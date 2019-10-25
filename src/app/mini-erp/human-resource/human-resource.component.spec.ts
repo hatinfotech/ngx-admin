@@ -8,7 +8,7 @@ describe('HumanResourceComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HumanResourceComponent ]
+      declarations: [ HumanResourceComponent ],
     })
     .compileComponents();
   }));

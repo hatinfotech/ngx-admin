@@ -8,7 +8,7 @@ describe('PrintComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PrintComponent ]
+      declarations: [ PrintComponent ],
     })
     .compileComponents();
   }));

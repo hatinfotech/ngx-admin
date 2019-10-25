@@ -6,7 +6,6 @@ import {
   NbTabsetModule, NbPopoverModule, NbButtonModule, NbInputModule,
   NbSelectModule, NbTooltipModule, NbDialogModule, NbWindowModule,
 } from '@nebular/theme';
-import { ShowcaseDialogComponent } from '../modal-overlays/dialog/showcase-dialog/showcase-dialog.component';
 import { DialogNamePromptComponent } from '../modal-overlays/dialog/dialog-name-prompt/dialog-name-prompt.component';
 import { WindowFormComponent } from '../modal-overlays/window/window-form/window-form.component';
 import { NgxPopoverCardComponent,
