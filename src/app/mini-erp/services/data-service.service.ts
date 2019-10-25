@@ -34,7 +34,6 @@ export class DataServiceService {
         }
         callback(resp.body);
       }, (e) => {
-        console.log(e);
         errorCallback(e.error);
       });
   }
