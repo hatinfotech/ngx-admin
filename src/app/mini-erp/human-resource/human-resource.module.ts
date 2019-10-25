@@ -5,7 +5,6 @@ import { NbTabsetModule, NbRouteTabsetModule, NbStepperModule, NbCardModule,
   NbButtonModule, NbListModule, NbAccordionModule, NbUserModule } from '@nebular/theme';
 import { ThemeModule } from '../../@theme/theme.module';
 import { HumanResouceRoutingModule } from './human-resource-routing.module';
-import { EmployeesComponent } from './employees/employees.component';
 
 @NgModule({
   declarations: [

@@ -3,7 +3,8 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { SmartTableData } from '../../../../@core/data/smart-table';
 import { Employee } from '../../../models/employee.model';
 import { DataServiceService } from '../../../services/data-service.service';
-import { HttpResponse } from '@angular/common/http';
+import { ShowcaseDialogComponent } from '../../../modal-overlays/dialog/showcase-dialog/showcase-dialog.component';
+import { NbDialogService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-list',
@@ -58,7 +59,7 @@ export class ListComponent implements OnInit {
   };
 
   source: LocalDataSource = new LocalDataSource();
-  constructor(private dataService: DataServiceService) {}
+  constructor(private dataService: DataServiceService, private dialogService: NbDialogService) {}
 
   onDeleteConfirm(event): void {
     if (window.confirm('Are you sure you want to delete?')) {
@@ -69,7 +70,14 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit() {
-    return this.dataService.getEmployees(data => this.source.load(data));
+    return this.dataService.getEmployees(data => this.source.load(data), (error)=>{
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Error',
+          content: error.logs[0],
+        },
+      });
+    });
   }
 
 }

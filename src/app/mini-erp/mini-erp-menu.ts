@@ -8,6 +8,18 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
+    title: 'Test component',
+    icon: 'people-outline',
+    link: '/mini-erp/test/dialog',
+    home: true,
+  },
+  {
+    title: 'Test dialog',
+    icon: 'people-outline',
+    link: '/mini-erp/test2/demo1',
+    home: true,
+  },
+  {
     title: 'Demo',
     icon: 'shopping-cart-outline',
     link: '/pages/dashboard',

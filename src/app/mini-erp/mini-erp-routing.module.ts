@@ -5,7 +5,6 @@ import { MiniErpComponent } from './mini-erp.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
-import { HumanResourceComponent } from './human-resource/human-resource.component';
 
 const routes: Routes = [{
   path: '',
@@ -15,7 +14,16 @@ const routes: Routes = [{
       path: 'human-resource',
       loadChildren: () => import('./human-resource/human-resource.module')
         .then(m => m.HumanResourceModule),
-      // component: HumanResourceComponent,
+    },
+    {
+      path: 'test',
+      loadChildren: () => import('./test/test.module')
+        .then(m => m.TestModule),
+    },
+    {
+      path: 'test2',
+      loadChildren: () => import('./test2/test2.module')
+        .then(m => m.Test2Module),
     },
     {
       path: 'dashboard',

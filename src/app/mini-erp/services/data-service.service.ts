@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { NbDialogService } from '@nebular/theme';
+import { ShowcaseDialogComponent } from '../modal-overlays/dialog/showcase-dialog/showcase-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +24,7 @@ export class DataServiceService {
     return this.apiUrl + (session ? ('?session=' + session) : '');
   }
 
-  getEmployees(callback) {
+  getEmployees(callback, errorCallback) {
 
     this._http.get<HttpResponse<any>>(this.makeApiUrl(), { observe: 'response' })
       .subscribe((resp: HttpResponse<any>) => {
@@ -31,6 +33,9 @@ export class DataServiceService {
           this.storeSession(session);
         }
         callback(resp.body);
+      }, (e) => {
+        console.log(e);
+        errorCallback(e.error);
       });
   }
 }

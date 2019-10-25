@@ -15,13 +15,11 @@ import {
 
 // modules
 import { ThemeModule } from '../../@theme/theme.module';
-import { ModalOverlaysRoutingModule } from './modal-overlays-routing.module';
+import { TestRoutingModule } from './test-routing.module';
 
 // components
-import { ModalOverlaysComponent } from './modal-overlays.component';
+import { TestComponent } from './test.component';
 import { DialogComponent } from './dialog/dialog.component';
-import { ShowcaseDialogComponent } from './dialog/showcase-dialog/showcase-dialog.component';
-import { DialogNamePromptComponent } from './dialog/dialog-name-prompt/dialog-name-prompt.component';
 import { WindowComponent } from './window/window.component';
 import { WindowFormComponent } from './window/window-form/window-form.component';
 import { ToastrComponent } from './toastr/toastr.component';
@@ -32,10 +30,12 @@ import {
   NgxPopoverTabsComponent,
 } from './popovers/popover-examples.component';
 import { TooltipComponent } from './tooltip/tooltip.component';
+import { ShowcaseDialogComponent } from '../modal-overlays/dialog/showcase-dialog/showcase-dialog.component';
+import { DialogNamePromptComponent } from '../modal-overlays/dialog/dialog-name-prompt/dialog-name-prompt.component';
 
 
 const COMPONENTS = [
-  ModalOverlaysComponent,
+  TestComponent,
   ToastrComponent,
   DialogComponent,
   ShowcaseDialogComponent,
@@ -61,7 +61,7 @@ const ENTRY_COMPONENTS = [
 const MODULES = [
   FormsModule,
   ThemeModule,
-  ModalOverlaysRoutingModule,
+  TestRoutingModule,
   NbDialogModule.forChild(),
   NbWindowModule.forChild(),
   NbCardModule,
@@ -91,5 +91,5 @@ const SERVICES = [
     ...ENTRY_COMPONENTS,
   ],
 })
-export class ModalOverlaysModule {
+export class TestModule {
 }
