@@ -16,16 +16,6 @@ const routes: Routes = [{
         .then(m => m.HumanResourceModule),
     },
     {
-      path: 'test',
-      loadChildren: () => import('./test/test.module')
-        .then(m => m.TestModule),
-    },
-    {
-      path: 'test2',
-      loadChildren: () => import('./test2/test2.module')
-        .then(m => m.Test2Module),
-    },
-    {
       path: 'dashboard',
       component: ECommerceComponent,
     },
