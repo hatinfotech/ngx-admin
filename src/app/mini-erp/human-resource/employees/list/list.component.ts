@@ -70,7 +70,7 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit() {
-    return this.dataService.getEmployees(data => this.source.load(data), (error)=>{
+    return this.dataService.getEmployees(data => this.source.load(data), (error) => {
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Error',
