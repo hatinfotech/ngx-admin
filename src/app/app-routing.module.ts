@@ -16,6 +16,11 @@ const routes: Routes = [
       .then(m => m.PagesModule),
   },
   {
+    path: 'mini-erp',
+    loadChildren: () => import('app/mini-erp/mini-erp.module')
+      .then(m => m.MiniErpModule),
+  },
+  {
     path: 'auth',
     component: NbAuthComponent,
     children: [
@@ -45,8 +50,8 @@ const routes: Routes = [
       },
     ],
   },
-  { path: '', redirectTo: 'pages', pathMatch: 'full' },
-  { path: '**', redirectTo: 'pages' },
+  { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
+  { path: '**', redirectTo: 'mini-erp' },
 ];
 
 const config: ExtraOptions = {

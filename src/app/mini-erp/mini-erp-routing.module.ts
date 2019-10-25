@@ -1,15 +1,22 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
-import { PagesComponent } from './pages.component';
+import { MiniErpComponent } from './mini-erp.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
+import { HumanResourceComponent } from './human-resource/human-resource.component';
 
 const routes: Routes = [{
   path: '',
-  component: PagesComponent,
+  component: MiniErpComponent,
   children: [
+    {
+      path: 'human-resource',
+      loadChildren: () => import('./human-resource/human-resource.module')
+        .then(m => m.HumanResourceModule),
+      // component: HumanResourceComponent,
+    },
     {
       path: 'dashboard',
       component: ECommerceComponent,
@@ -84,5 +91,5 @@ const routes: Routes = [{
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PagesRoutingModule {
+export class MiniErpRoutingModule {
 }

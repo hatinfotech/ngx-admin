@@ -6,6 +6,7 @@ import {NbMenuModule} from '@nebular/theme';
 import {DashboardModule} from './dashboard/dashboard.module';
 import {ECommerceModule} from './e-commerce/e-commerce.module';
 import {MiscellaneousModule} from './miscellaneous/miscellaneous.module';
+import { HumanResourceComponent } from './human-resource/human-resource.component';
 
 @NgModule({
   declarations: [
