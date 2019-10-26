@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -7,19 +8,36 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 export class DataServiceService {
   apiUrl = 'https://local.namsoftware.com/v1/hr/employees';
   session = '';
-  constructor(private _http: HttpClient) { }
+  token = '';
+  constructor(private _http: HttpClient, private authService: NbAuthService) {
+    this.authService.onTokenChange()
+      .subscribe((token: NbAuthJWTToken) => {
 
-  storeSession(session) {
+        if (token.isValid()) {
+          this.setToken(token.toString());
+        }
+
+      });
+   }
+
+  storeSession(session: string) {
     localStorage.setItem('api_session', session);
   }
 
-  getSession() {
+  getSession(): string {
     return localStorage.getItem('api_session');
   }
 
+  setToken(token: string) {
+    localStorage.setItem('api_token', token);
+  }
+
+  getToken(): string {
+    return localStorage.getItem('api_token');
+  }
+
   makeApiUrl() {
-    const session = this.getSession();
-    return this.apiUrl + (session ? ('?session=' + session) : '');
+    return this.apiUrl + (this.getToken() ? ('?token=' + this.getToken()) : '');
   }
 
   getEmployees(callback, errorCallback) {

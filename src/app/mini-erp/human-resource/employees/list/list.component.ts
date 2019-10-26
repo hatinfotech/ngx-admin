@@ -4,6 +4,7 @@ import { Employee } from '../../../models/employee.model';
 import { DataServiceService } from '../../../services/data-service.service';
 import { ShowcaseDialogComponent } from '../../../modal-overlays/dialog/showcase-dialog/showcase-dialog.component';
 import { NbDialogService } from '@nebular/theme';
+import { NbAuthService } from '@nebular/auth';
 
 @Component({
   selector: 'ngx-list',
@@ -11,6 +12,11 @@ import { NbDialogService } from '@nebular/theme';
   styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit {
+
+  constructor(
+    private dataService: DataServiceService,
+    private dialogService: NbDialogService,
+    private authService: NbAuthService) {}
 
   employees$: Employee[];
 
@@ -58,7 +64,6 @@ export class ListComponent implements OnInit {
   };
 
   source: LocalDataSource = new LocalDataSource();
-  constructor(private dataService: DataServiceService, private dialogService: NbDialogService) {}
 
   onDeleteConfirm(event): void {
     if (window.confirm('Are you sure you want to delete?')) {

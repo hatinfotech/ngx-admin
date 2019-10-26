@@ -1,20 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-// import { HumanResourceComponent } from './human-resource.component';
-// import { EmployeesComponent } from './employees/employees.component';
+import { AuthComponent } from './auth.componet';
 
 const routes: Routes = [{
-  // path: '',
-  // component: HumanResourceComponent,
-  // children: [
-  //   {
-  //     path: 'employees',
-  //     // component: EmployeesComponent,
-  //     loadChildren: () => import('./employees/employees.module')
-  //       .then(m => m.EmployeesModule),
-  //   },
-  // ],
+  path: '',
+  component: AuthComponent,
+  children: [
+    {
+      path: 'auth',
+      loadChildren: './auth/auth.module#AuthModule',
+    },
+  ],
 }];
 
 @NgModule({

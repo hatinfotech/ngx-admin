@@ -16,6 +16,11 @@ const routes: Routes = [{
         .then(m => m.HumanResourceModule),
     },
     {
+      path: 'auth',
+      loadChildren: () => import('./auth/auth.module')
+        .then(m => m.AuthModule),
+    },
+    {
       path: 'dashboard',
       component: ECommerceComponent,
     },

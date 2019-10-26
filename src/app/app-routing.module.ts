@@ -20,6 +20,11 @@ const routes: Routes = [
     loadChildren: () => import('app/mini-erp/mini-erp.module')
       .then(m => m.MiniErpModule),
   },
+  // {
+  //   path: 'auth',
+  //   loadChildren: () => import('app/mini-erp/auth/auth.module')
+  //     .then(m => m.AuthModule),
+  // },
   {
     path: 'auth',
     component: NbAuthComponent,

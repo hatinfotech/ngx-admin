@@ -20,6 +20,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
+    title: 'Authentication',
+    icon: 'people-outline',
+    children: [
+      {
+        title: 'Login',
+        link: '/auth',
+      },
+    ],
+  },
+  {
     title: 'Demo',
     icon: 'shopping-cart-outline',
     link: '/pages/dashboard',

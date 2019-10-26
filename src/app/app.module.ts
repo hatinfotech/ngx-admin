@@ -20,6 +20,7 @@ import {
   NbToastrModule,
   NbWindowModule,
 } from '@nebular/theme';
+import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken } from '@nebular/auth';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,35 @@ import {
     }),
     CoreModule.forRoot(),
     HttpClientModule,
+    NbAuthModule.forRoot({
+      strategies: [
+        NbPasswordAuthStrategy.setup({
+          name: 'email',
+          token: {
+            class: NbAuthJWTToken,
+            key: 'token', // this parameter tells where to look for the token
+          },
+          baseEndpoint: 'https://local.namsoftware.com/v1',
+          login: {
+            // ...
+            endpoint: '/user/login',
+            redirect: {
+              success: '/mini-erp/human-resource/employees/list',
+              failure: null, // stay on the same page
+            },
+          },
+          register: {
+            // ...
+            endpoint: '/user/register',
+            redirect: {
+              success: '/mini-erp/human-resource/employees/list',
+              failure: null, // stay on the same page
+            },
+          },
+        }),
+      ],
+      forms: { },
+    }),
   ],
   bootstrap: [AppComponent],
 })
