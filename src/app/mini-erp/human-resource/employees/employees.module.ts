@@ -22,7 +22,6 @@ import {
 } from '@nebular/theme';
 import { ThemeModule } from '../../../@theme/theme.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { ShowcaseDialogComponent } from '../../modal-overlays/dialog/showcase-dialog/showcase-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -33,10 +32,8 @@ import { CommonModule } from '@angular/common';
     FormComponent,
     PrintComponent,
     ViewComponent,
-    ShowcaseDialogComponent,
   ],
   entryComponents: [
-    ShowcaseDialogComponent,
   ],
   imports: [
     NbRouteTabsetModule,

@@ -5,7 +5,7 @@
  */
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
@@ -19,6 +19,8 @@ import {
   NbSidebarModule,
   NbToastrModule,
   NbWindowModule,
+  NbDialogService,
+  NbCardModule,
 } from '@nebular/theme';
 import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken } from '@nebular/auth';
 
@@ -31,9 +33,8 @@ import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-
+    NbCardModule,
     ThemeModule.forRoot(),
-
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(),
@@ -72,7 +73,7 @@ import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken
           },
         }),
       ],
-      forms: { },
+      forms: {},
     }),
   ],
   bootstrap: [AppComponent],

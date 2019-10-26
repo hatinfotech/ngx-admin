@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Employee } from '../../../models/employee.model';
 import { DataServiceService } from '../../../services/data-service.service';
-import { ShowcaseDialogComponent } from '../../../modal-overlays/dialog/showcase-dialog/showcase-dialog.component';
 import { NbDialogService } from '@nebular/theme';
 import { NbAuthService } from '@nebular/auth';
+import { ShowcaseDialogComponent } from '../../../showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-list',

@@ -20,12 +20,28 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
-    title: 'Authentication',
-    icon: 'people-outline',
+    title: 'Auth',
+    icon: 'lock-outline',
     children: [
       {
         title: 'Login',
-        link: '/auth',
+        link: '/auth/login',
+      },
+      {
+        title: 'Logout',
+        link: '/mini-erp/auth/logout',
+      },
+      {
+        title: 'Register',
+        link: '/auth/register',
+      },
+      {
+        title: 'Request Password',
+        link: '/auth/request-password',
+      },
+      {
+        title: 'Reset Password',
+        link: '/auth/reset-password',
       },
     ],
   },

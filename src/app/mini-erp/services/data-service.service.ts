@@ -6,7 +6,7 @@ import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
   providedIn: 'root',
 })
 export class DataServiceService {
-  apiUrl = 'https://local.namsoftware.com/v1/hr/employees';
+  baseApiUrl = 'https://local.namsoftware.com/v1';
   session = '';
   token = '';
   constructor(private _http: HttpClient, private authService: NbAuthService) {
@@ -36,21 +36,34 @@ export class DataServiceService {
     return localStorage.getItem('api_token');
   }
 
-  makeApiUrl() {
-    return this.apiUrl + (this.getToken() ? ('?token=' + this.getToken()) : '');
+  buildApiUrl(path: string) {
+    return this.baseApiUrl + path + (this.getToken() ? ('?token=' + this.getToken()) : '');
   }
 
-  getEmployees(callback, errorCallback) {
+  getEmployees(sucess, error) {
 
-    this._http.get<HttpResponse<any>>(this.makeApiUrl(), { observe: 'response' })
+    this._http.get<HttpResponse<any>>(this.buildApiUrl('/hr/employees'), { observe: 'response' })
       .subscribe((resp: HttpResponse<any>) => {
         const session = resp.headers.get('session');
         if (session) {
           this.storeSession(session);
         }
-        callback(resp.body);
+        sucess(resp.body);
       }, (e) => {
-        errorCallback(e.error);
+        error(e.error);
+      });
+  }
+
+  logout(sucess, error) {
+    this._http.get<HttpResponse<any>>(this.buildApiUrl('/user/logout'), { observe: 'response' })
+      .subscribe((resp: HttpResponse<any>) => {
+        const session = resp.headers.get('session');
+        if (session) {
+          this.storeSession(session);
+        }
+        sucess(resp.body);
+      }, (e) => {
+        error(e.error);
       });
   }
 }
