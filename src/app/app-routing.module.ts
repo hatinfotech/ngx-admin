@@ -16,7 +16,7 @@ const routes: Routes = [
       .then(m => m.PagesModule),
   },
   {
-    path: 'mini-erp',
+    path: '',
     loadChildren: () => import('app/mini-erp/mini-erp.module')
       .then(m => m.MiniErpModule),
   },
@@ -55,8 +55,8 @@ const routes: Routes = [
       },
     ],
   },
-  { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
-  { path: '**', redirectTo: 'mini-erp' },
+  // { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
+  // { path: '**', redirectTo: 'mini-erp' },
 ];
 
 const config: ExtraOptions = {

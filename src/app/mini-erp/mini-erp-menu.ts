@@ -4,19 +4,19 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Employees',
     icon: 'people-outline',
-    link: '/mini-erp/human-resource/employees/list',
+    link: '/human-resource/employees/list',
     home: true,
   },
   {
     title: 'Test component',
     icon: 'people-outline',
-    link: '/mini-erp/test/dialog',
+    link: '/test/dialog',
     home: true,
   },
   {
-    title: 'Test dialog',
+    title: 'Data table',
     icon: 'people-outline',
-    link: '/mini-erp/test2/demo1',
+    link: '/data-table',
     home: true,
   },
   {
@@ -29,7 +29,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
       {
         title: 'Logout',
-        link: '/mini-erp/auth/logout',
+        link: '/auth/logout',
       },
       {
         title: 'Register',

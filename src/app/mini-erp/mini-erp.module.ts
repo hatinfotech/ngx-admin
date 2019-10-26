@@ -7,11 +7,13 @@ import {DashboardModule} from './dashboard/dashboard.module';
 import {ECommerceModule} from './e-commerce/e-commerce.module';
 import {MiscellaneousModule} from './miscellaneous/miscellaneous.module';
 import { ShowcaseDialogComponent } from './showcase-dialog/showcase-dialog.component';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
   declarations: [
     MiniErpComponent,
     ShowcaseDialogComponent,
+    TestComponent,
   ],
   entryComponents: [
     ShowcaseDialogComponent,

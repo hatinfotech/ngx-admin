@@ -8,14 +8,19 @@ const routes: Routes = [{
   component: MiniErpComponent,
   children: [
     {
+      path: 'auth',
+      loadChildren: () => import('./auth/auth.module')
+        .then(m => m.AuthModule),
+    },
+    {
       path: 'human-resource',
       loadChildren: () => import('./human-resource/human-resource.module')
         .then(m => m.HumanResourceModule),
     },
     {
-      path: 'auth',
-      loadChildren: () => import('./auth/auth.module')
-        .then(m => m.AuthModule),
+      path: 'data-table',
+      loadChildren: () => import('./data-table/data-table.module')
+        .then(m => m.DataTableModule),
     },
   ],
 }];

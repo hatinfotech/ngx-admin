@@ -11,6 +11,7 @@ import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { environment } from './../environments/environment';
 import {
   NbChatModule,
   NbDatepickerModule,
@@ -54,12 +55,12 @@ import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken
             class: NbAuthJWTToken,
             key: 'token', // this parameter tells where to look for the token
           },
-          baseEndpoint: 'https://local.namsoftware.com/v1',
+          baseEndpoint: environment.api.baseUrl,
           login: {
             // ...
             endpoint: '/user/login',
             redirect: {
-              success: '/mini-erp/human-resource/employees/list',
+              success: '/human-resource/employees/list',
               failure: null, // stay on the same page
             },
           },
@@ -67,7 +68,7 @@ import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken
             // ...
             endpoint: '/user/register',
             redirect: {
-              success: '/mini-erp/human-resource/employees/list',
+              success: '/human-resource/employees/list',
               failure: null, // stay on the same page
             },
           },
