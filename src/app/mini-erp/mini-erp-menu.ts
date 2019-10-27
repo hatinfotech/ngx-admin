@@ -8,6 +8,22 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
+    title: 'Sales',
+    icon: 'lock-outline',
+    children: [
+      {
+        title: 'Price Report',
+        icon: 'people-outline',
+        link: '/sales/price-report',
+      },
+      {
+        title: 'Price Table',
+        icon: 'people-outline',
+        link: '/sales/price-table',
+      },
+    ],
+  },
+  {
     title: 'Test',
     icon: 'lock-outline',
     children: [
