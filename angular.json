@@ -39,6 +39,9 @@
               "node_modules/angular-tree-component/dist/angular-tree-component.css",
               "node_modules/pace-js/templates/pace-theme-flash.tmpl.css",
               "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/@swimlane/ngx-datatable/index.css",
+              "node_modules/@swimlane/ngx-datatable/themes/material.css",
+              "node_modules/@swimlane/ngx-datatable/assets/icons.css",
               "src/app/@theme/styles/styles.scss"
             ],
             "scripts": [
@@ -117,6 +120,10 @@
               "node_modules/socicon/css/socicon.css",
               "node_modules/nebular-icons/scss/nebular-icons.scss",
               "node_modules/pace-js/templates/pace-theme-flash.tmpl.css",
+              "node_modules/@swimlane/ngx-datatable/index.css",
+              "node_modules/@swimlane/ngx-datatable/themes/material.css",
+              "node_modules/@swimlane/ngx-datatable/assets/icons.css",
+              "node_modules/bootstrap/dist/css/bootstrap.css",
               "src/app/@theme/styles/styles.scss"
             ],
             "assets": [
@@ -166,7 +173,7 @@
           }
         }
       }
-    }
+    },
   },
   "defaultProject": "ngx-admin-demo",
   "schematics": {

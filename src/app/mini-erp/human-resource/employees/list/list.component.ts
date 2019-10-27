@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Employee } from '../../../models/employee.model';
-import { DataServiceService } from '../../../services/data-service.service';
 import { NbDialogService } from '@nebular/theme';
 import { NbAuthService } from '@nebular/auth';
-import { ShowcaseDialogComponent } from '../../../showcase-dialog/showcase-dialog.component';
+import { Observable, throwError } from 'rxjs';
+import { EmployeesService } from '../../../services/employees.service';
+import { retry, catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-list',
@@ -14,11 +16,14 @@ import { ShowcaseDialogComponent } from '../../../showcase-dialog/showcase-dialo
 export class ListComponent implements OnInit {
 
   constructor(
-    private dataService: DataServiceService,
+    private employeesService: EmployeesService,
     private dialogService: NbDialogService,
-    private authService: NbAuthService) {}
+    private authService: NbAuthService,
+    private router: Router) {
+      console.info('construct');
+    }
 
-  employees$: Employee[];
+  employees$: Observable<Employee[]>;
 
 
   editing = {};
@@ -74,14 +79,38 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit() {
-    return this.dataService.getEmployees(data => this.source.load(data), (error) => {
-      this.dialogService.open(ShowcaseDialogComponent, {
-        context: {
-          title: 'Error',
-          content: error.logs[0],
-        },
-      });
-    });
+
+    this.employeesService.get().pipe(retry(0), catchError(e => this.handleError(e)))
+      .subscribe(data => this.source.load(data));
+
+    // return this.dataService.getEmployees(data => this.source.load(data), (error) => {
+    //   this.dialogService.open(ShowcaseDialogComponent, {
+    //     context: {
+    //       title: 'Error',
+    //       content: error.logs[0],
+    //     },
+    //   });
+    // });
   }
 
+  handleError(e) {
+    if (e.status === 401) {
+      console.warn('You were not logged in');
+      // window.location.href = '/auth/login';
+      // location.replace('http://localhost:4200/auth/login');
+      this.router.navigate(['auth/login']);
+
+    }
+    let errorMessage = '';
+    if (e.error instanceof ErrorEvent) {
+      // client-side error
+      errorMessage = `Error: ${e.error.message}`;
+    } else {
+      // server-side error
+      errorMessage = `Error Code: ${e.status}\nMessage: ${e.message}`;
+    }
+    // tslint:disable-next-line: no-console
+    console.log(errorMessage);
+    return throwError(errorMessage);
+  }
 }

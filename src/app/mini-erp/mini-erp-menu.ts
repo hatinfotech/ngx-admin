@@ -8,16 +8,20 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
-    title: 'Test component',
-    icon: 'people-outline',
-    link: '/test/dialog',
-    home: true,
-  },
-  {
-    title: 'Data table',
-    icon: 'people-outline',
-    link: '/data-table',
-    home: true,
+    title: 'Test',
+    icon: 'lock-outline',
+    children: [
+      {
+        title: 'Data table',
+        icon: 'people-outline',
+        link: '/test/data-table',
+      },
+      {
+        title: 'From',
+        icon: 'people-outline',
+        link: '/test/form',
+      },
+    ],
   },
   {
     title: 'Auth',

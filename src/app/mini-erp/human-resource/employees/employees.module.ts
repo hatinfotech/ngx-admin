@@ -8,17 +8,6 @@ import { EmployeesRoutingModule } from './employees-routing.module';
 import {
   NbRouteTabsetModule,
   NbCardModule,
-  NbTreeGridModule,
-  NbIconModule,
-  NbInputModule,
-  NbDialogModule,
-  NbWindowModule,
-  NbCheckboxModule,
-  NbTabsetModule,
-  NbPopoverModule,
-  NbButtonModule,
-  NbSelectModule,
-  NbTooltipModule,
 } from '@nebular/theme';
 import { ThemeModule } from '../../../@theme/theme.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
@@ -38,22 +27,11 @@ import { CommonModule } from '@angular/common';
   imports: [
     NbRouteTabsetModule,
     EmployeesRoutingModule,
-    NbCardModule,
-    NbTreeGridModule,
-    NbIconModule,
-    NbInputModule,
     ThemeModule,
-    Ng2SmartTableModule,
     FormsModule,
-    NbDialogModule.forChild(),
-    NbWindowModule.forChild(),
-    NbCheckboxModule,
-    NbTabsetModule,
-    NbPopoverModule,
-    NbButtonModule,
-    NbSelectModule,
-    NbTooltipModule,
     CommonModule,
+    NbCardModule,
+    Ng2SmartTableModule,
   ],
 })
 export class EmployeesModule { }

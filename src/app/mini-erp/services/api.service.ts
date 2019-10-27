@@ -9,7 +9,7 @@ import { Employee } from '../models/employee.model';
 @Injectable({
   providedIn: 'root',
 })
-export class DataServiceService {
+export class ApiService {
   protected baseApiUrl = environment.api.baseUrl;
   protected session = '';
   protected token = '';
@@ -23,6 +23,13 @@ export class DataServiceService {
         }
 
       });
+      this.authService.getToken().subscribe((token: NbAuthJWTToken) => {
+
+        if (token.isValid()) {
+          this.setToken(token.toString());
+        }
+
+      }).unsubscribe();
    }
 
   storeSession(session: string) {
@@ -43,6 +50,10 @@ export class DataServiceService {
 
   buildApiUrl(path: string) {
     return this.baseApiUrl + path + (this.getToken() ? ('?token=' + this.getToken()) : '');
+  }
+
+  get<T>(enpoint: string) {
+    return this._http.get<T>(this.buildApiUrl(enpoint));
   }
 
   getEmployees(): Observable<Employee[]> {

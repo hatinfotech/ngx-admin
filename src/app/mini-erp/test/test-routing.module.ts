@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { TestComponent } from './test.component';
+import { DataTableComponent } from './data-table/data-table.component';
+import { FormComponent } from './form/form.component';
 
 
 const routes: Routes = [{
@@ -7,10 +10,12 @@ const routes: Routes = [{
   component: TestComponent,
   children: [
     {
-      path: 'employees',
-      // component: EmployeesComponent,
-      loadChildren: () => import('./employees/employees.module')
-        .then(m => m.EmployeesModule),
+      path: 'data-table',
+      component: DataTableComponent,
+    },
+    {
+      path: 'form',
+      component: FormComponent,
     },
   ],
 }];

@@ -20,10 +20,9 @@ import {
   NbSidebarModule,
   NbToastrModule,
   NbWindowModule,
-  NbDialogService,
   NbCardModule,
 } from '@nebular/theme';
-import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken } from '@nebular/auth';
+import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/auth';
 
 @NgModule({
   declarations: [
@@ -46,6 +45,7 @@ import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken
       messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
     }),
     CoreModule.forRoot(),
+    // NgxDnDModule.forRoot(),
     HttpClientModule,
     NbAuthModule.forRoot({
       strategies: [
@@ -77,6 +77,7 @@ import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken, NbAuthJWTToken
       forms: {},
     }),
   ],
+  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {

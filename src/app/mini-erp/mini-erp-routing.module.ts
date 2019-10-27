@@ -18,9 +18,9 @@ const routes: Routes = [{
         .then(m => m.HumanResourceModule),
     },
     {
-      path: 'data-table',
-      loadChildren: () => import('./data-table/data-table.module')
-        .then(m => m.DataTableModule),
+      path: 'test',
+      loadChildren: () => import('./test/test.module')
+        .then(m => m.TestModule),
     },
   ],
 }];
