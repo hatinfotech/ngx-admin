@@ -1,6 +1,6 @@
 import { DataServiceService } from './data-service.service';
 import { HttpResponse } from '@angular/common/http';
-import { PriceReport } from '../models/price-report.model';
+import { PriceReport } from '../models/sales/price-report.model';
 
 export class PriceReportService extends DataServiceService {
 

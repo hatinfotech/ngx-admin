@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
 import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
 import { environment } from './../../../environments/environment';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { map, retry, catchError } from 'rxjs/operators';
 import { Employee } from '../models/employee.model';
 
 @Injectable({
@@ -23,14 +23,14 @@ export class ApiService {
         }
 
       });
-      this.authService.getToken().subscribe((token: NbAuthJWTToken) => {
+    this.authService.getToken().subscribe((token: NbAuthJWTToken) => {
 
-        if (token.isValid()) {
-          this.setToken(token.toString());
-        }
+      if (token.isValid()) {
+        this.setToken(token.toString());
+      }
 
-      }).unsubscribe();
-   }
+    }).unsubscribe();
+  }
 
   storeSession(session: string) {
     localStorage.setItem('api_session', session);
@@ -48,12 +48,62 @@ export class ApiService {
     return localStorage.getItem('api_token');
   }
 
-  buildApiUrl(path: string) {
-    return this.baseApiUrl + path + (this.getToken() ? ('?token=' + this.getToken()) : '');
+  buildApiUrl(path: string, params?: Object) {
+    const token = this.getToken();
+    let paramsStr = '';
+    if (params) {
+      paramsStr += this.buildParams(params);
+    }
+    if (token) {
+      paramsStr += paramsStr + (paramsStr ? '&' : '') + 'token=' + token;
+    }
+    return `${this.baseApiUrl}${path}?${paramsStr}`;
   }
 
-  get<T>(enpoint: string) {
-    return this._http.get<T>(this.buildApiUrl(enpoint));
+  buildParams(params: Object): string {
+    let httpParams = '';
+    let first = true;
+    Object.entries(params).forEach(([key, value]) => {
+      httpParams += `${!first ? '&' : ''}${key}=${value}`;
+      first = false;
+    });
+    return httpParams;
+  }
+
+  get<T>(enpoint: string, params: Object, success: (resources: T) => void, error: (e) => void) {
+    return this._http.get<T>(this.buildApiUrl(enpoint, params))
+      .pipe(retry(0), catchError(e => {
+        error(e);
+        return this.handleError(e);
+      }))
+      .subscribe((resources: T) => success(resources));
+  }
+
+  post<T>(enpoint: string, resource, success: (newResource: T) => void, error: (e) => void) {
+    return this._http.post(this.buildApiUrl(enpoint), resource)
+      .pipe(retry(0), catchError(e => {
+        error(e);
+        return this.handleError(e);
+      }))
+      .subscribe((newResource: T) => success(newResource));
+  }
+
+  put<T>(enpoint: string, resource, success: (newResource: T) => void, error: (e) => void) {
+    return this._http.put(this.buildApiUrl(enpoint), resource)
+      .pipe(retry(0), catchError(e => {
+        error(e);
+        return this.handleError(e);
+      }))
+      .subscribe((newResource: T) => success(newResource));
+  }
+
+  delete(enpoint: string, id: string, success: (resp) => void, error: (e) => void) {
+    return this._http.delete(this.buildApiUrl(`${enpoint}?id=${id}`))
+      .pipe(retry(0), catchError(e => {
+        error(e);
+        return this.handleError(e);
+      }))
+      .subscribe((resp) => success(resp));
   }
 
   getEmployees(): Observable<Employee[]> {
@@ -72,5 +122,31 @@ export class ApiService {
       }, (e) => {
         error(e.error);
       });
+  }
+
+  handleError(e) {
+    if (e.status === 401) {
+      console.warn('You were not logged in');
+      // window.location.href = '/auth/login';
+      // location.replace('http://localhost:4200/auth/login');
+      // this.router.navigate(['auth/login']);
+
+    }
+    let errorMessage = '';
+    if (e.error instanceof ErrorEvent) {
+      // client-side error
+      errorMessage = `Error: ${e.error.message}`;
+    } else {
+      if (e.error && e.error.logs) {
+        const errorLogs = e.error.logs[0];
+        errorMessage = `Error Code: ${e.status}\nMessage: ${errorLogs}`;
+      } else {
+        // server-side error
+        errorMessage = `Error Code: ${e.status}\nMessage: ${e.message}`;
+      }
+    }
+    // tslint:disable-next-line: no-console
+    console.log(errorMessage);
+    return throwError(errorMessage);
   }
 }

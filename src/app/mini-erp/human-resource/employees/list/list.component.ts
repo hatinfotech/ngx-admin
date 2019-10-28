@@ -80,8 +80,8 @@ export class ListComponent implements OnInit {
 
   ngOnInit() {
 
-    this.employeesService.get().pipe(retry(0), catchError(e => this.handleError(e)))
-      .subscribe(data => this.source.load(data));
+    // this.employeesService.get().pipe(retry(0), catchError(e => this.handleError(e)))
+    //   .subscribe(data => this.source.load(data));
 
     // return this.dataService.getEmployees(data => this.source.load(data), (error) => {
     //   this.dialogService.open(ShowcaseDialogComponent, {

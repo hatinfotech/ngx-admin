@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import { PriceReport, PriceReportDetail } from '../../models/price-report.model';
+import { PriceReport, PriceReportDetail } from '../../models/sales/price-report.model';
 
 @Component({
   selector: 'ngx-form',

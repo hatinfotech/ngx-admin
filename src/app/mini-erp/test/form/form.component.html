@@ -97,15 +97,15 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let product of products; let rowIndex = index">
+                <tr *ngFor="let product of priceReportDetails; let rowIndex = index">
                   <th scope="row">{{ rowIndex + 1 }}</th>
-                  <td><input class="form-control" type="text" [value]="product.Code" readonly></td>
-                  <td>{{ product.Photo }}</td>
-                  <td><input class="form-control" type="text" [(value)]="product.Name"></td>
+                  <td><input class="form-control" type="text" [value]="product.Product" readonly></td>
+                  <td>IMG</td>
+                  <td><input class="form-control" type="text" [(value)]="product.Description"></td>
                   <td><input class="form-control" type="text" [(value)]="product.Unit"></td>
                   <td><input class="form-control" type="text" [(value)]="product.Price" style="text-align: right;"></td>
                   <td><input class="form-control" type="text" [(value)]="product.Tax"></td>
-                  <td><input class="form-control" type="text" [value]="product.ToMoney" style="text-align: right;"></td>
+                  <td><input class="form-control" type="text" style="text-align: right;"></td>
                 </tr>
               </tbody>
             </table>

@@ -12,7 +12,7 @@ export class EmployeesService {
   constructor(private apiService: ApiService) { }
 
   get() {
-    return this.apiService.get<Employee[]>('/hr/employees');
+    // return this.apiService.get<Employee[]>({ enpoint: '/hr/employees' });
   }
 
   handleError(e) {
