@@ -12,5 +12,5 @@ export const environment = {
   production: false,
   api: {
     baseUrl: 'https://local.namsoftware.com/v1',
-  }
+  },
 };

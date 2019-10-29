@@ -8,6 +8,6 @@ import { SalesRoutingModule } from './sales-routing.module';
   imports: [
     CommonModule,
     SalesRoutingModule,
-  ]
+  ],
 })
 export class SalesModule { }

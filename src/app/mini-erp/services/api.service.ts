@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
 import { environment } from './../../../environments/environment';
 import { Observable, throwError } from 'rxjs';
@@ -55,7 +55,7 @@ export class ApiService {
       paramsStr += this.buildParams(params);
     }
     if (token) {
-      paramsStr += paramsStr + (paramsStr ? '&' : '') + 'token=' + token;
+      paramsStr +=  (paramsStr ? '&' : '') + 'token=' + token;
     }
     return `${this.baseApiUrl}${path}?${paramsStr}`;
   }

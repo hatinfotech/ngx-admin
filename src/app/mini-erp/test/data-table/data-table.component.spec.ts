@@ -8,7 +8,7 @@ describe('DataTableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataTableComponent ]
+      declarations: [ DataTableComponent ],
     })
     .compileComponents();
   }));

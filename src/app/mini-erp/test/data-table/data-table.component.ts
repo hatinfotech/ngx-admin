@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { DataServiceService } from '../../services/data-service.service';
 
 @Component({
   selector: 'ngx-data-table',
@@ -14,7 +13,7 @@ export class DataTableComponent implements OnInit {
 
   ColumnMode = ColumnMode;
 
-  constructor(private dataService: DataServiceService) { }
+  constructor() { }
 
   ngOnInit() {
     this.fetch(data => {

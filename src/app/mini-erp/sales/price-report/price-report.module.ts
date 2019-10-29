@@ -5,8 +5,12 @@ import { ListComponent } from './list/list.component';
 import { FormComponent } from './form/form.component';
 import { ViewComponent } from './view/view.component';
 import { PriceReportRoutingModule } from './price-report-routing.module';
-import { NbCardModule } from '@nebular/theme';
+import {
+  NbCardModule, NbButtonModule, NbInputModule, NbActionsModule,
+  NbUserModule, NbCheckboxModule, NbRadioModule, NbDatepickerModule,
+} from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [PriceReportComponent, ListComponent, FormComponent, ViewComponent],
@@ -16,6 +20,15 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
     NbCardModule,
     Ng2SmartTableModule,
     NbCardModule,
+    NbInputModule,
+    NbButtonModule,
+    NbActionsModule,
+    NbUserModule,
+    NbCheckboxModule,
+    NbRadioModule,
+    NbDatepickerModule,
+    Ng2SmartTableModule,
+    ReactiveFormsModule,
   ],
 })
 export class PriceReportModule { }

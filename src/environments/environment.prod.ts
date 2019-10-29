@@ -7,5 +7,5 @@ export const environment = {
   production: true,
   api: {
     baseUrl: 'https://nam2019.mtsg.vn/v1',
-  }
+  },
 };

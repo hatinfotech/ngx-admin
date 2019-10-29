@@ -14,6 +14,9 @@ export class PriceReportService implements ApiResource<PriceReport> {
   get(params: Object, success: (resources: PriceReport[]) => void, error: (e) => void) {
     this.apiService.get<PriceReport[]>('/sales/price-reports', params, success, error);
   }
+  getById(id: string, success: (resources: PriceReport) => void, error: (e) => void) {
+    this.apiService.get<PriceReport>('/sales/price-reports', { 'id': id}, success, error);
+  }
   post(resource: PriceReport, success: (newResource: PriceReport) => void, error: (e) => void) {
     this.apiService.post<PriceReport>('/sales/price-reports', resource, success, error);
   }

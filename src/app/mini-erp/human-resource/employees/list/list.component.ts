@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Employee } from '../../../models/employee.model';
-import { NbDialogService } from '@nebular/theme';
-import { NbAuthService } from '@nebular/auth';
 import { Observable, throwError } from 'rxjs';
-import { EmployeesService } from '../../../services/employees.service';
-import { retry, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ApiService } from '../../../services/api.service';
+import { NbDialogService } from '@nebular/theme';
+import { ShowcaseDialogComponent } from '../../../showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-list',
@@ -16,9 +15,8 @@ import { Router } from '@angular/router';
 export class ListComponent implements OnInit {
 
   constructor(
-    private employeesService: EmployeesService,
+    private apiService: ApiService,
     private dialogService: NbDialogService,
-    private authService: NbAuthService,
     private router: Router) {
       console.info('construct');
     }
@@ -30,6 +28,10 @@ export class ListComponent implements OnInit {
   rows = [];
 
   settings = {
+    mode: 'external',
+    actions: {
+      position: 'right',
+    },
     add: {
       addButtonContent: '<i class="nb-plus"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',
@@ -79,6 +81,16 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.apiService.get<Employee[]>('/hr/employees', { limit: 1000000, ofset: 0 },
+      empployees => this.source.load(empployees), e => {
+        this.dialogService.open(ShowcaseDialogComponent, {
+          context: {
+            title: 'Error',
+            content: e.error.logs[0],
+          },
+      });
+    });
 
     // this.employeesService.get().pipe(retry(0), catchError(e => this.handleError(e)))
     //   .subscribe(data => this.source.load(data));

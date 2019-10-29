@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
-import { Employee } from '../models/employee.model';
-import { retry, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 @Injectable({
@@ -9,7 +6,7 @@ import { throwError } from 'rxjs';
 })
 export class EmployeesService {
 
-  constructor(private apiService: ApiService) { }
+  constructor() { }
 
   get() {
     // return this.apiService.get<Employee[]>({ enpoint: '/hr/employees' });

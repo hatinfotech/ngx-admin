@@ -23,6 +23,10 @@ const routes: Routes = [{
       component: FormComponent,
     },
     {
+      path: 'form/:id',
+      component: FormComponent,
+    },
+    {
       path: 'view',
       component: ViewComponent,
     },

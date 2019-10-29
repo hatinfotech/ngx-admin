@@ -1,3 +1,122 @@
-<p>
-  form works!
-</p>
+<nb-card>
+  <nb-card-header>Form báo giá</nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="priceReportForm" (ngSubmit)="onSubmit()">
+      <input type="hidden" formControlName="Code">
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label">Tổ chức/Cá nhân</label>
+            <input type="text" id="Object" nbInput fullWidth formControlName="Object" placeholder="Tổ chức/Cá nhân">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="label">Tên</label>
+            <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="Tên">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label">Người nhận</label>
+            <input type="email" nbInput fullWidth formControlName="Recipient" placeholder="Người nhận">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-9">
+          <div class="form-group">
+            <label class="label">Địa chỉ</label>
+            <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="Địa chỉ">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label">Điện thoại</label>
+            <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="Điện thoại">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label">Email</label>
+            <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="Email">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label">MST</label>
+            <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="Mã số thuế">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label">Ngân hàng</label>
+            <input type="text" nbInput fullWidth formControlName="ObjectBankName" placeholder="Ngân hàng">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label">Số TK Ngân hàng</label>
+            <input type="text" nbInput fullWidth formControlName="ObjectBankCode" placeholder="Số tài khoản ngân hàng">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="label">Tiêu đề báo giá</label>
+            <input type="text" nbInput fullWidth formControlName="Title" placeholder="Tiêu đề báo giá">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="label">Ghi chú</label>
+            <textarea nbInput fullWidth formControlName="Note" placeholder="Ghi chú"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label class="label">Chi tiết hàng hóa</label>
+          <div class="table-responsive-sm">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">STT</th>
+                  <th scope="col">Mã SP</th>
+                  <th scope="col">Diễn giải</th>
+                  <th scope="col">ĐVT</th>
+                  <th scope="col">Số lượng</th>
+                  <th scope="col">Đơn giá</th>
+                  <th scope="col">Thuế</th>
+                  <th scope="col">Thành tiền</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="details">
+                <tr *ngFor="let detail of details.controls; let i=index" [formGroup]="detail">
+                  <td><input type="hidden" formControlName="Id">{{ i + 1}}</td>
+                  <td><input class="form-control" type="text" formControlName="Product" placeholder="Sản phảm"></td>
+                  <td><input class="form-control" type="text" formControlName="Description" placeholder="Diễn giải"></td>
+                  <td><input class="form-control" type="text" formControlName="Unit" placeholder="ĐVT"></td>
+                  <td><input class="form-control" type="text" formControlName="Quantity" placeholder="Số lượng" style="text-align: right;">
+                  </td>
+                  <td><input class="form-control" type="text" formControlName="Price" placeholder="Đơn giá"></td>
+                  <td><input class="form-control" type="text" formControlName="Tax" placeholder="Thuế"></td>
+                  <td><input class="form-control" type="text" formControlName="ToMoney" placeholder="Thành tiền" style="text-align: right;">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="btn btn-primary" (click)="addDetail()">Add details</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary">Xem trước</button>
+      <button type="submit" class="btn btn-success" [disabled]="!priceReportForm.valid">Lưu</button>
+    </form>
+  </nb-card-body>
+</nb-card>

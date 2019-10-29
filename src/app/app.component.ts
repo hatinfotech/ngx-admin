@@ -5,7 +5,6 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
-import { NbDialogService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-app',
@@ -13,7 +12,7 @@ import { NbDialogService } from '@nebular/theme';
 })
 export class AppComponent implements OnInit {
 
-  constructor(private analytics: AnalyticsService, private dialogService: NbDialogService) {
+  constructor(private analytics: AnalyticsService) {
   }
 
   ngOnInit(): void {

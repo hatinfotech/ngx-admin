@@ -1,8 +1,4 @@
-import { Injectable } from '@angular/core';
-import { Adapter } from './adapter';
-
 export class Employee {
-
   Code: string;
   Name: string;
   Phone: string;
