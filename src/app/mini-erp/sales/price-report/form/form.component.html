@@ -7,7 +7,10 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label">Tổ chức/Cá nhân</label>
-            <input type="text" id="Object" nbInput fullWidth formControlName="Object" placeholder="Tổ chức/Cá nhân">
+            <!-- <input type="text" id="Object" nbInput fullWidth formControlName="Object" placeholder="Tổ chức/Cá nhân"> -->
+            <input type="hidden" formControlName="Object">
+            <select2 [value]="objectValue" [data]="customerList" [options]="select2Option" [cssImport]=true
+              (valueChanged)="onObjectChange($event)"></select2>
           </div>
         </div>
         <div class="col-sm-6">
@@ -47,7 +50,11 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label">MST</label>
-            <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="Mã số thuế">
+            <!-- <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="Mã số thuế"> -->
+            <nb-select selected="1" fullWidth formControlName="ObjectTaxCode">
+              <nb-option value="1">Chua bao gom 10 %</nb-option>
+              <nb-option value="2">Khong VAT</nb-option>
+            </nb-select>
           </div>
         </div>
         <div class="col-sm-3">
@@ -79,44 +86,99 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row form-details">
         <div class="col-sm-12">
           <label class="label">Chi tiết hàng hóa</label>
-          <div class="table-responsive-sm">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">STT</th>
-                  <th scope="col">Mã SP</th>
-                  <th scope="col">Diễn giải</th>
-                  <th scope="col">ĐVT</th>
-                  <th scope="col">Số lượng</th>
-                  <th scope="col">Đơn giá</th>
-                  <th scope="col">Thuế</th>
-                  <th scope="col">Thành tiền</th>
-                </tr>
-              </thead>
-              <tbody formArrayName="details">
-                <tr *ngFor="let detail of details.controls; let i=index" [formGroup]="detail">
-                  <td><input type="hidden" formControlName="Id">{{ i + 1}}</td>
-                  <td><input class="form-control" type="text" formControlName="Product" placeholder="Sản phảm"></td>
-                  <td><input class="form-control" type="text" formControlName="Description" placeholder="Diễn giải"></td>
-                  <td><input class="form-control" type="text" formControlName="Unit" placeholder="ĐVT"></td>
-                  <td><input class="form-control" type="text" formControlName="Quantity" placeholder="Số lượng" style="text-align: right;">
-                  </td>
-                  <td><input class="form-control" type="text" formControlName="Price" placeholder="Đơn giá"></td>
-                  <td><input class="form-control" type="text" formControlName="Tax" placeholder="Thuế"></td>
-                  <td><input class="form-control" type="text" formControlName="ToMoney" placeholder="Thành tiền" style="text-align: right;">
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <button class="btn btn-primary" (click)="addDetail()">Add details</button>
+          <div class="row">
+            <div class="col-sm-1">STT</div>
+            <div class="col-sm-11">
+                <div class="row">
+                    <!-- <div class="col-sm-1">STT</div> -->
+                    <div class="col-sm-2">Diễn giải</div>
+                    <div class="col-sm-2">ĐVT</div>
+                    <div class="col-sm-2" style="text-align: right;">Số lượng</div>
+                    <div class="col-sm-2" style="text-align: right;">Đơn giá</div>
+                    <div class="col-sm-2">Thuế</div>
+                    <div class="col-sm-2" style="text-align: right;">Thành tiền</div>
+                    <!-- <div class="col-sm-1" style="text-align: right;">Lệnh</div> -->
+                  </div>
+            </div>
           </div>
+
+          <hr>
+          <div formArrayName="details" [sortablejs]="details" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+            <div class="form-detail-item" *ngFor="let detail of details.controls; let i=index" [formGroup]="detail">
+              <div class="row">
+                <div class="col-sm-1">
+                  <button type="button" class="btn btn-warning" (click)="removeDetail(i)">{{ i+1 }}</button>
+                  <button type="button" class="btn btn-primary sorting-handle">MOVE</button>
+                </div>
+                <div class="col-sm-11">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <label class="label">Sản phẩm</label>
+                        <input style="display: none;" type="hidden" class="form-control" type="text"
+                          formControlName="Product" placeholder="Sản phảm">
+                        <select2 [options]="select2OptionForProduct" [cssImport]=true
+                          (valueChanged)="onObjectChange($event)"></select2>
+                      </div>
+                    </div>
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <label class="label">ĐVT</label>
+                        <select2 [data]="unitList" [options]="select2OptionForUnit" [cssImport]=true></select2>
+                      </div>
+                    </div>
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <label class="label">Số lượng</label>
+                        <input nbInput fullWidth type="text" formControlName="Quantity" placeholder="Số lượng"
+                          style="text-align: right;">
+                      </div>
+                    </div>
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <label class="label">Đơn giá</label>
+                        <input nbInput fullWidth type="text" formControlName="Price" placeholder="Đơn giá"
+                          style="text-align: right;">
+                      </div>
+                    </div>
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <label class="label">Thuế</label>
+                        <input nbInput fullWidth type="text" formControlName="Tax" placeholder="Thuế">
+                      </div>
+                    </div>
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <label class="label">Thành tiền</label>
+                        <input nbInput fullWidth type="text" formControlName="ToMoney"
+                          [value]=" detail.get('Price').value * detail.get('Quantity').value | number: '3.0-0'"
+                          placeholder="Thành tiền" style="text-align: right;">
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label class="label">Sản phẩm</label>
+                        <textarea nbInput fullWidth formControlName="Description" placeholder="Diễn giải"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
-      <button type="button" class="btn btn-primary">Xem trước</button>
-      <button type="submit" class="btn btn-success" [disabled]="!priceReportForm.valid">Lưu</button>
+      <div class="btn-group">
+        <button type="button" class="btn btn-warning" (click)="addDetail()">Thêm hàng hóa</button>
+        <button type="button" class="btn btn-success">Xem trước</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!priceReportForm.valid">Lưu</button>
+      </div>
     </form>
   </nb-card-body>
 </nb-card>
