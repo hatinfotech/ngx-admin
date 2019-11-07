@@ -229,7 +229,7 @@ export class FormComponent implements OnInit {
       }),
       e => console.warn(e.error));
 
-    this.sub = this.activeRoute.params.subscribe(params => {
+    this.activeRoute.params.subscribe(params => {
       this.id = params['id']; // (+) converts string 'id' to a number
 
       // In a real app: dispatch action to load the details here.
