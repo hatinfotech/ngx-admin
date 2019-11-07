@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import { PriceReport, PriceReportDetail } from '../../models/sales/price-report.model';
+import { PriceReportModel, PriceReportDetail } from '../../models/sales/price-report.model';
 
 @Component({
   selector: 'ngx-form',
@@ -68,7 +68,7 @@ export class FormComponent implements OnInit {
 
   no = 0;
 
-  priceReport: PriceReport = new PriceReport();
+  priceReport: PriceReportModel = new PriceReportModel();
 
   priceReportDetails: PriceReportDetail[] = [];
 

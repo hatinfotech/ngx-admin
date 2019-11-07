@@ -4,7 +4,7 @@ import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
 import { environment } from './../../../environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Employee } from '../models/employee.model';
+import { EmployeeModel } from '../models/employee.model';
 
 @Injectable({
   providedIn: 'root',
@@ -45,9 +45,9 @@ export class DataServiceService {
     return this.baseApiUrl + path + (this.getToken() ? ('?token=' + this.getToken()) : '');
   }
 
-  getEmployees(): Observable<Employee[]> {
+  getEmployees(): Observable<EmployeeModel[]> {
     return this._http.get(this.buildApiUrl('/hr/employees'))
-      .pipe(map((data: any[]) => data.map(item => new Employee(item))));
+      .pipe(map((data: any[]) => data.map(item => new EmployeeModel(item))));
   }
 
   logout(sucess, error) {

@@ -1,26 +1,26 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api.service';
 import { ApiResource } from '../api-resoure-interface';
-import { Unit } from '../../models/product/unit.model';
+import { UnitModel } from '../../models/product/unit.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UnitService implements ApiResource<Unit> {
+export class UnitService implements ApiResource<UnitModel> {
 
   constructor(private apiService: ApiService) { }
 
-  get(params: Object, success: (resources: Unit[]) => void, error: (e) => void) {
-    this.apiService.get<Unit[]>('/admin-product/units', params, success, error);
+  get(params: Object, success: (resources: UnitModel[]) => void, error: (e) => void) {
+    this.apiService.get<UnitModel[]>('/admin-product/units', params, success, error);
   }
-  getById(id: string, success: (resources: Unit) => void, error: (e) => void) {
-    this.apiService.get<Unit>('/admin-product/units', { 'id': id}, success, error);
+  getById(id: string, success: (resources: UnitModel) => void, error: (e) => void) {
+    this.apiService.get<UnitModel>('/admin-product/units', { 'id': id}, success, error);
   }
-  post(resource: Unit, success: (newResource: Unit) => void, error: (e) => void) {
-    this.apiService.post<Unit>('/admin-product/units', resource, success, error);
+  post(resource: UnitModel, success: (newResource: UnitModel) => void, error: (e) => void) {
+    this.apiService.post<UnitModel>('/admin-product/units', resource, success, error);
   }
-  put(resource: Unit, success: (newResource: Unit) => void, error: (e) => void) {
-    this.apiService.put<Unit>('/admin-product/units', resource, success, error);
+  put(resource: UnitModel, success: (newResource: UnitModel) => void, error: (e) => void) {
+    this.apiService.put<UnitModel>('/admin-product/units', resource, success, error);
   }
   delete(id: string, success: (resp) => void, error: (e) => void) {
     this.apiService.delete('/admin-product/units', id, success, error);

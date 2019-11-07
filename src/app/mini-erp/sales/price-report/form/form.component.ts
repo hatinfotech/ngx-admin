@@ -6,7 +6,9 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ContactService } from '../../../services/crm/contact.service';
 import { environment } from '../../../../../environments/environment';
 import { UnitService } from '../../../services/product/unit.service';
-import { Unit } from '../../../models/product/unit.model';
+import { UnitModel } from '../../../models/product/unit.model';
+import { TaxModel } from '../../../models/Accounting/tax.model';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'ngx-form',
@@ -23,6 +25,7 @@ export class FormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private contactService: ContactService,
     private unitService: UnitService,
+    private apiService: ApiService,
   ) { }
 
   provinceModel: { id: number, name: string, type: 'central' | 'province' };
@@ -33,7 +36,8 @@ export class FormComponent implements OnInit {
   // priceReport = new PriceReport();
   formLoading = false;
   priceReportDetails = [];
-  unitList: Unit[] = [];
+  unitList: UnitModel[] = [];
+  taxList: TaxModel[] = [];
 
   priceReportForm: FormGroup;
   submitted = false;
@@ -126,22 +130,17 @@ export class FormComponent implements OnInit {
       id: 'Code',
       text: 'Name',
     },
-    ajax: {
-      url: params => {
-        return environment.api.baseUrl + '/admin-product/units?token='
-          + localStorage.getItem('api_token') + '&filter_Name=' + params['term'];
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
-        };
-      },
+  };
+
+  select2OptionForTax = {
+    placeholder: 'Select option...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
     },
   };
 
@@ -179,47 +178,19 @@ export class FormComponent implements OnInit {
 
   ngOnInit() {
 
-    // $(document).ready(function () {
-    //   $('.js-example-basic-single').select2({
-    //     ajax: {
-    //       delay: 300,
-    //       url: environment.api.baseUrl + '/contact/contacts?token=' + localStorage.getItem('api_token'),
-    //       data: function (params) {
-    //         const query = {
-    //           search: params.term,
-    //         };
-
-    //         // Query parameters will be ?search=[term]&type=public
-    //         return query;
-    //       },
-    //       processResults: function (data) {
-    //         // Transforms the top-level key of the response object from 'items' to 'results'
-
-    //         for (var i in data) {
-    //           data[i]['id'] = data[i]['Code'];
-    //           data[i]['text'] = data[i]['Name'];
-    //         }
-
-    //         return {
-    //           results: data,
-    //         };
-    //       },
-    //     },
-    //   });
-    // });
 
     // this.customerList.push({
     //   id: '',
     //   text: 'Select option',
     // });
 
-    this.contactService.get({ limit: 100 }, list => {
-      this.customerList = list.map(item => {
-        item['id'] = item['Code'];
-        item['text'] = item['Name'];
-        return item;
-      });
-    }, e => console.warn(e));
+    // this.contactService.get({ limit: 100 }, list => {
+    //   this.customerList = list.map(item => {
+    //     item['id'] = item['Code'];
+    //     item['text'] = item['Name'];
+    //     return item;
+    //   });
+    // }, e => console.warn(e));
 
     this.unitService.get({ limit: 99999999 },
       unitList => this.unitList = unitList.map(item => {
@@ -228,6 +199,17 @@ export class FormComponent implements OnInit {
         return item;
       }),
       e => console.warn(e.error));
+
+    this.apiService.get<TaxModel[]>(
+      '/accounting/taxes', { limit: 99999 },
+      list => this.taxList = list.map(item => {
+        item['id'] = item['Code'];
+        item['text'] = item['Label2'];
+        return item;
+      }),
+      error => console.warn(error),
+    );
+
 
     this.activeRoute.params.subscribe(params => {
       this.id = params['id']; // (+) converts string 'id' to a number

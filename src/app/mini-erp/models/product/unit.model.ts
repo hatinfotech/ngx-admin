@@ -1,4 +1,4 @@
-export class Unit {
+export class UnitModel {
 
   Code: string;
   Name?: string;

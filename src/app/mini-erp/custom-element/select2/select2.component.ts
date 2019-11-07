@@ -66,26 +66,36 @@ export class Select2Component implements ControlValueAccessor, Validator {
   writeValue(value: any) {
     if (value) {
       const keyMap = this.select2Option['keyMap'];
-      if (value[keyMap['id']] && value[keyMap['text']]) {
-        value['id'] = value[keyMap['id']];
-        value['text'] = value[keyMap['text']];
-        this.data = [
-          value,
-        ];
-        this.value = value[keyMap['id']];
+      if (this.select2Option['ajax']) {
+        if (value[keyMap['id']] && value[keyMap['text']]) {
+          value['id'] = value[keyMap['id']];
+          value['text'] = value[keyMap['text']];
+          this.data = [
+            value,
+          ];
+          this.value = value[keyMap['id']];
+        } else {
+          this.data = [
+            {
+              id: '',
+              text: 'Select option...',
+            },
+            {
+              id: value,
+              text: value,
+            },
+          ];
+          this.value = value;
+        }
       } else {
-        this.data = [
-          {
-            id: '',
-            text: 'Select option...',
-          },
-          {
-            id: value,
-            text: value,
-          },
-        ];
-        this.value = value;
+        if (value[keyMap['id']] && value[keyMap['text']]) {
+          this.value = value[keyMap['id']];
+        } else {
+          this.value = value;
+        }
       }
+    }else{
+      this.value = '';
     }
   }
 

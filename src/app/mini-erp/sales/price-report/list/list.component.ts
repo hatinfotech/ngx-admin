@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../../services/api.service';
-import { PriceReport } from '../../../models/sales/price-report.model';
+import { PriceReportModel } from '../../../models/sales/price-report.model';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../../showcase-dialog/showcase-dialog.component';
 import { Router } from '@angular/router';
@@ -63,7 +63,7 @@ export class ListComponent implements OnInit {
 
 
   ngOnInit() {
-    this.apiService.get<PriceReport[]>('/sales/price-reports', { limit: 999999999, offset: 0 },
+    this.apiService.get<PriceReportModel[]>('/sales/price-reports', { limit: 999999999, offset: 0 },
       priceReport => this.source.load(priceReport), e => {
         console.warn(e);
         this.dialogService.open(ShowcaseDialogComponent, {

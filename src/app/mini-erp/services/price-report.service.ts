@@ -1,10 +1,10 @@
 import { DataServiceService } from './data-service.service';
 import { HttpResponse } from '@angular/common/http';
-import { PriceReport } from '../models/sales/price-report.model';
+import { PriceReportModel } from '../models/sales/price-report.model';
 
 export class PriceReportService extends DataServiceService {
 
-  getPriceReports(sucess: (priceReports: PriceReport[]) => void, error: (arg0: any) => void) {
+  getPriceReports(sucess: (priceReports: PriceReportModel[]) => void, error: (arg0: any) => void) {
 
     this._http.get<HttpResponse<any>>(this.buildApiUrl('/sales/price-reports'), { observe: 'response' })
       .subscribe((resp: HttpResponse<any>) => {

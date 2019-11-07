@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import { Employee } from '../../../models/employee.model';
+import { EmployeeModel } from '../../../models/employee.model';
 import { Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
@@ -21,7 +21,7 @@ export class ListComponent implements OnInit {
       console.info('construct');
     }
 
-  employees$: Observable<Employee[]>;
+  employees$: Observable<EmployeeModel[]>;
 
 
   editing = {};
@@ -82,7 +82,7 @@ export class ListComponent implements OnInit {
 
   ngOnInit() {
 
-    this.apiService.get<Employee[]>('/hr/employees', { limit: 1000000, ofset: 0 },
+    this.apiService.get<EmployeeModel[]>('/hr/employees', { limit: 1000000, ofset: 0 },
       empployees => this.source.load(empployees), e => {
         this.dialogService.open(ShowcaseDialogComponent, {
           context: {

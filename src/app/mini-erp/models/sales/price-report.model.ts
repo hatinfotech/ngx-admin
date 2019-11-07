@@ -1,4 +1,4 @@
-export class PriceReport {
+export class PriceReportModel {
 
   Code: string;
   Object: string;
