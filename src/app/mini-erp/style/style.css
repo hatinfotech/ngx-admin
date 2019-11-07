@@ -1,6 +1,6 @@
 
 
-select2 {
+select2, .select2 {
   -webkit-writing-mode: horizontal-tb !important;
   text-rendering: auto;
   color: initial;
@@ -19,7 +19,7 @@ select2 {
   /* font: 400 11px system-ui; */
 
   display: inline-block;
-  width: 100%;
+  width: 100% !important;
 }
 
 .select2 {
@@ -98,3 +98,8 @@ select2 {
 .input-group > select2.form-control {
   padding: 0px !important;
 }
+
+/* [nbInput], [nbSelect]{
+  width: 100%;
+} */
+

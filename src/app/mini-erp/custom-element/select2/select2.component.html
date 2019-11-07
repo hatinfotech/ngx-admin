@@ -1,0 +1,13 @@
+<!-- <select (change)="handleOnProvinceChange($event)" (focus)="onTouched()" [disabled]="isDisabled">
+  <option>-- Select a province --</option>
+  <option *ngFor="let item of data" [value]="item.id" [selected]="isSelect(item.id)">
+    {{item.text}}</option>
+</select> -->
+<!-- <input type="hidden" [value]="fieldValue"> -->
+<select2
+  [value]="value"
+  [data]="data"
+  [options]="select2Option"
+  [cssImport]=true
+  (valueChanged)="handleOnChange($event)">
+</select2>

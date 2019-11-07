@@ -7,3 +7,16 @@
 .form-details .form-detail-item:nth-of-type(even) {
   // background-color: #ebebeb;
 }
+
+
+.buttons-row {
+  margin: -0.5rem;
+}
+
+.buttons-row button[nbButton] {
+  margin: 0.5rem;
+}
+
+.buttons-row .actions-card {
+  height: 8rem;
+}

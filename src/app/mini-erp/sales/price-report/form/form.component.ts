@@ -11,11 +11,14 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { UnitService } from '../../../services/product/unit.service copy';
 import { Unit } from '../../../models/product/unit.model';
 
+declare var $: any;
+
 @Component({
   selector: 'ngx-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
+
 export class FormComponent implements OnInit {
 
   constructor(
@@ -26,6 +29,8 @@ export class FormComponent implements OnInit {
     private contactService: ContactService,
     private unitService: UnitService,
   ) { }
+
+  provinceModel: { id: number, name: string, type: 'central' | 'province' };
 
   id: string;
   private sub: any;
@@ -45,6 +50,17 @@ export class FormComponent implements OnInit {
   objectSearchApiPath = '/contact/contacts?token='
     + localStorage.getItem('api_token');
 
+  contactRemoteData(params: any, success: (list: any[]) => void, error: (error: any) => void) {
+    this.contactService.get({ limit: 20, filter_Name: params }, list => success(list.filter(item => {
+      if (item['Code']) {
+        item['id'] = item['Code'];
+        item['text'] = item['Name'];
+        return true;
+      }
+      return false;
+    })), error);
+  }
+
   objectValue = '';
   select2Option = {
     placeholder: 'Select option...',
@@ -52,6 +68,10 @@ export class FormComponent implements OnInit {
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 1,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
     ajax: {
       url: params => {
         return environment.api.baseUrl + '/contact/contacts?token='
@@ -63,7 +83,7 @@ export class FormComponent implements OnInit {
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
-            item['text'] = '[' + item['Code'] + '] ' + item['Name'];
+            item['text'] = item['Name'];
             return item;
           }),
         };
@@ -77,6 +97,10 @@ export class FormComponent implements OnInit {
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 1,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
     ajax: {
       url: params => {
         return environment.api.baseUrl + '/admin-product/products?token='
@@ -88,7 +112,7 @@ export class FormComponent implements OnInit {
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
-            item['text'] = '[' + item['Code'] + '] ' + item['Name'];
+            item['text'] = item['Name'];
             return item;
           }),
         };
@@ -103,33 +127,104 @@ export class FormComponent implements OnInit {
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return environment.api.baseUrl + '/admin-product/units?token='
+          + localStorage.getItem('api_token') + '&filter_Name=' + params['term'];
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
   };
 
-  onObjectChange($event) {
-    console.info($event);
+  onObjectChange(item) {
+    console.info(item);
 
     if (!this.formLoading) {
-      if ($event['data'] && $event['data'][0]) {
+      if (item) {
 
-        this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-        if ($event['data'][0]['Code']) {
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (item['Code']) {
 
-          this.priceReportForm.get('ObjectName').setValue($event['data'] && $event['data'][0]['Name']);
-          this.priceReportForm.get('ObjectPhone').setValue($event['data'] && $event['data'][0]['Phone']);
-          this.priceReportForm.get('ObjectEmail').setValue($event['data'] && $event['data'][0]['Email']);
-          this.priceReportForm.get('ObjectAddress').setValue($event['data'] && $event['data'][0]['Address']);
+          this.priceReportForm.get('ObjectName').setValue(item['Name']);
+          this.priceReportForm.get('ObjectPhone').setValue(item['Phone']);
+          this.priceReportForm.get('ObjectEmail').setValue(item['Email']);
+          this.priceReportForm.get('ObjectAddress').setValue(item['Address']);
         }
       }
     }
 
   }
 
+
+
+  onProductChange(item, index) {
+    console.info(item);
+
+    if (!this.formLoading) {
+      if (item && item['Code']) {
+        this.details.controls[index].get('Description').setValue(item['Name']);
+        this.details.controls[index].get('Unit').setValue(item['Unit']);
+      }
+    }
+  }
+
   ngOnInit() {
 
-    this.customerList.push({
-      id: '',
-      text: 'Select option',
-    });
+    // $(document).ready(function () {
+    //   $('.js-example-basic-single').select2({
+    //     ajax: {
+    //       delay: 300,
+    //       url: environment.api.baseUrl + '/contact/contacts?token=' + localStorage.getItem('api_token'),
+    //       data: function (params) {
+    //         const query = {
+    //           search: params.term,
+    //         };
+
+    //         // Query parameters will be ?search=[term]&type=public
+    //         return query;
+    //       },
+    //       processResults: function (data) {
+    //         // Transforms the top-level key of the response object from 'items' to 'results'
+
+    //         for (var i in data) {
+    //           data[i]['id'] = data[i]['Code'];
+    //           data[i]['text'] = data[i]['Name'];
+    //         }
+
+    //         return {
+    //           results: data,
+    //         };
+    //       },
+    //     },
+    //   });
+    // });
+
+    // this.customerList.push({
+    //   id: '',
+    //   text: 'Select option',
+    // });
+
+    this.contactService.get({ limit: 100 }, list => {
+      this.customerList = list.map(item => {
+        item['id'] = item['Code'];
+        item['text'] = item['Name'];
+        return item;
+      });
+    }, e => console.warn(e));
 
     this.unitService.get({ limit: 99999999 },
       unitList => this.unitList = unitList.map(item => {
@@ -174,33 +269,38 @@ export class FormComponent implements OnInit {
             // };
 
 
-            this.customerList = [
-              {
-                id: '',
-                text: 'Select option',
-              },
-              {
-                id: priceReport['Object'],
-                text: '[' + priceReport['Object'] + '] ' + priceReport['ObjectName'],
-                Code: priceReport['Object'],
-                Name: priceReport['ObjectName'],
-                Email: priceReport['ObjectEmail'],
-                Phone: priceReport['ObjectPhone'],
-                Address: priceReport['ObjectAddress'],
-              },
-            ];
+            // this.customerList = [
+            //   {
+            //     id: '',
+            //     text: 'Select option',
+            //   },
+            //   {
+            //     id: priceReport['Object'],
+            //     text: '[' + priceReport['Object'] + '] ' + priceReport['ObjectName'],
+            //     Code: priceReport['Object'],
+            //     Name: priceReport['ObjectName'],
+            //     Email: priceReport['ObjectEmail'],
+            //     Phone: priceReport['ObjectPhone'],
+            //     Address: priceReport['ObjectAddress'],
+            //   },
+            // ];
 
+            // priceReport['Object'] = {
+            //   id: priceReport['Object'],
+            //   text: priceReport['ObjectName'],
+            // };
             this.priceReportForm.patchValue(priceReport);
-            this.objectValue = priceReport['Object'];
-
-            setTimeout(() => {
-              this.formLoading = false;
-            }, 300);
+            // this.objectValue = priceReport['Object'];
 
             this.details.clear();
             priceReport['details'].forEach(detail => {
               this.details.push(this.makeNewDetailFormgroup(detail));
             });
+
+            setTimeout(() => {
+              this.formLoading = false;
+            }, 1000);
+
           },
           e => console.warn(e),
         );

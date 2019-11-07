@@ -13,10 +13,15 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { Select2Module } from 'ng2-select2';
-// import {AutocompleteLibModule} from 'angular-ng-autocomplete';
+import { CustomElementModule } from '../../custom-element/custom-element.module';
 
 @NgModule({
-  declarations: [PriceReportComponent, ListComponent, FormComponent, ViewComponent],
+  declarations: [
+    PriceReportComponent,
+    ListComponent,
+    FormComponent,
+    ViewComponent,
+  ],
   imports: [
     CommonModule,
     PriceReportRoutingModule,
@@ -39,6 +44,7 @@ import { Select2Module } from 'ng2-select2';
     SortablejsModule.forRoot({
       animation: 200,
     }),
+    CustomElementModule,
   ],
 })
 export class PriceReportModule { }
