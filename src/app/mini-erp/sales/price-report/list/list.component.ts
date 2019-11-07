@@ -63,7 +63,7 @@ export class ListComponent implements OnInit {
 
 
   ngOnInit() {
-    this.apiService.get<PriceReport[]>('/sales/price-reports', { limit: 40, offset: 0 },
+    this.apiService.get<PriceReport[]>('/sales/price-reports', { limit: 999999999, offset: 0 },
       priceReport => this.source.load(priceReport), e => {
         console.warn(e);
         this.dialogService.open(ShowcaseDialogComponent, {

@@ -1,6 +1,5 @@
-import { Component, forwardRef, Input, EventEmitter, Output, OnChanges } from '@angular/core';
+import { Component, forwardRef, Input, EventEmitter, Output } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-select2',
@@ -108,10 +107,9 @@ export class Select2Component implements ControlValueAccessor, Validator {
     // this.writeValue(e.value);
     const changedValue = this.select2Option.multiple ? e.data : e.data[0];
     this.onChange(changedValue);
-    const item = {};
     Object.keys(this.select2Option['keyMap']).forEach(k => {
-      e.data.forEach(item => {
-        item[this.select2Option['keyMap'][k]] = item[k];
+      e.data.forEach((i: any) => {
+        i[this.select2Option['keyMap'][k]] = i[k];
       });
     });
     this.selectChange.emit(changedValue);

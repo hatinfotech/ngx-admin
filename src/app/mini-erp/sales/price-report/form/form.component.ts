@@ -1,17 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { PriceReport, PriceReportDetail } from '../../../models/sales/price-report.model';
+import { PriceReportDetail } from '../../../models/sales/price-report.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PriceReportService } from '../../../services/sales/price-report.service';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ContactService } from '../../../services/crm/contact.service';
-import { Contact } from '../../../models/crm/contact';
 import { environment } from '../../../../../environments/environment';
-import { dashCaseToCamelCase } from '@angular/compiler/src/util';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { UnitService } from '../../../services/product/unit.service copy';
+import { UnitService } from '../../../services/product/unit.service';
 import { Unit } from '../../../models/product/unit.model';
-
-declare var $: any;
 
 @Component({
   selector: 'ngx-form',
@@ -33,9 +28,9 @@ export class FormComponent implements OnInit {
   provinceModel: { id: number, name: string, type: 'central' | 'province' };
 
   id: string;
-  private sub: any;
+  // private sub: any;
 
-  priceReport = new PriceReport();
+  // priceReport = new PriceReport();
   formLoading = false;
   priceReportDetails = [];
   unitList: Unit[] = [];

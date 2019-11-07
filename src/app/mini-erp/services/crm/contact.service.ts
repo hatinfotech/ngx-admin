@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api.service';
 import { ApiResource } from '../api-resoure-interface';
-import { PriceReport } from '../../models/sales/price-report.model';
 import { Contact } from '../../models/crm/contact';
 
 @Injectable({

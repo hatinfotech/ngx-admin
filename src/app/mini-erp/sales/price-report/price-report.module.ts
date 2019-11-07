@@ -7,7 +7,8 @@ import { ViewComponent } from './view/view.component';
 import { PriceReportRoutingModule } from './price-report-routing.module';
 import {
   NbCardModule, NbButtonModule, NbInputModule, NbActionsModule,
-  NbUserModule, NbCheckboxModule, NbRadioModule, NbDatepickerModule, NbIconModule, NbSelectModule, NbOptionComponent,
+  NbUserModule, NbCheckboxModule, NbRadioModule, NbDatepickerModule,
+  NbIconModule, NbSelectModule,
 } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ReactiveFormsModule } from '@angular/forms';
