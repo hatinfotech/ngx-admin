@@ -15,6 +15,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { Select2Module } from 'ng2-select2';
 import { CustomElementModule } from '../../custom-element/custom-element.module';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [
@@ -46,6 +50,8 @@ import { CustomElementModule } from '../../custom-element/custom-element.module'
       animation: 200,
     }),
     CustomElementModule,
+    CurrencyMaskModule,
+    NgxMaskModule.forRoot(options),
   ],
 })
 export class PriceReportModule { }

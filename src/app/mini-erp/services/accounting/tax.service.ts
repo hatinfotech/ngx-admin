@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api.service';
 import { ApiResource } from '../api-resoure-interface';
-import { TaxModel } from '../../models/accounting/tax.model';
+import { TaxModel } from '../../models/tax.model';
 
 @Injectable({
   providedIn: 'root',

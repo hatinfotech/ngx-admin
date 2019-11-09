@@ -5,8 +5,8 @@ export class TaxModel {
   Name: string;
   Label1: string;
   Label2: string;
-  Tax: string;
-  RealTax: string;
+  Tax: number;
+  RealTax: number;
   Type: string;
 
   constructor() { }

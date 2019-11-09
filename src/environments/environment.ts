@@ -13,4 +13,7 @@ export const environment = {
   api: {
     baseUrl: 'https://local.namsoftware.com/v1',
   },
+  number: {
+    thousandSeparator: ',',
+  },
 };

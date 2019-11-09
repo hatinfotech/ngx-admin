@@ -7,7 +7,7 @@ import { ContactService } from '../../../services/crm/contact.service';
 import { environment } from '../../../../../environments/environment';
 import { UnitService } from '../../../services/product/unit.service';
 import { UnitModel } from '../../../models/product/unit.model';
-import { TaxModel } from '../../../models/Accounting/tax.model';
+import { TaxModel } from '../../../models/tax.model';
 import { ApiService } from '../../../services/api.service';
 
 @Component({
@@ -30,6 +30,7 @@ export class FormComponent implements OnInit {
 
   provinceModel: { id: number, name: string, type: 'central' | 'province' };
 
+  env = environment;
   id: string;
   // private sub: any;
 
@@ -145,7 +146,7 @@ export class FormComponent implements OnInit {
   };
 
   onObjectChange(item) {
-    console.info(item);
+    // console.info(item);
 
     if (!this.formLoading) {
       if (item) {
@@ -326,10 +327,45 @@ export class FormComponent implements OnInit {
       Quantity: [''],
       ToMoney: [''],
     });
+    // detail.get('Price').valueChanges.subscribe(a => {
+
+    // });
+
+
+
+    detail.get('Quantity').valueChanges.subscribe(val => {
+      this.detailCalculate(detail);
+    });
+    detail.get('Price').valueChanges.subscribe(val => {
+      this.detailCalculate(detail);
+    });
+    detail.get('Tax').valueChanges.subscribe(val => {
+      this.detailCalculate(detail);
+    });
+
     if (data) {
       detail.patchValue(data);
     }
     return detail;
+  }
+
+  detailCalculate(detail: FormGroup) {
+
+    const tax = detail.get('Tax').value;
+    const price: number = +detail.get('Price').value;
+    const quantity: number = +detail.get('Quantity').value;
+
+    let taxValue = 0;
+    if (tax) {
+      const taxItem: TaxModel = this.taxList.find((t => {
+        return t.Code === tax['Code'];
+      }));
+      taxValue = tax ? +taxItem.Tax : 0;
+    }
+
+
+    // Calculate ToMoney
+    detail.get('ToMoney').patchValue((price * taxValue / 100 + price) * quantity);
   }
 
   get details() {

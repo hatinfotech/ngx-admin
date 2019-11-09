@@ -8,4 +8,7 @@ export const environment = {
   api: {
     baseUrl: 'https://nam2019.mtsg.vn/v1',
   },
+  number: {
+    thousandSeparator: ',',
+  },
 };
