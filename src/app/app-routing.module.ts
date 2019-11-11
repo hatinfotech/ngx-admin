@@ -9,6 +9,7 @@ import {
   NbResetPasswordComponent,
 } from '@nebular/auth';
 import { LoginComponent } from './mini-erp/auth/login/login.component';
+import { AuthGuardService } from './mini-erp/services/auth-guard.service';
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
   },
   {
     path: '',
+    canActivate: [AuthGuardService],
     loadChildren: () => import('./mini-erp/mini-erp.module')
       .then(m => m.MiniErpModule),
   },
