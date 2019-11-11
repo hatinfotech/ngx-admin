@@ -8,6 +8,7 @@ import {
   NbRequestPasswordComponent,
   NbResetPasswordComponent,
 } from '@nebular/auth';
+import { LoginComponent } from './mini-erp/auth/login/login.component';
 
 const routes: Routes = [
   {
@@ -35,7 +36,8 @@ const routes: Routes = [
       },
       {
         path: 'login',
-        component: NbLoginComponent,
+        // component: NbLoginComponent,
+        component: LoginComponent,
       },
       {
         path: 'register',

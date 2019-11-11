@@ -23,6 +23,7 @@ import {
   NbCardModule,
 } from '@nebular/theme';
 import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/auth';
+import { AuthModule } from './mini-erp/auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/a
     NbChatModule.forRoot({
       messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
     }),
+    AuthModule,
     CoreModule.forRoot(),
     // NgxDnDModule.forRoot(),
     HttpClientModule,
