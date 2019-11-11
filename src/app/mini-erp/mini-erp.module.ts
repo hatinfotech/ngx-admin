@@ -5,7 +5,7 @@ import { ThemeModule } from '../@theme/theme.module';
 import {
   NbMenuModule, NbCardModule, NbDialogModule, NbWindowModule, NbButtonModule,
   NbTabsetModule, NbTreeGridModule, NbIconModule, NbInputModule, NbCheckboxModule,
-  NbPopoverModule, NbSelectModule, NbTooltipModule
+  NbPopoverModule, NbSelectModule, NbTooltipModule,
 } from '@nebular/theme';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ECommerceModule } from './e-commerce/e-commerce.module';

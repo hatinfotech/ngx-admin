@@ -3,8 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { LogoutComponent } from './logout/logout.component';
 import { AuthComponent } from './auth.component';
-import { NbAuthComponent } from '@nebular/auth';
-import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [{
   path: '',

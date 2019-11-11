@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { MiniErpComponent } from './mini-erp.component';
 import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AuthGuardService } from './services/auth-guard.service';
 
 const routes: Routes = [{
   path: '',

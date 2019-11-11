@@ -94,7 +94,7 @@ export class Select2Component implements ControlValueAccessor, Validator {
           this.value = value;
         }
       }
-    }else{
+    } else {
       this.value = '';
     }
   }
