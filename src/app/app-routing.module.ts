@@ -13,12 +13,12 @@ import { LoginComponent } from './mini-erp/auth/login/login.component';
 const routes: Routes = [
   {
     path: 'pages',
-    loadChildren: () => import('app/pages/pages.module')
+    loadChildren: () => import('./pages/pages.module')
       .then(m => m.PagesModule),
   },
   {
     path: '',
-    loadChildren: () => import('app/mini-erp/mini-erp.module')
+    loadChildren: () => import('./mini-erp/mini-erp.module')
       .then(m => m.MiniErpModule),
   },
   // {
