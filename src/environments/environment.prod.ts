@@ -11,4 +11,7 @@ export const environment = {
   number: {
     thousandSeparator: ',',
   },
+  localApp: {
+    url: 'https://nam2019.mtsg.vn/app/ITLocal/index.html',
+  },
 };

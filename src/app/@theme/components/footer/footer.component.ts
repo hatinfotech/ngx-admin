@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-footer',
   styleUrls: ['./footer.component.scss'],
   template: `
-    <span class="created-by">Created with ♥ by <b><a href="https://akveo.com" target="_blank">Akveo</a></b> 2019</span>
+    <span class="created-by"><b><a (click)="gotoAbout()">mini-erp</a></b>  &copy; 2019 create by <b><a href="https://namsoftware.com" target="_blank">NaM software</a></b> &reg;</span>
     <div class="socials">
       <a href="#" target="_blank" class="ion ion-social-github"></a>
       <a href="#" target="_blank" class="ion ion-social-facebook"></a>
@@ -14,4 +15,11 @@ import { Component } from '@angular/core';
   `,
 })
 export class FooterComponent {
+  constructor(
+    private router: Router,
+  ) {}
+
+  gotoAbout() {
+    this.router.navigate(['/about']);
+  }
 }

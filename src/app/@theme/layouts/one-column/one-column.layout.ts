@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { messages } from './messages';
-import { ChatService } from './chat.service';
+import { Component, ViewChild, AfterViewInit, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-one-column-layout',
@@ -11,7 +10,7 @@ import { ChatService } from './chat.service';
         <ngx-header></ngx-header>
       </nb-layout-header>
 
-      <nb-sidebar class="menu-sidebar" tag="menu-sidebar" responsive>
+      <nb-sidebar #menuSidebar class="menu-sidebar" tag="menu-sidebar" responsive state="expanded">
         <ng-content select="nb-menu"></ng-content>
       </nb-sidebar>
 
@@ -19,7 +18,7 @@ import { ChatService } from './chat.service';
         <ng-content select="router-outlet"></ng-content>
       </nb-layout-column>
 
-      <nb-sidebar right class="chat-sidebar" tag="chat-sidebar" responsive>
+      <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed">
         <iframe class="itLocalapp" src="https://nam2019.mtsg.vn/app/ITLocal/index.html" style="height: 100% ; width:100%; border:0"></iframe>
       </nb-sidebar>
 
@@ -28,40 +27,42 @@ import { ChatService } from './chat.service';
       </nb-layout-footer>
     </nb-layout>
   `,
-  providers: [ ChatService ],
 })
-export class OneColumnLayoutComponent {
+export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('menuSidebar', { static: false }) menuSidebar: NbSidebarComponent;
+  @ViewChild('chatSidebar', { static: false }) chatSiderbar: NbSidebarComponent;
 
   messages: any[];
 
-  constructor(protected chatService: ChatService) {
-    this.messages = this.chatService.loadMessages();
+  ngOnInit(): void {
   }
 
-  sendMessage(event: any) {
-    const files = !event.files ? [] : event.files.map((file) => {
-      return {
-        url: file.src,
-        type: file.type,
-        icon: 'nb-compose',
-      };
-    });
-
-    this.messages.push({
-      text: event.message,
-      date: new Date(),
-      reply: true,
-      type: files.length ? 'file' : 'text',
-      files: files,
-      user: {
-        name: 'Jonh Doe',
-        avatar: 'https://i.gifer.com/no.gif',
-      },
-    });
-    const botReply = this.chatService.reply(event.message);
-    if (botReply) {
-      setTimeout(() => { this.messages.push(botReply); }, 500);
-    }
+  constructor(
+    private sidebarService: NbSidebarService,
+    private menuService: NbMenuService,
+  ) {
   }
 
+  ngAfterViewInit(): void {
+    // console.info(this.siderbar);
+    this.sidebarService.onToggle().subscribe(info => {
+      if (info.tag === 'menu-sidebar') {
+        if (this.menuSidebar.expanded && this.chatSiderbar.expanded) {
+          this.sidebarService.toggle(false, 'chat-sidebar');
+        }
+      }
+      if (info.tag === 'chat-sidebar') {
+        if (this.menuSidebar.expanded && this.chatSiderbar.expanded) {
+          this.sidebarService.toggle(true, 'menu-sidebar');
+        }
+      }
+    });
+
+    this.menuService.onSubmenuToggle().subscribe(item => {
+      if (this.chatSiderbar.expanded) {
+        this.sidebarService.toggle(true, 'menu-sidebar');
+      }
+    });
+  }
 }

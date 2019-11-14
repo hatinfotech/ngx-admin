@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
+import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService, NbSidebarComponent } from '@nebular/theme';
 
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
@@ -41,8 +41,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
   mennuBarExpand = true;
   chatBarExpand = true;
+  sidebars: NbSidebarComponent[];
 
-  constructor(private sidebarService: NbSidebarService,
+  constructor(
+    private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private userService: UserData,
@@ -71,28 +73,35 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(themeName => this.currentTheme = themeName);
-    // this.sidebarService.onExpand().subscribe(info => {
-    //   console.info('onExpand');
-    // });
+    this.sidebarService.onExpand().subscribe(info => {
+      console.info('onExpand: ' + info.tag);
+      if (info.tag === 'menu-sidebar') {
+        this.collapseChat();
+      } else {
+        this.collapseMenu();
+      }
+    });
     // this.sidebarService.onCollapse().subscribe(info => {
-    //   console.info('onCollapse');
+    //   console.info('onCollapse: ');
+    //   console.info(info);
     // });
     // this.sidebarService.onToggle().subscribe(info => {
-    //   console.info('onToggle');
+    //   console.info('onToggle: ');
+    //   console.info(info);
     // });
     // this.sidebarService.onCompact().subscribe(info => {
-    //   console.info('onCompact');
+    //   console.info('onCompact: ');
+    //   console.info(info);
     // });
 
-    this.menuService.onSubmenuToggle().subscribe(item => {
-      // console.info(item);
-      this.expandMenu();
-    });
+    // this.menuService.onSubmenuToggle().subscribe(item => {
+    //   // console.info(item);
+    //   this.expandMenu();
+    // });
 
-    setTimeout(() => {
-      this.expandMenu();
-      this.collapseChat();
-    }, 5000);
+    // setTimeout(() => {
+    //   this.toggleChatbar();
+    // }, 5000);
 
 
   }
@@ -109,51 +118,51 @@ export class HeaderComponent implements OnInit, OnDestroy {
   collapseMenu() {
     this.sidebarService.compact('menu-sidebar');
     this.layoutService.changeLayoutSize();
-    this.mennuBarExpand = false;
+    // this.mennuBarExpand = false;
   }
 
   expandMenu() {
     this.sidebarService.expand('menu-sidebar');
     this.layoutService.changeLayoutSize();
-    this.mennuBarExpand = true;
-    this.collapseChat();
+    // this.mennuBarExpand = true;
+    // this.collapseChat();
   }
 
   collapseChat() {
     this.sidebarService.collapse('chat-sidebar');
     this.layoutService.changeLayoutSize();
-    this.chatBarExpand = false;
+    // this.chatBarExpand = false;
   }
 
   expandChat() {
     this.sidebarService.expand('chat-sidebar');
     this.layoutService.changeLayoutSize();
-    this.chatBarExpand = true;
+    // this.chatBarExpand = true;
     this.collapseMenu();
   }
 
   toggleSidebar(): boolean {
-    // this.sidebarService.toggle(true, 'menu-sidebar');
-    // this.layoutService.changeLayoutSize();
+    this.sidebarService.toggle(true, 'menu-sidebar');
+    this.layoutService.changeLayoutSize();
 
-    if (this.mennuBarExpand) {
-      this.collapseMenu();
-    } else {
-      this.expandMenu();
-    }
+    // if (this.mennuBarExpand) {
+    //   this.collapseMenu();
+    // } else {
+    //   this.expandMenu();
+    // }
 
     return false;
   }
 
   toggleChatbar(): boolean {
-    // this.sidebarService.toggle(false, 'chat-sidebar');
-    // this.layoutService.changeLayoutSize();
+    this.sidebarService.toggle(false, 'chat-sidebar');
+    this.layoutService.changeLayoutSize();
 
-    if (this.chatBarExpand) {
-      this.collapseChat();
-    } else {
-      this.expandChat();
-    }
+    // if (this.chatBarExpand) {
+    //   this.collapseChat();
+    // } else {
+    //   this.expandChat();
+    // }
 
     return false;
   }
