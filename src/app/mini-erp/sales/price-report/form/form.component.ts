@@ -385,6 +385,10 @@ export class FormComponent implements OnInit {
     return false;
   }
 
+  goback() {
+    this.router.navigate(['sales/price-report']);
+  }
+
   get f() { return this.priceReportForm.controls; }
 
   onSubmit() {

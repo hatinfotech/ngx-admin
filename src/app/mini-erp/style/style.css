@@ -115,7 +115,7 @@ body ng2-smart-table table tr td, .nb-theme-default ng2-smart-table table tr th 
 
 .nb-theme-default nb-sidebar.chat-sidebar .scrollable {
   padding: 0;
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
 .nb-theme-default nb-layout-header.fixed ~ .layout-container nb-sidebar.chat-sidebar {
@@ -141,3 +141,54 @@ body ng2-smart-table table tr td, .nb-theme-default ng2-smart-table table tr th 
 }
 
 /* End chat bar */
+
+
+/* Layout */
+.nb-theme-default nb-layout .layout .layout-container .content .columns nb-layout-column {
+  /* padding: 0.7rem 0.7rem 0.75rem !important; */
+}
+
+.nb-theme-default nb-layout-header nav {
+  height: 3.05rem !important;
+  padding: 0.5rem !important;
+}
+
+.nb-theme-default nb-layout-header.fixed ~ .layout-container {
+  padding-top: 3.05rem !important;
+}
+
+.nb-theme-default nb-layout-header.fixed ~ .layout-container nb-sidebar .main-container {
+  height: calc(100vh - 3.05rem) !important;
+}
+
+.nb-theme-default nb-layout .layout .layout-container nb-sidebar.fixed,
+.nb-theme-default nb-layout .layout .layout-container nb-sidebar .main-container-fixed {
+  top: 3.05rem !important;
+}
+
+.nb-theme-default nb-layout .layout .layout-container .content nb-layout-footer nav {
+  padding: 0.5rem !important;
+}
+/* End layout */
+
+/* Smart Table */
+.nb-theme-default ng2-smart-table table tr th,
+.nb-theme-default ng2-smart-table table tr td {
+  padding: 0.5rem 0.5rem !important;
+}
+
+.nb-theme-default ng2-smart-table table tr td {
+  font-size: 0.8375rem !important;
+  line-height: 1.15rem !important;
+}
+
+.nb-theme-default ng2-smart-table table tr th,
+.nb-theme-default ng2-smart-table table tr td {
+  border:none !important;
+  border-bottom: 1px solid #edf1f7 !important;
+}
+
+nb-card-body .ng2-smart-table-wrap {
+  margin: -1rem -1.25rem;
+}
+/* End Smart Table */

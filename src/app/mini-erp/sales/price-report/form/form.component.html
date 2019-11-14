@@ -1,5 +1,12 @@
 <nb-card>
-  <nb-card-header>Form báo giá</nb-card-header>
+  <nb-card-header>
+    <nav>
+      <button nbButton status="info" hero size="tiny" (click)="goback()">
+        <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+      </button>
+      Form báo giá
+    </nav>
+  </nb-card-header>
   <nb-card-body>
     <form [formGroup]="priceReportForm" (ngSubmit)="onSubmit()">
       <input type="hidden" formControlName="Code">
@@ -179,8 +186,8 @@
                         <!-- <input nbInput fullWidth type="text" formControlName="ToMoney"
                           [value]="detail.get('Price').value * detail.get('Quantity').value | mask: 'separator'"
                           placeholder="Thành tiền" style="text-align: right;"> -->
-                        <input mask="separator" [thousandSeparator]="env.number.thousandSeparator" nbInput fullWidth type="text" formControlName="ToMoney"
-                          placeholder="Thành tiền" style="text-align: right;">
+                        <input mask="separator" [thousandSeparator]="env.number.thousandSeparator" nbInput fullWidth
+                          type="text" formControlName="ToMoney" placeholder="Thành tiền" style="text-align: right;">
                       </div>
                     </div>
                     <div class="col-sm-12">
