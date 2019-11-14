@@ -103,6 +103,41 @@ select2, .select2 {
   width: 100%;
 } */
 
-.nb-theme-default ng2-smart-table table tr td, .nb-theme-default ng2-smart-table table tr th {
+body ng2-smart-table table tr td, .nb-theme-default ng2-smart-table table tr th {
   padding: .575rem .575rem;
 }
+
+
+/* Chat bar */
+.nb-theme-default nb-layout-header.fixed ~ .layout-container nb-sidebar.chat-sidebar .main-container {
+  padding: 0;
+}
+
+.nb-theme-default nb-sidebar.chat-sidebar .scrollable {
+  padding: 0;
+  overflow: hidden;
+}
+
+.nb-theme-default nb-layout-header.fixed ~ .layout-container nb-sidebar.chat-sidebar {
+  /* width: 20rem; */
+}
+
+.nb-theme-default nb-layout-header.fixed ~ .layout-container nb-sidebar.chat-sidebar .main-container {
+  width: 20rem;
+}
+.nb-theme-default nb-sidebar.chat-sidebar nb-chat .messages {
+  padding: 0.5rem 0.50rem;
+}
+
+.nb-theme-default nb-sidebar.chat-sidebar,
+.nb-theme-default nb-sidebar.chat-sidebar .main-container,
+.nb-theme-default nb-sidebar.chat-sidebar.expanded,
+.nb-theme-default nb-sidebar.chat-sidebar.expanded .main-container  {
+  width: 20rem;
+}
+.nb-theme-default nb-sidebar.collapsed,
+.nb-theme-default nb-sidebar.collapsed .main-container {
+  width: 0;
+}
+
+/* End chat bar */

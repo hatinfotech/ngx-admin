@@ -38,14 +38,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
+  userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
+  mennuBarExpand = true;
+  chatBarExpand = true;
 
   constructor(private sidebarService: NbSidebarService,
-              private menuService: NbMenuService,
-              private themeService: NbThemeService,
-              private userService: UserData,
-              private layoutService: LayoutService,
-              private breakpointService: NbMediaBreakpointsService) {
+    private menuService: NbMenuService,
+    private themeService: NbThemeService,
+    private userService: UserData,
+    private layoutService: LayoutService,
+    private breakpointService: NbMediaBreakpointsService) {
   }
 
   ngOnInit() {
@@ -69,6 +71,30 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(themeName => this.currentTheme = themeName);
+    // this.sidebarService.onExpand().subscribe(info => {
+    //   console.info('onExpand');
+    // });
+    // this.sidebarService.onCollapse().subscribe(info => {
+    //   console.info('onCollapse');
+    // });
+    // this.sidebarService.onToggle().subscribe(info => {
+    //   console.info('onToggle');
+    // });
+    // this.sidebarService.onCompact().subscribe(info => {
+    //   console.info('onCompact');
+    // });
+
+    this.menuService.onSubmenuToggle().subscribe(item => {
+      // console.info(item);
+      this.expandMenu();
+    });
+
+    setTimeout(() => {
+      this.expandMenu();
+      this.collapseChat();
+    }, 5000);
+
+
   }
 
   ngOnDestroy() {
@@ -80,9 +106,54 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.themeService.changeTheme(themeName);
   }
 
-  toggleSidebar(): boolean {
-    this.sidebarService.toggle(true, 'menu-sidebar');
+  collapseMenu() {
+    this.sidebarService.compact('menu-sidebar');
     this.layoutService.changeLayoutSize();
+    this.mennuBarExpand = false;
+  }
+
+  expandMenu() {
+    this.sidebarService.expand('menu-sidebar');
+    this.layoutService.changeLayoutSize();
+    this.mennuBarExpand = true;
+    this.collapseChat();
+  }
+
+  collapseChat() {
+    this.sidebarService.collapse('chat-sidebar');
+    this.layoutService.changeLayoutSize();
+    this.chatBarExpand = false;
+  }
+
+  expandChat() {
+    this.sidebarService.expand('chat-sidebar');
+    this.layoutService.changeLayoutSize();
+    this.chatBarExpand = true;
+    this.collapseMenu();
+  }
+
+  toggleSidebar(): boolean {
+    // this.sidebarService.toggle(true, 'menu-sidebar');
+    // this.layoutService.changeLayoutSize();
+
+    if (this.mennuBarExpand) {
+      this.collapseMenu();
+    } else {
+      this.expandMenu();
+    }
+
+    return false;
+  }
+
+  toggleChatbar(): boolean {
+    // this.sidebarService.toggle(false, 'chat-sidebar');
+    // this.layoutService.changeLayoutSize();
+
+    if (this.chatBarExpand) {
+      this.collapseChat();
+    } else {
+      this.expandChat();
+    }
 
     return false;
   }

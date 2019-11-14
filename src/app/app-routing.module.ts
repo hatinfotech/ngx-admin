@@ -12,11 +12,11 @@ import { LoginComponent } from './mini-erp/auth/login/login.component';
 import { AuthGuardService } from './mini-erp/services/auth-guard.service';
 
 const routes: Routes = [
-  {
-    path: 'pages',
-    loadChildren: () => import('./pages/pages.module')
-      .then(m => m.PagesModule),
-  },
+  // {
+  //   path: 'pages',
+  //   loadChildren: () => import('./pages/pages.module')
+  //     .then(m => m.PagesModule),
+  // },
   {
     path: '',
     canActivate: [AuthGuardService],
