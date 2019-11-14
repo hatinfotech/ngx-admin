@@ -37,6 +37,11 @@ const routes: Routes = [{
         .then(m => m.SalesModule),
     },
     {
+      path: 'ivoip',
+      loadChildren: () => import('./ivoip/ivoip.module')
+        .then(m => m.IvoipModule),
+    },
+    {
       path: 'test',
       loadChildren: () => import('./test/test.module')
         .then(m => m.TestModule),

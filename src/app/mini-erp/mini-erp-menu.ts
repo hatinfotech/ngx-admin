@@ -20,29 +20,34 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'phone-call-outline',
     children: [
       {
+        title: 'Tổng đài',
+        // icon: 'people-outline',
+        link: '/ivoip/pbx',
+      },
+      {
         title: 'Số mở rộng',
         // icon: 'people-outline',
-        link: '/',
+        link: '/ivoip/extensions',
       },
       {
         title: 'Điện thoại',
         // icon: 'people-outline',
-        link: '/',
+        link: '/ivoip/devices',
       },
       {
         title: 'Số đấu nối',
         // icon: 'people-outline',
-        link: '/',
+        link: '/ivoip/pstn-numbers',
       },
       {
         title: 'Lịch sử cuộc gọi',
         // icon: 'people-outline',
-        link: '/',
+        link: '/ivoip/cdr',
       },
       {
         title: 'Chặn số',
         // icon: 'people-outline',
-        link: '/',
+        link: '/ivoip/call-block',
       },
     ],
   },

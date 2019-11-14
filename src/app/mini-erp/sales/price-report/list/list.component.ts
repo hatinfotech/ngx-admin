@@ -5,6 +5,7 @@ import { PriceReportModel } from '../../../models/sales/price-report.model';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../../showcase-dialog/showcase-dialog.component';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-list',
@@ -13,7 +14,11 @@ import { Router } from '@angular/router';
 })
 export class ListComponent implements OnInit {
 
-  constructor(private apiService: ApiService, private dialogService: NbDialogService, private router: Router) {
+  constructor(
+    private apiService: ApiService,
+    private dialogService: NbDialogService,
+    private router: Router,
+  ) {
 
   }
 
@@ -66,12 +71,15 @@ export class ListComponent implements OnInit {
     this.apiService.get<PriceReportModel[]>('/sales/price-reports', { limit: 999999999, offset: 0 },
       priceReport => this.source.load(priceReport), e => {
         console.warn(e);
-        this.dialogService.open(ShowcaseDialogComponent, {
-          context: {
-            title: 'Error',
-            content: e.error.logs[0],
-          },
-        });
+        if (e.status === 401) {
+          this.router.navigate(['/auth/login']);
+        }
+        // this.dialogService.open(ShowcaseDialogComponent, {
+        //   context: {
+        //     title: 'Error',
+        //     content: e.error.logs[0],
+        //   },
+        // });
       });
   }
 

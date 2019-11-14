@@ -1,0 +1,17 @@
+<nb-card>
+  <nb-card-header>
+    Tra cứu lịch sử cuộc gọi
+    <ngx-select2 [data]="domainList" [select2Option]="select2OptionForDomain">
+    </ngx-select2>
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table
+    [settings]="settings"
+    [source]="source"
+    (deleteConfirm)="onDeleteConfirm($event)"
+    (edit)="onEditAction($event)"
+    (create)="onCreateAction($event)">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>

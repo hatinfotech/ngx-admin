@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
 import { environment } from './../../../environments/environment';
 import { Observable, throwError } from 'rxjs';
@@ -15,20 +15,18 @@ export class ApiService {
   protected token = '';
   constructor(protected _http: HttpClient,
     protected authService: NbAuthService) {
+
     this.authService.onTokenChange()
       .subscribe((token: NbAuthJWTToken) => {
-
         if (token.isValid()) {
           this.setToken(token.toString());
         }
-
       });
-    this.authService.getToken().subscribe((token: NbAuthJWTToken) => {
 
+    this.authService.getToken().subscribe((token: NbAuthJWTToken) => {
       if (token.isValid()) {
         this.setToken(token.toString());
       }
-
     }).unsubscribe();
   }
 
@@ -48,6 +46,10 @@ export class ApiService {
     return localStorage.getItem('api_token');
   }
 
+  clearToken() {
+    this.setToken(null);
+  }
+
   buildApiUrl(path: string, params?: Object) {
     const token = this.getToken();
     let paramsStr = '';
@@ -55,7 +57,7 @@ export class ApiService {
       paramsStr += this.buildParams(params);
     }
     if (token) {
-      paramsStr +=  (paramsStr ? '&' : '') + 'token=' + token;
+      paramsStr += (paramsStr ? '&' : '') + 'token=' + token;
     }
     return `${this.baseApiUrl}${path}?${paramsStr}`;
   }
@@ -70,7 +72,7 @@ export class ApiService {
     return httpParams;
   }
 
-  get<T>(enpoint: string, params: Object, success: (resources: T) => void, error: (e) => void) {
+  get<T>(enpoint: string, params: Object, success: (resources: T) => void, error: (e: HttpErrorResponse) => void) {
     return this._http.get<T>(this.buildApiUrl(enpoint, params))
       .pipe(retry(0), catchError(e => {
         error(e);
@@ -79,7 +81,7 @@ export class ApiService {
       .subscribe((resources: T) => success(resources));
   }
 
-  post<T>(enpoint: string, resource, success: (newResource: T) => void, error: (e) => void) {
+  post<T>(enpoint: string, resource, success: (newResource: T) => void, error: (e: HttpErrorResponse) => void) {
     return this._http.post(this.buildApiUrl(enpoint), resource)
       .pipe(retry(0), catchError(e => {
         error(e);
@@ -88,7 +90,7 @@ export class ApiService {
       .subscribe((newResource: T) => success(newResource));
   }
 
-  put<T>(enpoint: string, resource, success: (newResource: T) => void, error: (e) => void) {
+  put<T>(enpoint: string, resource, success: (newResource: T) => void, error: (e: HttpErrorResponse) => void) {
     return this._http.put(this.buildApiUrl(enpoint), resource)
       .pipe(retry(0), catchError(e => {
         error(e);
@@ -97,7 +99,7 @@ export class ApiService {
       .subscribe((newResource: T) => success(newResource));
   }
 
-  delete(enpoint: string, id: string, success: (resp) => void, error: (e) => void) {
+  delete(enpoint: string, id: string, success: (resp) => void, error: (e: HttpErrorResponse) => void) {
     return this._http.delete(this.buildApiUrl(`${enpoint}?id=${id}`))
       .pipe(retry(0), catchError(e => {
         error(e);
@@ -119,12 +121,12 @@ export class ApiService {
         //   this.storeSession(session);
         // }
         sucess(resp.body);
-      }, (e) => {
+      }, (e: HttpErrorResponse) => {
         error(e.error);
       });
   }
 
-  handleError(e) {
+  handleError(e: HttpErrorResponse) {
     if (e.status === 401) {
       console.warn('You were not logged in');
       // window.location.href = '/auth/login';

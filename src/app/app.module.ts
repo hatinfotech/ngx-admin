@@ -61,7 +61,15 @@ import { AuthModule } from './mini-erp/auth/auth.module';
             // ...
             endpoint: '/user/login',
             redirect: {
-              success: '/human-resource/employees/list',
+              success: '/',
+              failure: null, // stay on the same page
+            },
+          },
+          logout: {
+            // ...
+            endpoint: '/user/logout',
+            redirect: {
+              success: '/auth/login',
               failure: null, // stay on the same page
             },
           },
@@ -69,7 +77,7 @@ import { AuthModule } from './mini-erp/auth/auth.module';
             // ...
             endpoint: '/user/register',
             redirect: {
-              success: '/human-resource/employees/list',
+              success: '/',
               failure: null, // stay on the same page
             },
           },
