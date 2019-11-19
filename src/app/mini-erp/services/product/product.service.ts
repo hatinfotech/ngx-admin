@@ -21,7 +21,7 @@ export class ProductService implements ApiResource<ProductModel> {
     this.apiService.post<ProductModel>('/admin-product/products', resource, success, error);
   }
   put(resource: ProductModel, success: (newResource: ProductModel) => void, error: (e: HttpErrorResponse) => void) {
-    this.apiService.put<ProductModel>('/admin-product/products', resource, success, error);
+    this.apiService.put<ProductModel>('/admin-product/products', resource.Code, resource, success, error);
   }
   delete(id: string, success: (resp) => void, error: (e: HttpErrorResponse) => void) {
     this.apiService.delete('/admin-product/products', id, success, error);

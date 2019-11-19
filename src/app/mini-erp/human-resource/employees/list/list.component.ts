@@ -18,8 +18,8 @@ export class ListComponent implements OnInit {
     private apiService: ApiService,
     private dialogService: NbDialogService,
     private router: Router) {
-      console.info('construct');
-    }
+    console.info('construct');
+  }
 
   employees$: Observable<EmployeeModel[]>;
 
@@ -89,8 +89,8 @@ export class ListComponent implements OnInit {
             title: 'Error',
             content: e.error.logs[0],
           },
+        });
       });
-    });
 
     // this.employeesService.get().pipe(retry(0), catchError(e => this.handleError(e)))
     //   .subscribe(data => this.source.load(data));

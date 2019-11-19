@@ -21,7 +21,7 @@ export class ContactService implements ApiResource<ContactModel> {
     this.apiService.post<ContactModel>('/contact/contacts', resource, success, error);
   }
   put(resource: ContactModel, success: (newResource: ContactModel) => void, error: (e: HttpErrorResponse) => void) {
-    this.apiService.put<ContactModel>('/contact/contacts', resource, success, error);
+    this.apiService.put<ContactModel>('/contact/contacts', resource.Code, resource, success, error);
   }
   delete(id: string, success: (resp) => void, error: (e: HttpErrorResponse) => void) {
     this.apiService.delete('/contact/contacts', id, success, error);

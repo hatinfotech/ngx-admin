@@ -5,6 +5,7 @@ import { environment } from './../../../environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { map, retry, catchError } from 'rxjs/operators';
 import { EmployeeModel } from '../models/employee.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +14,11 @@ export class ApiService {
   protected baseApiUrl = environment.api.baseUrl;
   protected session = '';
   protected token = '';
-  constructor(protected _http: HttpClient,
-    protected authService: NbAuthService) {
+  constructor(
+    protected _http: HttpClient,
+    protected authService: NbAuthService,
+    private router: Router,
+  ) {
 
     this.authService.onTokenChange()
       .subscribe((token: NbAuthJWTToken) => {
@@ -72,7 +76,16 @@ export class ApiService {
     return httpParams;
   }
 
-  get<T>(enpoint: string, params: Object, success: (resources: T) => void, error: (e: HttpErrorResponse) => void) {
+  get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void) {
+    let id: string;
+    if (Array.isArray(params['id'])) {
+      id = params['id'].join('-');
+      enpoint += `/${id}`;
+      delete params['id'];
+    } else if (params['id']) {
+      id = params['id'];
+      enpoint += `/${id}`;
+    }
     return this._http.get<T>(this.buildApiUrl(enpoint, params))
       .pipe(retry(0), catchError(e => {
         error(e);
@@ -81,7 +94,7 @@ export class ApiService {
       .subscribe((resources: T) => success(resources));
   }
 
-  post<T>(enpoint: string, resource, success: (newResource: T) => void, error: (e: HttpErrorResponse) => void) {
+  post<T>(enpoint: string, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
     return this._http.post(this.buildApiUrl(enpoint), resource)
       .pipe(retry(0), catchError(e => {
         error(e);
@@ -90,8 +103,11 @@ export class ApiService {
       .subscribe((newResource: T) => success(newResource));
   }
 
-  put<T>(enpoint: string, resource, success: (newResource: T) => void, error: (e: HttpErrorResponse) => void) {
-    return this._http.put(this.buildApiUrl(enpoint), resource)
+  put<T>(enpoint: string, id: string | string[], resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
+    if (Array.isArray(id)) {
+      id = id.join('-');
+    }
+    return this._http.put(this.buildApiUrl(`${enpoint}/${id}`), resource)
       .pipe(retry(0), catchError(e => {
         error(e);
         return this.handleError(e);
@@ -99,8 +115,11 @@ export class ApiService {
       .subscribe((newResource: T) => success(newResource));
   }
 
-  delete(enpoint: string, id: string, success: (resp) => void, error: (e: HttpErrorResponse) => void) {
-    return this._http.delete(this.buildApiUrl(`${enpoint}?id=${id}`))
+  delete(enpoint: string, id: string | string[], success: (resp: any) => void, error?: (e: HttpErrorResponse) => void) {
+    if (Array.isArray(id)) {
+      id = id.join('-');
+    }
+    return this._http.delete(this.buildApiUrl(`${enpoint}/${id}`))
       .pipe(retry(0), catchError(e => {
         error(e);
         return this.handleError(e);
@@ -129,10 +148,7 @@ export class ApiService {
   handleError(e: HttpErrorResponse) {
     if (e.status === 401) {
       console.warn('You were not logged in');
-      // window.location.href = '/auth/login';
-      // location.replace('http://localhost:4200/auth/login');
-      // this.router.navigate(['auth/login']);
-
+      this.router.navigate(['/auth/login']);
     }
     let errorMessage = '';
     if (e.error instanceof ErrorEvent) {
@@ -147,8 +163,7 @@ export class ApiService {
         errorMessage = `Error Code: ${e.status}\nMessage: ${e.message}`;
       }
     }
-    // tslint:disable-next-line: no-console
-    console.log(errorMessage);
+    console.info(errorMessage);
     return throwError(errorMessage);
   }
 }

@@ -19,7 +19,7 @@ import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/th
       </nb-layout-column>
 
       <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed">
-        <iframe class="itLocalapp" src="https://nam2019.mtsg.vn/app/ITLocal/index.html" style="height: 100% ; width:100%; border:0"></iframe>
+        <!--<iframe class="itLocalapp" src="https://nam2019.mtsg.vn/app/ITLocal/index.html" style="height: 100% ; width:100%; border:0"></iframe>-->
       </nb-sidebar>
 
       <nb-layout-footer fixed>

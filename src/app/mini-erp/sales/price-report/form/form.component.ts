@@ -179,20 +179,6 @@ export class FormComponent implements OnInit {
 
   ngOnInit() {
 
-
-    // this.customerList.push({
-    //   id: '',
-    //   text: 'Select option',
-    // });
-
-    // this.contactService.get({ limit: 100 }, list => {
-    //   this.customerList = list.map(item => {
-    //     item['id'] = item['Code'];
-    //     item['text'] = item['Name'];
-    //     return item;
-    //   });
-    // }, e => console.warn(e));
-
     this.unitService.get({ limit: 99999999 },
       unitList => this.unitList = unitList.map(item => {
         item['id'] = item['Code'];
@@ -231,7 +217,6 @@ export class FormComponent implements OnInit {
         Title: ['', Validators.required],
         Note: [''],
         details: this.formBuilder.array([
-          // this.makeNewDetailFormgroup(),
         ]),
       });
 
@@ -239,36 +224,7 @@ export class FormComponent implements OnInit {
         this.formLoading = true;
         this.priceReportService.getById(this.id,
           (priceReport: Object) => {
-            // let priceReport = priceReport;
-            // priceReport['Object'] = {
-            //   id: priceReport['Object'],
-            //   text: priceReport['ObjectName'],
-            //   selected: true,
-            // };
-
-
-            // this.customerList = [
-            //   {
-            //     id: '',
-            //     text: 'Select option',
-            //   },
-            //   {
-            //     id: priceReport['Object'],
-            //     text: '[' + priceReport['Object'] + '] ' + priceReport['ObjectName'],
-            //     Code: priceReport['Object'],
-            //     Name: priceReport['ObjectName'],
-            //     Email: priceReport['ObjectEmail'],
-            //     Phone: priceReport['ObjectPhone'],
-            //     Address: priceReport['ObjectAddress'],
-            //   },
-            // ];
-
-            // priceReport['Object'] = {
-            //   id: priceReport['Object'],
-            //   text: priceReport['ObjectName'],
-            // };
             this.priceReportForm.patchValue(priceReport);
-            // this.objectValue = priceReport['Object'];
 
             this.details.clear();
             priceReport['details'].forEach(detail => {
@@ -288,33 +244,6 @@ export class FormComponent implements OnInit {
     });
   }
 
-  // selectEvent(item: Contact) {
-  //   // do something with selected item
-  //   this.priceReportForm.get('ObjectName').setValue(item.Name);
-  //   this.priceReportForm.get('ObjectPhone').setValue(item.Phone);
-  //   this.priceReportForm.get('ObjectEmail').setValue(item.Email);
-  //   this.priceReportForm.get('ObjectAddress').setValue(item.Address);
-  // }
-
-  // onChangeSearch(val: string) {
-  //   // fetch remote data from here
-  //   // And reassign the 'data' which is binded to 'data' property.
-  //   // if (this.customerLlist.length === 0) {
-  //   //   this.contactService.get({ limit: 999999999 },
-  //   //     contacts => this.customerLlist = contacts,
-  //   //     e => console.warn(e.error));
-  //   // }
-
-  //   // return this.customerLlist.filter((customer) => new RegExp(val).test(customer.Name));
-
-  //   this.contactService.get({ limit: 20, filter_Name: val },
-  //     contacts => this.customerLlist = contacts.filter(contact => contact.Name && contact.Code),
-  //     e => console.warn(e.error));
-  // }
-
-  // onFocused(e) {
-  //   // do something when input is focused
-  // }
 
   makeNewDetailFormgroup(data?: PriceReportDetail): FormGroup {
     const detail = this.formBuilder.group({
@@ -327,11 +256,6 @@ export class FormComponent implements OnInit {
       Quantity: [''],
       ToMoney: [''],
     });
-    // detail.get('Price').valueChanges.subscribe(a => {
-
-    // });
-
-
 
     detail.get('Quantity').valueChanges.subscribe(val => {
       this.detailCalculate(detail);
@@ -374,9 +298,6 @@ export class FormComponent implements OnInit {
 
   addDetail() {
     this.details.push(this.makeNewDetailFormgroup());
-
-    // let formGroup = new FormGroup();
-    // formGroup.controls.
     return false;
   }
 
@@ -395,9 +316,6 @@ export class FormComponent implements OnInit {
     this.submitted = true;
     const data = this.priceReportForm.value;
     console.info(data);
-    // if (data['Object']) {
-    //   data['Object'] = data['Object']['Code'];
-    // }
 
     if (this.id) {
       // Update
@@ -416,13 +334,6 @@ export class FormComponent implements OnInit {
         error => console.warn(error));
     }
 
-    // stop here if form is invalid
-    // if (this.priceReportForm.invalid) {
-    //   return;
-    // }
-
-    // display form values on success
-    // alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.priceReportForm.value, null, 4));
   }
 
   onReset() {

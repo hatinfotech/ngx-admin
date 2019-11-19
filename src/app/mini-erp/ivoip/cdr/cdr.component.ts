@@ -43,45 +43,60 @@ export class CdrComponent implements OnInit {
       confirmDelete: true,
     },
     columns: {
+      No: {
+        title: 'Stt',
+        type: 'string',
+        width: '5%',
+      },
       Direction: {
         title: 'Hướng gọi',
         type: 'string',
+        width: '10%',
       },
       Extension: {
         title: 'Số nội bộ',
         type: 'string',
+        width: '10%',
       },
       FromOrigin: {
         title: 'Số gọi vào',
         type: 'string',
+        width: '10%',
       },
       CallerName: {
         title: 'Tên người gọi',
         type: 'string',
+        width: '10%',
       },
       CallerNumber: {
         title: 'Số người gọi',
         type: 'string',
+        width: '10%',
       },
       CallerDestination: {
         title: 'Số nhận cuộc gọi',
         type: 'string',
+        width: '10%',
       },
       Start: {
         title: 'TG Bắt đầu',
         type: 'string',
+        width: '10%',
       },
       Tta: {
         title: 'TG đỗ chuông',
         type: 'string',
+        width: '5%',
       },
       Duration: {
         title: 'Thời lượng',
         type: 'string',
+        width: '10%',
       },
       HangupCase: {
         title: 'Trạng thái',
         type: 'string',
+        width: '10%',
       },
     },
   };
@@ -105,12 +120,10 @@ export class CdrComponent implements OnInit {
 
     // Get data from api
     this.apiService.get<CdrModel[]>('/ivoip/cdr', { limit: 999999999, offset: 0 },
-      priceReport => this.source.load(priceReport), e => {
-        console.warn(e);
-        if (e.status === 401) {
-          this.router.navigate(['/auth/login']);
-        }
-      });
+      cdrs => this.source.load(cdrs.map((item, index: number) => {
+        item['No'] = index + 1;
+        return item;
+      })));
 
 
     this.domainList = [

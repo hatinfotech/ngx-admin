@@ -11,11 +11,13 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { ECommerceModule } from './e-commerce/e-commerce.module';
 import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 import { ShowcaseDialogComponent } from './showcase-dialog/showcase-dialog.component';
+import { NormalDialogComponent } from './dialog/normal-dialog/normal-dialog.component';
 
 @NgModule({
   declarations: [
     MiniErpComponent,
     ShowcaseDialogComponent,
+    NormalDialogComponent,
   ],
   entryComponents: [
     ShowcaseDialogComponent,

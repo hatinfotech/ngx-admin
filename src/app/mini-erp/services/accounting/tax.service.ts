@@ -21,7 +21,7 @@ export class TaxService implements ApiResource<TaxModel> {
     this.apiService.post<TaxModel>('/contact/contacts', resource, success, error);
   }
   put(resource: TaxModel, success: (newResource: TaxModel) => void, error: (e: HttpErrorResponse) => void) {
-    this.apiService.put<TaxModel>('/contact/contacts', resource, success, error);
+    this.apiService.put<TaxModel>('/contact/contacts', resource.Code, resource, success, error);
   }
   delete(id: string, success: (resp) => void, error: (e: HttpErrorResponse) => void) {
     this.apiService.delete('/contact/contacts', id, success, error);

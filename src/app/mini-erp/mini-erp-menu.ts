@@ -1,18 +1,21 @@
 import { NbMenuItem } from '@nebular/theme';
 
 export const MENU_ITEMS: NbMenuItem[] = [
+  // Summary Dashboard
   {
     title: 'Dashboard',
     icon: 'monitor-outline',
     link: '/dashboard',
   },
+  // IoT Dashboard
   {
     title: 'IoT Dashboard',
     icon: 'home-outline',
     link: '/iot-dashboard',
   },
+  // Interagtion
   {
-    title: 'Dịch vụ',
+    title: 'Tích hợp',
     group: true,
   },
   {
@@ -72,6 +75,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
     ],
   },
+  // Software
   {
     title: 'Phần mềm',
     group: true,
@@ -217,6 +221,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
     ],
   },
+  // System
   {
     title: 'Hệ thống',
     group: true,
@@ -226,24 +231,46 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'person-outline',
     children: [
       {
-        title: 'Người dùng',
+        title: 'Quản lý người dùng',
         // icon: 'people-outline',
-        link: '/',
+        link: '/users/user-manager/list',
       },
       {
         title: 'Nhóm người dùng',
         // icon: 'people-outline',
-        link: '/',
+        link: '/users/group/list',
       },
       {
         title: 'Phân quyền',
         // icon: 'people-outline',
-        link: '/',
+        link: '/users/permission/grant',
       },
       {
         title: 'Chặn truy cập',
         // icon: 'people-outline',
-        link: '/',
+        link: '/users/ban',
+      },
+    ],
+  },
+  {
+    title: 'Modules',
+    icon: 'cube-outline',
+    children: [
+      {
+        title: 'Quản lý module',
+        // icon: 'people-outline',
+        link: '/modules/manager/list',
+      },
+    ],
+  },
+  {
+    title: 'Menu',
+    icon: 'menu-2-outline',
+    children: [
+      {
+        title: 'Quản lý menu',
+        // icon: 'people-outline',
+        link: '/menu/manager/list',
       },
     ],
   },
@@ -266,10 +293,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Request Password',
         link: '/auth/request-password',
-      },
-      {
-        title: 'Reset Password',
-        link: '/auth/reset-password',
       },
     ],
   },

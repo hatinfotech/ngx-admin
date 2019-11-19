@@ -1,6 +1,5 @@
-
-
-select2, .select2 {
+select2,
+.select2 {
   -webkit-writing-mode: horizontal-tb !important;
   text-rendering: auto;
   color: initial;
@@ -43,7 +42,7 @@ select2, .select2 {
   transition-duration: 0.15s !important;
   transition-property: border, background-color, color, box-shadow !important;
   transition-timing-function: ease-in !important;
-  font-size: 0.9375rem  !important;
+  font-size: 0.9375rem !important;
   font-weight: 600 !important;
   line-height: 1.5rem !important;
 }
@@ -91,7 +90,9 @@ select2, .select2 {
 .select2-container--default .select2-search--dropdown .select2-search__field {
   border: 1px solid #aaaaaa5c !important;
 }
-.select2-container--default .select2-search--dropdown .select2-search__field:focus {
+.select2-container--default
+  .select2-search--dropdown
+  .select2-search__field:focus {
   outline: none;
 }
 
@@ -105,12 +106,15 @@ select2, .select2 {
 
 body ng2-smart-table table tr td,
 body ng2-smart-table table tr th {
-  padding: .575rem .575rem;
+  padding: 0.575rem 0.575rem;
 }
 
-
 /* Chat bar */
-body nb-layout-header.fixed ~ .layout-container nb-sidebar.chat-sidebar .main-container {
+body
+  nb-layout-header.fixed
+  ~ .layout-container
+  nb-sidebar.chat-sidebar
+  .main-container {
   padding: 0;
 }
 
@@ -123,17 +127,21 @@ body nb-sidebar.chat-sidebar .scrollable {
   width: 20rem;
 } */
 
-body nb-layout-header.fixed ~ .layout-container nb-sidebar.chat-sidebar .main-container {
+body
+  nb-layout-header.fixed
+  ~ .layout-container
+  nb-sidebar.chat-sidebar
+  .main-container {
   width: 20rem;
 }
 body nb-sidebar.chat-sidebar nb-chat .messages {
-  padding: 0.5rem 0.50rem;
+  padding: 0.5rem 0.5rem;
 }
 
 body nb-sidebar.chat-sidebar,
 body nb-sidebar.chat-sidebar .main-container,
 body nb-sidebar.chat-sidebar.expanded,
-body nb-sidebar.chat-sidebar.expanded .main-container  {
+body nb-sidebar.chat-sidebar.expanded .main-container {
   width: 20rem;
 }
 body nb-sidebar.chat-sidebar.collapsed,
@@ -149,7 +157,6 @@ body nb-sidebar.chat-sidebar.compacted.fixed.right ~ .content {
 }
 
 /* End chat bar */
-
 
 /* Layout */
 /* body nb-layout .layout .layout-container .content .columns nb-layout-column {
@@ -180,9 +187,37 @@ body nb-layout .layout .layout-container .content nb-layout-footer nav {
 /* End layout */
 
 /* Smart Table */
+body ng2-smart-table table tr.ng2-smart-titles th:first-child {
+  width: 5%;
+}
+
+body ng2-smart-table table tr th:first-child:hover,
+body ng2-smart-table table tr td:first-child:hover {
+  background-color: #42aaff;
+}
+
+body ng2-smart-table table tr.ng2-smart-titles th:first-child input {
+  width: 20px;
+  height: 16px;
+}
+
+body ng2-smart-table .form-control:focus {
+  box-shadow: none !important;
+}
+
 body ng2-smart-table table tr th,
 body ng2-smart-table table tr td {
-  padding: 0.5rem 0.5rem !important;
+  padding: 0.2rem 0.2rem !important;
+}
+
+body ng2-smart-table table tr td:first-child,
+body ng2-smart-table table tr th:first-child {
+  padding-left: 1rem !important;
+}
+
+body ng2-smart-table table tr td:last-child,
+body ng2-smart-table table tr th:last-child {
+  padding-right: 1rem !important;
 }
 
 body ng2-smart-table table tr td {
@@ -192,11 +227,75 @@ body ng2-smart-table table tr td {
 
 body ng2-smart-table table tr th,
 body ng2-smart-table table tr td {
-  border:none !important;
+  border: none !important;
   border-bottom: 1px solid #edf1f7 !important;
+}
+
+body ng2-smart-table th.ng2-smart-actions-title-add a {
+  padding: 0.25rem 0.5rem !important;
+}
+
+body ng2-smart-table .no {
+  text-align: left;
 }
 
 nb-card-body .ng2-smart-table-wrap {
   margin: -1rem -1.25rem;
 }
+
+.nb-theme-default ng2-smart-table thead tr.ng2-smart-filters th .ng2-smart-action i.nb-edit,
+.nb-theme-default ng2-smart-table thead tr.ng2-smart-filters th .ng2-smart-action i.nb-trash {
+  display: none;
+}
+
+.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action {
+    background-color: #dc3545 !important;
+}
+.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action:hover {
+    background-color: #fb6977 !important;
+}
+.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action i.nb-edit,
+.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action i.nb-trash {
+  display: block;
+}
+.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action i.nb-plus {
+  display: none;
+}
 /* End Smart Table */
+
+/* Form */
+.form-details .form-group label {
+  display: none !important;
+}
+.form-details .form-detail-item {
+  /* padding: 3px; */
+}
+.form-details .form-detail-item:nth-of-type(even) {
+  /* background-color: #ebebeb; */
+}
+
+.buttons-row {
+  margin: -0.5rem !important;
+}
+
+.buttons-row button[nbButton] {
+  margin: 0.5rem !important;
+}
+
+.buttons-row .actions-card {
+  height: 8rem !important;
+}
+
+/* End form */
+
+/* Button */
+body [nbButton] {
+  margin: 0.3rem;
+}
+/* End Button */
+
+/* Dialog */
+nb-card-footer [nbButton]:last-child {
+  float: right;
+}
+/* End Dialog */

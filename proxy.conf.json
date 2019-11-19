@@ -1,0 +1,6 @@
+{
+  "/api": {
+    "target": "https://local.namsoftware.com",
+    "secure": true
+  }
+}

@@ -22,7 +22,7 @@ export class PriceReportService implements ApiResource<PriceReportModel> {
     this.apiService.post<PriceReportModel>('/sales/price-reports', resource, success, error);
   }
   put(resource: PriceReportModel, success: (newResource: PriceReportModel) => void, error: (e: HttpErrorResponse) => void) {
-    this.apiService.put<PriceReportModel>('/sales/price-reports', resource, success, error);
+    this.apiService.put<PriceReportModel>('/sales/price-reports', resource.Code, resource, success, error);
   }
   delete(id: string, success: (resp) => void, error: (e: HttpErrorResponse) => void) {
     this.apiService.delete('/sales/price-reports', id, success, error);

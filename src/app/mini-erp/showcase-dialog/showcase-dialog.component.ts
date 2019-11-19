@@ -10,6 +10,7 @@ export class ShowcaseDialogComponent {
 
   @Input() title: string;
   @Input() content: string;
+  @Input() actions: {label: string, icon: string, status: string, action?: () => void}[];
 
   constructor(protected ref: NbDialogRef<ShowcaseDialogComponent>) {}
 

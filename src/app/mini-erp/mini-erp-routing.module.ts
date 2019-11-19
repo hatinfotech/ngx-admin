@@ -42,6 +42,21 @@ const routes: Routes = [{
         .then(m => m.IvoipModule),
     },
     {
+      path: 'users',
+      loadChildren: () => import('./users/users.module')
+        .then(m => m.UsersModule),
+    },
+    {
+      path: 'modules',
+      loadChildren: () => import('./modules/modules.module')
+        .then(m => m.ModulesModule),
+    },
+    {
+      path: 'menu',
+      loadChildren: () => import('./menu/menu.module')
+        .then(m => m.MenuModule),
+    },
+    {
       path: 'test',
       loadChildren: () => import('./test/test.module')
         .then(m => m.TestModule),

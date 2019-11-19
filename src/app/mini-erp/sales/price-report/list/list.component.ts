@@ -49,22 +49,34 @@ export class ListComponent implements OnInit {
       perPage: 40,
     },
     columns: {
+      No: {
+        title: 'Stt',
+        type: 'number',
+        filter: false,
+        width: '5%',
+      },
       Code: {
         title: 'Mã',
         type: 'string',
+        width: '10%',
       },
       ObjectName: {
         title: 'Khách hàng',
         type: 'string',
+        width: '25%',
         filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
       },
       Title: {
         title: 'Tiêu đề',
         type: 'string',
+        width: '30%',
+        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
       },
       Note: {
         title: 'Ghi chú',
         type: 'string',
+        windth: '30%',
+        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
       },
     },
   };
@@ -80,18 +92,10 @@ export class ListComponent implements OnInit {
     //   }
     // ]);
     this.apiService.get<PriceReportModel[]>('/sales/price-reports', { limit: 999999999, offset: 0 },
-      priceReport => this.source.load(priceReport), e => {
-        console.warn(e);
-        if (e.status === 401) {
-          this.router.navigate(['/auth/login']);
-        }
-        // this.dialogService.open(ShowcaseDialogComponent, {
-        //   context: {
-        //     title: 'Error',
-        //     content: e.error.logs[0],
-        //   },
-        // });
-      });
+      list => this.source.load(list.map((item, index) => {
+        item['No'] = index + 1;
+        return item;
+      })));
   }
 
   // onSearch(query: string = '') {

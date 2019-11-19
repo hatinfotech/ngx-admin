@@ -21,7 +21,7 @@ export class UnitService implements ApiResource<UnitModel> {
     this.apiService.post<UnitModel>('/admin-product/units', resource, success, error);
   }
   put(resource: UnitModel, success: (newResource: UnitModel) => void, error: (e: HttpErrorResponse) => void) {
-    this.apiService.put<UnitModel>('/admin-product/units', resource, success, error);
+    this.apiService.put<UnitModel>('/admin-product/units', resource.Code, resource, success, error);
   }
   delete(id: string, success: (resp) => void, error: (e: HttpErrorResponse) => void) {
     this.apiService.delete('/admin-product/units', id, success, error);
