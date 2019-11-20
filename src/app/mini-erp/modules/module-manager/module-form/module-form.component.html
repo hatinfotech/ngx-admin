@@ -1,119 +1,162 @@
-<nb-card>
-  <nb-card-header>
-    <nav>
-      <button nbButton status="info" hero size="tiny" (click)="goback()">
-        <nb-icon pack="eva" icon="arrow-back"></nb-icon>
-      </button>
-      Cập nhật thông tin người dùng
-    </nav>
-  </nb-card-header>
-  <nb-card-body>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <input type="hidden" formControlName="Code">
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="form-group">
-            <label class="label">Tên</label>
-            <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="form-group">
-            <label class="label">Username</label>
-            <input type="text" nbInput fullWidth formControlName="Username" placeholder="Username">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="form-group">
-            <label class="label">Password</label>
-            <input type="text" nbInput fullWidth formControlName="Password" placeholder="Password">
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="form-group">
-            <label class="label">Nhóm</label>
-            <input type="email" nbInput fullWidth formControlName="Groups" placeholder="Nhóm">
-          </div>
-        </div>
-      </div>
-      <div class="row form-details">
-        <div class="col-sm-12">
-          <label class="label">Phân quyền</label>
-          <div class="row">
-            <div class="col-sm-1">STT</div>
-            <div class="col-sm-11">
-              <div class="row">
-                <div class="col-sm-4">Chức năng</div>
-                <div class="col-sm-8">Quyền</div>
-              </div>
-            </div>
-          </div>
-
-          <hr>
-          <div formArrayName="details">
-            <div class="form-detail-item" *ngFor="let detail of modulePermissions.controls; let i=index" [formGroup]="detail">
-              <div class="row">
-                <div class="col-sm-1">
-                  <div class="form-group">
-                    <input nbInput fullWidth disabled="true" value="{{ i + 1 }}" style="text-align: center;">
-                  </div>
-                  <div class="form-group">
-                    <button nbButton status="danger" hero size="tiny" (click)="removeDetail(i)"
-                      style="width: 100%; margin-bottom: 3px;">
-                      <nb-icon pack="eva" icon="trash-2-outline"></nb-icon>
-                    </button>
-                    <button nbButton status="success" hero size="tiny" class="sorting-handle" style="width: 100%;">
-                      <nb-icon pack="eva" icon="move-outline"></nb-icon>
-                    </button>
-                  </div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card>
+        <nb-card-header>
+          <nav>
+            Cập nhật module
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Name_old">
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label">Tên module</label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên module">
                 </div>
-                <div class="col-sm-11">
-                  <div class="row">
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label class="label">Chức năng</label>
-                        <!-- <input type="text" nbInput fullWidth formControlName="Module" placeholder="Chức năng"> -->
-                        <ngx-select2 [data]="moduleList" formControlName="Module" [select2Option]="select2OptionForModule"
-                          (selectChange)="onModuleChange($event, i)"></ngx-select2>
-                      </div>
-                    </div>
-                    <div class="col-sm-8">
-                      <div class="form-group">
-                        <label class="label">Quyền</label>
-                        <!-- <input type="text" nbInput fullWidth formControlName="Permissions" placeholder="Quyền"> -->
-                        <ngx-select2 [data]="permissionList" formControlName="Permissions" [select2Option]="select2OptionForPermissions">
-                        </ngx-select2>
-                      </div>
-                    </div>
-
-                    <div class="col-sm-12">
-                      <div class="form-group">
-                        <label class="label">Diễn giải phân quyền</label>
-                        <textarea type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải phân quyền"></textarea>
-                        <!-- <ngx-select2 [data]="unitList" formControlName="Unit" [select2Option]="select2OptionForUnit">
-                        </ngx-select2> -->
-                      </div>
-                    </div>
-                  </div>
-                  <hr style="margin-top: 0;">
+              </div>
+              <div class="col-sm-9">
+                <div class="form-group">
+                  <label class="label">Diễn giải</label>
+                  <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
                 </div>
               </div>
             </div>
+
+            <hr>
+            <label class="label">Danh sách components</label>
+            <div class="row">
+              <div class="col-sm-1">STT</div>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-4">Tên component</div>
+                  <div class="col-sm-8">Diễn giải</div>
+                </div>
+              </div>
+              <div class="col-sm-1" style="text-align: center;">
+                <button nbButton status="success" (click)="addComponentFormGroup(i)" size="tiny" style="width: 100%; margin-bottom: 3px;" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+
+            <hr>
+            <div formArrayName="Components" class="form-details">
+              <div class="form-detail-item" *ngFor="let conponent of getComponents(i).controls; let ic=index"
+                [formGroup]="conponent">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}" style="text-align: center;">
+                    </div>
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="label">Tên component</label>
+                          <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên component">
+                        </div>
+                      </div>
+                      <div class="col-sm-8">
+                        <div class="form-group">
+                          <label class="label">Diễn giải</label>
+                          <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="tiny" (click)="removeComponentGroup(i, ic)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+            <hr>
+            <label class="label">Danh sách resources</label>
+            <div class="row">
+              <div class="col-sm-1">STT</div>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-4">Tên resource</div>
+                  <div class="col-sm-8">Diễn giải</div>
+                </div>
+              </div>
+              <div class="col-sm-1" style="text-align: center;">
+                <button nbButton status="success" (click)="addResourceFormGroup(i)" size="tiny" style="width: 100%; margin-bottom: 3px;" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+            <hr>
+            <div formArrayName="Resources" class="form-details">
+              <div class="form-detail-item" *ngFor="let resource of getResources(i).controls; let ir=index"
+                [formGroup]="resource">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth disabled="true" value="{{ ir + 1 }}" style="text-align: center;">
+                    </div>
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="label">Tên resource</label>
+                          <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên resource">
+                        </div>
+                      </div>
+                      <div class="col-sm-8">
+                        <div class="form-group">
+                          <label class="label">Diễn giải</label>
+                          <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="tiny" (click)="removeResourceGroup(i, ir)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
-        </div>
-      </div>
-      <div class="buttons-row" style="text-align: right;">
-        <button nbButton status="warning" (click)="addModulePermissions()" hero>Thêm phân quyền</button>
-        <button nbButton status="info" hero>Xem trước</button>
-        <button nbButton status="success" [disabled]="!form.valid" hero>Lưu thông tin người dùng</button>
-      </div>
-      <!-- <div class="btn-group">
-        <button type="button" class="btn btn-warning" (click)="addDetail()">Thêm hàng hóa</button>
-        <button type="button" class="btn btn-success">Xem trước</button>
-        <button type="submit" class="btn btn-primary" [disabled]="!priceReportForm.valid">Lưu</button>
-      </div> -->
-    </form>
-  </nb-card-body>
-</nb-card>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="buttons-row">
+                <button nbButton status="warning" (click)="addFormGroup()" style="float: left;" hero>Thêm module</button>
+                <button nbButton status="success" [disabled]="!form.valid" style="float: right; margin-right: 0;" hero>Lưu module</button>
+                <button nbButton status="info" style="float: right;" hero>Xem trước</button>
+              </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

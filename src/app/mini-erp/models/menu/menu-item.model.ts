@@ -7,6 +7,7 @@ export class MenuItemModel {
   Group?: boolean;
   Parent?: string;
   Childrend?: MenuItemModel[];
+  Components?: {Id: number, Module: string, Component: string}[];
 
   constructor() { }
 

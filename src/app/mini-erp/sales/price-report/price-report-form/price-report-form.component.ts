@@ -11,12 +11,12 @@ import { TaxModel } from '../../../models/tax.model';
 import { ApiService } from '../../../services/api.service';
 
 @Component({
-  selector: 'ngx-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss'],
+  selector: 'ngx-price-report-form',
+  templateUrl: './price-report-form.component.html',
+  styleUrls: ['./price-report-form.component.scss'],
 })
 
-export class FormComponent implements OnInit {
+export class PriceReportFormComponent implements OnInit {
 
   constructor(
     private activeRoute: ActivatedRoute,

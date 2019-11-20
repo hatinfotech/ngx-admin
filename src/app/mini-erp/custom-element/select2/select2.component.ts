@@ -64,6 +64,7 @@ export class Select2Component implements ControlValueAccessor, Validator {
   }
 
   writeValue(value: any) {
+    const oldValue = this.value;
     if (value) {
       const keyMap = this.select2Option['keyMap'];
       if (this.select2Option['ajax']) {
@@ -97,6 +98,7 @@ export class Select2Component implements ControlValueAccessor, Validator {
     } else {
       this.value = '';
     }
+    // this.selectChange.emit(value);
   }
 
   registerOnChange(fn: (item: any) => void) {

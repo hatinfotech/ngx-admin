@@ -7,11 +7,11 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
 
 @Component({
-  selector: 'ngx-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss'],
+  selector: 'ngx-price-report-list',
+  templateUrl: './price-report-list.component.html',
+  styleUrls: ['./price-report-list.component.scss'],
 })
-export class ListComponent implements OnInit {
+export class PriceReportListComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,

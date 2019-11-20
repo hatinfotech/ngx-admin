@@ -88,7 +88,7 @@ export class ApiService {
     }
     return this._http.get<T>(this.buildApiUrl(enpoint, params))
       .pipe(retry(0), catchError(e => {
-        error(e);
+        if (error) error(e);
         return this.handleError(e);
       }))
       .subscribe((resources: T) => success(resources));
@@ -97,7 +97,7 @@ export class ApiService {
   post<T>(enpoint: string, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
     return this._http.post(this.buildApiUrl(enpoint), resource)
       .pipe(retry(0), catchError(e => {
-        error(e);
+        if (error) error(e);
         return this.handleError(e);
       }))
       .subscribe((newResource: T) => success(newResource));
@@ -109,7 +109,7 @@ export class ApiService {
     }
     return this._http.put(this.buildApiUrl(`${enpoint}/${id}`), resource)
       .pipe(retry(0), catchError(e => {
-        error(e);
+        if (error) error(e);
         return this.handleError(e);
       }))
       .subscribe((newResource: T) => success(newResource));
@@ -121,7 +121,7 @@ export class ApiService {
     }
     return this._http.delete(this.buildApiUrl(`${enpoint}/${id}`))
       .pipe(retry(0), catchError(e => {
-        error(e);
+        if (error) error(e);
         return this.handleError(e);
       }))
       .subscribe((resp) => success(resp));
@@ -141,7 +141,7 @@ export class ApiService {
         // }
         sucess(resp.body);
       }, (e: HttpErrorResponse) => {
-        error(e.error);
+        if (error) error(e);
       });
   }
 

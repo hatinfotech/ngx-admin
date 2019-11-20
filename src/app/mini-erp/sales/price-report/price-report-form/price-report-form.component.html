@@ -108,14 +108,12 @@
             <div class="col-sm-1">STT</div>
             <div class="col-sm-11">
               <div class="row">
-                <!-- <div class="col-sm-1">STT</div> -->
                 <div class="col-sm-2">Diễn giải</div>
                 <div class="col-sm-2">ĐVT</div>
                 <div class="col-sm-2" style="text-align: right;">Số lượng</div>
                 <div class="col-sm-2" style="text-align: right;">Đơn giá</div>
                 <div class="col-sm-2">Thuế</div>
                 <div class="col-sm-2" style="text-align: right;">Thành tiền</div>
-                <!-- <div class="col-sm-1" style="text-align: right;">Lệnh</div> -->
               </div>
             </div>
           </div>
@@ -143,10 +141,6 @@
                     <div class="col-sm-2">
                       <div class="form-group">
                         <label class="label">Sản phẩm</label>
-                        <!-- <input style="display: none;" type="hidden" class="form-control" type="text"
-                          formControlName="Product" placeholder="Sản phảm"> -->
-                        <!-- <select2 [options]="select2OptionForProduct" [cssImport]=true
-                          (valueChanged)="onObjectChange($event)"></select2> -->
                         <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct"
                           (selectChange)="onProductChange($event, i)"></ngx-select2>
                       </div>
@@ -154,7 +148,6 @@
                     <div class="col-sm-2">
                       <div class="form-group">
                         <label class="label">ĐVT</label>
-                        <!-- <input nbInput fullWidth formControlName="Unit" placeholder="ĐVT"> -->
                         <ngx-select2 [data]="unitList" formControlName="Unit" [select2Option]="select2OptionForUnit">
                         </ngx-select2>
                       </div>
@@ -183,9 +176,6 @@
                     <div class="col-sm-2">
                       <div class="form-group">
                         <label class="label">Thành tiền</label>
-                        <!-- <input nbInput fullWidth type="text" formControlName="ToMoney"
-                          [value]="detail.get('Price').value * detail.get('Quantity').value | mask: 'separator'"
-                          placeholder="Thành tiền" style="text-align: right;"> -->
                         <input mask="separator" [thousandSeparator]="env.number.thousandSeparator" nbInput fullWidth
                           type="text" formControlName="ToMoney" placeholder="Thành tiền" style="text-align: right;">
                       </div>

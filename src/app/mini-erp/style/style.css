@@ -298,4 +298,7 @@ body [nbButton] {
 nb-card-footer [nbButton]:last-child {
   float: right;
 }
+body nb-dialog-container nb-card {
+  min-width: 30rem !important;
+}
 /* End Dialog */

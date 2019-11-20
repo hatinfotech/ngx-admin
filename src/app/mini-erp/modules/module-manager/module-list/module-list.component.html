@@ -5,8 +5,8 @@
 
   <nb-card-body>
     <div class="ng2-smart-table-wrap">
-      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)"
-        (edit)="onEditAction($event)" (create)="onCreateAction($event)">
+      <ng2-smart-table [attr.select]="hasSelect" [settings]="settings" [source]="source" (edit)="onEditAction($event)"
+        (create)="onCreateAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
       </ng2-smart-table>
     </div>
   </nb-card-body>

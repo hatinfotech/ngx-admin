@@ -1,35 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { NbDialogService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
-import { LocalDataSource } from 'ng2-smart-table';
-import { UserModel } from '../../../models/users/user.model';
 import { ModuleModel } from '../../../models/modules/module.model';
+import { DataManagerListComponent } from '../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-module-list',
   templateUrl: './module-list.component.html',
-  styleUrls: ['./module-list.component.scss']
+  styleUrls: ['./module-list.component.scss'],
 })
-export class ModuleListComponent implements OnInit {
+export class ModuleListComponent extends DataManagerListComponent<ModuleModel> implements OnInit {
 
-  constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private common: CommonService,
-  ) { }
-
-  editing = {};
-  rows = [];
-
+  /** Table settings */
   settings = {
     mode: 'external',
+    selectMode: 'multi',
     actions: {
       position: 'right',
     },
     add: {
-      addButtonContent: '<i class="nb-plus"></i>',
+      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
     },
@@ -68,30 +60,24 @@ export class ModuleListComponent implements OnInit {
     },
   };
 
-  source: LocalDataSource = new LocalDataSource();
+  constructor(
+    protected apiService: ApiService,
+    protected router: Router,
+    protected common: CommonService,
+    protected dialogService: NbDialogService,
+    protected toastService: NbToastrService,
+  ) {
+    super(apiService, router, common, dialogService, toastService);
+    this.apiPath = '/module/modules';
+    this.idKey = 'Name';
+  }
 
   ngOnInit() {
-    // Load user list
-    this.apiService.get<ModuleModel[]>('/module/modules', { limit: 999999999, offset: 0 }, results => this.source.load(results.map((item, index) => {
-      item['No'] = index + 1;
-      return item;
-    })));
+    super.ngOnInit();
   }
 
-  onEditAction(event: {data: ModuleModel}) {
-    this.router.navigate(['modules/manager/form', event.data.Name]);
-  }
-
-  onCreateAction(event) {
-    this.router.navigate(['modules/manager/form']);
-  }
-
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
-    }
+  gotoForm(id?: string) {
+    this.router.navigate(['modules/manager/form', id]);
   }
 
 }

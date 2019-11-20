@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { PriceReportListComponent } from './price-report-list/price-report-list.component';
+import { PriceReportFormComponent } from './price-report-form/price-report-form.component';
+import { PriceReportViewComponent } from './price-report-view/price-report-view.component';
 import { PriceReportComponent } from './price-report.component';
-import { ListComponent } from './list/list.component';
-import { FormComponent } from './form/form.component';
-import { ViewComponent } from './view/view.component';
 
 
 const routes: Routes = [{
@@ -12,23 +12,23 @@ const routes: Routes = [{
   children: [
     {
       path: '',
-      component: ListComponent,
+      component: PriceReportListComponent,
     },
     {
       path: 'list',
-      component: ListComponent,
+      component: PriceReportListComponent,
     },
     {
       path: 'form',
-      component: FormComponent,
+      component: PriceReportFormComponent,
     },
     {
       path: 'form/:id',
-      component: FormComponent,
+      component: PriceReportFormComponent,
     },
     {
       path: 'view',
-      component: ViewComponent,
+      component: PriceReportViewComponent,
     },
   ],
 }];
