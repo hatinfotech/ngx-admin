@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,16 @@ export class CommonService {
 
   smartTableFilter(value: string, query: string) {
     return (new RegExp(this.convertUnicodeToNormal(query).toLowerCase().replace(/\s+/g, '.*'), 'ig')).test(this.convertUnicodeToNormal(value));
+  }
+
+  getFullRoutePath(route: ActivatedRouteSnapshot): string {
+    /** The url we are going to return */
+    if ( route.routeConfig ) {
+      const url = route.routeConfig.path;
+      console.info('[router-reuse] returning url', url);
+
+      return route.pathFromRoot.filter(v => v.routeConfig && v.routeConfig.path) .map(v => v.routeConfig.path ? v.routeConfig.path : '').join('/');
+    }
   }
 
 }

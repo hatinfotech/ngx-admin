@@ -87,7 +87,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Phiếu báo giá',
         // icon: 'people-outline',
-        link: '/sales/price-report',
+        link: '/sales/price-report/list',
       },
       {
         title: 'Phiếu bán hàng',

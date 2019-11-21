@@ -16,26 +16,44 @@ const routes: Routes = [{
     {
       path: 'cdr',
       component: CdrComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'pbx',
       component: PbxComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'devices',
       component: DevicesComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'extensions',
       component: ExtensionsComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'pstn-numbers',
       component: PstnNumbersComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'call-blocks',
       component: CallBlocksComponent,
+      data: {
+        reuse: true,
+      },
     },
   ],
 }];

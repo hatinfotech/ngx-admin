@@ -24,6 +24,8 @@ import {
 } from '@nebular/theme';
 import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/auth';
 import { AuthModule } from './mini-erp/auth/auth.module';
+import { RouteReuseStrategy } from '@angular/router';
+import { CustomRouteReuseStrategy } from './custom-route-reuse-stratery';
 
 @NgModule({
   declarations: [
@@ -86,8 +88,11 @@ import { AuthModule } from './mini-erp/auth/auth.module';
       forms: {},
     }),
   ],
-  providers: [],
   bootstrap: [AppComponent],
+  providers: [{
+    provide: RouteReuseStrategy,
+    useClass: CustomRouteReuseStrategy,
+  }],
 })
 export class AppModule {
 }

@@ -10,13 +10,19 @@ const routes: Routes = [{
   path: '',
   component: PriceReportComponent,
   children: [
-    {
-      path: '',
-      component: PriceReportListComponent,
-    },
+    // {
+    //   path: '',
+    //   component: PriceReportListComponent,
+    //   data: {
+    //     reuse: true,
+    //   },
+    // },
     {
       path: 'list',
       component: PriceReportListComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'form',

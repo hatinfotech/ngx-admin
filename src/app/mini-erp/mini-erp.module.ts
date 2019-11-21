@@ -47,8 +47,6 @@ import { NormalDialogComponent } from './dialog/normal-dialog/normal-dialog.comp
     NbSelectModule,
     NbTooltipModule,
   ],
-  providers: [
-  ],
 })
 export class MiniErpModule {
 }

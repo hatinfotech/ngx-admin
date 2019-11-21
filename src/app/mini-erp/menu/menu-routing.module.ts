@@ -13,6 +13,9 @@ const routes: Routes = [{
     {
       path: 'manager/list',
       component: MenuListComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'manager/form',

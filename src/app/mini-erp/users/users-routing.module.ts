@@ -20,6 +20,9 @@ const routes: Routes = [{
     {
       path: 'user-manager/list',
       component: UserListComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'user-manager/form',
@@ -41,6 +44,9 @@ const routes: Routes = [{
     {
       path: 'group/list',
       component: UserGroupListComponent,
+      data: {
+        reuse: true,
+      },
     },
     {
       path: 'group/form',
@@ -62,6 +68,9 @@ const routes: Routes = [{
     {
       path: 'permission/grant',
       component: PermissionGrantComponent,
+      data: {
+        reuse: true,
+      },
     },
   ],
 }];
