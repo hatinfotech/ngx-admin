@@ -307,7 +307,7 @@ export class PriceReportFormComponent implements OnInit {
   }
 
   goback() {
-    this.router.navigate(['sales/price-report']);
+    this.router.navigate(['sales/price-report/list']);
   }
 
   get f() { return this.priceReportForm.controls; }
@@ -322,14 +322,14 @@ export class PriceReportFormComponent implements OnInit {
       this.priceReportService.put(data,
         newPriceReport => {
           console.info(newPriceReport);
-          this.router.navigate(['sales/price-report']);
+          this.router.navigate(['sales/price-report/list']);
         },
         error => console.warn(error));
     } else {
       this.priceReportService.post(data,
         newPriceReport => {
           console.info(newPriceReport);
-          this.router.navigate(['sales/price-report']);
+          this.router.navigate(['sales/price-report/list']);
         },
         error => console.warn(error));
     }

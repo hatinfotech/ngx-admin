@@ -14,9 +14,11 @@ const routes: Routes = [{
   children: [
     {
       path: '',
-      component: ECommerceComponent,
+      // component: ECommerceComponent,
+      redirectTo: '/dashboard',
+      pathMatch: 'full',
       data: {
-        reuse: true,
+        reuse: false,
       },
     },
     {
