@@ -9,9 +9,9 @@ const routes: Routes = [{
   children: [
     {
       path: 'price-report',
-      data: {
-        reuse: false,
-      },
+      // data: {
+      //   reuse: false,
+      // },
       // component: EmployeesComponent,
       loadChildren: () => import('./price-report/price-report.module')
         .then(m => m.PriceReportModule),

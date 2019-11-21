@@ -18,7 +18,14 @@ const routes: Routes = [{
   children: [
     // User manager
     {
+      path: 'user-manager',
+      redirectTo: 'user-manager/list',
+      pathMatch: 'full',
+    },
+    {
       path: 'user-manager/list',
+      redirectTo: 'list',
+      pathMatch: 'full',
       component: UserListComponent,
       data: {
         reuse: true,
@@ -41,6 +48,11 @@ const routes: Routes = [{
       component: UserReportComponent,
     },
     // User group
+    {
+      path: 'group',
+      redirectTo: 'group/list',
+      pathMatch: 'full',
+    },
     {
       path: 'group/list',
       component: UserGroupListComponent,
@@ -65,6 +77,11 @@ const routes: Routes = [{
       component: UserGroupReportComponent,
     },
     // Permission
+    {
+      path: 'permission',
+      redirectTo: 'permission/grant',
+      pathMatch: 'full',
+    },
     {
       path: 'permission/grant',
       component: PermissionGrantComponent,

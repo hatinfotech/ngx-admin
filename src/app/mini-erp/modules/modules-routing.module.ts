@@ -11,6 +11,11 @@ const routes: Routes = [{
   children: [
     // User manager
     {
+      path: 'manager',
+      redirectTo: 'manager/list',
+      pathMatch: 'full',
+    },
+    {
       path: 'manager/list',
       component: ModuleListComponent,
       data: {

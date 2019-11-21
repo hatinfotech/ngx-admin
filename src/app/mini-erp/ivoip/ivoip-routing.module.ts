@@ -14,6 +14,11 @@ const routes: Routes = [{
   component: IvoipComponent,
   children: [
     {
+      path: '',
+      redirectTo: 'cdr',
+      pathMatch: 'full',
+    },
+    {
       path: 'cdr',
       component: CdrComponent,
       data: {

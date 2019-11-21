@@ -7,9 +7,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [{
   path: '',
-  data: {
-    reuse: false,
-  },
+  // data: {
+  //   reuse: false,
+  // },
   component: MiniErpComponent,
   children: [
     {
@@ -17,9 +17,9 @@ const routes: Routes = [{
       // component: ECommerceComponent,
       redirectTo: '/dashboard',
       pathMatch: 'full',
-      data: {
-        reuse: false,
-      },
+      // data: {
+      //   reuse: false,
+      // },
     },
     {
       path: 'dashboard',
@@ -44,49 +44,49 @@ const routes: Routes = [{
       path: 'human-resource',
       loadChildren: () => import('./human-resource/human-resource.module')
         .then(m => m.HumanResourceModule),
-        data: {
-          reuse: false,
-        },
+        // data: {
+        //   reuse: false,
+        // },
     },
     {
       path: 'sales',
       loadChildren: () => import('./sales/sales.module')
         .then(m => m.SalesModule),
-        data: {
-          reuse: false,
-        },
+        // data: {
+        //   reuse: false,
+        // },
     },
     {
       path: 'ivoip',
       loadChildren: () => import('./ivoip/ivoip.module')
         .then(m => m.IvoipModule),
-      data: {
-        reuse: false,
-      },
+      // data: {
+      //   reuse: false,
+      // },
     },
     {
       path: 'users',
       loadChildren: () => import('./users/users.module')
         .then(m => m.UsersModule),
-        data: {
-          reuse: false,
-        },
+        // data: {
+        //   reuse: false,
+        // },
     },
     {
       path: 'modules',
       loadChildren: () => import('./modules/modules.module')
         .then(m => m.ModulesModule),
-        data: {
-          reuse: false,
-        },
+        // data: {
+        //   reuse: false,
+        // },
     },
     {
       path: 'menu',
       loadChildren: () => import('./menu/menu.module')
         .then(m => m.MenuModule),
-        data: {
-          reuse: false,
-        },
+        // data: {
+        //   reuse: false,
+        // },
     },
     // {
     //   path: 'test',

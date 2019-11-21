@@ -19,9 +19,9 @@ const routes: Routes = [
   // },
   {
     path: '',
-    data: {
-      reuse: false,
-    },
+    // data: {
+    //   reuse: true,
+    // },
     canActivate: [AuthGuardService],
     loadChildren: () => import('./mini-erp/mini-erp.module')
       .then(m => m.MiniErpModule),
