@@ -6,6 +6,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { MENU_ITEMS } from './app-menu';
+import { NbAuthService } from '@nebular/auth';
 
 @Component({
   selector: 'ngx-app',
@@ -21,7 +22,13 @@ export class AppComponent implements OnInit {
 
   menu = MENU_ITEMS;
 
-  constructor(private analytics: AnalyticsService) {
+  constructor(
+    private analytics: AnalyticsService,
+    // private authService: NbAuthService,
+  ) {
+    // this.authService.onAuthenticationChange().subscribe(authState => {
+    //   console.info(authState);
+    // });
   }
 
   ngOnInit(): void {

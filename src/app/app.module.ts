@@ -23,15 +23,19 @@ import {
   NbCardModule,
 } from '@nebular/theme';
 import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/auth';
-import { AuthModule } from './mini-erp/auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-stratery';
+import { ECommerceModule } from './modules/e-commerce/e-commerce.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
     AppComponent,
   ],
   imports: [
+    ECommerceModule,
+    DashboardModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,

@@ -1,11 +1,14 @@
 import { Component, ViewChild, AfterViewInit, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/theme';
+import { NbAuthService } from '@nebular/auth';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-one-column-layout',
   styleUrls: ['./one-column.layout.scss'],
   template: `
-    <nb-layout windowMode>
+    <nb-layout [attr.authState]="authState" windowMode>
       <nb-layout-header fixed>
         <ngx-header></ngx-header>
       </nb-layout-header>
@@ -34,6 +37,7 @@ export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
   @ViewChild('chatSidebar', { static: false }) chatSiderbar: NbSidebarComponent;
 
   messages: any[];
+  authState = 'logout';
 
   ngOnInit(): void {
   }
@@ -41,8 +45,19 @@ export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
   constructor(
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
+    private authService: NbAuthService,
   ) {
+    // setTimeout(() => {
+    //   this.authState = 'login';
+    // }, 10000);
+    this.authService.onAuthenticationChange().subscribe(state => {
+      this.authState = state ? 'login' : 'logout';
+    });
   }
+
+  // loginState(): Observable<boolean> {
+  //   return this.authService.onAuthenticationChange().pipe(tap(state => state));
+  // }
 
   ngAfterViewInit(): void {
     // console.info(this.siderbar);
