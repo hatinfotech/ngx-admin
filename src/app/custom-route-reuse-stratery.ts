@@ -20,7 +20,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     }
     /** Whether this route should be re used or not */
     let shouldReuse = false;
-    console.info('[shouldDetach] checking if this route should be re used or not: ' + this.getUrl(route));
+    // console.info('[shouldDetach] checking if this route should be re used or not: ' + this.getUrl(route));
     if (route.routeConfig.data) {
       route.routeConfig.data.reuse ? shouldReuse = true : shouldReuse = false;
     }
@@ -32,10 +32,10 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
    * Stores the detached route.
    */
   store(route: ActivatedRouteSnapshot, handler: DetachedRouteHandle): void {
-    console.info('[store] storing handler');
+    // console.info('[store] storing handler');
     if (handler) {
       this.handlers[this.getUrl(route)] = handler;
-      console.info('[store] Store handler : ', handler);
+      // console.info('[store] Store handler : ', handler);
     }
   }
 
@@ -44,7 +44,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
    * @param route Stores the detached route.
    */
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    console.info('[shouldAttach] checking if it should be re attached : ' + this.handlers[this.getUrl(route)]);
+    // console.info('[shouldAttach] checking if it should be re attached : ' + this.handlers[this.getUrl(route)]);
     return !!this.handlers[this.getUrl(route)];
   }
 
@@ -56,7 +56,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
       return null;
     }
 
-    console.info('[retrieve] ' + this.getUrl(route));
+    // console.info('[retrieve] ' + this.getUrl(route));
     return this.handlers[this.getUrl(route)];
   }
 
@@ -72,7 +72,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     if (future.routeConfig) {
       if (future.routeConfig.data) {
         reUseUrl = future.routeConfig.data.reuse;
-        console.info('[shouldReuseRoute] should reuse route : ' + future.routeConfig);
+        // console.info('[shouldReuseRoute] should reuse route : ' + future.routeConfig);
       }
     }
 
@@ -98,7 +98,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
       // console.info('[getUrl] returning url', url);
 
       const fullPath = '/' + route.pathFromRoot.filter(v => v.routeConfig && v.routeConfig.path).map(v => v.routeConfig.path ? v.routeConfig.path : '').join('/');
-      console.info('[getUrl] ' + fullPath);
+      // console.info('[getUrl] ' + fullPath);
       return fullPath;
     }
   }

@@ -6,10 +6,7 @@ import { MENU_ITEMS } from './mini-erp-menu';
   selector: 'ngx-pages',
   styleUrls: ['mini-erp.component.scss'],
   template: `
-    <ngx-one-column-layout>
-      <nb-menu [items]="menu"></nb-menu>
-      <router-outlet></router-outlet>
-    </ngx-one-column-layout>
+    <router-outlet></router-outlet>
   `,
 })
 export class MiniErpComponent {

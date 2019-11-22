@@ -4,6 +4,9 @@ import { NgModule } from '@angular/core';
 import { MiniErpComponent } from './mini-erp.component';
 import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { TabsComponent } from './tabs/tabs.component';
+import { UserListComponent } from './users/user-manager/user-list/user-list.component';
+import { MenuListComponent } from './menu/manager-menu/menu-list/menu-list.component';
 
 const routes: Routes = [{
   path: '',
@@ -27,6 +30,25 @@ const routes: Routes = [{
       data: {
         reuse: true,
       },
+    },
+    {
+      path: 'tabs',
+      component: TabsComponent,
+      // children: [
+      //   {
+      //     path: '',
+      //     redirectTo: 'tab1',
+      //     pathMatch: 'full',
+      //   },
+      //   {
+      //     path: 'users',
+      //     component: UserListComponent,
+      //   },
+      //   {
+      //     path: 'menu',
+      //     component: MenuListComponent,
+      //   },
+      // ],
     },
     {
       path: 'iot-dashboard',

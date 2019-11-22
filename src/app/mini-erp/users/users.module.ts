@@ -48,5 +48,6 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     NbRadioModule,
     NbDatepickerModule,
   ],
+  exports: [UserListComponent],
 })
 export class UsersModule { }

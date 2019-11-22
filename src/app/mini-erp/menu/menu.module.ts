@@ -41,5 +41,6 @@ import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart
   entryComponents: [
     SmartTableCheckboxComponent,
   ],
+  exports: [MenuListComponent],
 })
 export class MenuModule { }

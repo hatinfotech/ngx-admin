@@ -24,8 +24,6 @@ const routes: Routes = [{
     },
     {
       path: 'user-manager/list',
-      redirectTo: 'list',
-      pathMatch: 'full',
       component: UserListComponent,
       data: {
         reuse: true,
