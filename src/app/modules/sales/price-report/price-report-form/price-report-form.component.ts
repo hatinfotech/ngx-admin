@@ -217,7 +217,7 @@ export class PriceReportFormComponent implements OnInit {
 
       if (this.id) {
         this.formLoading = true;
-        this.apiService.get<PriceReportModel>('sales/price-reports/' + this.id, {},
+        this.apiService.get<PriceReportModel>('/sales/price-reports/' + this.id, {},
           (priceReport: Object) => {
             this.priceReportForm.patchValue(priceReport);
 

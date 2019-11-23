@@ -10,7 +10,6 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { MenuListComponent } from './manager-menu/menu-list/menu-list.component';
 import { MenuFormComponent } from './manager-menu/menu-form/menu-form.component';
 import { DialogModule } from '../dialog/dialog.module';
-import { ShowcaseDialogComponent } from '../dialog/showcase-dialog/showcase-dialog.component';
 
 @NgModule({
   declarations: [MenuComponent, MenuListComponent, MenuFormComponent],

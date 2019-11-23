@@ -1,3 +1,5 @@
+import { PermissionModel } from './permission.model';
+
 export class MenuItemModel {
 
   Code?: string;
@@ -8,6 +10,7 @@ export class MenuItemModel {
   Parent?: string;
   Childrend?: MenuItemModel[];
   Components?: {Id: number, Module: string, Component: string}[];
+  Permissions?: PermissionModel[];
 
   constructor() { }
 

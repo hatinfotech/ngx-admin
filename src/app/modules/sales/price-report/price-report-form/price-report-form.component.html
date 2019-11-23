@@ -14,18 +14,8 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label">Tổ chức/Cá nhân</label>
-            <!-- <input type="text" id="Object" nbInput fullWidth formControlName="Object" placeholder="Tổ chức/Cá nhân"> -->
-            <!-- <input type="hidden" formControlName="Object">
-            <select2 [value]="objectValue" [data]="customerList" [options]="select2Option" [cssImport]=true
-              (valueChanged)="onObjectChange($event)"></select2> -->
-            <!-- <select class="js-example-basic-single" name="state">
-                  <option value="AL">Alabama</option>
-
-                  <option value="WY">Wyoming</option>
-                </select> -->
             <ngx-select2 formControlName="Object" [select2Option]="select2Option"
               (selectChange)="onObjectChange($event)"></ngx-select2>
-            <!-- <span>{{provinceEl.touched ? 'touched' : 'none touch'}}</span> -->
           </div>
         </div>
         <div class="col-sm-6">

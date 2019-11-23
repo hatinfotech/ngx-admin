@@ -8,7 +8,7 @@ describe('CallBlocksComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CallBlocksComponent ]
+      declarations: [ CallBlocksComponent ],
     })
     .compileComponents();
   }));

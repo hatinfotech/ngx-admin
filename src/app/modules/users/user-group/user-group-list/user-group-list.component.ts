@@ -8,7 +8,7 @@ import { UserGroupModel } from '../../../../models/user-group.model';
 @Component({
   selector: 'ngx-user-group-list',
   templateUrl: './user-group-list.component.html',
-  styleUrls: ['./user-group-list.component.scss']
+  styleUrls: ['./user-group-list.component.scss'],
 })
 export class UserGroupListComponent implements OnInit {
 

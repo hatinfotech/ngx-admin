@@ -17,8 +17,6 @@ import { CustomElementModule } from '../../custom-element/custom-element.module'
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { PriceReportViewComponent } from './price-report-view/price-report-view.component';
-import { RouteReuseStrategy } from '@angular/router';
-import { CustomRouteReuseStrategy } from '../../../custom-route-reuse-stratery';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 

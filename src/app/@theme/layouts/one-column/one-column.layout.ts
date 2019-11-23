@@ -1,8 +1,6 @@
-import { Component, ViewChild, AfterViewInit, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/theme';
 import { NbAuthService } from '@nebular/auth';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-one-column-layout',

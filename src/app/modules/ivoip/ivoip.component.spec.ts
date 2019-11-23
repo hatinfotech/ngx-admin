@@ -8,7 +8,7 @@ describe('IvoipComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IvoipComponent ]
+      declarations: [ IvoipComponent ],
     })
     .compileComponents();
   }));

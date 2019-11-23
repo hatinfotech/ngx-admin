@@ -8,7 +8,7 @@ describe('PriceTableFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PriceTableFormComponent ]
+      declarations: [ PriceTableFormComponent ],
     })
     .compileComponents();
   }));

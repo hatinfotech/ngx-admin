@@ -11,8 +11,6 @@ import { ExtensionsComponent } from './extensions/extensions.component';
 import { DevicesComponent } from './devices/devices.component';
 import { PstnNumbersComponent } from './pstn-numbers/pstn-numbers.component';
 import { CallBlocksComponent } from './call-blocks/call-blocks.component';
-import { RouteReuseStrategy } from '@angular/router';
-import { CustomRouteReuseStrategy } from '../../custom-route-reuse-stratery';
 
 @NgModule({
   declarations: [

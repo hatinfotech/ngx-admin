@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../../../services/api.service';
 import { PriceReportModel } from '../../../../models/price-report.model';
-import { NbDialogService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 
@@ -15,7 +14,6 @@ export class PriceReportListComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private dialogService: NbDialogService,
     private router: Router,
     private common: CommonService,
   ) {

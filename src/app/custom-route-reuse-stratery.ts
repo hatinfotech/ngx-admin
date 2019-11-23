@@ -80,7 +80,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
      * Default reuse strategy by angular assers based on the following condition
      * @see https://github.com/angular/angular/blob/4.4.6/packages/router/src/route_reuse_strategy.ts#L67
      */
-    const defaultReuse = (future.routeConfig === current.routeConfig);
+    // const defaultReuse = (future.routeConfig === current.routeConfig);
 
     // If either of our reuseUrl and default Url are true, we want to reuse the route
     //
@@ -94,7 +94,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   getUrl(route: ActivatedRouteSnapshot): string {
     /** The url we are going to return */
     if (route.routeConfig) {
-      const url = route.routeConfig.path;
+      // const url = route.routeConfig.path;
       // console.info('[getUrl] returning url', url);
 
       const fullPath = '/' + route.pathFromRoot.filter(v => v.routeConfig && v.routeConfig.path).map(v => v.routeConfig.path ? v.routeConfig.path : '').join('/');

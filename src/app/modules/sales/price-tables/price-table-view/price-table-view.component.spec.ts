@@ -8,7 +8,7 @@ describe('PriceTableViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PriceTableViewComponent ]
+      declarations: [ PriceTableViewComponent ],
     })
     .compileComponents();
   }));

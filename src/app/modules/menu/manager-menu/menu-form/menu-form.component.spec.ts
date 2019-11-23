@@ -8,7 +8,7 @@ describe('MenuFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MenuFormComponent ]
+      declarations: [ MenuFormComponent ],
     })
     .compileComponents();
   }));

@@ -5,10 +5,16 @@
         <nb-card-header>
           <nav>
             Cập nhật menu
-            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;">
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;" title="Xoá">
               <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
             </button>
-            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;">
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;" title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo" style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
               <nb-icon pack="eva" icon="arrow-back"></nb-icon>
             </button>
           </nav>
@@ -63,8 +69,8 @@
               <div class="col-sm-1"><label>Stt</label></div>
               <div class="col-sm-10">
                 <div class="row">
-                  <div class="col-sm-5"><label>Tên component</label></div>
-                  <div class="col-sm-7"><label>Diễn giải</label></div>
+                  <div class="col-sm-5"><label>Module</label></div>
+                  <div class="col-sm-7"><label>Component</label></div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -161,7 +167,9 @@
                       <div class="col-sm-3">
                         <div class="form-group" style="position: relative;">
                           <label class="label">Mã định danh</label>
-                          <input type="email" nbInput fullWidth formControlName="Code" placeholder="Mã định danh">
+                          <!-- <input type="email" nbInput fullWidth formControlName="Code" placeholder="Mã định danh"> -->
+                          <ngx-select2 [data]="templatePermissionList" formControlName="Code"
+                            [select2Option]="select2OptionForPermissionCode" (selectChange)="onPermimssionChange(i, ip, $event)"></ngx-select2>
                         </div>
                       </div>
                       <div class="col-sm-8">

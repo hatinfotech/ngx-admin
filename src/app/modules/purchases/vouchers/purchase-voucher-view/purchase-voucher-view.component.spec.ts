@@ -8,7 +8,7 @@ describe('PurchaseVoucherViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PurchaseVoucherViewComponent ]
+      declarations: [ PurchaseVoucherViewComponent ],
     })
     .compileComponents();
   }));

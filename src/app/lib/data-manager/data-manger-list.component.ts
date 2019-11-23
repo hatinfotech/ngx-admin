@@ -52,7 +52,7 @@ export abstract class DataManagerListComponent<M> implements OnInit {
   abstract gotoForm(id?: string): void;
 
   /** User select event */
-  onUserRowSelect(event) {
+  onUserRowSelect(event: any) {
     this.selectedIds = event.selected.map((item: M) => {
       return item[this.idKey];
     });
@@ -76,7 +76,7 @@ export abstract class DataManagerListComponent<M> implements OnInit {
   }
 
   /** Create and multi edit/delete action */
-  onCreateAction() {
+  onCreateAction(event: any) {
     if (this.selectedIds.length > 0) {
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {

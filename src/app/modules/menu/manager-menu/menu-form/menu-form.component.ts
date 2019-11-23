@@ -9,6 +9,7 @@ import { ModuleModel } from '../../../../models/module.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentModel } from '../../../../models/component.model';
 import { PermissionModel } from '../../../../models/permission.model';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'ngx-menu-form',
@@ -24,9 +25,9 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     protected apiService: ApiService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
-
+    protected commonService: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastService, dialogService);
+    super(activeRoute, router, formBuilder, apiService, toastService, dialogService, commonService);
     this.apiPath = '/menu/menu-items';
     this.idKey = 'Code';
   }
@@ -41,6 +42,41 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     keyMap: {
       id: 'Code',
       text: 'Title',
+    },
+  };
+
+  templatePermissionList: PermissionModel[] = [
+    {
+      Code: 'VIEW',
+      Description: 'Xem dữ liệu',
+    },
+    {
+      Code: 'CREATE',
+      Description: 'Tạo dữ liệu',
+    },
+    {
+      Code: 'UPDATE',
+      Description: 'Cập nhật dữ liệu',
+    },
+    {
+      Code: 'DELETE',
+      Description: 'Xoá dữ liệu',
+    },
+  ].map((item) => {
+    item['id'] = item['Code'];
+    item['text'] = item['Description'];
+    return item;
+  });
+  select2OptionForPermissionCode = {
+    placeholder: 'Chọn hoặc tạo mới...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Description',
     },
   };
 
@@ -76,7 +112,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   ngOnInit() {
 
     this.apiService.get<MenuItemModel[]>(
-      '/menu/menu-items', { limit: 99999 , includeComponents: true, includePermissions: true },
+      '/menu/menu-items', { limit: 99999 },
       list => {
         list.unshift({
           Code: '',
@@ -89,7 +125,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
         });
 
         this.apiService.get<ModuleModel[]>(
-          '/module/modules', { limit: 99999, includeComponents: true},
+          '/module/modules', { limit: 99999, includeComponents: true },
           mList => {
             mList.unshift({
               Name: '',
@@ -101,38 +137,14 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
               return item;
             });
             super.ngOnInit();
-            // this.apiService.get<ComponentModel[]>(
-            //   '/module/components', { limit: 99999 },
-            //   mComs => {
-            //     mComs.unshift({
-            //       Name: '',
-            //       Description: 'Chọn Component...',
-            //     });
-            //     this.componentList[0] = mComs.map(item => {
-            //       item['id'] = item['Name'];
-            //       item['text'] = item['Description'];
-            //       return item;
-            //     });
-            //     super.ngOnInit();
-
-            //   });
-
           });
       });
 
   }
 
-  onAddFormGroup(index: number, newForm: FormGroup, data?: MenuItemModel) {
-    this.componentList.push([]);
-  }
-
-  onRemoveFormGroup(index: number) {
-    this.componentList.splice(index, 1);
-  }
-
   /** Get form data by id from api */
   getFormData(callback: (data: MenuItemModel[]) => void) {
-    this.apiService.get<MenuItemModel[]>(this.apiPath, { id: this.id, multi: true, includeComponents: true },
+    this.apiService.get<MenuItemModel[]>(this.apiPath, { id: this.id, multi: true, includeComponents: true, includePermissions: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
@@ -152,13 +164,37 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
         const module = this.moduleList.find((value, i, obj) => {
           return component['Module'] === value['Name'];
         });
-        this.componentList[index][comIndex] = module['Components'].map(item => {
-          item['id'] = item['Name'];
-          item['text'] = item['Description'] ? item['Description'] : item['Name'];
-          return item;
-        });
-        newComponentFormGroup.get('Component').patchValue(component['Component']);
+        if (module && module['Components']) {
+          this.componentList[index][comIndex] = module['Components'].map(item => {
+            item['id'] = item['Name'];
+            item['text'] = item['Description'] ? item['Description'] : item['Name'];
+            return item;
+          });
+          newComponentFormGroup.get('Component').patchValue(component['Component']);
+        }
+      });
 
+      // Permissions form load
+      itemFormData.Permissions.forEach(permission => {
+        const newPermissionFormGroup = this.makeNewPermissionFormGroup(permission);
+        // (newForm.get('Components') as FormArray).push(newComponentFormGroup);
+        this.getPermissions(index).push(newPermissionFormGroup);
+        const comIndex = this.getComponents(index).length - 1;
+        this.onAddPermissionFormGroup(index, comIndex, newPermissionFormGroup);
+        // const module = this.moduleList.find((value, i, obj) => {
+        //   return component['Module'] === value['Name'];
+        // });
+        // this.componentList[index][comIndex] = module['Components'].map(item => {
+        //   item['id'] = item['Name'];
+        //   item['text'] = item['Description'] ? item['Description'] : item['Name'];
+        //   return item;
+        // });
+        if (this.templatePermissionList.findIndex((value: PermissionModel) => value.Code === permission['Code']) < 0) {
+          permission['id'] = permission['Code'];
+          permission['text'] = permission['Description'];
+          this.templatePermissionList.push(permission);
+        }
+        newPermissionFormGroup.get('Code').patchValue(permission['Code']);
       });
 
       // // Resources form load
@@ -253,6 +289,14 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     return false;
   }
 
+  onAddFormGroup(index: number, newForm: FormGroup, data?: MenuItemModel) {
+    this.componentList.push([]);
+  }
+
+  onRemoveFormGroup(index: number) {
+    this.componentList.splice(index, 1);
+  }
+
   onAddComponentFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
     this.componentList[mainIndex].push([]);
   }
@@ -307,7 +351,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   }
 
   onModuleChange(event: { Components }, i: number, ic: number) {
-    console.info(event);
+    // console.info(event);
     if (event.Components) {
       event.Components.unshift({
         Name: '',
@@ -319,6 +363,36 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
         return item;
       });
     }
+  }
+
+  onPermimssionChange(mainFormIndex: number, ip: number, item: PermissionModel) {
+    // console.info(item);
+
+    if (!this.formLoading) {
+      if (item) {
+        if (this.templatePermissionList.findIndex((value: PermissionModel) => value.Code === item['Code']) < 0) {
+          this.templatePermissionList.push(item);
+        }
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (item['Code']) {
+          this.getPermissions(mainFormIndex).controls[ip].get('Description').setValue(item['Description']);
+          this.getPermissions(mainFormIndex).controls[ip].get('Status').setValue(1);
+        }
+      }
+    }
+
+  }
+
+  onUpdatePastFormData(aPastFormData: { formData: any, meta: any }) {
+    aPastFormData['meta'] = {
+      componentList: this.componentList,
+      templatePermissionList: this.templatePermissionList,
+    };
+  }
+
+  onUndoPastFormData(aPastFormData: { formData: any, meta: any }) {
+    this.componentList = aPastFormData['meta']['componentList'];
+    this.templatePermissionList = aPastFormData['meta']['templatePermissionList'];
   }
 
   // onAfterCreateSubmit(newFormData: MenuItemModel[]) {

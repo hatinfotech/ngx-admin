@@ -8,7 +8,7 @@ describe('PbxComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PbxComponent ]
+      declarations: [ PbxComponent ],
     })
     .compileComponents();
   }));

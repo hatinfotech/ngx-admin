@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { NbDialogService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CdrModel } from '../../../models/cdr.model';
@@ -8,13 +7,12 @@ import { CdrModel } from '../../../models/cdr.model';
 @Component({
   selector: 'ngx-cdr',
   templateUrl: './cdr.component.html',
-  styleUrls: ['./cdr.component.scss']
+  styleUrls: ['./cdr.component.scss'],
 })
 export class CdrComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private dialogService: NbDialogService,
     private router: Router,
   ) { }
 

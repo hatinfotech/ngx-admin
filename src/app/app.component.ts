@@ -6,7 +6,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { MENU_ITEMS } from './app-menu';
-import { NbAuthService } from '@nebular/auth';
 
 @Component({
   selector: 'ngx-app',

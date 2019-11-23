@@ -1,20 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../../services/api.service';
-import { NbDialogService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { CdrModel } from '../../../models/cdr.model';
 
 @Component({
   selector: 'ngx-devices',
   templateUrl: './devices.component.html',
-  styleUrls: ['./devices.component.scss']
+  styleUrls: ['./devices.component.scss'],
 })
 export class DevicesComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private dialogService: NbDialogService,
     private router: Router,
   ) { }
 

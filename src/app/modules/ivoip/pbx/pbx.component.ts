@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { NbDialogService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CdrModel } from '../../../models/cdr.model';
@@ -8,13 +7,12 @@ import { CdrModel } from '../../../models/cdr.model';
 @Component({
   selector: 'ngx-pbx',
   templateUrl: './pbx.component.html',
-  styleUrls: ['./pbx.component.scss']
+  styleUrls: ['./pbx.component.scss'],
 })
 export class PbxComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private dialogService: NbDialogService,
     private router: Router,
   ) { }
 

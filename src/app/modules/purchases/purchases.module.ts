@@ -17,7 +17,7 @@ import { PurchaseReportViewComponent } from './reports/purchase-report-view/purc
 @NgModule({
   declarations: [PurchasesComponent, PurchasePriceReportListComponent, PurchasePriceReportFormComponent, PurchasePriceReportViewComponent, PurchaseOrderListComponent, PurchaseOrderFormComponent, PurchaseOrderViewComponent, PurchaseVoucherListComponent, PurchaseVoucherFormComponent, PurchaseVoucherViewComponent, PurchaseReportListComponent, PurchaseReportFormComponent, PurchaseReportViewComponent],
   imports: [
-    CommonModule
-  ]
+    CommonModule,
+  ],
 })
 export class PurchasesModule { }

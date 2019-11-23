@@ -8,7 +8,7 @@ describe('PermissionGrantComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PermissionGrantComponent ]
+      declarations: [ PermissionGrantComponent ],
     })
     .compileComponents();
   }));
