@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService } from '@nebular/theme';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../services/api.service';
-import { ShowcaseDialogComponent } from '../../modules/showcase-dialog/showcase-dialog.component';
+import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 
 export abstract class DataManagerFormComponent<M> implements OnInit {
 

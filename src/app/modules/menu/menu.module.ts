@@ -9,16 +9,13 @@ import { CustomElementModule } from '../custom-element/custom-element.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { MenuListComponent } from './manager-menu/menu-list/menu-list.component';
 import { MenuFormComponent } from './manager-menu/menu-form/menu-form.component';
-import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table-checkbox.component';
+import { DialogModule } from '../dialog/dialog.module';
+import { ShowcaseDialogComponent } from '../dialog/showcase-dialog/showcase-dialog.component';
 
 @NgModule({
   declarations: [MenuComponent, MenuListComponent, MenuFormComponent],
   imports: [
-    CommonModule,
     NbRouteTabsetModule,
-    MenuRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
     NbTabsetModule,
     NbStepperModule,
     NbCardModule,
@@ -26,21 +23,21 @@ import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart
     NbListModule,
     NbAccordionModule,
     NbUserModule,
-    Ng2SmartTableModule,
     NbIconModule,
     NbSelectModule,
-    CustomElementModule,
-    CurrencyMaskModule,
     NbInputModule,
     NbActionsModule,
     NbCheckboxModule,
     NbRadioModule,
     NbDatepickerModule,
     CustomElementModule,
+    CurrencyMaskModule,
+    Ng2SmartTableModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DialogModule,
+    CommonModule,
+    MenuRoutingModule,
   ],
-  entryComponents: [
-    SmartTableCheckboxComponent,
-  ],
-  exports: [MenuListComponent],
 })
 export class MenuModule { }

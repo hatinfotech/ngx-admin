@@ -285,7 +285,7 @@ nb-card-body .ng2-smart-table-wrap {
 /* End Smart Table */
 
 /* Form */
-.form-details .form-group label {
+.form-details .form-group > label {
   display: none !important;
 }
 .form-details .form-detail-item {

@@ -5,7 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogService } from '@nebular/theme';
-import { ShowcaseDialogComponent } from '../../../showcase-dialog/showcase-dialog.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-list',

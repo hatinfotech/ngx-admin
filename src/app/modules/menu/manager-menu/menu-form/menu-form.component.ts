@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ModuleModel } from '../../../../models/module.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentModel } from '../../../../models/component.model';
+import { PermissionModel } from '../../../../models/permission.model';
 
 @Component({
   selector: 'ngx-menu-form',
@@ -185,6 +186,9 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
       Components: this.formBuilder.array([
 
       ]),
+      Permissions: this.formBuilder.array([
+
+      ]),
     });
 
     if (data) {
@@ -209,8 +213,28 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     return newForm;
   }
 
+  makeNewPermissionFormGroup(data?: PermissionModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      Id_old: [''],
+      Id: [''],
+      Code: ['', Validators.required],
+      Description: ['', Validators.required],
+      Status: [''],
+    });
+
+    if (data) {
+      data['Id_old'] = data['Id'];
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+
   getComponents(formGroupIndex: number) {
     return this.array.controls[formGroupIndex].get('Components') as FormArray;
+  }
+
+  getPermissions(formGroupIndex: number) {
+    return this.array.controls[formGroupIndex].get('Permissions') as FormArray;
   }
 
   addComponentFormGroup(formGroupIndex: number) {
@@ -221,8 +245,20 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     return false;
   }
 
+  addPermissionFormGroup(formGroupIndex: number) {
+    // this.componentList[formGroupIndex].push([]);
+    const newFormGroup = this.makeNewPermissionFormGroup();
+    this.getPermissions(formGroupIndex).push(newFormGroup);
+    this.onAddPermissionFormGroup(formGroupIndex, this.getPermissions(formGroupIndex).length - 1, newFormGroup);
+    return false;
+  }
+
   onAddComponentFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
     this.componentList[mainIndex].push([]);
+  }
+
+  onAddPermissionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+    // this.componentList[mainIndex].push([]);
   }
 
   removeComponentGroup(formGroupIndex: number, index: number) {
@@ -232,8 +268,19 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     return false;
   }
 
+  removePermissionGroup(formGroupIndex: number, index: number) {
+    this.getPermissions(formGroupIndex).removeAt(index);
+    // this.componentList[formGroupIndex].splice(index, 1);
+    this.onRemovePermissionFormGroup(formGroupIndex, index);
+    return false;
+  }
+
   onRemoveComponentFormGroup(mainIndex: number, index: number) {
     this.componentList[mainIndex].splice(index, 1);
+  }
+
+  onRemovePermissionFormGroup(mainIndex: number, index: number) {
+    // this.componentList[mainIndex].splice(index, 1);
   }
 
   copyMainFormControlValueToOthers(i: number, formControlName: string) {

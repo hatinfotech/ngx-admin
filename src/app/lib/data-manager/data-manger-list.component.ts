@@ -3,7 +3,7 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { ShowcaseDialogComponent } from '../../modules/showcase-dialog/showcase-dialog.component';
+import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { OnInit } from '@angular/core';
 
 export abstract class DataManagerListComponent<M> implements OnInit {

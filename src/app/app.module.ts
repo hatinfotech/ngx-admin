@@ -28,6 +28,8 @@ import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-stratery';
 import { ECommerceModule } from './modules/e-commerce/e-commerce.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { DialogModule } from './modules/dialog/dialog.module';
+import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showcase-dialog.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     HttpClientModule,
     AppRoutingModule,
     NbCardModule,
+    DialogModule,
     ThemeModule.forRoot(),
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
@@ -91,6 +94,9 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
       ],
       forms: {},
     }),
+  ],
+  entryComponents: [
+    ShowcaseDialogComponent,
   ],
   bootstrap: [AppComponent],
   providers: [{

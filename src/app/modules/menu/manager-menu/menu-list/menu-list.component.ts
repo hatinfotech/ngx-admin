@@ -2,12 +2,8 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { LocalDataSource } from 'ng2-smart-table';
 import { MenuItemModel } from '../../../../models/menu-item.model';
-import { ɵbo as Ng2SmartTableComponent, ɵbp as Row } from 'ng2-smart-table';
-import { ShowcaseDialogComponent } from '../../../showcase-dialog/showcase-dialog.component';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { isNgTemplate } from '@angular/compiler';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
