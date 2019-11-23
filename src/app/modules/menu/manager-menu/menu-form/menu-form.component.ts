@@ -62,6 +62,14 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
       Code: 'DELETE',
       Description: 'Xoá dữ liệu',
     },
+    {
+      Code: 'PRINT',
+      Description: 'In dữ liệu',
+    },
+    {
+      Code: 'SAHRE',
+      Description: 'Chia sẻ dữ liệu',
+    },
   ].map((item) => {
     item['id'] = item['Code'];
     item['text'] = item['Description'];

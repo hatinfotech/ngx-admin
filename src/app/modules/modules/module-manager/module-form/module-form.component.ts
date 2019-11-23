@@ -7,6 +7,7 @@ import { ModuleModel } from '../../../../models/module.model';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { ResourceModel } from '../../../../models/resource.model';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'ngx-module-form',
@@ -22,8 +23,9 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     protected apiService: ApiService,
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
+    protected commonService: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
     this.idKey = 'Name';
     this.apiPath = '/module/modules';
 
@@ -173,6 +175,13 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     // this.goback();
     this.formLoad(newFormData);
     super.onAfterUpdateSubmit(newFormData);
+  }
+
+  onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void {
+
+  }
+  onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void {
+
   }
 
 }
