@@ -5,8 +5,8 @@ import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService } from '@neb
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../services/api.service';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Subject, of } from 'rxjs';
-import { takeUntil, delay, concatMap, last } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CommonService } from '../../services/common.service';
 
 export abstract class DataManagerFormComponent<M> implements OnInit, OnDestroy {
