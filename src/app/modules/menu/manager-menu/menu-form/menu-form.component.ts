@@ -76,7 +76,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   ngOnInit() {
 
     this.apiService.get<MenuItemModel[]>(
-      '/menu/menu-items', { limit: 99999 },
+      '/menu/menu-items', { limit: 99999 , includeComponents: true, includePermissions: true },
       list => {
         list.unshift({
           Code: '',
@@ -89,7 +89,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
         });
 
         this.apiService.get<ModuleModel[]>(
-          '/module/modules', { limit: 99999, includeComponents: true },
+          '/module/modules', { limit: 99999, includeComponents: true},
           mList => {
             mList.unshift({
               Name: '',
@@ -321,13 +321,13 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     }
   }
 
-  onAfterCreateSubmit(newFormData: MenuItemModel[]) {
-    super.onAfterCreateSubmit(newFormData);
-    this.goback();
-  }
+  // onAfterCreateSubmit(newFormData: MenuItemModel[]) {
+  //   super.onAfterCreateSubmit(newFormData);
+  //   this.goback();
+  // }
 
-  onAfterUpdateSubmit(newFormData: MenuItemModel[]) {
-    super.onAfterUpdateSubmit(newFormData);
-    this.goback();
-  }
+  // onAfterUpdateSubmit(newFormData: MenuItemModel[]) {
+  //   super.onAfterUpdateSubmit(newFormData);
+  //   this.goback();
+  // }
 }
