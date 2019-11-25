@@ -162,8 +162,9 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     return false;
   }
 
-  goback() {
+  goback(): false {
     this.router.navigate(['modules/manager/list']);
+    return false;
   }
 
   onAfterCreateSubmit(newFormData: ModuleModel[]): void {

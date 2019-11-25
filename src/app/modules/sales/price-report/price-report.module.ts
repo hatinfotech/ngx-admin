@@ -13,7 +13,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { Select2Module } from 'ng2-select2';
-import { CustomElementModule } from '../../custom-element/custom-element.module';
+import { CustomElementModule } from '../../../lib/custom-element/custom-element.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { PriceReportViewComponent } from './price-report-view/price-report-view.component';

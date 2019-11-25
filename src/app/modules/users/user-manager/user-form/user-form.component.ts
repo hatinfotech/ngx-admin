@@ -1,285 +1,135 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { UserModel } from '../../../../models/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import { UserModel } from '../../../../models/user.model';
-import { ModuleModel } from '../../../../models/module.model';
-import { PermissionModel } from '../../../../models/permission.model';
+import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { CommonService } from '../../../../services/common.service';
+import { UserGroupModel } from '../../../../models/user-group.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-user-form',
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss'],
 })
-export class UserFormComponent implements OnInit {
+export class UserFormComponent extends DataManagerFormComponent<UserModel> implements OnInit {
 
-  form: FormGroup;
-  submitted = false;
-  formLoading = false;
-  id: string;
-
-  constructor(
-    private activeRoute: ActivatedRoute,
-    private router: Router,
-    private formBuilder: FormBuilder,
-    private apiService: ApiService,
-  ) { }
-
-  moduleList: ModuleModel[];
-  select2OptionForModule = {
-    placeholder: 'Select module...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'Name',
-      text: 'Description',
-    },
-
-    // matcher: (term, text, option) => {
-    //   return true;
-    // },
-    // ajax: {
-    //   url: params => {
-    //     return environment.api.baseUrl + '/module/modules?includePermissions=1&token='
-    //       + localStorage.getItem('api_token') + '&filter_Name=' + params['term'];
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     console.info(data, params);
-    //     return {
-    //       results: data.map((item: any) => {
-    //         item['id'] = item['Name'];
-    //         item['text'] = item['Description'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
-  };
-
-  permissionList: PermissionModel[];
-  select2OptionForPermissions = {
-    placeholder: 'Select module...',
+  groupList: UserGroupModel[];
+  select2OptionForGroups = {
+    placeholder: 'Chọn nhóm...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     multiple: true,
     keyMap: {
-      id: 'Name',
-      text: 'Description',
+      id: 'Code',
+      text: 'Name',
     },
-    // ajax: {
-    //   url: params => {
-    //     return environment.api.baseUrl + '/users/permssions?token='
-    //       + localStorage.getItem('api_token') + '&filter_Name=' + params['term'];
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     console.info(data, params);
-    //     return {
-    //       results: data.map((item: any) => {
-    //         item['id'] = item['Name'];
-    //         item['text'] = item['Description'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
   };
+
+  constructor(
+    protected activeRoute: ActivatedRoute,
+    protected router: Router,
+    protected formBuilder: FormBuilder,
+    protected apiService: ApiService,
+    protected toastrService: NbToastrService,
+    protected dialogService: NbDialogService,
+    protected commonService: CommonService,
+  ) {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    this.apiPath = '/user/users';
+    this.idKey = 'Code';
+  }
 
   ngOnInit() {
 
-    // this.unitService.get({ limit: 99999999 },
-    //   unitList => this.unitList = unitList.map(item => {
-    //     item['id'] = item['Code'];
-    //     item['text'] = item['Name'];
-    //     return item;
-    //   }),
-    //   e => console.warn(e.error));
-
-    // this.apiService.get<ModuleModel[]>(
-    //   '/module/modules', { limit: 99999 },
-    //   list => this.moduleList = list.map(item => {
-    //     item['id'] = item['Name'];
-    //     item['text'] = item['Description'];
-    //     return item;
-    //   }),
-    //   error => console.warn(error),
-    // );
-
-    // this.apiService.get<PermissionModel[]>(
-    //   '/module/permissions', { limit: 99999 },
-    //   list => this.permissionList = list.map(item => {
-    //     item['id'] = item['Module'];
-    //     item['text'] = item['Description'];
-    //     return item;
-    //   }),
-    //   error => console.warn(error),
-    // );
-
-
-    this.activeRoute.params.subscribe(params => {
-      this.id = params['id']; // (+) converts string 'id' to a number
-
-      // In a real app: dispatch action to load the details here.
-
-      this.form = this.formBuilder.group({
-        Name: ['', Validators.required],
-        Description: [''],
-        Permissions: this.formBuilder.array([
-        ]),
+    this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 9999999 },
+      list => {
+        this.groupList = list.map((item: UserGroupModel) => {
+          return {
+            ...item,
+            Group: item.Code,
+            id: item.Code,
+            text: item.Name,
+          };
+        });
+        super.ngOnInit();
       });
 
-      if (this.id) {
-        this.formLoading = true;
-        this.apiService.get<ModuleModel>('/module/modules', { id: this.id },
-          (data: ModuleModel) => {
-            this.form.patchValue(data);
-
-            this.modulePermissions.clear();
-            data['Permissions'].forEach((modulePermission: PermissionModel) => {
-              this.modulePermissions.push(this.makeNewModulePermissions(modulePermission));
-            });
-
-            setTimeout(() => {
-              this.formLoading = false;
-            }, 1000);
-
-          },
-          e => console.warn(e),
-        );
-      } else {
-        this.modulePermissions.push(this.makeNewModulePermissions());
-      }
-    });
-
   }
 
-  // onObjectChange(item) {
-  //   // console.info(item);
+  /** Get form data by id from api */
+  getFormData(callback: (data: UserModel[]) => void) {
+    this.apiService.get<UserModel[]>(this.apiPath, { id: this.id, multi: true, includeGroups: true },
+      data => callback(data),
+    ), (e: HttpErrorResponse) => {
+      this.onError(e);
+    };
+  }
 
-  //   if (!this.formLoading) {
-  //     if (item) {
+  /** Get data from api and patch data for form */
+  // formLoad(formData?: UserModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: UserModel) => void) {
+  //   this.formLoading = true;
 
-  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-  //       if (item['Code']) {
-
-  //         this.form.get('ObjectName').setValue(item['Name']);
-  //         this.form.get('ObjectPhone').setValue(item['Phone']);
-  //         this.form.get('ObjectEmail').setValue(item['Email']);
-  //         this.form.get('ObjectAddress').setValue(item['Address']);
-  //       }
+  //   /** If has formData input, use formData for patch */
+  //   ((callback: (data: UserModel[]) => void) => {
+  //     if (formData) {
+  //       callback(formData);
+  //     } else {
+  //       this.getFormData(callback);
   //     }
-  //   }
+  //   })((data: UserModel[]) => {
+
+  //     this.array.clear();
+  //     data.forEach(item => {
+  //       const newForm = this.makeNewFormGroup(item);
+  //       this.array.push(newForm);
+  //       this.onAddFormGroup(this.array.length - 1, newForm, item);
+
+  //       if (formItemLoadCallback) {
+  //         formItemLoadCallback(this.array.length - 1, newForm, item);
+  //       }
+  //     });
+
+  //     setTimeout(() => {
+  //       this.formLoading = false;
+  //       this.pushPastFormData(this.form.value.array);
+  //     }, 1000);
+
+  //   });
 
   // }
 
-
-
-  onModuleChange(item: any, index: number) {
-    console.info(item);
-
-    if (!this.formLoading) {
-      // if (item && item['Code']) {
-      // this.modulePermissions.controls[index].get('Description').setValue(item['Name']);
-      // this.modulePermissions.controls[index].get('Unit').setValue(item['Unit']);
-      // }
-    }
-  }
-
-
-  makeNewModulePermissions(data?: PermissionModel): FormGroup {
-    const permission = this.formBuilder.group({
-      Module: [''],
-      Permissions: [''],
-      Description: [''],
+  makeNewFormGroup(data?: UserModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      Code_old: [''],
+      Code: [''],
+      Username: ['', Validators.required],
+      Name: ['', Validators.required],
+      Phone: [''],
+      Email: [''],
+      Groups: [''],
     });
-
-    // detail.get('Quantity').valueChanges.subscribe(val => {
-    //   this.detailCalculate(detail);
-    // });
-    // detail.get('Price').valueChanges.subscribe(val => {
-    //   this.detailCalculate(detail);
-    // });
-    // detail.get('Tax').valueChanges.subscribe(val => {
-    //   this.detailCalculate(detail);
-    // });
-
     if (data) {
-      permission.patchValue(data);
+      data[this.idKey + '_old'] = data.Code;
+      // data['Groups'] = data['Groups'].map(item => {
+      //   return item.Code;
+      // });
+      newForm.patchValue(data);
     }
-    return permission;
+    return newForm;
   }
 
-  // detailCalculate(detail: FormGroup) {
-
-  //   // const tax = detail.get('Tax').value;
-  //   // const price: number = +detail.get('Price').value;
-  //   // const quantity: number = +detail.get('Quantity').value;
-
-  //   // let taxValue = 0;
-  //   // if (tax) {
-  //   //   const taxItem: TaxModel = this.taxList.find((t => {
-  //   //     return t.Code === tax['Code'];
-  //   //   }));
-  //   //   taxValue = tax ? +taxItem.Tax : 0;
-  //   // }
-
-
-  //   // Calculate ToMoney
-  //   detail.get('ToMoney').patchValue((price * taxValue / 100 + price) * quantity);
-  // }
-
-  get modulePermissions() {
-    return this.form.get('modulePermissions') as FormArray;
-  }
-
-  addModulePermissions() {
-    this.modulePermissions.push(this.makeNewModulePermissions());
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: UserModel): void { }
+  onRemoveFormGroup(index: number): void { }
+  goback(): false {
+    this.router.navigate(['/users/user-manager/list']);
     return false;
   }
+  onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
+  onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  removeDetail(index) {
-    this.modulePermissions.removeAt(index);
-    return false;
-  }
-
-  goback() {
-    this.router.navigate(['users/user-manager/list']);
-  }
-
-  get f() { return this.form.controls; }
-
-  onSubmit() {
-    this.submitted = true;
-    const data = this.form.value;
-    console.info(data);
-
-    if (this.id) {
-      // Update
-      this.apiService.put<UserModel>('user/users', this.id, data,
-        newPriceReport => {
-          console.info(newPriceReport);
-          this.router.navigate(['users/user']);
-        },
-        error => console.warn(error));
-    } else {
-      // Create
-      this.apiService.post(data,
-        newPriceReport => {
-          console.info(newPriceReport);
-          this.router.navigate(['users/user']);
-        },
-        error => console.warn(error));
-    }
-
-  }
-
-  onReset() {
-    this.submitted = false;
-    this.form.reset();
-  }
 }

@@ -30,6 +30,7 @@ import { ECommerceModule } from './modules/e-commerce/e-commerce.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { DialogModule } from './modules/dialog/dialog.module';
 import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showcase-dialog.component';
+import { TreeModule } from 'angular-tree-component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,9 @@ import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showca
     AppRoutingModule,
     NbCardModule,
     DialogModule,
+    HttpClientModule,
+    AuthModule,
+    TreeModule,
     ThemeModule.forRoot(),
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
@@ -54,9 +58,7 @@ import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showca
     NbChatModule.forRoot({
       messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
     }),
-    AuthModule,
     CoreModule.forRoot(),
-    HttpClientModule,
     NbAuthModule.forRoot({
       strategies: [
         NbPasswordAuthStrategy.setup({

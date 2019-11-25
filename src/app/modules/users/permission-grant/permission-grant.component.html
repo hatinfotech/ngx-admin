@@ -1,3 +1,58 @@
-<p>
-  permission-grant works!
-</p>
+<div class="row">
+  <div class="col-sm-4">
+    <nb-card>
+      <nb-card-header>
+        Group > Users
+      </nb-card-header>
+      <nb-card-body>
+        <tree-root [nodes]="userGroups" [options]="options"></tree-root>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-sm-4">
+    <nb-card>
+      <nb-card-header>
+        Menu tree
+      </nb-card-header>
+      <nb-card-body>
+        <tree-root [nodes]="nodes" [options]="options"></tree-root>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-sm-4">
+    <nb-card>
+      <nb-card-header>
+        User list
+      </nb-card-header>
+      <nb-card-body>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">Xem</nb-checkbox>
+        </div>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">Tạo mới</nb-checkbox>
+        </div>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">Cập nhật</nb-checkbox>
+        </div>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">Xoá</nb-checkbox>
+        </div>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">Xử lý nhiều dòng</nb-checkbox>
+        </div>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">In ấn</nb-checkbox>
+        </div>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">Chia sẻ</nb-checkbox>
+        </div>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">Nhập khẩu</nb-checkbox>
+        </div>
+        <div class="form-group">
+          <nb-checkbox formControlName="Status">Xuất khẩu</nb-checkbox>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

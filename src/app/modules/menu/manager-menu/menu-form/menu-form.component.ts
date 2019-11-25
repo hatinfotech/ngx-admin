@@ -354,8 +354,9 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   }
 
 
-  goback() {
+  goback(): false {
     this.router.navigate(['menu/manager/list']);
+    return false;
   }
 
   onModuleChange(event: { Components }, i: number, ic: number) {

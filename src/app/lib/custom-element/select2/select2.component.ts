@@ -24,7 +24,7 @@ export class Select2Component implements ControlValueAccessor, Validator {
   onTouched: () => void;
   isDisabled: boolean;
   @Input('data') data: any[];
-  @Input('value') value: string;
+  @Input('value') value: string | string[];
   @Input('select2Option') select2Option: Select2Options;
   @Output() selectChange = new EventEmitter<Object>();
 
@@ -87,6 +87,8 @@ export class Select2Component implements ControlValueAccessor, Validator {
           ];
           this.value = value;
         }
+      } else if (value instanceof Array) {
+        this.value = value.map(item => item[keyMap['id']]);
       } else {
         if (value[keyMap['id']] && value[keyMap['text']]) {
           this.value = value[keyMap['id']];

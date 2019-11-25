@@ -15,8 +15,9 @@ import { UsersRoutingModule } from './users-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PermissionGrantComponent } from './permission-grant/permission-grant.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { CustomElementModule } from '../custom-element/custom-element.module';
+import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { TreeModule } from 'angular-tree-component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     NbCheckboxModule,
     NbRadioModule,
     NbDatepickerModule,
+    TreeModule,
   ],
   exports: [UserListComponent],
 })

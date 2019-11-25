@@ -170,7 +170,7 @@ export abstract class DataManagerFormComponent<M> implements OnInit, OnDestroy {
   get formControls() { return this.form.controls; }
 
   /** Goback action, reuire in extended class */
-  abstract goback(): void;
+  abstract goback(): false;
 
   /** After main form create event */
   onAfterCreateSubmit(newFormData: M[]) {

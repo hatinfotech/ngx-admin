@@ -5,7 +5,7 @@ import { CdrComponent } from './cdr/cdr.component';
 import { IvoipRoutingModule } from './ivoip-routing.module';
 import { NbCardModule } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { CustomElementModule } from '../custom-element/custom-element.module';
+import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { PbxComponent } from './pbx/pbx.component';
 import { ExtensionsComponent } from './extensions/extensions.component';
 import { DevicesComponent } from './devices/devices.component';
