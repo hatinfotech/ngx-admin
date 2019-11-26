@@ -19,11 +19,13 @@ export abstract class DataManagerListComponent<M> implements OnInit {
   /** Local dat source */
   source: LocalDataSource = new LocalDataSource();
 
+  abstract formPath: string;
+
   /** Restful api path */
-  apiPath: string;
+  abstract apiPath: string;
 
   /** Resource id key */
-  idKey: string;
+  abstract idKey: string;
 
   constructor(
     protected apiService: ApiService,
@@ -49,7 +51,9 @@ export abstract class DataManagerListComponent<M> implements OnInit {
   }
 
   /** Go to form */
-  abstract gotoForm(id?: string): void;
+  gotoForm(id?: string): void {
+    this.router.navigate(id ? [this.formPath, id ] : [this.formPath]);
+  }
 
   /** User select event */
   onUserRowSelect(event: any) {

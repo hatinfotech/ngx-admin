@@ -308,6 +308,32 @@ nb-card-body .ng2-smart-table-wrap {
   height: 8rem !important;
 }
 
+body .form-group[state="warning"] label {
+  color: #ffaa00;
+}
+
+body .form-group span.invalid {
+  display: none;
+}
+body .form-group[state="warning"] span.invalid {
+  display: block;
+}
+body .form-group[state="warning"] span.valid {
+  display: none;
+}
+/* body .form-group[state="warning"] label {
+  font-style: italic;
+} */
+body .form-group[state="warning"] label,
+body .form-group[state="warning"] input,
+body .form-group[state="warning"] select,
+body .form-group[state="warning"] textarea,
+body .form-group[state="warning"] input:focus,
+body .form-group[state="warning"] select:focus,
+body .form-group[state="warning"] textarea:focus {
+  border-color: #ffaa00;
+}
+
 /* End form */
 
 /* Button */

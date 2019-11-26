@@ -1,5 +1,5 @@
 import { OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService } from '@nebular/theme';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -283,6 +283,13 @@ export abstract class DataManagerFormComponent<M> implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  formControlValidate(formControl: FormControl, invalidText: string, valideText?: string): string {
+    if (formControl.touched && formControl.errors && formControl.errors.required) {
+      return invalidText;
+    }
+    return valideText ? valideText : '';
   }
 
 }

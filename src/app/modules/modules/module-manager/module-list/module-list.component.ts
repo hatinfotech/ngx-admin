@@ -13,6 +13,10 @@ import { DataManagerListComponent } from '../../../../lib/data-manager/data-mang
 })
 export class ModuleListComponent extends DataManagerListComponent<ModuleModel> implements OnInit {
 
+  formPath: string = 'modules/manager/form';
+  apiPath: string = '/module/modules';
+  idKey: string = 'Code';
+
   /** Table settings */
   settings = {
     mode: 'external',
@@ -68,16 +72,12 @@ export class ModuleListComponent extends DataManagerListComponent<ModuleModel> i
     protected toastService: NbToastrService,
   ) {
     super(apiService, router, common, dialogService, toastService);
-    this.apiPath = '/module/modules';
-    this.idKey = 'Name';
+    // this.apiPath = '/module/modules';
+    // this.idKey = 'Name';
   }
 
   ngOnInit() {
     super.ngOnInit();
-  }
-
-  gotoForm(id?: string) {
-    this.router.navigate(['modules/manager/form', id]);
   }
 
 }

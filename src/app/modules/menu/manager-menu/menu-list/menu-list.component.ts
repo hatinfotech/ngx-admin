@@ -13,6 +13,10 @@ import { DataManagerListComponent } from '../../../../lib/data-manager/data-mang
 })
 export class MenuListComponent extends DataManagerListComponent<MenuItemModel> implements OnInit {
 
+  formPath = 'menu/manager/form';
+  apiPath = '/menu/menu-items';
+  idKey = 'Code';
+
   settings = {
     mode: 'external',
     selectMode: 'multi',
@@ -88,16 +92,12 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
     protected toastService: NbToastrService,
   ) {
     super(apiService, router, common, dialogService, toastService);
-    this.apiPath = '/menu/menu-items';
-    this.idKey = 'Code';
+    // this.apiPath = '/menu/menu-items';
+    // this.idKey = 'Code';
   }
 
   ngOnInit() {
     super.ngOnInit();
-  }
-
-  gotoForm(id?: string): void {
-    this.router.navigate(['menu/manager/form', id]);
   }
 
 }

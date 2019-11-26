@@ -70,39 +70,6 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
     };
   }
 
-  /** Get data from api and patch data for form */
-  // formLoad(formData?: UserModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: UserModel) => void) {
-  //   this.formLoading = true;
-
-  //   /** If has formData input, use formData for patch */
-  //   ((callback: (data: UserModel[]) => void) => {
-  //     if (formData) {
-  //       callback(formData);
-  //     } else {
-  //       this.getFormData(callback);
-  //     }
-  //   })((data: UserModel[]) => {
-
-  //     this.array.clear();
-  //     data.forEach(item => {
-  //       const newForm = this.makeNewFormGroup(item);
-  //       this.array.push(newForm);
-  //       this.onAddFormGroup(this.array.length - 1, newForm, item);
-
-  //       if (formItemLoadCallback) {
-  //         formItemLoadCallback(this.array.length - 1, newForm, item);
-  //       }
-  //     });
-
-  //     setTimeout(() => {
-  //       this.formLoading = false;
-  //       this.pushPastFormData(this.form.value.array);
-  //     }, 1000);
-
-  //   });
-
-  // }
-
   makeNewFormGroup(data?: UserModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code_old: [''],
