@@ -53,7 +53,7 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
         title: 'Menu cha',
         type: 'string',
         width: '20%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
       Code: {
         title: 'Mã',
@@ -64,7 +64,7 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
         title: 'Tiêu đề',
         type: 'string',
         width: '25%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
       Link: {
         title: 'Link',

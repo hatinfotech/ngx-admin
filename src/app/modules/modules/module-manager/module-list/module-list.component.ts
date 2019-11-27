@@ -54,7 +54,7 @@ export class ModuleListComponent extends DataManagerListComponent<ModuleModel> i
         title: 'Name',
         type: 'string',
         width: '45%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
       Description: {
         title: 'Diễn giải',

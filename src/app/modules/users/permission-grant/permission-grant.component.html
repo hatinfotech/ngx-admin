@@ -2,56 +2,60 @@
   <div class="col-sm-4">
     <nb-card style="min-height: 100%;">
       <nb-card-header>
-        Group > Users
+        <input #userTreeFilter (keyup)="treeFilter(userTreeFilter.value, userTreeEle)" type="text" nbInput fullWidth
+          placeholder="Tìm kiếm nhóm > người dùng">
       </nb-card-header>
       <nb-card-body>
-        <tree-root [nodes]="userGroups" [options]="options"></tree-root>
+        <tree-root #userTreeEle [nodes]="userGroups" [options]="options" (activate)="onUserTreeNodeForce($event)"
+          [(state)]="userTreeState"></tree-root>
       </nb-card-body>
     </nb-card>
   </div>
   <div class="col-sm-4">
     <nb-card style="min-height: 100%;">
       <nb-card-header>
-        Menu tree
+        <input #menuTreeFilter (keyup)="treeFilter(menuTreeFilter.value, menuTreeEle)" type="text" nbInput fullWidth
+          placeholder="Tìm kiếm menu">
       </nb-card-header>
       <nb-card-body>
-        <tree-root [nodes]="nodes" [options]="options"></tree-root>
+        <tree-root #menuTreeEle [nodes]="menuTree" [options]="options" (activate)="onMenuTreeNodeForce($event)"
+          [(state)]="menuTreeState"></tree-root>
       </nb-card-body>
     </nb-card>
   </div>
   <div class="col-sm-4">
     <nb-card style="min-height: 100%;">
       <nb-card-header>
-        User list
+        <button nbButton (click)="onPermissionUpdateButtonClick()" status="success" [disabled]="!allowUpdatePermission"
+          style="width: 50%;
+          margin: 0;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;" fullwidth hero>Cập nhật</button>
+        <button nbButton (click)="onPermissionResetButtonClick()" status="danger" [disabled]="!allowResetPermission"
+          style="width: 50%;
+          margin: 0;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;" fullwidth hero>Đặt lại</button>
       </nb-card-header>
       <nb-card-body>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">Xem</nb-checkbox>
+        <div [formGroup]="permissionForm"></div>
+        <div class="form-group" *ngFor="let pms of permissionFormArray.controls; let i = index" [formGroup]="pms">
+          <!-- <label>{{pms.Description}}</label> -->
+          <input type="hidden" formControlName="Permission">
+          <input type="hidden" formControlName="Description">
+          <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">
+            {{pms.get('Description').value}}</nb-checkbox>
         </div>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">Tạo mới</nb-checkbox>
-        </div>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">Cập nhật</nb-checkbox>
-        </div>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">Xoá</nb-checkbox>
-        </div>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">Xử lý nhiều dòng</nb-checkbox>
-        </div>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">In ấn</nb-checkbox>
-        </div>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">Chia sẻ</nb-checkbox>
-        </div>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">Nhập khẩu</nb-checkbox>
-        </div>
-        <div class="form-group">
-          <nb-checkbox formControlName="Status">Xuất khẩu</nb-checkbox>
-        </div>
+        <hr>
+        <h5>Hướng dẫn phân quyền</h5>
+        <p>
+          - Hệ thống hướng tới <strong>phân quyền theo nhóm người dùng</strong>, khi nhóm có quyền trên một menu nào đó
+          thì tất cả người dùng đều có quyền tương ứng.
+          - Bạn cũng có thể phân quyền riêng trên từng người dùng, quyền của người dùng sẽ <strong>ghi đè</strong> quyền
+          của nhóm.
+          - Khi bạn không kiểm soát được các quyền đã gán bạn có thể dùng chức đăng <strong>Đặt Lại</strong> để trả lại
+          quyền trên mỗi người dùng hoặc trên toàn bộ nhóm.
+        </p>
       </nb-card-body>
     </nb-card>
   </div>

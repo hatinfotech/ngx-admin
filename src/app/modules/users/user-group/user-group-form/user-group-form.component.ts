@@ -44,20 +44,51 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
     },
   };
 
+  parentList: UserGroupModel[];
+  select2OptionForParent = {
+    placeholder: 'Chọn nhóm cha...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Description',
+    },
+  };
+
   ngOnInit() {
-    this.apiService.get<UserModel[]>('/user/users', { limit: 9999999, isMulti: true, select: 'Code,Name' },
-      list => {
-        this.userList = list.filter((item: UserModel) => {
-          if (item['Code'] && item['Name']) {
-            // item['User'] = item['Code'];
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return true;
-          }
-          return false;
+
+    this.apiService.get<UserGroupModel[]>(
+      '/user/groups', { limit: 99999 },
+      list1 => {
+        list1.unshift({
+          Code: '',
+          Description: 'Chọn nhóm cha...',
         });
-        super.ngOnInit();
+        this.parentList = list1.map(item => {
+          item['id'] = item['Code'];
+          item['text'] = item['Description'];
+          return item;
+        });
+
+        this.apiService.get<UserModel[]>('/user/users', { limit: 9999999, isMulti: true, select: 'Code,Name' },
+          list => {
+            this.userList = list.filter((item: UserModel) => {
+              if (item['Code'] && item['Name']) {
+                // item['User'] = item['Code'];
+                item['id'] = item['Code'];
+                item['text'] = item['Name'];
+                return true;
+              }
+              return false;
+            });
+            super.ngOnInit();
+          });
+
       });
+
+
   }
 
   /** Get form data by id from api */
@@ -74,6 +105,7 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
       Code_old: [''],
       Code: ['', Validators.required],
       Name: ['', Validators.required],
+      Parent: [''],
       Users: [''],
       Description: [''],
     });

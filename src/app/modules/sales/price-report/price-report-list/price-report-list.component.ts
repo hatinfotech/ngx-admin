@@ -62,19 +62,19 @@ export class PriceReportListComponent implements OnInit {
         title: 'Khách hàng',
         type: 'string',
         width: '25%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
       Title: {
         title: 'Tiêu đề',
         type: 'string',
         width: '30%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
       Note: {
         title: 'Ghi chú',
         type: 'string',
         windth: '30%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
     },
   };

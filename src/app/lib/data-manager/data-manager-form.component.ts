@@ -280,16 +280,16 @@ export abstract class DataManagerFormComponent<M> implements OnInit, OnDestroy {
     this.form.reset();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   formControlValidate(formControl: FormControl, invalidText: string, valideText?: string): string {
     if (formControl.touched && formControl.errors && formControl.errors.required) {
       return invalidText;
     }
     return valideText ? valideText : '';
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }

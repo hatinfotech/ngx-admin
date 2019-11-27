@@ -18,7 +18,7 @@ export class CommonService {
     });
   }
 
-  smartTableFilter(value: string, query: string) {
+  smartFilter(value: string, query: string) {
     return (new RegExp(this.convertUnicodeToNormal(query).toLowerCase().replace(/\s+/g, '.*'), 'ig')).test(this.convertUnicodeToNormal(value));
   }
 

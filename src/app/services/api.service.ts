@@ -115,11 +115,15 @@ export class ApiService {
       .subscribe((newResource: T) => success(newResource));
   }
 
-  delete(enpoint: string, id: string | string[], success: (resp: any) => void, error?: (e: HttpErrorResponse) => void) {
+  delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void) {
+    let apiUrl = '';
     if (Array.isArray(id)) {
       id = id.join('-');
+      apiUrl = this.buildApiUrl(`${enpoint}/${id}`);
+    } else if (typeof id === 'object') {
+      apiUrl = this.buildApiUrl(enpoint, id);
     }
-    return this._http.delete(this.buildApiUrl(`${enpoint}/${id}`))
+    return this._http.delete(apiUrl)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
         return this.handleError(e);

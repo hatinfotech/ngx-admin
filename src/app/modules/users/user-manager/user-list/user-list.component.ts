@@ -72,7 +72,7 @@ export class UserListComponent extends DataManagerListComponent<UserModel> imple
         title: 'Name',
         type: 'string',
         width: '45%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
       Username: {
         title: 'Username',

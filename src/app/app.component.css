@@ -1,4 +1,4 @@
-@import '~angular-tree-component/dist/angular-tree-component.css';
+@import "~angular-tree-component/dist/angular-tree-component.css";
 /*
 Mini erp
 Global style
@@ -7,7 +7,7 @@ Global style
 /* Layout */
 body nb-layout[authState="logout"] .layout nb-layout-header,
 body nb-layout[authState="logout"] nb-sidebar {
-    display: none;
+  display: none;
 }
 
 body nb-layout[authState="logout"] .layout .layout-container {
@@ -20,8 +20,8 @@ body nb-layout[authState="logout"] nb-layout-header.fixed ~ .layout-container {
 }
 /* End Layout */
 
-
-select2, .select2 {
+select2,
+.select2 {
   -webkit-writing-mode: horizontal-tb !important;
   text-rendering: auto;
   color: initial;
@@ -50,7 +50,7 @@ select2, .select2 {
   transition-duration: 0.15s;
   transition-property: border, background-color, color, box-shadow;
   transition-timing-function: ease-in;
-  height: 40px;
+  min-height: 40px;
 }
 
 .select2 .select2-selection {
@@ -265,22 +265,62 @@ nb-card-body .ng2-smart-table-wrap {
   margin: -1rem -1.25rem;
 }
 
-.nb-theme-default ng2-smart-table thead tr.ng2-smart-filters th .ng2-smart-action i.nb-edit,
-.nb-theme-default ng2-smart-table thead tr.ng2-smart-filters th .ng2-smart-action i.nb-trash {
+.nb-theme-default
+  ng2-smart-table
+  thead
+  tr.ng2-smart-filters
+  th
+  .ng2-smart-action
+  i.nb-edit,
+.nb-theme-default
+  ng2-smart-table
+  thead
+  tr.ng2-smart-filters
+  th
+  .ng2-smart-action
+  i.nb-trash {
   display: none;
 }
 
-.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action {
-    background-color: #dc3545 !important;
+.nb-theme-default
+  ng2-smart-table[select="selected"]
+  thead
+  tr.ng2-smart-filters
+  th
+  .ng2-smart-action {
+  background-color: #dc3545 !important;
 }
-.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action:hover {
-    background-color: #fb6977 !important;
+.nb-theme-default
+  ng2-smart-table[select="selected"]
+  thead
+  tr.ng2-smart-filters
+  th
+  .ng2-smart-action:hover {
+  background-color: #fb6977 !important;
 }
-.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action i.nb-edit,
-.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action i.nb-trash {
+.nb-theme-default
+  ng2-smart-table[select="selected"]
+  thead
+  tr.ng2-smart-filters
+  th
+  .ng2-smart-action
+  i.nb-edit,
+.nb-theme-default
+  ng2-smart-table[select="selected"]
+  thead
+  tr.ng2-smart-filters
+  th
+  .ng2-smart-action
+  i.nb-trash {
   display: block;
 }
-.nb-theme-default ng2-smart-table[select="selected"] thead tr.ng2-smart-filters th .ng2-smart-action i.nb-plus {
+.nb-theme-default
+  ng2-smart-table[select="selected"]
+  thead
+  tr.ng2-smart-filters
+  th
+  .ng2-smart-action
+  i.nb-plus {
   display: none;
 }
 /* End Smart Table */
@@ -351,9 +391,18 @@ body nb-dialog-container nb-card {
 }
 /* End Dialog */
 
-
 /* Card */
 nb-card-header nb-icon {
   line-height: 1rem !important;
 }
 /* End Card */
+
+/* Tree */
+tree-node-content span {
+  color: #192038;
+  font-family: Open Sans, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+/* End Tree */

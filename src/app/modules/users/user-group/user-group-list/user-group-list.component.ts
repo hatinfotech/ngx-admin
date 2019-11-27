@@ -62,6 +62,11 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
         class: 'no',
         filter: false,
       },
+      ParentDescription: {
+        title: 'Nhóm cha',
+        type: 'string',
+        width: '20%',
+      },
       Code: {
         title: 'Mã',
         type: 'string',
@@ -70,14 +75,14 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
       Name: {
         title: 'Name',
         type: 'string',
-        width: '30%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        width: '20%',
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
       Description: {
         title: 'Description',
         type: 'string',
-        width: '50%',
-        filterFunction: (value: string, query: string) => this.common.smartTableFilter(value, query),
+        width: '30%',
+        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
     },
   };
@@ -86,29 +91,14 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
 
   ngOnInit() {
     super.ngOnInit();
-    // Load user list
-    // this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 999999999, offset: 0 }, results => this.source.load(results));
-
   }
 
-  // onEditAction(event) {
-  //   this.router.navigate(['users/group/form', event.data.Code]);
-  // }
-
-  // onCreateAction(event) {
-  //   this.router.navigate(['users/group/form']);
-  // }
-
-  // onDeleteConfirm(event): void {
-  //   if (window.confirm('Are you sure you want to delete?')) {
-  //     event.confirm.resolve();
-  //   } else {
-  //     event.confirm.reject();
-  //   }
-  // }
-
-// gotoForm(id?: string): void {
-//     this.router.navigate(['users/group/form', id]);
-//   }
+  /** Get data from api and push to list */
+  loadList() {
+    this.apiService.get<UserGroupModel[]>(this.apiPath, { limit: 999999999, offset: 0, includeParentInfo: true }, results => this.source.load(results.map((item, index) => {
+      item['No'] = index + 1;
+      return item;
+    })));
+  }
 
 }
