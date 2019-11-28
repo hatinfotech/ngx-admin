@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { UserModel } from '../../../../models/user.model';
 import { ActivatedRoute, Router } from '@angular/router';

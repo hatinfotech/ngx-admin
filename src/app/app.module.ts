@@ -22,7 +22,6 @@ import {
   NbWindowModule,
   NbCardModule,
   NbLayoutModule,
-  NbThemeModule,
 } from '@nebular/theme';
 import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/auth';
 import { AuthModule } from './modules/auth/auth.module';
@@ -33,7 +32,6 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { DialogModule } from './modules/dialog/dialog.module';
 import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showcase-dialog.component';
 import { TreeModule } from 'angular-tree-component';
-import { NbDialogService } from '@nebular/theme';
 
 @NgModule({
   declarations: [
@@ -106,15 +104,7 @@ import { NbDialogService } from '@nebular/theme';
     ShowcaseDialogComponent,
   ],
   bootstrap: [AppComponent],
-  providers: [
-    // ...NbThemeModule.forRoot(
-    //   {
-    //     name: 'default',
-    //   },
-    //   [],
-    // ).providers,
-    // NbDialogService,
-    {
+  providers: [{
     provide: RouteReuseStrategy,
     useClass: CustomRouteReuseStrategy,
   }],

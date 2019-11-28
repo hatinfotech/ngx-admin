@@ -3,7 +3,6 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
-import { PermissionEntryModel } from '../models/permission-entry.model';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';

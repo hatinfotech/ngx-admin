@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { CommonService } from '../../../services/common.service';
 import { UserGroupModel } from '../../../models/user-group.model';

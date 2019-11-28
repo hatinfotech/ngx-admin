@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
 import { NbLoginComponent, NbAuthService, NB_AUTH_OPTIONS, NbAuthResult } from '@nebular/auth';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { CommonService } from '../../../services/common.service';
 
 @Component({

@@ -6,9 +6,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { MENU_ITEMS } from './app-menu';
-// import { stat } from 'fs';
-// import { NbAuthService } from '@nebular/auth';
-import { ApiService } from './services/api.service';
 
 @Component({
   selector: 'ngx-app',
@@ -26,8 +23,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     private analytics: AnalyticsService,
-    // private authService: NbAuthService,
-    // private apiService: ApiService,
   ) {}
 
   ngOnInit(): void {

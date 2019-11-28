@@ -89,15 +89,6 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
           actions: [
             {
-              label: 'Chỉnh',
-              icon: 'edit',
-              status: 'primary',
-              action: () => {
-                // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
-                this.gotoForm(this.selectedIds.join('-'));
-              },
-            },
-            {
               label: 'Xoá',
               icon: 'delete',
               status: 'danger',
@@ -108,6 +99,12 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
                     content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',
                     actions: [
                       {
+                        label: 'Trở về',
+                        icon: 'back',
+                        status: 'info',
+                        action: () => {},
+                      },
+                      {
                         label: 'Xoá',
                         icon: 'delete',
                         status: 'danger',
@@ -117,12 +114,6 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
                           });
                         },
                       },
-                      {
-                        label: 'Trở về',
-                        icon: 'back',
-                        status: 'info',
-                        action: () => {},
-                      },
                     ],
                   },
                 });
@@ -131,8 +122,17 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
             {
               label: 'Trở về',
               icon: 'back',
-              status: 'info',
+              status: 'success',
               action: () => {},
+            },
+            {
+              label: 'Chỉnh',
+              icon: 'edit',
+              status: 'warning',
+              action: () => {
+                // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
+                this.gotoForm(this.selectedIds.join('-'));
+              },
             },
           ],
         },

@@ -383,8 +383,11 @@ body [nbButton] {
 /* End Button */
 
 /* Dialog */
-nb-card-footer [nbButton]:last-child {
+nb-card-footer [nbButton] {
   float: right;
+}
+nb-card-footer [nbButton]:first-child {
+  float: left;
 }
 body nb-dialog-container nb-card {
   min-width: 30rem !important;

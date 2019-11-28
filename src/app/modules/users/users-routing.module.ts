@@ -25,7 +25,7 @@ const routes: Routes = [{
     },
     {
       path: 'user-manager/list',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: UserListComponent,
       data: {
         reuse: true,
@@ -33,17 +33,17 @@ const routes: Routes = [{
     },
     {
       path: 'user-manager/form',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: UserFormComponent,
     },
     {
       path: 'user-manager/form/:id',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: UserFormComponent,
     },
     {
       path: 'user-manager/view',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: UserViewComponent,
     },
     {
@@ -59,7 +59,7 @@ const routes: Routes = [{
     },
     {
       path: 'group/list',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: UserGroupListComponent,
       data: {
         reuse: true,
@@ -67,17 +67,17 @@ const routes: Routes = [{
     },
     {
       path: 'group/form',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: UserGroupFormComponent,
     },
     {
       path: 'group/form/:id',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: UserGroupFormComponent,
     },
     {
       path: 'group/view',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: UserGroupViewComponent,
     },
     {
@@ -93,7 +93,7 @@ const routes: Routes = [{
     },
     {
       path: 'permission/grant',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: PermissionGrantComponent,
       data: {
         reuse: true,

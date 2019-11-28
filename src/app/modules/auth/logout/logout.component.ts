@@ -58,6 +58,7 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
     this.apiService.clearToken();
     // this.commonService.pushLoggedIn(false);
     this.commonService.clearCache();
+    this.commonService.setPreviousUrl('/');
   }
 
 }
