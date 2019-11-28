@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MenuComponent } from './menu.component';
 import { MenuListComponent } from './manager-menu/menu-list/menu-list.component';
 import { MenuFormComponent } from './manager-menu/menu-form/menu-form.component';
+import { AuthGuardService } from '../../services/auth-guard.service';
 
 
 const routes: Routes = [{
@@ -17,6 +18,7 @@ const routes: Routes = [{
     },
     {
       path: 'manager/list',
+      canActivate: [AuthGuardService],
       component: MenuListComponent,
       data: {
         reuse: true,
@@ -24,10 +26,12 @@ const routes: Routes = [{
     },
     {
       path: 'manager/form',
+      canActivate: [AuthGuardService],
       component: MenuFormComponent,
     },
     {
       path: 'manager/form/:id',
+      canActivate: [AuthGuardService],
       component: MenuFormComponent,
     },
   ],

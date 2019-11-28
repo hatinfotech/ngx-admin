@@ -28,27 +28,27 @@ const routes: Routes = [
         path: '',
         component: NbLoginComponent,
       },
-      {
-        path: 'login',
-        // component: NbLoginComponent,
-        component: LoginComponent,
-      },
-      {
-        path: 'register',
-        component: NbRegisterComponent,
-      },
-      {
-        path: 'logout',
-        component: NbLogoutComponent,
-      },
-      {
-        path: 'request-password',
-        component: NbRequestPasswordComponent,
-      },
-      {
-        path: 'reset-password',
-        component: NbResetPasswordComponent,
-      },
+      // {
+      //   path: 'login',
+      //   component: NbLoginComponent,
+      //   // component: LoginComponent,
+      // },
+      // {
+      //   path: 'register',
+      //   component: NbRegisterComponent,
+      // },
+      // {
+      //   path: 'logout',
+      //   component: NbLogoutComponent,
+      // },
+      // {
+      //   path: 'request-password',
+      //   component: NbRequestPasswordComponent,
+      // },
+      // {
+      //   path: 'reset-password',
+      //   component: NbResetPasswordComponent,
+      // },
     ],
   },
   {
@@ -79,37 +79,37 @@ const routes: Routes = [
   },
   {
     path: 'human-resource',
-    canActivate: [AuthGuardService],
+    // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/human-resource/human-resource.module')
       .then(m => m.HumanResourceModule),
   },
   {
     path: 'sales',
-    canActivate: [AuthGuardService],
+    // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/sales/sales.module')
       .then(m => m.SalesModule),
   },
   {
     path: 'ivoip',
-    canActivate: [AuthGuardService],
+    // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/ivoip/ivoip.module')
       .then(m => m.IvoipModule),
   },
   {
     path: 'users',
-    canActivate: [AuthGuardService],
+    // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/users/users.module')
       .then(m => m.UsersModule),
   },
   {
     path: 'modules',
-    canActivate: [AuthGuardService],
+    // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/modules/modules.module')
       .then(m => m.ModulesModule),
   },
   {
     path: 'menu',
-    canActivate: [AuthGuardService],
+    // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/menu/menu.module')
       .then(m => m.MenuModule),
   },

@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { LogoutComponent } from './logout/logout.component';
 import { AuthComponent } from './auth.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [{
   path: '',
@@ -16,10 +17,10 @@ const routes: Routes = [{
     //   path: 'auth',
     //   loadChildren: './auth/auth.module#AuthModule',
     // },
-    // {
-    //   path: 'login',
-    //   component: LoginComponent, // <---
-    // },
+    {
+      path: 'login',
+      component: LoginComponent, // <---
+    },
     {
       path: 'logout',
       component: LogoutComponent,

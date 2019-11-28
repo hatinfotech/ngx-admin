@@ -7,6 +7,7 @@ import { DevicesComponent } from './devices/devices.component';
 import { ExtensionsComponent } from './extensions/extensions.component';
 import { PstnNumbersComponent } from './pstn-numbers/pstn-numbers.component';
 import { CallBlocksComponent } from './call-blocks/call-blocks.component';
+import { AuthGuardService } from '../../services/auth-guard.service';
 
 
 const routes: Routes = [{
@@ -20,6 +21,7 @@ const routes: Routes = [{
     },
     {
       path: 'cdr',
+      canActivate: [AuthGuardService],
       component: CdrComponent,
       data: {
         reuse: true,
@@ -27,6 +29,7 @@ const routes: Routes = [{
     },
     {
       path: 'pbx',
+      canActivate: [AuthGuardService],
       component: PbxComponent,
       data: {
         reuse: true,
@@ -34,6 +37,7 @@ const routes: Routes = [{
     },
     {
       path: 'devices',
+      canActivate: [AuthGuardService],
       component: DevicesComponent,
       data: {
         reuse: true,
@@ -48,6 +52,7 @@ const routes: Routes = [{
     },
     {
       path: 'pstn-numbers',
+      canActivate: [AuthGuardService],
       component: PstnNumbersComponent,
       data: {
         reuse: true,
@@ -55,6 +60,7 @@ const routes: Routes = [{
     },
     {
       path: 'call-blocks',
+      canActivate: [AuthGuardService],
       component: CallBlocksComponent,
       data: {
         reuse: true,

@@ -15,7 +15,7 @@ export class ModuleListComponent extends DataManagerListComponent<ModuleModel> i
 
   formPath: string = 'modules/manager/form';
   apiPath: string = '/module/modules';
-  idKey: string = 'Code';
+  idKey: string = 'Name';
 
   /** Table settings */
   settings = {

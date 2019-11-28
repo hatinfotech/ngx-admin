@@ -4,20 +4,21 @@ import { ApiService } from '../../../../services/api.service';
 import { PriceReportModel } from '../../../../models/price-report.model';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
+import { BaseComponent } from '../../../../lib/base-component';
 
 @Component({
   selector: 'ngx-price-report-list',
   templateUrl: './price-report-list.component.html',
   styleUrls: ['./price-report-list.component.scss'],
 })
-export class PriceReportListComponent implements OnInit {
+export class PriceReportListComponent extends BaseComponent implements OnInit {
 
   constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private common: CommonService,
+    protected apiService: ApiService,
+    protected router: Router,
+    protected commonService: CommonService,
   ) {
-
+    super(commonService, router);
   }
 
   editing = {};
@@ -62,19 +63,19 @@ export class PriceReportListComponent implements OnInit {
         title: 'Khách hàng',
         type: 'string',
         width: '25%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Title: {
         title: 'Tiêu đề',
         type: 'string',
         width: '30%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Note: {
         title: 'Ghi chú',
         type: 'string',
         windth: '30%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
     },
   };

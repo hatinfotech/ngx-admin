@@ -5,8 +5,9 @@ import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { OnInit } from '@angular/core';
+import { BaseComponent } from '../base-component';
 
-export abstract class DataManagerListComponent<M> implements OnInit {
+export abstract class DataManagerListComponent<M> extends BaseComponent implements OnInit {
 
   editing = {};
   rows = [];
@@ -30,11 +31,11 @@ export abstract class DataManagerListComponent<M> implements OnInit {
   constructor(
     protected apiService: ApiService,
     protected router: Router,
-    protected common: CommonService,
+    protected commonService: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
   ) {
-
+    super(commonService, router);
   }
 
   /** List init event */
@@ -120,6 +121,7 @@ export abstract class DataManagerListComponent<M> implements OnInit {
                         label: 'Trở về',
                         icon: 'back',
                         status: 'info',
+                        action: () => {},
                       },
                     ],
                   },
@@ -130,6 +132,7 @@ export abstract class DataManagerListComponent<M> implements OnInit {
               label: 'Trở về',
               icon: 'back',
               status: 'info',
+              action: () => {},
             },
           ],
         },

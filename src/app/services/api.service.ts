@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { map, retry, catchError } from 'rxjs/operators';
 import { EmployeeModel } from '../models/employee.model';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +18,7 @@ export class ApiService {
     protected _http: HttpClient,
     protected authService: NbAuthService,
     private router: Router,
+    // private activatedRoute: ActivatedRouteSnapshot,
   ) {
 
     this.authService.onTokenChange()

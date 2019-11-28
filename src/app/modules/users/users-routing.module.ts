@@ -10,6 +10,7 @@ import { UserFormComponent } from './user-manager/user-form/user-form.component'
 import { UserViewComponent } from './user-manager/user-view/user-view.component';
 import { UserReportComponent } from './user-manager/user-report/user-report.component';
 import { PermissionGrantComponent } from './permission-grant/permission-grant.component';
+import { AuthGuardService } from '../../services/auth-guard.service';
 
 
 const routes: Routes = [{
@@ -24,6 +25,7 @@ const routes: Routes = [{
     },
     {
       path: 'user-manager/list',
+      canActivate: [AuthGuardService],
       component: UserListComponent,
       data: {
         reuse: true,
@@ -31,18 +33,22 @@ const routes: Routes = [{
     },
     {
       path: 'user-manager/form',
+      canActivate: [AuthGuardService],
       component: UserFormComponent,
     },
     {
       path: 'user-manager/form/:id',
+      canActivate: [AuthGuardService],
       component: UserFormComponent,
     },
     {
       path: 'user-manager/view',
+      canActivate: [AuthGuardService],
       component: UserViewComponent,
     },
     {
       path: 'user-manager/report',
+      canActivate: [AuthGuardService],
       component: UserReportComponent,
     },
     // User group
@@ -53,6 +59,7 @@ const routes: Routes = [{
     },
     {
       path: 'group/list',
+      canActivate: [AuthGuardService],
       component: UserGroupListComponent,
       data: {
         reuse: true,
@@ -60,18 +67,22 @@ const routes: Routes = [{
     },
     {
       path: 'group/form',
+      canActivate: [AuthGuardService],
       component: UserGroupFormComponent,
     },
     {
       path: 'group/form/:id',
+      canActivate: [AuthGuardService],
       component: UserGroupFormComponent,
     },
     {
       path: 'group/view',
+      canActivate: [AuthGuardService],
       component: UserGroupViewComponent,
     },
     {
       path: 'group/report',
+      canActivate: [AuthGuardService],
       component: UserGroupReportComponent,
     },
     // Permission
@@ -82,6 +93,7 @@ const routes: Routes = [{
     },
     {
       path: 'permission/grant',
+      canActivate: [AuthGuardService],
       component: PermissionGrantComponent,
       data: {
         reuse: true,

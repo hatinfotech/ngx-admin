@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ModulesComponent } from './modules.component';
 import { ModuleListComponent } from './module-manager/module-list/module-list.component';
 import { ModuleFormComponent } from './module-manager/module-form/module-form.component';
+import { AuthGuardService } from '../../services/auth-guard.service';
 
 
 const routes: Routes = [{
@@ -17,6 +18,7 @@ const routes: Routes = [{
     },
     {
       path: 'manager/list',
+      canActivate: [AuthGuardService],
       component: ModuleListComponent,
       data: {
         reuse: true,
@@ -24,10 +26,12 @@ const routes: Routes = [{
     },
     {
       path: 'manager/form',
+      canActivate: [AuthGuardService],
       component: ModuleFormComponent,
     },
     {
       path: 'manager/form/:id',
+      canActivate: [AuthGuardService],
       component: ModuleFormComponent,
     },
   ],

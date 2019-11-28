@@ -8,8 +8,9 @@ import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/sh
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CommonService } from '../../services/common.service';
+import { BaseComponent } from '../base-component';
 
-export abstract class DataManagerFormComponent<M> implements OnInit, OnDestroy {
+export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy {
 
   /** Main form */
   form: FormGroup;
@@ -50,6 +51,7 @@ export abstract class DataManagerFormComponent<M> implements OnInit, OnDestroy {
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
   ) {
+    super(commonService, router);
     this.formLoading = true;
     this.formUniqueId = Date.now().toString();
     this.form = this.formBuilder.group({
@@ -61,13 +63,7 @@ export abstract class DataManagerFormComponent<M> implements OnInit, OnDestroy {
     this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(formData => {
       if (!this.formLoading) {
         this.commonService.takeUntil(this.formUniqueId, 1000, () => {
-          // console.info(formData);
-          // const aPastFormData = { formData: formData.array, meta: null };
-          // this.onUpdatePastFormData(aPastFormData);
-          // this.pastFormData.push(aPastFormData);
-
           this.pushPastFormData(formData.array);
-          // console.info(this.pastFormData);
         });
       }
     });
@@ -158,13 +154,6 @@ export abstract class DataManagerFormComponent<M> implements OnInit, OnDestroy {
     this.onRemoveFormGroup(index);
     return false;
   }
-
-  // onModuleChange(item: any, index: number) {
-  //   console.info(item);
-
-  //   if (!this.formLoading) {
-  //   }
-  // }
 
   /** get main form controls */
   get formControls() { return this.form.controls; }
