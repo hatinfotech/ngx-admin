@@ -10,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentModel } from '../../../../models/component.model';
 import { PermissionModel } from '../../../../models/permission.model';
 import { CommonService } from '../../../../services/common.service';
+import { ResourceModel } from '../../../../models/resource.model';
 
 @Component({
   selector: 'ngx-menu-form',
@@ -117,6 +118,22 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     // },
   };
 
+  resourceList: ResourceModel[][][] = [];
+  select2OptionForResource = {
+    placeholder: 'Chọn Resource...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Name',
+      text: 'Description',
+    },
+    // matcher: (term: string, text: string, option: any) => {
+    //   return false;
+    // },
+  };
+
   ngOnInit() {
 
     this.apiService.get<MenuItemModel[]>(
@@ -133,7 +150,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
         });
 
         this.apiService.get<ModuleModel[]>(
-          '/module/modules', { limit: 99999, includeComponents: true },
+          '/module/modules', { limit: 99999, includeComponents: true, includeResources: true },
           mList => {
             mList.unshift({
               Name: '',
@@ -152,7 +169,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   /** Get form data by id from api */
   getFormData(callback: (data: MenuItemModel[]) => void) {
-    this.apiService.get<MenuItemModel[]>(this.apiPath, { id: this.id, multi: true, includeComponents: true, includePermissions: true },
+    this.apiService.get<MenuItemModel[]>(this.apiPath, { id: this.id, multi: true, includeComponents: true, includePermissions: true, includeResources: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
@@ -179,6 +196,34 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
             return item;
           });
           newComponentFormGroup.get('Component').patchValue(component['Component']);
+        }
+      });
+
+      // Resources form load
+      itemFormData.Resources.forEach(resource => {
+        const newResourceFormGroup = this.makeNewResourceFormGroup(resource);
+        this.getResources(index).push(newResourceFormGroup);
+        const comIndex = this.getResources(index).length - 1;
+        this.onAddResourceFormGroup(index, comIndex, newResourceFormGroup);
+        const module = this.moduleList.find((value, i, obj) => {
+          return resource['Module'] === value['Name'];
+        });
+        if (module && module['Resources']) {
+          this.resourceList[index][comIndex] = module['Resources'].map(item => {
+            item['id'] = item['Name'];
+            item['text'] = item['Description'] ? item['Description'] : item['Name'];
+            return item;
+          });
+          newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
+        }
+
+        if (module && module['Resources']) {
+          this.resourceList[index][comIndex] = module['Resources'].map(item => {
+            item['id'] = item['Name'];
+            item['text'] = item['Description'] ? item['Description'] : item['Name'];
+            return item;
+          });
+          newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
         }
       });
 
@@ -227,12 +272,9 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
       Icon: [''],
       Group: [''],
       Parent: [''],
-      Components: this.formBuilder.array([
-
-      ]),
-      Permissions: this.formBuilder.array([
-
-      ]),
+      Components: this.formBuilder.array([]),
+      Permissions: this.formBuilder.array([]),
+      Resources: this.formBuilder.array([]),
     });
 
     if (data) {
@@ -248,6 +290,21 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
       Id: [''],
       Module: ['', Validators.required],
       Component: ['', Validators.required],
+    });
+
+    if (data) {
+      data['Id_old'] = data['Id'];
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+
+  makeNewResourceFormGroup(data?: { Id: number, Module: string, Resource: string }): FormGroup {
+    const newForm = this.formBuilder.group({
+      Id_old: [''],
+      Id: [''],
+      Module: ['', Validators.required],
+      Resource: ['', Validators.required],
     });
 
     if (data) {
@@ -277,6 +334,10 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     return this.array.controls[formGroupIndex].get('Components') as FormArray;
   }
 
+  getResources(formGroupIndex: number) {
+    return this.array.controls[formGroupIndex].get('Resources') as FormArray;
+  }
+
   getPermissions(formGroupIndex: number) {
     return this.array.controls[formGroupIndex].get('Permissions') as FormArray;
   }
@@ -286,6 +347,14 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     const newFormGroup = this.makeNewComponentFormGroup();
     this.getComponents(formGroupIndex).push(newFormGroup);
     this.onAddComponentFormGroup(formGroupIndex, this.getComponents(formGroupIndex).length - 1, newFormGroup);
+    return false;
+  }
+
+  addResourceFormGroup(formGroupIndex: number) {
+    this.resourceList[formGroupIndex].push([]);
+    const newFormGroup = this.makeNewResourceFormGroup();
+    this.getResources(formGroupIndex).push(newFormGroup);
+    this.onAddResourceFormGroup(formGroupIndex, this.getResources(formGroupIndex).length - 1, newFormGroup);
     return false;
   }
 
@@ -299,14 +368,20 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   onAddFormGroup(index: number, newForm: FormGroup, data?: MenuItemModel) {
     this.componentList.push([]);
+    this.resourceList.push([]);
   }
 
   onRemoveFormGroup(index: number) {
     this.componentList.splice(index, 1);
+    this.resourceList.splice(index, 1);
   }
 
   onAddComponentFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
     this.componentList[mainIndex].push([]);
+  }
+
+  onAddResourceFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+    this.resourceList[mainIndex].push([]);
   }
 
   onAddPermissionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
@@ -320,6 +395,13 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     return false;
   }
 
+  removeResourceGroup(formGroupIndex: number, index: number) {
+    this.getResources(formGroupIndex).removeAt(index);
+    // this.componentList[formGroupIndex].splice(index, 1);
+    this.onRemoveResourceFormGroup(formGroupIndex, index);
+    return false;
+  }
+
   removePermissionGroup(formGroupIndex: number, index: number) {
     this.getPermissions(formGroupIndex).removeAt(index);
     // this.componentList[formGroupIndex].splice(index, 1);
@@ -329,6 +411,10 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   onRemoveComponentFormGroup(mainIndex: number, index: number) {
     this.componentList[mainIndex].splice(index, 1);
+  }
+
+  onRemoveResourceFormGroup(mainIndex: number, index: number) {
+    this.resourceList[mainIndex].splice(index, 1);
   }
 
   onRemovePermissionFormGroup(mainIndex: number, index: number) {
@@ -354,12 +440,23 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   }
 
 
+
+  copyResourceFormControlValueToOthers(i: number, ic: number, formControlName: string) {
+    const currentFormControl = this.getResources(i).controls[ic].get(formControlName);
+    this.getResources(i).controls.forEach((formItem, index) => {
+      if (index !== i) {
+        formItem.get(formControlName).patchValue(currentFormControl.value);
+      }
+    });
+  }
+
+
   goback(): false {
     this.router.navigate(['menu/manager/list']);
     return false;
   }
 
-  onModuleChange(event: { Components }, i: number, ic: number) {
+  onModuleChange(event: { Components: any[] }, i: number, ic: number) {
     // console.info(event);
     if (event.Components) {
       event.Components.unshift({
@@ -367,6 +464,21 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
         Description: 'Chọn component',
       });
       this.componentList[i][ic] = event.Components.map(item => {
+        item['id'] = item['Name'];
+        item['text'] = item['Description'] ? item['Description'] : item['Name'];
+        return item;
+      });
+    }
+  }
+
+  onModuleChangeForResource(event: { Resources: any[] }, i: number, ir: number) {
+    // console.info(event);
+    if (event.Resources) {
+      event.Resources.unshift({
+        Name: '',
+        Description: 'Chọn resource',
+      });
+      this.resourceList[i][ir] = event.Resources.map(item => {
         item['id'] = item['Name'];
         item['text'] = item['Description'] ? item['Description'] : item['Name'];
         return item;
