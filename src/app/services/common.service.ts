@@ -25,11 +25,11 @@ export class CommonService {
     private router: Router,
     private location: Location,
   ) {
-    this.authService.onAuthenticationChange().subscribe(state => {
-      if (state) {
-        this.loadPermissionToCache();
-      }
-    });
+    // this.authService.onAuthenticationChange().subscribe(state => {
+    //   if (state) {
+    //     this.loadPermissionToCache();
+    //   }
+    // });
   }
 
   setPreviousUrl(url: string) {

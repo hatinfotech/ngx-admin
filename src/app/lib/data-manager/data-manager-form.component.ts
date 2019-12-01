@@ -13,7 +13,11 @@ import { BaseComponent } from '../base-component';
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy {
 
   /** Main form */
-  form: FormGroup;
+  form = this.formBuilder.group({
+    array: this.formBuilder.array([
+      this.makeNewFormGroup(),
+    ]),
+  });
 
   /** Form unique id = current time as milisecond */
   formUniqueId: string;
@@ -54,11 +58,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     super(commonService, router);
     this.formLoading = true;
     this.formUniqueId = Date.now().toString();
-    this.form = this.formBuilder.group({
-      array: this.formBuilder.array([
-        this.makeNewFormGroup(),
-      ]),
-    });
+    // this.form = this.formBuilder.group({
+    //   array: this.formBuilder.array([
+    //     this.makeNewFormGroup(),
+    //   ]),
+    // });
 
     this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(formData => {
       if (!this.formLoading) {
@@ -169,6 +173,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       hasIcon: true,
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
     });
+    this.id = newFormData.map(item => item[this.idKey]).join('-');
   }
 
   /** Affter main form update event */
@@ -179,6 +184,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       hasIcon: true,
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
     });
+    this.id = newFormData.map(item => item[this.idKey]).join('-');
   }
 
   /** Error event */

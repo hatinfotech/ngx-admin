@@ -71,6 +71,10 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
       Code: 'SAHRE',
       Description: 'Chia sẻ dữ liệu',
     },
+    {
+      Code: 'LIST',
+      Description: 'Xem danh sách',
+    },
   ].map((item) => {
     item['id'] = item['Code'];
     item['text'] = item['Description'];
@@ -137,20 +141,24 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   ngOnInit() {
 
     this.apiService.get<MenuItemModel[]>(
-      '/menu/menu-items', { limit: 99999 },
+      '/menu/menu-items', { limit: 99999, list: true },
       list => {
         list.unshift({
           Code: '',
           Title: 'Chọn Menu cha...',
         });
-        this.parentList = list.map(item => {
-          item['id'] = item['Code'];
-          item['text'] = item['Title'];
-          return item;
+        this.parentList = list.filter(item => {
+          if (item['Code'] && item['Title']) {
+            item['id'] = item['Code'];
+            item['text'] = item['Title'];
+
+            return item;
+          }
+          return false;
         });
 
         this.apiService.get<ModuleModel[]>(
-          '/module/modules', { limit: 99999, includeComponents: true, includeResources: true },
+          '/module/modules', { limit: 99999, list: true, includeComponents: true, includeResources: true },
           mList => {
             mList.unshift({
               Name: '',

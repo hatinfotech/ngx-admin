@@ -1,0 +1,33 @@
+<nb-card size="large">
+    <nb-card-header style="padding: 0.5rem 1.25rem;">
+        <nav style="line-height: 2rem;">
+          <nb-icon pack="eva" icon="list-outline"></nb-icon> Lưu lượng cuộc gọi
+          <button nbButton status="success" hero size="tiny" (click)="refresh()" style="float: right; margin: 0; margin-left: 0.5rem;">
+            <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+          </button>
+          <button nbButton status="warning" hero size="tiny" (click)="onSettingClick()" style="float: right; margin: 0; margin-left: 0.5rem;">
+              <nb-icon pack="eva" icon="settings-2-outline"></nb-icon>
+            </button>
+        </nav>
+      </nb-card-header>
+  <!-- <nb-tabset fullWidth (changeTab)="changeTab($event)">
+    <nb-tab tabTitle="Orders"> -->
+      <div class="chart-container">
+        <ngx-chart-panel-summary [summary]="chartPanelSummary"></ngx-chart-panel-summary>
+        <ngx-chart-panel-header [type]="period"
+                                (periodChange)="setPeriodAndGetChartData($event)">
+        </ngx-chart-panel-header>
+        <ngx-orders-chart #ordersChart [ordersChartData]="ordersChartData"></ngx-orders-chart>
+      </div>
+    <!-- </nb-tab>
+    <nb-tab tabTitle="Profit" [lazyLoad]="true">
+      <div class="chart-container">
+        <ngx-chart-panel-summary [summary]="chartPanelSummary"></ngx-chart-panel-summary>
+        <ngx-chart-panel-header [type]="period"
+                                (periodChange)="setPeriodAndGetChartData($event)">
+        </ngx-chart-panel-header>
+        <ngx-profit-chart #profitChart [profitChartData]="profitChartData"></ngx-profit-chart>
+      </div>
+    </nb-tab>
+  </nb-tabset> -->
+</nb-card>

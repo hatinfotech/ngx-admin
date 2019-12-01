@@ -32,6 +32,9 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { DialogModule } from './modules/dialog/dialog.module';
 import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showcase-dialog.component';
 import { TreeModule } from 'angular-tree-component';
+import { PlayerDialogComponent } from './modules/dialog/player-dialog/player-dialog.component';
+import { IvoipModule } from './modules/ivoip/ivoip.module';
+import { PbxFormComponent } from './modules/ivoip/pbx/pbx-form/pbx-form.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +50,7 @@ import { TreeModule } from 'angular-tree-component';
     AppRoutingModule,
     NbCardModule,
     DialogModule,
+    IvoipModule,
     HttpClientModule,
     AuthModule,
     TreeModule,
@@ -102,6 +106,9 @@ import { TreeModule } from 'angular-tree-component';
   ],
   entryComponents: [
     ShowcaseDialogComponent,
+    PlayerDialogComponent,
+    PbxFormComponent,
+
   ],
   bootstrap: [AppComponent],
   providers: [{

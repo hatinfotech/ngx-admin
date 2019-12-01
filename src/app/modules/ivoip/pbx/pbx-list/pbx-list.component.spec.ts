@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PbxComponent } from './pbx.component';
+import { UserGroupListComponent } from './pbx-list.component';
 
-describe('PbxComponent', () => {
-  let component: PbxComponent;
-  let fixture: ComponentFixture<PbxComponent>;
+describe('UserGroupListComponent', () => {
+  let component: UserGroupListComponent;
+  let fixture: ComponentFixture<UserGroupListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PbxComponent ],
+      declarations: [ UserGroupListComponent ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PbxComponent);
+    fixture = TestBed.createComponent(UserGroupListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -11,6 +11,7 @@ export class CdrModel {
   Duration: string;
   Direction: string;
   HangupCase: string;
+  RecordingUrl?: string;
 
   constructor() { }
 

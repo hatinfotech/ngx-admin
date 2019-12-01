@@ -3,6 +3,8 @@ import { ApiService } from '../../../services/api.service';
 import { Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CdrModel } from '../../../models/cdr.model';
+import { NbDialogService } from '@nebular/theme';
+import { PlayerDialogComponent } from '../../dialog/player-dialog/player-dialog.component';
 
 @Component({
   selector: 'ngx-cdr',
@@ -14,6 +16,7 @@ export class CdrComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private router: Router,
+    private dialogService: NbDialogService,
   ) { }
 
 
@@ -37,7 +40,7 @@ export class CdrComponent implements OnInit {
       cancelButtonContent: '<i class="nb-close"></i>',
     },
     delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
+      deleteButtonContent: '<i class="fas fa-play-circle"></i>',
       confirmDelete: true,
     },
     columns: {
@@ -117,7 +120,7 @@ export class CdrComponent implements OnInit {
   ngOnInit() {
 
     // Get data from api
-    this.apiService.get<CdrModel[]>('/ivoip/cdr', { limit: 999999999, offset: 0 },
+    this.apiService.get<CdrModel[]>('/ivoip/cdrs', { limit: 999999999, offset: 0 },
       cdrs => this.source.load(cdrs.map((item, index: number) => {
         item['No'] = index + 1;
         return item;
@@ -148,11 +151,47 @@ export class CdrComponent implements OnInit {
     this.router.navigate(['sales/price-report/form']);
   }
 
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
-    }
+  onDeleteConfirm(event: {data: CdrModel}): void {
+    // if (window.confirm('Are you sure you want to delete?')) {
+    //   event.confirm.resolve();
+    // } else {
+    //   event.confirm.reject();
+    // }
+
+    this.dialogService.open(PlayerDialogComponent, {
+      context: {
+        tracks: [
+          {
+            name: event.data.FromOrigin ? event.data.FromOrigin : (event.data.CallerDestination),
+            artist: 'IVOIP',
+            url: event.data.RecordingUrl,
+            cover: 'assets/images/cover1.jpg',
+          },
+        ],
+      },
+      // context: {
+      //   title: 'Xác nhận xoá dữ liệu',
+      //   content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',
+      //   actions: [
+      //     {
+      //       label: 'Trở về',
+      //       icon: 'back',
+      //       status: 'info',
+      //       action: () => {},
+      //     },
+      //     {
+      //       label: 'Xoá',
+      //       icon: 'delete',
+      //       status: 'danger',
+      //       action: () => {
+      //         // this.apiService.delete(this.apiPath, this.selectedIds, result => {
+      //         //   this.loadList();
+      //         // });
+      //       },
+      //     },
+      //   ],
+      // },
+    });
+
   }
 }

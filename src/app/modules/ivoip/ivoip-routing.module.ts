@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CdrComponent } from './cdr/cdr.component';
 import { IvoipComponent } from './ivoip.component';
-import { PbxComponent } from './pbx/pbx.component';
 import { DevicesComponent } from './devices/devices.component';
 import { ExtensionsComponent } from './extensions/extensions.component';
 import { PstnNumbersComponent } from './pstn-numbers/pstn-numbers.component';
 import { CallBlocksComponent } from './call-blocks/call-blocks.component';
 import { AuthGuardService } from '../../services/auth-guard.service';
+import { IvoipDashboardComponent } from './dashboard/ivoip-dashboard.component';
+import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';
+import { PbxFormComponent } from './pbx/pbx-form/pbx-form.component';
 
 
 const routes: Routes = [{
@@ -16,21 +18,39 @@ const routes: Routes = [{
   children: [
     {
       path: '',
-      redirectTo: 'cdr',
+      redirectTo: 'dashboard',
       pathMatch: 'full',
     },
     {
-      path: 'cdr',
-      canActivate: [AuthGuardService],
-      component: CdrComponent,
+      path: 'dashboard',
+      // canActivate: [AuthGuardService],
+      component: IvoipDashboardComponent,
       data: {
         reuse: true,
       },
     },
     {
-      path: 'pbx',
+      path: 'pbx/list',
+      // canActivate: [AuthGuardService],
+      component: PbxListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'pbx/form/:id',
+      // canActivate: [AuthGuardService],
+      component: PbxFormComponent,
+    },
+    {
+      path: 'pbx/form',
+      // canActivate: [AuthGuardService],
+      component: PbxFormComponent,
+    },
+    {
+      path: 'cdr',
       canActivate: [AuthGuardService],
-      component: PbxComponent,
+      component: CdrComponent,
       data: {
         reuse: true,
       },

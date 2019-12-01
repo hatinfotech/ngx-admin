@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
 import { environment } from '../../environments/environment';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, observable } from 'rxjs';
 import { map, retry, catchError } from 'rxjs/operators';
 import { EmployeeModel } from '../models/employee.model';
 import { Router } from '@angular/router';
@@ -87,33 +87,84 @@ export class ApiService {
       id = params['id'];
       enpoint += `/${id}`;
     }
+    const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
+      .pipe(retry(0), catchError(e => {
+        if (error) error(e);
+        return this.handleError(e);
+      }))
+      .subscribe((resources: T) => {
+        success(resources);
+        obs.unsubscribe();
+      });
+  }
+
+  // get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void) {
+  //   let id: string;
+  //   if (Array.isArray(params['id'])) {
+  //     id = params['id'].join('-');
+  //     enpoint += `/${id}`;
+  //     delete params['id'];
+  //   } else if (params['id']) {
+  //     id = params['id'];
+  //     enpoint += `/${id}`;
+  //   }
+
+  //   const observable = this.getAsObservable(enpoint, params, error).subscribe((resources: T) => {
+  //     success(resources);
+  //     observable.unsubscribe();
+  //   });
+  //   return observable;
+
+  //   // return this._http.get<T>(this.buildApiUrl(enpoint, params))
+  //   //   .pipe(retry(0), catchError(e => {
+  //   //     if (error) error(e);
+  //   //     return this.handleError(e);
+  //   //   }))
+  //   //   .subscribe((resources: T) => success(resources));
+  // }
+
+  getAsObservable<T>(enpoint: string, params: any, error?: (e: HttpErrorResponse) => void): Observable<T> {
+    let id: string;
+    if (Array.isArray(params['id'])) {
+      id = params['id'].join('-');
+      enpoint += `/${id}`;
+      delete params['id'];
+    } else if (params['id']) {
+      id = params['id'];
+      enpoint += `/${id}`;
+    }
     return this._http.get<T>(this.buildApiUrl(enpoint, params))
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
         return this.handleError(e);
-      }))
-      .subscribe((resources: T) => success(resources));
+      }));
   }
 
   post<T>(enpoint: string, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
-    return this._http.post(this.buildApiUrl(enpoint), resource)
+    const obs = this._http.post(this.buildApiUrl(enpoint), resource)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
         return this.handleError(e);
       }))
-      .subscribe((newResource: T) => success(newResource));
+      .subscribe((newResource: T) => {
+        success(newResource);
+        obs.unsubscribe();
+      });
   }
 
   put<T>(enpoint: string, id: string | string[], resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
     if (Array.isArray(id)) {
       id = id.join('-');
     }
-    return this._http.put(this.buildApiUrl(`${enpoint}/${id}`), resource)
+    const obs = this._http.put(this.buildApiUrl(`${enpoint}/${id}`), resource)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
         return this.handleError(e);
       }))
-      .subscribe((newResource: T) => success(newResource));
+      .subscribe((newResource: T) => {
+        success(newResource);
+        obs.unsubscribe();
+      });
   }
 
   delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void) {
@@ -124,12 +175,15 @@ export class ApiService {
     } else if (typeof id === 'object') {
       apiUrl = this.buildApiUrl(enpoint, id);
     }
-    return this._http.delete(apiUrl)
+    const obs = this._http.delete(apiUrl)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
         return this.handleError(e);
       }))
-      .subscribe((resp) => success(resp));
+      .subscribe((resp) => {
+        success(resp);
+        obs.unsubscribe();
+      });
   }
 
   getEmployees(): Observable<EmployeeModel[]> {

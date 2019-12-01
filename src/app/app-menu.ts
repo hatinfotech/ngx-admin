@@ -23,9 +23,14 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'phone-call-outline',
     children: [
       {
+        title: 'Dashboard',
+        // icon: 'people-outline',
+        link: '/ivoip/dashboard',
+      },
+      {
         title: 'Tổng đài',
         // icon: 'people-outline',
-        link: '/ivoip/pbx',
+        link: '/ivoip/pbx/list',
       },
       {
         title: 'Số mở rộng',
