@@ -182,6 +182,7 @@ export class OrdersChartComponent implements AfterViewInit, OnDestroy, OnChanges
         emphasis: {
           color: '#ffffff',
           borderColor: eTheme.itemBorderColor,
+          // borderColor: '#db2c66',
           borderWidth: 2,
           opacity: 1,
         },
@@ -192,10 +193,12 @@ export class OrdersChartComponent implements AfterViewInit, OnDestroy, OnChanges
           type: eTheme.lineStyle,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
             offset: 0,
-            color: eTheme.secondLineGradFrom,
+            // color: eTheme.secondLineGradFrom,
+            color: '#db2c66',
           }, {
             offset: 1,
-            color: eTheme.secondLineGradTo,
+            // color: eTheme.secondLineGradTo,
+            color: '#db2c66',
           }]),
         },
       },
@@ -203,10 +206,12 @@ export class OrdersChartComponent implements AfterViewInit, OnDestroy, OnChanges
         normal: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
             offset: 0,
-            color: eTheme.secondAreaGradFrom,
+            // color: eTheme.secondAreaGradFrom,
+            color: '#db2c66',
           }, {
             offset: 1,
-            color: eTheme.secondAreaGradTo,
+            // color: eTheme.secondAreaGradTo,
+            color: '#ffb0ca',
           }]),
         },
       },

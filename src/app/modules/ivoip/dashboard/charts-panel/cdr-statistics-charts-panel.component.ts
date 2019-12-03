@@ -8,6 +8,7 @@ import { ProfitChart } from '../../../../@core/data/profit-chart';
 import { OrderProfitChartSummary, OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
 import { NbDialogService } from '@nebular/theme';
 import { PbxFormComponent } from '../../pbx/pbx-form/pbx-form.component';
+import { ApiService } from '../../../../services/api.service';
 
 @Component({
   selector: 'ngx-cdr-statistics-charts-panel',
@@ -20,7 +21,10 @@ export class CdrStatisticsChartsPanelComponent implements OnDestroy {
 
   chartPanelSummary: OrderProfitChartSummary[];
   period: string = 'week';
-  ordersChartData: OrdersChart;
+  ordersChartData: OrdersChart = {
+    chartLabel: [],
+    linesData: [ [], [], [] ],
+  };
   profitChartData: ProfitChart;
 
   @ViewChild('ordersChart', { static: true }) ordersChart: OrdersChartComponent;
@@ -29,6 +33,7 @@ export class CdrStatisticsChartsPanelComponent implements OnDestroy {
   constructor(
     private ordersProfitChartService: OrdersProfitChartData,
     private dialogService: NbDialogService,
+    private apiService: ApiService,
   ) {
     this.ordersProfitChartService.getOrderProfitChartSummary()
       .pipe(takeWhile(() => this.alive))
@@ -37,7 +42,7 @@ export class CdrStatisticsChartsPanelComponent implements OnDestroy {
       });
 
     this.getOrdersChartData(this.period);
-    this.getProfitChartData(this.period);
+    // this.getProfitChartData(this.period);
   }
 
   setPeriodAndGetChartData(value: string): void {
@@ -46,7 +51,7 @@ export class CdrStatisticsChartsPanelComponent implements OnDestroy {
     }
 
     this.getOrdersChartData(value);
-    this.getProfitChartData(value);
+    // this.getProfitChartData(value);
   }
 
   changeTab(selectedTab) {
@@ -58,11 +63,31 @@ export class CdrStatisticsChartsPanelComponent implements OnDestroy {
   }
 
   getOrdersChartData(period: string) {
-    this.ordersProfitChartService.getOrdersChartData(period)
-      .pipe(takeWhile(() => this.alive))
-      .subscribe(ordersChartData => {
-        this.ordersChartData = ordersChartData;
+
+    const orderChartTmp: OrdersChart = {
+      chartLabel: [],
+      linesData: [ [], [], [] ],
+    };
+
+    this.apiService.get<{ Label: string, Count: { Complete: number, Miss: number }, Duration: { Complete: number, Miss: number } }[]>(
+      '/ivoip/cdrs', { limit: 99999999999, statistics: period },
+      result => {
+        result.forEach(element => {
+          orderChartTmp.chartLabel.push(element.Label);
+          orderChartTmp.linesData[2].push(element.Count.Complete);
+          orderChartTmp.linesData[1].push(element.Count.Miss);
+          orderChartTmp.linesData[0].push(element.Count.Miss + element.Count.Complete);
+        });
+        this.ordersChartData = orderChartTmp;
       });
+
+
+
+    // this.ordersProfitChartService.getOrdersChartData(period)
+    //   .pipe(takeWhile(() => this.alive))
+    //   .subscribe(ordersChartData => {
+    //     this.ordersChartData = ordersChartData;
+    //   });
   }
 
   getProfitChartData(period: string) {
@@ -74,6 +99,7 @@ export class CdrStatisticsChartsPanelComponent implements OnDestroy {
   }
 
   refresh(): false {
+    this.getOrdersChartData(this.period);
     return false;
   }
 
