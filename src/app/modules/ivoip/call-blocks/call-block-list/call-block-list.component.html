@@ -1,7 +1,7 @@
-<nb-card class="small-header">
+<nb-card>
   <nb-card-header>
     <nav>
-      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách số nội bộ
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh số bị chặn
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
@@ -11,7 +11,7 @@
   <nb-card-body>
     <div class="ng2-smart-table-wrap">
       <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
-        (create)="onCreateAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+        (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
       </ng2-smart-table>
     </div>
   </nb-card-body>

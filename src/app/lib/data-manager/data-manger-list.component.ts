@@ -51,9 +51,14 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     })));
   }
 
+  onReloadBtnClick(): false {
+    this.loadList();
+    return false;
+  }
+
   /** Go to form */
   gotoForm(id?: string): void {
-    this.router.navigate(id ? [this.formPath, id ] : [this.formPath]);
+    this.router.navigate(id ? [this.formPath, id] : [this.formPath]);
   }
 
   /** User select event */
@@ -81,7 +86,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   /** Create and multi edit/delete action */
-  onCreateAction(event: any) {
+  onSerialAction(event: any) {
     if (this.selectedIds.length > 0) {
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
@@ -93,37 +98,38 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
               icon: 'delete',
               status: 'danger',
               action: () => {
-                this.dialogService.open(ShowcaseDialogComponent, {
-                  context: {
-                    title: 'Xác nhận xoá dữ liệu',
-                    content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',
-                    actions: [
-                      {
-                        label: 'Trở về',
-                        icon: 'back',
-                        status: 'info',
-                        action: () => {},
-                      },
-                      {
-                        label: 'Xoá',
-                        icon: 'delete',
-                        status: 'danger',
-                        action: () => {
-                          this.apiService.delete(this.apiPath, this.selectedIds, result => {
-                            this.loadList();
-                          });
-                        },
-                      },
-                    ],
-                  },
-                });
+                this.deleteConfirm(this.selectedIds, () => this.loadList());
+                // this.dialogService.open(ShowcaseDialogComponent, {
+                //   context: {
+                //     title: 'Xác nhận xoá dữ liệu',
+                //     content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',
+                //     actions: [
+                //       {
+                //         label: 'Trở về',
+                //         icon: 'back',
+                //         status: 'info',
+                //         action: () => { },
+                //       },
+                //       {
+                //         label: 'Xoá',
+                //         icon: 'delete',
+                //         status: 'danger',
+                //         action: () => {
+                //           this.apiService.delete(this.apiPath, this.selectedIds, result => {
+                //             this.loadList();
+                //           });
+                //         },
+                //       },
+                //     ],
+                //   },
+                // });
               },
             },
             {
               label: 'Trở về',
               icon: 'back',
               status: 'success',
-              action: () => {},
+              action: () => { },
             },
             {
               label: 'Chỉnh',
@@ -131,7 +137,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
               status: 'warning',
               action: () => {
                 // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
-                this.gotoForm(this.selectedIds.join('-'));
+                this.gotoForm(this.selectedIds.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')));
               },
             },
           ],
@@ -143,16 +149,44 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     }
   }
 
+  deleteConfirm(ids: string[], callback?: () => void) {
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: 'Xác nhận xoá dữ liệu',
+        content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',
+        actions: [
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'info',
+            action: () => { },
+          },
+          {
+            label: 'Xoá',
+            icon: 'delete',
+            status: 'danger',
+            action: () => {
+              this.apiService.delete(this.apiPath, ids, result => {
+                if (callback) callback();
+              });
+            },
+          },
+        ],
+      },
+    });
+  }
+
   /** Delete action */
-  delete(event): void {
-    if (window.confirm('Bạn có muốn xoá dữ liệu \'' + event.data.Name + '\' không?')) {
-      this.apiService.delete(this.apiPath, event.data.Name, result => {
-        // event.confirm.resolve();
-        // event._dataSet.data.splice(event.index, 1);
-        this.source.remove(event.data);
-      });
-    } else {
-      event.confirm.reject();
-    }
+  delete(event: any): void {
+    this.deleteConfirm([event.data[this.idKey]], () => this.loadList());
+    //   if (window.confirm('Bạn có muốn xoá dữ liệu \'' + event.data.Name + '\' không?')) {
+    //     this.apiService.delete(this.apiPath, event.data.Name, result => {
+    //       // event.confirm.resolve();
+    //       // event._dataSet.data.splice(event.index, 1);
+    //       this.source.remove(event.data);
+    //     });
+    //   } else {
+    //     event.confirm.reject();
+    //   }
   }
 }

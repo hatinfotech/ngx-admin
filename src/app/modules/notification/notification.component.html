@@ -1,0 +1,12 @@
+<nb-card>
+  <nb-card-header>
+    <nav>
+      <nb-icon *ngIf="icon" pack="eva" icon="{{ icon }}"></nb-icon> {{ title }}
+    </nav>
+  </nb-card-header>
+  <nb-card-body>{{ content }}</nb-card-body>
+  <nb-card-footer>
+    <button *ngFor="let item of actions" nbButton hero [status]="item?.status"
+      (click)="item?.action()">{{ item.label }}</button>
+  </nb-card-footer>
+</nb-card>

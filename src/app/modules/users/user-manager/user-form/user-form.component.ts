@@ -16,6 +16,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class UserFormComponent extends DataManagerFormComponent<UserModel> implements OnInit {
 
+  idKey = 'Code';
+  apiPath = '/user/users';
+  baseFormUrl = '/users/user-manager/form';
+
   groupList: UserGroupModel[];
   select2OptionForGroups = {
     placeholder: 'Chọn nhóm...',
@@ -40,8 +44,6 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
     protected commonService: CommonService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-    this.apiPath = '/user/users';
-    this.idKey = 'Code';
   }
 
   ngOnInit() {

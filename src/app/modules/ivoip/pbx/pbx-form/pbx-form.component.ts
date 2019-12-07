@@ -16,6 +16,10 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 })
 export class PbxFormComponent extends DataManagerFormComponent<PbxModel> implements OnInit {
 
+  idKey = 'Owner';
+  apiPath = '/ivoip/pbxs';
+  baseFormUrl = '/users/group/form';
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -27,9 +31,6 @@ export class PbxFormComponent extends DataManagerFormComponent<PbxModel> impleme
     protected ref: NbDialogRef<ShowcaseDialogComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-    this.apiPath = '/ivoip/pbxs';
-    this.idKey = 'Owner';
-    // this.form = this.makeNewFormGroup();
   }
 
   ngOnInit() {
@@ -44,7 +45,7 @@ export class PbxFormComponent extends DataManagerFormComponent<PbxModel> impleme
 
         if (data.length > 0) {
           callback(data);
-          this.id = data.map(item => item[this.idKey]).join('-');
+          this.id = data.map(item => item[this.idKey]);
         } else {
           callback([{
             // Code: '',

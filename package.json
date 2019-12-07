@@ -1,13 +1,13 @@
 {
   "name": "mini-erp",
   "version": "4.0.1",
-  "license": "MIT",
+  "license": "NaM software license",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/akveo/ngx-admin.git"
+    "url": "git+git.maytinhsaigon.net:clonet/nam-mini-erp-client.git"
   },
   "bugs": {
-    "url": "https://github.com/akveo/ngx-admin/issues"
+    "url": "https://git.maytinhsaigon.net:clonet/nam-mini-erp-client.git/issues"
   },
   "scripts": {
     "ng": "ng",

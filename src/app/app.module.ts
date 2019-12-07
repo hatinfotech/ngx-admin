@@ -35,12 +35,14 @@ import { TreeModule } from 'angular-tree-component';
 import { PlayerDialogComponent } from './modules/dialog/player-dialog/player-dialog.component';
 import { IvoipModule } from './modules/ivoip/ivoip.module';
 import { PbxFormComponent } from './modules/ivoip/pbx/pbx-form/pbx-form.component';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @NgModule({
   declarations: [
     AppComponent,
   ],
   imports: [
+    NotificationModule,
     NbLayoutModule,
     ECommerceModule,
     DashboardModule,

@@ -78,16 +78,22 @@ export class ApiService {
   }
 
   get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void) {
-    let id: string;
+    // let id: string;
+    let url = '';
     if (Array.isArray(params['id'])) {
-      id = params['id'].join('-');
-      enpoint += `/${id}`;
+      // const idParam = {};
+      params['id'].forEach((item, index) => {
+        params['id' + index] = encodeURIComponent(item);
+      });
       delete params['id'];
+      url = this.buildApiUrl(`${enpoint}`, params);
     } else if (params['id']) {
-      id = params['id'];
-      enpoint += `/${id}`;
+      enpoint += `/${params['id']}`;
+      url = this.buildApiUrl(enpoint, params);
+    } else {
+      url = this.buildApiUrl(enpoint, params);
     }
-    const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
+    const obs = this._http.get<T>(url)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
         return this.handleError(e);
@@ -153,10 +159,18 @@ export class ApiService {
   }
 
   put<T>(enpoint: string, id: string | string[], resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
+    let url = '';
     if (Array.isArray(id)) {
-      id = id.join('-');
+      // id = id.join('-');
+      const params = {};
+      id.forEach((item, index) => {
+        params['id' + index] = encodeURIComponent(item);
+      });
+      url = this.buildApiUrl(`${enpoint}`, params);
+    } else {
+      this.buildApiUrl(`${enpoint}/${id}`);
     }
-    const obs = this._http.put(this.buildApiUrl(`${enpoint}/${id}`), resource)
+    const obs = this._http.put(url, resource)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
         return this.handleError(e);
@@ -170,8 +184,12 @@ export class ApiService {
   delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void) {
     let apiUrl = '';
     if (Array.isArray(id)) {
-      id = id.join('-');
-      apiUrl = this.buildApiUrl(`${enpoint}/${id}`);
+      // const _id = id.join(encodeURIComponent('-'));
+      const params = {};
+      id.forEach((item, index) => {
+        params['id' + index] = encodeURIComponent(item);
+      });
+      apiUrl = this.buildApiUrl(`${enpoint}`, params);
     } else if (typeof id === 'object') {
       apiUrl = this.buildApiUrl(enpoint, id);
     }

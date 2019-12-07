@@ -120,27 +120,42 @@ export class CdrComponent implements OnInit {
   ngOnInit() {
 
     // Get data from api
+    // this.apiService.get<CdrModel[]>('/ivoip/cdrs', { limit: 999999999, offset: 0 },
+    //   cdrs => this.source.load(cdrs.map((item, index: number) => {
+    //     item['No'] = index + 1;
+    //     return item;
+    //   })));
+
+    this.loadList();
+
+
+    // this.domainList = [
+    //   {
+    //     DomainId: 'dfsdfdsf-dsf-sdf-sdf-dsf-sd',
+    //     DomainName: 'thanphat.tongdaidientoan.com',
+    //   },
+    //   {
+    //     DomainId: 'dfsdfdsf-dsf-sdf-sdf-dsf-231223',
+    //     DomainName: 'vanthangdat.tongdaidientoan.com',
+    //   },
+    // ].filter(item => {
+    //   item['id'] = item['DomainId'];
+    //   item['text'] = item['DomainName'];
+    //   return true;
+    // }) as [];
+  }
+
+  loadList() {
     this.apiService.get<CdrModel[]>('/ivoip/cdrs', { limit: 999999999, offset: 0 },
-      cdrs => this.source.load(cdrs.map((item, index: number) => {
-        item['No'] = index + 1;
-        return item;
-      })));
+    cdrs => this.source.load(cdrs.map((item, index: number) => {
+      item['No'] = index + 1;
+      return item;
+    })));
+  }
 
-
-    this.domainList = [
-      {
-        DomainId: 'dfsdfdsf-dsf-sdf-sdf-dsf-sd',
-        DomainName: 'thanphat.tongdaidientoan.com',
-      },
-      {
-        DomainId: 'dfsdfdsf-dsf-sdf-sdf-dsf-231223',
-        DomainName: 'vanthangdat.tongdaidientoan.com',
-      },
-    ].filter(item => {
-      item['id'] = item['DomainId'];
-      item['text'] = item['DomainName'];
-      return true;
-    }) as [];
+  onReloadBtnClick(): false {
+    this.loadList();
+    return false;
   }
 
   onEditAction(event) {
@@ -151,7 +166,7 @@ export class CdrComponent implements OnInit {
     this.router.navigate(['sales/price-report/form']);
   }
 
-  onDeleteConfirm(event: {data: CdrModel}): void {
+  onDeleteConfirm(event: { data: CdrModel }): void {
     // if (window.confirm('Are you sure you want to delete?')) {
     //   event.confirm.resolve();
     // } else {

@@ -10,6 +10,8 @@ import { AuthGuardService } from '../../services/auth-guard.service';
 import { IvoipDashboardComponent } from './dashboard/ivoip-dashboard.component';
 import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';
 import { PbxFormComponent } from './pbx/pbx-form/pbx-form.component';
+import { CallBlockListComponent } from './call-blocks/call-block-list/call-block-list.component';
+import { CallBlockFormComponent } from './call-blocks/call-block-form/call-block-form.component';
 
 
 const routes: Routes = [{
@@ -79,12 +81,22 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'call-blocks',
-      canActivate: [AuthGuardService],
-      component: CallBlocksComponent,
+      path: 'call-blocks/list',
+      // canActivate: [AuthGuardService],
+      component: CallBlockListComponent,
       data: {
         reuse: true,
       },
+    },
+    {
+      path: 'call-blocks/form',
+      // canActivate: [AuthGuardService],
+      component: CallBlockFormComponent,
+    },
+    {
+      path: 'call-blocks/form/:id',
+      // canActivate: [AuthGuardService],
+      component: CallBlockFormComponent,
     },
   ],
 }];

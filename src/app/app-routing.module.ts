@@ -7,6 +7,7 @@ import {
 import { AuthGuardService } from './services/auth-guard.service';
 import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
+import { NotificationComponent } from './modules/notification/notification.component';
 
 const routes: Routes = [
   // {
@@ -66,6 +67,10 @@ const routes: Routes = [
     data: {
       reuse: true,
     },
+  },
+  {
+    path: 'notification/:id',
+    component: NotificationComponent,
   },
   {
     path: 'auth',

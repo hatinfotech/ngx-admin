@@ -6,12 +6,13 @@
 export const environment = {
   production: true,
   api: {
-    baseUrl: 'https://nam2019.mtsg.vn/v1',
+    baseUrl: '/v1',
   },
   number: {
     thousandSeparator: ',',
   },
   localApp: {
-    url: 'https://nam2019.mtsg.vn/app/ITLocal/index.html',
+    enabled: true,
+    url: '/app/ITLocal/index.html',
   },
 };

@@ -11,12 +11,15 @@
 export const environment = {
   production: false,
   api: {
+    // baseUrl: '/v1', // prod
     baseUrl: 'https://local.namsoftware.com/v1',
   },
   number: {
     thousandSeparator: ',',
   },
   localApp: {
-    url: 'https://nam2019.mtsg.vn/app/ITLocal/index.html',
+    // enabled: true, // prod
+    enabled: false,
+    url: '/app/ITLocal/index.html',
   },
 };

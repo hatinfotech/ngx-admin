@@ -1,6 +1,7 @@
 import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/theme';
 import { NbAuthService } from '@nebular/auth';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-one-column-layout',
@@ -20,7 +21,7 @@ import { NbAuthService } from '@nebular/auth';
       </nb-layout-column>
 
       <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed">
-        <!--<iframe class="itLocalapp" src="https://nam2019.mtsg.vn/app/ITLocal/index.html" style="height: 100% ; width:100%; border:0"></iframe>-->
+        <iframe *ngIf="enableLocalApp" class="itLocalapp" src="/app/ITLocal/index.html" style="height: 100% ; width:100%; border:0"></iframe>
       </nb-sidebar>
 
       <nb-layout-footer fixed>
@@ -36,8 +37,15 @@ export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
 
   messages: any[];
   authState = 'logout';
+  enableLocalApp: boolean;
+  localAppUrl = '/app/ITLocal/index.html';
 
   ngOnInit(): void {
+
+    // Local app
+    this.enableLocalApp = environment.localApp.enabled;
+    this.localAppUrl = environment.localApp.url;
+
   }
 
   constructor(
@@ -58,6 +66,7 @@ export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
   // }
 
   ngAfterViewInit(): void {
+
     // console.info(this.siderbar);
     this.sidebarService.onToggle().subscribe(info => {
       if (info.tag === 'menu-sidebar') {

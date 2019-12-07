@@ -219,8 +219,8 @@ body ng2-smart-table table tr td:first-child:hover {
 }
 
 body ng2-smart-table table tr.ng2-smart-titles th:first-child input {
-  width: 20px;
-  height: 16px;
+  /* width: 20px;
+  height: 16px; */
 }
 
 body ng2-smart-table .form-control:focus {
@@ -259,6 +259,18 @@ body ng2-smart-table th.ng2-smart-actions-title-add a {
 
 body ng2-smart-table .no {
   text-align: left;
+}
+
+nb-card.small-header nb-card-header {
+  padding: 0.5rem 1.25rem !important;
+}
+nb-card.small-header nb-card-header nav {
+  height: 2.1rem !important;
+  line-height: 2.1rem !important;
+}
+nb-card.small-header nb-card-header nav button {
+  float: right;
+  margin: 0; margin-left: 0.5rem !important;
 }
 
 nb-card-body .ng2-smart-table-wrap {
@@ -364,6 +376,10 @@ body .form-group[state="warning"] span.valid {
 /* body .form-group[state="warning"] label {
   font-style: italic;
 } */
+.form-group label {
+  width: 100%;
+}
+
 body .form-group[state="warning"] label,
 body .form-group[state="warning"] input,
 body .form-group[state="warning"] select,

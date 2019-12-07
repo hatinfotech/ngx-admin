@@ -55,7 +55,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Chặn số',
         // icon: 'people-outline',
-        link: '/ivoip/call-block',
+        link: '/ivoip/call-blocks/list',
       },
     ],
   },

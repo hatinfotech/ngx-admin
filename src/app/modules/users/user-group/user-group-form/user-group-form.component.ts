@@ -16,6 +16,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupModel> implements OnInit {
 
+  idKey = 'Code';
+  apiPath = '/user/groups';
+  baseFormUrl = '/users/group/form';
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -26,8 +30,6 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
     protected commonService: CommonService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-    this.apiPath = '/user/groups';
-    this.idKey = 'Code';
   }
 
   userList: UserModel[];

@@ -19,6 +19,10 @@ import { ResourceModel } from '../../../../models/resource.model';
 })
 export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> implements OnInit {
 
+  idKey = 'Code';
+  apiPath = '/menu/menu-items';
+  baseFormUrl = 'menu/manager/form';
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -29,8 +33,6 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     protected commonService: CommonService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastService, dialogService, commonService);
-    this.apiPath = '/menu/menu-items';
-    this.idKey = 'Code';
   }
 
   parentList: MenuItemModel[];

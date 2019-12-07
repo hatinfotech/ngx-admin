@@ -1,5 +1,6 @@
 export class CdrModel {
 
+  Id: string;
   Extension: string;
   FromOrigin: string;
   CallerName: string;

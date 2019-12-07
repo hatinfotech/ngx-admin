@@ -2,30 +2,43 @@ import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../../services/api.service';
 import { Router } from '@angular/router';
-import { CdrModel } from '../../../models/cdr.model';
+import { DataManagerListComponent } from '../../../lib/data-manager/data-manger-list.component';
+import { CommonService } from '../../../services/common.service';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { PbxExtensionModel } from '../../../models/pbx-extension.model';
 
 @Component({
   selector: 'ngx-extensions',
   templateUrl: './extensions.component.html',
   styleUrls: ['./extensions.component.scss'],
 })
-export class ExtensionsComponent implements OnInit {
+export class ExtensionsComponent extends DataManagerListComponent<PbxExtensionModel> implements OnInit {
+
+  formPath = '';
+  apiPath = '/ivoip/extensions';
+  idKey = 'Id';
 
   constructor(
-    private apiService: ApiService,
-    private router: Router,
-  ) { }
+    protected apiService: ApiService,
+    protected router: Router,
+    protected commonService: CommonService,
+    protected dialogService: NbDialogService,
+    protected toastService: NbToastrService,
+  ) {
+    super(apiService, router, commonService, dialogService, toastService);
+  }
 
   editing = {};
   rows = [];
 
   settings = {
     mode: 'external',
+    selectMode: 'multi',
     actions: {
       position: 'right',
     },
     add: {
-      addButtonContent: '<i class="nb-plus"></i>',
+      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
     },
@@ -38,45 +51,38 @@ export class ExtensionsComponent implements OnInit {
       deleteButtonContent: '<i class="nb-trash"></i>',
       confirmDelete: true,
     },
+    pager: {
+      display: true,
+      perPage: 99999,
+    },
     columns: {
-      Direction: {
-        title: 'Hướng gọi',
+      extension: {
+        title: 'Extension',
         type: 'string',
       },
-      Extension: {
-        title: 'Số nội bộ',
+      description: {
+        title: 'Diễn giải',
+        type: 'string',
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      },
+      number_alias: {
+        title: 'Alias',
         type: 'string',
       },
-      FromOrigin: {
-        title: 'Số gọi vào',
+      accountcode: {
+        title: 'Số Public',
         type: 'string',
       },
-      CallerName: {
-        title: 'Tên người gọi',
+      call_group: {
+        title: 'Nhóm',
         type: 'string',
       },
-      CallerNumber: {
-        title: 'Số người gọi',
+      user_record: {
+        title: 'Ghi âm',
         type: 'string',
       },
-      CallerDestination: {
-        title: 'Số nhận cuộc gọi',
-        type: 'string',
-      },
-      Start: {
-        title: 'TG Bắt đầu',
-        type: 'string',
-      },
-      Tta: {
-        title: 'TG đỗ chuông',
-        type: 'string',
-      },
-      Duration: {
-        title: 'Thời lượng',
-        type: 'string',
-      },
-      HangupCase: {
-        title: 'Trạng thái',
+      enabled: {
+        title: 'Kích hoạt',
         type: 'string',
       },
     },
@@ -84,60 +90,67 @@ export class ExtensionsComponent implements OnInit {
 
   source: LocalDataSource = new LocalDataSource();
 
-  select2OptionForDomain = {
-    placeholder: 'Chọn tổng đài...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'DoaminId',
-      text: 'DoaminName',
-    },
-  };
-  domainList: { id: string, text: string }[];
+  // select2OptionForDomain = {
+  //   placeholder: 'Chọn tổng đài...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   keyMap: {
+  //     id: 'DoaminId',
+  //     text: 'DoaminName',
+  //   },
+  // };
+  // domainList: { id: string, text: string }[];
 
   ngOnInit() {
 
     // Get data from api
-    this.apiService.get<CdrModel[]>('/ivoip/cdr', { limit: 999999999, offset: 0 },
-      priceReport => this.source.load(priceReport), e => {
-        console.warn(e);
-        if (e.status === 401) {
-          this.router.navigate(['/auth/login']);
-        }
-      });
+    // this.apiService.get<CdrModel[]>('/ivoip/cdr', { limit: 999999999, offset: 0 },
+    //   priceReport => this.source.load(priceReport), e => {
+    //     console.warn(e);
+    //     if (e.status === 401) {
+    //       this.router.navigate(['/auth/login']);
+    //     }
+    //   });
 
-    this.domainList = [
-      {
-        DomainId: 'dfsdfdsf-dsf-sdf-sdf-dsf-sd',
-        DomainName: 'thanphat.tongdaidientoan.com',
-      },
-      {
-        DomainId: 'dfsdfdsf-dsf-sdf-sdf-dsf-231223',
-        DomainName: 'vanthangdat.tongdaidientoan.com',
-      },
-    ].filter(item => {
-      item['id'] = item['DomainId'];
-      item['text'] = item['DomainName'];
-      return true;
-    }) as [];
+    super.ngOnInit();
+
+    // this.domainList = [
+    //   {
+    //     DomainId: 'dfsdfdsf-dsf-sdf-sdf-dsf-sd',
+    //     DomainName: 'thanphat.tongdaidientoan.com',
+    //   },
+    //   {
+    //     DomainId: 'dfsdfdsf-dsf-sdf-sdf-dsf-231223',
+    //     DomainName: 'vanthangdat.tongdaidientoan.com',
+    //   },
+    // ].filter(item => {
+    //   item['id'] = item['DomainId'];
+    //   item['text'] = item['DomainName'];
+    //   return true;
+    // }) as [];
   }
 
-  onEditAction(event) {
-    this.router.navigate(['sales/price-report/form', event.data.Code]);
+  onReloadBtnClick(): false {
+    this.loadList();
+    return false;
   }
 
-  onCreateAction(event) {
-    this.router.navigate(['sales/price-report/form']);
-  }
+  // onEditAction(event) {
+  //   this.router.navigate(['sales/price-report/form', event.data.Code]);
+  // }
 
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
-    }
-  }
+  // onCreateAction(event) {
+  //   this.router.navigate(['sales/price-report/form']);
+  // }
+
+  // onDeleteConfirm(event): void {
+  //   if (window.confirm('Are you sure you want to delete?')) {
+  //     event.confirm.resolve();
+  //   } else {
+  //     event.confirm.reject();
+  //   }
+  // }
 
 }

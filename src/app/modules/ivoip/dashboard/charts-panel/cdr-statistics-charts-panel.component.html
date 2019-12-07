@@ -1,11 +1,11 @@
-<nb-card size="large">
-    <nb-card-header style="padding: 0.5rem 1.25rem;">
-        <nav style="line-height: 2rem;">
+<nb-card class="small-header" size="large">
+    <nb-card-header>
+        <nav>
           <nb-icon pack="eva" icon="list-outline"></nb-icon> Lưu lượng cuộc gọi
-          <button nbButton status="success" hero size="tiny" (click)="refresh()" style="float: right; margin: 0; margin-left: 0.5rem;">
+          <button nbButton status="success" hero size="tiny" (click)="refresh()">
             <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
           </button>
-          <button nbButton status="warning" hero size="tiny" (click)="onSettingClick()" style="float: right; margin: 0; margin-left: 0.5rem;">
+          <button nbButton status="warning" hero size="tiny" (click)="onSettingClick()">
               <nb-icon pack="eva" icon="settings-2-outline"></nb-icon>
             </button>
         </nav>

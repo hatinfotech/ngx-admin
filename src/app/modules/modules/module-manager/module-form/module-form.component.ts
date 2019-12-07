@@ -16,6 +16,10 @@ import { CommonService } from '../../../../services/common.service';
 })
 export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> implements OnInit {
 
+  idKey = 'Name';
+  apiPath = '/module/modules';
+  baseFormUrl = 'modules/manager/form';
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,

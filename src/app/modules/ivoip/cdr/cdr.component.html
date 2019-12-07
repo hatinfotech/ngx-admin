@@ -1,6 +1,11 @@
-<nb-card>
+<nb-card class="small-header">
   <nb-card-header>
-    Tra cứu lịch sử cuộc gọi
+    <nav>
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> Tra cứu lịch sử cuộc gọi
+      <button nbButton status="success" hero size="tiny" (click)="onReloadBtnClick()" style="float: right;">
+        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+      </button>
+    </nav>
   </nb-card-header>
 
   <nb-card-body>

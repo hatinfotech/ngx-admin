@@ -1,6 +1,11 @@
 <nb-card>
   <nb-card-header>
-    Danh sách modules
+    <nav>
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách modules
+      <button nbButton status="success" hero size="tiny" (click)="onReloadBtnClick()" style="float: right;">
+        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+      </button>
+    </nav>
   </nb-card-header>
 
   <nb-card-body>

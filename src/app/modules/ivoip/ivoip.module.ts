@@ -17,13 +17,15 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { MenuRoutingModule } from '../menu/menu-routing.module';
+import { CallBlockListComponent } from './call-blocks/call-block-list/call-block-list.component';
+import { CallBlockFormComponent } from './call-blocks/call-block-form/call-block-form.component';
 
 @NgModule({
   declarations: [
     IvoipComponent, CdrComponent,
     ExtensionsComponent, DevicesComponent,
     PstnNumbersComponent, CallBlocksComponent,
-    PbxListComponent, PbxFormComponent],
+    PbxListComponent, PbxFormComponent, CallBlockListComponent, CallBlockFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,

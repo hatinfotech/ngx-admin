@@ -35,13 +35,16 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   formLoading = false;
 
   /** resource(s) id for get data */
-  id: string;
+  id: string[] = [];
+
+  /** base form url */
+  abstract baseFormUrl: string;
 
   /** resource id key */
-  idKey = 'Id';
+  abstract idKey: string;
 
   /** Restful api path use for api service */
-  apiPath: string;
+  abstract apiPath: string;
 
   /** Destroy monitoring */
   destroy$: Subject<null> = new Subject<null>();
@@ -81,10 +84,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   ngOnInit() {
 
     this.activeRoute.params.subscribe(params => {
-      this.id = params['id']; // (+) converts string 'id' to a number
-
-      if (this.id) {
-        this.formLoad();
+      // this.id = params['id']; // (+) converts string 'id' to a number
+      if (params['id']) {
+        this.id = decodeURIComponent(params['id']).split('&');
+        if (this.id.length > 0) {
+          this.formLoad();
+        } else {
+          this.formLoading = false;
+        }
       } else {
         this.formLoading = false;
       }
@@ -93,6 +100,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Get form data by id from api */
   getFormData(callback: (data: M[]) => void) {
+    // const ids: { [key: string]: string } = {};
+    // this.id.forEach((element, index) => {
+    //   ids['id' + index] = element;
+    // });
     this.apiService.get<M[]>(this.apiPath, { id: this.id, multi: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
@@ -173,7 +184,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       hasIcon: true,
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
     });
-    this.id = newFormData.map(item => item[this.idKey]).join('-');
+    this.id = newFormData.map(item => item[this.idKey]);
+    this.commonService.location.go('/');
   }
 
   /** Affter main form update event */
@@ -184,7 +196,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       hasIcon: true,
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
     });
-    this.id = newFormData.map(item => item[this.idKey]).join('-');
+    this.id = newFormData.map(item => item[this.idKey]);
+    this.commonService.location.go(this.baseFormUrl + '/' + this.id.join(encodeURIComponent('&')));
   }
 
   /** Error event */
