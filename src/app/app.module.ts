@@ -23,7 +23,7 @@ import {
   NbCardModule,
   NbLayoutModule,
 } from '@nebular/theme';
-import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/auth';
+import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken, NbAuthOAuth2JWTToken } from '@nebular/auth';
 import { AuthModule } from './modules/auth/auth.module';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-stratery';
@@ -72,7 +72,8 @@ import { NotificationModule } from './modules/notification/notification.module';
         NbPasswordAuthStrategy.setup({
           name: 'email',
           token: {
-            class: NbAuthJWTToken,
+            // class: NbAuthJWTToken,
+            class: NbAuthOAuth2JWTToken,
             key: 'token', // this parameter tells where to look for the token
           },
           baseEndpoint: environment.api.baseUrl,
@@ -84,6 +85,16 @@ import { NotificationModule } from './modules/notification/notification.module';
               failure: null, // stay on the same page
             },
           },
+          refreshToken: {
+            method: 'post',
+            endpoint: '/user/login/refresh',
+            requireValidToken: false,
+            redirect: {
+              success: null,
+              failure: null,
+            },
+          }
+          ,
           logout: {
             // ...
             endpoint: '/user/logout',

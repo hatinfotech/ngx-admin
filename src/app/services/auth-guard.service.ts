@@ -18,7 +18,7 @@ export class AuthGuardService implements CanActivate {
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return this.authService.isAuthenticated()
+    return this.authService.isAuthenticatedOrRefresh()
       .pipe(
         tap(authenticated => {
           if (!authenticated) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { NbAuthService, NbAuthJWTToken } from '@nebular/auth';
+import { NbAuthService, NbAuthJWTToken, NbAuthOAuth2Token } from '@nebular/auth';
 import { environment } from '../../environments/environment';
 import { Observable, throwError, observable } from 'rxjs';
 import { map, retry, catchError } from 'rxjs/operators';
@@ -22,17 +22,27 @@ export class ApiService {
   ) {
 
     this.authService.onTokenChange()
-      .subscribe((token: NbAuthJWTToken) => {
+      .subscribe((token: NbAuthOAuth2Token) => {
         if (token.isValid()) {
-          this.setToken(token.toString());
+          this.setToken(token);
         }
       });
 
-    this.authService.getToken().subscribe((token: NbAuthJWTToken) => {
+    this.authService.getToken().subscribe((token: NbAuthOAuth2Token) => {
       if (token.isValid()) {
-        this.setToken(token.toString());
+        this.setToken(token);
       }
-    }).unsubscribe();
+    });
+  }
+
+  setToken(token: NbAuthOAuth2Token) {
+    if (token) {
+      const t = JSON.parse(token.toString());
+      if (t) {
+        this.setAccessToken(t['access_token']);
+        this.setRefreshToken(t['refresh_token']);
+      }
+    }
   }
 
   storeSession(session: string) {
@@ -43,20 +53,28 @@ export class ApiService {
     return localStorage.getItem('api_session');
   }
 
-  setToken(token: string) {
-    localStorage.setItem('api_token', token);
+  setAccessToken(token: string) {
+    localStorage.setItem('api_access_token', token);
   }
 
-  getToken(): string {
-    return localStorage.getItem('api_token');
+  setRefreshToken(token: string) {
+    localStorage.setItem('api_refresh_token', token);
+  }
+
+  getAccessToken(): string {
+    return localStorage.getItem('api_access_token');
+  }
+
+  getRefreshToken(): string {
+    return localStorage.getItem('api_refresh_token');
   }
 
   clearToken() {
-    this.setToken(null);
+    this.setAccessToken(null);
   }
 
   buildApiUrl(path: string, params?: Object) {
-    const token = this.getToken();
+    const token = this.getAccessToken();
     let paramsStr = '';
     if (params) {
       paramsStr += this.buildParams(params);
@@ -77,57 +95,45 @@ export class ApiService {
     return httpParams;
   }
 
-  get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void) {
-    // let id: string;
-    let url = '';
-    if (Array.isArray(params['id'])) {
-      // const idParam = {};
-      params['id'].forEach((item, index) => {
-        params['id' + index] = encodeURIComponent(item);
-      });
-      delete params['id'];
-      url = this.buildApiUrl(`${enpoint}`, params);
-    } else if (params['id']) {
-      enpoint += `/${params['id']}`;
-      url = this.buildApiUrl(enpoint, params);
-    } else {
-      url = this.buildApiUrl(enpoint, params);
-    }
-    const obs = this._http.get<T>(url)
-      .pipe(retry(0), catchError(e => {
-        if (error) error(e);
-        return this.handleError(e);
-      }))
-      .subscribe((resources: T) => {
-        success(resources);
-        obs.unsubscribe();
-      });
+  refreshToken(success: () => void, error?: () => void) {
+    this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+      console.info(result);
+      success();
+    });
   }
 
-  // get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void) {
-  //   let id: string;
-  //   if (Array.isArray(params['id'])) {
-  //     id = params['id'].join('-');
-  //     enpoint += `/${id}`;
-  //     delete params['id'];
-  //   } else if (params['id']) {
-  //     id = params['id'];
-  //     enpoint += `/${id}`;
-  //   }
-
-  //   const observable = this.getAsObservable(enpoint, params, error).subscribe((resources: T) => {
-  //     success(resources);
-  //     observable.unsubscribe();
-  //   });
-  //   return observable;
-
-  //   // return this._http.get<T>(this.buildApiUrl(enpoint, params))
-  //   //   .pipe(retry(0), catchError(e => {
-  //   //     if (error) error(e);
-  //   //     return this.handleError(e);
-  //   //   }))
-  //   //   .subscribe((resources: T) => success(resources));
-  // }
+  /** Restful api getting request */
+  get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void) {
+    this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+      if (result) {
+        let url = '';
+        if (Array.isArray(params['id'])) {
+          // const idParam = {};
+          params['id'].forEach((item, index) => {
+            params['id' + index] = encodeURIComponent(item);
+          });
+          delete params['id'];
+          url = this.buildApiUrl(`${enpoint}`, params);
+        } else if (params['id']) {
+          enpoint += `/${params['id']}`;
+          url = this.buildApiUrl(enpoint, params);
+        } else {
+          url = this.buildApiUrl(enpoint, params);
+        }
+        const obs = this._http.get<T>(url)
+          .pipe(retry(0), catchError(e => {
+            if (error) error(e);
+            return this.handleError(e);
+          }))
+          .subscribe((resources: T) => {
+            success(resources);
+            obs.unsubscribe();
+          });
+      } else {
+        this.onUnauthorizied();
+      }
+    });
+  }
 
   getAsObservable<T>(enpoint: string, params: any, error?: (e: HttpErrorResponse) => void): Observable<T> {
     let id: string;
@@ -146,62 +152,83 @@ export class ApiService {
       }));
   }
 
+  /** Restful api post request */
   post<T>(enpoint: string, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
-    const obs = this._http.post(this.buildApiUrl(enpoint), resource)
-      .pipe(retry(0), catchError(e => {
-        if (error) error(e);
-        return this.handleError(e);
-      }))
-      .subscribe((newResource: T) => {
-        success(newResource);
-        obs.unsubscribe();
-      });
+    this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+      if (result) {
+        const obs = this._http.post(this.buildApiUrl(enpoint), resource)
+          .pipe(retry(0), catchError(e => {
+            if (error) error(e);
+            return this.handleError(e);
+          }))
+          .subscribe((newResource: T) => {
+            success(newResource);
+            obs.unsubscribe();
+          });
+      } else {
+        this.onUnauthorizied();
+      }
+    });
   }
 
+  /** Restful api put request */
   put<T>(enpoint: string, id: string | string[], resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
-    let url = '';
-    if (Array.isArray(id)) {
-      // id = id.join('-');
-      const params = {};
-      id.forEach((item, index) => {
-        params['id' + index] = encodeURIComponent(item);
-      });
-      url = this.buildApiUrl(`${enpoint}`, params);
-    } else {
-      this.buildApiUrl(`${enpoint}/${id}`);
-    }
-    const obs = this._http.put(url, resource)
-      .pipe(retry(0), catchError(e => {
-        if (error) error(e);
-        return this.handleError(e);
-      }))
-      .subscribe((newResource: T) => {
-        success(newResource);
-        obs.unsubscribe();
-      });
+    this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+      if (result) {
+        let url = '';
+        if (Array.isArray(id)) {
+          // id = id.join('-');
+          const params = {};
+          id.forEach((item, index) => {
+            params['id' + index] = encodeURIComponent(item);
+          });
+          url = this.buildApiUrl(`${enpoint}`, params);
+        } else {
+          this.buildApiUrl(`${enpoint}/${id}`);
+        }
+        const obs = this._http.put(url, resource)
+          .pipe(retry(0), catchError(e => {
+            if (error) error(e);
+            return this.handleError(e);
+          }))
+          .subscribe((newResource: T) => {
+            success(newResource);
+            obs.unsubscribe();
+          });
+      } else {
+        this.onUnauthorizied();
+      }
+    });
   }
 
+  /** Restful api delete request */
   delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void) {
-    let apiUrl = '';
-    if (Array.isArray(id)) {
-      // const _id = id.join(encodeURIComponent('-'));
-      const params = {};
-      id.forEach((item, index) => {
-        params['id' + index] = encodeURIComponent(item);
-      });
-      apiUrl = this.buildApiUrl(`${enpoint}`, params);
-    } else if (typeof id === 'object') {
-      apiUrl = this.buildApiUrl(enpoint, id);
-    }
-    const obs = this._http.delete(apiUrl)
-      .pipe(retry(0), catchError(e => {
-        if (error) error(e);
-        return this.handleError(e);
-      }))
-      .subscribe((resp) => {
-        success(resp);
-        obs.unsubscribe();
-      });
+    this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+      if (result) {
+        let apiUrl = '';
+        if (Array.isArray(id)) {
+          // const _id = id.join(encodeURIComponent('-'));
+          const params = {};
+          id.forEach((item, index) => {
+            params['id' + index] = encodeURIComponent(item);
+          });
+          apiUrl = this.buildApiUrl(`${enpoint}`, params);
+        } else if (typeof id === 'object') {
+          apiUrl = this.buildApiUrl(enpoint, id);
+        }
+        const obs = this._http.delete(apiUrl)
+          .pipe(retry(0), catchError(e => {
+            if (error) error(e);
+            return this.handleError(e);
+          }))
+          .subscribe((resp) => {
+            success(resp);
+            obs.unsubscribe();
+          });
+      } else {
+        this.onUnauthorizied();
+      }
+    });
   }
 
   getEmployees(): Observable<EmployeeModel[]> {
@@ -220,6 +247,10 @@ export class ApiService {
       }, (e: HttpErrorResponse) => {
         if (error) error(e);
       });
+  }
+
+  onUnauthorizied() {
+    this.router.navigate(['/auth/login']);
   }
 
   handleError(e: HttpErrorResponse) {
