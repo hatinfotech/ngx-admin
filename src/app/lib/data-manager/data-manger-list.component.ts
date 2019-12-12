@@ -43,9 +43,13 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     this.loadList();
   }
 
+  getList(callback: (list: M[]) => void) {
+    this.apiService.get<M[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => callback(results));
+  }
+
   /** Get data from api and push to list */
   loadList() {
-    this.apiService.get<M[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => this.source.load(results.map((item, index) => {
+    this.getList(list => this.source.load(list.map((item, index) => {
       item['No'] = index + 1;
       return item;
     })));

@@ -1,7 +1,10 @@
-<nb-card>
-  <nb-card-header>{{ title }}</nb-card-header>
-  <nb-card-body>{{ content }}</nb-card-body>
-  <nb-card-footer>
-    <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="dismiss(); item?.action()">{{ item.label }}</button>
-  </nb-card-footer>
-</nb-card>
+<div style="height: 100%; overflow: auto;">
+  <nb-card style="max-height: initial; margin: 0 auto;">
+    <nb-card-header>{{ title }}</nb-card-header>
+    <nb-card-body [innerHTML]="content"></nb-card-body>
+    <nb-card-footer>
+      <button *ngFor="let item of actions" nbButton hero [status]="item?.status"
+        (click)="dismiss(); item?.action()">{{ item.label }}</button>
+    </nb-card-footer>
+  </nb-card>
+</div>

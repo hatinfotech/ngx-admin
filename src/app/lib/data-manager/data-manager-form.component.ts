@@ -31,6 +31,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Submit status */
   submitted = false;
 
+  submiting = false;
+
   /** Form loading status */
   formLoading = false;
 
@@ -261,6 +263,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Form submit event */
   onSubmit() {
     this.submitted = true;
+    this.submiting = true;
     const data: { array: any } = this.form.value;
     // console.info(data);
 
@@ -270,7 +273,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         newFormData => {
           // console.info(newFormData);
           this.onAfterUpdateSubmit(newFormData);
+          this.submiting = false;
         }, e => {
+          this.submiting = false;
           this.onError(e);
         });
     } else {
@@ -279,8 +284,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         newFormData => {
           // console.info(newFormData);
           this.onAfterCreateSubmit(newFormData);
+          this.submiting = false;
         }, e => {
           this.onError(e);
+          this.submiting = false;
         });
     }
 
@@ -309,10 +316,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
-    const currentFormControl = this.array.controls[i].get(formControlName);
-    this.array.controls.forEach((formItem, index) => {
+    const currentValue = array.controls[i].get(formControlName).value;
+    array.controls.forEach((formItem, index) => {
       if (index !== i) {
-        formItem.get(formControlName).patchValue(currentFormControl.value);
+        formItem.get(formControlName).patchValue(currentValue);
       }
     });
   }

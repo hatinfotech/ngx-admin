@@ -431,14 +431,14 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     // this.componentList[mainIndex].splice(index, 1);
   }
 
-  copyMainFormControlValueToOthers(i: number, formControlName: string) {
-    const currentFormControl = this.array.controls[i].get(formControlName);
-    this.array.controls.forEach((formItem, index) => {
-      if (index !== i) {
-        formItem.get(formControlName).patchValue(currentFormControl.value);
-      }
-    });
-  }
+  // copyMainFormControlValueToOthers(i: number, formControlName: string) {
+  //   const currentFormControl = this.array.controls[i].get(formControlName);
+  //   this.array.controls.forEach((formItem, index) => {
+  //     if (index !== i) {
+  //       formItem.get(formControlName).patchValue(currentFormControl.value);
+  //     }
+  //   });
+  // }
 
   copyComponentFormControlValueToOthers(i: number, ic: number, formControlName: string) {
     const currentFormControl = this.getComponents(i).controls[ic].get(formControlName);

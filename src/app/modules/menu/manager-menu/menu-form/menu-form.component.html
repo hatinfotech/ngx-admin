@@ -25,7 +25,7 @@
               <input type="hidden" formControlName="Code_old">
               <div class="col-sm-3">
                 <div class="form-group">
-                  <label class="label">Menu cha <nb-icon (click)="copyMainFormControlValueToOthers(i, 'Parent')" pack="eva"
+                  <label class="label">Menu cha <nb-icon (click)="copyFormControlValueToOthers(array, i, 'Parent')" pack="eva"
                       icon="copy-outline"></nb-icon></label>
                   <ngx-select2 [data]="parentList" formControlName="Parent" [select2Option]="select2OptionForParent">
                   </ngx-select2>
