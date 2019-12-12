@@ -36,6 +36,7 @@ import { PlayerDialogComponent } from './modules/dialog/player-dialog/player-dia
 import { IvoipModule } from './modules/ivoip/ivoip.module';
 import { PbxFormComponent } from './modules/ivoip/pbx/pbx-form/pbx-form.component';
 import { NotificationModule } from './modules/notification/notification.module';
+import { DialogFormComponent } from './modules/dialog/dialog-form/dialog-form.component';
 
 @NgModule({
   declarations: [
@@ -121,7 +122,7 @@ import { NotificationModule } from './modules/notification/notification.module';
     ShowcaseDialogComponent,
     PlayerDialogComponent,
     PbxFormComponent,
-
+    DialogFormComponent,
   ],
   bootstrap: [AppComponent],
   providers: [{

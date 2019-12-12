@@ -19,13 +19,15 @@ import { DialogModule } from '../dialog/dialog.module';
 import { MenuRoutingModule } from '../menu/menu-routing.module';
 import { CallBlockListComponent } from './call-blocks/call-block-list/call-block-list.component';
 import { CallBlockFormComponent } from './call-blocks/call-block-form/call-block-form.component';
+import { ExtensionListComponent } from './extensions/extension-list/extension-list.component';
+import { ExtensionFormComponent } from './extensions/extension-form/extension-form.component';
 
 @NgModule({
   declarations: [
     IvoipComponent, CdrComponent,
     ExtensionsComponent, DevicesComponent,
     PstnNumbersComponent, CallBlocksComponent,
-    PbxListComponent, PbxFormComponent, CallBlockListComponent, CallBlockFormComponent],
+    PbxListComponent, PbxFormComponent, CallBlockListComponent, CallBlockFormComponent, ExtensionListComponent, ExtensionFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,

@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ShowcaseDialogComponent } from './showcase-dialog/showcase-dialog.component';
-import { NbCardModule, NbButtonModule, NbIconModule, NbUserModule, NbTabsetModule, NbActionsModule, NbRadioModule, NbSelectModule, NbListModule } from '@nebular/theme';
+import { NbCardModule, NbButtonModule, NbIconModule, NbUserModule, NbTabsetModule, NbActionsModule, NbRadioModule, NbSelectModule, NbListModule, NbInputModule, NbCheckboxModule } from '@nebular/theme';
 import { PlayerDialogComponent } from './player-dialog/player-dialog.component';
 import { MediaModule } from '../media/media.module';
 import { ThemeModule } from '../../@theme/theme.module';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { DialogFormComponent } from './dialog-form/dialog-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [ShowcaseDialogComponent, PlayerDialogComponent],
+  declarations: [ShowcaseDialogComponent, PlayerDialogComponent, DialogFormComponent],
   imports: [
     MediaModule,
 
@@ -24,7 +26,11 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NbIconModule,
     NbButtonModule,
     NgxEchartsModule,
+    NbInputModule,
+    NbCheckboxModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
-  exports: [ShowcaseDialogComponent, PlayerDialogComponent],
+  exports: [ShowcaseDialogComponent, PlayerDialogComponent, DialogFormComponent],
 })
 export class DialogModule { }

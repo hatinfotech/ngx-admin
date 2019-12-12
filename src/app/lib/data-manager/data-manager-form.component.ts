@@ -185,7 +185,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
     });
     this.id = newFormData.map(item => item[this.idKey]);
-    this.commonService.location.go('/');
+    this.commonService.location.go(this.generateUrlByIds(this.id));
   }
 
   /** Affter main form update event */
@@ -197,7 +197,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
     });
     this.id = newFormData.map(item => item[this.idKey]);
-    this.commonService.location.go(this.baseFormUrl + '/' + this.id.join(encodeURIComponent('&')));
+    this.commonService.location.go(this.generateUrlByIds(this.id));
+  }
+
+  protected generateUrlByIds(ids: string[]){
+    return this.baseFormUrl + '/' + ids.join(encodeURIComponent('&'));
   }
 
   /** Error event */
@@ -260,7 +264,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     const data: { array: any } = this.form.value;
     // console.info(data);
 
-    if (this.id) {
+    if (this.id.length > 0) {
       // Update
       this.apiService.put<M[]>(this.apiPath, this.id, data.array,
         newFormData => {
@@ -293,6 +297,24 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       return invalidText;
     }
     return valideText ? valideText : '';
+  }
+
+  protected convertOptionList(list: any[], idKey: string, labelKey: string) {
+    return list.map(item => {
+      item['id'] = item[idKey] = item[idKey] ? item[idKey] : 'undefined';
+      item['text'] = item[labelKey] = item[labelKey] ? item[labelKey] : 'undefined';
+
+      return item;
+    });
+  }
+
+  copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
+    const currentFormControl = this.array.controls[i].get(formControlName);
+    this.array.controls.forEach((formItem, index) => {
+      if (index !== i) {
+        formItem.get(formControlName).patchValue(currentFormControl.value);
+      }
+    });
   }
 
   ngOnDestroy(): void {

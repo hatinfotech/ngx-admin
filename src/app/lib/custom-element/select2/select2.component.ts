@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, EventEmitter, Output } from '@angular/core';
+import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
 @Component({
@@ -18,7 +18,9 @@ import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VAL
     },
   ],
 })
-export class Select2Component implements ControlValueAccessor, Validator {
+export class Select2Component implements ControlValueAccessor, Validator, OnChanges {
+
+
   private provinceData: { id: number, name: string, type: 'central' | 'province' };
   onChange: (item: any) => void;
   onTouched: () => void;
@@ -27,6 +29,15 @@ export class Select2Component implements ControlValueAccessor, Validator {
   @Input('value') value: string | string[];
   @Input('select2Option') select2Option: Select2Options;
   @Output() selectChange = new EventEmitter<Object>();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.data && changes.data.previousValue !== changes.data.currentValue) {
+      this.data.unshift({
+        id: '',
+        text: this.select2Option.placeholder,
+      });
+    }
+  }
 
   select2Value = '';
   fieldValue: string | string[];

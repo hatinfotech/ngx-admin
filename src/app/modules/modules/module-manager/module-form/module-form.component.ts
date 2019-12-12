@@ -137,7 +137,7 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     return this.array.controls[formGroupIndex].get('Resources') as FormArray;
   }
 
-  copyFormControlValueToOthers(i: number, formControlName: string) {
+  copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
     const currentFormControl = this.array.controls[i].get(formControlName);
     this.array.controls.forEach((formItem, index) => {
       if (index !== i) {

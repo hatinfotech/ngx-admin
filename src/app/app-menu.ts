@@ -35,10 +35,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Số mở rộng',
         // icon: 'people-outline',
-        link: '/ivoip/extensions',
+        link: '/ivoip/extensions/list',
       },
       {
-        title: 'Điện thoại',
+        title: 'Điện thoại IP',
         // icon: 'people-outline',
         link: '/ivoip/devices',
       },

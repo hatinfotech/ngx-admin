@@ -1,0 +1,18 @@
+<nb-card>
+  <nb-card-header>{{ title }}</nb-card-header>
+  <nb-card-body>
+    <div [formGroup]="formGroup">
+      <div class="row">
+        <div class="col-sm-12" *ngFor="let control of controls">
+          <div class="form-group">
+            <label class="label"><span class="valid">{{ control.label }}</span></label>
+            <input type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder">
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="dismiss(); item?.action(formGroup)">{{ item?.label }}</button>
+  </nb-card-footer>
+</nb-card>

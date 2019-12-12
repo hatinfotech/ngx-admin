@@ -12,6 +12,8 @@ import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';
 import { PbxFormComponent } from './pbx/pbx-form/pbx-form.component';
 import { CallBlockListComponent } from './call-blocks/call-block-list/call-block-list.component';
 import { CallBlockFormComponent } from './call-blocks/call-block-form/call-block-form.component';
+import { ExtensionListComponent } from './extensions/extension-list/extension-list.component';
+import { ExtensionFormComponent } from './extensions/extension-form/extension-form.component';
 
 
 const routes: Routes = [{
@@ -66,11 +68,19 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'extensions',
-      component: ExtensionsComponent,
+      path: 'extensions/list',
+      component: ExtensionListComponent,
       data: {
         reuse: true,
       },
+    },
+    {
+      path: 'extensions/form',
+      component: ExtensionFormComponent,
+    },
+    {
+      path: 'extensions/form/:id',
+      component: ExtensionFormComponent,
     },
     {
       path: 'pstn-numbers',
