@@ -279,24 +279,24 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Execute api get */
   executeGet(params: any, success: (resources: M[]) => void, error?: (e: HttpErrorResponse) => void) {
     this.apiService.get<M[]>(this.apiPath, params, data => success(data), e => {
-      if (error) error(e);
-      this.onError(e);
+      if (error) error(e); else this.onError(e);
+      // this.onError(e);
     });
   }
 
   /** Execute api put */
   executePut(params: any, data: M[], success: (data: M[]) => void, error: (e: any) => void) {
     this.apiService.put<M[]>(this.apiPath, params, data, newFormData => success(newFormData), e => {
-      if (error) error(e);
-      this.onError(e);
+      if (error) error(e); else this.onError(e);
+      // this.onError(e);
     });
   }
 
   /** Execute api post */
   executePost(params: any, data: M[], success: (data: M[]) => void, error: (e: any) => void) {
-    this.apiService.post<M[]>(this.apiPath, params, data, newFormData =>  success(newFormData) , e =>  {
-      if (error) error(e);
-      this.onError(e);
+    this.apiService.post<M[]>(this.apiPath, params, data, newFormData => success(newFormData), e => {
+      if (error) error(e); else this.onError(e);
+      // this.onError(e);
     });
   }
 

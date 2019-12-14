@@ -34,10 +34,47 @@
                     placeholder="Mã mac">
                 </div>
               </div>
+              <div class="col-sm-8">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Mô tả</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_description')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <input type="text" nbInput fullWidth formControlName="device_description" placeholder="Mô tả">
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Extension</span></label>
+                  <ngx-select2 [data]="extensionList" formControlName="extension"
+                    [select2Option]="extensionListConfig" (selectChange)="onExtensionChange($event, i)">
+                  </ngx-select2>
+                </div>
+              </div>
               <div class="col-sm-3">
                 <div class="form-group">
                   <label class="label"><span class="valid">Nhãn</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_label')" pack="eva" icon="copy-outline"></nb-icon></label>
                   <input type="text" nbInput fullWidth formControlName="device_label" placeholder="Nhãn">
+                </div>
+              </div>
+              <div class="col-sm-5">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
+                  <label class="label"><span class="valid">Domain</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'domain_uuid')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <ngx-select2 [data]="domainList" formControlName="domain_uuid"
+                    [select2Option]="select2OptionForDoaminList">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('device_template'), 'warning')">
+                  <label class="label"><span class="valid">Template</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_template')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <ngx-select2 [data]="templateList" formControlName="device_template"
+                    [select2Option]="templateListConfig" (selectChange)="onVendorTemplateChange($event, i)">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Kiểu</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_model')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <input type="text" nbInput fullWidth formControlName="device_model"
+                    placeholder="Kiểu">
                 </div>
               </div>
               <div class="col-sm-3">
@@ -51,35 +88,6 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('device_enabled'), 'warning')">
                   <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_enabled')" pack="eva" icon="copy-outline"></nb-icon></label>
                   <nb-checkbox formControlName="device_enabled">Kích hoạt</nb-checkbox>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <label class="label"><span class="valid">Kiểu</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_model')" pack="eva" icon="copy-outline"></nb-icon></label>
-                  <input type="text" nbInput fullWidth formControlName="device_model"
-                    placeholder="Kiểu">
-                </div>
-              </div>
-              <div class="col-sm-8">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
-                  <label class="label"><span class="valid">Domain</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'domain_uuid')" pack="eva" icon="copy-outline"></nb-icon></label>
-                  <ngx-select2 [data]="domainList" formControlName="domain_uuid"
-                    [select2Option]="select2OptionForDoaminList">
-                  </ngx-select2>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('device_template'), 'warning')">
-                  <label class="label"><span class="valid">Template</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_template')" pack="eva" icon="copy-outline"></nb-icon></label>
-                  <ngx-select2 [data]="templateList" formControlName="device_template"
-                    [select2Option]="templateListConfig">
-                  </ngx-select2>
-                </div>
-              </div>
-              <div class="col-sm-8">
-                <div class="form-group">
-                  <label class="label"><span class="valid">Mô tả</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_description')" pack="eva" icon="copy-outline"></nb-icon></label>
-                  <input type="text" nbInput fullWidth formControlName="device_description" placeholder="Mô tả">
                 </div>
               </div>
             </div>

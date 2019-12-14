@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -9,6 +9,8 @@ import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { IvoipService } from '../../ivoip-service';
+import { PbxDeviceModel } from '../../../../models/pbx-device.model';
+import { PbxDeviceVendorModel } from '../../../../models/pbx-device-vendor.model';
 
 @Component({
   selector: 'ngx-extension-form',
@@ -21,19 +23,18 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   apiPath = '/ivoip/extensions';
   baseFormUrl = '/ivoip/extensions/form';
 
-  constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
-    protected ivoipService: IvoipService,
-  ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
-
-  }
+  templateList: {id?: string, text: string, children?: any[]}[];
+  templateListConfig = {
+    placeholder: 'Chọn template...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'DomainId',
+      text: 'DomainName',
+    },
+  };
 
   userRecordActionList: { id: string, text: string }[] = [
     {
@@ -69,32 +70,48 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     },
   };
 
-  // domainList: { id?: string, text: string, children?: any[] }[] = [];
-  // select2OptionForDoaminList = {
-  //   placeholder: 'Chọn domain...',
-  //   allowClear: true,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   keyMap: {
-  //     id: 'DomainId',
-  //     text: 'DomainName',
-  //   },
-  // };
+  constructor(
+    protected activeRoute: ActivatedRoute,
+    protected router: Router,
+    protected formBuilder: FormBuilder,
+    protected apiService: ApiService,
+    protected toastrService: NbToastrService,
+    protected dialogService: NbDialogService,
+    protected commonService: CommonService,
+    protected ivoipService: IvoipService,
+  ) {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
 
-
-  ngOnInit() {
-    super.ngOnInit();
   }
 
-  // /** Get form data by id from api */
-  // getFormData(callback: (data: PbxExtensionModel[]) => void) {
-  //   this.apiService.get<PbxExtensionModel[]>(this.apiPath, { id: this.id, multi: true, includeUser: true, includeDevices: true, domainId: this.ivoipService.getPbxActiveDomain() },
-  //     data => callback(data),
-  //   ), (e: HttpErrorResponse) => {
-  //     this.onError(e);
-  //   };
-  // }
+  ngOnInit() {
+    this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', {limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true}, list => {
+      this.templateList = list.map(item => {
+        return {text: item.name, children: item.templates.map(item => {
+          return {id: item, text: item};
+        })};
+      });
+      super.ngOnInit();
+    });
+    // super.ngOnInit();
+  }
+
+  formLoad(formData: PbxExtensionModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PbxExtensionModel) => void) {
+    super.formLoad(formData, (index, newForm, itemFormData) => {
+
+      // Domains form load
+      if (itemFormData.devices) {
+        itemFormData.devices.forEach(device => {
+          (newForm.get('devices') as FormArray).push(this.makeNewDeviceFormGroup(device));
+        });
+      }
+
+      // Direct callback
+      if (formItemLoadCallback) {
+        formItemLoadCallback(index, newForm, itemFormData);
+      }
+    });
+  }
 
   /** Execute api get */
   executeGet(params: any, success: (resources: PbxExtensionModel[]) => void, error?: (e: HttpErrorResponse) => void) {
@@ -106,7 +123,6 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
 
   makeNewFormGroup(data?: PbxExtensionModel): FormGroup {
     const newForm = this.formBuilder.group({
-      // call_block_uuid_old: [''],
       extension_uuid: [''],
       domain_uuid: [this.activePbxDoamin, Validators.required],
       extension: ['', Validators.required],
@@ -116,31 +132,44 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
       call_timeout: [30],
       enabled: [true],
       description: [''],
+      devices: this.formBuilder.array([]),
     });
     if (data) {
-      //   data[this.idKey + '_old'] = data[this.idKey];
       newForm.patchValue(data);
     }
     return newForm;
   }
 
-  // executePut(ids: string[], data: PbxExtensionModel[], success: (data: PbxExtensionModel[]) => void, error: (e: any) => void) {
-  //   this.apiService.put<PbxExtensionModel[]>(this.apiPath, {id: ids, domainId: localStorage.getItem('active_pbx_domain')}, data,
-  //     newFormData => {
-  //       success(newFormData);
-  //     }, e => {
-  //       error(e);
-  //     });
-  // }
+  makeNewDeviceFormGroup(data?: PbxDeviceModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      device_uuid: ['', Validators.required],
+      device_mac_address: ['', Validators.required],
+      device_template: ['', Validators.required],
+      device_description: [''],
+    });
 
-  // executePost(params, data: PbxExtensionModel[], success: (data: PbxExtensionModel[]) => void, error: (e: any) => void) {
-  //   this.apiService.post<PbxExtensionModel[]>(this.apiPath, {domainId: localStorage.getItem('active_pbx_domain')}, data,
-  //     newFormData => {
-  //       success(newFormData);
-  //     }, e => {
-  //       error(e);
-  //     });
-  // }
+    if (data) {
+      // data['Name_old'] = data.Name;
+      newForm.patchValue(data);
+    }
+    // newForm.disable();
+
+    return newForm;
+  }
+
+  getDevices(formGroupIndex: number) {
+    return this.array.controls[formGroupIndex].get('devices') as FormArray;
+  }
+
+  addDeviceFormGroup(formGroupIndex: number) {
+    this.getDevices(formGroupIndex).push(this.makeNewDeviceFormGroup());
+    return false;
+  }
+
+  removeDeviceGroup(formGroupIndex: number, index: number) {
+    this.getDevices(formGroupIndex).removeAt(index);
+    return false;
+  }
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxExtensionModel): void { }
   onRemoveFormGroup(index: number): void {

@@ -1,3 +1,5 @@
+import { PbxDeviceModel } from './pbx-device.model';
+
 export class PbxExtensionModel {
 
   extension_uuid?: string;
@@ -55,6 +57,7 @@ export class PbxExtensionModel {
   description?: string;
   absolute_codec_string?: string;
   force_ping?: string;
+  devices: PbxDeviceModel[];
 
   constructor() { }
 

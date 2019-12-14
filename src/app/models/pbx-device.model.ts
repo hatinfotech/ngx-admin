@@ -19,6 +19,7 @@ export class PbxDeviceModel {
   device_provisioned_date?: string;
   device_provisioned_method?: string;
   device_provisioned_ip?: string;
+  extension_uuid?: string;
   device_lines: {
     domain_uuid?: string,
     device_line_uuid?: string,
