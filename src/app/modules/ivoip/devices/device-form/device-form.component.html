@@ -1,0 +1,98 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật thông tin thết bị voip
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="device_uuid">
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('device_mac_address'), 'warning')">
+                  <label class="label"><span class="valid">Mã mac (*)</span><span class="invalid">Mã mac là bắt
+                      buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="device_mac_address"
+                    placeholder="Mã mac">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Nhãn</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_label')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <input type="text" nbInput fullWidth formControlName="device_label" placeholder="Nhãn">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Nhà sản xuất</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_vendor')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <input type="text" nbInput fullWidth formControlName="device_vendor"
+                    placeholder="Nhà sản xuất">
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('device_enabled'), 'warning')">
+                  <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'enabled')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <nb-checkbox formControlName="device_enabled">Kích hoạt</nb-checkbox>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Kiểu</span></label>
+                  <input type="text" nbInput fullWidth formControlName="device_model"
+                    placeholder="Kiểu">
+                </div>
+              </div>
+              <div class="col-sm-8">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
+                  <label class="label"><span class="valid">Domain</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'domain_uuid')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <ngx-select2 [data]="domainList" formControlName="domain_uuid"
+                    [select2Option]="select2OptionForDoaminList">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('device_template'), 'warning')">
+                  <label class="label"><span class="valid">Template</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'user_record')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <ngx-select2 [data]="userRecordActionList" formControlName="device_template"
+                    [select2Option]="select2OptionForUserRecordActionList">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-8">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Mô tả</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'device_description')" pack="eva" icon="copy-outline"></nb-icon></label>
+                  <input type="text" nbInput fullWidth formControlName="device_description" placeholder="Mô tả">
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button>
+            <button nbButton status="success" [disabled]="!form.valid || submiting" hero>Lưu</button>
+            <button nbButton status="danger" [disabled]="!form.valid || this.id.length > 0 || submiting" (click)="onAutoGenrateExtensionClick(i)" hero>Tạo tự động</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

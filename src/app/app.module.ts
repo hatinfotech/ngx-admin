@@ -121,7 +121,7 @@ import { DialogFormComponent } from './modules/dialog/dialog-form/dialog-form.co
   entryComponents: [
     ShowcaseDialogComponent,
     PlayerDialogComponent,
-    PbxFormComponent,
+    // PbxFormComponent,
     DialogFormComponent,
   ],
   bootstrap: [AppComponent],

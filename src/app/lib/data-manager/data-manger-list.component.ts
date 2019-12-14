@@ -170,13 +170,20 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
             icon: 'delete',
             status: 'danger',
             action: () => {
-              this.apiService.delete(this.apiPath, ids, result => {
-                if (callback) callback();
-              });
+              // this.apiService.delete(this.apiPath, ids, result => {
+              //   if (callback) callback();
+              // });
+              this.executeDelete(ids, callback);
             },
           },
         ],
       },
+    });
+  }
+
+  executeDelete(ids: string[], callback: (result: any) => void) {
+    this.apiService.delete(this.apiPath, ids, result => {
+      if (callback) callback(result);
     });
   }
 

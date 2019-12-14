@@ -139,6 +139,15 @@ export class CommonService {
     this.isLoggedIn$.next(state);
   }
 
+  convertOptionList(list: any[], idKey: string, labelKey: string) {
+    return list.map(item => {
+      item['id'] = item[idKey] = item[idKey] ? item[idKey] : 'undefined';
+      item['text'] = item[labelKey] = item[labelKey] ? item[labelKey] : 'undefined';
+
+      return item;
+    });
+  }
+
   private takeUltilCount = {};
   private takeUltilPastCount = {};
   takeUntil(context: string, delay: number, callback: () => void) {

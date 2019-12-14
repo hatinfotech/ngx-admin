@@ -51,10 +51,13 @@ select2,
   cursor: text;
   margin: 0em;
   /* font: 400 11px system-ui; */
-
-  display: inline-block;
   width: 100% !important;
+  display: inline-block;
 }
+
+/* .form-group select2, .form-group .select2 {
+  width: 100% !important;
+} */
 
 .select2 {
   color: #192038 !important;
@@ -236,6 +239,10 @@ body ng2-smart-table table tr.ng2-smart-titles th:first-child input {
   height: 16px; */
 }
 
+.ng2-smart-actions input.form-control {
+  width: initial !important;
+}
+
 body ng2-smart-table .form-control:focus {
   box-shadow: none !important;
 }
@@ -278,12 +285,18 @@ nb-card.small-header nb-card-header {
   padding: 0.5rem 1.25rem !important;
 }
 nb-card.small-header nb-card-header nav {
-  height: 2.1rem !important;
-  line-height: 2.1rem !important;
+  height: 2.45rem !important;
+  line-height: 2.45rem !important;
 }
 nb-card.small-header nb-card-header nav button {
   float: right;
-  margin: 0; margin-left: 0.5rem !important;
+  margin: 0;
+  margin-left: 0.5rem !important;
+}
+nb-card.small-header button[size="tiny"] {
+  height: 2.45rem;
+  float: right;
+  margin-top: 1px;
 }
 
 nb-card-body .ng2-smart-table-wrap {
@@ -422,9 +435,9 @@ body nb-dialog-container nb-card {
   min-width: 30rem !important;
 }
 
-.cdk-overlay-pane, .cdk-overlay-pane nb-dialog-container {
+/* .cdk-overlay-pane, .cdk-overlay-pane nb-dialog-container {
   width: 100%;
-}
+} */
 
 /* End Dialog */
 

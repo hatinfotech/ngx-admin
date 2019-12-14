@@ -1,0 +1,65 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật thông tin domain
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;" title="Xoá" [disabled]="submiting">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;" title="Tải lại" [disabled]="submiting">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo || submiting" style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về" [disabled]="submiting">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Id">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DomainName'), 'warning')">
+                  <label class="label"><span class="valid">Domain (*)</span><span class="invalid">Domain là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="DomainName" placeholder="Domain">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Pbx'), 'warning')">
+                  <label class="label"><span class="valid">Tổng đài (*)</span></label>
+                  <ngx-select2 [data]="pbxList" formControlName="Pbx"
+                    [select2Option]="select2OptionForPbxList">
+                  </ngx-select2>
+                </div>
+              </div>
+              <!-- <div class="col-sm-12">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Api Key</span></label>
+                  <input type="text" nbInput fullWidth formControlName="AdminKey" placeholder="Api Key">
+                </div>
+              </div> -->
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label class="label">Diễn giải</label>
+                  <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" [disabled]="submiting" hero>Thêm Domain</button>
+            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
+            <button nbButton status="success" [disabled]="!form.valid || submiting" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

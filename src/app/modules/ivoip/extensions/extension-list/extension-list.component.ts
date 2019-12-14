@@ -7,6 +7,8 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
 import { LocalDataSource, ViewCell } from 'ng2-smart-table';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
+import { PbxModel } from '../../../../models/pbx.model';
 
 @Component({
   selector: 'ngx-custom-view',
@@ -140,42 +142,76 @@ export class ExtensionListComponent extends DataManagerListComponent<PbxExtensio
         onComponentInitFunction: (instance: ButtonViewComponent) => {
           instance.renderValue = 'fa fa-qrcode';
           instance.click.subscribe((row: PbxExtensionModel) => {
-            // console.info(`${row.extension} clicked!`);
-            // this.apiService.get<{ extension: string, qr_code: string }[]>('/ivoip/extensions/' + row.extension_uuid, { resptype: 'qrcode' }, result => {
-
-            //   this.dialogService.open(ShowcaseDialogComponent, {
-            //     context: {
-            //       title: 'QR Code',
-            //       content: `<img style="width: 100%" src="${result[0].qr_code}">`,
-            //       actions: [
-            //         {
-            //           label: 'Trở về',
-            //           icon: 'back',
-            //           status: 'info',
-            //           action: () => { },
-            //         },
-            //       ],
-            //     },
-            //   });
-            // });
-            this.showQrCode(row.extension_uuid);
+            this.showQrCode(row.extension_uuid, row.extension);
           });
         },
-        // valuePrepareFunction(cell, row) {
-        //   return `<div style="text-align: center">${cell}</div>`;
-        // },
       },
     },
   };
 
-  source: LocalDataSource = new LocalDataSource();
+  domainList: { text: string, children: any[] }[] = [];
+  select2OptionForDoaminList = {
+    placeholder: 'Chọn domain...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'DomainId',
+      text: 'DomainName',
+    },
+  };
+  activePbxDoamin: string;
 
   ngOnInit() {
-    super.ngOnInit();
+    this.loadDomainList(doamins => {
+      super.ngOnInit();
+    });
+
+    // this.loadDomainList();
+    // this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {
+    //   this.domainList = list.map(pbx => {
+    //     return {
+    //       text: pbx.Name,
+    //       children: this.commonService.convertOptionList(pbx.Domains, 'DomainId', 'DomainName'),
+    //     };
+    //   });
+
+
+    // });
   }
 
-  showQrCode(extensionUuid: string, regenerate?: boolean) {
-    this.apiService.get<{ extension: string, qr_code: string }[]>('/ivoip/extensions/' + extensionUuid, { resptype: 'qrcode', regenerate: regenerate ? 1 : 0 }, result => {
+  // loadList() {
+  //   this.loadDomainList(doamins => {
+  //     super.loadList();
+  //   });
+  // }
+
+  loadDomainList(callback?: (domains: any[]) => void) {
+    this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {
+      this.domainList = list.map(pbx => {
+        return {
+          text: pbx.Name,
+          children: this.commonService.convertOptionList(pbx.Domains, 'DomainId', 'DomainName'),
+        };
+      });
+      setTimeout(() => {
+        this.activePbxDoamin = localStorage.getItem('active_pbx_domain');
+        // super.ngOnInit();
+        if (callback) callback(this.domainList);
+      }, 300);
+
+    });
+  }
+
+  getList(callback: (list: PbxExtensionModel[]) => void) {
+    this.commonService.takeUntil('pbx_ext_get_list', 1000, () => {
+      this.apiService.get<PbxExtensionModel[]>(this.apiPath, { limit: 999999999, offset: 0, domainId: this.activePbxDoamin }, results => callback(results));
+    });
+  }
+
+  showQrCode(extensionUuid: string, extension: string, regenerate?: boolean) {
+    this.apiService.get<{ extension: string, extension_uuid: string, qr_code: string }[]>('/ivoip/extensions/' + extensionUuid, { resptype: 'qrcode', regenerate: regenerate ? 1 : 0, domainId: localStorage.getItem('active_pbx_domain') }, result => {
 
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
@@ -187,14 +223,25 @@ export class ExtensionListComponent extends DataManagerListComponent<PbxExtensio
               icon: 'back',
               status: 'danger',
               action: () => {
-                this.showQrCode(extensionUuid, true);
+                this.showQrCode(extensionUuid, extension, true);
               },
             },
             {
               label: 'Trở về',
               icon: 'back',
-              status: 'info',
+              status: 'primary',
               action: () => { },
+            },
+            {
+              label: 'Tải về',
+              icon: 'download',
+              status: 'success',
+              action: () => {
+                const a = document.createElement('a');
+                a.href = result[0].qr_code;
+                a.download = 'ext_' + extension + '.png';
+                a.click();
+              },
             },
           ],
         },
@@ -202,20 +249,37 @@ export class ExtensionListComponent extends DataManagerListComponent<PbxExtensio
     });
   }
 
-  getList(callback: (list: PbxExtensionModel[]) => void) {
-    super.getList(list => callback(list.map((item: any) => {
-      // item['qr_code'] = '<i icon="qrcode" class="fa fa-qrcode"></i>';
-      return item;
-    })));
+  executeDelete(ids: string[], callback: (result: any) => void) {
+    const params = {};
+    ids.forEach((item, index) => {
+      params['id' + index] = encodeURIComponent(item);
+    });
+    params['domainId'] = localStorage.getItem('active_pbx_domain');
+    this.apiService.delete(this.apiPath, params, result => {
+      if (callback) callback(result);
+    });
   }
 
   onReloadBtnClick(): false {
-    this.loadList();
+    this.loadDomainList(doamins => {
+      super.loadList();
+    });
     return false;
   }
 
   onGenerateQRCodeBtnClick(): false {
     return false;
+  }
+
+  onChangeDomain(event: PbxDomainModel) {
+    console.info(event);
+    if (event['id']) {
+      // this.commonService.takeUntil('on_pbx_domain_change', 1000, () => {
+      localStorage.setItem('active_pbx_domain', event['id']);
+      this.activePbxDoamin = event['id'];
+      this.loadList();
+      // });
+    }
   }
 
 }

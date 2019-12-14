@@ -211,7 +211,7 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
       });
 
       if ((group || user) && menuItem && permissionsData) {
-        this.apiService.post<{ Group: string, User: string, MenuItem: string, Permissions: PermissionEntryModel[] }>('/user/permissions', {
+        this.apiService.post<{ Group: string, User: string, MenuItem: string, Permissions: PermissionEntryModel[] }>('/user/permissions', {}, {
           Group: group,
           User: user,
           MenuItem: menuItem,

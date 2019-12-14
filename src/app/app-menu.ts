@@ -30,7 +30,12 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Tổng đài',
         // icon: 'people-outline',
-        link: '/ivoip/pbx/list',
+        link: '/ivoip/pbxs/list',
+      },
+      {
+        title: 'Domain',
+        // icon: 'people-outline',
+        link: '/ivoip/domains/list',
       },
       {
         title: 'Số mở rộng',
@@ -40,7 +45,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Điện thoại IP',
         // icon: 'people-outline',
-        link: '/ivoip/devices',
+        link: '/ivoip/devices/list',
       },
       {
         title: 'Số đấu nối',

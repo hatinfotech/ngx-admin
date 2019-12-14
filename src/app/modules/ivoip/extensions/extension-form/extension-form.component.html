@@ -6,18 +6,18 @@
           <nav>
             Cập nhật số nội bộ
             <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
-              title="Xoá">
+              title="Xoá" [disabled]="isProcessing">
               <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
             </button>
             <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
-              title="Tải lại">
+              title="Tải lại" [disabled]="isProcessing">
               <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
             </button>
-            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo || isProcessing"
               style="float: right;" title="Hoàn tác">
               <nb-icon pack="eva" icon="undo-outline"></nb-icon>
             </button>
-            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về" [disabled]="isProcessing">
               <nb-icon pack="eva" icon="arrow-back"></nb-icon>
             </button>
           </nav>
@@ -87,9 +87,9 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button>
-            <button nbButton status="success" [disabled]="!form.valid || submiting" hero>Lưu</button>
-            <button nbButton status="danger" [disabled]="!form.valid || this.id.length > 0 || submiting" (click)="onAutoGenrateExtensionClick(i)" hero>Tạo tự động</button>
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero [disabled]="isProcessing">Thêm</button>
+            <button nbButton status="success" [disabled]="!form.valid || isProcessing" hero>Lưu</button>
+            <button nbButton status="danger" [disabled]="!form.valid || this.id.length > 0 || isProcessing" (click)="onAutoGenrateExtensionClick(i)" hero>Tạo tự động</button>
           </div>
         </nb-card-footer>
       </nb-card>

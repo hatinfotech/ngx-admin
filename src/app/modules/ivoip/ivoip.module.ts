@@ -21,6 +21,10 @@ import { CallBlockListComponent } from './call-blocks/call-block-list/call-block
 import { CallBlockFormComponent } from './call-blocks/call-block-form/call-block-form.component';
 import { ExtensionListComponent, ButtonViewComponent } from './extensions/extension-list/extension-list.component';
 import { ExtensionFormComponent } from './extensions/extension-form/extension-form.component';
+import { DeviceListComponent } from './devices/device-list/device-list.component';
+import { DeviceFormComponent } from './devices/device-form/device-form.component';
+import { DomainListComponent } from './domains/domain-list/domain-list.component';
+import { DomainFormComponent } from './domains/domain-form/domain-form.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +34,10 @@ import { ExtensionFormComponent } from './extensions/extension-form/extension-fo
     PbxListComponent, PbxFormComponent, CallBlockListComponent, CallBlockFormComponent,
     ExtensionListComponent, ExtensionFormComponent,
     ButtonViewComponent,
+    DeviceListComponent,
+    DeviceFormComponent,
+    DomainListComponent,
+    DomainFormComponent,
   ],
   imports: [
     CommonModule,

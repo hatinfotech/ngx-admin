@@ -34,7 +34,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   submiting = false;
 
   /** Form loading status */
-  formLoading = false;
+  isProcessing = false;
 
   /** resource(s) id for get data */
   id: string[] = [];
@@ -61,7 +61,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     protected commonService: CommonService,
   ) {
     super(commonService, router);
-    this.formLoading = true;
+    // this.formLoading = true;
+    this.onProcessing();
     this.formUniqueId = Date.now().toString();
     // this.form = this.formBuilder.group({
     //   array: this.formBuilder.array([
@@ -70,7 +71,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     // });
 
     this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(formData => {
-      if (!this.formLoading) {
+      if (!this.isProcessing) {
         this.commonService.takeUntil(this.formUniqueId, 1000, () => {
           this.pushPastFormData(formData.array);
         });
@@ -92,10 +93,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         if (this.id.length > 0) {
           this.formLoad();
         } else {
-          this.formLoading = false;
+          // this.formLoading = false;
+          this.onProcessed();
         }
       } else {
-        this.formLoading = false;
+        // this.array.clear();
+        // this.addFormGroup();
+        // this.formLoading = false;
+        this.onProcessed();
       }
     });
   }
@@ -115,7 +120,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Get data from api and patch data for form */
   formLoad(formData?: M[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: M) => void) {
-    this.formLoading = true;
+    // this.formLoading = true;
+    // this.form.disable();
+    this.onProcessing();
 
     /** If has formData input, use formData for patch */
     ((callback: (data: M[]) => void) => {
@@ -138,11 +145,12 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       });
 
       setTimeout(() => {
-        this.formLoading = false;
+        // this.formLoading = false;
         // const aPastFormData = {formData: this.form.value.array, meta: null};
         // this.onUpdatePastFormData(aPastFormData);
         // this.pastFormData.push(aPastFormData);
         this.pushPastFormData(this.form.value.array);
+        this.onProcessed();
       }, 1000);
 
     });
@@ -160,6 +168,16 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.array.push(newForm);
     this.onAddFormGroup(this.array.length - 1, newForm, data);
     return false;
+  }
+
+  onProcessing() {
+    this.isProcessing = true;
+    this.form.disable();
+  }
+
+  onProcessed() {
+    this.isProcessing = false;
+    this.form.enable();
   }
 
   abstract onAddFormGroup(index: number, newForm: FormGroup, formData?: M): void;
@@ -202,7 +220,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.commonService.location.go(this.generateUrlByIds(this.id));
   }
 
-  protected generateUrlByIds(ids: string[]){
+  protected generateUrlByIds(ids: string[]) {
     return this.baseFormUrl + '/' + ids.join(encodeURIComponent('&'));
   }
 
@@ -260,35 +278,82 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   onPreview() {
     return false;
   }
+
+  executePut(ids: string[], data: M[], success: (data: M[]) => void, error: (e: any) => void) {
+    this.apiService.put<M[]>(this.apiPath, { id: ids }, data,
+      newFormData => {
+        success(newFormData);
+      }, e => {
+        error(e);
+      });
+  }
+
+  executePost(data: M[], success: (data: M[]) => void, error: (e: any) => void) {
+    this.apiService.post<M[]>(this.apiPath, {}, data,
+      newFormData => {
+        success(newFormData);
+      }, e => {
+        error(e);
+      });
+  }
+
   /** Form submit event */
   onSubmit() {
-    this.submitted = true;
-    this.submiting = true;
+    // this.submitted = true;
+    // this.submiting = true;
+    this.onProcessing();
     const data: { array: any } = this.form.value;
     // console.info(data);
 
+    this.form.disable();
     if (this.id.length > 0) {
       // Update
-      this.apiService.put<M[]>(this.apiPath, this.id, data.array,
-        newFormData => {
-          // console.info(newFormData);
-          this.onAfterUpdateSubmit(newFormData);
-          this.submiting = false;
-        }, e => {
-          this.submiting = false;
-          this.onError(e);
-        });
+      // this.apiService.put<M[]>(this.apiPath, this.id, data.array,
+      //   newFormData => {
+      //     // console.info(newFormData);
+      //     this.onAfterUpdateSubmit(newFormData);
+      //     this.submiting = false;
+      //     this.form.enable();
+      //   }, e => {
+      //     this.submiting = false;
+      //     this.form.enable();
+      //     this.onError(e);
+      //   });
+      this.executePut(this.id, data.array, results => {
+        this.onAfterUpdateSubmit(results);
+        // this.submiting = false;
+        // this.form.enable();
+        this.onProcessed();
+      }, e => {
+        // this.submiting = false;
+        // this.form.enable();
+        this.onProcessed();
+        this.onError(e);
+      });
     } else {
       // Create
-      this.apiService.post<M[]>(this.apiPath, data.array,
-        newFormData => {
-          // console.info(newFormData);
-          this.onAfterCreateSubmit(newFormData);
-          this.submiting = false;
-        }, e => {
-          this.onError(e);
-          this.submiting = false;
-        });
+      // this.apiService.post<M[]>(this.apiPath, data.array,
+      //   newFormData => {
+      //     // console.info(newFormData);
+      //     this.onAfterCreateSubmit(newFormData);
+      //     this.submiting = false;
+      //     this.form.enable();
+      //   }, e => {
+      //     this.onError(e);
+      //     this.submiting = false;
+      //     this.form.enable();
+      //   });
+      this.executePost(data.array, results => {
+        this.onAfterCreateSubmit(results);
+        // this.submiting = false;
+        // this.form.enable();
+        this.onProcessed();
+      }, e => {
+        this.onError(e);
+        // this.submiting = false;
+        // this.form.enable();
+        this.onProcessed();
+      });
     }
 
   }
@@ -307,12 +372,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   protected convertOptionList(list: any[], idKey: string, labelKey: string) {
-    return list.map(item => {
-      item['id'] = item[idKey] = item[idKey] ? item[idKey] : 'undefined';
-      item['text'] = item[labelKey] = item[labelKey] ? item[labelKey] : 'undefined';
+    return this.commonService.convertOptionList(list, idKey, labelKey);
+    // return list.map(item => {
+    //   item['id'] = item[idKey] = item[idKey] ? item[idKey] : 'undefined';
+    //   item['text'] = item[labelKey] = item[labelKey] ? item[labelKey] : 'undefined';
 
-      return item;
-    });
+    //   return item;
+    // });
   }
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {

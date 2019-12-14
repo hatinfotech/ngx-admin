@@ -76,6 +76,25 @@ export class ApiService {
   buildApiUrl(path: string, params?: Object) {
     const token = this.getAccessToken();
     let paramsStr = '';
+
+    // const _idParams = {};
+    if (Array.isArray(params['id'])) {
+      // const idParam = {};
+      params['id'].forEach((item, index) => {
+        params['id' + index] = encodeURIComponent(item);
+      });
+      delete params['id'];
+      // url = this.buildApiUrl(`${enpoint}`, params);
+    } else if (params['id']) {
+      // enpoint += `/${params['id']}`;
+      // url = this.buildApiUrl(enpoint, params);
+      params['id0'] = params['id'];
+      delete params['id'];
+    }
+    //  else {
+    //   // url = this.buildApiUrl(enpoint, params);
+    // }
+
     if (params) {
       paramsStr += this.buildParams(params);
     }
@@ -106,21 +125,21 @@ export class ApiService {
   get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       if (result) {
-        let url = '';
-        if (Array.isArray(params['id'])) {
-          // const idParam = {};
-          params['id'].forEach((item, index) => {
-            params['id' + index] = encodeURIComponent(item);
-          });
-          delete params['id'];
-          url = this.buildApiUrl(`${enpoint}`, params);
-        } else if (params['id']) {
-          enpoint += `/${params['id']}`;
-          url = this.buildApiUrl(enpoint, params);
-        } else {
-          url = this.buildApiUrl(enpoint, params);
-        }
-        const obs = this._http.get<T>(url)
+        // let url = '';
+        // if (Array.isArray(params['id'])) {
+        //   // const idParam = {};
+        //   params['id'].forEach((item, index) => {
+        //     params['id' + index] = encodeURIComponent(item);
+        //   });
+        //   delete params['id'];
+        //   url = this.buildApiUrl(`${enpoint}`, params);
+        // } else if (params['id']) {
+        //   enpoint += `/${params['id']}`;
+        //   url = this.buildApiUrl(enpoint, params);
+        // } else {
+        //   url = this.buildApiUrl(enpoint, params);
+        // }
+        const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
             return this.handleError(e);
@@ -153,10 +172,10 @@ export class ApiService {
   }
 
   /** Restful api post request */
-  post<T>(enpoint: string, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
+  post<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       if (result) {
-        const obs = this._http.post(this.buildApiUrl(enpoint), resource)
+        const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
             return this.handleError(e);
@@ -172,21 +191,20 @@ export class ApiService {
   }
 
   /** Restful api put request */
-  put<T>(enpoint: string, id: string | string[], resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
+  put<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       if (result) {
-        let url = '';
-        if (Array.isArray(id)) {
-          // id = id.join('-');
-          const params = {};
-          id.forEach((item, index) => {
-            params['id' + index] = encodeURIComponent(item);
-          });
-          url = this.buildApiUrl(`${enpoint}`, params);
-        } else {
-          this.buildApiUrl(`${enpoint}/${id}`);
-        }
-        const obs = this._http.put(url, resource)
+        // let url = '';
+        // if (Array.isArray(params)) {
+        //   const _params = {};
+        //   params.forEach((item, index) => {
+        //     _params['id' + index] = encodeURIComponent(item);
+        //   });
+        //   url = this.buildApiUrl(`${enpoint}`, _params);
+        // } else {
+        //   this.buildApiUrl(`${enpoint}/${params}`);
+        // }
+        const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
             return this.handleError(e);

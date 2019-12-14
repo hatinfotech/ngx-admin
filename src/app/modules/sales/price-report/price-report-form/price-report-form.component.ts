@@ -314,14 +314,14 @@ export class PriceReportFormComponent implements OnInit {
 
     if (this.id) {
       // Update
-      this.apiService.put<PriceReportModel>('sales/price-reports', this.id, data,
+      this.apiService.put<PriceReportModel>('sales/price-reports', {id: this.id}, data,
         newPriceReport => {
           console.info(newPriceReport);
           this.router.navigate(['sales/price-report/list']);
         },
         error => console.warn(error));
     } else {
-      this.apiService.post<PriceReportModel>('sales/price-reports', data,
+      this.apiService.post<PriceReportModel>('sales/price-reports', {}, data,
         newPriceReport => {
           console.info(newPriceReport);
           this.router.navigate(['sales/price-report/list']);

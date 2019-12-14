@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { PbxModel } from '../../../../models/pbx.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-pbx-form',
@@ -16,9 +17,9 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 })
 export class PbxFormComponent extends DataManagerFormComponent<PbxModel> implements OnInit {
 
-  idKey = 'Owner';
+  idKey = 'Code';
   apiPath = '/ivoip/pbxs';
-  baseFormUrl = '/users/group/form';
+  baseFormUrl = '/ivoip/pbxs/form';
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -28,75 +29,105 @@ export class PbxFormComponent extends DataManagerFormComponent<PbxModel> impleme
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
-    protected ref: NbDialogRef<ShowcaseDialogComponent>,
+    // protected ref: NbDialogRef<ShowcaseDialogComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
 
   ngOnInit() {
-    // super.ngOnInit();
-    this.formLoad();
+    super.ngOnInit();
   }
 
   /** Get form data by id from api */
   getFormData(callback: (data: PbxModel[]) => void) {
-    this.apiService.get<PbxModel[]>(this.apiPath, { id: this.id, loadForCurrentUser: true, multi: true },
-      data => {
-
-        if (data.length > 0) {
-          callback(data);
-          this.id = data.map(item => item[this.idKey]);
-        } else {
-          callback([{
-            // Code: '',
-            Name: '',
-            Description: '',
-            ApiKey: '',
-            ApiUrl: '',
-          }]);
-        }
-      },
+    this.apiService.get<PbxModel[]>(this.apiPath, { id: this.id, includeDomains: true },
+      data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
     };
   }
 
+  formLoad(formData: PbxModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PbxModel) => void) {
+    super.formLoad(formData, (index, newForm, itemFormData) => {
+
+      // Domains form load
+      if (itemFormData.Domains) {
+        itemFormData.Domains.forEach(domain => {
+          (newForm.get('Domains') as FormArray).push(this.makeNewDomainFormGroup(domain));
+        });
+      }
+
+      // Direct callback
+      if (formItemLoadCallback) {
+        formItemLoadCallback(index, newForm, itemFormData);
+      }
+    });
+  }
+
   makeNewFormGroup(data?: PbxModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Owner_old: [''],
-      // Code: [''],
-      Name: [''],
+      Code: [''],
+      Name: ['', Validators.required],
       Description: [''],
       ApiUrl: ['', Validators.required],
-      ApiKey: ['', Validators.required],
-      Owner: [''],
+      ApiVersion: [''],
+      BaseDomainName: [''],
+      ApiKey: [''],
+      Domains: this.formBuilder.array([
+
+      ]),
     });
     if (data) {
-      data[this.idKey + '_old'] = data.Owner;
       newForm.patchValue(data);
     }
     return newForm;
   }
 
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxModel): void { }
-  onRemoveFormGroup(index: number): void { }
-  goback(): false {
-    // this.router.navigate(['/users/user-manager/list']);
-    this.ref.close();
+  makeNewDomainFormGroup(data?: PbxDomainModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      DomainId: [''],
+      DomainName: [''],
+      // AdminKey: ['', Validators.required],
+      Description: [''],
+    });
+
+    if (data) {
+      // data['Name_old'] = data.Name;
+      newForm.patchValue(data);
+    }
+    newForm.disable();
+    return newForm;
+  }
+
+  getDomains(formGroupIndex: number) {
+    return this.array.controls[formGroupIndex].get('Domains') as FormArray;
+  }
+
+  addDomainFormGroup(formGroupIndex: number) {
+    this.getDomains(formGroupIndex).push(this.makeNewDomainFormGroup());
     return false;
   }
-  onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
-  onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  /** Affter main form update event */
-  onAfterUpdateSubmit(newFormData: PbxModel[]) {
-    super.onAfterUpdateSubmit(newFormData);
-    this.ref.close();
+  removeDomainGroup(formGroupIndex: number, index: number) {
+    this.getDomains(formGroupIndex).removeAt(index);
+    return false;
   }
 
-  /** After main form create event */
-  onAfterCreateSubmit(newFormData: PbxModel[]) {
-    super.onAfterCreateSubmit(newFormData);
-    this.ref.close();
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxModel): void {
+
   }
+  onRemoveFormGroup(index: number): void {
+
+  }
+  goback(): false {
+    this.router.navigate(['/ivoip/pbxs/list']);
+    return false;
+  }
+  onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void {
+
+  }
+  onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void {
+
+  }
+
 }

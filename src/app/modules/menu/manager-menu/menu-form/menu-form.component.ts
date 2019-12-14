@@ -499,7 +499,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   onPermimssionChange(mainFormIndex: number, ip: number, item: PermissionModel) {
     // console.info(item);
 
-    if (!this.formLoading) {
+    if (!this.isProcessing) {
       if (item) {
         if (this.templatePermissionList.findIndex((value: PermissionModel) => value.Code === item['Code']) < 0) {
           this.templatePermissionList.push(item);

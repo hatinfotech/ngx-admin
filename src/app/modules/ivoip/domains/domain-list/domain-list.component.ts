@@ -1,22 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalDataSource } from 'ng2-smart-table';
+import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { PbxModel } from '../../../../models/pbx.model';
 
 @Component({
-  selector: 'ngx-pbx-list',
-  templateUrl: './pbx-list.component.html',
-  styleUrls: ['./pbx-list.component.scss'],
+  selector: 'ngx-domain-list',
+  templateUrl: './domain-list.component.html',
+  styleUrls: ['./domain-list.component.scss']
 })
-export class PbxListComponent extends DataManagerListComponent<PbxModel> implements OnInit {
+export class DomainListComponent  extends DataManagerListComponent<PbxDomainModel> implements OnInit {
 
-  formPath: string = '/ivoip/pbxs/form';
-  apiPath: string = '/ivoip/pbxs';
-  idKey: string = 'Code';
+  formPath: string = '/ivoip/domains/form';
+  apiPath: string = '/ivoip/domains';
+  idKey: string = 'Id';
 
   constructor(
     protected apiService: ApiService,
@@ -62,33 +61,31 @@ export class PbxListComponent extends DataManagerListComponent<PbxModel> impleme
         class: 'no',
         filter: false,
       },
-      Code: {
-        title: 'Mã',
-        type: 'string',
-        width: '15%',
-      },
-      Name: {
-        title: 'Tên',
+      PbxDescription: {
+        title: 'Tổng đài',
         type: 'string',
         width: '30%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+      },
+      DomainName: {
+        title: 'Domain',
+        type: 'string',
+        width: '30%',
       },
       Description: {
         title: 'Mô tả',
         type: 'string',
-        width: '50%',
+        width: '40%',
         filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
-      },
-      ApiVersion: {
-        title: 'Phiên bản api',
-        type: 'string',
-        width: '10%',
       },
     },
   };
 
   ngOnInit() {
     super.ngOnInit();
+  }
+
+  getList(callback: (list: PbxDomainModel[]) => void) {
+    this.apiService.get<PbxDomainModel[]>(this.apiPath, { limit: 999999999, offset: 0, includePbxDescription: true }, results => callback(results));
   }
 
   onDeclareNewDomainForPbx(): false {

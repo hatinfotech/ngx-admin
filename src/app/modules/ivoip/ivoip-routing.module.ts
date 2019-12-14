@@ -14,6 +14,10 @@ import { CallBlockListComponent } from './call-blocks/call-block-list/call-block
 import { CallBlockFormComponent } from './call-blocks/call-block-form/call-block-form.component';
 import { ExtensionListComponent } from './extensions/extension-list/extension-list.component';
 import { ExtensionFormComponent } from './extensions/extension-form/extension-form.component';
+import { DeviceListComponent } from './devices/device-list/device-list.component';
+import { DeviceFormComponent } from './devices/device-form/device-form.component';
+import { DomainListComponent } from './domains/domain-list/domain-list.component';
+import { DomainFormComponent } from './domains/domain-form/domain-form.component';
 
 
 const routes: Routes = [{
@@ -34,7 +38,7 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'pbx/list',
+      path: 'pbxs/list',
       // canActivate: [AuthGuardService],
       component: PbxListComponent,
       data: {
@@ -42,14 +46,32 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'pbx/form/:id',
+      path: 'pbxs/form',
       // canActivate: [AuthGuardService],
       component: PbxFormComponent,
     },
     {
-      path: 'pbx/form',
+      path: 'pbxs/form/:id',
       // canActivate: [AuthGuardService],
       component: PbxFormComponent,
+    },
+    {
+      path: 'domains/list',
+      // canActivate: [AuthGuardService],
+      component: DomainListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'domains/form',
+      // canActivate: [AuthGuardService],
+      component: DomainFormComponent,
+    },
+    {
+      path: 'domains/form/:id',
+      // canActivate: [AuthGuardService],
+      component: DomainFormComponent,
     },
     {
       path: 'cdr',
@@ -60,12 +82,25 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'devices',
-      canActivate: [AuthGuardService],
-      component: DevicesComponent,
+      path: 'devices/list',
+      // canActivate: [AuthGuardService],
+      component: DeviceListComponent,
       data: {
         reuse: true,
       },
+    },
+    {
+      path: 'devices/form',
+      // canActivate: [AuthGuardService],
+      component: DeviceFormComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'devices/form/:id',
+      // canActivate: [AuthGuardService],
+      component: DeviceFormComponent,
     },
     {
       path: 'extensions/list',
