@@ -5,17 +5,24 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
+import { IvoipService } from '../../ivoip-service';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
+import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 
 @Component({
   selector: 'ngx-device-list',
   templateUrl: './device-list.component.html',
   styleUrls: ['./device-list.component.scss']
 })
-export class DeviceListComponent extends DataManagerListComponent<PbxDeviceModel> implements OnInit {
+export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> implements OnInit {
 
   formPath = '/ivoip/devices/form';
   apiPath = '/ivoip/devices';
   idKey = 'device_uuid';
+
+  domainList: { id?: string, text: string, children: any[] }[] = [];
+  select2OptionForDoaminList = this.ivoipService.getDomainListOption();
+  activePbxDoamin: string;
 
   constructor(
     protected apiService: ApiService,
@@ -23,10 +30,9 @@ export class DeviceListComponent extends DataManagerListComponent<PbxDeviceModel
     protected commonService: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
-    iconsLibrary: NbIconLibraries,
+    protected ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
-    iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
+    super(apiService, router, commonService, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -77,7 +83,11 @@ export class DeviceListComponent extends DataManagerListComponent<PbxDeviceModel
   };
 
   ngOnInit() {
-    super.ngOnInit();
+    this.ivoipService.loadDomainList(domains => {
+      this.domainList = domains;
+      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+      super.ngOnInit();
+    });
   }
 
   getList(callback: (list: PbxDeviceModel[]) => void) {
@@ -88,12 +98,25 @@ export class DeviceListComponent extends DataManagerListComponent<PbxDeviceModel
   }
 
   onReloadBtnClick(): false {
-    this.loadList();
+    this.ivoipService.loadDomainList(domains => {
+      this.domainList = domains;
+      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+      this.loadList();
+    });
     return false;
   }
 
   onGenerateQRCodeBtnClick(): false {
     return false;
+  }
+
+  onChangeDomain(event: PbxDomainModel) {
+    console.info(event);
+    if (event['id']) {
+      this.ivoipService.setPbxActiveDomain(event['id']);
+      this.activePbxDoamin = event['id'];
+      this.loadList();
+    }
   }
 
 }

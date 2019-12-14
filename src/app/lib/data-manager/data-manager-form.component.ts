@@ -97,8 +97,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
           this.onProcessed();
         }
       } else {
-        // this.array.clear();
-        // this.addFormGroup();
+        this.array.clear();
+        this.addFormGroup();
         // this.formLoading = false;
         this.onProcessed();
       }
@@ -111,11 +111,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     // this.id.forEach((element, index) => {
     //   ids['id' + index] = element;
     // });
-    this.apiService.get<M[]>(this.apiPath, { id: this.id, multi: true },
-      data => callback(data),
-    ), (e: HttpErrorResponse) => {
-      this.onError(e);
-    };
+    // this.apiService.get<M[]>(this.apiPath, { id: this.id, multi: true }, data => callback(data), e => this.onError(e));
+    this.executeGet({ id: this.id }, data => callback(data));
   }
 
   /** Get data from api and patch data for form */
@@ -279,22 +276,28 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     return false;
   }
 
-  executePut(ids: string[], data: M[], success: (data: M[]) => void, error: (e: any) => void) {
-    this.apiService.put<M[]>(this.apiPath, { id: ids }, data,
-      newFormData => {
-        success(newFormData);
-      }, e => {
-        error(e);
-      });
+  /** Execute api get */
+  executeGet(params: any, success: (resources: M[]) => void, error?: (e: HttpErrorResponse) => void) {
+    this.apiService.get<M[]>(this.apiPath, params, data => success(data), e => {
+      if (error) error(e);
+      this.onError(e);
+    });
   }
 
-  executePost(data: M[], success: (data: M[]) => void, error: (e: any) => void) {
-    this.apiService.post<M[]>(this.apiPath, {}, data,
-      newFormData => {
-        success(newFormData);
-      }, e => {
-        error(e);
-      });
+  /** Execute api put */
+  executePut(params: any, data: M[], success: (data: M[]) => void, error: (e: any) => void) {
+    this.apiService.put<M[]>(this.apiPath, params, data, newFormData => success(newFormData), e => {
+      if (error) error(e);
+      this.onError(e);
+    });
+  }
+
+  /** Execute api post */
+  executePost(params: any, data: M[], success: (data: M[]) => void, error: (e: any) => void) {
+    this.apiService.post<M[]>(this.apiPath, params, data, newFormData =>  success(newFormData) , e =>  {
+      if (error) error(e);
+      this.onError(e);
+    });
   }
 
   /** Form submit event */
@@ -308,18 +311,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.form.disable();
     if (this.id.length > 0) {
       // Update
-      // this.apiService.put<M[]>(this.apiPath, this.id, data.array,
-      //   newFormData => {
-      //     // console.info(newFormData);
-      //     this.onAfterUpdateSubmit(newFormData);
-      //     this.submiting = false;
-      //     this.form.enable();
-      //   }, e => {
-      //     this.submiting = false;
-      //     this.form.enable();
-      //     this.onError(e);
-      //   });
-      this.executePut(this.id, data.array, results => {
+      this.executePut({ id: this.id }, data.array, results => {
         this.onAfterUpdateSubmit(results);
         // this.submiting = false;
         // this.form.enable();
@@ -332,26 +324,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       });
     } else {
       // Create
-      // this.apiService.post<M[]>(this.apiPath, data.array,
-      //   newFormData => {
-      //     // console.info(newFormData);
-      //     this.onAfterCreateSubmit(newFormData);
-      //     this.submiting = false;
-      //     this.form.enable();
-      //   }, e => {
-      //     this.onError(e);
-      //     this.submiting = false;
-      //     this.form.enable();
-      //   });
-      this.executePost(data.array, results => {
+      this.executePost({}, data.array, results => {
         this.onAfterCreateSubmit(results);
-        // this.submiting = false;
-        // this.form.enable();
         this.onProcessed();
       }, e => {
         this.onError(e);
-        // this.submiting = false;
-        // this.form.enable();
         this.onProcessed();
       });
     }

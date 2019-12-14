@@ -1,14 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
-import { LocalDataSource, ViewCell } from 'ng2-smart-table';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { PbxModel } from '../../../../models/pbx.model';
+import { ViewCell } from 'ng2-smart-table';
+import { IvoipService } from '../../ivoip-service';
+import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 
 @Component({
   selector: 'ngx-custom-view',
@@ -41,7 +43,7 @@ export class ButtonViewComponent implements ViewCell, OnInit {
   templateUrl: './extension-list.component.html',
   styleUrls: ['./extension-list.component.scss'],
 })
-export class ExtensionListComponent extends DataManagerListComponent<PbxExtensionModel> implements OnInit {
+export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionModel> implements OnInit {
 
   formPath = '/ivoip/extensions/form';
   apiPath = '/ivoip/extensions';
@@ -53,10 +55,9 @@ export class ExtensionListComponent extends DataManagerListComponent<PbxExtensio
     protected commonService: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
-    iconsLibrary: NbIconLibraries,
+    protected ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
-    iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
+    super(apiService, router, commonService, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -149,69 +150,12 @@ export class ExtensionListComponent extends DataManagerListComponent<PbxExtensio
     },
   };
 
-  domainList: { text: string, children: any[] }[] = [];
-  select2OptionForDoaminList = {
-    placeholder: 'Chọn domain...',
-    allowClear: false,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'DomainId',
-      text: 'DomainName',
-    },
-  };
-  activePbxDoamin: string;
-
   ngOnInit() {
-    this.loadDomainList(doamins => {
-      super.ngOnInit();
-    });
-
-    // this.loadDomainList();
-    // this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {
-    //   this.domainList = list.map(pbx => {
-    //     return {
-    //       text: pbx.Name,
-    //       children: this.commonService.convertOptionList(pbx.Domains, 'DomainId', 'DomainName'),
-    //     };
-    //   });
-
-
-    // });
-  }
-
-  // loadList() {
-  //   this.loadDomainList(doamins => {
-  //     super.loadList();
-  //   });
-  // }
-
-  loadDomainList(callback?: (domains: any[]) => void) {
-    this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {
-      this.domainList = list.map(pbx => {
-        return {
-          text: pbx.Name,
-          children: this.commonService.convertOptionList(pbx.Domains, 'DomainId', 'DomainName'),
-        };
-      });
-      setTimeout(() => {
-        this.activePbxDoamin = localStorage.getItem('active_pbx_domain');
-        // super.ngOnInit();
-        if (callback) callback(this.domainList);
-      }, 300);
-
-    });
-  }
-
-  getList(callback: (list: PbxExtensionModel[]) => void) {
-    this.commonService.takeUntil('pbx_ext_get_list', 1000, () => {
-      this.apiService.get<PbxExtensionModel[]>(this.apiPath, { limit: 999999999, offset: 0, domainId: this.activePbxDoamin }, results => callback(results));
-    });
+    super.ngOnInit();
   }
 
   showQrCode(extensionUuid: string, extension: string, regenerate?: boolean) {
-    this.apiService.get<{ extension: string, extension_uuid: string, qr_code: string }[]>('/ivoip/extensions/' + extensionUuid, { resptype: 'qrcode', regenerate: regenerate ? 1 : 0, domainId: localStorage.getItem('active_pbx_domain') }, result => {
+    this.apiService.get<{ extension: string, extension_uuid: string, qr_code: string }[]>('/ivoip/extensions/' + extensionUuid, { resptype: 'qrcode', regenerate: regenerate ? 1 : 0, domainId: this.ivoipService.getPbxActiveDomain() }, result => {
 
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
@@ -249,37 +193,8 @@ export class ExtensionListComponent extends DataManagerListComponent<PbxExtensio
     });
   }
 
-  executeDelete(ids: string[], callback: (result: any) => void) {
-    const params = {};
-    ids.forEach((item, index) => {
-      params['id' + index] = encodeURIComponent(item);
-    });
-    params['domainId'] = localStorage.getItem('active_pbx_domain');
-    this.apiService.delete(this.apiPath, params, result => {
-      if (callback) callback(result);
-    });
-  }
-
-  onReloadBtnClick(): false {
-    this.loadDomainList(doamins => {
-      super.loadList();
-    });
-    return false;
-  }
-
   onGenerateQRCodeBtnClick(): false {
     return false;
-  }
-
-  onChangeDomain(event: PbxDomainModel) {
-    console.info(event);
-    if (event['id']) {
-      // this.commonService.takeUntil('on_pbx_domain_change', 1000, () => {
-      localStorage.setItem('active_pbx_domain', event['id']);
-      this.activePbxDoamin = event['id'];
-      this.loadList();
-      // });
-    }
   }
 
 }

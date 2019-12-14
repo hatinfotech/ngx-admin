@@ -6,6 +6,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { MENU_ITEMS } from './app-menu';
+import { NbIconLibraries } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-app',
@@ -23,7 +24,10 @@ export class AppComponent implements OnInit {
 
   constructor(
     private analytics: AnalyticsService,
-  ) {}
+    iconsLibrary: NbIconLibraries,
+  ) {
+    iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
+  }
 
   ngOnInit(): void {
     this.analytics.trackPageViews();

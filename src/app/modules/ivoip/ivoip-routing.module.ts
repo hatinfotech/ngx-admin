@@ -93,9 +93,6 @@ const routes: Routes = [{
       path: 'devices/form',
       // canActivate: [AuthGuardService],
       component: DeviceFormComponent,
-      data: {
-        reuse: true,
-      },
     },
     {
       path: 'devices/form/:id',
