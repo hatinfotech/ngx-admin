@@ -20,8 +20,8 @@ export class IvoipService {
 
   }
 
-  getPbxList(callback: (pbxList: PbxModel[]) => void) {
-    if (this.pbxList.length === 0) {
+  getPbxList(callback: (pbxList: PbxModel[]) => void, clearCache?: boolean) {
+    if (clearCache || this.pbxList.length === 0) {
       this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {
         callback(list);
       });
@@ -58,6 +58,12 @@ export class IvoipService {
     if (domain) {
       this.setPbxActiveDomain(domain.DomainUuid);
       this.setActivePbx(domain.Pbx);
+    }
+  }
+
+  onChangePbx(pbx: PbxModel) {
+    if (pbx) {
+      this.setActivePbx(pbx.Code);
     }
   }
 

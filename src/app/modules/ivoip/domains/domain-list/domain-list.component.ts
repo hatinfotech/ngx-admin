@@ -5,17 +5,34 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
+import { IvoipService } from '../../ivoip-service';
+import { PbxModel } from '../../../../models/pbx.model';
 
 @Component({
   selector: 'ngx-domain-list',
   templateUrl: './domain-list.component.html',
   styleUrls: ['./domain-list.component.scss']
 })
-export class DomainListComponent  extends DataManagerListComponent<PbxDomainModel> implements OnInit {
+export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> implements OnInit {
 
   formPath: string = '/ivoip/domains/form';
   apiPath: string = '/ivoip/domains';
   idKey: string = 'Id';
+
+  activePbx: string;
+  pbxList: { id: string, text: string }[] = [];
+  pbxListConfig = {
+    placeholder: 'Chọn tổng đài...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Description',
+    },
+  };
 
   constructor(
     protected apiService: ApiService,
@@ -23,8 +40,9 @@ export class DomainListComponent  extends DataManagerListComponent<PbxDomainMode
     protected common: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
+    protected ivoipService: IvoipService,
   ) {
-    super(apiService, router, common, dialogService, toastService);
+    super(apiService, router, common, dialogService, toastService, ivoipService);
     // this.apiPath = '/user/groups';
     // this.idKey = 'Code';
   }
@@ -81,16 +99,39 @@ export class DomainListComponent  extends DataManagerListComponent<PbxDomainMode
   };
 
   ngOnInit() {
-    super.ngOnInit();
+    this.ivoipService.getPbxList(pbxList => {
+
+      this.pbxList = this.commonService.convertOptionList(pbxList, 'Code', 'Description');
+      this.activePbx = this.ivoipService.getActivePbx();
+      super.ngOnInit();
+
+    });
   }
 
   getList(callback: (list: PbxDomainModel[]) => void) {
-    this.apiService.get<PbxDomainModel[]>(this.apiPath, { limit: 999999999, offset: 0, includePbxDescription: true }, results => callback(results));
+    this.apiService.get<PbxDomainModel[]>(this.apiPath, { limit: 999999999, offset: 0, includePbxDescription: true, belongTopPbx: this.ivoipService.getActivePbx() }, results => callback(results));
   }
 
   onDeclareNewDomainForPbx(): false {
 
     return false;
   }
+
+  onChangePbx(event: PbxModel) {
+    this.ivoipService.onChangePbx(event);
+    this.loadList();
+  }
+
+  onReloadBtnClick(): false {
+    this.ivoipService.getPbxList(pbxList => {
+
+      this.pbxList = this.commonService.convertOptionList(pbxList, 'Code', 'Description');
+      this.activePbx = this.ivoipService.getActivePbx();
+      this.loadList();
+
+    }, true);
+    return false;
+  }
+
 
 }

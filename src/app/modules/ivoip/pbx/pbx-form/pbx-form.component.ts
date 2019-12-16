@@ -9,13 +9,15 @@ import { PbxModel } from '../../../../models/pbx.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
+import { IvoipService } from '../../ivoip-service';
 
 @Component({
   selector: 'ngx-pbx-form',
   templateUrl: './pbx-form.component.html',
   styleUrls: ['./pbx-form.component.scss'],
 })
-export class PbxFormComponent extends DataManagerFormComponent<PbxModel> implements OnInit {
+export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implements OnInit {
 
   idKey = 'Code';
   apiPath = '/ivoip/pbxs';
@@ -30,21 +32,31 @@ export class PbxFormComponent extends DataManagerFormComponent<PbxModel> impleme
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
     // protected ref: NbDialogRef<ShowcaseDialogComponent>,
+    protected ivoipService: IvoipService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }
 
   ngOnInit() {
     super.ngOnInit();
   }
 
-  /** Get form data by id from api */
-  getFormData(callback: (data: PbxModel[]) => void) {
-    this.apiService.get<PbxModel[]>(this.apiPath, { id: this.id, includeDomains: true },
-      data => callback(data),
-    ), (e: HttpErrorResponse) => {
-      this.onError(e);
-    };
+  // /** Get form data by id from api */
+  // getFormData(callback: (data: PbxModel[]) => void) {
+  //   this.apiService.get<PbxModel[]>(this.apiPath, { id: this.id, includeDomains: true },
+  //     data => callback(data),
+  //   ), (e: HttpErrorResponse) => {
+  //     this.onError(e);
+  //   };
+  // }
+
+  /** Execute api get */
+  executeGet(params: any, success: (resources: PbxModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+    params['domainId'] = this.ivoipService.getPbxActiveDomain();
+    params['includeDomains'] = true;
+    this.apiService.get<PbxModel[]>(this.apiPath, params, data => success(data), e => {
+      if (error) error(e); else this.onError(e);
+    });
   }
 
   formLoad(formData: PbxModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PbxModel) => void) {
