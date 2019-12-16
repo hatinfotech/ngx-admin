@@ -56,6 +56,7 @@ import { EarningLiveUpdateChartComponent } from './earning-card/front-side/earni
 import { ThemeModule } from '../../../@theme/theme.module';
 import { IvoipComponent } from '../ivoip.component';
 import { IvoipDashboardComponent } from './ivoip-dashboard.component';
+import { CustomElementModule } from '../../../lib/custom-element/custom-element.module';
 
 @NgModule({
   imports: [
@@ -72,6 +73,7 @@ import { IvoipDashboardComponent } from './ivoip-dashboard.component';
     NgxEchartsModule,
     NgxChartsModule,
     LeafletModule,
+    CustomElementModule,
   ],
   declarations: [
     IvoipDashboardComponent,

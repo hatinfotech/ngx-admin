@@ -11,6 +11,8 @@ import { ViewCell } from 'ng2-smart-table';
 import { IvoipService } from '../../ivoip-service';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { PbxCdrModel } from '../../../../models/pbx-cdr.model';
 
 @Component({
   selector: 'ngx-custom-view',

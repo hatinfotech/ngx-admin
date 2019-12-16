@@ -77,8 +77,8 @@
                     <nb-icon (click)="copyFormControlValueToOthers(array, i, 'domain_uuid')" pack="eva"
                       icon="copy-outline"></nb-icon>
                   </label>
-                  <ngx-select2 [tabindex]="i*10 + 7" [data]="domainList" formControlName="domain_uuid"
-                    [select2Option]="select2OptionForDoaminList">
+                  <ngx-select2 [tabindex]="i*10 + 7" [data]="privateDmainList" formControlName="domain_uuid"
+                    [select2Option]="privateDmainListConfig">
                   </ngx-select2>
                 </div>
               </div>

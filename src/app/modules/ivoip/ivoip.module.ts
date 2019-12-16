@@ -25,6 +25,10 @@ import { DeviceListComponent } from './devices/device-list/device-list.component
 import { DeviceFormComponent } from './devices/device-form/device-form.component';
 import { DomainListComponent } from './domains/domain-list/domain-list.component';
 import { DomainFormComponent } from './domains/domain-form/domain-form.component';
+import { CdrListComponent } from './cdrs/cdr-list/cdr-list.component';
+import { SmartTableButtonComponent } from '../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { PstnNumberListComponent } from './pstn-numbers/pstn-number-list/pstn-number-list.component';
+import { PstnNumberFormComponent } from './pstn-numbers/pstn-number-form/pstn-number-form.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +42,9 @@ import { DomainFormComponent } from './domains/domain-form/domain-form.component
     DeviceFormComponent,
     DomainListComponent,
     DomainFormComponent,
+    CdrListComponent,
+    PstnNumberListComponent,
+    PstnNumberFormComponent,
   ],
   imports: [
     CommonModule,
@@ -75,6 +82,7 @@ import { DomainFormComponent } from './domains/domain-form/domain-form.component
   // }],
   entryComponents: [
     ButtonViewComponent,
+    SmartTableButtonComponent,
   ],
 })
 export class IvoipModule { }

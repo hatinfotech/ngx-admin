@@ -48,6 +48,19 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
     },
   };
 
+  privateDmainList: { id?: string, text: string }[] = [];
+  privateDmainListConfig = {
+    placeholder: 'Chọn domain...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'DomainId',
+      text: 'DomainName',
+    },
+  };
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -62,22 +75,31 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
   }
 
   ngOnInit() {
-    // Get extension list
-    this.apiService.get<PbxExtensionModel[]>('/ivoip/extensions', { select: 'extension_uuid,extension,description', domainId: this.ivoipService.getPbxActiveDomain() }, extList => {
-      this.extensionList = this.convertOptionList(extList, 'extension', 'description');
 
-      // Get device vendor templates
-      this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
-        this.templateList = list.map(item => {
-          return {
-            text: item.name, children: item.templates.map(itemc => {
-              return { id: itemc, text: itemc };
-            }),
-          };
+    // Load domain list
+    this.ivoipService.getActiveDomainList(domainList => {
+      this.privateDmainList = this.convertOptionList(domainList, 'DomainId', 'DomainName');
+
+      // Get extension list
+      this.apiService.get<PbxExtensionModel[]>('/ivoip/extensions', { select: 'extension_uuid,extension,description', domainId: this.ivoipService.getPbxActiveDomain() }, extList => {
+        this.extensionList = this.convertOptionList(extList, 'extension', 'description');
+
+        // Get device vendor templates
+        this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
+          this.templateList = list.map(item => {
+
+            return {
+              text: item.name, children: item.templates.map(itemc => {
+                return { id: itemc, text: itemc };
+              }),
+            };
+          });
+          super.ngOnInit();
         });
-        super.ngOnInit();
       });
     });
+
+
   }
 
   /** Execute api get */
@@ -89,7 +111,7 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
   makeNewFormGroup(data?: PbxDeviceModel): FormGroup {
     const newForm = this.formBuilder.group({
       device_uuid: [''],
-      domain_uuid: [this.activePbxDoamin, Validators.required],
+      domain_uuid: [this.activePbxDoamin.split('@')[0], Validators.required],
       device_mac_address: ['', Validators.required],
       device_label: [''],
       extension: [''],

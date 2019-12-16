@@ -53,9 +53,29 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: '/ivoip/pstn-numbers',
       },
       {
+        title: 'Định tuyến cuộc gọi',
+        // icon: 'people-outline',
+        link: '/ivoip/routes',
+      },
+      {
+        title: 'Lời chào',
+        // icon: 'people-outline',
+        link: '/ivoip/ivrs',
+      },
+      {
+        title: 'Giờ làm việc',
+        // icon: 'people-outline',
+        link: '/ivoip/pstn-numbers',
+      },
+      {
+        title: 'Call center',
+        // icon: 'people-outline',
+        link: '/ivoip/call-centers',
+      },
+      {
         title: 'Lịch sử cuộc gọi',
         // icon: 'people-outline',
-        link: '/ivoip/cdr',
+        link: '/ivoip/cdrs/list',
       },
       {
         title: 'Chặn số',

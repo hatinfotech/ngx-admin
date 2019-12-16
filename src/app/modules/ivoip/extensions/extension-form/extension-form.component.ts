@@ -11,6 +11,7 @@ import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { IvoipService } from '../../ivoip-service';
 import { PbxDeviceModel } from '../../../../models/pbx-device.model';
 import { PbxDeviceVendorModel } from '../../../../models/pbx-device-vendor.model';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 
 @Component({
   selector: 'ngx-extension-form',
@@ -23,9 +24,22 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   apiPath = '/ivoip/extensions';
   baseFormUrl = '/ivoip/extensions/form';
 
-  templateList: {id?: string, text: string, children?: any[]}[];
+  templateList: { id?: string, text: string, children?: any[] }[];
   templateListConfig = {
     placeholder: 'Chọn template...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'DomainId',
+      text: 'DomainName',
+    },
+  };
+
+  privateDmainList: { id?: string, text: string, children: any[] }[] = [];
+  privateDmainListConfig = {
+    placeholder: 'Chọn domain...',
     allowClear: false,
     width: '100%',
     dropdownAutoWidth: true,
@@ -85,14 +99,20 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   }
 
   ngOnInit() {
-    this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', {limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true}, list => {
-      this.templateList = list.map(item => {
-        return {text: item.name, children: item.templates.map(item => {
-          return {id: item, text: item};
-        })};
-      });
-      super.ngOnInit();
+    this.apiService.get<PbxDomainModel[]>('/ivoip/domains', {}, list => {
+        this.privateDmainList = this.convertOptionList(list, 'DomainId', 'DomainName');
+        this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
+          this.templateList = list.map(item => {
+            return {
+              text: item.name, children: item.templates.map(item => {
+                return { id: item, text: item };
+              }),
+            };
+          });
+          super.ngOnInit();
+        });
     });
+
     // super.ngOnInit();
   }
 

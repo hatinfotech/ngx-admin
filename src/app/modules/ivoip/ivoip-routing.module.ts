@@ -18,6 +18,9 @@ import { DeviceListComponent } from './devices/device-list/device-list.component
 import { DeviceFormComponent } from './devices/device-form/device-form.component';
 import { DomainListComponent } from './domains/domain-list/domain-list.component';
 import { DomainFormComponent } from './domains/domain-form/domain-form.component';
+import { CdrListComponent } from './cdrs/cdr-list/cdr-list.component';
+import { PstnNumberListComponent } from './pstn-numbers/pstn-number-list/pstn-number-list.component';
+import { PstnNumberFormComponent } from './pstn-numbers/pstn-number-form/pstn-number-form.component';
 
 
 const routes: Routes = [{
@@ -74,9 +77,9 @@ const routes: Routes = [{
       component: DomainFormComponent,
     },
     {
-      path: 'cdr',
-      canActivate: [AuthGuardService],
-      component: CdrComponent,
+      path: 'cdrs/list',
+      // canActivate: [AuthGuardService],
+      component: CdrListComponent,
       data: {
         reuse: true,
       },
@@ -98,6 +101,25 @@ const routes: Routes = [{
       path: 'devices/form/:id',
       // canActivate: [AuthGuardService],
       component: DeviceFormComponent,
+    },
+    // Pstn numbers
+    {
+      path: 'pstn-numbers/list',
+      // canActivate: [AuthGuardService],
+      component: PstnNumberListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'pstn-numbers/form',
+      // canActivate: [AuthGuardService],
+      component: PstnNumberFormComponent,
+    },
+    {
+      path: 'pstn-numbers/form/:id',
+      // canActivate: [AuthGuardService],
+      component: PstnNumberFormComponent,
     },
     {
       path: 'extensions/list',

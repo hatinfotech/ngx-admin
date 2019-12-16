@@ -35,6 +35,10 @@ export class ApiService {
     });
   }
 
+  getBaseApiUrl() {
+    return this.baseApiUrl;
+  }
+
   setToken(token: NbAuthOAuth2Token) {
     if (token) {
       const t = JSON.parse(token.toString());

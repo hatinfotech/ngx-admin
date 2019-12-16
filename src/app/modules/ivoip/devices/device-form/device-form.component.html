@@ -57,8 +57,8 @@
               <div class="col-sm-5">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
                   <label class="label"><span class="valid">Domain</span> <nb-icon (click)="copyFormControlValueToOthers(array, i, 'domain_uuid')" pack="eva" icon="copy-outline"></nb-icon></label>
-                  <ngx-select2 [data]="domainList" formControlName="domain_uuid"
-                    [select2Option]="select2OptionForDoaminList">
+                  <ngx-select2 [data]="privateDmainList" formControlName="domain_uuid"
+                    [select2Option]="privateDmainListConfig">
                   </ngx-select2>
                 </div>
               </div>

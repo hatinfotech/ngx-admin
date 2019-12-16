@@ -1,8 +1,8 @@
 <nb-card class="small-header">
   <nb-card-header>
     <nav>
-      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh số bị chặn
-      <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách chi tiết cuộc gọi
+      <button nbButton status="success" hero size="tiny" (click)="onReloadBtnClick()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
       <ngx-select2 [data]="domainList" [value]="activePbxDoamin" [select2Option]="select2OptionForDoaminList"
@@ -13,8 +13,9 @@
 
   <nb-card-body>
     <div class="ng2-smart-table-wrap">
-      <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
-        (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+      <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
+      (delete)="onDeleteConfirm($event)" (edit)="onEditAction($event)" (create)="onSerialAction($event)"
+        (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
       </ng2-smart-table>
     </div>
   </nb-card-body>

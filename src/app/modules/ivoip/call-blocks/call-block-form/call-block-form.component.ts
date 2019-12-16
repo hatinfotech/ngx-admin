@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { UserGroupModel } from '../../../../models/user-group.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { UserModel } from '../../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
+import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
+import { IvoipService } from '../../ivoip-service';
 
 @Component({
   selector: 'ngx-call-block-form',
   templateUrl: './call-block-form.component.html',
-  styleUrls: ['./call-block-form.component.scss']
+  styleUrls: ['./call-block-form.component.scss'],
 })
-export class CallBlockFormComponent extends DataManagerFormComponent<PbxCallBlockModel> implements OnInit {
+export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockModel> implements OnInit {
 
   idKey = 'call_block_uuid';
   apiPath = '/ivoip/call-blocks';
@@ -29,8 +28,9 @@ export class CallBlockFormComponent extends DataManagerFormComponent<PbxCallBloc
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
+    protected ivoipService: IvoipService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }
 
   blockActions: { id: string, text: string, Code: string, Name: string }[];
@@ -71,14 +71,20 @@ export class CallBlockFormComponent extends DataManagerFormComponent<PbxCallBloc
     ];
   }
 
-  /** Get form data by id from api */
-  getFormData(callback: (data: PbxCallBlockModel[]) => void) {
-    this.apiService.get<PbxCallBlockModel[]>(this.apiPath, { id: this.id, multi: true, includeUsers: true },
-      data => callback(data),
-    ), (e: HttpErrorResponse) => {
-      this.onError(e);
-    };
+  /** Execute api get */
+  executeGet(params: any, success: (resources: PbxCallBlockModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+    params['includeUsers'] = true;
+    super.executeGet(params, success, error);
   }
+
+  // /** Get form data by id from api */
+  // getFormData(callback: (data: PbxCallBlockModel[]) => void) {
+  //   this.apiService.get<PbxCallBlockModel[]>(this.apiPath, { id: this.id, multi: true, includeUsers: true },
+  //     data => callback(data),
+  //   ), (e: HttpErrorResponse) => {
+  //     this.onError(e);
+  //   };
+  // }
 
   makeNewFormGroup(data?: PbxCallBlockModel): FormGroup {
     const newForm = this.formBuilder.group({

@@ -23,7 +23,6 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
     protected ivoipService: IvoipService,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
-    // iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
   }
 
   ngOnInit() {
@@ -61,9 +60,10 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
   }
 
   onChangeDomain(event: PbxDomainModel) {
-    console.info(event);
-    if (event['id']) {
-      this.ivoipService.setPbxActiveDomain(event['id']);
+    // console.info(event);
+    if (event && event['id']) {
+      // this.ivoipService.setPbxActiveDomain(event['id']);
+      this.ivoipService.onChangeDomain(event);
       this.activePbxDoamin = event['id'];
       this.loadList();
     }

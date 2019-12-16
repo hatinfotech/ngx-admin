@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
+import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
+import { IvoipService } from '../../ivoip-service';
 
 @Component({
   selector: 'ngx-call-block-list',
   templateUrl: './call-block-list.component.html',
   styleUrls: ['./call-block-list.component.scss']
 })
-export class CallBlockListComponent extends DataManagerListComponent<PbxCallBlockModel> implements OnInit {
+export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockModel> implements OnInit {
 
   formPath = '/ivoip/call-blocks/form';
   apiPath = '/ivoip/call-blocks';
@@ -23,8 +24,9 @@ export class CallBlockListComponent extends DataManagerListComponent<PbxCallBloc
     protected commonService: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
+    protected ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService, ivoipService);
   }
 
   editing = {};

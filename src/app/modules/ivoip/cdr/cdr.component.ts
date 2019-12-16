@@ -19,8 +19,6 @@ export class CdrComponent implements OnInit {
     private dialogService: NbDialogService,
   ) { }
 
-
-
   editing = {};
   rows = [];
 
@@ -28,6 +26,10 @@ export class CdrComponent implements OnInit {
     mode: 'external',
     actions: {
       position: 'right',
+    },
+    pager: {
+      display: true,
+      perPage: 99999,
     },
     add: {
       addButtonContent: '<i class="nb-plus"></i>',

@@ -1,24 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { PbxDeviceModel } from '../../../../models/pbx-device.model';
+import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
-import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
+import { PbxPstnNumberModel } from '../../../../models/pbx-pstn-number.model';
 
 @Component({
-  selector: 'ngx-device-list',
-  templateUrl: './device-list.component.html',
-  styleUrls: ['./device-list.component.scss']
+  selector: 'ngx-pstn-number-list',
+  templateUrl: './pstn-number-list.component.html',
+  styleUrls: ['./pstn-number-list.component.scss']
 })
-export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> implements OnInit {
+export class PstnNumberListComponent extends IvoipBaseListComponent<PbxPstnNumberModel> implements OnInit {
 
-  formPath = '/ivoip/devices/form';
-  apiPath = '/ivoip/devices';
-  idKey = 'device_uuid';
+  formPath = '/ivoip/pstn-numbers/form';
+  apiPath = '/ivoip/pstn-numbers';
+  idKey = 'destination_uuid';
 
   domainList: { id?: string, text: string, children: any[] }[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
@@ -60,23 +59,23 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
     },
     pager: {
       display: true,
-      perPage: 100,
+      perPage: 50,
     },
     columns: {
-      device_mac_address: {
-        title: 'Mã mac',
+      destination_number: {
+        title: 'Số điện thoại',
         type: 'string',
-        width: '30%',
+        width: '50%',
       },
-      device_template: {
-        title: 'Template',
+      pbx: {
+        title: 'Tổng đài',
         type: 'string',
         width: '20%',
       },
-      device_description: {
-        title: 'Mô tả',
+      domain: {
+        title: 'Domain',
         type: 'string',
-        width: '50%',
+        width: '30%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
     },
@@ -90,7 +89,7 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
     });
   }
 
-  getList(callback: (list: PbxDeviceModel[]) => void) {
+  getList(callback: (list: PbxPstnNumberModel[]) => void) {
     super.getList(list => callback(list.map((item: any) => {
       // item['qr_code'] = '<i icon="qrcode" class="fa fa-qrcode"></i>';
       return item;
