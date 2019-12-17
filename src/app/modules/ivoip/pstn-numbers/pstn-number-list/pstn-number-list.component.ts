@@ -5,13 +5,12 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
-import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { PbxPstnNumberModel } from '../../../../models/pbx-pstn-number.model';
 
 @Component({
   selector: 'ngx-pstn-number-list',
   templateUrl: './pstn-number-list.component.html',
-  styleUrls: ['./pstn-number-list.component.scss']
+  styleUrls: ['./pstn-number-list.component.scss'],
 })
 export class PstnNumberListComponent extends IvoipBaseListComponent<PbxPstnNumberModel> implements OnInit {
 
@@ -62,21 +61,30 @@ export class PstnNumberListComponent extends IvoipBaseListComponent<PbxPstnNumbe
       perPage: 50,
     },
     columns: {
-      destination_number: {
-        title: 'Số điện thoại',
+      destination_type: {
+        title: 'Loại',
         type: 'string',
-        width: '50%',
+        width: '10%',
       },
-      pbx: {
-        title: 'Tổng đài',
+      destination_accountcode: {
+        title: 'Số đại diện',
         type: 'string',
         width: '20%',
       },
-      domain: {
-        title: 'Domain',
+      destination_number: {
+        title: 'Mẫu nhận diện',
         type: 'string',
-        width: '30%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        width: '20%',
+      },
+      destination_description: {
+        title: 'Mô tả',
+        type: 'string',
+        width: '40%',
+      },
+      destination_enabled: {
+        title: 'Kích hoạt',
+        type: 'string',
+        width: '10%',
       },
     },
   };
@@ -84,39 +92,39 @@ export class PstnNumberListComponent extends IvoipBaseListComponent<PbxPstnNumbe
   ngOnInit() {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
       super.ngOnInit();
     });
   }
 
-  getList(callback: (list: PbxPstnNumberModel[]) => void) {
-    super.getList(list => callback(list.map((item: any) => {
-      // item['qr_code'] = '<i icon="qrcode" class="fa fa-qrcode"></i>';
-      return item;
-    })));
-  }
+  // getList(callback: (list: PbxPstnNumberModel[]) => void) {
+  //   super.getList(list => callback(list.map((item: any) => {
+  //     // item['qr_code'] = '<i icon="qrcode" class="fa fa-qrcode"></i>';
+  //     return item;
+  //   })));
+  // }
 
-  onReloadBtnClick(): false {
-    this.ivoipService.loadDomainList(domains => {
-      this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
-      this.loadList();
-    });
-    return false;
-  }
+  // onReloadBtnClick(): false {
+  //   this.ivoipService.loadDomainList(domains => {
+  //     this.domainList = domains;
+  //     this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+  //     this.loadList();
+  //   });
+  //   return false;
+  // }
 
-  onGenerateQRCodeBtnClick(): false {
-    return false;
-  }
+  // onGenerateQRCodeBtnClick(): false {
+  //   return false;
+  // }
 
-  onChangeDomain(event: PbxDomainModel) {
-    console.info(event);
-    if (event['id']) {
-      // this.ivoipService.setPbxActiveDomain(event['id']);
-      this.ivoipService.onChangeDomain(event);
-      this.activePbxDoamin = event['id'];
-      this.loadList();
-    }
-  }
+  // onChangeDomain(event: PbxDomainModel) {
+  //   console.info(event);
+  //   if (event['id']) {
+  //     // this.ivoipService.setPbxActiveDomain(event['id']);
+  //     this.ivoipService.onChangeDomain(event);
+  //     this.activePbxDoamin = event['id'];
+  //     this.loadList();
+  //   }
+  // }
 
 }

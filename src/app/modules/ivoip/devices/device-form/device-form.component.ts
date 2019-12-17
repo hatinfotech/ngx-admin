@@ -81,7 +81,7 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
       this.privateDmainList = this.convertOptionList(domainList, 'DomainId', 'DomainName');
 
       // Get extension list
-      this.apiService.get<PbxExtensionModel[]>('/ivoip/extensions', { select: 'extension_uuid,extension,description', domainId: this.ivoipService.getPbxActiveDomain() }, extList => {
+      this.apiService.get<PbxExtensionModel[]>('/ivoip/extensions', { select: 'extension_uuid,extension,description', domainId: this.ivoipService.getPbxActiveDomainUuid() }, extList => {
         this.extensionList = this.convertOptionList(extList, 'extension', 'description');
 
         // Get device vendor templates

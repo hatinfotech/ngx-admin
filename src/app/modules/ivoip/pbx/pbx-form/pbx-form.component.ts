@@ -52,7 +52,7 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
 
   /** Execute api get */
   executeGet(params: any, success: (resources: PbxModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['domainId'] = this.ivoipService.getPbxActiveDomain();
+    params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
     params['includeDomains'] = true;
     this.apiService.get<PbxModel[]>(this.apiPath, params, data => success(data), e => {
       if (error) error(e); else this.onError(e);

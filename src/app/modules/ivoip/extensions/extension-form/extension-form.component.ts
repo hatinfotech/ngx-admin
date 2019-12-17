@@ -50,40 +50,6 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     },
   };
 
-  userRecordActionList: { id: string, text: string }[] = [
-    {
-      id: 'all',
-      text: 'Tất cả',
-    },
-    {
-      id: 'local',
-      text: 'Nội bộ',
-    },
-    {
-      id: 'inbound',
-      text: 'Gọi vào',
-    },
-    {
-      id: 'outbound',
-      text: 'Gọi ra',
-    },
-    {
-      id: '',
-      text: 'Không ghi âm',
-    },
-  ];
-  select2OptionForUserRecordActionList = {
-    placeholder: 'Chọn kểu ghi âm...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-  };
-
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -135,7 +101,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
 
   /** Execute api get */
   executeGet(params: any, success: (resources: PbxExtensionModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['domainId'] = this.ivoipService.getPbxActiveDomain();
+    params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
     params['includeUser'] = true;
     params['includeDevices'] = true;
     super.executeGet(params, success, error);
@@ -144,7 +110,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   makeNewFormGroup(data?: PbxExtensionModel): FormGroup {
     const newForm = this.formBuilder.group({
       extension_uuid: [''],
-      domain_uuid: [this.activePbxDoamin, Validators.required],
+      domain_uuid: [this.ivoipService ? this.ivoipService.getPbxActiveDomainId() : '', Validators.required],
       extension: ['', Validators.required],
       password: [''],
       call_group: [''],

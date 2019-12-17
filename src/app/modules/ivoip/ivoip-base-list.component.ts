@@ -28,7 +28,7 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
   ngOnInit() {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
       super.ngOnInit();
     });
   }
@@ -44,7 +44,7 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
     ids.forEach((item, index) => {
       params['id' + index] = encodeURIComponent(item);
     });
-    params['domainId'] = this.ivoipService.getPbxActiveDomain();
+    params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
     this.apiService.delete(this.apiPath, params, result => {
       if (callback) callback(result);
     });
@@ -53,7 +53,7 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
   onReloadBtnClick(): false {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
       this.loadList();
     });
     return false;

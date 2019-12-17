@@ -85,7 +85,7 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   ngOnInit() {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
       super.ngOnInit();
     });
   }
@@ -100,7 +100,7 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   onReloadBtnClick(): false {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
       this.loadList();
     });
     return false;

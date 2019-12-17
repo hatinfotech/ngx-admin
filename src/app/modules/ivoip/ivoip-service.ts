@@ -38,8 +38,12 @@ export class IvoipService {
     this.domainList = [];
   }
 
-  getPbxActiveDomain() {
+  getPbxActiveDomainUuid() {
     return localStorage.getItem('active_pbx_domain');
+  }
+
+  getPbxActiveDomainId() {
+    return this.getPbxActiveDomainUuid().split('@')[0];
   }
 
   setPbxActiveDomain(value: string) {

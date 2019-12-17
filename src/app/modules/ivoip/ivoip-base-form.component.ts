@@ -14,6 +14,42 @@ export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
   // activePbxDoamin: string;
 
+
+
+  userRecordActionList: { id: string, text: string }[] = [
+    {
+      id: 'all',
+      text: 'Tất cả',
+    },
+    {
+      id: 'local',
+      text: 'Nội bộ',
+    },
+    {
+      id: 'inbound',
+      text: 'Gọi vào',
+    },
+    {
+      id: 'outbound',
+      text: 'Gọi ra',
+    },
+    {
+      id: '',
+      text: 'Không ghi âm',
+    },
+  ];
+  select2OptionForUserRecordActionList = {
+    placeholder: 'Chọn kểu ghi âm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -36,24 +72,24 @@ export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent
   }
 
   get activePbxDoamin() {
-    return this.ivoipService ? this.ivoipService.getPbxActiveDomain() : '';
+    return this.ivoipService ? this.ivoipService.getPbxActiveDomainUuid() : '';
   }
 
   /** Execute api get */
   executeGet(params: any, success: (resources: M[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['domainId'] = this.ivoipService.getPbxActiveDomain();
+    params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
     super.executeGet(params, success, error);
   }
 
   /** Execute api put */
   executePut(params: any, data: M[], success: (data: M[]) => void, error: (e: any) => void) {
-    params['domainId'] = this.ivoipService.getPbxActiveDomain();
+    params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
     super.executePut(params, data, success, error);
   }
 
   /** Execute api post */
   executePost(params: any, data: M[], success: (data: M[]) => void, error: (e: any) => void) {
-    params['domainId'] = this.ivoipService.getPbxActiveDomain();
+    params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
     super.executePost(params, data, success, error);
   }
 

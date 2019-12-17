@@ -1,4 +1,5 @@
 import { PbxDomainModel } from './pbx-domain.model';
+import { PbxDialplanDetailModel } from './pbx-dialplan-detail.model';
 
 export class PbxPstnNumberModel {
 
@@ -25,6 +26,7 @@ export class PbxPstnNumberModel {
   destination_alternate_data?: string;
   destination_enabled?: string;
   destination_description?: string;
+  dialplan_details: PbxDialplanDetailModel[];
 
   constructor() { }
 

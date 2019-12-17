@@ -58,7 +58,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
     });
   }
 
@@ -87,7 +87,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
     };
 
     this.apiService.get<{ Label: string, Count: { Complete: number, Miss: number }, Duration: { Complete: number, Miss: number } }[]>(
-      '/ivoip/cdrs', { limit: 99999999999, statistics: period, domainId: this.ivoipService.getPbxActiveDomain() },
+      '/ivoip/cdrs', { limit: 99999999999, statistics: period, domainId: this.ivoipService.getPbxActiveDomainUuid() },
       result => {
         result.forEach(element => {
           orderChartTmp.chartLabel.push(element.Label);
@@ -119,7 +119,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
     this.commondService.takeUntil('ivoip_dashboard_refresh', 1000, () => {
       this.ivoipService.loadDomainList(domains => {
         this.domainList = domains;
-        this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
+        this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
         this.getOrdersChartData(this.period);
       });
     });

@@ -50,7 +50,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Số đấu nối',
         // icon: 'people-outline',
-        link: '/ivoip/pstn-numbers',
+        link: '/ivoip/pstn-numbers/list',
       },
       {
         title: 'Định tuyến cuộc gọi',

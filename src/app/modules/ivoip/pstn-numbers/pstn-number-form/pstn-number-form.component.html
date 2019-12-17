@@ -1,3 +1,142 @@
-<p>
-  pstn-number-form works!
-</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật thông tin số đấu nối
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <!-- <input type="hidden" formControlName="call_block_uuid_old"> -->
+              <input type="hidden" formControlName="destination_uuid">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('destination_accountcode'), 'warning')">
+                  <label class="label"><span class="valid">Số đấu nối (*)</span><span class="invalid">Số đấu nối là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="destination_accountcode" placeholder="Số đấu nối">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('destination_number'), 'warning')">
+                  <label class="label"><span class="valid">Mẫu nhận diện (*)</span><span class="invalid">Mẫu nhận diện là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="destination_number" placeholder="Mẫ nhận diện">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
+                  <label class="label"><span class="valid">Domain (*)</span><span class="invalid">Domain là bắt buộc (*)</span></label>
+                  <ngx-select2 [data]="privateDomainList" formControlName="domain_uuid" [select2Option]="privateDomainListConfig">
+                    </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Loại</span></label>
+                  <nb-select size="medium" formControlName="destination_type" fullWidth>
+                    <nb-option *ngFor="let direction of directionList" [value]="direction.id"> {{ direction.text }}</nb-option>
+                  </nb-select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Mô tả</span></label>
+                  <input type="text" nbInput fullWidth formControlName="destination_description" placeholder="Mô tả">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Loại</span></label>
+                  <nb-checkbox formControlName="destination_record" >Ghi âm</nb-checkbox>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('destination_enabled'), 'warning')">
+                  <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span></label>
+                  <nb-checkbox formControlName="destination_enabled" >Kích hoạt</nb-checkbox>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <label class="label">Điều hướng</label>
+            <div class="row">
+              <div class="col-sm-1">STT</div>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-12">Hành động</div>
+                </div>
+              </div>
+              <div class="col-sm-1" style="text-align: center;">
+                <button nbButton status="success" (click)="addDialplanDetailFormGroup(i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+
+            <hr>
+            <div formArrayName="dialplan_details" class="form-details">
+              <div class="form-detail-item" *ngFor="let dialplanDetail of getDialplanDetails(i).controls; let ic=index"
+                [formGroup]="dialplanDetail">
+                <input type="hidden" formGroupName="dialplan_detail_uuid">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth disabled value="{{ ic + 1 }}" style="text-align: center;">
+                    </div>
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="form-group" [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_data'), 'warning')">
+                          <label class="label"><span class="valid">Hành động (*)</span><span class="invalid">Hành động chưa được chọn (*)</span></label>
+                          <ngx-select2 [data]="dialplanDetailList" formControlName="dialplan_detail_data"
+                            [select2Option]="dialplanDetailListConfig">
+                          </ngx-select2>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="tiny" (click)="removeDialplanDetailGroup(i, ic)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button>
+            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
+            <button nbButton status="success" [disabled]="!form.valid" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>
