@@ -53,6 +53,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: '/ivoip/pstn-numbers/list',
       },
       {
+        title: 'Gateway',
+        // icon: 'people-outline',
+        link: '/ivoip/gateways/list',
+      },
+      {
         title: 'Định tuyến cuộc gọi',
         // icon: 'people-outline',
         link: '/ivoip/routes',

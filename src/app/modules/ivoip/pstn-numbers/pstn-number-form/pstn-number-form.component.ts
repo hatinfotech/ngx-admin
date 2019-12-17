@@ -7,8 +7,6 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs';
 import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
 
 @Component({
@@ -105,51 +103,7 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
         });
 
       });
-
-
-    // this.blockActions = [
-    //   {
-    //     id: 'Reject',
-    //     text: 'Reject',
-    //     Code: 'Reject',
-    //     Name: 'Reject',
-    //   },
-    //   {
-    //     id: 'Busy',
-    //     text: 'Busy',
-    //     Code: 'Busy',
-    //     Name: 'Busy',
-    //   },
-    //   {
-    //     id: 'Hold',
-    //     text: 'Hold',
-    //     Code: 'Hold',
-    //     Name: 'Hold',
-    //   },
-    // ];
   }
-
-  // /** Execute api get */
-  // executeGet(params: any, success: (resources: PbxPstnNumberModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-  //   params['includeUsers'] = true;
-  //   super.executeGet(params, success, error);
-  // }
-
-  // /** Get form data by id from api */
-  // getFormData(callback: (data: PbxPstnNumberModel[]) => void) {
-  //   this.apiService.get<PbxPstnNumberModel[]>(this.apiPath, { id: this.id, multi: true, includeUsers: true },
-  //     data => callback(data),
-  //   ), (e: HttpErrorResponse) => {
-  //     this.onError(e);
-  //   };
-  // }
-
-  /** Get data from api and patch data for form */
-  // formLoad(formData?: PbxPstnNumberModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PbxPstnNumberModel) => void) {
-  //   super.formLoad(formData, (index: number, newForm: FormGroup, fData: PbxPstnNumberModel) => {
-  //     formItemLoadCallback(index);
-  //   });
-  // }
 
   makeNewFormGroup(data?: PbxPstnNumberModel): FormGroup {
     const newForm = this.formBuilder.group({
@@ -179,8 +133,12 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
       });
     }
 
-    newForm.get('destination_accountcode').valueChanges.subscribe(value => {
-      newForm.get('destination_number').setValue('(\\d{1,2}' + value.replace(/^0/, '') + ')');
+    const destinationAccountCode = newForm.get('destination_accountcode');
+    const destinationNumber = newForm.get('destination_number');
+    destinationAccountCode.valueChanges.subscribe(value => {
+      if (!this.isProcessing && this.id.length === 0) {
+        destinationNumber.setValue('(\\d{1,3}' + value.replace(/^0/, '') + ')');
+      }
     });
 
   }

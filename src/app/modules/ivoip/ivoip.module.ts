@@ -29,6 +29,8 @@ import { CdrListComponent } from './cdrs/cdr-list/cdr-list.component';
 import { SmartTableButtonComponent } from '../../lib/custom-element/smart-table/smart-table-checkbox.component';
 import { PstnNumberListComponent } from './pstn-numbers/pstn-number-list/pstn-number-list.component';
 import { PstnNumberFormComponent } from './pstn-numbers/pstn-number-form/pstn-number-form.component';
+import { GatewayListComponent } from './gateways/gateway-list/gateway-list.component';
+import { GatewayFormComponent } from './gateways/gateway-form/gateway-form.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { PstnNumberFormComponent } from './pstn-numbers/pstn-number-form/pstn-nu
     CdrListComponent,
     PstnNumberListComponent,
     PstnNumberFormComponent,
+    GatewayListComponent,
+    GatewayFormComponent,
   ],
   imports: [
     CommonModule,

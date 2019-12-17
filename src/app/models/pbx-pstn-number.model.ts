@@ -1,4 +1,3 @@
-import { PbxDomainModel } from './pbx-domain.model';
 import { PbxDialplanDetailModel } from './pbx-dialplan-detail.model';
 
 export class PbxPstnNumberModel {

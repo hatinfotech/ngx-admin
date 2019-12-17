@@ -21,6 +21,8 @@ import { DomainFormComponent } from './domains/domain-form/domain-form.component
 import { CdrListComponent } from './cdrs/cdr-list/cdr-list.component';
 import { PstnNumberListComponent } from './pstn-numbers/pstn-number-list/pstn-number-list.component';
 import { PstnNumberFormComponent } from './pstn-numbers/pstn-number-form/pstn-number-form.component';
+import { GatewayFormComponent } from './gateways/gateway-form/gateway-form.component';
+import { GatewayListComponent } from './gateways/gateway-list/gateway-list.component';
 
 
 const routes: Routes = [{
@@ -120,6 +122,25 @@ const routes: Routes = [{
       path: 'pstn-numbers/form/:id',
       // canActivate: [AuthGuardService],
       component: PstnNumberFormComponent,
+    },
+    // Gateways
+    {
+      path: 'gateways/list',
+      // canActivate: [AuthGuardService],
+      component: GatewayListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'gateways/form',
+      // canActivate: [AuthGuardService],
+      component: GatewayFormComponent,
+    },
+    {
+      path: 'gateways/form/:id',
+      // canActivate: [AuthGuardService],
+      component: GatewayFormComponent,
     },
     {
       path: 'extensions/list',
