@@ -5,6 +5,7 @@ import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { IvoipService } from '../../../modules/ivoip/ivoip-service';
 
 @Component({
   selector: 'ngx-header',
@@ -43,13 +44,27 @@ export class HeaderComponent implements OnInit, OnDestroy {
   chatBarExpand = true;
   sidebars: NbSidebarComponent[];
 
+  domainList: { id?: string, text: string, children: any[] }[] = [];
+  domainListConfig = {
+    placeholder: 'Chọn domain...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'DomainUuid',
+      text: 'DomainName',
+    },
+  };
+
   constructor(
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private userService: UserData,
     private layoutService: LayoutService,
-    private breakpointService: NbMediaBreakpointsService) {
+    private breakpointService: NbMediaBreakpointsService,
+    private ivoipService: IvoipService) {
   }
 
   ngOnInit() {
@@ -103,7 +118,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     //   this.toggleChatbar();
     // }, 5000);
 
+    // this.ivoipService.getDomainList(domainList => {
+    //   this.domainList = domainList;
+    // });
 
+  }
+
+  get activePbxDoamin() {
+    return this.ivoipService.getPbxActiveDomainUuid();
   }
 
   ngOnDestroy() {
@@ -170,5 +192,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateHome() {
     this.menuService.navigateHome();
     return false;
+  }
+
+  onChangeDomain(event) {
+    this.ivoipService.onChangeDomain(event);
   }
 }

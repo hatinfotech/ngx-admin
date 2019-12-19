@@ -20,7 +20,7 @@ export class PstnNumberListComponent extends IvoipBaseListComponent<PbxPstnNumbe
 
   domainList: { id?: string, text: string, children: any[] }[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
-  activePbxDoamin: string;
+  // activePbxDoamin: string;
 
   constructor(
     protected apiService: ApiService,
@@ -90,11 +90,11 @@ export class PstnNumberListComponent extends IvoipBaseListComponent<PbxPstnNumbe
   };
 
   ngOnInit() {
-    this.ivoipService.loadDomainList(domains => {
-      this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
+    // this.ivoipService.loadDomainList(domains => {
+    //   this.domainList = domains;
+      // this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
       super.ngOnInit();
-    });
+    // });
   }
 
   // getList(callback: (list: PbxPstnNumberModel[]) => void) {

@@ -28,7 +28,7 @@ export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
-    protected ivoipService: IvoipService,
+    public ivoipService: IvoipService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }

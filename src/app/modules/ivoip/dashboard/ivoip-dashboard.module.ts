@@ -57,6 +57,8 @@ import { ThemeModule } from '../../../@theme/theme.module';
 import { IvoipComponent } from '../ivoip.component';
 import { IvoipDashboardComponent } from './ivoip-dashboard.component';
 import { CustomElementModule } from '../../../lib/custom-element/custom-element.module';
+import { ReuseComponent } from '../../../lib/reuse-component';
+import { IvoipService } from '../ivoip-service';
 
 @NgModule({
   imports: [
@@ -113,4 +115,12 @@ import { CustomElementModule } from '../../../lib/custom-element/custom-element.
     CountryOrdersMapService,
   ],
 })
-export class IvoipDashboardModule { }
+export class IvoipDashboardModule implements ReuseComponent {
+
+  activePbxDoamin: string;
+  constructor(private ivoipService: IvoipService) {}
+
+  /** User for reuse component */
+  onResume() {}
+
+}

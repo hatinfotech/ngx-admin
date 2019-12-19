@@ -24,7 +24,7 @@ export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel
     protected commonService: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
-    protected ivoipService: IvoipService,
+    public ivoipService: IvoipService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);
   }

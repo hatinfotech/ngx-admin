@@ -60,7 +60,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Định tuyến cuộc gọi',
         // icon: 'people-outline',
-        link: '/ivoip/routes',
+        link: '/ivoip/dialplans/list',
       },
       {
         title: 'Lời chào',

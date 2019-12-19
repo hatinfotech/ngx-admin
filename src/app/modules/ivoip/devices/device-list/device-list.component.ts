@@ -5,7 +5,7 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
-import { IvoipService } from '../../ivoip-service';
+import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 
@@ -20,9 +20,9 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   apiPath = '/ivoip/devices';
   idKey = 'device_uuid';
 
-  domainList: { id?: string, text: string, children: any[] }[] = [];
+  domainList: PbxDomainSelection[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
-  activePbxDoamin: string;
+  // activePbxDoamin: string;
 
   constructor(
     protected apiService: ApiService,
@@ -85,7 +85,7 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   ngOnInit() {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
+      // this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
       super.ngOnInit();
     });
   }
@@ -110,14 +110,14 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
     return false;
   }
 
-  onChangeDomain(event: PbxDomainModel) {
-    console.info(event);
-    if (event['id']) {
-      // this.ivoipService.setPbxActiveDomain(event['id']);
-      this.ivoipService.onChangeDomain(event);
-      this.activePbxDoamin = event['id'];
-      this.loadList();
-    }
-  }
+  // onChangeDomain(event: PbxDomainModel) {
+  //   console.info(event);
+  //   if (event['id']) {
+  //     // this.ivoipService.setPbxActiveDomain(event['id']);
+  //     this.ivoipService.onChangeDomain(event);
+  //     this.activePbxDoamin = event['id'];
+  //     this.loadList();
+  //   }
+  // }
 
 }

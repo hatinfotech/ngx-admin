@@ -7,10 +7,11 @@ import { CommonService } from '../../services/common.service';
 import { IvoipService } from './ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { OnInit } from '@angular/core';
+import { PbxDomainModel } from '../../models/pbx-domain.model';
 
 export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent<M> implements OnInit {
 
-  domainList: { id?: string, text: string, children: any[] }[] = [];
+  domainList: { id: string, text: string, domain: PbxDomainModel }[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
   // activePbxDoamin: string;
 
@@ -58,13 +59,13 @@ export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
-    protected ivoipService: IvoipService,
+    public ivoipService: IvoipService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
 
   ngOnInit() {
-    this.ivoipService.loadDomainList(domains => {
+    this.ivoipService.getActiveDomainList(domains => {
       this.domainList = domains;
       // this.activePbxDoamin = this.ivoipService.getPbxActiveDomain();
       super.ngOnInit();

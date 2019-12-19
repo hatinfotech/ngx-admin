@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
+import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
+import { PbxDialplanModel } from '../../../../models/pbx-dialplan.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
-import { CommonService } from '../../../../services/common.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
-import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { IvoipService } from '../../ivoip-service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
-  selector: 'ngx-call-block-form',
-  templateUrl: './call-block-form.component.html',
-  styleUrls: ['./call-block-form.component.scss'],
+  selector: 'ngx-dialplan-form',
+  templateUrl: './dialplan-form.component.html',
+  styleUrls: ['./dialplan-form.component.scss']
 })
-export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockModel> implements OnInit {
+export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanModel> implements OnInit {
 
-  idKey = 'call_block_uuid';
-  apiPath = '/ivoip/call-blocks';
-  baseFormUrl = '/ivoip/call-blocks/form';
+  idKey = 'dialplan_uuid';
+  apiPath = '/ivoip/dialplans';
+  baseFormUrl = '/ivoip/dialplans/form';
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -71,30 +71,30 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
   }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: PbxCallBlockModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: PbxDialplanModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeUsers'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: PbxCallBlockModel): FormGroup {
+  makeNewFormGroup(data?: PbxDialplanModel): FormGroup {
     const newForm = this.formBuilder.group({
-      call_block_uuid: [''],
-      call_block_name: [''],
-      call_block_number: ['', Validators.required],
-      call_block_action: [''],
-      call_block_enabled: [''],
+      dialplan_uuid: [''],
+      dialplan_expression: ['', Validators.required],
+      accountcode: ['', Validators.required],
+      dialplan_enabled: [true],
+      dialplan_description: [''],
     });
     if (data) {
       newForm.patchValue(data);
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxCallBlockModel): void { }
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxDialplanModel): void { }
   onRemoveFormGroup(index: number): void {
 
   }
   goback(): false {
-    this.router.navigate(['/ivoip/call-blocks/list']);
+    this.router.navigate(['/ivoip/dialplans/list']);
     return false;
   }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }

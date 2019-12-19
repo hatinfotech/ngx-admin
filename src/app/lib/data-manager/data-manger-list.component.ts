@@ -48,11 +48,14 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   /** Get data from api and push to list */
-  loadList() {
-    this.getList(list => this.source.load(list.map((item, index) => {
-      item['No'] = index + 1;
-      return item;
-    })));
+  loadList(callback?: (list: M[]) => void) {
+    this.getList(list => {
+      this.source.load(list.map((item, index) => {
+        item['No'] = index + 1;
+        return item;
+      }));
+      if (callback) callback(list);
+    });
   }
 
   onReloadBtnClick(): false {

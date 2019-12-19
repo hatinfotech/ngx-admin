@@ -30,9 +30,9 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
     protected apiService: ApiService,
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public commonService: CommonService,
     // protected ref: NbDialogRef<ShowcaseDialogComponent>,
-    protected ivoipService: IvoipService,
+    public ivoipService: IvoipService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }

@@ -31,6 +31,8 @@ import { PstnNumberListComponent } from './pstn-numbers/pstn-number-list/pstn-nu
 import { PstnNumberFormComponent } from './pstn-numbers/pstn-number-form/pstn-number-form.component';
 import { GatewayListComponent } from './gateways/gateway-list/gateway-list.component';
 import { GatewayFormComponent } from './gateways/gateway-form/gateway-form.component';
+import { DialplanListComponent } from './dialplans/dialplan-list/dialplan-list.component';
+import { DialplanFormComponent } from './dialplans/dialplan-form/dialplan-form.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import { GatewayFormComponent } from './gateways/gateway-form/gateway-form.compo
     PstnNumberFormComponent,
     GatewayListComponent,
     GatewayFormComponent,
+    DialplanListComponent,
+    DialplanFormComponent,
   ],
   imports: [
     CommonModule,

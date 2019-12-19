@@ -37,7 +37,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     },
   };
 
-  privateDmainList: { id?: string, text: string, children: any[] }[] = [];
+  privateDmainList: { id?: string, text: string}[] = [];
   privateDmainListConfig = {
     placeholder: 'Chọn domain...',
     allowClear: false,
@@ -58,25 +58,28 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
-    protected ivoipService: IvoipService,
+    public ivoipService: IvoipService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
 
   }
 
   ngOnInit() {
-    this.apiService.get<PbxDomainModel[]>('/ivoip/domains', {}, list => {
-        this.privateDmainList = this.convertOptionList(list, 'DomainId', 'DomainName');
-        this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
-          this.templateList = list.map(item => {
-            return {
-              text: item.name, children: item.templates.map(item => {
-                return { id: item, text: item };
-              }),
-            };
-          });
-          super.ngOnInit();
+    this.ivoipService.getActiveDomainList(domainList => {
+      this.privateDmainList = this.convertOptionList(domainList, 'DomainId', 'DomainName');
+      this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
+        this.templateList = list.map(item => {
+          return {
+            text: item.name, children: item.templates.map(item2 => {
+              return { id: item2, text: item2 };
+            }),
+          };
         });
+        super.ngOnInit();
+      });
+    });
+    this.apiService.get<PbxDomainModel[]>('/ivoip/domains', {}, list => {
+
     });
 
     // super.ngOnInit();

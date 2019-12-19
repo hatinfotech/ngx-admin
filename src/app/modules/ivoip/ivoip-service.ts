@@ -3,35 +3,63 @@ import { ApiService } from '../../services/api.service';
 import { CommonService } from '../../services/common.service';
 import { PbxModel } from '../../models/pbx.model';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
+import { isString } from 'util';
+
+export class PbxDomainSelection {
+  id?: string;
+  text: string;
+  children?: {
+    id: string,
+    text: string,
+    domain: PbxDomainModel,
+  }[];
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class IvoipService {
 
-  protected domainList: { id?: string, text: string, children: any[] }[] = [];
+  protected domainList: PbxDomainSelection[] = [];
   protected pbxList: PbxModel[] = [];
   protected activePbx: string;
+  activeDomainUuid: string;
+  // protected _activeDomainUuid: string;
 
   constructor(
     private apiService: ApiService,
     private commonService: CommonService,
   ) {
+    // this.activeDomainUuid = localStorage.getItem('active_pbx_domain');
+    // this._activeDomainUuid = this.getPbxActiveDomainUuid();
+  }
+
+  getDomainList(callback: (domainList: PbxDomainSelection[]) => void) {
+    this.loadDomainList(domainList => {
+      callback(this.domainList);
+    });
 
   }
 
   getPbxList(callback: (pbxList: PbxModel[]) => void, clearCache?: boolean) {
     if (clearCache || this.pbxList.length === 0) {
       this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {
-        callback(list);
+        this.pbxList = list;
+        callback(this.pbxList);
       });
     } else {
       callback(this.pbxList);
     }
   }
 
-  getActiveDomainList(callback: (domainList: PbxDomainModel[]) => void) {
-    this.getPbxList(pbxList => callback(pbxList.filter(item => item.Code === this.getActivePbx())[0].Domains));
+  getActiveDomainList(callback: (domainList: { id: string, text: string, domain: PbxDomainModel }[]) => void) {
+    this.getPbxList(pbxList => callback(pbxList.filter(item => item.Code === this.getActivePbx())[0].Domains.map(item2 => {
+      return {
+        id: item2.DomainId,
+        text: item2.DomainName,
+        domain: item2,
+      };
+    })));
   }
 
   clearCache() {
@@ -39,7 +67,11 @@ export class IvoipService {
   }
 
   getPbxActiveDomainUuid() {
-    return localStorage.getItem('active_pbx_domain');
+    if (!this.activeDomainUuid) {
+      this.activeDomainUuid = localStorage.getItem('active_pbx_domain')
+    }
+    return this.activeDomainUuid;
+    // return localStorage.getItem('active_pbx_domain');
   }
 
   getPbxActiveDomainId() {
@@ -47,6 +79,7 @@ export class IvoipService {
   }
 
   setPbxActiveDomain(value: string) {
+    this.activeDomainUuid = value;
     localStorage.setItem('active_pbx_domain', value);
   }
 
@@ -58,10 +91,16 @@ export class IvoipService {
     return localStorage.getItem('active_pbx');
   }
 
-  onChangeDomain(domain: PbxDomainModel) {
+  onChangeDomain(domain: string) {
     if (domain) {
-      this.setPbxActiveDomain(domain.DomainUuid);
-      this.setActivePbx(domain.Pbx);
+      let domainModel: PbxDomainModel;
+      this.domainList.forEach(element => {
+        if (element.children) {
+          domainModel = element.children.find((value) => value.domain.DomainUuid === domain).domain;
+        }
+      });
+      this.setPbxActiveDomain(domainModel.DomainUuid);
+      this.setActivePbx(domainModel.Pbx);
     }
   }
 
@@ -85,20 +124,36 @@ export class IvoipService {
     };
   }
 
-  loadDomainList(callback?: (domains: { id?: string, text: string, children: any[] }[]) => void) {
+  loadDomainList(callback?: (domains: PbxDomainSelection[]) => void) {
     if (this.domainList.length > 0) {
-      callback(this.domainList);
+      if (callback) {
+        callback(this.domainList);
+        // const activeDomainUuid = this.activeDomainUuid;
+        // this.activeDomainUuid = '';
+        // this.activeDomainUuid = activeDomainUuid;
+      }
     } else {
       this.getPbxList(pbxList => {
         this.domainList = pbxList.map(pbx => {
           // this.pbxList[pbx.Code] = pbx;
           return {
             text: pbx.Name,
-            children: this.commonService.convertOptionList(pbx.Domains, 'DomainUuid', 'DomainName'),
+            children: pbx.Domains.map(domain => {
+              return {
+                id: domain.DomainUuid,
+                text: domain.DomainName,
+                domain: domain,
+              };
+            }),
           };
         });
         setTimeout(() => {
-          if (callback) callback(this.domainList);
+          if (callback) {
+            callback(this.domainList);
+            // const activeDomainUuid = this.activeDomainUuid;
+            // this.activeDomainUuid = '';
+            // this.activeDomainUuid = activeDomainUuid;
+          }
         }, 300);
       });
       // this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {

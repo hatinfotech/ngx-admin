@@ -3,11 +3,16 @@ import {
   ActivatedRouteSnapshot,
   DetachedRouteHandle,
 } from '@angular/router';
+import { CommonService } from './services/common.service';
 
 
 export class CustomRouteReuseStrategy implements RouteReuseStrategy {
 
+  // constructor(private commonService: CommonService) {}
+
   private handlers: { [key: string]: DetachedRouteHandle } = {};
+  private takeUltilCount = 0;
+  private takeUltilPastCount = 0;
 
   /**
    * Determines if this route (and its subtree) should be detached to be reused later
@@ -57,7 +62,26 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     }
 
     // console.info('[retrieve] ' + this.getUrl(route));
-    return this.handlers[this.getUrl(route)];
+    const url = this.getUrl(route);
+    const handler = this.handlers[url];
+    if (handler) {
+      const component = handler['componentRef']['_component'];
+      if (component && component['onResume']) {
+        // if (!this.takeUltilCount) this.takeUltilCount = 0;
+        this.takeUltilCount++;
+        ((takeCount) => {
+          setTimeout(() => {
+            this.takeUltilPastCount = takeCount;
+          }, 300);
+        })(this.takeUltilCount);
+        setTimeout(() => {
+          if (this.takeUltilPastCount === this.takeUltilCount) {
+            component['onResume']();
+          }
+        }, 300);
+      }
+    }
+    return handler;
   }
 
   /**

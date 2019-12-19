@@ -8,6 +8,9 @@
   <nb-select size="small" [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
     <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
   </nb-select>
+  <!-- <ngx-select2 [data]="domainList" [value]="activePbxDoamin" [select2Option]="domainListConfig"
+        (selectChange)="onChangeDomain($event)">
+      </ngx-select2> -->
 </div>
 
 <div class="header-container">

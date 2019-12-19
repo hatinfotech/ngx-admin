@@ -303,6 +303,10 @@ nb-card-body .ng2-smart-table-wrap {
   margin: -1rem -1.25rem;
 }
 
+nb-card nb-tabset nb-tab {
+  padding: 0 !important;
+}
+
 .nb-theme-default
   ng2-smart-table
   thead

@@ -4,13 +4,15 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
-import { IvoipService } from './ivoip-service';
+import { IvoipService, PbxDomainSelection } from './ivoip-service';
 import { OnInit } from '@angular/core';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
+import { ReuseComponent } from '../../lib/reuse-component';
+import { Observable } from 'rxjs';
 
-export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit {
+export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
-  domainList: { id?: string, text: string, children: any[] }[] = [];
+  domainList: PbxDomainSelection[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
   activePbxDoamin: string;
 
@@ -28,15 +30,29 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
   ngOnInit() {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
+      // setTimeout(() => {
+      this.ivoipService.onChangeDomain(this.ivoipService.getPbxActiveDomainUuid());
+      // this.ivoipService.activeDomainUuid = localStorage.getItem('active_pbx_domain');
+      // }, 500);
       super.ngOnInit();
     });
   }
 
+  /** User for reuse component */
+  onResume() {
+    this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
+  }
+
   getList(callback: (list: M[]) => void) {
-    this.commonService.takeUntil('pbx_ext_get_list', 1000, () => {
-      this.apiService.get<M[]>(this.apiPath, { limit: 999999999, offset: 0, domainId: this.activePbxDoamin }, results => callback(results));
-    });
+    if (this.ivoipService.getPbxActiveDomainUuid()) {
+      this.commonService.takeUntil('pbx_ext_get_list', 1000, () => {
+        // this.ivoipService.activeDomainUuid$.subscribe(activeDoaminUUid => {
+        this.apiService.get<M[]>(this.apiPath, { limit: 999999999, offset: 0, domainId: this.ivoipService.getPbxActiveDomainUuid() }, results => callback(results));
+        // });
+      });
+    } else {
+      console.info('Active domain uuuid was not set');
+    }
   }
 
   executeDelete(ids: string[], callback: (result: any) => void) {
@@ -53,7 +69,7 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
   onReloadBtnClick(): false {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
-      this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
+      // this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
       this.loadList();
     });
     return false;
@@ -63,8 +79,10 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
     // console.info(event);
     if (event && event['id']) {
       // this.ivoipService.setPbxActiveDomain(event['id']);
-      this.ivoipService.onChangeDomain(event);
-      this.activePbxDoamin = event['id'];
+      this.ivoipService.onChangeDomain(event['id']);
+      // this.activePbxDoamin = event['id'];
+      this.ivoipService.setPbxActiveDomain(event['id']);
+      // this.setAc
       this.loadList();
     }
   }

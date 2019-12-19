@@ -60,31 +60,37 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
       call_block_number: {
         title: 'Number',
         type: 'string',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        width: '10%',
       },
       call_block_name: {
         title: 'Name',
         type: 'string',
+        width: '20%',
       },
       call_block_count: {
         title: 'Só lần chặn',
         type: 'string',
+        width: '10%',
       },
       accountcode: {
         title: 'Số Public',
         type: 'string',
+        width: '20%',
       },
       call_block_action: {
         title: 'Hành động',
         type: 'string',
+        width: '20%',
       },
       date_added: {
         title: 'Ngày khai báo',
         type: 'string',
+        width: '10%',
       },
       call_block_enabled: {
         title: 'Đã chặn',
         type: 'string',
+        width: '10%',
       },
     },
   };

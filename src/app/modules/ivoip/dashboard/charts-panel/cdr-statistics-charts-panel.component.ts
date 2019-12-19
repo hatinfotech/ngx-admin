@@ -10,7 +10,7 @@ import { NbDialogService } from '@nebular/theme';
 import { PbxFormComponent } from '../../pbx/pbx-form/pbx-form.component';
 import { ApiService } from '../../../../services/api.service';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
-import { IvoipService } from '../../ivoip-service';
+import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
 import { CommonService } from '../../../../services/common.service';
 
 @Component({
@@ -34,7 +34,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   @ViewChild('ordersChart', { static: true }) ordersChart: OrdersChartComponent;
   @ViewChild('profitChart', { static: true }) profitChart: ProfitChartComponent;
 
-  domainList: { id?: string, text: string, children: any[] }[] = [];
+  domainList: PbxDomainSelection[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
   activePbxDoamin: string;
 
@@ -141,7 +141,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
     // console.info(event);
     if (event && event['id']) {
       // this.ivoipService.setPbxActiveDomain(event['id']);
-      this.ivoipService.onChangeDomain(event);
+      this.ivoipService.onChangeDomain(event['id']);
       this.activePbxDoamin = event['id'];
       this.refresh();
     }

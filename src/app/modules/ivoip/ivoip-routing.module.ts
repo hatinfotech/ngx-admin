@@ -23,6 +23,8 @@ import { PstnNumberListComponent } from './pstn-numbers/pstn-number-list/pstn-nu
 import { PstnNumberFormComponent } from './pstn-numbers/pstn-number-form/pstn-number-form.component';
 import { GatewayFormComponent } from './gateways/gateway-form/gateway-form.component';
 import { GatewayListComponent } from './gateways/gateway-list/gateway-list.component';
+import { DialplanFormComponent } from './dialplans/dialplan-form/dialplan-form.component';
+import { DialplanListComponent } from './dialplans/dialplan-list/dialplan-list.component';
 
 
 const routes: Routes = [{
@@ -141,6 +143,25 @@ const routes: Routes = [{
       path: 'gateways/form/:id',
       // canActivate: [AuthGuardService],
       component: GatewayFormComponent,
+    },
+    // Dialplans
+    {
+      path: 'dialplans/list',
+      // canActivate: [AuthGuardService],
+      component: DialplanListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'dialplans/form',
+      // canActivate: [AuthGuardService],
+      component: DialplanFormComponent,
+    },
+    {
+      path: 'dialplans/form/:id',
+      // canActivate: [AuthGuardService],
+      component: DialplanFormComponent,
     },
     {
       path: 'extensions/list',
