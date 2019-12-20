@@ -424,7 +424,7 @@ body .form-group[state="warning"] textarea:focus {
 
 /* Button */
 body [nbButton] {
-  margin: 0.3rem;
+  /* margin: 0.3rem; */
 }
 /* End Button */
 

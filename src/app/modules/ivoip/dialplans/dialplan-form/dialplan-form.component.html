@@ -27,29 +27,229 @@
             <div class="row">
               <input type="hidden" formControlName="dialplan_uuid">
               <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_expression'), 'warning')">
-                  <label class="label"><span class="valid">Mẫu (*)</span><span class="invalid">Mẫu (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="dialplan_expression" placeholder="Mẫu">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_type'), 'warning')">
+                  <label class="label"><span class="valid">Loại (*)</span><span class="invalid">Loại là bắt buộc
+                      (*)</span></label>
+                  <nb-select size="medium" formControlName="dialplan_type" fullWidth>
+                    <nb-option value="">Loại</nb-option>
+                    <nb-option value="inbound">Inbound</nb-option>
+                    <nb-option value="outbound">Outbound</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('call_block_name'), 'warning')">
-                  <label class="label"><span class="valid">Tên (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="call_block_name" placeholder="Tên">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_gateway'), 'warning')">
+                  <label class="label"><span class="valid">Gateway (*)</span><span class="invalid">Gateway là bắt buộc
+                      (*)</span></label>
+                  <nb-select size="medium" formControlName="dialplan_gateway" fullWidth>
+                    <nb-option value="">Gateway</nb-option>
+                    <nb-option *ngFor="let gateway of gatewaylist" [value]="gateway.id">{{gateway.text}}</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('call_block_action'), 'warning')">
-                  <label class="label"><span class="valid">Nhóm cha (*)</span></label>
-                  <ngx-select2 [data]="blockActions" formControlName="call_block_action" [select2Option]="select2OptionForBlockActions">
-                    </ngx-select2>
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_name'), 'warning')">
+                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_name" placeholder="Tên">
                 </div>
               </div>
               <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('call_block_enabled'), 'warning')">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_number'), 'warning')">
+                  <label class="label"><span class="valid">Số đấu nối (*)</span><span class="invalid">Số đấu nối là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_number" placeholder="Số điện thoại">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_regex'), 'warning')">
+                  <label class="label"><span class="valid">Mẫu so khớp</span><span class="invalid">Mẫu so khớp</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_regex" placeholder="VD: \d{7,12} ~ dãy số 7-12 chữ số; \d{1,3}281234567 ~ 0281234567|84281234567">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
+                  <label class="label"><span class="valid">Domain (*)</span><span class="invalid">Domain là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="privateDmainList" formControlName="domain_uuid"
+                    [select2Option]="privateDmainListConfig">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Mô tả</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_description" placeholder="Mô tả">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_context'), 'warning')">
+                  <label class="label"><span class="valid">Context</span><span class="invalid">Context là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_context" placeholder="Context">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Thứ tự</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_order" placeholder="Thứ tự">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_enabled'), 'warning')">
                   <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span></label>
-                  <nb-checkbox formControlName="call_block_enabled" >Kích hoạt</nb-checkbox>
+                  <nb-checkbox formControlName="dialplan_enabled">Kích hoạt</nb-checkbox>
                 </div>
+              </div>
+            </div>
+            <hr>
+            <label class="label">Điều hướng</label>
+            <div class="row">
+              <div class="col-sm-1">STT</div>
+              <div class="col-sm-11">
+                <div class="row">
+                  <div class="col-sm-3" seleted>Tag</div>
+                  <div class="col-sm-6">Type</div>
+                  <!-- <div class="col-sm-5">Data</div> -->
+                  <div class="col-sm-2">Break</div>
+                  <div class="col-sm-1">Inline</div>
+                  <!-- <div class="col-sm-1">Group</div>
+                  <div class="col-sm-1">Order</div> -->
+                </div>
+              </div>
+              <!-- <div class="col-sm-1" style="text-align: center;">
+                <button nbButton status="success" (click)="addDialplanDetailFormGroup(i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div> -->
+            </div>
+
+            <hr>
+            <div formArrayName="dialplan_details" class="form-details" [sortablejs]="getDialplanDetails(i)"
+              [sortablejsOptions]="{ handle: '.sorting-handle' }">
+              <div class="form-detail-item" *ngFor="let dialplanDetail of getDialplanDetails(i).controls; let ic=index"
+                [formGroup]="dialplanDetail">
+                <input type="hidden" formGroupName="dialplan_detail_uuid">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth disabled value="{{ ic + 1 }}" style="text-align: center;">
+                    </div>
+                    <div class="form-group">
+                      <!-- <button nbButton status="danger" hero size="tiny" (click)="removeDetail(i)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="trash-2-outline"></nb-icon>
+                      </button> -->
+                      <button nbButton status="success" hero size="tiny" class="sorting-handle" style="width: 100%;">
+                        <nb-icon pack="eva" icon="move-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-sm-11">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_tag'), 'warning')">
+                          <label class="label"><span class="valid">Tag (*)</span><span class="invalid">Tag
+                              (*)</span></label>
+                          <nb-select size="medium" formControlName="dialplan_detail_tag" fullWidth>
+                            <nb-option value="">Tag</nb-option>
+                            <nb-option value="condition">Condition</nb-option>
+                            <nb-option value="regex">Regular Expression</nb-option>
+                            <nb-option value="action">Action</nb-option>
+                            <nb-option value="anti-action">Anti-Action</nb-option>
+                          </nb-select>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_type'), 'warning')">
+                          <label class="label"><span class="valid">Type (*)</span><span class="invalid">Type
+                              (*)</span></label>
+                          <!-- <ngx-select2 [data]="dialplanDetailList" formControlName="dialplan_detail_type"
+                            [select2Option]="dialplanDetailListConfig">
+                          </ngx-select2> -->
+                          <!-- <nb-select size="medium" formControlName="dialplan_detail_type" fullWidth>
+                            <nb-option value="">Type</nb-option>
+                            <nb-option value="condition">Condition</nb-option>
+                            <nb-option value="regex">Regular Expression</nb-option>
+                            <nb-option value="action">Action</nb-option>
+                            <nb-option value="anti-action">Anti-Action</nb-option>
+                          </nb-select> -->
+                          <input type="text" nbInput fullWidth formControlName="dialplan_detail_type"
+                            placeholder="Type">
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_break'), 'warning')">
+                          <label class="label"><span class="valid">Break (*)</span><span class="invalid">Break
+                              (*)</span></label>
+                          <nb-select size="medium" formControlName="dialplan_detail_break" fullWidth>
+                            <nb-option value="">Break</nb-option>
+                            <nb-option value="on-true">On True</nb-option>
+                            <nb-option value="on-false">On False</nb-option>
+                            <nb-option value="always">Always</nb-option>
+                            <nb-option value="never">Never</nb-option>
+                          </nb-select>
+                        </div>
+                      </div>
+                      <div class="col-sm-1  ">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_inline'), 'warning')">
+                          <label class="label"><span class="valid">Inline</span><span class="invalid">Inline
+                              (*)</span></label>
+                          <!-- <nb-select size="medium" formControlName="dialplan_detail_inline" fullWidth>
+                            <nb-option value="">Inline</nb-option>
+                            <nb-option value="True">True</nb-option>
+                            <nb-option value="false">False</nb-option>
+                          </nb-select> -->
+                          <nb-checkbox formControlName="dialplan_detail_inline"></nb-checkbox>
+                        </div>
+                      </div>
+                      <!-- <div class="col-sm-1">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_group'), 'warning')">
+                          <label class="label"><span class="valid">Group (*)</span><span class="invalid">Group
+                              (*)</span></label>
+                          <input type="text" nbInput fullWidth formControlName="dialplan_detail_group"
+                            placeholder="Group">
+                        </div>
+                      </div>
+                      <div class="col-sm-1">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_order'), 'warning')">
+                          <label class="label"><span class="valid">Order (*)</span><span class="invalid">Order
+                              (*)</span></label>
+                          <input type="text" nbInput fullWidth formControlName="dialplan_detail_order"
+                            placeholder="Order">
+                        </div>
+                      </div> -->
+                      <div class="col-sm-12">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_data'), 'warning')">
+                          <label class="label"><span class="valid">Data (*)</span><span class="invalid">Data
+                              (*)</span></label>
+                          <input type="text" nbInput fullWidth formControlName="dialplan_detail_data"
+                            placeholder="Data">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="tiny" (click)="removeDialplanDetailGroup(i, ic)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div> -->
+                </div>
+                <hr>
+
               </div>
             </div>
           </div>

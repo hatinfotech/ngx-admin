@@ -74,6 +74,26 @@ export class IvoipService {
     // return localStorage.getItem('active_pbx_domain');
   }
 
+  getActiveDomain() {
+    let domainModel: PbxDomainModel;
+    this.domainList.forEach(element => {
+      if (element.children) {
+        domainModel = element.children.find((value) => value.domain.DomainUuid === this.activeDomainUuid).domain;
+      }
+    });
+    return domainModel;
+  }
+
+  getActiveDomainByUuid(uuid: string) {
+    let domainModel: PbxDomainModel;
+    this.domainList.forEach(element => {
+      if (element.children) {
+        domainModel = element.children.find((value) => value.domain.DomainUuid === uuid).domain;
+      }
+    });
+    return domainModel;
+  }
+
   getPbxActiveDomainId() {
     return this.getPbxActiveDomainUuid().split('@')[0];
   }

@@ -105,11 +105,11 @@ export class DialplanListComponent
   /** Get data from api and push to list */
   loadList(callback?: (list: PbxDialplanDetailModel[]) => void) {
     super.loadList(list => {
-      this.inboundSource.load(list.filter(item => item['type'] === 'inbound').map((d, i) => {
+      this.inboundSource.load(list.filter(item => item['dialplan_type'] === 'inbound').map((d, i) => {
         d['No'] = i + 1;
         return d;
       }));
-      this.outboundSource.load(list.filter(item => item['type'] === 'outbound').map((d, i) => {
+      this.outboundSource.load(list.filter(item => item['dialplan_type'] === 'outbound').map((d, i) => {
         d['No'] = i + 1;
         return d;
       }));

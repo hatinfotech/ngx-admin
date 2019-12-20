@@ -33,6 +33,7 @@ import { GatewayListComponent } from './gateways/gateway-list/gateway-list.compo
 import { GatewayFormComponent } from './gateways/gateway-form/gateway-form.component';
 import { DialplanListComponent } from './dialplans/dialplan-list/dialplan-list.component';
 import { DialplanFormComponent } from './dialplans/dialplan-form/dialplan-form.component';
+import { SortablejsModule } from 'ngx-sortablejs';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,9 @@ import { DialplanFormComponent } from './dialplans/dialplan-form/dialplan-form.c
     FormsModule,
     ReactiveFormsModule,
     DialogModule,
+    SortablejsModule.forRoot({
+      animation: 200,
+    }),
   ],
   // exports: [PbxFormComponent],
   // providers: [{

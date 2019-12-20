@@ -16,7 +16,8 @@ export class PbxDialplanModel {
   dialplan_order?: string;
   dialplan_enabled?: string;
   dialplan_description?: string;
-  dialplan_detail?: PbxDialplanDetailModel[];
+  dialplan_details?: PbxDialplanDetailModel[];
+
 
   constructor() { }
 

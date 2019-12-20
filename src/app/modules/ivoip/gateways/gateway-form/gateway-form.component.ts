@@ -65,7 +65,6 @@ export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel
   ngOnInit() {
     this.ivoipService.getActiveDomainList(domainList => {
       this.privateDmainList = this.convertOptionList(domainList, 'DomainId', 'DomainName');
-      // this.privateActiveDmain = this.ivoipService.getPbxActiveDomainId();
       super.ngOnInit();
     });
   }
