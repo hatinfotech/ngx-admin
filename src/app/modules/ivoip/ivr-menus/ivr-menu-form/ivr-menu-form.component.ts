@@ -215,6 +215,7 @@ export class IvrMenuFormComponent extends IvoipBaseFormComponent<PbxIvrMenuModel
   }
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxIvrMenuModel): void {
+    super.onAddFormGroup(index, newForm, formData);
     // Domains form load
     if (formData && formData.ivr_menu_options) {
       formData.ivr_menu_options.forEach(iveMenuOption => {

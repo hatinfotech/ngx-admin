@@ -48,19 +48,29 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: '/ivoip/devices/list',
       },
       {
-        title: 'Số đấu nối',
-        // icon: 'people-outline',
-        link: '/ivoip/pstn-numbers/list',
-      },
-      {
         title: 'Gateway',
         // icon: 'people-outline',
         link: '/ivoip/gateways/list',
       },
       {
-        title: 'Định tuyến cuộc gọi',
+        title: 'Số đấu nối',
         // icon: 'people-outline',
-        link: '/ivoip/dialplans/list',
+        link: '/ivoip/pstn-numbers/list',
+      },
+      {
+        title: 'Đều hướng cuộc gọi',
+        // icon: 'people-outline',
+        // link: '/ivoip/dialplans/list',
+        children: [
+          {
+            title: 'Gọi vào/Gọi ra',
+            link: '/ivoip/dialplans/list',
+          },
+          {
+            title: 'Định tuyến cuộc gọi',
+            link: '/ivoip/call-routes/list',
+          },
+        ],
       },
       {
         title: 'Lời chào',

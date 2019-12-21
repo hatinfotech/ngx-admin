@@ -1,5 +1,5 @@
 import { OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService } from '@nebular/theme';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -50,6 +50,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Destroy monitoring */
   destroy$: Subject<null> = new Subject<null>();
+
+  /** disable controls list */
+  protected disabledControls: AbstractControl[] = [];
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -159,10 +162,20 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     return this.form.get('array') as FormArray;
   }
 
+  updateInitialFormPropertiesCache(form: FormGroup) {
+    Object.keys(form.controls).forEach(name => {
+      const control = form.controls[name];
+      if (control.disabled) {
+        this.disabledControls.push(form.controls[name]);
+      }
+    });
+  }
+
   /** Add new main form item */
   addFormGroup(data?: M) {
     const newForm = this.makeNewFormGroup(data);
     this.array.push(newForm);
+    // tslint:disable-next-line: forin
     this.onAddFormGroup(this.array.length - 1, newForm, data);
     return false;
   }
@@ -175,9 +188,12 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   onProcessed() {
     this.isProcessing = false;
     this.form.enable();
+    this.disabledControls.forEach(control => control.disable());
   }
 
-  abstract onAddFormGroup(index: number, newForm: FormGroup, formData?: M): void;
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: M): void {
+    this.updateInitialFormPropertiesCache(newForm);
+  }
   abstract onRemoveFormGroup(index: number): void;
 
   /** Remove main form item */

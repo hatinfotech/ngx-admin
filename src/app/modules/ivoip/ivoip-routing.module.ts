@@ -27,6 +27,8 @@ import { DialplanFormComponent } from './dialplans/dialplan-form/dialplan-form.c
 import { DialplanListComponent } from './dialplans/dialplan-list/dialplan-list.component';
 import { IvrMenuListComponent } from './ivr-menus/ivr-menu-list/ivr-menu-list.component';
 import { IvrMenuFormComponent } from './ivr-menus/ivr-menu-form/ivr-menu-form.component';
+import { CallRouteListComponent } from './call-routes/call-route-list/call-route-list.component';
+import { CallRouteFormComponent } from './call-routes/call-route-form/call-route-form.component';
 
 
 const routes: Routes = [{
@@ -164,6 +166,25 @@ const routes: Routes = [{
       path: 'dialplans/form/:id',
       // canActivate: [AuthGuardService],
       component: DialplanFormComponent,
+    },
+    // Call routing
+    {
+      path: 'call-routes/list',
+      // canActivate: [AuthGuardService],
+      component: CallRouteListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'call-routes/form',
+      // canActivate: [AuthGuardService],
+      component: CallRouteFormComponent,
+    },
+    {
+      path: 'call-routes/form/:id',
+      // canActivate: [AuthGuardService],
+      component: CallRouteFormComponent,
     },
     // IVR Menu
     {

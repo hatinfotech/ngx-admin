@@ -118,6 +118,7 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
   }
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxDialplanModel): void {
+    super.onAddFormGroup(index, newForm, formData);
     // Domains form load
     if (formData && formData.dialplan_details) {
       formData.dialplan_details.forEach(dialplanDetail => {

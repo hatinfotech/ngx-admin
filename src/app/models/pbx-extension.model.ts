@@ -1,4 +1,5 @@
 import { PbxDeviceModel } from './pbx-device.model';
+import { PbxFollowMeDestinationModel } from './pbx-follow_me_destination.model';
 
 export class PbxExtensionModel {
 
@@ -52,7 +53,7 @@ export class PbxExtensionModel {
   follow_me_uuid?: string;
   forward_caller_id_uuid?: string;
   follow_me_enabled?: string;
-  follow_me_destinations?: string;
+  follow_me_destinations: PbxFollowMeDestinationModel[];
   enabled?: string;
   description?: string;
   absolute_codec_string?: string;

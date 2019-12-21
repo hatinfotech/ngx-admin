@@ -74,7 +74,7 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
   }
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: ModuleModel): void {
-
+    super.onAddFormGroup(index, newForm, formData);
   }
 
   onRemoveFormGroup(index: number): void {

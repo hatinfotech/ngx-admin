@@ -1,28 +1,29 @@
 import { Component, OnInit } from '@angular/core';
+import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
+import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
-import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
-import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { IvoipService } from '../../ivoip-service';
-import { PbxDeviceModel } from '../../../../models/pbx-device.model';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PbxDeviceVendorModel } from '../../../../models/pbx-device-vendor.model';
-import { PbxDomainModel } from '../../../../models/pbx-domain.model';
+import { PbxDeviceModel } from '../../../../models/pbx-device.model';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { PbxFollowMeDestinationModel } from '../../../../models/pbx-follow_me_destination.model';
 
 @Component({
-  selector: 'ngx-extension-form',
-  templateUrl: './extension-form.component.html',
-  styleUrls: ['./extension-form.component.scss'],
+  selector: 'ngx-call-route-form',
+  templateUrl: './call-route-form.component.html',
+  styleUrls: ['./call-route-form.component.scss'],
 })
-export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionModel> implements OnInit {
+export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionModel> implements OnInit {
 
   idKey = 'extension_uuid';
-  apiPath = '/ivoip/extensions';
-  baseFormUrl = '/ivoip/extensions/form';
+  apiPath = '/ivoip/call-routes';
+  baseFormUrl = '/ivoip/call-routes/form';
 
   templateList: { id?: string, text: string, children?: any[] }[];
   templateListConfig = {
@@ -69,22 +70,22 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   }
 
   ngOnInit() {
-    this.ivoipService.getActiveDomainList(domainList => {
-      this.privateDmainList = domainList;
-      this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
-        this.templateList = list.map(item => {
-          return {
-            text: item.name, children: item.templates.map(item2 => {
-              return { id: item2, text: item2 };
-            }),
-          };
-        });
+    // this.ivoipService.getActiveDomainList(domainList => {
+    //   this.privateDmainList = domainList;
+    //   this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
+    //     this.templateList = list.map(item => {
+    //       return {
+    //         text: item.name, children: item.templates.map(item2 => {
+    //           return { id: item2, text: item2 };
+    //         }),
+    //       };
+    //     });
         super.ngOnInit();
-      });
-    });
-    this.apiService.get<PbxDomainModel[]>('/ivoip/domains', {}, list => {
+      // });
+    // });
+    // this.apiService.get<PbxDomainModel[]>('/ivoip/domains', {}, list => {
 
-    });
+    // });
 
     // super.ngOnInit();
   }
@@ -93,9 +94,9 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     super.formLoad(formData, (index, newForm, itemFormData) => {
 
       // Domains form load
-      if (itemFormData.devices) {
-        itemFormData.devices.forEach(device => {
-          (newForm.get('devices') as FormArray).push(this.makeNewDeviceFormGroup(device));
+      if (itemFormData.follow_me_destinations) {
+        itemFormData.follow_me_destinations.forEach(destination => {
+          (newForm.get('follow_me_destinations') as FormArray).push(this.makeNewFollowMeFormGroup(destination));
         });
       }
 
@@ -108,23 +109,22 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
 
   /** Execute api get */
   executeGet(params: any, success: (resources: PbxExtensionModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
-    params['includeUser'] = true;
-    params['includeDevices'] = true;
+    // params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
+    params['includeFollowMeDestinations'] = true;
     super.executeGet(params, success, error);
   }
 
   makeNewFormGroup(data?: PbxExtensionModel): FormGroup {
     const newForm = this.formBuilder.group({
       extension_uuid: [''],
-      domain_uuid: [this.ivoipService ? this.ivoipService.getPbxActiveDomainId() : '', Validators.required],
-      extension: ['', Validators.required],
-      password: [''],
-      call_group: [''],
-      user_record: ['all'],
-      call_timeout: [30],
-      enabled: [true],
-      description: [''],
+      // domain_uuid: [this.ivoipService ? this.ivoipService.getPbxActiveDomainId() : '', Validators.required],
+      extension: this.formBuilder.control({value: '', disabled: true}),
+      // password: [''],
+      call_group: this.formBuilder.control({value: '', disabled: true}),
+      // user_record: ['all'],
+      // call_timeout: [30],
+      // enabled: [true],
+      description: this.formBuilder.control({value: '', disabled: true}),
       forward_all_destination: [''],
       forward_all_enabled: [false],
       forward_busy_destination: [''],
@@ -134,7 +134,8 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
       forward_user_not_registered_destination: [''],
       forward_user_not_registered_enabled: [false],
       follow_me_enabled: [false],
-      devices: this.formBuilder.array([]),
+      follow_me_destinations: this.formBuilder.array([]),
+      // devices: this.formBuilder.array([]),
     });
     if (data) {
       newForm.patchValue(data);
@@ -142,12 +143,14 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     return newForm;
   }
 
-  makeNewDeviceFormGroup(data?: PbxDeviceModel): FormGroup {
+  /** Follow me list */
+  makeNewFollowMeFormGroup(data?: PbxFollowMeDestinationModel): FormGroup {
     const newForm = this.formBuilder.group({
-      device_uuid: ['', Validators.required],
-      device_mac_address: ['', Validators.required],
-      device_template: ['', Validators.required],
-      device_description: [''],
+      follow_me_destination_uuid: [''],
+      follow_me_destination: [''],
+      follow_me_delay: [0],
+      follow_me_timeout: [30],
+      follow_me_prompt: [true],
     });
 
     if (data) {
@@ -159,29 +162,30 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     return newForm;
   }
 
-  getDevices(formGroupIndex: number) {
-    return this.array.controls[formGroupIndex].get('devices') as FormArray;
+  getFollowMes(formGroupIndex: number) {
+    return this.array.controls[formGroupIndex].get('follow_me_destinations') as FormArray;
   }
 
-  addDeviceFormGroup(formGroupIndex: number) {
-    this.getDevices(formGroupIndex).push(this.makeNewDeviceFormGroup());
+  addFollowMeFormGroup(formGroupIndex: number) {
+    this.getFollowMes(formGroupIndex).push(this.makeNewFollowMeFormGroup());
     return false;
   }
 
-  removeDeviceGroup(formGroupIndex: number, index: number) {
-    this.getDevices(formGroupIndex).removeAt(index);
+  removeFollowMeGroup(formGroupIndex: number, index: number) {
+    this.getFollowMes(formGroupIndex).removeAt(index);
     return false;
   }
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxExtensionModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
+
   onRemoveFormGroup(index: number): void {
 
   }
 
   goback(): false {
-    this.router.navigate(['/ivoip/extensions/list']);
+    this.router.navigate(['/ivoip/call-routes/list']);
     return false;
   }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }

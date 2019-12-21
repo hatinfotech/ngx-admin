@@ -126,7 +126,7 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
   }
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxModel): void {
-
+    super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
 

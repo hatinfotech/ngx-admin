@@ -89,7 +89,9 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxCallBlockModel): void { }
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxCallBlockModel): void {
+    super.onAddFormGroup(index, newForm, formData);
+  }
   onRemoveFormGroup(index: number): void {
 
   }

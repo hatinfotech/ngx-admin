@@ -131,7 +131,9 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxDeviceModel): void { }
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxDeviceModel): void {
+    super.onAddFormGroup(index, newForm, formData);
+  }
   onRemoveFormGroup(index: number): void {
 
   }

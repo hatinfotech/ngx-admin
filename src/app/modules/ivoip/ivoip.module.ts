@@ -40,6 +40,8 @@ import { TimeConditionListComponent } from './time-conditions/time-condition-lis
 import { TimeConditionFormComponent } from './time-conditions/time-condition-form/time-condition-form.component';
 import { CallCenterListComponent } from './call-conters/call-center-list/call-center-list.component';
 import { CallCenterFormComponent } from './call-conters/call-center-form/call-center-form.component';
+import { CallRouteListComponent } from './call-routes/call-route-list/call-route-list.component';
+import { CallRouteFormComponent } from './call-routes/call-route-form/call-route-form.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +68,8 @@ import { CallCenterFormComponent } from './call-conters/call-center-form/call-ce
     TimeConditionFormComponent,
     CallCenterListComponent,
     CallCenterFormComponent,
+    CallRouteListComponent,
+    CallRouteFormComponent,
   ],
   imports: [
     CommonModule,

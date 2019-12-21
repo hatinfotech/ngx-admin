@@ -4,7 +4,7 @@
       <nb-card class="small-header">
         <nb-card-header>
           <nav>
-            Cập nhật số nội bộ
+            Cập nhật định tuyến cuộc gọi
             <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
               title="Xoá" [disabled]="isProcessing">
               <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
@@ -29,7 +29,7 @@
               <input type="hidden" formControlName="extension_uuid">
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('extension'), 'warning')">
-                  <label class="label"><span class="valid">Số nội bộ (*)</span><span class="invalid">Số nội bộ là bắt
+                  <label class="label"><span class="valid">Số nội bộ</span><span class="invalid">Số nội bộ là bắt
                       buộc (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="extension" placeholder="Số nội bộ (Ext)">
                 </div>
@@ -37,64 +37,13 @@
               <div class="col-sm-3">
                 <div class="form-group">
                   <label class="label"><span class="valid">Nhóm</span>
-                    <nb-icon (click)="copyFormControlValueToOthers(array, i, 'call_group')" pack="eva"
-                      icon="copy-outline"></nb-icon>
                   </label>
                   <input type="text" nbInput fullWidth formControlName="call_group" placeholder="Nhóm">
                 </div>
               </div>
-              <div class="col-sm-3">
-                <div class="form-group">
-                  <label class="label"><span class="valid">Thời gian đỗ chuông</span>
-                    <nb-icon (click)="copyFormControlValueToOthers(array, i, 'call_timeout')" pack="eva"
-                      icon="copy-outline"></nb-icon>
-                  </label>
-                  <input type="text" nbInput fullWidth formControlName="call_timeout" placeholder="Thời gian đỗ chuông">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('enabled'), 'warning')">
-                  <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span>
-                    <nb-icon (click)="copyFormControlValueToOthers(array, i, 'enabled')" pack="eva" icon="copy-outline">
-                    </nb-icon>
-                  </label>
-                  <nb-checkbox formControlName="enabled">Kích hoạt</nb-checkbox>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group">
-                  <label class="label"><span class="valid">Mật khẩu</span></label>
-                  <input type="text" nbInput fullWidth formControlName="password"
-                    placeholder="Bỏ trống để tạo mật khẩu ngẫu nhiên">
-                </div>
-              </div>
-              <div class="col-sm-9">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
-                  <label class="label"><span class="valid">Domain</span>
-                    <nb-icon (click)="copyFormControlValueToOthers(array, i, 'domain_uuid')" pack="eva"
-                      icon="copy-outline"></nb-icon>
-                  </label>
-                  <ngx-select2 [data]="privateDmainList" formControlName="domain_uuid"
-                    [select2Option]="privateDmainListConfig">
-                  </ngx-select2>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('user_record'), 'warning')">
-                  <label class="label"><span class="valid">Ghi âm</span>
-                    <nb-icon (click)="copyFormControlValueToOthers(array, i, 'user_record')" pack="eva"
-                      icon="copy-outline"></nb-icon>
-                  </label>
-                  <ngx-select2 [data]="userRecordActionList" formControlName="user_record"
-                    [select2Option]="select2OptionForUserRecordActionList">
-                  </ngx-select2>
-                </div>
-              </div>
-              <div class="col-sm-9">
+              <div class="col-sm-6">
                 <div class="form-group">
                   <label class="label"><span class="valid">Mô tả</span>
-                    <nb-icon (click)="copyFormControlValueToOthers(array, i, 'description')" pack="eva"
-                      icon="copy-outline"></nb-icon>
                   </label>
                   <input type="text" nbInput fullWidth formControlName="description" placeholder="Mô tả">
                 </div>
@@ -104,7 +53,7 @@
               <div class="col-sm-3">
                 <div class="form-group">
                   <nb-checkbox formControlName="forward_all_enabled">
-                    <label class="label"><span class="valid">Chuyển cuộc gọi</span></label>
+                    <label class="label"><span class="valid">Chuyển tất cả cuộc gọi</span></label>
                   </nb-checkbox>
                   <input type="text" nbInput fullWidth formControlName="forward_all_destination"
                     placeholder="Số chuyển tới">
@@ -124,8 +73,8 @@
                   <nb-checkbox formControlName="forward_no_answer_enabled">
                     <label class="label"><span class="valid">Khi không bắt máy</span></label>
                   </nb-checkbox>
-                  <input type="text" [tabindex]="i*10 + 8" nbInput fullWidth formControlName="forward_no_answer_destination"
-                    placeholder="Số chuyển tới">
+                  <input type="text" [tabindex]="i*10 + 8" nbInput fullWidth
+                    formControlName="forward_no_answer_destination" placeholder="Số chuyển tới">
                 </div>
               </div>
               <div class="col-sm-3">
@@ -133,64 +82,66 @@
                   <nb-checkbox formControlName="forward_user_not_registered_enabled">
                     <label class="label"><span class="valid">Khi ngoại tuyến</span></label>
                   </nb-checkbox>
-                  <input type="text" [tabindex]="i*10 + 8" nbInput fullWidth formControlName="forward_user_not_registered_destination"
-                    placeholder="Số chuyển tới">
+                  <input type="text" [tabindex]="i*10 + 8" nbInput fullWidth
+                    formControlName="forward_user_not_registered_destination" placeholder="Số chuyển tới">
                 </div>
               </div>
             </div>
 
-            <hr>
-            <label class="label">Danh sách thiết bị voip</label>
+            <nb-checkbox formControlName="follow_me_enabled">
+              <label class="label"><span class="valid">Tính năng Follow me</span></label>
+            </nb-checkbox>
             <div class="row">
-              <div class="col-sm-1">STT</div>
+              <div class="col-sm-1 label">STT</div>
               <div class="col-sm-10">
                 <div class="row">
-                  <div class="col-sm-3">Mã mac</div>
-                  <div class="col-sm-4">Template</div>
-                  <div class="col-sm-5">Diễn giải</div>
+                  <div class="col-sm-5 label">Số nhận cuộc gọi</div>
+                  <div class="col-sm-3 label">Thời gian chờ</div>
+                  <div class="col-sm-3 label">Thời gian đỗ chuông</div>
+                  <div class="col-sm-1 label">K.hoạt</div>
                 </div>
               </div>
-              <div class="col-sm-1" style="text-align: center;">
-                <button nbButton status="success" (click)="addDeviceFormGroup(i)" size="tiny"
-                  style="width: 100%; margin-bottom: 3px;" hero>
-                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
-                </button>
-              </div>
+              <div class="col-sm-1 label" style="text-align: center;">Lệnh</div>
             </div>
 
             <hr>
-            <div formArrayName="devices" class="form-details">
-              <div class="form-detail-item" *ngFor="let device of getDevices(i).controls; let ic=index"
-                [formGroup]="device">
+            <div formArrayName="follow_me_destinations" class="form-details">
+              <div class="form-detail-item" *ngFor="let followMe of getFollowMes(i).controls; let il=index"
+                [formGroup]="followMe">
+                <input type="hidden" formControlName="follow_me_destination_uuid">
                 <div class="row">
                   <div class="col-sm-1">
                     <div class="form-group">
                       <label class="label">Stt</label>
-                      <input nbInput fullWidth disabled value="{{ ic + 1 }}" style="text-align: center;">
+                      <input nbInput fullWidth disabled value="{{ il + 1 }}" style="text-align: center;">
                     </div>
                   </div>
                   <div class="col-sm-10">
                     <div class="row">
-                      <div class="col-sm-3">
-                        <div class="form-group">
-                          <label class="label">Mã mac (*)</label>
-                          <input type="text" nbInput fullWidth formControlName="device_mac_address"
-                            placeholder="Mã mac">
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="form-group">
-                          <label class="label">Template (*)</label>
-                          <ngx-select2 [data]="templateList" formControlName="device_template"
-                            [select2Option]="templateListConfig">
-                          </ngx-select2>
-                        </div>
-                      </div>
                       <div class="col-sm-5">
                         <div class="form-group">
-                          <label class="label">Diễn giải</label>
-                          <input type="text" nbInput fullWidth formControlName="device_description"
-                            placeholder="Diễn giải">
+                          <label class="label">Số nhận cuộc gọi (*)</label>
+                          <input type="text" nbInput fullWidth formControlName="follow_me_destination"
+                            placeholder="Số nhận cuộc gọi: 101/102/09091234456">
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="label">Thờ gian chờ (s)</label>
+                          <input type="text" nbInput fullWidth formControlName="follow_me_delay" placeholder="Thờ gian chờ ">
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="label">Thời gian đỗ chuông (s)</label>
+                          <input type="text" nbInput fullWidth formControlName="follow_me_timeout"
+                            placeholder="Thời gian đỗ chuông">
+                        </div>
+                      </div>
+                      <div class="col-sm-1">
+                        <div class="form-group">
+                          <label class="label">Kích hoạt</label>
+                          <nb-checkbox formControlName="follow_me_prompt"></nb-checkbox>
                         </div>
                       </div>
                     </div>
@@ -198,16 +149,30 @@
                   <div class="col-sm-1">
                     <div class="form-group">
                       <label class="label">CM</label>
-                      <button nbButton status="danger" hero size="tiny" (click)="removeDeviceGroup(i, ic)"
+                      <button nbButton status="danger" hero size="tiny" (click)="removeFollowMeGroup(i, il)"
                         style="width: 100%; margin-bottom: 3px;">
                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                       </button>
                     </div>
                   </div>
                 </div>
+              </div>
 
+              <div class="row">
+                <div class="col-sm-11">
+                  <i>Tính năng giúp người dùng có thể sử dụng nhiều số phụ để tăng khả năng trực tuyến, người dùng có
+                    thể sử dụng điện thoại bàn cố định tại văn phòng hoặc số nội bộ cài trong mobile app hoặc số di động
+                    cá nhân để nhận cuộc gọi.</i>
+                </div>
+                <div class="col-sm-1">
+                  <button nbButton status="success" (click)="addFollowMeFormGroup(i)" size="tiny"
+                    style="width: 100%; margin-bottom: 3px;" hero>
+                    <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                  </button>
+                </div>
               </div>
             </div>
+
           </div>
         </nb-card-body>
         <nb-card-footer>

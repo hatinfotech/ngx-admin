@@ -48,7 +48,7 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
 
   ngOnInit() {
 
-    this.apiService.get<PbxModel[]>('/ivoip/pbxs', {select: 'Code,Description', limit: 9999}, list => {
+    this.apiService.get<PbxModel[]>('/ivoip/pbxs', { select: 'Code,Description', limit: 9999 }, list => {
       this.pbxList = this.convertOptionList(list, 'Code', 'Description');
       super.ngOnInit();
     });
@@ -80,7 +80,7 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
   }
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxDomainModel): void {
-
+    super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
 

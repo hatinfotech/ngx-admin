@@ -92,7 +92,9 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
     return newForm;
   }
 
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: UserModel): void { }
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: UserModel): void {
+    super.onAddFormGroup(index, newForm, formData);
+  }
   onRemoveFormGroup(index: number): void { }
   goback(): false {
     this.router.navigate(['/users/user-manager/list']);

@@ -117,7 +117,9 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: UserGroupModel): void { }
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: UserGroupModel): void {
+    super.onAddFormGroup(index, newForm, formData);
+  }
   onRemoveFormGroup(index: number): void {
 
   }

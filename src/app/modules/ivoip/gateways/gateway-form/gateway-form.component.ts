@@ -65,7 +65,7 @@ export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel
     },
   };
 
-  profileList: {id?: string, text: string}[] = [];
+  profileList: { id?: string, text: string }[] = [];
 
   ngOnInit() {
     this.ivoipService.getActiveDomainList(domainList => {
@@ -108,7 +108,9 @@ export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxGatewayModel): void { }
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxGatewayModel): void {
+    super.onAddFormGroup(index, newForm, formData);
+  }
   onRemoveFormGroup(index: number): void {
 
   }

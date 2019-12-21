@@ -129,6 +129,7 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxPstnNumberModel): void {
+    super.onAddFormGroup(index, newForm, formData);
     // Event
 
     // Domains form load

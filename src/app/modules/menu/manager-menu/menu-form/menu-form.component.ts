@@ -376,7 +376,8 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     return false;
   }
 
-  onAddFormGroup(index: number, newForm: FormGroup, data?: MenuItemModel) {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: MenuItemModel) {
+    super.onAddFormGroup(index, newForm, formData);
     this.componentList.push([]);
     this.resourceList.push([]);
   }
