@@ -25,6 +25,8 @@ import { GatewayFormComponent } from './gateways/gateway-form/gateway-form.compo
 import { GatewayListComponent } from './gateways/gateway-list/gateway-list.component';
 import { DialplanFormComponent } from './dialplans/dialplan-form/dialplan-form.component';
 import { DialplanListComponent } from './dialplans/dialplan-list/dialplan-list.component';
+import { IvrMenuListComponent } from './ivr-menus/ivr-menu-list/ivr-menu-list.component';
+import { IvrMenuFormComponent } from './ivr-menus/ivr-menu-form/ivr-menu-form.component';
 
 
 const routes: Routes = [{
@@ -162,6 +164,25 @@ const routes: Routes = [{
       path: 'dialplans/form/:id',
       // canActivate: [AuthGuardService],
       component: DialplanFormComponent,
+    },
+    // IVR Menu
+    {
+      path: 'ivr-menus/list',
+      // canActivate: [AuthGuardService],
+      component: IvrMenuListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'ivr-menus/form',
+      // canActivate: [AuthGuardService],
+      component: IvrMenuFormComponent,
+    },
+    {
+      path: 'ivr-menus/form/:id',
+      // canActivate: [AuthGuardService],
+      component: IvrMenuFormComponent,
     },
     {
       path: 'extensions/list',

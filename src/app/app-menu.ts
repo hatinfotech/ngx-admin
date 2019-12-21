@@ -65,7 +65,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Lời chào',
         // icon: 'people-outline',
-        link: '/ivoip/ivrs',
+        link: '/ivoip/ivr-menus/list',
       },
       {
         title: 'Giờ làm việc',

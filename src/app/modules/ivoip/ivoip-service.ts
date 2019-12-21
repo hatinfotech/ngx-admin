@@ -78,7 +78,10 @@ export class IvoipService {
     let domainModel: PbxDomainModel;
     this.domainList.forEach(element => {
       if (element.children) {
-        domainModel = element.children.find((value) => value.domain.DomainUuid === this.activeDomainUuid).domain;
+        const domainChoosed = element.children.find((value) => value.domain.DomainUuid === this.activeDomainUuid);
+        if (domainChoosed) {
+          domainModel = domainChoosed.domain;
+        }
       }
     });
     return domainModel;
@@ -88,7 +91,10 @@ export class IvoipService {
     let domainModel: PbxDomainModel;
     this.domainList.forEach(element => {
       if (element.children) {
-        domainModel = element.children.find((value) => value.domain.DomainUuid === uuid).domain;
+        const domainChoosed = element.children.find((value) => value.domain.DomainUuid === uuid);
+        if (domainChoosed) {
+          domainModel = domainChoosed.domain;
+        }
       }
     });
     return domainModel;
@@ -116,7 +122,10 @@ export class IvoipService {
       let domainModel: PbxDomainModel;
       this.domainList.forEach(element => {
         if (element.children) {
-          domainModel = element.children.find((value) => value.domain.DomainUuid === domain).domain;
+          const domainChoosed = element.children.find((value) => value.domain.DomainUuid === domain);
+          if (domainChoosed) {
+            domainModel = domainChoosed.domain;
+          }
         }
       });
       this.setPbxActiveDomain(domainModel.DomainUuid);

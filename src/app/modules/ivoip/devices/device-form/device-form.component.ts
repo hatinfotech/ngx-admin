@@ -10,6 +10,7 @@ import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { PbxDeviceVendorModel } from '../../../../models/pbx-device-vendor.model';
 import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 
 @Component({
   selector: 'ngx-device-form',
@@ -48,7 +49,11 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
     },
   };
 
-  privateDmainList: { id?: string, text: string }[] = [];
+  privateDmainList: {
+    id: string,
+    text: string,
+    domain: PbxDomainModel,
+  }[] = [];
   privateDmainListConfig = {
     placeholder: 'Chọn domain...',
     allowClear: false,
@@ -78,7 +83,7 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
 
     // Load domain list
     this.ivoipService.getActiveDomainList(domainList => {
-      this.privateDmainList = this.convertOptionList(domainList, 'DomainId', 'DomainName');
+      this.privateDmainList = domainList;
 
       // Get extension list
       this.apiService.get<PbxExtensionModel[]>('/ivoip/extensions', { select: 'extension_uuid,extension,description', domainId: this.ivoipService.getPbxActiveDomainUuid() }, extList => {

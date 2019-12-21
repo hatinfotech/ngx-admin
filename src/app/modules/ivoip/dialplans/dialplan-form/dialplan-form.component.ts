@@ -23,7 +23,11 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
   apiPath = '/ivoip/dialplans';
   baseFormUrl = '/ivoip/dialplans/form';
 
-  privateDmainList: { id?: string, text: string }[] = [];
+  privateDmainList: {
+    id: string,
+    text: string,
+    domain: PbxDomainModel,
+  }[] = [];
   privateDmainListConfig = {
     placeholder: 'Global',
     allowClear: true,
@@ -97,7 +101,7 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
       domain_uuid: [this.ivoipService ? this.ivoipService.getPbxActiveDomainId() : ''],
       dialplan_context: [domain ? domain.DomainName : ''],
       dialplan_regex: [''],
-      dialplan_gateway: ['', Validators.required],
+      dialplan_gateway: [''],
       dialplan_name: [''],
       dialplan_number: [''],
       dialplan_destination: [''],

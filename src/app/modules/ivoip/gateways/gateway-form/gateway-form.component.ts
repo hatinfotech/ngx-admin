@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 
 @Component({
   selector: 'ngx-gateway-form',
@@ -47,7 +48,11 @@ export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel
   };
 
   privateActiveDmain: string;
-  privateDmainList: { id?: string, text: string }[] = [];
+  privateDmainList: {
+    id: string,
+    text: string,
+    domain: PbxDomainModel,
+  }[] = [];
   privateDmainListConfig = {
     placeholder: 'Global',
     allowClear: true,

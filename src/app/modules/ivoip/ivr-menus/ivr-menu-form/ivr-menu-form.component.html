@@ -1,0 +1,240 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật Menu lời chào
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="ivr_menu_uuid">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ivr_menu_name'), 'warning')">
+                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid" status="primary">Tên là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ivr_menu_name" placeholder="Tên" status="primary">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_extension'), 'warning')">
+                  <label class="label"><span class="valid">Số nội bộ đại diện (*)</span><span class="invalid">Số nội bộ đại diện là bắt
+                      buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ivr_menu_extension" placeholder="Số nội bộ đại diện" status="primary">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_greet_long'), 'warning')">
+                  <label class="label"><span class="valid">Lời chào ban đầu</span><span class="invalid">Lời chào ban
+                      đầu là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="greetingList" formControlName="ivr_menu_greet_long"
+                    [select2Option]="greetingListConfig" status="primary">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_greet_short'), 'warning')">
+                  <label class="label"><span class="valid">Lời chào lặp lại</span><span class="invalid">Lời chào lặp
+                      lại là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="greetingList" formControlName="ivr_menu_greet_short"
+                    [select2Option]="greetingListConfig">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
+                  <label class="label"><span class="valid">Domain (*)</span><span class="invalid">Domain là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="privateDmainList" formControlName="domain_uuid"
+                    [select2Option]="privateDmainListConfig" status="primary">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_exit_action'), 'warning')">
+                  <label class="label"><span class="valid">Hành động khi kết thúc</span><span class="invalid">Hành động
+                      khi kết thúc là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="actionList" formControlName="ivr_menu_exit_action"
+                    [select2Option]="actionListConfig">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_invalid_sound'), 'warning')">
+                  <label class="label"><span class="valid">Âm thanh khi bấm sai</span><span class="invalid">Âm thanh khi
+                      bấm sai là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="soundList" formControlName="ivr_menu_invalid_sound"
+                    [select2Option]="soundListConfig">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_exit_sound'), 'warning')">
+                  <label class="label"><span class="valid">Âm thanh khi kết thúc</span><span class="invalid">Âm thanh
+                      khi kết thúc là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="soundList" formControlName="ivr_menu_exit_sound"
+                    [select2Option]="soundListConfig">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_ringback'), 'warning')">
+                  <label class="label"><span class="valid">Hồi chuông</span><span class="invalid">Hồi chuông là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="ringbackList" formControlName="ivr_menu_ringback"
+                    [select2Option]="ringbackListConfig">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ivr_menu_timeout'), 'warning')">
+                  <label class="label"><span class="valid">Thời gian bắt đầu chọn menu (*)</span><span class="invalid">Thời gian bắt đầu chọn menu là bắt buộc</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ivr_menu_timeout" placeholder="Thời gian bắt đầu chọn menu">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_description'), 'warning')">
+                  <label class="label"><span class="valid">Mô tả</span><span class="invalid">Mô tả là bắt buộc
+                    (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ivr_menu_description" placeholder="Mô tả">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ivr_menu_direct_dial'), 'warning')">
+                  <label class="label"><span class="valid">Bấm số nội bộ trực tiếp</span><span
+                      class="invalid"></span></label>
+                  <nb-checkbox formControlName="ivr_menu_direct_dial">Bấm số nội bộ trực tiếp
+                  </nb-checkbox>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ivr_menu_enabled'), 'warning')">
+                  <label class="label"><span class="valid">Kích hoạt</span><span class="invalid"></span></label>
+                  <nb-checkbox formControlName="ivr_menu_enabled">Kích hoạt</nb-checkbox>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <label class="label">Chi tiết menu</label>
+            <div class="row">
+              <div class="col-sm-1">STT</div>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-2">Bấm số</div>
+                  <div class="col-sm-5">Chuyển tới</div>
+                  <div class="col-sm-5">Mô tả</div>
+                </div>
+              </div>
+              <div class="col-sm-1" style="text-align: center;">
+                <button nbButton status="success" (click)="addIvrMenuOptionGroup(i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+            <hr>
+            <div formArrayName="ivr_menu_options" class="form-details" [sortablejs]="getIvrMenuOptions(i)"
+              [sortablejsOptions]="{ handle: '.sorting-handle' }">
+              <div class="form-detail-item" *ngFor="let ivrMenuOption of getIvrMenuOptions(i).controls; let ic=index"
+                [formGroup]="ivrMenuOption">
+                <input type="hidden" formGroupName="ivr_menu_option_uuid">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth disabled value="{{ ic + 1 }}" style="text-align: center;">
+                    </div>
+                    <!-- <div class="form-group">
+                      <button nbButton status="success" hero size="tiny" class="sorting-handle" style="width: 100%;">
+                        <nb-icon pack="eva" icon="move-outline"></nb-icon>
+                      </button>
+                    </div> -->
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(ivrMenuOption.get('ivr_menu_option_digits'), 'warning')">
+                          <label class="label"><span class="valid">Phím (*)</span><span class="invalid">Phím (*)</span></label>
+                          <input type="text"    nbInput fullWidth formControlName="ivr_menu_option_digits"
+                            placeholder="Bấm số" status="primary">
+                        </div>
+                      </div>
+                      <div class="col-sm-5">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(ivrMenuOption.get('ivr_menu_option_param'), 'warning')">
+                          <label class="label"><span class="valid">Chuyển tới (*)</span><span class="invalid">Chuyển tới (*)</span></label>
+                          <ngx-select2 [data]="actionList" formControlName="ivr_menu_option_param"
+                            [select2Option]="actionListConfig" status="primary">
+                          </ngx-select2>
+                        </div>
+                      </div>
+                      <div class="col-sm-5">
+                        <div class="form-group"
+                          [attr.state]="formControlValidate(ivrMenuOption.get('ivr_menu_option_description'), 'warning')">
+                          <label class="label"><span class="valid">Mô tả</span><span class="invalid">Mô tả (*)</span></label>
+                              <input type="text" nbInput fullWidth formControlName="ivr_menu_option_description"
+                              placeholder="Mô tả">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="tiny" (click)="removeIvrMenuOptionGroup(i, ic)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- <hr> -->
+
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button>
+            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
+            <button nbButton status="success" [disabled]="!form.valid" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

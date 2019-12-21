@@ -39,7 +39,7 @@
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_gateway'), 'warning')">
-                  <label class="label"><span class="valid">Gateway (*)</span><span class="invalid">Gateway là bắt buộc
+                  <label class="label"><span class="valid">Gateway</span><span class="invalid">Gateway là bắt buộc
                       (*)</span></label>
                   <nb-select size="medium" formControlName="dialplan_gateway" fullWidth>
                     <nb-option value="">Gateway</nb-option>
@@ -109,21 +109,18 @@
               <div class="col-sm-11">
                 <div class="row">
                   <div class="col-sm-3" seleted>Tag</div>
-                  <div class="col-sm-6">Type</div>
-                  <!-- <div class="col-sm-5">Data</div> -->
+                  <div class="col-sm-5">Type</div>
                   <div class="col-sm-2">Break</div>
                   <div class="col-sm-1">Inline</div>
-                  <!-- <div class="col-sm-1">Group</div>
-                  <div class="col-sm-1">Order</div> -->
+                  <div class="col-sm-1" style="text-align: center;">
+                    <button nbButton status="success" (click)="addDialplanDetailFormGroup(i)" size="tiny"
+                      style="width: 100%; margin-bottom: 3px;" hero>
+                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                    </button>
+                  </div>
+                </div>
                 </div>
               </div>
-              <!-- <div class="col-sm-1" style="text-align: center;">
-                <button nbButton status="success" (click)="addDialplanDetailFormGroup(i)" size="tiny"
-                  style="width: 100%; margin-bottom: 3px;" hero>
-                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
-                </button>
-              </div> -->
-            </div>
 
             <hr>
             <div formArrayName="dialplan_details" class="form-details" [sortablejs]="getDialplanDetails(i)"
@@ -138,10 +135,6 @@
                       <input nbInput fullWidth disabled value="{{ ic + 1 }}" style="text-align: center;">
                     </div>
                     <div class="form-group">
-                      <!-- <button nbButton status="danger" hero size="tiny" (click)="removeDetail(i)"
-                        style="width: 100%; margin-bottom: 3px;">
-                        <nb-icon pack="eva" icon="trash-2-outline"></nb-icon>
-                      </button> -->
                       <button nbButton status="success" hero size="tiny" class="sorting-handle" style="width: 100%;">
                         <nb-icon pack="eva" icon="move-outline"></nb-icon>
                       </button>
@@ -163,21 +156,11 @@
                           </nb-select>
                         </div>
                       </div>
-                      <div class="col-sm-6">
+                      <div class="col-sm-5">
                         <div class="form-group"
                           [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_type'), 'warning')">
                           <label class="label"><span class="valid">Type (*)</span><span class="invalid">Type
                               (*)</span></label>
-                          <!-- <ngx-select2 [data]="dialplanDetailList" formControlName="dialplan_detail_type"
-                            [select2Option]="dialplanDetailListConfig">
-                          </ngx-select2> -->
-                          <!-- <nb-select size="medium" formControlName="dialplan_detail_type" fullWidth>
-                            <nb-option value="">Type</nb-option>
-                            <nb-option value="condition">Condition</nb-option>
-                            <nb-option value="regex">Regular Expression</nb-option>
-                            <nb-option value="action">Action</nb-option>
-                            <nb-option value="anti-action">Anti-Action</nb-option>
-                          </nb-select> -->
                           <input type="text" nbInput fullWidth formControlName="dialplan_detail_type"
                             placeholder="Type">
                         </div>
@@ -201,32 +184,18 @@
                           [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_inline'), 'warning')">
                           <label class="label"><span class="valid">Inline</span><span class="invalid">Inline
                               (*)</span></label>
-                          <!-- <nb-select size="medium" formControlName="dialplan_detail_inline" fullWidth>
-                            <nb-option value="">Inline</nb-option>
-                            <nb-option value="True">True</nb-option>
-                            <nb-option value="false">False</nb-option>
-                          </nb-select> -->
                           <nb-checkbox formControlName="dialplan_detail_inline"></nb-checkbox>
                         </div>
                       </div>
-                      <!-- <div class="col-sm-1">
-                        <div class="form-group"
-                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_group'), 'warning')">
-                          <label class="label"><span class="valid">Group (*)</span><span class="invalid">Group
-                              (*)</span></label>
-                          <input type="text" nbInput fullWidth formControlName="dialplan_detail_group"
-                            placeholder="Group">
+                      <div class="col-sm-1">
+                        <div class="form-group">
+                          <label class="label">CM</label>
+                          <button nbButton status="danger" hero size="tiny" (click)="removeDialplanDetailGroup(i, ic)"
+                            style="width: 100%; margin-bottom: 3px;">
+                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                          </button>
                         </div>
                       </div>
-                      <div class="col-sm-1">
-                        <div class="form-group"
-                          [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_order'), 'warning')">
-                          <label class="label"><span class="valid">Order (*)</span><span class="invalid">Order
-                              (*)</span></label>
-                          <input type="text" nbInput fullWidth formControlName="dialplan_detail_order"
-                            placeholder="Order">
-                        </div>
-                      </div> -->
                       <div class="col-sm-12">
                         <div class="form-group"
                           [attr.state]="formControlValidate(dialplanDetail.get('dialplan_detail_data'), 'warning')">
@@ -238,15 +207,6 @@
                       </div>
                     </div>
                   </div>
-                  <!-- <div class="col-sm-1">
-                    <div class="form-group">
-                      <label class="label">CM</label>
-                      <button nbButton status="danger" hero size="tiny" (click)="removeDialplanDetailGroup(i, ic)"
-                        style="width: 100%; margin-bottom: 3px;">
-                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
-                      </button>
-                    </div>
-                  </div> -->
                 </div>
                 <hr>
 

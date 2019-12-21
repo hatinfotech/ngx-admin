@@ -6,8 +6,9 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { IvoipService } from '../../ivoip-service';
+import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
 import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
+import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 
 @Component({
   selector: 'ngx-pstn-number-form',
@@ -21,7 +22,11 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
   baseFormUrl = '/ivoip/pstn-numbers/form';
 
   privateActiveDomain: string;
-  privateDomainList: { id: string, text: string, Code: string, Name: string }[];
+  privateDomainList: {
+    id: string,
+    text: string,
+    domain: PbxDomainModel,
+  }[];
   privateDomainListConfig = {
     placeholder: 'Chọn domain...',
     allowClear: false,
@@ -97,7 +102,7 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
         });
 
         this.ivoipService.getActiveDomainList(domainList => {
-          this.privateDomainList = this.convertOptionList(domainList, 'DomainId', 'DomainName');
+          this.privateDomainList = domainList;
           this.privateActiveDomain = this.ivoipService.getPbxActiveDomainUuid();
           super.ngOnInit();
         });

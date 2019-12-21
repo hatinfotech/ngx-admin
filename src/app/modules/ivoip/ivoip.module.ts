@@ -34,6 +34,8 @@ import { GatewayFormComponent } from './gateways/gateway-form/gateway-form.compo
 import { DialplanListComponent } from './dialplans/dialplan-list/dialplan-list.component';
 import { DialplanFormComponent } from './dialplans/dialplan-form/dialplan-form.component';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { IvrMenuListComponent } from './ivr-menus/ivr-menu-list/ivr-menu-list.component';
+import { IvrMenuFormComponent } from './ivr-menus/ivr-menu-form/ivr-menu-form.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,8 @@ import { SortablejsModule } from 'ngx-sortablejs';
     GatewayFormComponent,
     DialplanListComponent,
     DialplanFormComponent,
+    IvrMenuListComponent,
+    IvrMenuFormComponent,
   ],
   imports: [
     CommonModule,

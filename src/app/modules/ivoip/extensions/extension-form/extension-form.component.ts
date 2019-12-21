@@ -37,7 +37,11 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     },
   };
 
-  privateDmainList: { id?: string, text: string}[] = [];
+  privateDmainList: {
+    id: string,
+    text: string,
+    domain: PbxDomainModel,
+  }[] = [];
   privateDmainListConfig = {
     placeholder: 'Chọn domain...',
     allowClear: false,
@@ -66,7 +70,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
 
   ngOnInit() {
     this.ivoipService.getActiveDomainList(domainList => {
-      this.privateDmainList = this.convertOptionList(domainList, 'DomainId', 'DomainName');
+      this.privateDmainList = domainList;
       this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
         this.templateList = list.map(item => {
           return {

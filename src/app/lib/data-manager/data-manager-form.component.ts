@@ -306,6 +306,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     // this.submiting = true;
     this.onProcessing();
     const data: { array: any } = this.form.getRawValue();
+
     // console.info(data);
 
     this.form.disable();

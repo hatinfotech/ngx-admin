@@ -1,26 +1,25 @@
-import { Component, OnInit, OnDestroy, OnChanges, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
-import { PbxDialplanModel } from '../../../../models/pbx-dialplan.model';
+import { PbxIvrMenuModel } from '../../../../models/pbx-ivr-menu.model';
+import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
-import { LocalDataSource } from 'ng2-smart-table';
 import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
+import { PbxIvrMenuOptionModel } from '../../../../models/pbx-ivr-menu-option.model';
 
 @Component({
-  selector: 'ngx-dialplan-list',
-  templateUrl: './dialplan-list.component.html',
-  styleUrls: ['./dialplan-list.component.scss'],
+  selector: 'ngx-ivr-menu-list',
+  templateUrl: './ivr-menu-list.component.html',
+  styleUrls: ['./ivr-menu-list.component.scss'],
 })
-export class DialplanListComponent
-  extends IvoipBaseListComponent<PbxDialplanModel>
-  implements OnInit {
+export class IvrMenuListComponent extends IvoipBaseListComponent<PbxIvrMenuModel> implements OnInit {
 
-  formPath = '/ivoip/dialplans/form';
-  apiPath = '/ivoip/dialplans';
-  idKey = 'dialplan_uuid';
+  formPath = '/ivoip/ivr-menus/form';
+  apiPath = '/ivoip/ivr-menus';
+  idKey = 'ivr_menu_uuid';
 
   inboundSource: LocalDataSource = new LocalDataSource();
   outboundSource: LocalDataSource = new LocalDataSource();
@@ -69,27 +68,22 @@ export class DialplanListComponent
       //   type: 'string',
       //   width: '10%',
       // },
-      dialplan_name: {
+      ivr_menu_name: {
         title: 'Tên',
         type: 'string',
         width: '20%',
       },
-      dialplan_number: {
+      ivr_menu_extension: {
         title: 'Số',
         type: 'string',
         width: '20%',
       },
-      dialplan_context: {
-        title: 'Context',
-        type: 'string',
-        width: '20%',
-      },
-      dialplan_description: {
+      ivr_menu_description: {
         title: 'Mô tả',
         type: 'string',
-        width: '20%',
+        width: '40%',
       },
-      dialplan_enabled: {
+      ivr_menu_enabled: {
         title: 'Kích hoạt',
         type: 'string',
         width: '10%',
@@ -99,21 +93,6 @@ export class DialplanListComponent
 
   ngOnInit() {
     super.ngOnInit();
-  }
-
-  /** Get data from api and push to list */
-  loadList(callback?: (list: PbxDialplanDetailModel[]) => void) {
-    super.loadList(list => {
-      this.inboundSource.load(list.filter(item => item['dialplan_type'] === 'inbound').map((d, i) => {
-        d['No'] = i + 1;
-        return d;
-      }));
-      this.outboundSource.load(list.filter(item => item['dialplan_type'] === 'outbound').map((d, i) => {
-        d['No'] = i + 1;
-        return d;
-      }));
-      if (callback) callback(list);
-    });
   }
 
 }
