@@ -36,6 +36,10 @@ import { DialplanFormComponent } from './dialplans/dialplan-form/dialplan-form.c
 import { SortablejsModule } from 'ngx-sortablejs';
 import { IvrMenuListComponent } from './ivr-menus/ivr-menu-list/ivr-menu-list.component';
 import { IvrMenuFormComponent } from './ivr-menus/ivr-menu-form/ivr-menu-form.component';
+import { TimeConditionListComponent } from './time-conditions/time-condition-list/time-condition-list.component';
+import { TimeConditionFormComponent } from './time-conditions/time-condition-form/time-condition-form.component';
+import { CallCenterListComponent } from './call-conters/call-center-list/call-center-list.component';
+import { CallCenterFormComponent } from './call-conters/call-center-form/call-center-form.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +62,10 @@ import { IvrMenuFormComponent } from './ivr-menus/ivr-menu-form/ivr-menu-form.co
     DialplanFormComponent,
     IvrMenuListComponent,
     IvrMenuFormComponent,
+    TimeConditionListComponent,
+    TimeConditionFormComponent,
+    CallCenterListComponent,
+    CallCenterFormComponent,
   ],
   imports: [
     CommonModule,
