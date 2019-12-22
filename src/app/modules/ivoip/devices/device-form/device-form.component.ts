@@ -49,11 +49,7 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
     },
   };
 
-  privateDmainList: {
-    id: string,
-    text: string,
-    domain: PbxDomainModel,
-  }[] = [];
+  privateDmainList: { id: string, text: string, domain: PbxDomainModel }[] = [];
   privateDmainListConfig = {
     placeholder: 'Chọn domain...',
     allowClear: false,

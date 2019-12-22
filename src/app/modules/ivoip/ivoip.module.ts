@@ -38,10 +38,12 @@ import { IvrMenuListComponent } from './ivr-menus/ivr-menu-list/ivr-menu-list.co
 import { IvrMenuFormComponent } from './ivr-menus/ivr-menu-form/ivr-menu-form.component';
 import { TimeConditionListComponent } from './time-conditions/time-condition-list/time-condition-list.component';
 import { TimeConditionFormComponent } from './time-conditions/time-condition-form/time-condition-form.component';
-import { CallCenterListComponent } from './call-conters/call-center-list/call-center-list.component';
-import { CallCenterFormComponent } from './call-conters/call-center-form/call-center-form.component';
 import { CallRouteListComponent } from './call-routes/call-route-list/call-route-list.component';
 import { CallRouteFormComponent } from './call-routes/call-route-form/call-route-form.component';
+import { CallCenterFormComponent } from './call-centers/call-center-form/call-center-form.component';
+import { CallCenterListComponent } from './call-centers/call-center-list/call-center-list.component';
+import { CallCenterAgentListComponent } from './call-centers/agents/call-center-agent-list/call-center-agent-list.component';
+import { CallCenterAgentFormComponent } from './call-centers/agents/call-center-agent-form/call-center-agent-form.component';
 
 @NgModule({
   declarations: [
@@ -66,10 +68,12 @@ import { CallRouteFormComponent } from './call-routes/call-route-form/call-route
     IvrMenuFormComponent,
     TimeConditionListComponent,
     TimeConditionFormComponent,
-    CallCenterListComponent,
-    CallCenterFormComponent,
     CallRouteListComponent,
     CallRouteFormComponent,
+    CallCenterListComponent,
+    CallCenterFormComponent,
+    CallCenterAgentListComponent,
+    CallCenterAgentFormComponent,
   ],
   imports: [
     CommonModule,

@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../../services/api.service';
+import { PbxCallCenterAgentModel } from '../../../../../models/pbx-center-agent.model';
+import { IvoipBaseListComponent } from '../../../ivoip-base-list.component';
+import { ApiService } from '../../../../../services/api.service';
 import { Router } from '@angular/router';
-import { CommonService } from '../../../../services/common.service';
+import { CommonService } from '../../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
-import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
-import { IvoipService } from '../../ivoip-service';
+import { IvoipService } from '../../../ivoip-service';
 
 @Component({
-  selector: 'ngx-call-block-list',
-  templateUrl: './call-block-list.component.html',
-  styleUrls: ['./call-block-list.component.scss'],
+  selector: 'ngx-call-center-agent-list',
+  templateUrl: './call-center-agent-list.component.html',
+  styleUrls: ['./call-center-agent-list.component.scss'],
 })
-export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockModel> implements OnInit {
+export class CallCenterAgentListComponent extends IvoipBaseListComponent<PbxCallCenterAgentModel> implements OnInit {
 
-  formPath = '/ivoip/call-blocks/form';
-  apiPath = '/ivoip/call-blocks';
-  idKey = 'call_block_uuid';
+  formPath = '/ivoip/call-centers/agents/form';
+  apiPath = '/ivoip/call-center-agents';
+  idKey = 'call_center_agent_uuid';
 
   constructor(
     protected apiService: ApiService,
@@ -57,40 +57,40 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
       perPage: 99999,
     },
     columns: {
-      call_block_number: {
-        title: 'Number',
+      agent_name: {
+        title: 'Tên',
         type: 'string',
         width: '10%',
       },
-      call_block_name: {
-        title: 'Name',
+      agent_id: {
+        title: 'ID',
+        type: 'string',
+        width: '10%',
+      },
+      agent_type: {
+        title: 'Loại',
+        type: 'string',
+        width: '10%',
+      },
+      agent_call_timeout: {
+        title: 'Thời gian ngắt',
+        type: 'string',
+        width: '10%',
+      },
+      agent_contact: {
+        title: 'Liên hệ',
         type: 'string',
         width: '20%',
       },
-      call_block_count: {
-        title: 'Só lần chặn',
-        type: 'string',
-        width: '10%',
-      },
-      accountcode: {
-        title: 'Số Public',
+      agent_max_no_answer: {
+        title: 'Số lần không nhấc máy tối đa',
         type: 'string',
         width: '20%',
       },
-      call_block_action: {
-        title: 'Hành động',
+      agent_status: {
+        title: 'Trạng thái mặc định',
         type: 'string',
         width: '20%',
-      },
-      date_added: {
-        title: 'Ngày khai báo',
-        type: 'string',
-        width: '10%',
-      },
-      call_block_enabled: {
-        title: 'Đã chặn',
-        type: 'string',
-        width: '10%',
       },
     },
   };

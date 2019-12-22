@@ -78,14 +78,24 @@ export const MENU_ITEMS: NbMenuItem[] = [
         ],
       },
       {
+        title: 'Trung tâm cuộc gọi',
+        // icon: 'people-outline',
+        // link: '/ivoip/call-centers/',
+        children: [
+          {
+            title: 'Quản lý',
+            link: '/ivoip/call-centers/list',
+          },
+          {
+            title: 'Vị trí trực máy',
+            link: '/ivoip/call-centers/agents/list',
+          },
+        ],
+      },
+      {
         title: 'Lời chào',
         // icon: 'people-outline',
         link: '/ivoip/ivr-menus/list',
-      },
-      {
-        title: 'Call center',
-        // icon: 'people-outline',
-        link: '/ivoip/call-centers',
       },
       {
         title: 'Lịch sử cuộc gọi',

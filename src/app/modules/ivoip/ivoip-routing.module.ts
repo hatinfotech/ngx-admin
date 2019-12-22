@@ -31,6 +31,10 @@ import { CallRouteListComponent } from './call-routes/call-route-list/call-route
 import { CallRouteFormComponent } from './call-routes/call-route-form/call-route-form.component';
 import { TimeConditionListComponent } from './time-conditions/time-condition-list/time-condition-list.component';
 import { TimeConditionFormComponent } from './time-conditions/time-condition-form/time-condition-form.component';
+import { CallCenterListComponent } from './call-centers/call-center-list/call-center-list.component';
+import { CallCenterFormComponent } from './call-centers/call-center-form/call-center-form.component';
+import { CallCenterAgentListComponent } from './call-centers/agents/call-center-agent-list/call-center-agent-list.component';
+import { CallCenterAgentFormComponent } from './call-centers/agents/call-center-agent-form/call-center-agent-form.component';
 
 
 const routes: Routes = [{
@@ -187,6 +191,44 @@ const routes: Routes = [{
       path: 'time-conditions/form/:id',
       // canActivate: [AuthGuardService],
       component: TimeConditionFormComponent,
+    },
+    // Call centers
+    {
+      path: 'call-centers/list',
+      // canActivate: [AuthGuardService],
+      component: CallCenterListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'call-centers/form',
+      // canActivate: [AuthGuardService],
+      component: CallCenterFormComponent,
+    },
+    {
+      path: 'call-centers/form/:id',
+      // canActivate: [AuthGuardService],
+      component: CallCenterFormComponent,
+    },
+    // Call center agents
+    {
+      path: 'call-centers/agents/list',
+      // canActivate: [AuthGuardService],
+      component: CallCenterAgentListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'call-centers/agents/form',
+      // canActivate: [AuthGuardService],
+      component: CallCenterAgentFormComponent,
+    },
+    {
+      path: 'call-centers/agents/form/:id',
+      // canActivate: [AuthGuardService],
+      component: CallCenterAgentFormComponent,
     },
     // Call routing
     {
