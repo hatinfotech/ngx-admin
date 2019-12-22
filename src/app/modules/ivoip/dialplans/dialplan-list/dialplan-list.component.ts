@@ -14,9 +14,7 @@ import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.m
   templateUrl: './dialplan-list.component.html',
   styleUrls: ['./dialplan-list.component.scss'],
 })
-export class DialplanListComponent
-  extends IvoipBaseListComponent<PbxDialplanModel>
-  implements OnInit {
+export class DialplanListComponent extends IvoipBaseListComponent<PbxDialplanModel> implements OnInit {
 
   formPath = '/ivoip/dialplans/form';
   apiPath = '/ivoip/dialplans';

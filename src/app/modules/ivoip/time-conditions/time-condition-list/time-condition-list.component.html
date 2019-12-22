@@ -1,3 +1,20 @@
-<p>
-  time-condition-list works!
-</p>
+<nb-card class="small-header">
+  <nb-card-header>
+    <nav>
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> Điều hướng thời gian làm việc
+      <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
+        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+      </button>
+      <ngx-select2 [data]="domainList" [value]="ivoipService.activeDomainUuid" [select2Option]="select2OptionForDoaminList"
+        (selectChange)="onChangeDomain($event)" style="float: right; min-width: 250px;">
+      </ngx-select2>
+    </nav>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="ng2-smart-table-wrap">
+      <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
+        (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+      </ng2-smart-table>
+    </div>
+  </nb-card-body>
+</nb-card>

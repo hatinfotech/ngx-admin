@@ -70,17 +70,17 @@ export const MENU_ITEMS: NbMenuItem[] = [
             title: 'Định tuyến cuộc gọi',
             link: '/ivoip/call-routes/list',
           },
+          {
+            title: 'Thời gian làm việc',
+            // icon: 'people-outline',
+            link: '/ivoip/time-conditions/list',
+          },
         ],
       },
       {
         title: 'Lời chào',
         // icon: 'people-outline',
         link: '/ivoip/ivr-menus/list',
-      },
-      {
-        title: 'Giờ làm việc',
-        // icon: 'people-outline',
-        link: '/ivoip/pstn-numbers',
       },
       {
         title: 'Call center',

@@ -1,3 +1,166 @@
-<p>
-  time-condition-form works!
-</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật điều hướng thời gian làm việc
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="dialplan_uuid">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_name'), 'warning')">
+                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_name" placeholder="Tên">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_number'), 'warning')">
+                  <label class="label"><span class="valid">Số đại diện (*)</span><span class="invalid">Số đại diện
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_number" placeholder="Số đại diện">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
+                  <label class="label"><span class="valid">Domain (*)</span><span class="invalid">Domain là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="privateDmainList" formControlName="domain_uuid"
+                    [select2Option]="privateDmainListConfig">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="label"><span class="valid">Thứ tự</span></label>
+                  <input type="text" nbInput fullWidth formControlName="dialplan_order" placeholder="Thứ tự">
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('dialplan_enabled'), 'warning')">
+                  <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span></label>
+                  <nb-checkbox formControlName="dialplan_enabled">Kích hoạt</nb-checkbox>
+                </div>
+              </div>
+            </div>
+
+            <br>
+            <label class="label">Thời gian làm việc</label>
+            <hr>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group"
+                      [attr.state]="formControlValidate(formItem.get('day_of_week_start'), 'warning')">
+                      <label class="label"><span class="valid">Ngày đầu tuần (*)</span><span class="invalid">Ngày đầu
+                          tuần (*)</span></label>
+                      <nb-select size="medium" formControlName="day_of_week_start" fullWidth>
+                        <nb-option value="">Ngày đầu tuần</nb-option>
+                        <nb-option *ngFor="let week of weekList" [value]="week.id">{{week.text}}</nb-option>
+                      </nb-select>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group"
+                      [attr.state]="formControlValidate(formItem.get('day_of_week_end'), 'warning')">
+                      <label class="label"><span class="valid">Ngày cuối tuần (*)</span><span class="invalid">Ngày cuối
+                          tuần (*)</span></label>
+                      <nb-select size="medium" formControlName="day_of_week_end" fullWidth>
+                        <nb-option value="">Ngày cuối tuần</nb-option>
+                        <nb-option *ngFor="let week of weekList" [value]="week.id">{{week.text}}</nb-option>
+                      </nb-select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group"
+                      [attr.state]="formControlValidate(formItem.get('time_of_morning_start'), 'warning')">
+                      <label class="label"><span class="valid">Giờ bắt đầu ca sáng (*)</span><span class="invalid">Giờ
+                          bắt đầu ca sáng (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="time_of_morning_start" placeholder="07:30">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group"
+                      [attr.state]="formControlValidate(formItem.get('time_of_morning_end'), 'warning')">
+                      <label class="label"><span class="valid">Giờ kết thúc ca sáng (*)</span><span class="invalid">Giờ
+                          kết thúc ca sáng (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="time_of_morning_end" placeholder="11:30">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group"
+                      [attr.state]="formControlValidate(formItem.get('time_of_afternoon_start'), 'warning')">
+                      <label class="label"><span class="valid">Giờ bắt đầu ca chiều (*)</span><span class="invalid">Giờ
+                          bắt đầu ca chiều (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="time_of_afternoon_start"
+                        placeholder="13:15">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group"
+                      [attr.state]="formControlValidate(formItem.get('time_of_afternoon_end'), 'warning')">
+                      <label class="label"><span class="valid">Giờ kết thúc ca chiều (*)</span><span class="invalid">Giờ
+                          kết thúc ca chiều (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="time_of_afternoon_end" placeholder="17:30">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('dialplan_action'), 'warning')">
+                  <label class="label"><span class="valid">Chuyển cuộc gọi tới (*)</span><span class="invalid">Chuyển
+                      cuộc gọi tới (*)</span></label>
+                  <ngx-select2 [data]="actionList" formControlName="dialplan_action"
+                    [select2Option]="actionListConfig" status="primary">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('dialplan_anti_action'), 'warning')">
+                  <label class="label"><span class="valid">Ngoài giờ chuyển tới (*)</span><span class="invalid">Ngoài giờ chuyển tới (*)</span></label>
+                  <ngx-select2 [data]="actionList" formControlName="dialplan_anti_action"
+                    [select2Option]="actionListConfig" status="primary">
+                  </ngx-select2>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button>
+            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
+            <button nbButton status="success" [disabled]="!form.valid" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>
