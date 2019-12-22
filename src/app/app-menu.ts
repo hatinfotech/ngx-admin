@@ -80,17 +80,17 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Trung tâm cuộc gọi',
         // icon: 'people-outline',
-        link: '/ivoip/call-centers/list',
-        // children: [
-        //   {
-        //     title: 'Quản lý',
-        //     link: '/ivoip/call-centers/list',
-        //   },
-        //   {
-        //     title: 'Vị trí trực máy',
-        //     link: '/ivoip/call-centers/agents/list',
-        //   },
-        // ],
+        // link: '/ivoip/call-centers/list',
+        children: [
+          {
+            title: 'Trung tâm cuộc gọi',
+            link: '/ivoip/call-centers/list',
+          },
+          {
+            title: 'Vị trí trực máy',
+            link: '/ivoip/call-centers/agents/list',
+          },
+        ],
       },
       {
         title: 'Lời chào',
