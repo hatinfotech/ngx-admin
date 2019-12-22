@@ -5,6 +5,9 @@
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
+      <button nbButton status="primary" hero size="tiny" (click)="router.navigate(['/ivoip/call-centers/list'])" style="float: right;">
+        <nb-icon pack="eva" icon="cube-outline"></nb-icon>Trung tâm cuộc gọi
+      </button>
       <ngx-select2 [data]="domainList" [value]="ivoipService.activeDomainUuid" [select2Option]="select2OptionForDoaminList"
         (selectChange)="onChangeDomain($event)" style="float: right; min-width: 250px;">
       </ngx-select2>

@@ -1,3 +1,5 @@
+import { PbxCallCenterAgentModel } from './pbx-center-agent.model';
+
 export class PbxCallCenterQueueModel {
 
   call_center_queue_uuid?: string;
@@ -25,6 +27,7 @@ export class PbxCallCenterQueueModel {
   queue_announce_frequency?: string;
   queue_cc_exit_keys?: string;
   queue_description?: string;
+  call_center_tiers?: PbxCallCenterAgentModel[];
 
   constructor() { }
 
