@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card>
+      <nb-card class="small-header">
         <nb-card-header>
           <nav>
             Cập nhật module
@@ -38,7 +38,8 @@
               <div class="col-sm-10">
                 <div class="row">
                   <div class="col-sm-4">Tên component</div>
-                  <div class="col-sm-8">Diễn giải</div>
+                  <div class="col-sm-4">Đường dẫn</div>
+                  <div class="col-sm-4">Diễn giải</div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -64,12 +65,21 @@
                       <div class="col-sm-4">
                         <div class="form-group">
                           <label class="label">Tên component</label>
+                          <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(getComponents(i), i, 'Name')" pack="eva" icon="copy-outline"></nb-icon>
                           <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên component">
                         </div>
                       </div>
-                      <div class="col-sm-8">
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="label">Đường dẫn</label>
+                          <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(getComponents(i), i, 'Path')" pack="eva" icon="copy-outline"></nb-icon>
+                          <input type="text" nbInput fullWidth formControlName="Path" placeholder="Đường dẫn">
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
                         <div class="form-group">
                           <label class="label">Diễn giải</label>
+                          <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(getComponents(i), i, 'Description')" pack="eva" icon="copy-outline"></nb-icon>
                           <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
                         </div>
                       </div>

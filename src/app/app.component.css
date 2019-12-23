@@ -419,7 +419,12 @@ body .form-group[state="warning"] select:focus,
 body .form-group[state="warning"] textarea:focus {
   border-color: #ffaa00;
 }
-
+.form-group {
+  position: relative;
+}
+.form-group .copy-btn {
+  position: absolute; z-index: 1; right: -14px; top: -14px;
+}
 /* End form */
 
 /* Button */

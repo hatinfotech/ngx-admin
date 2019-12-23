@@ -190,75 +190,81 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     super.formLoad(formData, (index, newForm, itemFormData) => {
 
       // Components form load
-      itemFormData.Components.forEach(component => {
-        const newComponentFormGroup = this.makeNewComponentFormGroup(component);
-        // (newForm.get('Components') as FormArray).push(newComponentFormGroup);
-        this.getComponents(index).push(newComponentFormGroup);
-        const comIndex = this.getComponents(index).length - 1;
-        this.onAddComponentFormGroup(index, comIndex, newComponentFormGroup);
-        const module = this.moduleList.find((value, i, obj) => {
-          return component['Module'] === value['Name'];
-        });
-        if (module && module['Components']) {
-          this.componentList[index][comIndex] = module['Components'].map(item => {
-            item['id'] = item['Name'];
-            item['text'] = item['Description'] ? item['Description'] : item['Name'];
-            return item;
+      if (itemFormData.Components) {
+        itemFormData.Components.forEach(component => {
+          const newComponentFormGroup = this.makeNewComponentFormGroup(component);
+          // (newForm.get('Components') as FormArray).push(newComponentFormGroup);
+          this.getComponents(index).push(newComponentFormGroup);
+          const comIndex = this.getComponents(index).length - 1;
+          this.onAddComponentFormGroup(index, comIndex, newComponentFormGroup);
+          const module = this.moduleList.find((value, i, obj) => {
+            return component['Module'] === value['Name'];
           });
-          newComponentFormGroup.get('Component').patchValue(component['Component']);
-        }
-      });
+          if (module && module['Components']) {
+            this.componentList[index][comIndex] = module['Components'].map(item => {
+              item['id'] = item['Name'];
+              item['text'] = item['Description'] ? item['Description'] : item['Name'];
+              return item;
+            });
+            newComponentFormGroup.get('Component').patchValue(component['Component']);
+          }
+        });
+      }
 
       // Resources form load
-      itemFormData.Resources.forEach(resource => {
-        const newResourceFormGroup = this.makeNewResourceFormGroup(resource);
-        this.getResources(index).push(newResourceFormGroup);
-        const comIndex = this.getResources(index).length - 1;
-        this.onAddResourceFormGroup(index, comIndex, newResourceFormGroup);
-        const module = this.moduleList.find((value, i, obj) => {
-          return resource['Module'] === value['Name'];
-        });
-        if (module && module['Resources']) {
-          this.resourceList[index][comIndex] = module['Resources'].map(item => {
-            item['id'] = item['Name'];
-            item['text'] = item['Description'] ? item['Description'] : item['Name'];
-            return item;
+      if (itemFormData.Resources) {
+        itemFormData.Resources.forEach(resource => {
+          const newResourceFormGroup = this.makeNewResourceFormGroup(resource);
+          this.getResources(index).push(newResourceFormGroup);
+          const comIndex = this.getResources(index).length - 1;
+          this.onAddResourceFormGroup(index, comIndex, newResourceFormGroup);
+          const module = this.moduleList.find((value, i, obj) => {
+            return resource['Module'] === value['Name'];
           });
-          newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
-        }
+          if (module && module['Resources']) {
+            this.resourceList[index][comIndex] = module['Resources'].map(item => {
+              item['id'] = item['Name'];
+              item['text'] = item['Description'] ? item['Description'] : item['Name'];
+              return item;
+            });
+            newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
+          }
 
-        if (module && module['Resources']) {
-          this.resourceList[index][comIndex] = module['Resources'].map(item => {
-            item['id'] = item['Name'];
-            item['text'] = item['Description'] ? item['Description'] : item['Name'];
-            return item;
-          });
-          newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
-        }
-      });
+          if (module && module['Resources']) {
+            this.resourceList[index][comIndex] = module['Resources'].map(item => {
+              item['id'] = item['Name'];
+              item['text'] = item['Description'] ? item['Description'] : item['Name'];
+              return item;
+            });
+            newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
+          }
+        });
+      }
 
       // Permissions form load
-      itemFormData.Permissions.forEach(permission => {
-        const newPermissionFormGroup = this.makeNewPermissionFormGroup(permission);
-        // (newForm.get('Components') as FormArray).push(newComponentFormGroup);
-        this.getPermissions(index).push(newPermissionFormGroup);
-        const comIndex = this.getComponents(index).length - 1;
-        this.onAddPermissionFormGroup(index, comIndex, newPermissionFormGroup);
-        // const module = this.moduleList.find((value, i, obj) => {
-        //   return component['Module'] === value['Name'];
-        // });
-        // this.componentList[index][comIndex] = module['Components'].map(item => {
-        //   item['id'] = item['Name'];
-        //   item['text'] = item['Description'] ? item['Description'] : item['Name'];
-        //   return item;
-        // });
-        if (this.templatePermissionList.findIndex((value: PermissionModel) => value.Code === permission['Code']) < 0) {
-          permission['id'] = permission['Code'];
-          permission['text'] = permission['Description'];
-          this.templatePermissionList.push(permission);
-        }
-        newPermissionFormGroup.get('Code').patchValue(permission['Code']);
-      });
+      if (itemFormData.Permissions) {
+        itemFormData.Permissions.forEach(permission => {
+          const newPermissionFormGroup = this.makeNewPermissionFormGroup(permission);
+          // (newForm.get('Components') as FormArray).push(newComponentFormGroup);
+          this.getPermissions(index).push(newPermissionFormGroup);
+          const comIndex = this.getComponents(index).length - 1;
+          this.onAddPermissionFormGroup(index, comIndex, newPermissionFormGroup);
+          // const module = this.moduleList.find((value, i, obj) => {
+          //   return component['Module'] === value['Name'];
+          // });
+          // this.componentList[index][comIndex] = module['Components'].map(item => {
+          //   item['id'] = item['Name'];
+          //   item['text'] = item['Description'] ? item['Description'] : item['Name'];
+          //   return item;
+          // });
+          if (this.templatePermissionList.findIndex((value: PermissionModel) => value.Code === permission['Code']) < 0) {
+            permission['id'] = permission['Code'];
+            permission['text'] = permission['Description'];
+            this.templatePermissionList.push(permission);
+          }
+          newPermissionFormGroup.get('Code').patchValue(permission['Code']);
+        });
+      }
 
       // // Resources form load
       // itemFormData.Resources.forEach(resource => {
@@ -296,14 +302,14 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   makeNewComponentFormGroup(data?: { Id: number, Module: string, Component: string }): FormGroup {
     const newForm = this.formBuilder.group({
-      Id_old: [''],
+      // Id_old: [''],
       Id: [''],
       Module: ['', Validators.required],
       Component: ['', Validators.required],
     });
 
     if (data) {
-      data['Id_old'] = data['Id'];
+      // data['Id_old'] = data['Id'];
       newForm.patchValue(data);
     }
     return newForm;
@@ -311,14 +317,14 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   makeNewResourceFormGroup(data?: { Id: number, Module: string, Resource: string }): FormGroup {
     const newForm = this.formBuilder.group({
-      Id_old: [''],
+      // Id_old: [''],
       Id: [''],
       Module: ['', Validators.required],
       Resource: ['', Validators.required],
     });
 
     if (data) {
-      data['Id_old'] = data['Id'];
+      // data['Id_old'] = data['Id'];
       newForm.patchValue(data);
     }
     return newForm;
@@ -326,7 +332,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   makeNewPermissionFormGroup(data?: PermissionModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id_old: [''],
+      // Id_old: [''],
       Id: [''],
       Code: ['', Validators.required],
       Description: ['', Validators.required],
@@ -334,7 +340,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     });
 
     if (data) {
-      data['Id_old'] = data['Id'];
+      // data['Id_old'] = data['Id'];
       newForm.patchValue(data);
     }
     return newForm;
@@ -441,14 +447,14 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   //   });
   // }
 
-  copyComponentFormControlValueToOthers(i: number, ic: number, formControlName: string) {
-    const currentFormControl = this.getComponents(i).controls[ic].get(formControlName);
-    this.getComponents(i).controls.forEach((formItem, index) => {
-      if (index !== i) {
-        formItem.get(formControlName).patchValue(currentFormControl.value);
-      }
-    });
-  }
+  // copyComponentFormControlValueToOthers(i: number, ic: number, formControlName: string) {
+  //   const currentFormControl = this.getComponents(i).controls[ic].get(formControlName);
+  //   this.getComponents(i).controls.forEach((formItem, index) => {
+  //     if (index !== i) {
+  //       formItem.get(formControlName).patchValue(currentFormControl.value);
+  //     }
+  //   });
+  // }
 
 
 

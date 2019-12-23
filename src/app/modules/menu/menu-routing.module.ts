@@ -18,7 +18,7 @@ const routes: Routes = [{
     },
     {
       path: 'manager/list',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: MenuListComponent,
       data: {
         reuse: true,
@@ -26,12 +26,12 @@ const routes: Routes = [{
     },
     {
       path: 'manager/form',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: MenuFormComponent,
     },
     {
       path: 'manager/form/:id',
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
       component: MenuFormComponent,
     },
   ],

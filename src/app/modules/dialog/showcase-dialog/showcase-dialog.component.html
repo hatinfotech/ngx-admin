@@ -3,8 +3,10 @@
     <nb-card-header>{{ title }}</nb-card-header>
     <nb-card-body [innerHTML]="content"></nb-card-body>
     <nb-card-footer>
-      <button *ngFor="let item of actions" nbButton hero [status]="item?.status"
-        (click)="dismiss(); item?.action()">{{ item.label }}</button>
+      <div class="buttons-row">
+        <button *ngFor="let item of actions" nbButton hero [status]="item?.status"
+          (click)="dismiss(); item?.action()">{{ item.label }}</button>
+      </div>
     </nb-card-footer>
   </nb-card>
 </div>

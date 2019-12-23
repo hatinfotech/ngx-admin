@@ -57,13 +57,17 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     super.formLoad(formData, (index, newForm, itemFormData) => {
 
       // Components form load
-      itemFormData.Components.forEach(component => {
-        (newForm.get('Components') as FormArray).push(this.makeNewComponentFormGroup(component));
+      if (itemFormData.Components) itemFormData.Components.forEach(component => {
+        const componentFormGroup = this.makeNewComponentFormGroup(component);
+        (newForm.get('Components') as FormArray).push(componentFormGroup);
+        this.onAddComponentFormGroup(componentFormGroup);
       });
 
       // Resources form load
-      itemFormData.Resources.forEach(resource => {
-        (newForm.get('Resources') as FormArray).push(this.makeNewResourceFormGroup(resource));
+      if (itemFormData.Resources) itemFormData.Resources.forEach(resource => {
+        const resourceFormGroup = this.makeNewResourceFormGroup(resource);
+        (newForm.get('Resources') as FormArray).push(resourceFormGroup);
+
       });
 
       // Direct callback
@@ -106,6 +110,7 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
       Name_old: [''],
       Name: ['', Validators.required],
       Description: [''],
+      Path: [''],
     });
 
     if (data) {
@@ -138,8 +143,8 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
   }
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
-    const currentFormControl = this.array.controls[i].get(formControlName);
-    this.array.controls.forEach((formItem, index) => {
+    const currentFormControl = array.controls[i].get(formControlName);
+    array.controls.forEach((formItem, index) => {
       if (index !== i) {
         formItem.get(formControlName).patchValue(currentFormControl.value);
       }
@@ -147,8 +152,31 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
   }
 
   addComponentFormGroup(formGroupIndex: number) {
-    this.getComponents(formGroupIndex).push(this.makeNewComponentFormGroup());
+    const component = this.makeNewComponentFormGroup();
+    this.getComponents(formGroupIndex).push(component);
+    this.onAddComponentFormGroup(component);
+    // const path = component.get('Path');
+    // const name = component.get('Name');
+    // const description = component.get('Description');
+    // path.valueChanges.subscribe(value => {
+    //   if (!this.isProcessing && this.id.length === 0) {
+    //     name.setValue(value);
+    //     description.setValue(value);
+    //   }
+    // });
     return false;
+  }
+
+  onAddComponentFormGroup(component: FormGroup) {
+    const path = component.get('Path');
+    const name = component.get('Name');
+    const description = component.get('Description');
+    path.valueChanges.subscribe(value => {
+      if (!this.isProcessing) {
+        name.setValue(value);
+        description.setValue(value);
+      }
+    });
   }
 
   removeComponentGroup(formGroupIndex: number, index: number) {

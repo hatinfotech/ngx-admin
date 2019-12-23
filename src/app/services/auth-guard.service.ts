@@ -21,13 +21,14 @@ export class AuthGuardService implements CanActivate {
     return this.authService.isAuthenticatedOrRefresh()
       .pipe(
         tap(authenticated => {
+          const fullPath = '/' + route.pathFromRoot.filter(v => v.routeConfig && v.routeConfig.path).map(v => v.routeConfig.path ? v.routeConfig.path : '').join('/');
           if (!authenticated) {
-            const fullPath = '/' + route.pathFromRoot.filter(v => v.routeConfig && v.routeConfig.path).map(v => v.routeConfig.path ? v.routeConfig.path : '').join('/');
             this.commonService.setPreviousUrl(fullPath);
             this.router.navigate(['auth/login']);
           } else {
-            if (route && route.component && route.component['name']) {
-              this.commonService.checkPermission(route.component['name'], 'VIEW', result => {
+            // if (route && route.component && route.component['name']) {
+            if (route && route.component && fullPath) {
+            this.commonService.checkPermission(fullPath, 'VIEW', result => {
                 if (!result) {
                   // this.commonService.showDiaplog('Permission deny !!!', 'Bạn chưa được phân quyền vào chức năng này !', [
                   //   {

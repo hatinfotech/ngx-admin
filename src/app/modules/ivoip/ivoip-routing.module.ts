@@ -48,7 +48,7 @@ const routes: Routes = [{
     },
     {
       path: 'dashboard',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: IvoipDashboardComponent,
       data: {
         reuse: true,
@@ -56,7 +56,7 @@ const routes: Routes = [{
     },
     {
       path: 'pbxs/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: PbxListComponent,
       data: {
         reuse: true,
@@ -64,17 +64,17 @@ const routes: Routes = [{
     },
     {
       path: 'pbxs/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: PbxFormComponent,
     },
     {
       path: 'pbxs/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: PbxFormComponent,
     },
     {
       path: 'domains/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DomainListComponent,
       data: {
         reuse: true,
@@ -82,17 +82,17 @@ const routes: Routes = [{
     },
     {
       path: 'domains/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DomainFormComponent,
     },
     {
       path: 'domains/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DomainFormComponent,
     },
     {
       path: 'cdrs/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CdrListComponent,
       data: {
         reuse: true,
@@ -100,7 +100,7 @@ const routes: Routes = [{
     },
     {
       path: 'devices/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DeviceListComponent,
       data: {
         reuse: true,
@@ -108,18 +108,18 @@ const routes: Routes = [{
     },
     {
       path: 'devices/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DeviceFormComponent,
     },
     {
       path: 'devices/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DeviceFormComponent,
     },
     // Pstn numbers
     {
       path: 'pstn-numbers/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: PstnNumberListComponent,
       data: {
         reuse: true,
@@ -127,18 +127,18 @@ const routes: Routes = [{
     },
     {
       path: 'pstn-numbers/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: PstnNumberFormComponent,
     },
     {
       path: 'pstn-numbers/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: PstnNumberFormComponent,
     },
     // Gateways
     {
       path: 'gateways/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: GatewayListComponent,
       data: {
         reuse: true,
@@ -146,18 +146,18 @@ const routes: Routes = [{
     },
     {
       path: 'gateways/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: GatewayFormComponent,
     },
     {
       path: 'gateways/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: GatewayFormComponent,
     },
     // Dialplans
     {
       path: 'dialplans/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DialplanListComponent,
       data: {
         reuse: true,
@@ -165,18 +165,18 @@ const routes: Routes = [{
     },
     {
       path: 'dialplans/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DialplanFormComponent,
     },
     {
       path: 'dialplans/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: DialplanFormComponent,
     },
     // Time conditions
     {
       path: 'time-conditions/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: TimeConditionListComponent,
       data: {
         reuse: true,
@@ -184,18 +184,18 @@ const routes: Routes = [{
     },
     {
       path: 'time-conditions/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: TimeConditionFormComponent,
     },
     {
       path: 'time-conditions/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: TimeConditionFormComponent,
     },
     // Call centers
     {
       path: 'call-centers/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallCenterListComponent,
       data: {
         reuse: true,
@@ -203,18 +203,18 @@ const routes: Routes = [{
     },
     {
       path: 'call-centers/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallCenterFormComponent,
     },
     {
       path: 'call-centers/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallCenterFormComponent,
     },
     // Call center agents
     {
       path: 'call-centers/agents/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallCenterAgentListComponent,
       data: {
         reuse: true,
@@ -222,18 +222,18 @@ const routes: Routes = [{
     },
     {
       path: 'call-centers/agents/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallCenterAgentFormComponent,
     },
     {
       path: 'call-centers/agents/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallCenterAgentFormComponent,
     },
     // Call routing
     {
       path: 'call-routes/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallRouteListComponent,
       data: {
         reuse: true,
@@ -241,18 +241,18 @@ const routes: Routes = [{
     },
     {
       path: 'call-routes/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallRouteFormComponent,
     },
     {
       path: 'call-routes/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallRouteFormComponent,
     },
     // IVR Menu
     {
       path: 'ivr-menus/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: IvrMenuListComponent,
       data: {
         reuse: true,
@@ -260,16 +260,17 @@ const routes: Routes = [{
     },
     {
       path: 'ivr-menus/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: IvrMenuFormComponent,
     },
     {
       path: 'ivr-menus/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: IvrMenuFormComponent,
     },
     {
       path: 'extensions/list',
+      canActivate: [AuthGuardService],
       component: ExtensionListComponent,
       data: {
         reuse: true,
@@ -277,23 +278,17 @@ const routes: Routes = [{
     },
     {
       path: 'extensions/form',
+      canActivate: [AuthGuardService],
       component: ExtensionFormComponent,
     },
     {
       path: 'extensions/form/:id',
+      canActivate: [AuthGuardService],
       component: ExtensionFormComponent,
     },
     {
-      path: 'pstn-numbers',
-      canActivate: [AuthGuardService],
-      component: PstnNumbersComponent,
-      data: {
-        reuse: true,
-      },
-    },
-    {
       path: 'call-blocks/list',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallBlockListComponent,
       data: {
         reuse: true,
@@ -301,12 +296,12 @@ const routes: Routes = [{
     },
     {
       path: 'call-blocks/form',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallBlockFormComponent,
     },
     {
       path: 'call-blocks/form/:id',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: CallBlockFormComponent,
     },
   ],

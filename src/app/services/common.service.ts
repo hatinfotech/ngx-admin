@@ -16,9 +16,9 @@ export class CommonService {
   isLoggedIn$ = new BehaviorSubject<boolean>(false);
   private permissionsCache: { [key: string]: boolean };
   private excludeComponents = [
-    'AppComponent',
-    'ECommerceComponent',
-    'DashboardComponent',
+    // 'AppComponent',
+    // 'ECommerceComponent',
+    // 'DashboardComponent',
   ];
   private previousUrl = null;
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
@@ -76,10 +76,11 @@ export class CommonService {
 
   private loadPermissionToCache(callback?: () => void) {
     if (!this.permissionsCache) {
-      this.apiService.get<{ Component: string, Permission: string, State: number }[]>('/user/permissions', { limi: 99999, loadPermissionsForLoggedUser: true }, results => {
+      this.apiService.get<{ Component: string, Path: string, Permission: string, State: number }[]>('/user/permissions', { limi: 99999, loadPermissionsForLoggedUser: true }, results => {
         this.permissionsCache = {};
         results.map(item => {
-          this.permissionsCache[`${item.Component}_${item.Permission}`] = item.State > 0 ? true : false;
+          if (item.Path)
+            this.permissionsCache[`${item.Path}_${item.Permission}`] = item.State > 0 ? true : false;
         });
         if (callback) callback();
       });
@@ -88,10 +89,11 @@ export class CommonService {
     }
   }
 
-  checkPermission(component: string, permission: string, callback: (result: boolean) => void) {
-    if (this.excludeComponents.indexOf(component) < 0) {
+  checkPermission(path: string, permission: string, callback: (result: boolean) => void) {
+    path = path.replace(/^\//g, '').replace(/\:id/g, '').replace(/\/$/g, '');
+    if (this.excludeComponents.indexOf(path) < 0) {
       this.loadPermissionToCache(() => {
-        callback(typeof this.permissionsCache[`${component}_${permission}`] === 'undefined' ? false : this.permissionsCache[`${component}_${permission}`]);
+        callback(typeof this.permissionsCache[`${path}_${permission}`] === 'undefined' ? false : this.permissionsCache[`${path}_${permission}`]);
       });
     }
     return callback(true);
