@@ -43,10 +43,16 @@
                   <input type="text" nbInput fullWidth formControlName="AdminKey" placeholder="Api Key">
                 </div>
               </div> -->
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <div class="form-group">
                   <label class="label">Diễn giải</label>
                   <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Sở hữu</label>
+                  <ngx-select2 formControlName="Owner" [select2Option]="userChooseConfig"></ngx-select2>
                 </div>
               </div>
             </div>

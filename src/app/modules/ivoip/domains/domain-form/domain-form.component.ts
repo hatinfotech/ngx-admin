@@ -21,6 +21,37 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
   apiPath = '/ivoip/domains';
   baseFormUrl = '/ivoip/domains/form';
 
+  // objectValue = '';
+  userChooseConfig = {
+    placeholder: 'Chọn người dùng...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 1,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/user/users', {filter_Name: params['term']});
+        // return environment.api.baseUrl + '/contact/contacts?token='
+        //   + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -58,7 +89,7 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
 
   /** Get form data by id from api */
   getFormData(callback: (data: PbxDomainModel[]) => void) {
-    this.apiService.get<PbxDomainModel[]>(this.apiPath, { id: this.id, includeDomains: true },
+    this.apiService.get<PbxDomainModel[]>(this.apiPath, { id: this.id, includeDomains: true, includeOwner: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
@@ -73,6 +104,7 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
       DomainName: ['', Validators.required],
       // AdminKey: [''],
       Description: [''],
+      Owner: [''],
     });
     if (data) {
       newForm.patchValue(data);

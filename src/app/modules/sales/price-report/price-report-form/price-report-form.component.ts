@@ -77,7 +77,7 @@ export class PriceReportFormComponent extends BaseComponent implements OnInit {
     ajax: {
       url: params => {
         return environment.api.baseUrl + '/contact/contacts?token='
-          + localStorage.getItem('api_token') + '&filter_Name=' + params['term'];
+          + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
       },
       delay: 300,
       processResults: (data: any, params: any) => {

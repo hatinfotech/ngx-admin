@@ -45,10 +45,19 @@ export class IvoipService {
     if (clearCache || this.pbxList.length === 0) {
       this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {
         this.pbxList = list;
+        this.setFirstDomainAsActivated();
         callback(this.pbxList);
       });
     } else {
+      this.setFirstDomainAsActivated();
       callback(this.pbxList);
+    }
+  }
+
+  setFirstDomainAsActivated() {
+    if (this.pbxList && this.pbxList[0] && this.pbxList[0].Domains && this.pbxList[0].Domains[0]) {
+      this.setPbxActiveDomain(this.pbxList[0].Domains[0].DomainUuid);
+      this.setActivePbx(this.pbxList[0].Code);
     }
   }
 
