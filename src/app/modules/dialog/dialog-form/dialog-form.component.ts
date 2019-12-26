@@ -6,7 +6,7 @@ import { FormGroup, AbstractControl, FormControl } from '@angular/forms';
 @Component({
   selector: 'ngx-dialog-form',
   templateUrl: './dialog-form.component.html',
-  styleUrls: ['./dialog-form.component.scss']
+  styleUrls: ['./dialog-form.component.scss'],
 })
 export class DialogFormComponent implements OnInit {
 

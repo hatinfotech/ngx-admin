@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { PbxCdrModel } from '../../../../models/pbx-cdr.model';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { ApiService } from '../../../../services/api.service';
@@ -10,7 +9,6 @@ import { IvoipService } from '../../ivoip-service';
 import { PlayerDialogComponent } from '../../../dialog/player-dialog/player-dialog.component';
 import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
-import { PbxModel } from '../../../../models/pbx.model';
 
 @Component({
   selector: 'ngx-cdr-list',

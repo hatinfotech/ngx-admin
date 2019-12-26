@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { CommonService } from '../../services/common.service';
 import { PbxModel } from '../../models/pbx.model';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
-import { isString } from 'util';
 
 export class PbxDomainSelection {
   id?: string;
@@ -28,7 +26,6 @@ export class IvoipService {
 
   constructor(
     private apiService: ApiService,
-    private commonService: CommonService,
   ) {
     // this.activeDomainUuid = localStorage.getItem('active_pbx_domain');
     // this._activeDomainUuid = this.getPbxActiveDomainUuid();
@@ -77,7 +74,7 @@ export class IvoipService {
 
   getPbxActiveDomainUuid() {
     if (!this.activeDomainUuid) {
-      this.activeDomainUuid = localStorage.getItem('active_pbx_domain')
+      this.activeDomainUuid = localStorage.getItem('active_pbx_domain');
     }
     return this.activeDomainUuid;
     // return localStorage.getItem('active_pbx_domain');

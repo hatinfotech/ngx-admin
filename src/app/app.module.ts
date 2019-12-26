@@ -23,7 +23,7 @@ import {
   NbCardModule,
   NbLayoutModule,
 } from '@nebular/theme';
-import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken, NbAuthOAuth2JWTToken } from '@nebular/auth';
+import { NbAuthModule, NbPasswordAuthStrategy, NbAuthOAuth2JWTToken } from '@nebular/auth';
 import { AuthModule } from './modules/auth/auth.module';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-stratery';

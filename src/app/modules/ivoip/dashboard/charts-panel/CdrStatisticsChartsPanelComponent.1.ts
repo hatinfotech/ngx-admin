@@ -70,8 +70,7 @@ export class CdrStatisticsChartsPanelComponent extends BaseComponent implements 
   changeTab(selectedTab) {
     if (selectedTab.tabTitle === 'Profit') {
       this.profitChart.resizeChart();
-    }
-    else {
+    } else {
       this.ordersChart.resizeChart();
     }
   }

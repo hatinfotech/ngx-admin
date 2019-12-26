@@ -3,16 +3,11 @@ import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { PbxDomainModel } from '../../../../models/pbx-domain.model';
-import { PbxModel } from '../../../../models/pbx.model';
 import { ViewCell } from 'ng2-smart-table';
 import { IvoipService } from '../../ivoip-service';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
-import { PbxCdrModel } from '../../../../models/pbx-cdr.model';
 
 @Component({
   selector: 'ngx-custom-view',

@@ -8,7 +8,7 @@ describe('CallRouteListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CallRouteListComponent ]
+      declarations: [ CallRouteListComponent ],
     })
     .compileComponents();
   }));

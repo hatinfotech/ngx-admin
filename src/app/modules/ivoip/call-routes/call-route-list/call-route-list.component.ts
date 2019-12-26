@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
-import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-call-route-list',

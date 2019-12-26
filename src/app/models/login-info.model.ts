@@ -1,5 +1,3 @@
-import { ModuleModel } from './module.model';
-import { PermissionModel } from './permission.model';
 import { UserModel } from './user.model';
 import { ContactModel } from './contact.model';
 import { FileStoreModel } from './file-store.model';

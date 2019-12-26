@@ -11,7 +11,6 @@ import { ApiService } from '../../../../services/api.service';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
 import { CommonService } from '../../../../services/common.service';
-import { BaseComponent } from '../../../../lib/base-component';
 import { Router } from '@angular/router';
 @Component({
   selector: 'ngx-cdr-statistics-charts-panel',
@@ -68,8 +67,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   changeTab(selectedTab) {
     if (selectedTab.tabTitle === 'Profit') {
       this.profitChart.resizeChart();
-    }
-    else {
+    } else {
       this.ordersChart.resizeChart();
     }
   }

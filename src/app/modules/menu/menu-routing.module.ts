@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { MenuComponent } from './menu.component';
 import { MenuListComponent } from './manager-menu/menu-list/menu-list.component';
 import { MenuFormComponent } from './manager-menu/menu-form/menu-form.component';
-import { AuthGuardService } from '../../services/auth-guard.service';
 
 
 const routes: Routes = [{

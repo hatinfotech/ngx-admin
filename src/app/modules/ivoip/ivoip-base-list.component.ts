@@ -1,14 +1,12 @@
 import { DataManagerListComponent } from '../../lib/data-manager/data-manger-list.component';
-import { DataManagerFormComponent } from '../../lib/data-manager/data-manager-form.component';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
-import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService, PbxDomainSelection } from './ivoip-service';
 import { OnInit } from '@angular/core';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
 import { ReuseComponent } from '../../lib/reuse-component';
-import { Observable } from 'rxjs';
 
 export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 

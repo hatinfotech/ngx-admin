@@ -1,6 +1,5 @@
-import { Component, Input, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
-import { PlayerService } from '../../../@core/utils';
 import { Track } from '../../../@core/utils/player.service';
 
 @Component({
@@ -28,7 +27,7 @@ export class PlayerDialogComponent implements OnInit, OnDestroy {
   currentTrackIndex = 0;
 
   constructor(
-    private playerService: PlayerService,
+    // private playerService: PlayerService,
     protected ref: NbDialogRef<PlayerDialogComponent>) {
     // this.track = this.playerService.random();
 

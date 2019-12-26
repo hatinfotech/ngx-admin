@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { PbxModel } from '../../../../models/pbx.model';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
@@ -32,7 +30,6 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     public commonService: CommonService,
-    // protected ref: NbDialogRef<ShowcaseDialogComponent>,
     public ivoipService: IvoipService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);

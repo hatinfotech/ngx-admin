@@ -1,5 +1,3 @@
-import { PbxDomainModel } from './pbx-domain.model';
-import { PbxDialplanDetailModel } from './pbx-dialplan-detail.model';
 import { PbxIvrMenuOptionModel } from './pbx-ivr-menu-option.model';
 
 export class PbxIvrMenuModel {

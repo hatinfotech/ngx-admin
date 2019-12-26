@@ -8,7 +8,7 @@ describe('ResourceFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResourceFormComponent ]
+      declarations: [ ResourceFormComponent ],
     })
     .compileComponents();
   }));

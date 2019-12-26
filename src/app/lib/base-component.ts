@@ -2,7 +2,6 @@ import { OnInit } from '@angular/core';
 import { CommonService } from '../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
-import { NbDialogService } from '@nebular/theme';
 import { ReuseComponent } from './reuse-component';
 
 export abstract class BaseComponent implements OnInit, ReuseComponent {

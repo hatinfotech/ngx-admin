@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { NbAuthService, NbAuthJWTToken, NbAuthOAuth2Token } from '@nebular/auth';
+import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
 import { environment } from '../../environments/environment';
-import { Observable, throwError, observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { map, retry, catchError } from 'rxjs/operators';
 import { EmployeeModel } from '../models/employee.model';
 import { Router } from '@angular/router';

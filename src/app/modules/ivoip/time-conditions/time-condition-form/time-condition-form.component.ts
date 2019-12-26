@@ -3,14 +3,12 @@ import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { PbxDialplanModel } from '../../../../models/pbx-dialplan.model';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
-import { PbxGatewayModel } from '../../../../models/pbx-gateway.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
 
 @Component({
   selector: 'ngx-time-condition-form',
@@ -150,7 +148,7 @@ export class TimeConditionFormComponent extends IvoipBaseFormComponent<PbxDialpl
     // if (this.ivoipService) {
     //   activeDomain = this.ivoipService.getActiveDomain();
     // }
-    const domain = this.ivoipService ? this.ivoipService.getActiveDomain() : null;
+    // const domain = this.ivoipService ? this.ivoipService.getActiveDomain() : null;
     const newForm = this.formBuilder.group({
       dialplan_uuid: [''],
       // dialplan_type: ['', Validators.required],

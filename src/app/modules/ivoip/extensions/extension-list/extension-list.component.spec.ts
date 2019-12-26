@@ -8,7 +8,7 @@ describe('ExtensionListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExtensionListComponent ]
+      declarations: [ ExtensionListComponent ],
     })
     .compileComponents();
   }));

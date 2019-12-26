@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { ModulesComponent } from './modules.component';
 import { ModuleListComponent } from './module-manager/module-list/module-list.component';
 import { ModuleFormComponent } from './module-manager/module-form/module-form.component';
-import { AuthGuardService } from '../../services/auth-guard.service';
 import { ResourceListComponent } from './resources/resource-list/resource-list.component';
 import { ResourceFormComponent } from './resources/resource-form/resource-form.component';
 

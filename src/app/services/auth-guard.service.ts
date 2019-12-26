@@ -3,8 +3,6 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { NbAuthService } from '@nebular/auth';
 import { tap } from 'rxjs/operators';
 import { CommonService } from './common.service';
-import { ApiService } from './api.service';
-import { BaseComponent } from '../lib/base-component';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +13,6 @@ export class AuthGuardService implements CanActivate {
     private authService: NbAuthService,
     private router: Router,
     private commonService: CommonService,
-    private apiService: ApiService,
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

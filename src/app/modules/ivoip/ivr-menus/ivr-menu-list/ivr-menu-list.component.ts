@@ -7,8 +7,6 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
-import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
-import { PbxIvrMenuOptionModel } from '../../../../models/pbx-ivr-menu-option.model';
 
 @Component({
   selector: 'ngx-ivr-menu-list',

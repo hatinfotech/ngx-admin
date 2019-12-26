@@ -15,7 +15,7 @@ import { PbxGatewayModel } from '../../../../models/pbx-gateway.model';
 @Component({
   selector: 'ngx-dialplan-form',
   templateUrl: './dialplan-form.component.html',
-  styleUrls: ['./dialplan-form.component.scss']
+  styleUrls: ['./dialplan-form.component.scss'],
 })
 export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanModel> implements OnInit {
 

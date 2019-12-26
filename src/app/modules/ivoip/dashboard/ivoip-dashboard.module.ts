@@ -13,7 +13,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { ProfitCardComponent } from './profit-card/profit-card.component';
-import { CdrStatisticsChartsPanelComponent } from "./charts-panel/CdrStatisticsChartsPanelComponent";
+import { CdrStatisticsChartsPanelComponent } from './charts-panel/CdrStatisticsChartsPanelComponent';
 import { OrdersChartComponent } from './charts-panel/charts/orders-chart.component';
 import { ProfitChartComponent } from './charts-panel/charts/profit-chart.component';
 import { ChartPanelHeaderComponent } from './charts-panel/chart-panel-header/chart-panel-header.component';
@@ -54,11 +54,9 @@ import { EarningPieChartComponent } from './earning-card/back-side/earning-pie-c
 import { EarningCardFrontComponent } from './earning-card/front-side/earning-card-front.component';
 import { EarningLiveUpdateChartComponent } from './earning-card/front-side/earning-live-update-chart.component';
 import { ThemeModule } from '../../../@theme/theme.module';
-import { IvoipComponent } from '../ivoip.component';
 import { IvoipDashboardComponent } from './ivoip-dashboard.component';
 import { CustomElementModule } from '../../../lib/custom-element/custom-element.module';
 import { ReuseComponent } from '../../../lib/reuse-component';
-import { IvoipService } from '../ivoip-service';
 
 @NgModule({
   imports: [
@@ -118,7 +116,9 @@ import { IvoipService } from '../ivoip-service';
 export class IvoipDashboardModule implements ReuseComponent {
 
   activePbxDoamin: string;
-  constructor(private ivoipService: IvoipService) {}
+  constructor(
+    // private ivoipService: IvoipService,
+    ) {}
 
   /** User for reuse component */
   onResume() {}

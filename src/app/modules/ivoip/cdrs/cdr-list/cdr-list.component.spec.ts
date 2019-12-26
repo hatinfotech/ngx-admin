@@ -8,7 +8,7 @@ describe('CdrListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CdrListComponent ]
+      declarations: [ CdrListComponent ],
     })
     .compileComponents();
   }));

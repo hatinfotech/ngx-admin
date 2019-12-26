@@ -6,11 +6,7 @@ import { ApiService } from './api.service';
 import { NbDialogService, NbMenuItem } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
-import { UserModel } from '../models/user.model';
 import { LoginInfoModel } from '../models/login-info.model';
-import { CookieService } from 'ngx-cookie-service';
-import { BaseComponent } from '../lib/base-component';
-import { MenuItemModel, NgxMenuItemModel } from '../models/menu-item.model';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +24,7 @@ export class CommonService {
   private previousUrl = null;
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
 
-  private loginInfo: LoginInfoModel;
+  // private loginInfo: LoginInfoModel;
   loginInfoSubject: BehaviorSubject<LoginInfoModel> = new BehaviorSubject<LoginInfoModel>(null);
   loginInfo$ = this.loginInfoSubject.asObservable();
 
@@ -42,7 +38,6 @@ export class CommonService {
     private dialogService: NbDialogService,
     private router: Router,
     private _location: Location,
-    private cookieService: CookieService,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {

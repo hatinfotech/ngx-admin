@@ -8,7 +8,6 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
-import { PbxGatewayModel } from '../../../../models/pbx-gateway.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxIvrMenuOptionModel } from '../../../../models/pbx-ivr-menu-option.model';
 
@@ -191,7 +190,7 @@ export class IvrMenuFormComponent extends IvoipBaseFormComponent<PbxIvrMenuModel
     if (this.ivoipService) {
       activeDomain = this.ivoipService.getActiveDomain();
     }
-    const domain = this.ivoipService ? this.ivoipService.getActiveDomain() : null;
+    // const domain = this.ivoipService ? this.ivoipService.getActiveDomain() : null;
     const newForm = this.formBuilder.group({
       ivr_menu_uuid: [''],
       domain_uuid: [this.ivoipService ? this.ivoipService.getPbxActiveDomainId() : ''],

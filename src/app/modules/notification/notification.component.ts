@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'ngx-notification',
   templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.scss']
+  styleUrls: ['./notification.component.scss'],
 })
 export class NotificationComponent implements OnInit, OnDestroy {
 
@@ -19,8 +19,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     protected activeRoute: ActivatedRoute,
     protected commonService: CommonService,
   ) { }

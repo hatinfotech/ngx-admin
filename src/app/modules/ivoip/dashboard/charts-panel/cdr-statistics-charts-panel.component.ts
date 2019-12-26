@@ -12,7 +12,6 @@ import { ApiService } from '../../../../services/api.service';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
 import { CommonService } from '../../../../services/common.service';
-import { BaseComponent } from '../../../../lib/base-component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,9 +19,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./cdr-statistics-charts-panel.component.scss'],
   templateUrl: './cdr-statistics-charts-panel.component.html',
 })
-export class CdrStatisticsChartsPanelComponent extends BaseComponent implements OnInit, OnDestroy {
-
-  componentName: string = '';
+export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
 
   private alive = true;
 
@@ -50,7 +47,6 @@ export class CdrStatisticsChartsPanelComponent extends BaseComponent implements 
     protected commonService: CommonService,
     protected router: Router,
   ) {
-    super(commonService, router, apiService);
     this.ordersProfitChartService.getOrderProfitChartSummary()
       .pipe(takeWhile(() => this.alive))
       .subscribe((summary) => {
@@ -62,7 +58,6 @@ export class CdrStatisticsChartsPanelComponent extends BaseComponent implements 
   }
 
   ngOnInit() {
-    this.restrict();
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
       this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();

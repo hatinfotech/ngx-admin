@@ -16,7 +16,6 @@ import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
-import { MenuRoutingModule } from '../menu/menu-routing.module';
 import { CallBlockListComponent } from './call-blocks/call-block-list/call-block-list.component';
 import { CallBlockFormComponent } from './call-blocks/call-block-form/call-block-form.component';
 import { ExtensionListComponent, ButtonViewComponent } from './extensions/extension-list/extension-list.component';

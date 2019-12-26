@@ -11,7 +11,7 @@ import { IvoipService } from '../../ivoip-service';
 @Component({
   selector: 'ngx-call-center-list',
   templateUrl: './call-center-list.component.html',
-  styleUrls: ['./call-center-list.component.scss']
+  styleUrls: ['./call-center-list.component.scss'],
 })
 export class CallCenterListComponent  extends IvoipBaseListComponent<PbxCallCenterQueueModel> implements OnInit {
 

@@ -8,7 +8,7 @@ describe('CallBlockFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CallBlockFormComponent ]
+      declarations: [ CallBlockFormComponent ],
     })
     .compileComponents();
   }));

@@ -8,7 +8,7 @@ describe('DomainFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DomainFormComponent ]
+      declarations: [ DomainFormComponent ],
     })
     .compileComponents();
   }));

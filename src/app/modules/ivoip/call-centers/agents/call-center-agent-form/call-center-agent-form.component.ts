@@ -7,7 +7,6 @@ import { ApiService } from '../../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../../services/common.service';
 import { IvoipService } from '../../../ivoip-service';
-import { PbxCallBlockModel } from '../../../../../models/pbx-call-block.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxDomainModel } from '../../../../../models/pbx-domain.model';
 

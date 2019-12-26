@@ -8,9 +8,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
-import { PbxIvrMenuModel } from '../../../../models/pbx-ivr-menu.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PbxIvrMenuOptionModel } from '../../../../models/pbx-ivr-menu-option.model';
 import { PbxCallCenterAgentModel } from '../../../../models/pbx-center-agent.model';
 
 @Component({
@@ -201,7 +199,7 @@ export class CallCenterFormComponent extends IvoipBaseFormComponent<PbxCallCente
     if (this.ivoipService) {
       activeDomain = this.ivoipService.getActiveDomain();
     }
-    const domain = this.ivoipService ? this.ivoipService.getActiveDomain() : null;
+    // const domain = this.ivoipService ? this.ivoipService.getActiveDomain() : null;
     const newForm = this.formBuilder.group({
       call_center_queue_uuid: [''],
       domain_uuid: [this.ivoipService ? this.ivoipService.getPbxActiveDomainId() : '', Validators.required],

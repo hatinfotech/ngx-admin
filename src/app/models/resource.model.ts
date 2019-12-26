@@ -1,4 +1,3 @@
-import { ResourcePermissionModel } from './resource-permission.model';
 import { PermissionModel } from './permission.model';
 
 export class ResourceModel {

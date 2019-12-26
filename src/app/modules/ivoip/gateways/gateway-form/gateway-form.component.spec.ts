@@ -8,7 +8,7 @@ describe('GatewayFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GatewayFormComponent ]
+      declarations: [ GatewayFormComponent ],
     })
     .compileComponents();
   }));

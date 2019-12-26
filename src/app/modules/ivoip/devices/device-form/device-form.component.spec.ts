@@ -8,7 +8,7 @@ describe('DeviceFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeviceFormComponent ]
+      declarations: [ DeviceFormComponent ],
     })
     .compileComponents();
   }));

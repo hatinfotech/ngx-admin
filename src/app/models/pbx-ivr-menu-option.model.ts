@@ -1,4 +1,3 @@
-import { PbxDomainModel } from './pbx-domain.model';
 
 export class PbxIvrMenuOptionModel {
 

@@ -8,7 +8,7 @@ describe('GatewayListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GatewayListComponent ]
+      declarations: [ GatewayListComponent ],
     })
     .compileComponents();
   }));

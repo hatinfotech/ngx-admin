@@ -8,7 +8,7 @@ describe('CallCenterAgentListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CallCenterAgentListComponent ]
+      declarations: [ CallCenterAgentListComponent ],
     })
     .compileComponents();
   }));

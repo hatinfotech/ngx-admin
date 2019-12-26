@@ -1,11 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CdrComponent } from './cdr/cdr.component';
 import { IvoipComponent } from './ivoip.component';
-import { DevicesComponent } from './devices/devices.component';
-import { ExtensionsComponent } from './extensions/extensions.component';
-import { PstnNumbersComponent } from './pstn-numbers/pstn-numbers.component';
-import { CallBlocksComponent } from './call-blocks/call-blocks.component';
 import { AuthGuardService } from '../../services/auth-guard.service';
 import { IvoipDashboardComponent } from './dashboard/ivoip-dashboard.component';
 import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';

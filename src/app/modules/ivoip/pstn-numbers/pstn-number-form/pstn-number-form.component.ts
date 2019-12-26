@@ -6,7 +6,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
+import { IvoipService } from '../../ivoip-service';
 import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -12,7 +12,7 @@ import { PbxModel } from '../../../../models/pbx.model';
 @Component({
   selector: 'ngx-domain-form',
   templateUrl: './domain-form.component.html',
-  styleUrls: ['./domain-form.component.scss']
+  styleUrls: ['./domain-form.component.scss'],
 })
 export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel> implements OnInit {
 

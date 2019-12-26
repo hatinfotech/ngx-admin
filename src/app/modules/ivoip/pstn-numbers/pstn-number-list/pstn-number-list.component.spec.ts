@@ -8,7 +8,7 @@ describe('PstnNumberListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PstnNumberListComponent ]
+      declarations: [ PstnNumberListComponent ],
     })
     .compileComponents();
   }));

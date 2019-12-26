@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -12,7 +11,7 @@ import { PbxModel } from '../../../../models/pbx.model';
 @Component({
   selector: 'ngx-domain-list',
   templateUrl: './domain-list.component.html',
-  styleUrls: ['./domain-list.component.scss']
+  styleUrls: ['./domain-list.component.scss'],
 })
 export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> implements OnInit {
 

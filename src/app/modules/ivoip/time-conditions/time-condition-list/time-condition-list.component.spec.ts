@@ -8,7 +8,7 @@ describe('TimeConditionListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimeConditionListComponent ]
+      declarations: [ TimeConditionListComponent ],
     })
     .compileComponents();
   }));

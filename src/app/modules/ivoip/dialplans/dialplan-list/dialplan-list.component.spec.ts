@@ -8,7 +8,7 @@ describe('DialplanListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DialplanListComponent ]
+      declarations: [ DialplanListComponent ],
     })
     .compileComponents();
   }));

@@ -8,7 +8,7 @@ describe('IvrMenuListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IvrMenuListComponent ]
+      declarations: [ IvrMenuListComponent ],
     })
     .compileComponents();
   }));

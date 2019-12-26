@@ -3,14 +3,12 @@ import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PbxDeviceVendorModel } from '../../../../models/pbx-device-vendor.model';
-import { PbxDeviceModel } from '../../../../models/pbx-device.model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { PbxFollowMeDestinationModel } from '../../../../models/pbx-follow_me_destination.model';
 
@@ -204,7 +202,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
             label: 'Số lượng cần tạo',
             placeholder: 'Số lượng cần tạo',
             type: 'text',
-          }
+          },
         ],
         actions: [
           {

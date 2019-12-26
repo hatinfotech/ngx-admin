@@ -200,7 +200,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
             label: 'Số lượng cần tạo',
             placeholder: 'Số lượng cần tạo',
             type: 'text',
-          }
+          },
         ],
         actions: [
           {

@@ -1,18 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { PbxDeviceModel } from '../../../../models/pbx-device.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService, NbIconLibraries } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
-import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 
 @Component({
   selector: 'ngx-device-list',
   templateUrl: './device-list.component.html',
-  styleUrls: ['./device-list.component.scss']
+  styleUrls: ['./device-list.component.scss'],
 })
 export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> implements OnInit {
 

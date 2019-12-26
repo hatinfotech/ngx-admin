@@ -6,15 +6,13 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { ComponentModel } from '../../../../models/component.model';
-import { ResourcePermissionModel } from '../../../../models/resource-permission.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PermissionModel } from '../../../../models/permission.model';
 
 @Component({
   selector: 'ngx-resource-form',
   templateUrl: './resource-form.component.html',
-  styleUrls: ['./resource-form.component.scss']
+  styleUrls: ['./resource-form.component.scss'],
 })
 export class ResourceFormComponent extends DataManagerFormComponent<ResourceModel> implements OnInit {
 

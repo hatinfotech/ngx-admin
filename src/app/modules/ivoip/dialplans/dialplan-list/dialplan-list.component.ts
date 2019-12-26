@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, OnChanges, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { PbxDialplanModel } from '../../../../models/pbx-dialplan.model';
 import { ApiService } from '../../../../services/api.service';

@@ -5,10 +5,8 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
-import { MENU_ITEMS } from './app-menu';
 import { NbIconLibraries, NbMenuItem } from '@nebular/theme';
 import { CommonService } from './services/common.service';
-import { NgxMenuItemModel } from './models/menu-item.model';
 
 @Component({
   selector: 'ngx-app',
