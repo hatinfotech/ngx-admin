@@ -6,7 +6,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { MENU_ITEMS } from './app-menu';
-import { NbIconLibraries } from '@nebular/theme';
+import { NbIconLibraries, NbMenuItem } from '@nebular/theme';
 import { CommonService } from './services/common.service';
 import { NgxMenuItemModel } from './models/menu-item.model';
 
@@ -23,8 +23,14 @@ import { NgxMenuItemModel } from './models/menu-item.model';
 })
 export class AppComponent implements OnInit {
 
-  menu = MENU_ITEMS;
-  // menu: any;
+  // menu = MENU_ITEMS;
+  menu: NbMenuItem[] = [
+    {
+      title: 'Loading',
+      icon: 'monitor-outline',
+      link: '/loading',
+    },
+  ];
   // menu: NgxMenuItemModel[];
   // distributeFileStoreCookieRequest: string;
 

@@ -101,8 +101,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.commonService.loginInfo$.subscribe(loginInfo => {
       if (loginInfo) {
-        this.user['picture'] = loginInfo.contact.Avatar;
-        this.user['name'] = loginInfo.contact.Name;
+        this.user['picture'] = loginInfo.user.Avatar;
+        this.user['name'] = loginInfo.user.Name;
       }
     });
     // this.sidebarService.onCollapse().subscribe(info => {

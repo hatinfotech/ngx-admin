@@ -78,6 +78,7 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
       Code_old: [''],
       Code: [''],
       Username: ['', Validators.required],
+      Password: [''],
       Name: ['', Validators.required],
       Phone: [''],
       Email: [''],

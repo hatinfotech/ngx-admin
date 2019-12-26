@@ -1,70 +1,79 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div formArrayName="array">
-      <div *ngFor="let formItem of array.controls; let i = index">
-        <nb-card class="small-header">
-          <nb-card-header>
-            <nav>
-              Cập nhật thông tin người dùng
-              <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;" title="Xoá">
-                <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
-              </button>
-              <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;" title="Tải lại">
-                <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
-              </button>
-              <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo" style="float: right;" title="Hoàn tác">
-                <nb-icon pack="eva" icon="undo-outline"></nb-icon>
-              </button>
-              <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
-                <nb-icon pack="eva" icon="arrow-back"></nb-icon>
-              </button>
-            </nav>
-          </nb-card-header>
-          <nb-card-body>
-            <div [formGroup]="formItem">
-              <div class="row">
-                <input type="hidden" formControlName="Code_old">
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label class="label">Mã người dùng</label>
-                    <input type="text" readonly nbInput fullWidth formControlName="Code" placeholder="Mã người dùng">
-                  </div>
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật thông tin người dùng
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Code_old">
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label">Mã người dùng</label>
+                  <input type="text" readonly nbInput fullWidth formControlName="Code" placeholder="Mã người dùng">
                 </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label class="label">Tên</label>
-                    <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
-                  </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label">Tên</label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
                 </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label class="label">Tên đăng nhập</label>
-                    <input type="text" nbInput fullWidth formControlName="Username" placeholder="Tên đăng nhập">
-                  </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label">Tên đăng nhập</label>
+                  <input type="text" nbInput fullWidth formControlName="Username" placeholder="Tên đăng nhập">
                 </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label class="label">Số điện thoại</label>
-                    <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Số điện thoại">
-                  </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label">Số điện thoại</label>
+                  <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Số điện thoại">
                 </div>
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label class="label">Thuộc nhóm</label>
-                    <ngx-select2 [data]="groupList" formControlName="Groups" [select2Option]="select2OptionForGroups">
-                      </ngx-select2>
-                  </div>
+              </div>
+              <div class="col-sm-9">
+                <div class="form-group">
+                  <label class="label">Thuộc nhóm</label>
+                  <ngx-select2 [data]="groupList" formControlName="Groups" [select2Option]="select2OptionForGroups">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Password'), 'warning')">
+                  <label class="label"><span class="valid">Mật khẩu (*)</span><span class="invalid">Mật khẩu</span></label>
+                  <input type="password" nbInput fullWidth formControlName="Password" placeholder="Mật khẩu" autocomplete="new-password">
                 </div>
               </div>
             </div>
-          </nb-card-body>
-          <nb-card-footer>
-            <div class="buttons-row" style="text-align: right;">
-              <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm người dùng</button>
-              <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button>
-              <button nbButton status="success" [disabled]="!form.valid" hero>Lưu thông tin người dùng</button>
-            </div>
-          </nb-card-footer>
-        </nb-card>
-      </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm người dùng</button>
+            <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button>
+            <button nbButton status="success" [disabled]="!form.valid" hero>Lưu thông tin người dùng</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
     </div>
-  </form>
+  </div>
+</form>

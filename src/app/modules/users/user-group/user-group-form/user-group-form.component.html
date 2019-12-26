@@ -28,7 +28,8 @@
               <input type="hidden" formControlName="Code_old">
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                  <label class="label"><span class="valid">Mã nhóm (*)</span><span class="invalid">Mã nhóm là bắt buộc (*)</span></label>
+                  <label class="label"><span class="valid">Mã nhóm (*)</span><span class="invalid">Mã nhóm là bắt buộc
+                      (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Code" placeholder="Mã nhóm">
                 </div>
               </div>
@@ -36,12 +37,13 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Parent'), 'warning')">
                   <label class="label"><span class="valid">Nhóm cha (*)</span></label>
                   <ngx-select2 [data]="parentList" formControlName="Parent" [select2Option]="select2OptionForParent">
-                    </ngx-select2>
+                  </ngx-select2>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc (*)</span></label>
+                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
+                      (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
                 </div>
               </div>
@@ -51,13 +53,13 @@
                   <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
                 </div>
               </div>
-              <div class="col-sm-12">
-                  <div class="form-group">
-                    <label class="label">Người dùng thuộc nhóm</label>
-                    <ngx-select2 [data]="userList" formControlName="Users" [select2Option]="select2OptionForUsers">
-                      </ngx-select2>
-                  </div>
+              <div class="col-sm-9">
+                <div class="form-group">
+                  <label class="label">Người dùng thuộc nhóm</label>
+                  <ngx-select2 [data]="userList" formControlName="Users" [select2Option]="select2OptionForUsers">
+                  </ngx-select2>
                 </div>
+              </div>
             </div>
           </div>
         </nb-card-body>
