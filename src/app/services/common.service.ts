@@ -3,9 +3,14 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
-import { NbDialogService } from '@nebular/theme';
+import { NbDialogService, NbMenuItem } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
+import { UserModel } from '../models/user.model';
+import { LoginInfoModel } from '../models/login-info.model';
+import { CookieService } from 'ngx-cookie-service';
+import { BaseComponent } from '../lib/base-component';
+import { MenuItemModel, NgxMenuItemModel } from '../models/menu-item.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,18 +28,52 @@ export class CommonService {
   private previousUrl = null;
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
 
+  private loginInfo: LoginInfoModel;
+  loginInfoSubject: BehaviorSubject<LoginInfoModel> = new BehaviorSubject<LoginInfoModel>(null);
+  loginInfo$ = this.loginInfoSubject.asObservable();
+
+  distributeFileStoreCookieRequestSubject: BehaviorSubject<string> = new BehaviorSubject<string>('assets/images/nick.png');
+  distributeFileStoreCookieRequest$ = this.distributeFileStoreCookieRequestSubject.asObservable();
+
+
   constructor(
     private authService: NbAuthService,
     private apiService: ApiService,
     private dialogService: NbDialogService,
     private router: Router,
     private _location: Location,
+    private cookieService: CookieService,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
     //     this.loadPermissionToCache();
     //   }
     // });
+
+    this.authService.onAuthenticationChange().subscribe(state => {
+      console.info('Authentication change with state ' + state);
+      if (state) {
+        // Get login info
+        this.apiService.get<LoginInfoModel>('/user/login/info', {}, loginInfo => {
+          this.loginInfoSubject.next(loginInfo);
+          // this.cookieService.set(loginInfo.distributeFileStore.name, loginInfo.distributeFileStore.value, null, '/', loginInfo.distributeFileStore.domain.replace(/https?:\/\/\./g, ''));
+          // this.cookieService.set(loginInfo.distributeFileStore.name, loginInfo.distributeFileStore.value, null, null, loginInfo.distributeFileStore.domain);
+          if (loginInfo.distribution && loginInfo.distribution.cookie && loginInfo.distribution.fileStores) {
+            const fileStoreCode = Object.keys(loginInfo.distribution.fileStores).pop();
+            const firstFileStore = loginInfo.distribution.fileStores[fileStoreCode];
+            this.distributeFileStoreCookieRequestSubject.next(firstFileStore.requestCookieUrl + '&time=' + (Date.now()));
+          }
+        });
+      } else {
+        this.loginInfoSubject.next(new LoginInfoModel());
+      }
+    });
+  }
+
+  getMenuTree(callback: (menuTree: NbMenuItem[]) => void) {
+    this.apiService.get<NbMenuItem[]>('/menu/menu-items', { limit: 999999, restrictPms: true, isTree: true, includeUsers: true, select: 'id=>Code,title,link=>Link=>Title,icon=>Icon,children=>Children' }, list => {
+      callback(list);
+    });
   }
 
   get location() {
@@ -75,12 +114,12 @@ export class CommonService {
   // }
 
   private loadPermissionToCache(callback?: () => void) {
-    if (!this.permissionsCache) {
+    if (!this.permissionsCache || Object.keys(this.permissionsCache).length === 0) {
       this.apiService.get<{ Component: string, Path: string, Permission: string, State: number }[]>('/user/permissions', { limi: 99999, loadPermissionsForLoggedUser: true }, results => {
         this.permissionsCache = {};
         results.map(item => {
-          if (item.Path)
-            this.permissionsCache[`${item.Path}_${item.Permission}`] = item.State > 0 ? true : false;
+          if (item.Component)
+            this.permissionsCache[`${item.Component}_${item.Permission}`] = item.State > 0 ? true : false;
         });
         if (callback) callback();
       });
@@ -89,11 +128,12 @@ export class CommonService {
     }
   }
 
-  checkPermission(path: string, permission: string, callback: (result: boolean) => void) {
-    path = path.replace(/^\//g, '').replace(/\:id/g, '').replace(/\/$/g, '');
-    if (this.excludeComponents.indexOf(path) < 0) {
+  checkPermission(componentName: string, permission: string, callback: (result: boolean) => void) {
+    // path = path.replace(/^\//g, '').replace(/\:id/g, '').replace(/\/$/g, '');
+    // const componentName = component['componentName'];
+    if (this.excludeComponents.indexOf(componentName) < 0) {
       this.loadPermissionToCache(() => {
-        callback(typeof this.permissionsCache[`${path}_${permission}`] === 'undefined' ? false : this.permissionsCache[`${path}_${permission}`]);
+        callback(typeof this.permissionsCache[`${componentName}_${permission}`] === 'undefined' ? false : this.permissionsCache[`${componentName}_${permission}`]);
       });
     }
     return callback(true);

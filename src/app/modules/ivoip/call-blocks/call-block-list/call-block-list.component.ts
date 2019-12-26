@@ -14,6 +14,7 @@ import { IvoipService } from '../../ivoip-service';
 })
 export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockModel> implements OnInit {
 
+  componentName: string = 'CallBlockListComponent';
   formPath = '/ivoip/call-blocks/form';
   apiPath = '/ivoip/call-blocks';
   idKey = 'call_block_uuid';
@@ -96,6 +97,7 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

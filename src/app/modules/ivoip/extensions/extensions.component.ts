@@ -14,6 +14,7 @@ import { PbxExtensionModel } from '../../../models/pbx-extension.model';
 })
 export class ExtensionsComponent extends DataManagerListComponent<PbxExtensionModel> implements OnInit {
 
+  componentName = 'ExtensionsComponent';
   formPath = '';
   apiPath = '/ivoip/extensions';
   idKey = 'Id';
@@ -104,7 +105,7 @@ export class ExtensionsComponent extends DataManagerListComponent<PbxExtensionMo
   // domainList: { id: string, text: string }[];
 
   ngOnInit() {
-
+    this.restrict();
     // Get data from api
     // this.apiService.get<CdrModel[]>('/ivoip/cdr', { limit: 999999999, offset: 0 },
     //   priceReport => this.source.load(priceReport), e => {

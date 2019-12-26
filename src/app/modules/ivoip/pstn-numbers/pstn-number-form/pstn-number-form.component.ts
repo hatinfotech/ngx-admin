@@ -17,6 +17,7 @@ import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 })
 export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumberModel> implements OnInit {
 
+  componentName = 'PstnNumberFormComponent';
   idKey = 'destination_uuid';
   apiPath = '/ivoip/pstn-numbers';
   baseFormUrl = '/ivoip/pstn-numbers/form';
@@ -83,7 +84,7 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
   }
 
   ngOnInit() {
-
+    this.restrict();
     // Load destination list
     this.apiService.get<{ label: string, name: string, result: { data: { select_label: string, select_value: string }[] } }[]>(
       '/ivoip/dialplan-actions',

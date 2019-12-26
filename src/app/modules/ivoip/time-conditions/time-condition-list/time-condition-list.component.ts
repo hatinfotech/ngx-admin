@@ -16,6 +16,7 @@ import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.m
 })
 export class TimeConditionListComponent extends IvoipBaseListComponent<PbxDialplanModel> implements OnInit {
 
+  componentName = 'TimeConditionListComponent';
   formPath = '/ivoip/time-conditions/form';
   apiPath = '/ivoip/time-conditions';
   idKey = 'dialplan_uuid';
@@ -96,6 +97,7 @@ export class TimeConditionListComponent extends IvoipBaseListComponent<PbxDialpl
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

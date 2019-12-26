@@ -13,6 +13,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 })
 export class UserListComponent extends DataManagerListComponent<UserModel> implements OnInit {
 
+  componentName: string = 'UserListComponent';
   formPath: string = 'users/user-manager/form';
   apiPath: string = '/user/users';
   idKey: string = 'Code';
@@ -84,7 +85,7 @@ export class UserListComponent extends DataManagerListComponent<UserModel> imple
   // source: LocalDataSource = new LocalDataSource();
 
   ngOnInit() {
-
+    this.restrict();
     super.ngOnInit();
 
     // // Load user list

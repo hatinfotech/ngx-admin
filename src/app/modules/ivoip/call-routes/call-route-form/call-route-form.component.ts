@@ -21,6 +21,7 @@ import { PbxFollowMeDestinationModel } from '../../../../models/pbx-follow_me_de
 })
 export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionModel> implements OnInit {
 
+  componentName = 'CallRouteFormComponent';
   idKey = 'extension_uuid';
   apiPath = '/ivoip/call-routes';
   baseFormUrl = '/ivoip/call-routes/form';
@@ -70,6 +71,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   }
 
   ngOnInit() {
+    this.restrict();
     // this.ivoipService.getActiveDomainList(domainList => {
     //   this.privateDmainList = domainList;
     //   this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {

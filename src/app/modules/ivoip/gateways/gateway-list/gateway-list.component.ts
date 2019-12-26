@@ -14,6 +14,7 @@ import { IvoipService } from '../../ivoip-service';
 })
 export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel> implements OnInit {
 
+  componentName = 'GatewayListComponent';
   formPath = '/ivoip/gateways/form';
   apiPath = '/ivoip/gateways';
   idKey = 'gateway_uuid';
@@ -97,6 +98,7 @@ export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

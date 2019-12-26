@@ -9,9 +9,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { ResourceListComponent } from './resources/resource-list/resource-list.component';
+import { ResourceFormComponent } from './resources/resource-form/resource-form.component';
 
 @NgModule({
-  declarations: [ModulesComponent, ModuleFormComponent, ModuleListComponent],
+  declarations: [ModulesComponent, ModuleFormComponent, ModuleListComponent, ResourceListComponent, ResourceFormComponent],
   imports: [
     CommonModule,
     NbRouteTabsetModule,

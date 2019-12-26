@@ -19,6 +19,7 @@ import { PbxIvrMenuOptionModel } from '../../../../models/pbx-ivr-menu-option.mo
 })
 export class IvrMenuFormComponent extends IvoipBaseFormComponent<PbxIvrMenuModel> implements OnInit {
 
+  componentName = 'IvrMenuFormComponent';
   idKey = 'ivr_menu_uuid';
   apiPath = '/ivoip/ivr-menus';
   baseFormUrl = '/ivoip/ivr-menus/form';
@@ -108,7 +109,7 @@ export class IvrMenuFormComponent extends IvoipBaseFormComponent<PbxIvrMenuModel
   }
 
   ngOnInit() {
-
+    this.restrict();
 
     this.apiService.get<{ [id: string]: { id: string, text: string }[] }>('/ivoip/sounds', { domainId: this.ivoipService.getPbxActiveDomainUuid() }, soundList => {
       this.soundList = [

@@ -5,7 +5,7 @@ import { UserGroupModel } from '../../../models/user-group.model';
 import { MenuItemModel } from '../../../models/menu-item.model';
 import { TreeComponent, ITreeState } from 'angular-tree-component';
 import { PermissionEntryModel } from '../../../models/permission-entry.model';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
 import { NbDialogService } from '@nebular/theme';
@@ -30,6 +30,10 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
   currentMenuNode: { id: string, name: string, type: string };
 
   permissionForm: FormGroup;
+  permissionData: any = {
+    menuItem: {},
+    resources: {},
+  };
 
   /** Destroy monitoring */
   destroy$: Subject<null> = new Subject<null>();
@@ -43,9 +47,40 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
     private dialogService: NbDialogService,
   ) {
 
-    this.permissionForm = this.formBuilder.group({
-      array: this.formBuilder.array([]),
+    // this.permissionForm = this.formBuilder.group({
+    //   menuItem: this.formBuilder.group({
+    //     array: this.formBuilder.array([]),
+    //   }),
+    //   resources: this.formBuilder.array([]),
+    // });
+    this.permissionForm = new FormGroup({
+      menuItem: this.formBuilder.array([]),
+      resources: this.formBuilder.group({}),
     });
+    // this.permissionForm.addControl('menuItem', this.formBuilder.group({}));
+    // (this.permissionForm.get('menuItem') as FormGroup).addControl('VIEW', this.formBuilder.control(false));
+    // (this.permissionForm.get('menuItem') as FormGroup).addControl('CREATE', this.formBuilder.control(false));
+    // (this.permissionForm.get('menuItem') as FormGroup).addControl('UPDATE', this.formBuilder.control(false));
+    // (this.permissionForm.get('menuItem') as FormGroup).addControl('DELETE', this.formBuilder.control(false));
+    // this.permissionForm.addControl('resources', this.formBuilder.group({}));
+
+    // (this.permissionForm.get('resources') as FormGroup).addControl('Ivoip_Resource_Pstns', this.formBuilder.group({}));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Pstns') as FormGroup).addControl('VIEW', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Pstns') as FormGroup).addControl('CREATE', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Pstns') as FormGroup).addControl('UPDATE', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Pstns') as FormGroup).addControl('DELETE', this.formBuilder.control(false));
+
+    // (this.permissionForm.get('resources') as FormGroup).addControl('Ivoip_Resource_Domains', this.formBuilder.group({}));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Domains') as FormGroup).addControl('VIEW', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Domains') as FormGroup).addControl('CREATE', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Domains') as FormGroup).addControl('UPDATE', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Domains') as FormGroup).addControl('DELETE', this.formBuilder.control(false));
+
+    // (this.permissionForm.get('resources') as FormGroup).addControl('Ivoip_Resource_Pbxs', this.formBuilder.group({}));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Pbxs') as FormGroup).addControl('VIEW', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Pbxs') as FormGroup).addControl('CREATE', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Pbxs') as FormGroup).addControl('UPDATE', this.formBuilder.control(false));
+    // (this.permissionForm.get('resources.Ivoip_Resource_Pbxs') as FormGroup).addControl('DELETE', this.formBuilder.control(false));
 
     this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 999999, includeUsers: true, selectUsers: 'id=>Code,name=>Name,type=>Type', isTree: true, select: 'id=>Code,name=>Description,children=>Children,type=>Type' },
       list => {
@@ -61,12 +96,64 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
+  getObjectKeys(obj: any) {
+    return Object.keys(obj);
+  }
+
+  getAsFormArray(form: AbstractControl) {
+    return form as FormArray;
+  }
+
+  getAsFormGroup(form: AbstractControl) {
+    return form as FormGroup;
+  }
+
+  patchPermissionFormData(data: any) {
+    this.permissionForm = new FormGroup({});
+    this.permissionForm.addControl('menuItem', this.formBuilder.array([]));
+    this.permissionForm.addControl('resources', this.formBuilder.group({}));
+
+    const menuItemPmsFormArray = (this.permissionForm.get('menuItem') as FormArray);
+    const resourcesPmsFormGroup = (this.permissionForm.get('resources') as FormGroup);
+
+    data['menuItem'].forEach(pms => {
+      menuItemPmsFormArray.push(this.formBuilder.group({
+        Permission: [pms['Permission']],
+        Description: [pms['Description']],
+        Status: [pms['Status']],
+      }));
+    });
+
+    Object.keys(data['resources']).forEach(resourceName => {
+      const resourcePms = data['resources'][resourceName];
+      const pmsFormArray = this.formBuilder.array([]);
+
+      resourcePms['Permissions'].forEach(pms => {
+        pmsFormArray.push(this.formBuilder.group({
+          Permission: [pms['Permission']],
+          Description: [pms['Description']],
+          Status: [pms['Status']],
+        }));
+      });
+
+      resourcesPmsFormGroup.addControl(resourceName, pmsFormArray);
+    });
+  }
+
   get allowResetPermission() {
     return this.currentUserNode && this.currentUserNode.id && this.currentMenuNode && this.currentMenuNode.id;
   }
 
   get permissionFormArray(): FormArray {
-    return this.permissionForm.get('array') as FormArray;
+    return this.permissionForm.get('menuItem.array') as FormArray;
+  }
+
+  get resourcesPermissionFormArray(): FormArray {
+    return this.permissionForm.get('resources') as FormArray;
+  }
+
+  getResourcePermissionFormArray(resource: number): FormArray {
+    return this.permissionForm.get('resources[' + resource + ']') as FormArray;
   }
 
   treeFilter(text: string, tree: TreeComponent) {
@@ -123,23 +210,46 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
         user = this.currentUserNode.id;
       }
 
-      this.apiService.get<PermissionEntryModel[]>('/user/permissions', {
-        Group: group,
-        User: user,
-        MenuItem: menuItem,
+      this.apiService.get<{ [key: string]: any }>('/user/permissions', {
+        group: group,
+        user: user,
+        menuItem: menuItem,
       }, (result) => {
         console.info(result);
-        this.permissionFormArray.clear();
-        result.forEach(element => {
-          const newPermissionFormItem = this.formBuilder.group({
-            Permission: '',
-            Description: '',
-            Status: '',
-          });
+        this.permissionData = result;
+        this.patchPermissionFormData(result);
+        // this.permissionFormArray.clear();
+        // const menuItemPermission = (result.menuItem as []);
+        // const resourcesPermission = (result.resources as { [key: string]: [] });
+        // menuItemPermission.forEach(element => {
+        //   const newPermissionFormItem = this.formBuilder.group({
+        //     Permission: '',
+        //     Description: '',
+        //     Status: '',
+        //   });
 
-          newPermissionFormItem.patchValue(element);
-          this.permissionFormArray.push(newPermissionFormItem);
-        });
+        //   newPermissionFormItem.patchValue(element);
+        //   this.permissionFormArray.push(newPermissionFormItem);
+        // });
+
+        // Object.keys(resourcesPermission).forEach(resourceName => {
+        //   const resource = resourcesPermission[resourceName];
+        //   const formGroup = {};
+        //   const formArray = formGroup[resourceName] = this.formBuilder.array([]);
+        //   resource.forEach(pms => {
+        //     const newResourcePermissionFormItem = this.formBuilder.group({
+        //       Permission: '',
+        //       Description: '',
+        //       Status: '',
+        //     });
+        //     newResourcePermissionFormItem.patchValue(pms);
+        //     formArray.push(newResourcePermissionFormItem);
+        //   });
+        //   const resourceForm = this.formBuilder.group(formGroup);
+        //   this.resourcesPermissionFormArray.clear();
+        //   this.resourcesPermissionFormArray.push(resourceForm);
+        // });
+
       });
     }
   }
@@ -183,7 +293,7 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
 
   protected updatePermission(): void {
 
-    const permissionsData = this.permissionFormArray.value;
+    const permissionsData = this.permissionForm.value;
 
     if (this.currentUserNode && this.currentUserNode.id && this.currentMenuNode && this.currentMenuNode.id) {
 
@@ -206,16 +316,16 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
         user = this.currentUserNode.id;
       }
 
-      permissionsData.forEach(element => {
-        console.info(`Grant ${element.Code} (${element.Status}) on ${menuItem} to ${user || group}`);
-      });
+      // permissionsData.forEach(element => {
+      //   console.info(`Grant ${element.Code} (${element.Status}) on ${menuItem} to ${user || group}`);
+      // });
 
       if ((group || user) && menuItem && permissionsData) {
-        this.apiService.post<{ Group: string, User: string, MenuItem: string, Permissions: PermissionEntryModel[] }>('/user/permissions', {}, {
-          Group: group,
-          User: user,
-          MenuItem: menuItem,
-          Permissions: permissionsData,
+        this.apiService.post<{ group: string, menuItem: string, permissions: PermissionEntryModel[] }>('/user/permissions', {}, {
+          group: group,
+          // user: user,
+          menuItem: menuItem,
+          permissions: permissionsData,
         }, (result) => {
           this.allowUpdatePermission = false;
         });

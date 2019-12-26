@@ -13,13 +13,7 @@ import { BaseComponent } from '../../../../lib/base-component';
 })
 export class PriceReportListComponent extends BaseComponent implements OnInit {
 
-  constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
-  ) {
-    super(commonService, router);
-  }
+  componentName = 'PriceReportListComponent';
 
   editing = {};
   rows = [];
@@ -82,8 +76,16 @@ export class PriceReportListComponent extends BaseComponent implements OnInit {
 
   source: LocalDataSource = new LocalDataSource();
 
+  constructor(
+    protected apiService: ApiService,
+    protected router: Router,
+    protected commonService: CommonService,
+  ) {
+    super(commonService, router, apiService);
+  }
 
   ngOnInit() {
+    this.restrict();
     // this.source.setFilter([
     //   {
     //     field: 'id',

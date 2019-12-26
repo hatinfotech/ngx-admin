@@ -40,6 +40,7 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
 
   /** User for reuse component */
   onResume() {
+    super.onResume();
     this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
   }
 

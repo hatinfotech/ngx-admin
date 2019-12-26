@@ -136,8 +136,9 @@
               <div class="col-sm-1"><label>Stt</label></div>
               <div class="col-sm-10">
                 <div class="row">
-                  <div class="col-sm-5"><label>Module</label></div>
-                  <div class="col-sm-7"><label>Resource</label></div>
+                  <div class="col-sm-3 label">Module</div>
+                  <div class="col-sm-3 label">Resource</div>
+                  <div class="col-sm-6 label">Permissions</div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -163,7 +164,7 @@
                   </div>
                   <div class="col-sm-10">
                     <div class="row">
-                      <div class="col-sm-5">
+                      <div class="col-sm-3">
                         <div class="form-group" style="position: relative;">
                           <label class="label">Module</label>
                           <nb-icon (click)="copyFormControlValueToOthers(getResources(i), ir, 'Module')" pack="eva"
@@ -173,11 +174,18 @@
                           </ngx-select2>
                         </div>
                       </div>
-                      <div class="col-sm-7">
+                      <div class="col-sm-3">
                         <div class="form-group">
                           <label class="label">Resource</label>
-                          <ngx-select2 [data]="resourceList[i][ir]" formControlName="Resource"
-                            [select2Option]="select2OptionForResource">
+                          <ngx-select2 [data]="getResourceChooseList(i, ir)" formControlName="Resource"
+                            [select2Option]="select2OptionForResource" (selectChange)="onResourceChangeForPermission($event, i, ir)">
+                          </ngx-select2>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="label">Permissions</label>
+                          <ngx-select2 [data]="getPermissionChooseList(i, ir)" formControlName="Permissions" [select2Option]="permissionListConfig">
                           </ngx-select2>
                         </div>
                       </div>

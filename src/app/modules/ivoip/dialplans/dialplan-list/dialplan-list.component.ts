@@ -16,6 +16,7 @@ import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.m
 })
 export class DialplanListComponent extends IvoipBaseListComponent<PbxDialplanModel> implements OnInit {
 
+  componentName = 'DialplanListComponent';
   formPath = '/ivoip/dialplans/form';
   apiPath = '/ivoip/dialplans';
   idKey = 'dialplan_uuid';
@@ -96,6 +97,7 @@ export class DialplanListComponent extends IvoipBaseListComponent<PbxDialplanMod
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

@@ -317,6 +317,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
         // icon: 'people-outline',
         link: '/modules/manager/list',
       },
+      {
+        title: 'Quản lý resources',
+        // icon: 'people-outline',
+        link: '/modules/resources/list',
+      },
     ],
   },
   {

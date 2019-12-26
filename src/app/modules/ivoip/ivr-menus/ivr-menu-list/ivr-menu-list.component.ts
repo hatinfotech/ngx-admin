@@ -17,6 +17,7 @@ import { PbxIvrMenuOptionModel } from '../../../../models/pbx-ivr-menu-option.mo
 })
 export class IvrMenuListComponent extends IvoipBaseListComponent<PbxIvrMenuModel> implements OnInit {
 
+  componentName = 'IvrMenuListComponent';
   formPath = '/ivoip/ivr-menus/form';
   apiPath = '/ivoip/ivr-menus';
   idKey = 'ivr_menu_uuid';
@@ -92,6 +93,7 @@ export class IvrMenuListComponent extends IvoipBaseListComponent<PbxIvrMenuModel
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

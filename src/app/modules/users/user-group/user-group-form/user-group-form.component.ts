@@ -16,6 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupModel> implements OnInit {
 
+  componentName = 'UserGroupFormComponent';
   idKey = 'Code';
   apiPath = '/user/groups';
   baseFormUrl = '/users/group/form';
@@ -60,7 +61,7 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
   };
 
   ngOnInit() {
-
+    this.restrict();
     this.apiService.get<UserGroupModel[]>(
       '/user/groups', { limit: 99999 },
       list1 => {

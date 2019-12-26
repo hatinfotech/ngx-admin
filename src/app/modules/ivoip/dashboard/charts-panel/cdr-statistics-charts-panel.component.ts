@@ -12,13 +12,17 @@ import { ApiService } from '../../../../services/api.service';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
 import { CommonService } from '../../../../services/common.service';
+import { BaseComponent } from '../../../../lib/base-component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-cdr-statistics-charts-panel',
   styleUrls: ['./cdr-statistics-charts-panel.component.scss'],
   templateUrl: './cdr-statistics-charts-panel.component.html',
 })
-export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
+export class CdrStatisticsChartsPanelComponent extends BaseComponent implements OnInit, OnDestroy {
+
+  componentName: string = '';
 
   private alive = true;
 
@@ -39,12 +43,14 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   activePbxDoamin: string;
 
   constructor(
-    private ordersProfitChartService: OrdersProfitChartData,
-    private dialogService: NbDialogService,
-    private apiService: ApiService,
-    private ivoipService: IvoipService,
-    private commondService: CommonService,
+    protected ordersProfitChartService: OrdersProfitChartData,
+    protected dialogService: NbDialogService,
+    protected apiService: ApiService,
+    protected ivoipService: IvoipService,
+    protected commonService: CommonService,
+    protected router: Router,
   ) {
+    super(commonService, router, apiService);
     this.ordersProfitChartService.getOrderProfitChartSummary()
       .pipe(takeWhile(() => this.alive))
       .subscribe((summary) => {
@@ -56,6 +62,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.restrict();
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
       this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
@@ -116,7 +123,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   }
 
   refresh(): false {
-    this.commondService.takeUntil('ivoip_dashboard_refresh', 1000, () => {
+    this.commonService.takeUntil('ivoip_dashboard_refresh', 1000, () => {
       this.ivoipService.loadDomainList(domains => {
         this.domainList = domains;
         this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();

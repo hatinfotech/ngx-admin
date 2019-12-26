@@ -47,6 +47,7 @@ export class ButtonViewComponent implements ViewCell, OnInit {
 })
 export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionModel> implements OnInit {
 
+  componentName = 'ExtensionListComponent';
   formPath = '/ivoip/extensions/form';
   apiPath = '/ivoip/extensions';
   idKey = 'extension_uuid';
@@ -153,6 +154,7 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

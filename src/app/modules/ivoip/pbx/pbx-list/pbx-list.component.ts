@@ -14,6 +14,7 @@ import { PbxModel } from '../../../../models/pbx.model';
 })
 export class PbxListComponent extends DataManagerListComponent<PbxModel> implements OnInit {
 
+  componentName = 'PbxListComponent';
   formPath: string = '/ivoip/pbxs/form';
   apiPath: string = '/ivoip/pbxs';
   idKey: string = 'Code';
@@ -80,7 +81,7 @@ export class PbxListComponent extends DataManagerListComponent<PbxModel> impleme
         filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
       },
       ApiVersion: {
-        title: 'Phiên bản api',
+        title: 'Version',
         type: 'string',
         width: '10%',
       },
@@ -88,6 +89,7 @@ export class PbxListComponent extends DataManagerListComponent<PbxModel> impleme
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

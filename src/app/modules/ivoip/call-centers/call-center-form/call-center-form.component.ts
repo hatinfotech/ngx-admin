@@ -20,6 +20,7 @@ import { PbxCallCenterAgentModel } from '../../../../models/pbx-center-agent.mod
 })
 export class CallCenterFormComponent extends IvoipBaseFormComponent<PbxCallCenterQueueModel> implements OnInit {
 
+  componentName = 'CallCenterFormComponent';
   idKey = 'call_center_queue_uuid';
   apiPath = '/ivoip/call-centers';
   baseFormUrl = '/ivoip/call-centers/form';
@@ -111,8 +112,7 @@ export class CallCenterFormComponent extends IvoipBaseFormComponent<PbxCallCente
   }
 
   ngOnInit() {
-
-
+    this.restrict();
     this.apiService.get<{ [id: string]: { id: string, text: string }[] }>('/ivoip/sounds', { domainId: this.ivoipService.getPbxActiveDomainUuid() }, soundList => {
       this.soundList = [
         {

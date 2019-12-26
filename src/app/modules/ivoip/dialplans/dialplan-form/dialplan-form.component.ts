@@ -19,6 +19,7 @@ import { PbxGatewayModel } from '../../../../models/pbx-gateway.model';
 })
 export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanModel> implements OnInit {
 
+  componentName = 'DialplanFormComponent';
   idKey = 'dialplan_uuid';
   apiPath = '/ivoip/dialplans';
   baseFormUrl = '/ivoip/dialplans/form';
@@ -69,6 +70,7 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
   // };
 
   ngOnInit() {
+    this.restrict();
     this.apiService.get<PbxGatewayModel[]>('/ivoip/gateways', { domainId: this.ivoipService.getPbxActiveDomainUuid() }, gateways => {
 
       this.gatewaylist = gateways.map(item => {

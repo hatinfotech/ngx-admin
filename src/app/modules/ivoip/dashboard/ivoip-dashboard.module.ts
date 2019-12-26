@@ -13,7 +13,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { ProfitCardComponent } from './profit-card/profit-card.component';
-import { CdrStatisticsChartsPanelComponent } from './charts-panel/cdr-statistics-charts-panel.component';
+import { CdrStatisticsChartsPanelComponent } from "./charts-panel/CdrStatisticsChartsPanelComponent";
 import { OrdersChartComponent } from './charts-panel/charts/orders-chart.component';
 import { ProfitChartComponent } from './charts-panel/charts/profit-chart.component';
 import { ChartPanelHeaderComponent } from './charts-panel/chart-panel-header/chart-panel-header.component';

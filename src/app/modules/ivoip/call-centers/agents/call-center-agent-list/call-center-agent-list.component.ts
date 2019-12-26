@@ -14,6 +14,7 @@ import { IvoipService } from '../../../ivoip-service';
 })
 export class CallCenterAgentListComponent extends IvoipBaseListComponent<PbxCallCenterAgentModel> implements OnInit {
 
+  componentName: string = 'CallCenterAgentListComponent';
   formPath = '/ivoip/call-centers/agents/form';
   apiPath = '/ivoip/call-center-agents';
   idKey = 'call_center_agent_uuid';
@@ -96,6 +97,7 @@ export class CallCenterAgentListComponent extends IvoipBaseListComponent<PbxCall
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

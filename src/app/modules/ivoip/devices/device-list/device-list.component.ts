@@ -16,6 +16,7 @@ import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 })
 export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> implements OnInit {
 
+  componentName = 'DeviceListComponent';
   formPath = '/ivoip/devices/form';
   apiPath = '/ivoip/devices';
   idKey = 'device_uuid';
@@ -83,6 +84,7 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   };
 
   ngOnInit() {
+    this.restrict();
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
       // this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();

@@ -14,6 +14,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 })
 export class UserGroupListComponent extends DataManagerListComponent<UserGroupModel> implements OnInit {
 
+  componentName = 'UserGroupListComponent';
   formPath: string = '/users/group/form';
   apiPath: string = '/user/groups';
   idKey: string = 'Code';
@@ -90,6 +91,7 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
   source: LocalDataSource = new LocalDataSource();
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

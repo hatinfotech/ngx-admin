@@ -13,6 +13,7 @@ import { DataManagerListComponent } from '../../../../lib/data-manager/data-mang
 })
 export class MenuListComponent extends DataManagerListComponent<MenuItemModel> implements OnInit {
 
+  componentName = 'MenuListComponent';
   formPath = 'menu/manager/form';
   apiPath = '/menu/menu-items';
   idKey = 'Code';
@@ -97,6 +98,7 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
   }
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

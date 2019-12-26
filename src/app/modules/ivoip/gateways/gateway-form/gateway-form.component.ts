@@ -17,6 +17,7 @@ import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 })
 export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel> implements OnInit {
 
+  componentName = 'GatewayFormComponent';
   idKey = 'gateway_uuid';
   apiPath = '/ivoip/gateways';
   baseFormUrl = '/ivoip/gateways/form';
@@ -68,6 +69,7 @@ export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel
   profileList: { id?: string, text: string }[] = [];
 
   ngOnInit() {
+    this.restrict();
     this.ivoipService.getActiveDomainList(domainList => {
       this.privateDmainList = this.convertOptionList(domainList, 'DomainId', 'DomainName');
       super.ngOnInit();

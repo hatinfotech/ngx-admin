@@ -13,6 +13,7 @@ import { DataManagerListComponent } from '../../../../lib/data-manager/data-mang
 })
 export class ModuleListComponent extends DataManagerListComponent<ModuleModel> implements OnInit {
 
+  componentName = 'ModuleListComponent';
   formPath: string = 'modules/manager/form';
   apiPath: string = '/module/modules';
   idKey: string = 'Name';
@@ -77,6 +78,7 @@ export class ModuleListComponent extends DataManagerListComponent<ModuleModel> i
   }
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

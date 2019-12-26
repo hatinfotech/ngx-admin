@@ -35,7 +35,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
   ) {
-    super(commonService, router);
+    super(commonService, router, apiService);
   }
 
   /** List init event */

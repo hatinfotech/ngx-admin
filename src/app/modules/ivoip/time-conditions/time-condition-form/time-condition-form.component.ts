@@ -19,6 +19,7 @@ import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.m
 })
 export class TimeConditionFormComponent extends IvoipBaseFormComponent<PbxDialplanModel> implements OnInit {
 
+  componentName = 'TimeConditionFormComponent';
   idKey = 'dialplan_uuid';
   apiPath = '/ivoip/time-conditions';
   baseFormUrl = '/ivoip/time-conditions/form';
@@ -113,7 +114,7 @@ export class TimeConditionFormComponent extends IvoipBaseFormComponent<PbxDialpl
   // };
 
   ngOnInit() {
-
+    this.restrict();
     this.ivoipService.getActiveDomainList(domainList => {
       this.privateDmainList = domainList;
 

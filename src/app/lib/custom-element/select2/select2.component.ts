@@ -99,7 +99,8 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
           this.value = value;
         }
       } else if (value instanceof Array) {
-        this.value = value.map(item => item[keyMap['id']]);
+        // this.value = value.map(item => item[keyMap['id']]);
+        this.value = value;
       } else {
         if (value[keyMap['id']] && value[keyMap['text']]) {
           this.value = value[keyMap['id']];
@@ -130,7 +131,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     // const itemSelect = this.data.find(item => item['id'] === id);
     // this.writeValue(e.value);
     const changedValue = this.select2Option.multiple ? e.data : e.data[0];
-    if (this.onChange) this.onChange(changedValue.id);
+    if (this.onChange) this.onChange(Array.isArray(changedValue) ? changedValue.map(v => v.id) : changedValue.id);
     Object.keys(this.select2Option['keyMap']).forEach(k => {
       e.data.forEach((i: any) => {
         i[this.select2Option['keyMap'][k]] = i[k];

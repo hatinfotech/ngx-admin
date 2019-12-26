@@ -20,6 +20,7 @@ import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 })
 export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionModel> implements OnInit {
 
+  componentName = 'ExtensionFormComponent';
   idKey = 'extension_uuid';
   apiPath = '/ivoip/extensions';
   baseFormUrl = '/ivoip/extensions/form';
@@ -69,6 +70,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   }
 
   ngOnInit() {
+    this.restrict();
     this.ivoipService.getActiveDomainList(domainList => {
       this.privateDmainList = domainList;
       this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {

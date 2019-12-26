@@ -6,6 +6,8 @@ import { Observable, throwError, observable } from 'rxjs';
 import { map, retry, catchError } from 'rxjs/operators';
 import { EmployeeModel } from '../models/employee.model';
 import { Router } from '@angular/router';
+import { NbDialogService } from '@nebular/theme';
+import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +20,7 @@ export class ApiService {
     protected _http: HttpClient,
     protected authService: NbAuthService,
     private router: Router,
+    private dialogService: NbDialogService,
     // private activatedRoute: ActivatedRouteSnapshot,
   ) {
 
@@ -279,6 +282,22 @@ export class ApiService {
     if (e.status === 401) {
       console.warn('You were not logged in');
       this.router.navigate(['/auth/login']);
+    }
+    if (e.status === 405) {
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Yêu cầu quyền truy cập',
+          content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
+          actions: [
+            {
+              label: 'Trở về',
+              icon: 'back',
+              status: 'info',
+              action: () => { },
+            },
+          ],
+        },
+      });
     }
     let errorMessage = '';
     if (e.error instanceof ErrorEvent) {

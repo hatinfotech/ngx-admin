@@ -18,6 +18,7 @@ import { PbxDomainModel } from '../../../../../models/pbx-domain.model';
 })
 export class CallCenterAgentFormComponent extends IvoipBaseFormComponent<PbxCallCenterAgentModel> implements OnInit {
 
+  componentName: string = 'CallCenterAgentFormComponent';
   idKey = 'call_center_agent_uuid';
   apiPath = '/ivoip/call-center-agents';
   baseFormUrl = '/ivoip/call-centers/agents/form';
@@ -78,6 +79,7 @@ export class CallCenterAgentFormComponent extends IvoipBaseFormComponent<PbxCall
   }
 
   ngOnInit() {
+    this.restrict();
     this.apiService.get<{ label: string, name: string, result: { data: { select_label: string, select_value: string, destination: string, context: string }[] } }[]>(
       '/ivoip/dialplan-actions',
       { domainId: this.ivoipService.getPbxActiveDomainUuid() }, actionList => {

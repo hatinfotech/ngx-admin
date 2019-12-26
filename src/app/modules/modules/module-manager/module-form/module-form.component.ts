@@ -16,6 +16,7 @@ import { CommonService } from '../../../../services/common.service';
 })
 export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> implements OnInit {
 
+  componentName = 'ModuleFormComponent';
   idKey = 'Name';
   apiPath = '/module/modules';
   baseFormUrl = 'modules/manager/form';
@@ -44,6 +45,7 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
   parentList: ModuleModel[];
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 
@@ -168,15 +170,15 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
   }
 
   onAddComponentFormGroup(component: FormGroup) {
-    const path = component.get('Path');
-    const name = component.get('Name');
-    const description = component.get('Description');
-    path.valueChanges.subscribe(value => {
-      if (!this.isProcessing) {
-        name.setValue(value);
-        description.setValue(value);
-      }
-    });
+    // const path = component.get('Path');
+    // const name = component.get('Name');
+    // const description = component.get('Description');
+    // path.valueChanges.subscribe(value => {
+    //   if (!this.isProcessing) {
+    //     name.setValue(value);
+    //     description.setValue(value);
+    //   }
+    // });
   }
 
   removeComponentGroup(formGroupIndex: number, index: number) {

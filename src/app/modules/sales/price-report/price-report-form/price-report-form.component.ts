@@ -7,6 +7,8 @@ import { UnitModel } from '../../../../models/unit.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { ApiService } from '../../../../services/api.service';
 import { ContactModel } from '../../../../models/contact.model';
+import { BaseComponent } from '../../../../lib/base-component';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'ngx-price-report-form',
@@ -14,14 +16,19 @@ import { ContactModel } from '../../../../models/contact.model';
   styleUrls: ['./price-report-form.component.scss'],
 })
 
-export class PriceReportFormComponent implements OnInit {
+export class PriceReportFormComponent extends BaseComponent implements OnInit {
+
+  componentName: string = 'PriceReportFormComponent';
 
   constructor(
     private activeRoute: ActivatedRoute,
-    private router: Router,
+    protected router: Router,
     private formBuilder: FormBuilder,
-    private apiService: ApiService,
-  ) { }
+    protected apiService: ApiService,
+    protected commonService: CommonService,
+  ) {
+    super(commonService, router, apiService);
+  }
 
   provinceModel: { id: number, name: string, type: 'central' | 'province' };
 
@@ -173,7 +180,7 @@ export class PriceReportFormComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.restrict();
     this.apiService.get<UnitModel[]>('admin-product/units', { limit: 99999999 },
       unitList => this.unitList = unitList.map(item => {
         item['id'] = item['Code'];

@@ -5,9 +5,13 @@ export class UserModel {
 
   Code?: string;
   Name: string;
+  Phone?: string;
+  Email?: string;
   Username: string;
   Password?: string;
-  modulePermissions: {module: ModuleModel, permissions: PermissionModel[]}[];
+  Avata?: string;
+  Contact?: string;
+  modulePermissions?: {module: ModuleModel, permissions: PermissionModel[]}[];
 
   constructor() { }
 

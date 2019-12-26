@@ -19,6 +19,7 @@ import { PbxModel } from '../../../../models/pbx.model';
 })
 export class CdrListComponent extends IvoipBaseListComponent<any> implements OnInit {
 
+  componentName = 'CdrListComponent';
   formPath: string;
   apiPath: string = '/ivoip/cdrs';
   idKey = 'cdr_uuid';
@@ -153,6 +154,7 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
   }
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

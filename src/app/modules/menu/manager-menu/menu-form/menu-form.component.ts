@@ -19,9 +19,24 @@ import { ResourceModel } from '../../../../models/resource.model';
 })
 export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> implements OnInit {
 
+  componentName = 'MenuFormComponent';
   idKey = 'Code';
   apiPath = '/menu/menu-items';
   baseFormUrl = 'menu/manager/form';
+
+  permissionList: PermissionModel[][][] = [];
+  permissionListConfig = {
+    placeholder: 'Chọn permission...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Description',
+    },
+  };
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -50,32 +65,40 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   templatePermissionList: PermissionModel[] = [
     {
-      Code: 'VIEW',
-      Description: 'Xem dữ liệu',
+      Code: 'MENU',
+      Description: 'Hiển thị menu',
     },
     {
-      Code: 'CREATE',
-      Description: 'Tạo dữ liệu',
-    },
-    {
-      Code: 'UPDATE',
-      Description: 'Cập nhật dữ liệu',
-    },
-    {
-      Code: 'DELETE',
-      Description: 'Xoá dữ liệu',
-    },
-    {
-      Code: 'PRINT',
-      Description: 'In dữ liệu',
-    },
-    {
-      Code: 'SAHRE',
-      Description: 'Chia sẻ dữ liệu',
+      Code: 'DASHBOARD',
+      Description: 'Dashboard',
     },
     {
       Code: 'LIST',
-      Description: 'Xem danh sách',
+      Description: 'Danh sách',
+    },
+    {
+      Code: 'DELETE',
+      Description: 'Xoá',
+    },
+    {
+      Code: 'FORM',
+      Description: 'Biểu mẫu',
+    },
+    {
+      Code: 'PRINT',
+      Description: 'In',
+    },
+    {
+      Code: 'SAHRE',
+      Description: 'Chia sẻ',
+    },
+    {
+      Code: 'REPORT',
+      Description: 'Báo cáo',
+    },
+    {
+      Code: 'ACCESS',
+      Description: 'Truy cập',
     },
   ].map((item) => {
     item['id'] = item['Code'];
@@ -135,13 +158,10 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
       id: 'Name',
       text: 'Description',
     },
-    // matcher: (term: string, text: string, option: any) => {
-    //   return false;
-    // },
   };
 
   ngOnInit() {
-
+    this.restrict();
     this.apiService.get<MenuItemModel[]>(
       '/menu/menu-items', { limit: 99999, list: true },
       list => {
@@ -160,7 +180,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
         });
 
         this.apiService.get<ModuleModel[]>(
-          '/module/modules', { limit: 99999, list: true, includeComponents: true, includeResources: true },
+          '/module/modules', { limit: 99999, list: true, includeComponents: true, includeResources: true, includeResourcePermissions: true },
           mList => {
             mList.unshift({
               Name: '',
@@ -179,7 +199,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   /** Get form data by id from api */
   getFormData(callback: (data: MenuItemModel[]) => void) {
-    this.apiService.get<MenuItemModel[]>(this.apiPath, { id: this.id, multi: true, includeComponents: true, includePermissions: true, includeResources: true },
+    this.apiService.get<MenuItemModel[]>(this.apiPath, { id: this.id, multi: true, includeComponents: true, includePermissions: true, includeResources: true, includeResourcePermissions: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
@@ -227,17 +247,32 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
               item['text'] = item['Description'] ? item['Description'] : item['Name'];
               return item;
             });
-            newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
-          }
 
-          if (module && module['Resources']) {
-            this.resourceList[index][comIndex] = module['Resources'].map(item => {
-              item['id'] = item['Name'];
-              item['text'] = item['Description'] ? item['Description'] : item['Name'];
+            const resourceChooseList = module['Resources'].find((value, i, obj) => {
+              return value.Name === resource['Resource'];
+            });
+            this.permissionList[index][comIndex] = resourceChooseList.Permissions.map(item => {
+              item['id'] = item['Code'];
+              item['text'] = item['Description'];
               return item;
+              // return {
+              //   id: item['Name'],
+              //   text: item['Description'],
+              // };
             });
             newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
+
+
           }
+
+          // if (module && module['Resources']) {
+          //   this.resourceList[index][comIndex] = module['Resources'].map(item => {
+          //     item['id'] = item['Name'];
+          //     item['text'] = item['Description'] ? item['Description'] : item['Name'];
+          //     return item;
+          //   });
+          //   newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
+          // }
         });
       }
 
@@ -321,6 +356,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
       Id: [''],
       Module: ['', Validators.required],
       Resource: ['', Validators.required],
+      Permissions: [''],
     });
 
     if (data) {
@@ -368,6 +404,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   addResourceFormGroup(formGroupIndex: number) {
     this.resourceList[formGroupIndex].push([]);
+    this.permissionList[formGroupIndex].push([]);
     const newFormGroup = this.makeNewResourceFormGroup();
     this.getResources(formGroupIndex).push(newFormGroup);
     this.onAddResourceFormGroup(formGroupIndex, this.getResources(formGroupIndex).length - 1, newFormGroup);
@@ -386,11 +423,13 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     super.onAddFormGroup(index, newForm, formData);
     this.componentList.push([]);
     this.resourceList.push([]);
+    this.permissionList.push([]);
   }
 
   onRemoveFormGroup(index: number) {
     this.componentList.splice(index, 1);
     this.resourceList.splice(index, 1);
+    this.permissionList.splice(index, 1);
   }
 
   onAddComponentFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
@@ -399,6 +438,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   onAddResourceFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
     this.resourceList[mainIndex].push([]);
+    this.permissionList[mainIndex].push([]);
   }
 
   onAddPermissionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
@@ -432,6 +472,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
 
   onRemoveResourceFormGroup(mainIndex: number, index: number) {
     this.resourceList[mainIndex].splice(index, 1);
+    this.permissionList[mainIndex].splice(index, 1);
   }
 
   onRemovePermissionFormGroup(mainIndex: number, index: number) {
@@ -503,6 +544,21 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     }
   }
 
+  onResourceChangeForPermission(event: { Permissions: any[] }, i: number, ir: number) {
+    // console.info(event);
+    if (event.Permissions) {
+      event.Permissions.unshift({
+        Name: '',
+        Description: 'Chọn permission',
+      });
+      this.permissionList[i][ir] = event.Permissions.map(item => {
+        item['id'] = item['Code'];
+        item['text'] = item['Description'];
+        return item;
+      });
+    }
+  }
+
   onPermimssionChange(mainFormIndex: number, ip: number, item: PermissionModel) {
     // console.info(item);
 
@@ -542,4 +598,17 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   //   super.onAfterUpdateSubmit(newFormData);
   //   this.goback();
   // }
+
+  getResourceChooseList(mainFormIndex: number, resourceIndex: number) {
+    if (this.resourceList && this.resourceList[mainFormIndex] && this.resourceList[mainFormIndex][resourceIndex]) {
+      return this.resourceList[mainFormIndex][resourceIndex];
+    }
+    return [];
+  }
+  getPermissionChooseList(mainFormIndex: number, resourceIndex: number) {
+    if (this.permissionList && this.permissionList[mainFormIndex] && this.permissionList[mainFormIndex][resourceIndex]) {
+      return this.permissionList[mainFormIndex][resourceIndex];
+    }
+    return [];
+  }
 }

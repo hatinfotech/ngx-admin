@@ -16,6 +16,7 @@ import { PbxModel } from '../../../../models/pbx.model';
 })
 export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> implements OnInit {
 
+  componentName = 'DomainListComponent';
   formPath: string = '/ivoip/domains/form';
   apiPath: string = '/ivoip/domains';
   idKey: string = 'Id';
@@ -99,6 +100,7 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
   };
 
   ngOnInit() {
+    this.restrict();
     this.ivoipService.getPbxList(pbxList => {
 
       this.pbxList = this.commonService.convertOptionList(pbxList, 'Code', 'Description');

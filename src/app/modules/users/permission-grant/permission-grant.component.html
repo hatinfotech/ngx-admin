@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-4">
-    <nb-card style="min-height: 100%;">
+    <nb-card style="max-height: 600px">
       <nb-card-header>
         <input #userTreeFilter (keyup)="treeFilter(userTreeFilter.value, userTreeEle)" type="text" nbInput fullWidth
           placeholder="Tìm kiếm nhóm > người dùng">
@@ -12,7 +12,7 @@
     </nb-card>
   </div>
   <div class="col-sm-4">
-    <nb-card style="min-height: 100%;">
+    <nb-card style="max-height: 600px">
       <nb-card-header>
         <input #menuTreeFilter (keyup)="treeFilter(menuTreeFilter.value, menuTreeEle)" type="text" nbInput fullWidth
           placeholder="Tìm kiếm menu">
@@ -24,7 +24,7 @@
     </nb-card>
   </div>
   <div class="col-sm-4">
-    <nb-card style="min-height: 100%;">
+    <nb-card style="max-height: 600px">
       <nb-card-header>
         <button nbButton (click)="onPermissionUpdateButtonClick()" status="success" [disabled]="!allowUpdatePermission"
           style="width: 50%;
@@ -38,13 +38,90 @@
           border-bottom-left-radius: 0;" fullwidth hero>Đặt lại</button>
       </nb-card-header>
       <nb-card-body>
-        <div [formGroup]="permissionForm"></div>
-        <div class="form-group" *ngFor="let pms of permissionFormArray.controls; let i = index" [formGroup]="pms">
-          <!-- <label>{{pms.Description}}</label> -->
-          <input type="hidden" formControlName="Permission">
-          <input type="hidden" formControlName="Description">
-          <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">
-            {{pms.get('Description').value}}</nb-checkbox>
+        <div [formGroup]="permissionForm">
+
+          <div formArrayName="menuItem">
+            <div class="label">Giao diện</div>
+            <span *ngFor="let menuItemPmsFormGroup of getAsFormArray(permissionForm.get('menuItem')).controls"
+              [formGroup]="menuItemPmsFormGroup">
+              <input type="hidden" formControlName="Permission">
+              <input type="hidden" formControlName="Description">
+              <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">
+                {{menuItemPmsFormGroup.get('Description').value}}</nb-checkbox>
+            </span>
+          </div>
+          <div formGroupName="resources">
+            <div *ngFor="let resourcePmsFormGroupName of getObjectKeys(permissionData['resources'])"
+              [formGroupName]="resourcePmsFormGroupName">
+              <div class="label">{{permissionData['resources'][resourcePmsFormGroupName]['Description']}}</div>
+              <span *ngFor="let resourcePmsFormGroup of getAsFormArray(permissionForm.get('resources.' + resourcePmsFormGroupName)).controls"
+                [formGroup]="resourcePmsFormGroup">
+                <input type="hidden" formControlName="Permission">
+                <input type="hidden" formControlName="Description">
+                <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">
+                  {{resourcePmsFormGroup.get('Description').value}}</nb-checkbox>
+              </span>
+            </div>
+          </div>
+
+          <!-- <div formArrayName="menuItem">
+            <div class="form-group" *ngFor="let pms of permissionFormArray.controls; let i = index" [formGroup]="pms">
+
+              <input type="hidden" formControlName="Permission">
+              <input type="hidden" formControlName="Description">
+              <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">
+                {{pms.get('Description').value}}</nb-checkbox>
+            </div>
+          </div> -->
+          <!-- <div formArrayName="resources">
+            <div formGroupName="Ivoip_Resource_PstnNumbers">
+              <div formArrayName="array"></div>
+              <div class="label">Ivoip_Resource_PstnNumbers</div>
+              <div class="form-group" formGroupName="View">
+                <input type="hidden" formControlName="Permission">
+                <input type="hidden" formControlName="Description">
+                <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">Xem</nb-checkbox>
+              </div>
+              <div class="form-group" formGroupName="View">
+                <input type="hidden" formControlName="Permission">
+                <input type="hidden" formControlName="Description">
+                <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">Tao moi</nb-checkbox>
+              </div>
+              <div class="form-group" formGroupName="UPDATE">
+                <input type="hidden" formControlName="Permission">
+                <input type="hidden" formControlName="Description">
+                <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">Cap nhat</nb-checkbox>
+              </div>
+              <div class="form-group" formGroupName="DELETE">
+                <input type="hidden" formControlName="Permission">
+                <input type="hidden" formControlName="Description">
+                <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">Xoa</nb-checkbox>
+              </div>
+            </div>
+
+            <div formGroupName="Ivoip_Resource_Domains">
+              <div formArrayName="array">
+                <div class="label">Ivoip_Resource_PstnNumbers</div>
+                <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="LIST">List</nb-checkbox>
+              </div>
+            </div>
+            <div formGroupName="Ivoip_Resource_Pbxs">
+              <div formArrayName="array">
+                <div class="label">Ivoip_Resource_PstnNumbers</div>
+                <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="LIST">List</nb-checkbox>
+              </div>
+            </div>
+            <div *ngFor="let resource of resourcesPermissionFormArray.controls; let r = index" [formGroup]="resource">
+              <div formArrayName="resourcePermission">
+                <div class="form-group" *ngFor="let resourcePms of getResourcePermissionFormArray(r).controls; let p = index" [formGroup]="resourcePms">
+                  <input type="hidden" formControlName="Permission">
+                  <input type="hidden" formControlName="Description">
+                  <nb-checkbox (checkedChange)="onPermissionChange($event)" formControlName="Status">
+                    {{resourcePms.get('Description').value}}</nb-checkbox>
+                </div>
+              </div>
+            </div>
+          </div> -->
         </div>
         <hr>
         <h5>Hướng dẫn phân quyền</h5>

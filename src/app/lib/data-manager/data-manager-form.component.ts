@@ -63,7 +63,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
   ) {
-    super(commonService, router);
+    super(commonService, router, apiService);
     // this.formLoading = true;
     this.onProcessing();
     this.formUniqueId = Date.now().toString();

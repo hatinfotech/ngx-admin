@@ -16,6 +16,7 @@ import { PbxModel } from '../../../../models/pbx.model';
 })
 export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel> implements OnInit {
 
+  componentName = 'DomainFormComponent';
   idKey = 'Id';
   apiPath = '/ivoip/domains';
   baseFormUrl = '/ivoip/domains/form';
@@ -47,7 +48,7 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
   };
 
   ngOnInit() {
-
+    this.restrict();
     this.apiService.get<PbxModel[]>('/ivoip/pbxs', { select: 'Code,Description', limit: 9999 }, list => {
       this.pbxList = this.convertOptionList(list, 'Code', 'Description');
       super.ngOnInit();

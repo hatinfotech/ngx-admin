@@ -6,6 +6,7 @@ import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { IvoipService } from '../../../modules/ivoip/ivoip-service';
+import { CommonService } from '../../../services/common.service';
 
 @Component({
   selector: 'ngx-header',
@@ -39,7 +40,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
+  userMenu = [{ title: 'Profile' }, { title: 'Log out', link: '/auth/logout' }];
   mennuBarExpand = true;
   chatBarExpand = true;
   sidebars: NbSidebarComponent[];
@@ -64,7 +65,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private userService: UserData,
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
-    private ivoipService: IvoipService) {
+    private ivoipService: IvoipService,
+    private commonService: CommonService) {
   }
 
   ngOnInit() {
@@ -94,6 +96,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.collapseChat();
       } else {
         this.collapseMenu();
+      }
+    });
+
+    this.commonService.loginInfo$.subscribe(loginInfo => {
+      if (loginInfo) {
+        this.user['picture'] = loginInfo.contact.Avatar;
+        this.user['name'] = loginInfo.contact.Name;
       }
     });
     // this.sidebarService.onCollapse().subscribe(info => {

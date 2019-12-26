@@ -16,6 +16,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 })
 export class CallRouteListComponent extends IvoipBaseListComponent<PbxExtensionModel> implements OnInit {
 
+  componentName = 'CallRouteListComponent';
   formPath = '/ivoip/call-routes/form';
   apiPath = '/ivoip/call-routes';
   idKey = 'extension_uuid';
@@ -122,6 +123,7 @@ export class CallRouteListComponent extends IvoipBaseListComponent<PbxExtensionM
   };
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 

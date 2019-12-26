@@ -1,0 +1,124 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật module
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;" title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;" title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo" style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Id">
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label">Tên module</label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên module">
+                </div>
+              </div>
+              <div class="col-sm-9">
+                <div class="form-group">
+                  <label class="label">Diễn giải</label>
+                  <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
+                </div>
+              </div>
+            </div>
+
+            <hr>
+            <label class="label">Danh sách permission</label>
+            <div class="row">
+              <div class="col-sm-1">STT</div>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-5">Permission</div>
+                  <div class="col-sm-6">Mô tả</div>
+                  <div class="col-sm-1">K.hoạt</div>
+                </div>
+              </div>
+              <div class="col-sm-1" style="text-align: center;">
+                <button nbButton status="success" (click)="addPermissionFormGroup(i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+
+            <hr>
+            <div formArrayName="Permissions" class="form-details">
+              <div class="form-detail-item" *ngFor="let permission of getPermissions(i).controls; let ic=index"
+                [formGroup]="permission">
+                <input type="hidden" formGroupName="Id">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}" style="text-align: center;">
+                    </div>
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="row">
+                      <div class="col-sm-5">
+                        <div class="form-group">
+                          <label class="label">Permission</label>
+                          <!-- <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(getPermissions(i), i, 'Code')" pack="eva" icon="copy-outline"></nb-icon> -->
+                          <ngx-select2 [data]="templatePermissionList" formControlName="Code"
+                            [select2Option]="select2OptionForPermissionCode"
+                            (selectChange)="onPermimssionChange(i, ic, $event)"></ngx-select2>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="label">Mô tả</label>
+                          <!-- <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(getPermissions(i), i, 'Path')" pack="eva" icon="copy-outline"></nb-icon> -->
+                          <input type="text" nbInput fullWidth formControlName="Description" placeholder="Đường dẫn">
+                        </div>
+                      </div>
+                      <div class="col-sm-1">
+                        <div class="form-group">
+                          <label class="label">K.hoạt</label>
+                          <!-- <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(getPermissions(i), i, 'Description')" pack="eva" icon="copy-outline"></nb-icon> -->
+                          <nb-checkbox formControlName="Status"></nb-checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="tiny" (click)="removePermissionGroup(i, ic)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row">
+            <button nbButton status="warning" (click)="addFormGroup()" style="float: left;" hero>Thêm module</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right; margin-right: 0;" hero>Lưu module</button>
+            <button nbButton status="info" style="float: right;" hero (click)="onGeneratePermissionsBtnClick(i);">Generate Permission</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

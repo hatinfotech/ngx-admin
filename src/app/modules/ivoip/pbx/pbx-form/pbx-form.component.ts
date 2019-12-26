@@ -19,6 +19,7 @@ import { IvoipService } from '../../ivoip-service';
 })
 export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implements OnInit {
 
+  componentName = 'PbxFormComponent';
   idKey = 'Code';
   apiPath = '/ivoip/pbxs';
   baseFormUrl = '/ivoip/pbxs/form';
@@ -38,6 +39,7 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
   }
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 
