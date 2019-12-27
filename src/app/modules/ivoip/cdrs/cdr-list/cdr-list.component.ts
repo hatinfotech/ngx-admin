@@ -142,11 +142,11 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
 
   constructor(
     protected apiService: ApiService,
-    protected router: Router,
+    public router: Router,
     protected commonService: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
-    protected ivoipService: IvoipService,
+    public ivoipService: IvoipService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);
   }

@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
     private ivoipService: IvoipService,
-    private commonService: CommonService) {
+    public commonService: CommonService) {
   }
 
   ngOnInit() {
@@ -99,12 +99,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.commonService.loginInfo$.subscribe(loginInfo => {
-      if (loginInfo) {
-        this.user['picture'] = loginInfo.user.Avatar;
-        this.user['name'] = loginInfo.user.Name;
-      }
-    });
+    // this.commonService.loginInfo$.subscribe(loginInfo => {
+    //   if (loginInfo) {
+    //     this.user['picture'] = loginInfo.user.Avatar;
+    //     this.user['name'] = loginInfo.user.Name;
+    //   }
+    // });
     // this.sidebarService.onCollapse().subscribe(info => {
     //   console.info('onCollapse: ');
     //   console.info(info);

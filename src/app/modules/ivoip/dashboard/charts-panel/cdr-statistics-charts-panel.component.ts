@@ -43,7 +43,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
     protected ordersProfitChartService: OrdersProfitChartData,
     protected dialogService: NbDialogService,
     protected apiService: ApiService,
-    protected ivoipService: IvoipService,
+    public ivoipService: IvoipService,
     protected commonService: CommonService,
     protected router: Router,
   ) {

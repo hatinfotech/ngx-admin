@@ -13,7 +13,6 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { ProfitCardComponent } from './profit-card/profit-card.component';
-import { CdrStatisticsChartsPanelComponent } from './charts-panel/CdrStatisticsChartsPanelComponent';
 import { OrdersChartComponent } from './charts-panel/charts/orders-chart.component';
 import { ProfitChartComponent } from './charts-panel/charts/profit-chart.component';
 import { ChartPanelHeaderComponent } from './charts-panel/chart-panel-header/chart-panel-header.component';
@@ -57,6 +56,7 @@ import { ThemeModule } from '../../../@theme/theme.module';
 import { IvoipDashboardComponent } from './ivoip-dashboard.component';
 import { CustomElementModule } from '../../../lib/custom-element/custom-element.module';
 import { ReuseComponent } from '../../../lib/reuse-component';
+import { CdrStatisticsChartsPanelComponent } from './charts-panel/cdr-statistics-charts-panel.component';
 
 @NgModule({
   imports: [

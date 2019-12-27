@@ -20,7 +20,7 @@ export class PbxListComponent extends DataManagerListComponent<PbxModel> impleme
 
   constructor(
     protected apiService: ApiService,
-    protected router: Router,
+    public router: Router,
     protected common: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,

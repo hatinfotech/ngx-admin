@@ -12,7 +12,7 @@ export const environment = {
     thousandSeparator: ',',
   },
   localApp: {
-    enabled: true,
+    enabled: false,
     url: '/app/ITLocal/index.html',
   },
 };

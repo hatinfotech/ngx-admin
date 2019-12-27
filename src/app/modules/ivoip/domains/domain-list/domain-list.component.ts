@@ -36,11 +36,11 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
 
   constructor(
     protected apiService: ApiService,
-    protected router: Router,
+    public router: Router,
     protected common: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
-    protected ivoipService: IvoipService,
+    public ivoipService: IvoipService,
   ) {
     super(apiService, router, common, dialogService, toastService, ivoipService);
     // this.apiPath = '/user/groups';

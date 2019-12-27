@@ -7,6 +7,9 @@ import { NbDialogService, NbMenuItem } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
+import { UserModel } from '../models/user.model';
+import { ContactModel } from '../models/contact.model';
+import { FileStoreModel } from '../models/file-store.model';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +30,7 @@ export class CommonService {
   // private loginInfo: LoginInfoModel;
   loginInfoSubject: BehaviorSubject<LoginInfoModel> = new BehaviorSubject<LoginInfoModel>(null);
   loginInfo$ = this.loginInfoSubject.asObservable();
+  loginInfo: LoginInfoModel = new LoginInfoModel();
 
   distributeFileStoreCookieRequestSubject: BehaviorSubject<string> = new BehaviorSubject<string>('assets/images/nick.png');
   distributeFileStoreCookieRequest$ = this.distributeFileStoreCookieRequestSubject.asObservable();
@@ -50,7 +54,8 @@ export class CommonService {
       if (state) {
         // Get login info
         this.apiService.get<LoginInfoModel>('/user/login/info', {}, loginInfo => {
-          this.loginInfoSubject.next(loginInfo);
+          // this.loginInfoSubject.next(loginInfo);
+          this.loginInfo = loginInfo;
           // this.cookieService.set(loginInfo.distributeFileStore.name, loginInfo.distributeFileStore.value, null, '/', loginInfo.distributeFileStore.domain.replace(/https?:\/\/\./g, ''));
           // this.cookieService.set(loginInfo.distributeFileStore.name, loginInfo.distributeFileStore.value, null, null, loginInfo.distributeFileStore.domain);
           if (loginInfo.distribution && loginInfo.distribution.cookie && loginInfo.distribution.fileStores) {
