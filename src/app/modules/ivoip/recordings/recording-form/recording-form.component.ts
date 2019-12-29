@@ -12,7 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'ngx-recording-form',
   templateUrl: './recording-form.component.html',
-  styleUrls: ['./recording-form.component.scss']
+  styleUrls: ['./recording-form.component.scss'],
 })
 export class RecordingFormComponent extends IvoipBaseFormComponent<PbxRecordingModel> implements OnInit {
 

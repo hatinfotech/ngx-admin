@@ -3,8 +3,6 @@ import {
   ActivatedRouteSnapshot,
   DetachedRouteHandle,
 } from '@angular/router';
-import { CommonService } from './services/common.service';
-
 
 export class CustomRouteReuseStrategy implements RouteReuseStrategy {
 

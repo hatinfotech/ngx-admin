@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { PbxRecordingModel } from '../../../../models/pbx-recording.model';
 import { ApiService } from '../../../../services/api.service';
@@ -10,7 +10,7 @@ import { IvoipService } from '../../ivoip-service';
 @Component({
   selector: 'ngx-recording-list',
   templateUrl: './recording-list.component.html',
-  styleUrls: ['./recording-list.component.scss']
+  styleUrls: ['./recording-list.component.scss'],
 })
 export class RecordingListComponent extends IvoipBaseListComponent<PbxRecordingModel> implements OnInit {
 
