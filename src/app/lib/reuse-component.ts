@@ -1,3 +1,3 @@
-export interface ReuseComponent {
+export declare interface ReuseComponent {
   onResume(): void;
 }

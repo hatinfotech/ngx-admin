@@ -99,7 +99,7 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
     const domain = this.ivoipService ? this.ivoipService.getActiveDomain() : null;
     const newForm = this.formBuilder.group({
       dialplan_uuid: [''],
-      dialplan_type: ['', Validators.required],
+      dialplan_type: ['outbound', Validators.required],
       domain_uuid: [this.ivoipService ? this.ivoipService.getPbxActiveDomainId() : ''],
       dialplan_context: [domain ? domain.DomainName : ''],
       dialplan_regex: [''],

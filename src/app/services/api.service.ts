@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
 import { environment } from '../../environments/environment';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { map, retry, catchError } from 'rxjs/operators';
 import { EmployeeModel } from '../models/employee.model';
 import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
+import { CommonService } from './common.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,11 +17,16 @@ export class ApiService {
   protected baseApiUrl = environment.api.baseUrl;
   protected session = '';
   protected token = '';
+
+  private unauthoriziedSubject: BehaviorSubject<{previousUrl: string}> = new BehaviorSubject<{previousUrl: string}>(null);
+  public unauthorizied$: Observable<{previousUrl: string}> = this.unauthoriziedSubject.asObservable();
+
   constructor(
     protected _http: HttpClient,
     protected authService: NbAuthService,
     private router: Router,
     private dialogService: NbDialogService,
+    // private commonService: CommonService,
     // private activatedRoute: ActivatedRouteSnapshot,
   ) {
 
@@ -275,6 +281,9 @@ export class ApiService {
   }
 
   onUnauthorizied() {
+    this.unauthoriziedSubject.next({
+      previousUrl: this.router.url,
+    });
     this.router.navigate(['/auth/login']);
   }
 

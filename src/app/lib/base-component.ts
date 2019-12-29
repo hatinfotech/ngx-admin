@@ -1,13 +1,16 @@
-import { OnInit } from '@angular/core';
+import { OnInit, OnDestroy } from '@angular/core';
 import { CommonService } from '../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { ReuseComponent } from './reuse-component';
+import { Subscription } from 'rxjs';
 
-export abstract class BaseComponent implements OnInit, ReuseComponent {
+export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent {
 
   abstract componentName: string = '';
   requiredPermissions: string[] = ['ACCESS'];
+
+  protected subcriptions: Subscription[] = [];
 
   constructor(
     protected commonService: CommonService,
@@ -43,6 +46,14 @@ export abstract class BaseComponent implements OnInit, ReuseComponent {
 
   onResume() {
     this.restrict();
+  }
+
+  ngOnDestroy(): void {
+    if (this.subcriptions) {
+      this.subcriptions.forEach(subciption => {
+        subciption.unsubscribe();
+      });
+    }
   }
 
 }

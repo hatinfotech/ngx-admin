@@ -46,7 +46,7 @@ select2,
   display: inline-block;
   text-align: start;
   -webkit-appearance: textfield;
-  background-color: white;
+  /* background-color: white; */
   -webkit-rtl-ordering: logical;
   cursor: text;
   margin: 0em;
@@ -97,8 +97,15 @@ select2,
   font-family: Open Sans, sans-serif !important;
 }
 
-.select2-selection.select2-selection--single:focus {
+.select2-selection.select2-selection--single:focus,
+.select2-container--open .select2-selection.select2-selection--single {
   height: 40px !important;
+  outline: none;
+  border-color: #274bdb !important;
+  box-shadow: 0 0 0 0.375rem rgba(143, 155, 179, 0.16);
+}
+
+.select2-dropdown {
   outline: none;
   border-color: #274bdb !important;
   box-shadow: 0 0 0 0.375rem rgba(143, 155, 179, 0.16);
@@ -133,6 +140,65 @@ select2,
   .select2-search__field:focus {
   outline: none;
 }
+
+select2[ng-reflect-disabled="true"]
+  .select2-container--default
+  .select2-selection__rendered {
+  color: rgba(143, 155, 179, 0.48) !important;
+}
+select2[ng-reflect-disabled="true"]
+  .select2-selection.select2-selection--single:focus {
+  outline: none;
+  box-shadow: none !important;
+  border-color: #edf1f7 !important;
+  /* background-color: #f7f9fc !important; */
+  /* border-color: #edf1f7 !important; */
+}
+
+.nb-theme-dark select2 .select2-selection.select2-selection--single {
+  background-color: #192038 !important;
+  border-color: #151a30 !important;
+}
+
+.nb-theme-dark
+  select2
+  .select2-selection.select2-selection--single
+  .select2-selection__rendered {
+  color: #ffffff !important;
+}
+
+.nb-theme-dark
+  select2[ng-reflect-disabled="true"]
+  .select2-container--default
+  .select2-selection__rendered {
+  color: rgba(143, 155, 179, 0.48) !important;
+}
+.nb-theme-dark
+  select2[ng-reflect-disabled="true"]
+  .select2-selection.select2-selection--single:focus {
+  outline: none !important;
+  border-color: #151a30 !important;
+  box-shadow: none !important;
+  /* background-color: #f7f9fc !important; */
+  border-color: initial !important;
+}
+
+.nb-theme-dark select2 .select2-selection.select2-selection--single:focus,
+.nb-theme-dark
+  select2
+  .select2-container--open
+  .select2-selection.select2-selection--single {
+  outline: none !important;
+  border-color: #274bdb !important;
+  box-shadow: 0 0 0 0.375rem #2e3a59 !important;
+}
+
+.nb-theme-dark .select2-dropdown {
+  background-color: #222b45 !important;
+  border-color: #274bdb !important;
+  box-shadow: 0 0 0 0.375rem #2e3a59 !important;
+}
+/* End select2*/
 
 .input-group > select2.form-control {
   padding: 0px !important;
@@ -229,9 +295,13 @@ body ng2-smart-table table tr.ng2-smart-titles th:first-child {
   width: 5%;
 }
 
-body ng2-smart-table table tr th:first-child:hover,
-body ng2-smart-table table tr td:first-child:hover {
-  background-color: #42aaff;
+body ng2-smart-table table tr:nth-child(odd) th:first-child:hover,
+body ng2-smart-table table tr:nth-child(odd) td:first-child:hover {
+  background-image: linear-gradient(to right, #d9dce0 , #edf1f7);
+}
+body ng2-smart-table table tr:nth-child(even) th:first-child:hover,
+body ng2-smart-table table tr:nth-child(even) td:first-child:hover {
+  background-image: linear-gradient(to right, #d9dce0 , #edf1f7);
 }
 
 body ng2-smart-table table tr.ng2-smart-titles th:first-child input {
@@ -423,7 +493,10 @@ body .form-group[state="warning"] textarea:focus {
   position: relative;
 }
 .form-group .copy-btn {
-  position: absolute; z-index: 1; right: -14px; top: -14px;
+  position: absolute;
+  z-index: 1;
+  right: -14px;
+  top: -14px;
 }
 /* End form */
 

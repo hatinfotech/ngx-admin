@@ -4,10 +4,11 @@
     {{item.text}}</option>
 </select> -->
 <!-- <input type="hidden" [value]="fieldValue"> -->
-<select2
+<select2 [disabled]="isDisabled"
   [value]="value"
   [data]="data"
   [options]="select2Option"
   [cssImport]=true
+  [disabled]="isDisabled"
   (valueChanged)="handleOnChange($event)">
 </select2>

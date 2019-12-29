@@ -27,6 +27,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   isDisabled: boolean;
   @Input('data') data: any[];
   @Input('value') value: string | string[];
+  // @Input('disabled') disabled: string | string[];
   @Input('select2Option') select2Option: Select2Options;
   @Output() selectChange = new EventEmitter<Object>();
 

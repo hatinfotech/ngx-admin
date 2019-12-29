@@ -141,4 +141,14 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
 
   }
 
+  onAfterCreateSubmit(newFormData: PbxModel[]) {
+    super.onAfterCreateSubmit(newFormData);
+    this.ivoipService.clearCache();
+  }
+
+  onAfterUpdateSubmit(newFormData: PbxModel[]) {
+    super.onAfterUpdateSubmit(newFormData);
+    this.ivoipService.clearCache();
+  }
+
 }

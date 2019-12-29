@@ -28,9 +28,9 @@
               <input type="hidden" formControlName="ivr_menu_uuid">
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ivr_menu_name'), 'warning')">
-                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid" status="primary">Tên là bắt buộc
+                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ivr_menu_name" placeholder="Tên" status="primary">
+                  <input type="text" nbInput fullWidth formControlName="ivr_menu_name" placeholder="Tên">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -39,7 +39,7 @@
                   <label class="label"><span class="valid">Số nội bộ đại diện (*)</span><span class="invalid">Số nội bộ đại diện là bắt
                       buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ivr_menu_extension" placeholder="Số nội bộ đại diện" status="primary">
+                  <input type="text" nbInput fullWidth formControlName="ivr_menu_extension" placeholder="Số nội bộ đại diện">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -49,7 +49,7 @@
                       đầu là bắt buộc
                       (*)</span></label>
                   <ngx-select2 [data]="greetingList" formControlName="ivr_menu_greet_long"
-                    [select2Option]="greetingListConfig" status="primary">
+                    [select2Option]="greetingListConfig">
                   </ngx-select2>
                 </div>
               </div>
@@ -69,7 +69,7 @@
                   <label class="label"><span class="valid">Domain (*)</span><span class="invalid">Domain là bắt buộc
                       (*)</span></label>
                   <ngx-select2 [data]="privateDmainList" formControlName="domain_uuid"
-                    [select2Option]="privateDmainListConfig" status="primary">
+                    [select2Option]="privateDmainListConfig">
                   </ngx-select2>
                 </div>
               </div>
@@ -189,7 +189,7 @@
                           [attr.state]="formControlValidate(ivrMenuOption.get('ivr_menu_option_digits'), 'warning')">
                           <label class="label"><span class="valid">Phím (*)</span><span class="invalid">Phím (*)</span></label>
                           <input type="text"    nbInput fullWidth formControlName="ivr_menu_option_digits"
-                            placeholder="Bấm số" status="primary">
+                            placeholder="Bấm số">
                         </div>
                       </div>
                       <div class="col-sm-5">
@@ -197,7 +197,7 @@
                           [attr.state]="formControlValidate(ivrMenuOption.get('ivr_menu_option_param'), 'warning')">
                           <label class="label"><span class="valid">Chuyển tới (*)</span><span class="invalid">Chuyển tới (*)</span></label>
                           <ngx-select2 [data]="actionList" formControlName="ivr_menu_option_param"
-                            [select2Option]="actionListConfig" status="primary">
+                            [select2Option]="actionListConfig">
                           </ngx-select2>
                         </div>
                       </div>

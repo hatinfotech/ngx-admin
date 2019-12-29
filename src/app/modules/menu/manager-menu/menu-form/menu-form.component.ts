@@ -323,6 +323,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
       Icon: [''],
       Group: [''],
       Parent: [''],
+      No: [''],
       Components: this.formBuilder.array([]),
       Permissions: this.formBuilder.array([]),
       Resources: this.formBuilder.array([]),

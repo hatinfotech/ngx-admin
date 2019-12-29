@@ -6,8 +6,9 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { OnInit } from '@angular/core';
 import { BaseComponent } from '../base-component';
+import { ReuseComponent } from '../reuse-component';
 
-export abstract class DataManagerListComponent<M> extends BaseComponent implements OnInit {
+export abstract class DataManagerListComponent<M> extends BaseComponent implements OnInit, ReuseComponent {
 
   editing = {};
   rows = [];
@@ -28,6 +29,8 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   /** Resource id key */
   abstract idKey: string;
 
+  protected refreshPendding = false;
+
   constructor(
     protected apiService: ApiService,
     protected router: Router,
@@ -40,6 +43,11 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** List init event */
   ngOnInit() {
+    this.subcriptions.push(this.commonService.componentChange$.subscribe(info => {
+      if (info.componentName === this.componentName) {
+        this.refreshPendding = true;
+      }
+    }));
     this.loadList();
   }
 
@@ -49,9 +57,13 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Get data from api and push to list */
   loadList(callback?: (list: M[]) => void) {
+    this.selectedIds = [];
+    this.hasSelect = 'none';
     this.getList(list => {
       this.source.load(list.map((item, index) => {
-        item['No'] = index + 1;
+        if (!item['No']) {
+          item['No'] = index + 1;
+        }
         return item;
       }));
       if (callback) callback(list);
@@ -59,13 +71,14 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   onReloadBtnClick(): false {
+    // this.source.reset();
     this.loadList();
     return false;
   }
 
   /** Go to form */
   gotoForm(id?: string): void {
-    this.router.navigate(id ? [this.formPath, id] : [this.formPath]);
+    this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
   }
 
   /** User select event */
@@ -73,7 +86,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     this.selectedIds = event.selected.map((item: M) => {
       return item[this.idKey];
     });
-    console.info(event);
+    // console.info(event);
     if (this.selectedIds.length > 0) {
       this.hasSelect = 'selected';
     } else {
@@ -202,5 +215,17 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     //   } else {
     //     event.confirm.reject();
     //   }
+  }
+
+  refresh() {
+    this.loadList();
+  }
+
+  onResume() {
+    super.onResume();
+    if (this.refreshPendding) {
+      this.refreshPendding = false;
+      this.refresh();
+    }
   }
 }

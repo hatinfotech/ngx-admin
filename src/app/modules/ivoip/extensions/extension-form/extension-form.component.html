@@ -85,9 +85,12 @@
                     <nb-icon (click)="copyFormControlValueToOthers(array, i, 'user_record')" pack="eva"
                       icon="copy-outline"></nb-icon>
                   </label>
-                  <ngx-select2 [data]="userRecordActionList" formControlName="user_record"
+                  <!-- <ngx-select2 [data]="userRecordActionList" formControlName="user_record"
                     [select2Option]="select2OptionForUserRecordActionList">
-                  </ngx-select2>
+                  </ngx-select2> -->
+                  <nb-select size="medium" formControlName="user_record" fullWidth>
+                    <nb-option *ngFor="let userRecordAction of userRecordActionList" [value]="userRecordAction.id">{{ userRecordAction.text }}</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <div class="col-sm-9">
@@ -142,20 +145,20 @@
             <hr>
             <label class="label">Danh sách thiết bị voip</label>
             <div class="row">
-              <div class="col-sm-1">STT</div>
-              <div class="col-sm-10">
+              <div class="col-sm-1 label">STT</div>
+              <div class="col-sm-11">
                 <div class="row">
-                  <div class="col-sm-3">Mã mac</div>
-                  <div class="col-sm-4">Template</div>
-                  <div class="col-sm-5">Diễn giải</div>
+                  <div class="col-sm-3 label">Mã mac</div>
+                  <div class="col-sm-4 label">Template</div>
+                  <div class="col-sm-5 label">Diễn giải</div>
                 </div>
               </div>
-              <div class="col-sm-1" style="text-align: center;">
+              <!-- <div class="col-sm-1" style="text-align: center;">
                 <button nbButton status="success" (click)="addDeviceFormGroup(i)" size="tiny"
                   style="width: 100%; margin-bottom: 3px;" hero>
                   <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                 </button>
-              </div>
+              </div> -->
             </div>
 
             <hr>
@@ -169,7 +172,7 @@
                       <input nbInput fullWidth disabled value="{{ ic + 1 }}" style="text-align: center;">
                     </div>
                   </div>
-                  <div class="col-sm-10">
+                  <div class="col-sm-11">
                     <div class="row">
                       <div class="col-sm-3">
                         <div class="form-group">
@@ -195,7 +198,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-sm-1">
+                  <!-- <div class="col-sm-1">
                     <div class="form-group">
                       <label class="label">CM</label>
                       <button nbButton status="danger" hero size="tiny" (click)="removeDeviceGroup(i, ic)"
@@ -203,7 +206,7 @@
                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                       </button>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
 
               </div>

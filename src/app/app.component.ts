@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { NbIconLibraries, NbMenuItem } from '@nebular/theme';
 import { CommonService } from './services/common.service';
+import { NbAuthService } from '@nebular/auth';
 
 @Component({
   selector: 'ngx-app',
@@ -36,9 +37,25 @@ export class AppComponent implements OnInit {
     private analytics: AnalyticsService,
     iconsLibrary: NbIconLibraries,
     public commonService: CommonService,
+    public authService: NbAuthService,
   ) {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.commonService.getMenuTree(menuTree => this.menu = menuTree);
+
+    this.authService.onAuthenticationChange().subscribe(state => {
+      if (state) {
+        this.commonService.getMenuTree(menuTree => this.menu = menuTree);
+      } else {
+        this.menu = [
+          {
+            title: 'Loading',
+            icon: 'monitor-outline',
+            link: '/loading',
+          },
+        ];
+      }
+    });
+
   }
 
   ngOnInit(): void {

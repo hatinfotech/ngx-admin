@@ -7,9 +7,6 @@ import { NbDialogService, NbMenuItem } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
-import { UserModel } from '../models/user.model';
-import { ContactModel } from '../models/contact.model';
-import { FileStoreModel } from '../models/file-store.model';
 
 @Injectable({
   providedIn: 'root',
@@ -28,13 +25,15 @@ export class CommonService {
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
 
   // private loginInfo: LoginInfoModel;
-  loginInfoSubject: BehaviorSubject<LoginInfoModel> = new BehaviorSubject<LoginInfoModel>(null);
-  loginInfo$ = this.loginInfoSubject.asObservable();
+  // loginInfoSubject: BehaviorSubject<LoginInfoModel> = new BehaviorSubject<LoginInfoModel>(null);
+  // loginInfo$ = this.loginInfoSubject.asObservable();
   loginInfo: LoginInfoModel = new LoginInfoModel();
 
   distributeFileStoreCookieRequestSubject: BehaviorSubject<string> = new BehaviorSubject<string>('assets/images/nick.png');
   distributeFileStoreCookieRequest$ = this.distributeFileStoreCookieRequestSubject.asObservable();
 
+  componentChangeSubject: BehaviorSubject<{componentName: string, state: boolean, data?: any}> = new BehaviorSubject<{componentName: string, state: boolean, data?: any}>({componentName: '', state: false});
+  componentChange$: Observable<{componentName: string, state: boolean, data?: any}> = this.componentChangeSubject.asObservable();
 
   constructor(
     private authService: NbAuthService,
@@ -65,13 +64,21 @@ export class CommonService {
           }
         });
       } else {
-        this.loginInfoSubject.next(new LoginInfoModel());
+        // this.loginInfoSubject.next(new LoginInfoModel());
+        this.clearCache();
+      }
+    });
+
+    // Subcribe authorized event
+    this.apiService.unauthorizied$.subscribe(info => {
+      if (info) {
+        this.setPreviousUrl(info.previousUrl);
       }
     });
   }
 
   getMenuTree(callback: (menuTree: NbMenuItem[]) => void) {
-    this.apiService.get<NbMenuItem[]>('/menu/menu-items', { limit: 999999, restrictPms: true, isTree: true, includeUsers: true, select: 'id=>Code,title,link=>Link=>Title,icon=>Icon,children=>Children' }, list => {
+    this.apiService.get<NbMenuItem[]>('/menu/menu-items', { limit: 999999, restrictPms: true, isTree: true, includeUsers: true, select: 'id=>Code,group=>Group,title,link=>Link=>Title,icon=>Icon,children=>Children' }, list => {
       callback(list);
     });
   }
@@ -90,6 +97,18 @@ export class CommonService {
       this.previousUrl = null;
     } else {
       this._location.back();
+      // this.router.navigate(['/']);
+    }
+
+  }
+
+  goToPrevious() {
+    if (this.previousUrl) {
+      this.router.navigateByUrl(this.previousUrl);
+      this.previousUrl = null;
+    } else {
+      // this._location.back();
+      this.router.navigate(['/']);
     }
 
   }

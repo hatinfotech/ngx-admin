@@ -43,7 +43,7 @@ export class LoginComponent extends NbLoginComponent implements OnInit {
         }, this.redirectDelay);
       } else {
         setTimeout(() => {
-          this.commonService.goback();
+          this.commonService.goToPrevious();
         }, this.redirectDelay);
       }
       this.cd.detectChanges();

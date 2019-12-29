@@ -76,7 +76,8 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
       this.apiService.get<PbxDeviceVendorModel[]>('/ivoip/device-vendors', { limit: 99999, domainId: this.activePbxDoamin, includeTemplates: true }, list => {
         this.templateList = list.map(item => {
           return {
-            text: item.name, children: item.templates.map(item2 => {
+            text: item.name,
+            children: item.templates.map(item2 => {
               return { id: item2, text: item2 };
             }),
           };
@@ -146,10 +147,10 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
 
   makeNewDeviceFormGroup(data?: PbxDeviceModel): FormGroup {
     const newForm = this.formBuilder.group({
-      device_uuid: ['', Validators.required],
-      device_mac_address: ['', Validators.required],
-      device_template: ['', Validators.required],
-      device_description: [''],
+      device_uuid: this.formBuilder.control({value: '', disabled: true}),
+      device_mac_address: this.formBuilder.control({value: '', disabled: true}),
+      device_template: this.formBuilder.control({value: '', disabled: true}),
+      device_description: this.formBuilder.control({value: '', disabled: true}) ,
     });
 
     if (data) {
@@ -157,6 +158,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
       newForm.patchValue(data);
     }
     // newForm.disable();
+    this.updateInitialFormPropertiesCache(newForm);
 
     return newForm;
   }
@@ -166,7 +168,8 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   }
 
   addDeviceFormGroup(formGroupIndex: number) {
-    this.getDevices(formGroupIndex).push(this.makeNewDeviceFormGroup());
+    const newForm = this.makeNewDeviceFormGroup();
+    this.getDevices(formGroupIndex).push(newForm);
     return false;
   }
 

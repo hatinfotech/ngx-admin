@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,13 +7,15 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxModel } from '../../../../models/pbx.model';
+import { IvoipService } from '../../ivoip-service';
+import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 
 @Component({
   selector: 'ngx-domain-form',
   templateUrl: './domain-form.component.html',
   styleUrls: ['./domain-form.component.scss'],
 })
-export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel> implements OnInit {
+export class DomainFormComponent extends IvoipBaseFormComponent<PbxDomainModel> implements OnInit {
 
   componentName = 'DomainFormComponent';
   idKey = 'Id';
@@ -60,9 +61,10 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
+    public ivoipService: IvoipService,
     // protected ref: NbDialogRef<ShowcaseDialogComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }
 
   pbxList: { Code: string, Name: string }[] = [];
@@ -100,7 +102,7 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
     const newForm = this.formBuilder.group({
       Id: [''],
       DomainId: [''],
-      Pbx: ['', Validators.required],
+      Pbx: [this.ivoipService ? this.ivoipService.getActivePbx() : '', Validators.required],
       DomainName: ['', Validators.required],
       // AdminKey: [''],
       Description: [''],
@@ -127,6 +129,16 @@ export class DomainFormComponent extends DataManagerFormComponent<PbxDomainModel
   }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void {
 
+  }
+
+  onAfterCreateSubmit(newFormData: PbxDomainModel[]) {
+    super.onAfterCreateSubmit(newFormData);
+    this.ivoipService.clearCache();
+  }
+
+  onAfterUpdateSubmit(newFormData: PbxDomainModel[]) {
+    super.onAfterUpdateSubmit(newFormData);
+    this.ivoipService.clearCache();
   }
 
 }

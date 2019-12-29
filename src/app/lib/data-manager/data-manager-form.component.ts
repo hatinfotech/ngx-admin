@@ -54,6 +54,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** disable controls list */
   protected disabledControls: AbstractControl[] = [];
 
+  protected queryParam: any;
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -89,6 +91,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Form init */
   ngOnInit() {
 
+    this.activeRoute.queryParams.subscribe(queryParams => {
+      this.queryParam = queryParams;
+    });
     this.activeRoute.params.subscribe(params => {
       // this.id = params['id']; // (+) converts string 'id' to a number
       if (params['id']) {
@@ -219,6 +224,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     });
     this.id = newFormData.map(item => item[this.idKey]);
     this.commonService.location.go(this.generateUrlByIds(this.id));
+    if (this.queryParam && this.queryParam['list']) {
+      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+    }
   }
 
   /** Affter main form update event */
@@ -231,6 +239,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     });
     this.id = newFormData.map(item => item[this.idKey]);
     this.commonService.location.go(this.generateUrlByIds(this.id));
+    if (this.queryParam && this.queryParam['list']) {
+      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+    }
   }
 
   protected generateUrlByIds(ids: string[]) {
@@ -387,6 +398,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  refresh() {
+    this.array.clear();
+    this.formLoad();
   }
 
 }

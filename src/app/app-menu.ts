@@ -93,9 +93,21 @@ export const MENU_ITEMS: NbMenuItem[] = [
         ],
       },
       {
-        title: 'Lời chào',
+        title: 'Cài đặt lời chào',
         // icon: 'people-outline',
-        link: '/ivoip/ivr-menus/list',
+        // link: '/ivoip/ivr-menus/list',
+        children: [
+          {
+            title: 'Lời chào',
+            // icon: 'people-outline',
+            link: '/ivoip/ivr-menus/list',
+          },
+          {
+            title: 'Tệp âm thanh',
+            // icon: 'people-outline',
+            link: '/ivoip/recordings/list',
+          },
+        ],
       },
       {
         title: 'Lịch sử cuộc gọi',

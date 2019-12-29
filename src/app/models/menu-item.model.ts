@@ -2,6 +2,7 @@ import { PermissionModel } from './permission.model';
 
 export class MenuItemModel {
 
+  No?: string;
   Code?: string;
   Title: string;
   Icon?: string;

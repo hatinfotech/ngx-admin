@@ -30,6 +30,8 @@ import { CallCenterListComponent } from './call-centers/call-center-list/call-ce
 import { CallCenterFormComponent } from './call-centers/call-center-form/call-center-form.component';
 import { CallCenterAgentListComponent } from './call-centers/agents/call-center-agent-list/call-center-agent-list.component';
 import { CallCenterAgentFormComponent } from './call-centers/agents/call-center-agent-form/call-center-agent-form.component';
+import { RecordingListComponent } from './recordings/recording-list/recording-list.component';
+import { RecordingFormComponent } from './recordings/recording-form/recording-form.component';
 
 
 const routes: Routes = [{
@@ -298,6 +300,25 @@ const routes: Routes = [{
       path: 'call-blocks/form/:id',
       canActivate: [AuthGuardService],
       component: CallBlockFormComponent,
+    },
+    // Recordings
+    {
+      path: 'recordings/list',
+      canActivate: [AuthGuardService],
+      component: RecordingListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'recordings/form',
+      canActivate: [AuthGuardService],
+      component: RecordingFormComponent,
+    },
+    {
+      path: 'recordings/form/:id',
+      canActivate: [AuthGuardService],
+      component: RecordingFormComponent,
     },
   ],
 }];

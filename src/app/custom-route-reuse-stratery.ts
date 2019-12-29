@@ -3,6 +3,7 @@ import {
   ActivatedRouteSnapshot,
   DetachedRouteHandle,
 } from '@angular/router';
+import { CommonService } from './services/common.service';
 
 
 export class CustomRouteReuseStrategy implements RouteReuseStrategy {
@@ -12,6 +13,10 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   private handlers: { [key: string]: DetachedRouteHandle } = {};
   private takeUltilCount = 0;
   private takeUltilPastCount = 0;
+
+  constructor() {
+
+  }
 
   /**
    * Determines if this route (and its subtree) should be detached to be reused later

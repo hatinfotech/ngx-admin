@@ -43,6 +43,8 @@ import { CallCenterFormComponent } from './call-centers/call-center-form/call-ce
 import { CallCenterListComponent } from './call-centers/call-center-list/call-center-list.component';
 import { CallCenterAgentListComponent } from './call-centers/agents/call-center-agent-list/call-center-agent-list.component';
 import { CallCenterAgentFormComponent } from './call-centers/agents/call-center-agent-form/call-center-agent-form.component';
+import { RecordingListComponent } from './recordings/recording-list/recording-list.component';
+import { RecordingFormComponent } from './recordings/recording-form/recording-form.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +75,8 @@ import { CallCenterAgentFormComponent } from './call-centers/agents/call-center-
     CallCenterFormComponent,
     CallCenterAgentListComponent,
     CallCenterAgentFormComponent,
+    RecordingListComponent,
+    RecordingFormComponent,
   ],
   imports: [
     CommonModule,
