@@ -53,6 +53,19 @@ export class DomainFormComponent extends IvoipBaseFormComponent<PbxDomainModel> 
     },
   };
 
+  pbxList: { Code: string, Name: string }[] = [];
+  select2OptionForPbxList = {
+    placeholder: 'Chọn tổng đài...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Description',
+    },
+  };
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -66,19 +79,6 @@ export class DomainFormComponent extends IvoipBaseFormComponent<PbxDomainModel> 
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }
-
-  pbxList: { Code: string, Name: string }[] = [];
-  select2OptionForPbxList = {
-    placeholder: 'Chọn tổng đài...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'Code',
-      text: 'Description',
-    },
-  };
 
   ngOnInit() {
     this.restrict();

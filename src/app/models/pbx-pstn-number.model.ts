@@ -14,7 +14,7 @@ export class PbxPstnNumberModel {
   destination_caller_id_number?: string;
   destination_cid_name_prefix?: string;
   destination_context?: string;
-  destination_record?: string;
+  destination_record?: boolean;
   destination_accountcode?: string;
   destination_type_voice?: string;
   destination_type_fax?: string;
@@ -23,7 +23,7 @@ export class PbxPstnNumberModel {
   destination_data?: string;
   destination_alternate_app?: string;
   destination_alternate_data?: string;
-  destination_enabled?: string;
+  destination_enabled?: boolean;
   destination_description?: string;
   dialplan_details: PbxDialplanDetailModel[];
 

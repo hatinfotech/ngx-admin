@@ -32,8 +32,8 @@ export class CommonService {
   distributeFileStoreCookieRequestSubject: BehaviorSubject<string> = new BehaviorSubject<string>('assets/images/nick.png');
   distributeFileStoreCookieRequest$ = this.distributeFileStoreCookieRequestSubject.asObservable();
 
-  componentChangeSubject: BehaviorSubject<{componentName: string, state: boolean, data?: any}> = new BehaviorSubject<{componentName: string, state: boolean, data?: any}>({componentName: '', state: false});
-  componentChange$: Observable<{componentName: string, state: boolean, data?: any}> = this.componentChangeSubject.asObservable();
+  componentChangeSubject: BehaviorSubject<{ componentName: string, state: boolean, data?: any }> = new BehaviorSubject<{ componentName: string, state: boolean, data?: any }>({ componentName: '', state: false });
+  componentChange$: Observable<{ componentName: string, state: boolean, data?: any }> = this.componentChangeSubject.asObservable();
 
   constructor(
     private authService: NbAuthService,
@@ -224,6 +224,12 @@ export class CommonService {
         callback();
       }
     }, delay);
+  }
+
+  generatePassword(length: number): string {
+    return Array(length)
+      .fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
+      .map(x => x[Math.floor(Math.random() * x.length)]).join('');
   }
 
 }

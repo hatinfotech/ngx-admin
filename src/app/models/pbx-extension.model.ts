@@ -25,7 +25,7 @@ export class PbxExtensionModel {
   missed_call_data?: string;
   user_context?: string;
   toll_allow?: string;
-  call_timeout?: string;
+  call_timeout?: number;
   call_group?: string;
   call_screen_enabled?: string;
   user_record?: string;
@@ -53,12 +53,12 @@ export class PbxExtensionModel {
   follow_me_uuid?: string;
   forward_caller_id_uuid?: string;
   follow_me_enabled?: string;
-  follow_me_destinations: PbxFollowMeDestinationModel[];
-  enabled?: string;
+  follow_me_destinations?: PbxFollowMeDestinationModel[];
+  enabled?: boolean;
   description?: string;
   absolute_codec_string?: string;
   force_ping?: string;
-  devices: PbxDeviceModel[];
+  devices?: PbxDeviceModel[];
 
   constructor() { }
 

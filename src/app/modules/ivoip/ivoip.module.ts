@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IvoipComponent } from './ivoip.component';
 import { CdrComponent } from './cdr/cdr.component';
 import { IvoipRoutingModule } from './ivoip-routing.module';
-import { NbCardModule, NbIconModule, NbButtonModule, NbInputModule, NbCheckboxModule, NbTabsetModule, NbRouteTabsetModule, NbStepperModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule } from '@nebular/theme';
+import { NbCardModule, NbIconModule, NbButtonModule, NbInputModule, NbCheckboxModule, NbTabsetModule, NbRouteTabsetModule, NbStepperModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { ExtensionsComponent } from './extensions/extensions.component';
@@ -45,6 +45,8 @@ import { CallCenterAgentListComponent } from './call-centers/agents/call-center-
 import { CallCenterAgentFormComponent } from './call-centers/agents/call-center-agent-form/call-center-agent-form.component';
 import { RecordingListComponent } from './recordings/recording-list/recording-list.component';
 import { RecordingFormComponent } from './recordings/recording-form/recording-form.component';
+import { CustomerListComponent } from './customers/customer-list/customer-list.component';
+import { CustomerFormComponent } from './customers/customer-form/customer-form.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { RecordingFormComponent } from './recordings/recording-form/recording-fo
     CallCenterAgentFormComponent,
     RecordingListComponent,
     RecordingFormComponent,
+    CustomerListComponent,
+    CustomerFormComponent,
   ],
   imports: [
     CommonModule,
@@ -106,6 +110,7 @@ import { RecordingFormComponent } from './recordings/recording-form/recording-fo
     FormsModule,
     ReactiveFormsModule,
     DialogModule,
+    NbProgressBarModule,
     SortablejsModule.forRoot({
       animation: 200,
     }),

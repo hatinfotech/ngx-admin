@@ -8,6 +8,7 @@ export class PbxDomainModel {
   Description?: string;
   AdminKey?: string;
   Pbx?: string;
+  Owner?: string;
 
   // pbx properties
   domain_uuid?: string;

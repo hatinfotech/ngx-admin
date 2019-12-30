@@ -1,0 +1,137 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật khách hàng tổng đài điện toán
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Code">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Tên (*)</span>
+                    <span class="invalid">Tên là bắt buộc(*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Phone'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Số điện thoại (*)</span>
+                    <span class="invalid">Số điện thoại là bắt buộc (*)</span>
+                    </label>
+                  <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Số điện thoại">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Email'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Email (*)</span>
+                    <span class="invalid">Email là bắt buộc(*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Email" placeholder="Email">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address'), 'warning')">
+                  <label class="label"><span class="valid">Địa chỉ</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Address" placeholder="Address">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
+                  <label class="label"><span class="valid">Ghi chú</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Note" placeholder="Ghi chú">
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Pbx'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Tổng đài (*)</span>
+                    <span class="invalid">Tổng đài là bắt buộc(*)</span>
+                  </label>
+                  <ngx-select2 [data]="pbxList" formControlName="Pbx"
+                    [select2Option]="select2OptionForPbxList">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DomainName'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Tên miền (*)</span>
+                    <span class="invalid">Tên miền là bắt buộc(*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="DomainName" placeholder="Tên miền">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PstnNumber'), 'warning')">
+                  <label class="label"><span class="valid">Số đấu nối</span></label>
+                  <input type="text" nbInput fullWidth formControlName="PstnNumber" placeholder="Số đấu nối">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PrivatePbxNumber'), 'warning')">
+                  <label class="label"><span class="valid">Số liên tổng đài</span></label>
+                  <input type="text" nbInput fullWidth formControlName="PrivatePbxNumber"
+                    placeholder="Số liên tổng đài">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Gateway'), 'warning')">
+                  <label class="label"><span class="valid">Gateway</span></label>
+                  <nb-select size="medium" formControlName="Gateway" fullWidth selected="">
+                    <nb-option value="">Gateway</nb-option>
+                    <nb-option *ngFor="let gateway of gatewaylist" [value]="gateway.id">{{gateway.text}}</nb-option>
+                  </nb-select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Extensions'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Số mở rộng (*)</span>
+                    <span class="invalid">Số mở rộng là bắt buộc(*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Extensions" placeholder="Số mở rộng, vd: 101,102,103,104,105/101-105">
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <nb-progress-bar [value]="progressBarValue" [status]="progressBarStatus">{{processBarlabel}}</nb-progress-bar>
+          <br>
+          <div class="buttons-row" style="text-align: right;">
+            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
+            <button nbButton status="success" [disabled]="!form.valid" hero style="float: right;">Cập nhật/Khởi tạo tổng đài</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

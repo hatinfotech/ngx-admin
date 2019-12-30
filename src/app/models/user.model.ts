@@ -12,6 +12,7 @@ export class UserModel {
   Avata?: string;
   Contact?: string;
   Avatar?: string;
+  Groups?: string[];
   modulePermissions?: {module: ModuleModel, permissions: PermissionModel[]}[];
 
   constructor() { }
