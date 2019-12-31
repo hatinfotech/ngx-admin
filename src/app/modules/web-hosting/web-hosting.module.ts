@@ -15,6 +15,12 @@ import { SortablejsModule } from 'ngx-sortablejs';
 import { WebHostingRoutingModule } from './web-hosting-routing.module';
 import { WebsiteListComponent } from './websites/website-list/website-list.component';
 import { WebsiteFormComponent } from './websites/website-form/website-form.component';
+import { DatabaseListComponent } from './databases/database-list/database-list.component';
+import { DatabaseFormComponent } from './databases/database-form/database-form.component';
+import { DatabaseUserListComponent } from './database-users/database-user-list/database-user-list.component';
+import { DatabaseUserFormComponent } from './database-users/database-user-form/database-user-form.component';
+import { FtpListComponent } from './ftps/ftp-list/ftp-list.component';
+import { FtpFormComponent } from './ftps/ftp-form/ftp-form.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +30,12 @@ import { WebsiteFormComponent } from './websites/website-form/website-form.compo
     WebHostingDashboardComponent,
     WebsiteListComponent,
     WebsiteFormComponent,
+    DatabaseListComponent,
+    DatabaseFormComponent,
+    DatabaseUserListComponent,
+    DatabaseUserFormComponent,
+    FtpListComponent,
+    FtpFormComponent,
   ],
   imports: [
     WebHostingRoutingModule,
