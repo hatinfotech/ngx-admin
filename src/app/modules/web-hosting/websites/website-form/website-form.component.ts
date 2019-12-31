@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { WebHostingService } from '../../web-hosting-service';
 import { WebHostingBaseFormComponent } from '../../web-hosting-base-form.component';
-import { WhHostingModel } from '../../../../models/wh-hosting.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
+import { WebHostingService } from '../../web-hosting-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { WhWebsiteModel } from '../../../../models/wh-website.model';
 
 @Component({
-  selector: 'ngx-hosting-form',
-  templateUrl: './hosting-form.component.html',
-  styleUrls: ['./hosting-form.component.scss'],
+  selector: 'ngx-website-form',
+  templateUrl: './website-form.component.html',
+  styleUrls: ['./website-form.component.scss'],
 })
-export class HostingFormComponent extends WebHostingBaseFormComponent<WhHostingModel> implements OnInit {
+export class WebsiteFormComponent extends WebHostingBaseFormComponent<WhWebsiteModel> implements OnInit {
 
-  componentName: string = 'HostingFormComponent';
-  idKey = 'Code';
-  apiPath = '/web-hosting/hostings';
-  baseFormUrl = '/web-hosting/hostings/form';
+  componentName: string = 'WebsiteFormComponent';
+  idKey = 'domain_id';
+  apiPath = '/web-hosting/websites';
+  baseFormUrl = '/web-hosting/websites/form';
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -40,31 +40,24 @@ export class HostingFormComponent extends WebHostingBaseFormComponent<WhHostingM
   }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: WhHostingModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: WhWebsiteModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     // params['includeUsers'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: WhHostingModel): FormGroup {
+  makeNewFormGroup(data?: WhWebsiteModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
-      Host: ['', Validators.required],
-      HostIp: ['', Validators.required],
-      ApiLocation: ['', Validators.required],
-      ApiUrl: ['', Validators.required],
-      Username: ['', Validators.required],
-      Password: ['', Validators.required],
-      ClientId: ['', Validators.required],
-      ApiKey: [''],
-      ApiVersion: [''],
-      Enabled: [''],
+      domain_id: [''],
+      hosting: [''],
+      domain: ['', Validators.required],
+      ip_address: [''],
     });
     if (data) {
       newForm.patchValue(data);
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: WhHostingModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: WhWebsiteModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {

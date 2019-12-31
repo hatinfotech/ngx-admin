@@ -1,3 +1,102 @@
-<p>
-  hosting-form works!
-</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật hosting
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Code">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Host'), 'warning')">
+                  <label class="label"><span class="valid">Host (*)</span><span class="invalid">Code là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Host" placeholder="SHost">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('HostIp'), 'warning')">
+                  <label class="label"><span class="valid">Host Ip (*)</span><span class="invalid">Host Ip là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Host" placeholder="Host Ip">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiLocation'), 'warning')">
+                  <label class="label"><span class="valid">Api Location (*)</span><span class="invalid">Api Location là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ApiLocation" placeholder="Api Location">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiUrl'), 'warning')">
+                  <label class="label"><span class="valid">Api Url (*)</span><span class="invalid">Api Url là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ApiUrl" placeholder="Api Url">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Username'), 'warning')">
+                  <label class="label"><span class="valid">Username (*)</span><span class="invalid">Username là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Username" placeholder="Username">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Password'), 'warning')">
+                  <label class="label"><span class="valid">Password (*)</span><span class="invalid">Password là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Password" placeholder="Password">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ClientId'), 'warning')">
+                  <label class="label"><span class="valid">Client Id (*)</span><span class="invalid">Client Id là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ClientId" placeholder="Client Id">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiKey'), 'warning')">
+                  <label class="label"><span class="valid">Api Key (*)</span><span class="invalid">Api Key là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ApiKey" placeholder="Api Key">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiVersion'), 'warning')">
+                  <label class="label"><span class="valid">Api Version (*)</span><span class="invalid">Api Version là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ApiVersion" placeholder="Api Version">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Enabled'), 'warning')">
+                  <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span></label>
+                  <nb-checkbox formControlName="Enabled" >Kích hoạt</nb-checkbox>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button>
+            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
+            <button nbButton status="success" [disabled]="!form.valid" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

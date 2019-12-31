@@ -5,6 +5,8 @@ import { AuthGuardService } from '../../services/auth-guard.service';
 import { WebHostingDashboardComponent } from './web-hosting-dashboard/web-hosting-dashboard.component';
 import { HostingFormComponent } from './hostings/hosting-form/hosting-form.component';
 import { HostingListComponent } from './hostings/hosting-list/hosting-list.component';
+import { WebsiteListComponent } from './websites/website-list/website-list.component';
+import { WebsiteFormComponent } from './websites/website-form/website-form.component';
 
 
 const routes: Routes = [{
@@ -42,6 +44,25 @@ const routes: Routes = [{
       path: 'hostings/form/:id',
       canActivate: [AuthGuardService],
       component: HostingFormComponent,
+    },
+    // Websites
+    {
+      path: 'websites/list',
+      canActivate: [AuthGuardService],
+      component: WebsiteListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'websites/form',
+      canActivate: [AuthGuardService],
+      component: WebsiteFormComponent,
+    },
+    {
+      path: 'websites/form/:id',
+      canActivate: [AuthGuardService],
+      component: WebsiteFormComponent,
     },
   ],
 }];

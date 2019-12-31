@@ -8,12 +8,47 @@ import { OnInit } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 
+export class SmartTableSetting {
+  mode?: string;
+  selectMode?: string;
+  actions?: Boolean | {
+    position?: string;
+  };
+  // actions?: string | number | Boolean;
+  add?: {
+    addButtonContent: string,
+    createButtonContent: string,
+    cancelButtonContent: string,
+  };
+  edit?: {
+    editButtonContent: string,
+    saveButtonContent: string,
+    cancelButtonContent: string,
+  };
+  delete?: {
+    deleteButtonContent: string,
+    confirmDelete: boolean,
+  };
+  pager?: {
+    display: boolean,
+    perPage: number,
+  };
+  columns: {
+    [key: string]: {
+      title: string,
+      type: string,
+      width?: string,
+      filterFunction?: (value: string, query: string) => boolean,
+    },
+  };
+}
+
 export abstract class DataManagerListComponent<M> extends BaseComponent implements OnInit, ReuseComponent {
 
   editing = {};
   rows = [];
   hasSelect = 'none';
-  settings: any;
+  settings: SmartTableSetting;
 
   /** Seleted ids */
   selectedIds: string[] = [];
@@ -227,5 +262,49 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       this.refreshPendding = false;
       this.refresh();
     }
+  }
+
+  /** Config for add button */
+  protected configAddButton() {
+    return {
+      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for edit button */
+  protected configEditButton() {
+    return {
+      editButtonContent: '<i class="nb-edit"></i>',
+      saveButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for delete button */
+  protected configDeleteButton() {
+    return {
+      deleteButtonContent: '<i class="nb-trash"></i>',
+      confirmDelete: true,
+    };
+  }
+
+  /** Config for paging */
+  protected configPaging() {
+    return {
+      display: true,
+      perPage: 100,
+    };
+  }
+
+  /** Config for stmart table setttings */
+  protected configSetting(settings: SmartTableSetting) {
+
+    // Set default filter function
+    if (!settings['filterFunction']) {
+      settings['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
+    }
+    return settings;
   }
 }
