@@ -96,6 +96,12 @@ const routes: Routes = [
       .then(m => m.IvoipModule),
   },
   {
+    path: 'web-hosting',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/web-hosting/web-hosting.module')
+      .then(m => m.WebHostingModule),
+  },
+  {
     path: 'users',
     // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/users/users.module')

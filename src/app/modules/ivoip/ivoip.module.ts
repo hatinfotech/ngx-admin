@@ -90,12 +90,9 @@ import { CustomerFormComponent } from './customers/customer-form/customer-form.c
     Ng2SmartTableModule,
     CustomElementModule,
     NbIconModule,
-    NbButtonModule,
     NbInputModule,
     NbCheckboxModule,
     IvoipDashboardModule,
-
-
     NbRouteTabsetModule,
     NbStepperModule,
     NbButtonModule,

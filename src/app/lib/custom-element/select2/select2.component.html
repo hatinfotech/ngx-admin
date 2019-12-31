@@ -4,7 +4,7 @@
     {{item.text}}</option>
 </select> -->
 <!-- <input type="hidden" [value]="fieldValue"> -->
-<select2 [disabled]="isDisabled"
+<select2 [disabled]="isDisabled" [ngClass]="{'disabled': isDisabled}"
   [value]="value"
   [data]="data"
   [options]="select2Option"

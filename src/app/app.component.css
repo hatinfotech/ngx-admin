@@ -141,12 +141,12 @@ select2,
   outline: none;
 }
 
-select2[ng-reflect-disabled="true"]
+select2.disabled
   .select2-container--default
   .select2-selection__rendered {
   color: rgba(143, 155, 179, 0.48) !important;
 }
-select2[ng-reflect-disabled="true"]
+select2.disabled
   .select2-selection.select2-selection--single:focus {
   outline: none;
   box-shadow: none !important;
@@ -168,13 +168,13 @@ select2[ng-reflect-disabled="true"]
 }
 
 .nb-theme-dark
-  select2[ng-reflect-disabled="true"]
+  select2.disabled
   .select2-container--default
   .select2-selection__rendered {
   color: rgba(143, 155, 179, 0.48) !important;
 }
 .nb-theme-dark
-  select2[ng-reflect-disabled="true"]
+  select2.disabled
   .select2-selection.select2-selection--single:focus {
   outline: none !important;
   border-color: #151a30 !important;

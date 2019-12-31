@@ -1,0 +1,76 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật nhóm người dùng
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Code_old">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
+                  <label class="label"><span class="valid">Mã nhóm (*)</span><span class="invalid">Mã nhóm là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Code" placeholder="Mã nhóm">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Parent'), 'warning')">
+                  <label class="label"><span class="valid">Nhóm cha (*)</span></label>
+                  <ngx-select2 [data]="parentList" formControlName="Parent" [select2Option]="select2OptionForParent">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Diễn giải</label>
+                  <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
+                </div>
+              </div>
+              <div class="col-sm-9">
+                <div class="form-group">
+                  <label class="label">Người dùng thuộc nhóm</label>
+                  <ngx-select2 [data]="userList" formControlName="Users" [select2Option]="select2OptionForUsers">
+                  </ngx-select2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm nhóm người dùng</button>
+            <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button>
+            <button nbButton status="success" [disabled]="!form.valid" hero>Lưu nhóm người dùng</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>
