@@ -54,7 +54,7 @@ export class FtpListComponent extends WebHostingBaseListComponent<WhFtpModel> im
     },
   });
 
-  websiteMap: {[key: string]: WhWebsiteModel} = {};
+  websiteMap: { [key: string]: WhWebsiteModel } = {};
 
   constructor(
     protected apiService: ApiService,
@@ -84,7 +84,9 @@ export class FtpListComponent extends WebHostingBaseListComponent<WhFtpModel> im
 
       callback(results.map(item => {
         item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
-        item.parent_domain_id = this.websiteMap[item.parent_domain_id].domain;
+        if (this.websiteMap[item.parent_domain_id]) {
+          item.parent_domain_id = this.websiteMap[item.parent_domain_id].domain;
+        }
         return item;
       }));
 

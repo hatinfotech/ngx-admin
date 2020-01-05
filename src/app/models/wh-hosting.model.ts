@@ -8,6 +8,7 @@ export class WhHostingModel {
   Username?: string;
   Password?: string;
   ClientId?: string;
+  ClientName?: string;
   ApiKey?: string;
   ApiVersion?: string;
   Enabled?: boolean;

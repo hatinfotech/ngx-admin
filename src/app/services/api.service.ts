@@ -17,8 +17,8 @@ export class ApiService {
   protected session = '';
   protected token = '';
 
-  private unauthoriziedSubject: BehaviorSubject<{previousUrl: string}> = new BehaviorSubject<{previousUrl: string}>(null);
-  public unauthorizied$: Observable<{previousUrl: string}> = this.unauthoriziedSubject.asObservable();
+  private unauthoriziedSubject: BehaviorSubject<{ previousUrl: string }> = new BehaviorSubject<{ previousUrl: string }>(null);
+  public unauthorizied$: Observable<{ previousUrl: string }> = this.unauthoriziedSubject.asObservable();
 
   constructor(
     protected _http: HttpClient,
@@ -231,6 +231,14 @@ export class ApiService {
     });
   }
 
+  postPut<T>(method: string, enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
+    if (method === 'POST') {
+      this.post<T>(enpoint, params, resource, success, error);
+    } else if (method === 'PUT') {
+      this.put<T>(enpoint, params, resource, success, error);
+    }
+  }
+
   /** Restful api delete request */
   delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
@@ -295,6 +303,22 @@ export class ApiService {
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Yêu cầu quyền truy cập',
+          content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
+          actions: [
+            {
+              label: 'Trở về',
+              icon: 'back',
+              status: 'info',
+              action: () => { },
+            },
+          ],
+        },
+      });
+    }
+    if (e.status === 400) {
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Yêu cầu không thể thục thi',
           content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
           actions: [
             {

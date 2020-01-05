@@ -75,11 +75,11 @@
                     <span class="invalid">Tổng đài là bắt buộc(*)</span>
                   </label>
                   <ngx-select2 [data]="pbxList" formControlName="Pbx"
-                    [select2Option]="select2OptionForPbxList">
+                    [select2Option]="select2OptionForPbxList" (ngModelChange)="onPbxChange($event, formItem, i)">
                   </ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('DomainName'), 'warning')">
                   <label class="label">
                     <span class="valid">Tên miền (*)</span>
@@ -88,10 +88,21 @@
                   <input type="text" nbInput fullWidth formControlName="DomainName" placeholder="Tên miền">
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('PstnNumber'), 'warning')">
                   <label class="label"><span class="valid">Số đấu nối</span></label>
                   <input type="text" nbInput fullWidth formControlName="PstnNumber" placeholder="Số đấu nối">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Hosting'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Hosting (*)</span>
+                    <span class="invalid">Hosting là bắt buộc(*)</span>
+                  </label>
+                  <ngx-select2 [data]="hostingList" formControlName="Hosting"
+                    [select2Option]="hostingListConfig">
+                  </ngx-select2>
                 </div>
               </div>
               <div class="col-sm-6">
@@ -105,7 +116,7 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Gateway'), 'warning')">
                   <label class="label"><span class="valid">Gateway</span></label>
                   <nb-select size="medium" formControlName="Gateway" fullWidth selected="">
-                    <nb-option value="">Gateway</nb-option>
+                    <nb-option value="">Chọn gateway...</nb-option>
                     <nb-option *ngFor="let gateway of gatewaylist" [value]="gateway.id">{{gateway.text}}</nb-option>
                   </nb-select>
                 </div>

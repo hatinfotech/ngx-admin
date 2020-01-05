@@ -71,7 +71,7 @@ export class HostingFormComponent extends WebHostingBaseFormComponent<WhHostingM
 
   }
   goback(): false {
-    this.router.navigate(['/web-hosting/websites/list']);
+    this.router.navigate(['/web-hosting/hostings/list']);
     return false;
   }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
