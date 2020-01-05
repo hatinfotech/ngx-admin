@@ -47,6 +47,8 @@ import { RecordingListComponent } from './recordings/recording-list/recording-li
 import { RecordingFormComponent } from './recordings/recording-form/recording-form.component';
 import { CustomerListComponent } from './customers/customer-list/customer-list.component';
 import { CustomerFormComponent } from './customers/customer-form/customer-form.component';
+import { UserListComponent } from './users/user-list/user-list.component';
+import { UserFormComponent } from './users/user-form/user-form.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,8 @@ import { CustomerFormComponent } from './customers/customer-form/customer-form.c
     RecordingFormComponent,
     CustomerListComponent,
     CustomerFormComponent,
+    UserListComponent,
+    UserFormComponent,
   ],
   imports: [
     CommonModule,

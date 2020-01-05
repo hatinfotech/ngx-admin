@@ -1,0 +1,130 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header">
+        <nb-card-header>
+          <nav>
+            Cập nhật thông tin người dùng
+            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+              title="Xoá">
+              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="arrow-back"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <!-- <input type="hidden" formControlName="call_block_uuid_old"> -->
+              <input type="hidden" formControlName="user_uuid">
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('username'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Username (*)</span>
+                    <span class="invalid">Username là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="username" placeholder="Username">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('password'), 'warning')">
+                  <label class="label"><span class="valid">Password (*)</span></label>
+                  <input type="password" nbInput fullWidth formControlName="password" placeholder="Password">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('domain_uuid'), 'warning')">
+                  <label class="label"><span class="valid">Domain (*)</span></label>
+                  <ngx-select2 [data]="domainList" formControlName="domain_uuid" [select2Option]="select2OptionForDoaminList">
+                    </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('contact_name_given'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Tên (*)</span>
+                    <span class="invalid">Tên là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="contact_name_given" placeholder="Tên">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('contact_name_family'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Họ (*)</span>
+                    <span class="invalid">Họ là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="contact_name_family" placeholder="Họ">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('contact_organization'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Công ty (*)</span>
+                    <span class="invalid">Công ty là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="contact_organization" placeholder="Công ty">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('user_email'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Email (*)</span>
+                    <span class="invalid">Email là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="user_email" placeholder="Email">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('api_key'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Api key (*)</span>
+                    <span class="invalid">Api key là bắt buộc (*)</span>
+                    &nbsp;<nb-icon (click)="generateApiKey(formItem.get('api_key'))" pack="eva" icon="flash" title="Tạo api key" style="cursor: pointer;"></nb-icon>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="api_key" placeholder="Api key">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('groups'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Nhóm (*)</span>
+                    <span class="invalid">Nhóm là bắt buộc (*)</span>
+                  </label>
+                  <ngx-select2 [data]="groupList" formControlName="groups" [select2Option]="select2OptionForGroups">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('user_enabled'), 'warning')">
+                  <label class="label">
+                    <span class="valid">Kích hoạt</span>
+                    <span class="invalid"></span>
+                  </label>
+                  <nb-checkbox formControlName="user_enabled" >Kích hoạt</nb-checkbox>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button>
+            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
+            <button nbButton status="success" [disabled]="!form.valid" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

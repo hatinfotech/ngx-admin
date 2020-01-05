@@ -18,6 +18,10 @@ export class MiniErpDeploymentModel {
   ShellHost?: string;
   ShellUser?: string;
   ShellPassword?: string;
+  PbxApiUrl?: string;
+  PbxName?: string;
+  PbxDomain?: string;
+  PbxApiKey?: string;
 
   constructor() { }
 

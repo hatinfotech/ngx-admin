@@ -49,7 +49,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/dashboard',
+    redirectTo: '/ivoip/dashboard',
     pathMatch: 'full',
   },
   {

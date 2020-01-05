@@ -22,6 +22,7 @@ import { WhDatabaseModel } from '../../../../models/wh-database.model';
 import { WhFtpModel } from '../../../../models/wh-ftp.model';
 import { MiniErpDeploymentModel } from '../../../../models/minierp-deployment.model';
 import { WhHostingModel } from '../../../../models/wh-hosting.model';
+import { PbxUserModel } from '../../../../models/pbx-user.model';
 
 @Component({
   selector: 'ngx-customer-form',
@@ -53,7 +54,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
   progressBarValue = 10;
   processBarlabel = 'Tiến trình';
 
-  pbxList: { Code: string, Name: string }[] = [];
+  pbxList: PbxModel[] = [];
   select2OptionForPbxList = {
     placeholder: 'Chọn tổng đài...',
     allowClear: true,
@@ -88,7 +89,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     //   return { id: item.gateway_uuid, text: item.gateway };
     // });
 
-    this.apiService.get<PbxModel[]>('/ivoip/pbxs', { select: 'Code,Description', limit: 9999 }, list => {
+    this.apiService.get<PbxModel[]>('/ivoip/pbxs', { select: 'Code,Description,ApiUrl', limit: 9999 }, list => {
       this.pbxList = this.convertOptionList(list, 'Code', 'Description');
 
       this.apiService.get<WhHostingModel[]>('/web-hosting/hostings', {}, hostings => {
@@ -261,7 +262,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
 
 
-        ((callback) => {
+        ((callback: (newPbxDomain: PbxDomainModel, newAdminUser: PbxUserModel) => void) => {
 
           ((afterCreateDomain: (newDomain: PbxDomainModel) => void) => {
             this.apiService.get<PbxDomainModel[]>('/ivoip/domains', { DomainName: formData.DomainName }, domains => {
@@ -288,158 +289,199 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
               }
             });
           })((newDomain) => {
-            // Create extensions
-            this.progressBarValue = 60;
-            this.processBarlabel = 'Tạo số mở rộng';
 
             const domainUuid = newDomain.DomainId + '@' + newDomain.Pbx;
 
-            // Config pstn number
-            let exts: string[] = [];
-            let minExtension: string;
-            let maxExtension: string;
-            let firstExtension: string;
-            if (/\,/.test(formData.Extensions)) {
-              exts = formData.Extensions.split(',');
-              firstExtension = exts[0];
-            } else {
-              const tmpList = formData.Extensions.split('-');
-              if (tmpList.length > 1) {
-                minExtension = tmpList[0];
-                maxExtension = tmpList[1];
-                firstExtension = minExtension;
+            /** Create admin user for new domain */
+            ((afterCreateDomainAdminUser: (newAdminUser: PbxUserModel) => void) => {
+              this.apiService.get<PbxUserModel[]>('/ivoip/users', { username: 'admin', domainId: domainUuid }, oldPbxUsers => {
+                let pbxUser: PbxUserModel = null;
+                let method = 'POST';
+                if (oldPbxUsers.length > 0) {
+                  pbxUser = oldPbxUsers[0];
+                  method = 'PUT';
+                } else {
+                  pbxUser = new PbxUserModel();
+                }
+                this.apiService.get<{ data: string }>('/ivoip/users', { generateApiKey: true, domainId: domainUuid }, apiKey => {
+                  pbxUser.username = 'admin';
+                  pbxUser.password = 'MiniERP@' + apiKey.data;
+                  pbxUser.user_email = formData.Email;
+                  pbxUser.contact_name_given = 'Admin';
+                  pbxUser.contact_name_family = 'Mini ERP';
+                  pbxUser.contact_organization = formData.Name;
+                  pbxUser.domain_uuid = newDomain.DomainId;
+                  pbxUser.api_key = apiKey.data;
+                  pbxUser.groups = ['admin'];
+                  pbxUser.user_enabled = true;
 
-                for (let i = +minExtension; i <= +maxExtension; i++) {
-                  exts.push('' + i);
+                  this.apiService.postPut<PbxUserModel[]>(method, '/ivoip/users', { domainId: domainUuid }, [pbxUser], newPbxUsers => {
+                    afterCreateDomainAdminUser(newPbxUsers[0]);
+                  }, e => this.onProcessing());
+                });
+              });
+            })((newAdminUser) => {
+
+              /** Create extensions */
+              this.progressBarValue = 60;
+              this.processBarlabel = 'Tạo số mở rộng';
+
+              // Config pstn number
+              let exts: string[] = [];
+              let minExtension: string;
+              let maxExtension: string;
+              let firstExtension: string;
+              if (/\,/.test(formData.Extensions)) {
+                exts = formData.Extensions.split(',');
+                firstExtension = exts[0];
+              } else {
+                const tmpList = formData.Extensions.split('-');
+                if (tmpList.length > 1) {
+                  minExtension = tmpList[0];
+                  maxExtension = tmpList[1];
+                  firstExtension = minExtension;
+
+                  for (let i = +minExtension; i <= +maxExtension; i++) {
+                    exts.push('' + i);
+                  }
                 }
               }
-            }
 
-            const extensions: PbxExtensionModel[] = [];
-            exts.forEach(ext => {
-              extensions.push({
-                extension: ext,
-                call_timeout: 30,
-                enabled: true,
-                password: '',
-                domain_uuid: newDomain.DomainId,
-                user_record: 'all',
-                description: ext + '@' + newDomain.DomainName,
+              const extensions: PbxExtensionModel[] = [];
+              exts.forEach(ext => {
+                extensions.push({
+                  extension: ext,
+                  call_timeout: 30,
+                  enabled: true,
+                  password: '',
+                  domain_uuid: newDomain.DomainId,
+                  user_record: 'all',
+                  description: ext + '@' + newDomain.DomainName,
+                });
               });
-            });
 
-            ((afterCreateExtensions: () => void) => {
-              this.apiService.get<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainUuid }, oldExtensions => {
-                if (oldExtensions.length > 0) {
-                  afterCreateExtensions();
-                } else {
-                  this.apiService.post<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainUuid }, extensions, newExtensions => {
-                    console.info(newExtensions);
-
-                    // Notify
-                    this.toastrService.show('success', 'Đã khai báo số mở rộng ' + newExtensions.map(item => item.description).join('; '), {
-                      status: 'primary',
-                      hasIcon: true,
-                      position: NbGlobalPhysicalPosition.TOP_RIGHT,
-                    });
-
+              ((afterCreateExtensions: () => void) => {
+                this.apiService.get<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainUuid }, oldExtensions => {
+                  if (oldExtensions.length > 0) {
                     afterCreateExtensions();
+                  } else {
+                    this.apiService.post<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainUuid }, extensions, newExtensions => {
+                      console.info(newExtensions);
+
+                      // Notify
+                      this.toastrService.show('success', 'Đã khai báo số mở rộng ' + newExtensions.map(item => item.description).join('; '), {
+                        status: 'primary',
+                        hasIcon: true,
+                        position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                      });
+
+                      afterCreateExtensions();
 
 
-                  }, e => this.onProcessed());
-                }
-              });
-            })(() => {
-              this.progressBarValue = 70;
-              this.processBarlabel = 'Cấu hình số đấu nối';
+                    }, e => this.onProcessed());
+                  }
+                });
+              })(() => {
+                this.progressBarValue = 70;
+                this.processBarlabel = 'Cấu hình số đấu nối';
 
-              ((afterCreatePstnNumber: (pstnNumber?: PbxPstnNumberModel) => void) => {
+                ((afterCreatePstnNumber: (pstnNumber?: PbxPstnNumberModel) => void) => {
 
-                if (!formData.PstnNumber) {
-                  afterCreatePstnNumber();
-                } else {
+                  if (!formData.PstnNumber) {
+                    afterCreatePstnNumber();
+                  } else {
 
-                  this.apiService.get<PbxPstnNumberModel[]>('/ivoip/pstn-numbers', { domainId: domainUuid, destination_accountcode: formData.PstnNumber }, oldPstnNumbers => {
-                    if (oldPstnNumbers.length > 0) {
-                      afterCreatePstnNumber(oldPstnNumbers[0]);
-                    } else {
-                      const pstnNumber = new PbxPstnNumberModel();
-                      pstnNumber.destination_accountcode = formData.PstnNumber;
-                      pstnNumber.destination_number = '(\\d{1,3}' + formData.PstnNumber.replace(/^0/, '') + ')';
-                      pstnNumber.domain_uuid = newDomain.DomainId;
-                      pstnNumber.destination_type = 'inbound';
-                      pstnNumber.destination_description = 'Goi vao';
-                      pstnNumber.destination_record = true;
-                      pstnNumber.destination_enabled = true;
-                      pstnNumber.dialplan_details = [
-                        {
-                          dialplan_detail_data: 'transfer:' + firstExtension + ' XML ' + newDomain.DomainName,
-                        },
-                      ];
+                    this.apiService.get<PbxPstnNumberModel[]>('/ivoip/pstn-numbers', { domainId: domainUuid, destination_accountcode: formData.PstnNumber }, oldPstnNumbers => {
+                      if (oldPstnNumbers.length > 0) {
+                        afterCreatePstnNumber(oldPstnNumbers[0]);
+                      } else {
+                        const pstnNumber = new PbxPstnNumberModel();
+                        pstnNumber.destination_accountcode = formData.PstnNumber;
+                        pstnNumber.destination_number = '(\\d{1,3}' + formData.PstnNumber.replace(/^0/, '') + ')';
+                        pstnNumber.domain_uuid = newDomain.DomainId;
+                        pstnNumber.destination_type = 'inbound';
+                        pstnNumber.destination_description = 'Goi vao';
+                        pstnNumber.destination_record = true;
+                        pstnNumber.destination_enabled = true;
+                        pstnNumber.dialplan_details = [
+                          {
+                            dialplan_detail_data: 'transfer:' + firstExtension + ' XML ' + newDomain.DomainName,
+                          },
+                        ];
 
-                      this.apiService.post<PbxPstnNumberModel[]>('/ivoip/pstn-numbers', { domainId: domainUuid }, [pstnNumber], newPstnNumbers => {
-                        const newPstnNumber = newPstnNumbers[0];
-                        console.info(newPstnNumber);
+                        this.apiService.post<PbxPstnNumberModel[]>('/ivoip/pstn-numbers', { domainId: domainUuid }, [pstnNumber], newPstnNumbers => {
+                          const newPstnNumber = newPstnNumbers[0];
+                          console.info(newPstnNumber);
 
-                        // Notify
-                        this.toastrService.show('success', 'Đã khai báo số đấu nối ' + newPstnNumber.destination_accountcode, {
-                          status: 'info',
-                          hasIcon: true,
-                          position: NbGlobalPhysicalPosition.TOP_RIGHT,
-                        });
+                          // Notify
+                          this.toastrService.show('success', 'Đã khai báo số đấu nối ' + newPstnNumber.destination_accountcode, {
+                            status: 'info',
+                            hasIcon: true,
+                            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                          });
 
-                        afterCreatePstnNumber(newPstnNumber);
+                          afterCreatePstnNumber(newPstnNumber);
 
 
-                      }, e => this.onProcessed());
-                    }
-                  });
-                }
-              })((pstnNumber) => {
-
-                if (!pstnNumber) {
-                  callback(newDomain);
-                } else {
-
-                  this.progressBarValue = 80;
-                  this.processBarlabel = 'Cấu hình quy tắt gọi ra';
-
-                  // Create outbound route
-                  const dialplan = new PbxDialplanModel();
-                  dialplan.dialplan_type = 'outbound';
-                  dialplan.dialplan_gateway = '';
-                  dialplan.dialplan_name = 'Goi ra ' + pstnNumber.destination_accountcode;
-                  dialplan.dialplan_number = pstnNumber.destination_accountcode;
-                  dialplan.dialplan_regex = '\d{7,12}';
-                  dialplan.dialplan_context = newDomain.DomainName;
-                  dialplan.domain_uuid = newDomain.DomainId;
-                  dialplan.dialplan_description = 'Goi ra ' + pstnNumber.destination_accountcode;
-                  dialplan.dialplan_order = 100;
-                  dialplan.dialplan_enabled = true;
-
-                  this.apiService.post<PbxDialplanModel[]>('/ivoip/dialplans', { domainId: domainUuid }, [dialplan], newDialplans => {
-
-                    console.info(newDialplans);
-
-                    // Notify
-                    this.toastrService.show('success', 'Đã thêm cấu hình gọi ra', {
-                      status: 'success',
-                      hasIcon: true,
-                      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                        }, e => this.onProcessed());
+                      }
                     });
+                  }
+                })((pstnNumber) => {
 
-                    callback(newDomain);
+                  if (!pstnNumber) {
+                    callback(newDomain, newAdminUser);
+                  } else {
 
-                  }, e => this.onProcessed());
-                }
+                    this.progressBarValue = 80;
+                    this.processBarlabel = 'Cấu hình quy tắt gọi ra';
+
+                    // Create outbound route
+                    const dialplan = new PbxDialplanModel();
+                    dialplan.dialplan_type = 'outbound';
+                    dialplan.dialplan_gateway = '';
+                    dialplan.dialplan_name = 'Goi ra ' + pstnNumber.destination_accountcode;
+                    dialplan.dialplan_number = pstnNumber.destination_accountcode;
+                    dialplan.dialplan_regex = '\d{7,12}';
+                    dialplan.dialplan_context = newDomain.DomainName;
+                    dialplan.domain_uuid = newDomain.DomainId;
+                    dialplan.dialplan_description = 'Goi ra ' + pstnNumber.destination_accountcode;
+                    dialplan.dialplan_order = 100;
+                    dialplan.dialplan_enabled = true;
+
+                    this.apiService.post<PbxDialplanModel[]>('/ivoip/dialplans', { domainId: domainUuid }, [dialplan], newDialplans => {
+
+                      console.info(newDialplans);
+
+                      // Notify
+                      this.toastrService.show('success', 'Đã thêm cấu hình gọi ra', {
+                        status: 'success',
+                        hasIcon: true,
+                        position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                      });
+
+                      callback(newDomain, newAdminUser);
+
+                    }, e => this.onProcessed());
+                  }
+
+                });
+
+
 
               });
+
+
 
 
 
             });
+
+
+
+
           });
-        })((newDomain: PbxDomainModel) => {
+        })((newDomain: PbxDomainModel, newAdminUser: PbxUserModel) => {
           console.info(newDomain);
 
           // Notify
@@ -633,7 +675,9 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                   this.apiService.get<MiniErpDeploymentModel[]>('/minierp/deployments', { customer: formData.Code }, miniErpDeployments => {
                     if (miniErpDeployments.length > 0) {
 
+                      const pbx = this.pbxList.filter(p => p.Code === formData.Pbx)[0];
                       const miniErpDeployment = miniErpDeployments[0];
+
 
                       miniErpDeployment.FtpHost = webHosting.Host;
                       miniErpDeployment.Domain = formData.DomainName;
@@ -643,6 +687,10 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                       miniErpDeployment.DbName = newDatabase.database_name;
                       miniErpDeployment.DbUser = newDbUser.database_user;
                       miniErpDeployment.DbPassword = newDbUser.database_password;
+                      miniErpDeployment.PbxApiUrl = pbx.ApiUrl;
+                      miniErpDeployment.PbxDomain = formData.DomainName;
+                      miniErpDeployment.PbxName = formData.DomainName.toUpperCase();
+                      miniErpDeployment.PbxApiKey = newAdminUser.api_key;
 
                       this.apiService.put<MiniErpDeploymentModel[]>('/minierp/deployments', { deploy: true }, [miniErpDeployment], results => {
                         console.info(results);
