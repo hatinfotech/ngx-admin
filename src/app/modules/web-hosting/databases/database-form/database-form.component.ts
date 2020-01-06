@@ -14,7 +14,7 @@ import { WhWebsiteModel } from '../../../../models/wh-website.model';
 @Component({
   selector: 'ngx-database-form',
   templateUrl: './database-form.component.html',
-  styleUrls: ['./database-form.component.scss']
+  styleUrls: ['./database-form.component.scss'],
 })
 export class DatabaseFormComponent extends WebHostingBaseFormComponent<WhDatabaseModel> implements OnInit {
 

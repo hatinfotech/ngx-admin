@@ -26,7 +26,7 @@ export class WebHostingService {
 
   constructor(
     private apiService: ApiService,
-    private authService: NbAuthService,
+    // private authService: NbAuthService,
     private commonService: CommonService,
   ) {
     this.apiService.get<WhHostingModel[]>('/web-hosting/hostings', {}, hostings => {
