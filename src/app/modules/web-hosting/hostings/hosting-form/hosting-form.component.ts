@@ -55,6 +55,7 @@ export class HostingFormComponent extends WebHostingBaseFormComponent<WhHostingM
       Username: ['', Validators.required],
       Password: ['', Validators.required],
       ClientId: ['', Validators.required],
+      ClientName: ['', Validators.required],
       ApiKey: [''],
       ApiVersion: [''],
       Enabled: [''],

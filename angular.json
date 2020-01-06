@@ -13,7 +13,7 @@
           "options": {
             "preserveSymlinks": true,
             "rebaseRootRelativeCssUrls": true,
-            "outputPath": "dist",
+            "outputPath": "/Users/hoangtriet/Data/Development/NaM/Source/NaM-EP/mini-erp",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -21,7 +21,7 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              "src/favicon.png",
+              "src/.htaccess",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",
@@ -133,7 +133,7 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              "src/favicon.png",
+              "src/.htaccess",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",

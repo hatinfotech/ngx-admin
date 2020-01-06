@@ -203,8 +203,23 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
-          content: JSON.stringify(e),
-          actions: [{ label: 'Ok', icon: 'back', status: 'info', action: () => { } }],
+          content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : e,
+          actions: [
+            { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
+            {
+              label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
+                this.dialogService.open(ShowcaseDialogComponent, {
+                  context: {
+                    title: 'Lỗi triển khai Tổng Đài Điện Toán',
+                    content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : e,
+                    actions: [
+                      { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
+                    ],
+                  },
+                });
+              },
+            },
+          ],
         },
       });
     });
@@ -226,8 +241,23 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
-          content: JSON.stringify(e),
-          actions: [{ label: 'Ok', icon: 'back', status: 'info', action: () => { } }],
+          content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : e,
+          actions: [
+            { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
+            {
+              label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
+                this.dialogService.open(ShowcaseDialogComponent, {
+                  context: {
+                    title: 'Lỗi triển khai Tổng Đài Điện Toán',
+                    content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : e,
+                    actions: [
+                      { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
+                    ],
+                  },
+                });
+              },
+            },
+          ],
         },
       });
     });
@@ -380,7 +410,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
                   this.apiService.postPut<PbxUserModel[]>(method, '/ivoip/users', { domainId: domainUuid }, [pbxUser], newPbxUsers => {
                     afterCreateDomainAdminUser(newPbxUsers[0]);
-                  }, e => this.onProcessing());
+                  }, e => error(e));
                 });
               }, e => error(e));
             })((newAdminUser) => {
@@ -618,8 +648,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                     newDbUser.database_password = 'mtsg513733';
                     callback(newDbUser);
                   } else {
-                    this.onProcessed();
-                    console.error('System could not create websting db user');
+                    // this.onProcessed();
+                    error('System could not create websting db user');
                   }
                 }, e => error(e));
                 // }
@@ -654,8 +684,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                         callback(newDatabase);
 
                       } else {
-                        this.onProcessed();
-                        console.error('System could not create web hosting database');
+                        // this.onProcessed();
+                        error('System could not create web hosting database');
                       }
                     }, e => error(e));
                   }
@@ -693,8 +723,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                         newFtp.password = 'mtsg513733';
                         callback(newFtp);
                       } else {
-                        this.onProcessed();
-                        console.error('System could not create web hosting ftp user');
+                        // this.onProcessed();
+                        error('System could not create web hosting ftp user');
                       }
                     }, e => error(e));
                     // }
@@ -722,7 +752,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                   console.info(webHosting);
 
                   // Check
-                  this.apiService.get<MiniErpDeploymentModel[]>('/minierp/deployments', { customer: newFormData.Code }, miniErpDeployments => {
+                  this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { customer: newFormData.Code }, miniErpDeployments => {
                     if (miniErpDeployments.length > 0) {
 
                       const miniErpDeployment = miniErpDeployments[0];
@@ -741,7 +771,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                       miniErpDeployment.PbxName = formData.DomainName.toUpperCase();
                       miniErpDeployment.PbxApiKey = newAdminUser.api_key;
 
-                      this.apiService.put<MiniErpDeploymentModel[]>('/minierp/deployments', { deploy: true }, [miniErpDeployment], results => {
+                      this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { deploy: true }, [miniErpDeployment], results => {
                         console.info(results);
                         this.progressBarValue = 100;
                         this.processBarlabel = 'Khởi tạo tổng đài thành công';

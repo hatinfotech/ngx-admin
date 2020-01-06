@@ -62,10 +62,16 @@
                   <input type="text" nbInput fullWidth formControlName="Password" placeholder="Password">
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ClientId'), 'warning')">
                   <label class="label"><span class="valid">Client Id (*)</span><span class="invalid">Client Id là bắt buộc (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="ClientId" placeholder="Client Id">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ClientName'), 'warning')">
+                  <label class="label"><span class="valid">Client Name (*)</span><span class="invalid">Client Name là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ClientName" placeholder="Client Name">
                 </div>
               </div>
               <div class="col-sm-6">
