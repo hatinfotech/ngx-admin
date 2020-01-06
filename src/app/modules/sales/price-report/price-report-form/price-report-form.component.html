@@ -8,7 +8,7 @@
     </nav>
   </nb-card-header>
   <nb-card-body>
-    <form [formGroup]="priceReportForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="priceReportForm" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()">
       <input type="hidden" formControlName="Code">
       <div class="row">
         <div class="col-sm-3">
