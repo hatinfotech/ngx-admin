@@ -203,7 +203,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
-          content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : e,
+          content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
           actions: [
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
             {
@@ -211,7 +211,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                 this.dialogService.open(ShowcaseDialogComponent, {
                   context: {
                     title: 'Lỗi triển khai Tổng Đài Điện Toán',
-                    content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : e,
+                    content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
                     actions: [
                       { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
                     ],
@@ -241,7 +241,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
-          content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : e,
+          content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
           actions: [
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
             {
@@ -249,7 +249,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                 this.dialogService.open(ShowcaseDialogComponent, {
                   context: {
                     title: 'Lỗi triển khai Tổng Đài Điện Toán',
-                    content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : e,
+                    content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
                     actions: [
                       { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
                     ],
