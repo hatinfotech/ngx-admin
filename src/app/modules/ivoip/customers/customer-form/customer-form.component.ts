@@ -13,7 +13,6 @@ import { PbxModel } from '../../../../models/pbx.model';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { UserModel } from '../../../../models/user.model';
 import { PbxPstnNumberModel } from '../../../../models/pbx-pstn-number.model';
-import { max } from 'rxjs/operators';
 import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { PbxDialplanModel } from '../../../../models/pbx-dialplan.model';
 import { WhWebsiteModel } from '../../../../models/wh-website.model';
@@ -28,7 +27,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 @Component({
   selector: 'ngx-customer-form',
   templateUrl: './customer-form.component.html',
-  styleUrls: ['./customer-form.component.scss']
+  styleUrls: ['./customer-form.component.scss'],
 })
 export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerModel> implements OnInit {
 

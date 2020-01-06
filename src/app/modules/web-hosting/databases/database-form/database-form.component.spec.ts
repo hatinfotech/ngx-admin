@@ -8,7 +8,7 @@ describe('DatabaseFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DatabaseFormComponent ]
+      declarations: [ DatabaseFormComponent ],
     })
     .compileComponents();
   }));

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WebHostingBaseFormComponent } from '../../web-hosting-base-form.component';
 import { WhFtpModel } from '../../../../models/wh-ftp.model';
-import { WhDatabaseUserModel } from '../../../../models/wh-database-user.model';
 import { WhWebsiteModel } from '../../../../models/wh-website.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';

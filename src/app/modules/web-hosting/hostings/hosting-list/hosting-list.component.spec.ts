@@ -8,7 +8,7 @@ describe('HostingListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HostingListComponent ]
+      declarations: [ HostingListComponent ],
     })
     .compileComponents();
   }));

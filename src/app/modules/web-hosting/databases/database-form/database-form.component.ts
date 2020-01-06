@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WebHostingBaseFormComponent } from '../../web-hosting-base-form.component';
 import { WhDatabaseModel } from '../../../../models/wh-database.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';

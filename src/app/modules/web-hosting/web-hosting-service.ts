@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { PbxModel } from '../../models/pbx.model';
-import { PbxDomainModel } from '../../models/pbx-domain.model';
 import { NbAuthService } from '@nebular/auth';
 import { WhHostingModel } from '../../models/wh-hosting.model';
 import { CommonService } from '../../services/common.service';

@@ -11,7 +11,7 @@ import { WhWebsiteModel } from '../../../../models/wh-website.model';
 @Component({
   selector: 'ngx-ftp-list',
   templateUrl: './ftp-list.component.html',
-  styleUrls: ['./ftp-list.component.scss']
+  styleUrls: ['./ftp-list.component.scss'],
 })
 export class FtpListComponent extends WebHostingBaseListComponent<WhFtpModel> implements OnInit {
 

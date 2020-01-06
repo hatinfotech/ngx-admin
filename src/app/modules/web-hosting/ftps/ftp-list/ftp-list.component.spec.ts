@@ -8,7 +8,7 @@ describe('FtpListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FtpListComponent ]
+      declarations: [ FtpListComponent ],
     })
     .compileComponents();
   }));

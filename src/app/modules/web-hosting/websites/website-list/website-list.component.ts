@@ -6,7 +6,6 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WhWebsiteModel } from '../../../../models/wh-website.model';
 import { WebHostingService } from '../../web-hosting-service';
-import { WhHostingModel } from '../../../../models/wh-hosting.model';
 
 @Component({
   selector: 'ngx-website-list',

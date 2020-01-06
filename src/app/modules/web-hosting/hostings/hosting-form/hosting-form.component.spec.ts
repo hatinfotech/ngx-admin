@@ -8,7 +8,7 @@ describe('HostingFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HostingFormComponent ]
+      declarations: [ HostingFormComponent ],
     })
     .compileComponents();
   }));

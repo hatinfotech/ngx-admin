@@ -8,7 +8,7 @@ describe('DatabaseListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DatabaseListComponent ]
+      declarations: [ DatabaseListComponent ],
     })
     .compileComponents();
   }));

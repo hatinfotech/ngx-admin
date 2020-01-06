@@ -8,7 +8,7 @@ describe('WebsiteFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WebsiteFormComponent ]
+      declarations: [ WebsiteFormComponent ],
     })
     .compileComponents();
   }));

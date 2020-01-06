@@ -8,7 +8,7 @@ describe('WebHostingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WebHostingComponent ]
+      declarations: [ WebHostingComponent ],
     })
     .compileComponents();
   }));

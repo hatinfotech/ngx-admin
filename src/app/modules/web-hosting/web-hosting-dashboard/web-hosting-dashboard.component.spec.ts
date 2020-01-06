@@ -8,7 +8,7 @@ describe('WebHostingDashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WebHostingDashboardComponent ]
+      declarations: [ WebHostingDashboardComponent ],
     })
     .compileComponents();
   }));
