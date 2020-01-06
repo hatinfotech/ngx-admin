@@ -23,6 +23,7 @@ import { WhFtpModel } from '../../../../models/wh-ftp.model';
 import { MiniErpDeploymentModel } from '../../../../models/minierp-deployment.model';
 import { WhHostingModel } from '../../../../models/wh-hosting.model';
 import { PbxUserModel } from '../../../../models/pbx-user.model';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-customer-form',
@@ -142,6 +143,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
             success(data);
 
           });
+        } else {
+          success(data);
         }
       }
 
@@ -153,7 +156,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       Code: [''],
       Name: ['', Validators.required],
       Phone: ['', Validators.required],
-      Email: ['', Validators.email],
+      Email: ['', Validators.required],
       Address: [''],
       Note: [''],
       // Pbx info
@@ -186,18 +189,52 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
   onAfterCreateSubmit(newFormData: PbxCustomerModel[]) {
     // super.onAfterCreateSubmit(newFormData);
+    super.onAfterCreateSubmit(newFormData);
     this.deployPbxAndMiniErp(newFormData, () => {
-      super.onAfterCreateSubmit(newFormData);
+      this.onProcessed();
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Triển khai Tổng Đài Điện Toán',
+          content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
+          actions: [{ label: 'Ok', icon: 'back', status: 'info', action: () => { } }],
+        },
+      });
+    }, e => {
+      this.onProcessed();
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Lỗi triển khai Tổng Đài Điện Toán',
+          content: JSON.stringify(e),
+          actions: [{ label: 'Ok', icon: 'back', status: 'info', action: () => { } }],
+        },
+      });
     });
   }
 
   onAfterUpdateSubmit(newFormData: PbxCustomerModel[]) {
+    super.onAfterUpdateSubmit(newFormData);
     this.deployPbxAndMiniErp(newFormData, () => {
-      super.onAfterUpdateSubmit(newFormData);
+      this.onProcessed();
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Triển khai Tổng Đài Điện Toán',
+          content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
+          actions: [{ label: 'Ok', icon: 'back', status: 'info', action: () => { } }],
+        },
+      });
+    }, e => {
+      this.onProcessed();
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Lỗi triển khai Tổng Đài Điện Toán',
+          content: JSON.stringify(e),
+          actions: [{ label: 'Ok', icon: 'back', status: 'info', action: () => { } }],
+        },
+      });
     });
   }
 
-  deployPbxAndMiniErp(newFormDatas: PbxCustomerModel[], onAfterDeploy: () => void) {
+  deployPbxAndMiniErp(newFormDatas: PbxCustomerModel[], onAfterDeploy: () => void, error: (error: any) => void) {
     // super.onAfterUpdateSubmit(newFormData);
 
     const newFormData = newFormDatas[0];
@@ -221,41 +258,43 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     if (formData) {
 
       const webHosting: WhHostingModel = this.hostingList.filter(w => w.Code === formData.Hosting)[0];
+      const pbx = this.pbxList.filter(p => p.Code === formData.Pbx)[0];
 
       setTimeout(() => {
         this.onProcessing();
       }, 1000);
 
       // Create/update user
-      const user = new UserModel();
-      if (newFormData.User) {
-        user.Code = newFormData.User;
-      }
-      user.Name = formData.Name;
-      user.Username = formData.Phone;
-      user.Phone = formData.Phone;
-      user.Email = formData.Email;
-      user.Password = this.commonService.generatePassword(6);
-      user.Groups = ['IVOIP'];
+      // const user = new UserModel();
+      // if (newFormData.User) {
+      //   user.Code = newFormData.User;
+      // }
+      // user.Name = formData.Name;
+      // user.Username = formData.Phone;
+      // user.Phone = formData.Phone;
+      // user.Email = formData.Email;
+      // user.Password = this.commonService.generatePassword(6);
+      // user.Groups = ['IVOIP'];
       ((callback: (newUser: UserModel) => void) => {
-        if (user.Code) {
-          this.apiService.put<UserModel[]>('/user/users', {}, [user], newUsers => {
-            callback(newUsers[0]);
-          }, e => this.onProcessed());
-        } else {
-          this.apiService.post<UserModel[]>('/user/users', {}, [user], newUsers => {
-            callback(newUsers[0]);
-          }, e => this.onProcessed());
-        }
+        callback(new UserModel());
+        // if (user.Code) {
+        //   this.apiService.put<UserModel[]>('/user/users', {}, [user], newUsers => {
+        //     callback(newUsers[0]);
+        //   }, e => this.onProcessed());
+        // } else {
+        //   this.apiService.post<UserModel[]>('/user/users', {}, [user], newUsers => {
+        //     callback(newUsers[0]);
+        //   }, e => this.onProcessed());
+        // }
       })((newUser: UserModel) => {
-        console.info(newUser);
+        // console.info(newUser);
 
-        // Notify
-        this.toastrService.show('success', 'Đã tạo thôn tin người dùng ' + newUser.Name, {
-          status: 'danger',
-          hasIcon: true,
-          position: NbGlobalPhysicalPosition.TOP_RIGHT,
-        });
+        // // Notify
+        // this.toastrService.show('success', 'Đã tạo thôn tin người dùng ' + newUser.Name, {
+        //   status: 'danger',
+        //   hasIcon: true,
+        //   position: NbGlobalPhysicalPosition.TOP_RIGHT,
+        // });
 
         this.progressBarValue = 50;
         this.processBarlabel = 'Tạo tên miền';
@@ -274,18 +313,43 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                 domain.Pbx = formData.Pbx;
                 domain.DomainName = formData.DomainName;
                 domain.Description = formData.Name;
-                domain.Owner = newUser.Code;
+                // domain.Owner = newUser.Code;
+                let tryCount = 0;
+                const tryCreatePbxDomain = () => {
+                  tryCount++;
+                  this.apiService.post<PbxDomainModel[]>('/ivoip/domains', {}, [domain], newDomains => {
 
-                this.apiService.post<PbxDomainModel[]>('/ivoip/domains', {}, [domain], newDomains => {
+                    const newDomain = newDomains[0];
+                    if (newDomain) {
+                      afterCreateDomain(newDomain);
+                    } else {
+                      error('System could not create pbx domain');
+                    }
+                  }, e => {
+                    if (tryCount < 10) {
 
-                  const newDomain = newDomains[0];
-                  if (newDomain) {
-                    afterCreateDomain(newDomain);
-                  } else {
-                    this.onProcessed();
-                    console.error('System could not create pbx domain');
-                  }
-                });
+                      this.apiService.put<PbxModel[]>('/ivoip/pbxs', { cachePbxDomain: true }, [pbx], pbxs => {
+                        const domainList = pbxs[0].Domains;
+                        if (domainList) {
+                          const failDomain = domainList.filter(d => d.DomainName === formData.DomainName)[0];
+                          if (failDomain) {
+                            this.apiService.delete('/ivoip/domains', [failDomain.Id], result => {
+                              tryCreatePbxDomain();
+                            }, e2 => {
+                              console.info(e2);
+                              if (error) error(e2);
+                            });
+                          }
+                        }
+                      });
+                    } else {
+                      // console.info(e);
+                      error(e);
+                    }
+                  });
+                };
+                tryCreatePbxDomain();
+
               }
             });
           })((newDomain) => {
@@ -319,7 +383,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                     afterCreateDomainAdminUser(newPbxUsers[0]);
                   }, e => this.onProcessing());
                 });
-              });
+              }, e => error(e));
             })((newAdminUser) => {
 
               /** Create extensions */
@@ -344,6 +408,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                   for (let i = +minExtension; i <= +maxExtension; i++) {
                     exts.push('' + i);
                   }
+                } else if (tmpList[0]) {
+                  exts.push('' + tmpList[0]);
                 }
               }
 
@@ -365,22 +431,23 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                   if (oldExtensions.length > 0) {
                     afterCreateExtensions();
                   } else {
-                    this.apiService.post<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainUuid }, extensions, newExtensions => {
-                      console.info(newExtensions);
+                    if (extensions.length > 0) {
+                      this.apiService.post<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainUuid }, extensions, newExtensions => {
+                        console.info(newExtensions);
 
-                      // Notify
-                      this.toastrService.show('success', 'Đã khai báo số mở rộng ' + newExtensions.map(item => item.description).join('; '), {
-                        status: 'primary',
-                        hasIcon: true,
-                        position: NbGlobalPhysicalPosition.TOP_RIGHT,
-                      });
-
+                        // Notify
+                        this.toastrService.show('success', 'Đã khai báo số mở rộng ' + newExtensions.map(item => item.description).join('; '), {
+                          status: 'primary',
+                          hasIcon: true,
+                          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                        });
+                        afterCreateExtensions();
+                      }, e => error(e));
+                    } else {
                       afterCreateExtensions();
-
-
-                    }, e => this.onProcessed());
+                    }
                   }
-                });
+                }, e => error(e));
               })(() => {
                 this.progressBarValue = 70;
                 this.processBarlabel = 'Cấu hình số đấu nối';
@@ -423,9 +490,9 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                           afterCreatePstnNumber(newPstnNumber);
 
 
-                        }, e => this.onProcessed());
+                        }, e => error(e));
                       }
-                    });
+                    }, e => error(e));
                   }
                 })((pstnNumber) => {
 
@@ -462,24 +529,11 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
                       callback(newDomain, newAdminUser);
 
-                    }, e => this.onProcessed());
+                    }, e => error(e));
                   }
-
                 });
-
-
-
               });
-
-
-
-
-
             });
-
-
-
-
           });
         })((newDomain: PbxDomainModel, newAdminUser: PbxUserModel) => {
           console.info(newDomain);
@@ -523,12 +577,12 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                   });
                   callback(newWebsite);
                 } else {
-                  this.onProcessed();
-                  console.error('System could not create website');
+                  // this.onProcessed();
+                  error('System could not create website');
                 }
-              });
+              }, e => error(e));
               // }
-            });
+            }, e => error(e));
           })((newWebsite) => {
 
             // Create db user
@@ -568,9 +622,9 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                     this.onProcessed();
                     console.error('System could not create websting db user');
                   }
-                });
+                }, e => error(e));
                 // }
-              });
+              }, e => error(e));
             })((newDbUser) => {
               // Create database
               ((callback: (newDatabase: WhDatabaseModel) => void) => {
@@ -604,9 +658,9 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                         this.onProcessed();
                         console.error('System could not create web hosting database');
                       }
-                    }, e => this.onProcessed());
+                    }, e => error(e));
                   }
-                });
+                }, e => error(e));
 
               })((newDatabase) => {
                 // Create ftp account
@@ -643,9 +697,9 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                         this.onProcessed();
                         console.error('System could not create web hosting ftp user');
                       }
-                    }, e => this.onProcessed());
+                    }, e => error(e));
                     // }
-                  });
+                  }, e => error(e));
 
 
                 })((newFtp) => {
@@ -665,17 +719,13 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                     position: NbGlobalPhysicalPosition.TOP_RIGHT,
                   });
 
-                  // setTimeout(() => {
-
                   // Upload mini erp source code
                   console.info(webHosting);
 
-                  // let minierpDeployment: MiniErpDeploymentModel;
                   // Check
-                  this.apiService.get<MiniErpDeploymentModel[]>('/minierp/deployments', { customer: formData.Code }, miniErpDeployments => {
+                  this.apiService.get<MiniErpDeploymentModel[]>('/minierp/deployments', { customer: newFormData.Code }, miniErpDeployments => {
                     if (miniErpDeployments.length > 0) {
 
-                      const pbx = this.pbxList.filter(p => p.Code === formData.Pbx)[0];
                       const miniErpDeployment = miniErpDeployments[0];
 
 
@@ -698,70 +748,17 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                         this.processBarlabel = 'Khởi tạo tổng đài thành công';
                         onAfterDeploy();
 
-                      });
+                      }, e => error(e));
 
                     } else {
-                      this.onProcessed();
-                      console.info('Mini Erp Deploloyment was not exists');
+                      error('Mini Erp Deploloyment was not exists');
                     }
-
-                  });
-
-                  // Upload php install script
-
-                  // ajax request php install script
-
-
-
-                  // }, 30000);
+                  }, e => error(e));
                 });
-
-
               });
-
-
-
-
-
             });
-
-
-            // this.apiService.post<WhDatabaseUserModel[]>('/web-hosting/database-users', { hosting: 'ISPCONFIG33' }, [dbUser], newDbUsers => {
-            //   const newDbUser = newDbUsers[0];
-            //   if (newDbUser) {
-
-            //     // Notify
-            //     this.toastrService.show('success', 'Đã khao báo website database user', {
-            //       status: 'success',
-            //       hasIcon: true,
-            //       position: NbGlobalPhysicalPosition.TOP_RIGHT,
-            //     });
-
-
-            //   }
-            // }, e => this.onProcessed());
           });
-
-          // this.apiService.post<WhWebsiteModel[]>('/web-hosting/websites', { hosting: 'ISPCONFIG33' }, [website], newWebsites => {
-          // const newWebsite = newWebsites[0];
-          // if (newWebsite) {
-
-          // Notify
-          // this.toastrService.show('success', 'Đã khao báo website', {
-          //   status: 'success',
-          //   hasIcon: true,
-          //   position: NbGlobalPhysicalPosition.TOP_RIGHT,
-          // });
-
-          // Create database user
-
-          // }
-          // }, e => this.onProcessed());
-
-
         });
-
-
       });
     }
   }

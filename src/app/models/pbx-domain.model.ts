@@ -1,7 +1,7 @@
 export class PbxDomainModel {
 
   // NaM Core properites
-  Id?: number;
+  Id?: string;
   DomainUuid?: string;
   DomainId?: string;
   DomainName?: string;
