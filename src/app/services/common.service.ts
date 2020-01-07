@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
-import { NbDialogService, NbMenuItem } from '@nebular/theme';
+import { NbDialogService, NbMenuItem, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
@@ -36,11 +36,12 @@ export class CommonService {
   componentChange$: Observable<{ componentName: string, state: boolean, data?: any }> = this.componentChangeSubject.asObservable();
 
   constructor(
-    private authService: NbAuthService,
-    private apiService: ApiService,
-    private dialogService: NbDialogService,
-    private router: Router,
-    private _location: Location,
+    public authService: NbAuthService,
+    public apiService: ApiService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public router: Router,
+    public _location: Location,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {

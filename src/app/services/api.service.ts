@@ -154,7 +154,7 @@ export class ApiService {
         const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
-            return this.handleError(e);
+            return this.handleError(e, params['silent']);
           }))
           .subscribe((resources: T) => {
             success(resources);
@@ -190,7 +190,7 @@ export class ApiService {
         const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
-            return this.handleError(e);
+            return this.handleError(e, params['silent']);
           }))
           .subscribe((newResource: T) => {
             success(newResource);
@@ -219,7 +219,7 @@ export class ApiService {
         const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
-            return this.handleError(e);
+            return this.handleError(e, params['silent']);
           }))
           .subscribe((newResource: T) => {
             success(newResource);
@@ -257,7 +257,7 @@ export class ApiService {
         const obs = this._http.delete(apiUrl)
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
-            return this.handleError(e);
+            return this.handleError(e, id['silent']);
           }))
           .subscribe((resp) => {
             success(resp);
@@ -294,13 +294,13 @@ export class ApiService {
     this.router.navigate(['/auth/login']);
   }
 
-  handleError(e: HttpErrorResponse) {
+  handleError(e: HttpErrorResponse, silient?: boolean) {
     if (e.status === 401) {
       console.warn('You were not logged in');
       this.router.navigate(['/auth/login']);
     }
     if (e.status === 405) {
-      this.dialogService.open(ShowcaseDialogComponent, {
+      if (!silient) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Yêu cầu quyền truy cập',
           content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
@@ -316,9 +316,9 @@ export class ApiService {
       });
     }
     if (e.status === 400) {
-      this.dialogService.open(ShowcaseDialogComponent, {
+      if (!silient) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
-          title: 'Yêu cầu không thể thục thi',
+          title: 'Yêu cầu không thể thực thi',
           content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
           actions: [
             {

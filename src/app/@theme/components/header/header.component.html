@@ -3,7 +3,8 @@
     <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
       <nb-icon icon="menu-2-outline"></nb-icon>
     </a>
-    <a class="logo" href="#" (click)="navigateHome()">Mini-ERP ®</a>
+    <a class="logo" href="#" (click)="navigateHome()">
+      <div style="position: relative">Mini-ERP <div style="position: absolute; top: -5px; right: -18px; font-size: 20px">®</div></div></a>
   </div>
   <nb-select size="small" [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
     <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>

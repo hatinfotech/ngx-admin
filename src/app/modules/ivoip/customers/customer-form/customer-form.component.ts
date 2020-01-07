@@ -4,7 +4,7 @@ import { PbxCustomerModel } from '../../../../models/pbx-customer.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbGlobalPhysicalPosition } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbGlobalPhysicalPosition, NbToastRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -195,7 +195,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         context: {
           title: 'Triển khai Tổng Đài Điện Toán',
           content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
-          actions: [{ label: 'Ok', icon: 'back', status: 'info', action: () => { } }],
+          actions: [{ label: 'Ok', icon: 'back', status: 'success', action: () => { } }],
         },
       });
     }, e => {
@@ -233,7 +233,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         context: {
           title: 'Triển khai Tổng Đài Điện Toán',
           content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
-          actions: [{ label: 'Ok', icon: 'back', status: 'info', action: () => { } }],
+          actions: [{ label: 'Ok', icon: 'back', status: 'success', action: () => { } }],
         },
       });
     }, e => {
@@ -267,6 +267,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     // super.onAfterUpdateSubmit(newFormData);
 
     const newFormData = newFormDatas[0];
+    let longToastRef: NbToastRef = null;
 
     this.progressBarValue = 40;
     this.processBarlabel = 'Tạo tài khoản';
@@ -343,33 +344,72 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                 domain.DomainName = formData.DomainName;
                 domain.Description = formData.Name;
                 // domain.Owner = newUser.Code;
-                let tryCount = 0;
-                const tryCreatePbxDomain = () => {
-                  tryCount++;
-                  this.apiService.post<PbxDomainModel[]>('/ivoip/domains', {}, [domain], newDomains => {
+                // let tryCount = 0;
+
+                const tryCreatePbxDomain = (tryCount: number) => {
+                  if (longToastRef) {
+                    longToastRef.close();
+                  }
+                  longToastRef = this.toastrService.show('Đang thực thi...', 'Khởi tạo tổng đài', {
+                    status: 'warning',
+                    hasIcon: true,
+                    position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                    duration: 0,
+                  });
+
+                  this.apiService.post<PbxDomainModel[]>('/ivoip/domains', { silent: tryCount <= 5 }, [domain], newDomains => {
 
                     const newDomain = newDomains[0];
                     if (newDomain) {
                       afterCreateDomain(newDomain);
+                      if (longToastRef) {
+                        longToastRef.close();
+                      }
                     } else {
                       error('System could not create pbx domain');
                     }
                   }, e => {
-                    if (tryCount < 10) {
-
-                      this.apiService.put<PbxModel[]>('/ivoip/pbxs', { cachePbxDomain: true }, [pbx], pbxs => {
-                        const domainList = pbxs[0].Domains;
-                        if (domainList) {
-                          const failDomain = domainList.filter(d => d.DomainName === formData.DomainName)[0];
-                          if (failDomain) {
-                            this.apiService.delete('/ivoip/domains', [failDomain.Id], result => {
-                              tryCreatePbxDomain();
-                            }, e2 => {
-                              console.info(e2);
-                              if (error) error(e2);
-                            });
+                    if (tryCount <= 5) {
+                      this.toastrService.show('Thử lại lần ' + tryCount + '/5', 'Đã xảy ra lỗi trong quá trình khởi tạo tổng đài', {
+                        status: 'warning',
+                        hasIcon: true,
+                        position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                      });
+                      ((afterCleanPbxDomain: () => void) => {
+                        this.apiService.put<PbxModel[]>('/ivoip/pbxs', { cachePbxDomain: true }, [pbx], pbxs => {
+                          const domainList = pbxs[0].Domains;
+                          if (domainList) {
+                            const failDomain = domainList.filter(d => d.DomainName === formData.DomainName)[0];
+                            if (failDomain) {
+                              this.apiService.delete('/ivoip/domains', [failDomain.Id], result => {
+                                afterCleanPbxDomain();
+                              }, e2 => {
+                                console.info(e2);
+                                this.toastrService.show('Bỏ qua bước dọn dẹp domain', 'Lỗi trong quá trình xoá domain', {
+                                  status: 'warning',
+                                  hasIcon: true,
+                                  position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                                });
+                                afterCleanPbxDomain();
+                              });
+                            } else {
+                              afterCleanPbxDomain();
+                            }
+                          } else {
+                            afterCleanPbxDomain();
                           }
-                        }
+                        });
+                      })(() => {
+                        // afterCleanPbxDomain();
+                        this.toastrService.show('Thử lại trong 15s nữa', 'Khởi tạo tổng đài', {
+                          status: 'warning',
+                          hasIcon: true,
+                          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                          duration: 15000,
+                        });
+                        setTimeout(() => {
+                          tryCreatePbxDomain(tryCount + 1);
+                        }, 15000);
                       });
                     } else {
                       // console.info(e);
@@ -377,13 +417,22 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                     }
                   });
                 };
-                tryCreatePbxDomain();
-
+                tryCreatePbxDomain(1);
               }
             });
           })((newDomain) => {
 
             const domainUuid = newDomain.DomainId + '@' + newDomain.Pbx;
+
+            if (longToastRef) {
+              longToastRef.close();
+            }
+            longToastRef = this.toastrService.show('Đang thực thi...', 'Tạo thông tin kết nối cho tổng đài mới', {
+              status: 'primary',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+              duration: 0,
+            });
 
             /** Create admin user for new domain */
             ((afterCreateDomainAdminUser: (newAdminUser: PbxUserModel) => void) => {
@@ -414,6 +463,16 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                 });
               }, e => error(e));
             })((newAdminUser) => {
+
+              if (longToastRef) {
+                longToastRef.close();
+              }
+              longToastRef = this.toastrService.show('Đang thực thi...', 'Khởi tạo số mở rộng (extension) cho tổng đài', {
+                status: 'primary',
+                hasIcon: true,
+                position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                duration: 0,
+              });
 
               /** Create extensions */
               this.progressBarValue = 60;
@@ -478,6 +537,17 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                   }
                 }, e => error(e));
               })(() => {
+
+                if (longToastRef) {
+                  longToastRef.close();
+                }
+                longToastRef = this.toastrService.show('Đang thực thi...', 'Cấu hình số đấu đối cho tổng đài mới', {
+                  status: 'primary',
+                  hasIcon: true,
+                  position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                  duration: 0,
+                });
+
                 this.progressBarValue = 70;
                 this.processBarlabel = 'Cấu hình số đấu nối';
 
@@ -529,6 +599,16 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                     callback(newDomain, newAdminUser);
                   } else {
 
+                    if (longToastRef) {
+                      longToastRef.close();
+                    }
+                    longToastRef = this.toastrService.show('Đang thực thi...', 'Cấu hình quy tắt gọi ra cho tổng đài mới', {
+                      status: 'primary',
+                      hasIcon: true,
+                      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                      duration: 0,
+                    });
+
                     this.progressBarValue = 80;
                     this.processBarlabel = 'Cấu hình quy tắt gọi ra';
 
@@ -568,12 +648,21 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           console.info(newDomain);
 
           // Notify
-          this.toastrService.show('success', 'Đã tạo tên miền ' + newDomain.DomainName, {
-            status: 'warning',
+          this.toastrService.show(newDomain.DomainName, 'Đã tạo tên miền ' + newDomain.DomainName, {
+            status: 'success',
             hasIcon: true,
             position: NbGlobalPhysicalPosition.TOP_RIGHT,
           });
 
+          if (longToastRef) {
+            longToastRef.close();
+          }
+          longToastRef = this.toastrService.show('Đang thực thi...', 'Tạo giao diện quản lý cho tổng đài mới', {
+            status: 'warning',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            duration: 0,
+          });
 
           this.progressBarValue = 80;
           this.processBarlabel = 'Tạo giao diện quản lý';
@@ -757,7 +846,6 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
                       const miniErpDeployment = miniErpDeployments[0];
 
-
                       miniErpDeployment.FtpHost = webHosting.Host;
                       miniErpDeployment.Domain = formData.DomainName;
                       miniErpDeployment.FtpUser = newFtp.username;
@@ -771,16 +859,47 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                       miniErpDeployment.PbxName = formData.DomainName.toUpperCase();
                       miniErpDeployment.PbxApiKey = newAdminUser.api_key;
 
-                      this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { deploy: true }, [miniErpDeployment], results => {
-                        console.info(results);
-                        this.progressBarValue = 100;
-                        this.processBarlabel = 'Khởi tạo tổng đài thành công';
-                        onAfterDeploy();
+                      if (longToastRef) {
+                        longToastRef.close();
+                      }
+                      longToastRef = this.toastrService.show('Đang thực thi...', 'Khởi tạo giao diện quản lý', {
+                        status: 'warning',
+                        hasIcon: true,
+                        position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                        duration: 0,
+                      });
 
-                      }, e => error(e));
+                      const tryDeployMiniErp = (tryCount: number) => {
+                        this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { deploy: true, silent: tryCount <= 5 }, [miniErpDeployment], results => {
+                          console.info(results);
+                          this.progressBarValue = 100;
+                          this.processBarlabel = 'Khởi tạo tổng đài thành công';
+                          if (longToastRef) {
+                            longToastRef.close();
+                          }
+                          onAfterDeploy();
+
+                        }, e => {
+                          if (tryCount <= 5) {
+                            // Notify
+                            this.toastrService.show('Thử lại trong 15s nữa', 'Có lỗi xảy ra trong quá trình khởi tạo giao diện quản lý', {
+                              status: 'warning',
+                              hasIcon: true,
+                              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                              duration: 15000,
+                            });
+                            setTimeout(() => {
+                              tryDeployMiniErp(tryCount + 1);
+                            }, 15000);
+                          } else {
+                            error(e);
+                          }
+                        });
+                      };
+                      tryDeployMiniErp(1);
 
                     } else {
-                      error('Mini Erp Deploloyment was not exists');
+                      error('Thông tin triển khai Mini ERP không tồn tại');
                     }
                   }, e => error(e));
                 });
