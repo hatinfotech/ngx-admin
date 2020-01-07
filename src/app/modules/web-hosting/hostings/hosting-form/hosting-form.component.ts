@@ -78,4 +78,12 @@ export class HostingFormComponent extends WebHostingBaseFormComponent<WhHostingM
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+  onAfterCreateSubmit(newFormData: WhHostingModel[]) {
+    super.onAfterCreateSubmit(newFormData);
+    this.webHostingService.reloadCache();
+  }
+  onAfterUpdateSubmit(newFormData: WhHostingModel[]) {
+    super.onAfterUpdateSubmit(newFormData);
+    this.webHostingService.reloadCache();
+  }
 }

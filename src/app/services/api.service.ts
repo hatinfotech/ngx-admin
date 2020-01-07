@@ -134,7 +134,7 @@ export class ApiService {
   }
 
   /** Restful api getting request */
-  get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void) {
+  get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       if (result) {
         // let url = '';
@@ -154,10 +154,12 @@ export class ApiService {
         const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
+            if (complete) complete(e);
             return this.handleError(e, params['silent']);
           }))
           .subscribe((resources: T) => {
             success(resources);
+            if (complete) complete(resources);
             obs.unsubscribe();
           });
       } else {
@@ -184,16 +186,18 @@ export class ApiService {
   }
 
   /** Restful api post request */
-  post<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
+  post<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       if (result) {
         const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
+            if (complete) complete(e);
             return this.handleError(e, params['silent']);
           }))
           .subscribe((newResource: T) => {
             success(newResource);
+            if (complete) complete(newResource);
             obs.unsubscribe();
           });
       } else {
@@ -203,7 +207,7 @@ export class ApiService {
   }
 
   /** Restful api put request */
-  put<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
+  put<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       if (result) {
         // let url = '';
@@ -219,10 +223,12 @@ export class ApiService {
         const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
+            if (complete) complete(e);
             return this.handleError(e, params['silent']);
           }))
           .subscribe((newResource: T) => {
             success(newResource);
+            if (complete) complete(newResource);
             obs.unsubscribe();
           });
       } else {
@@ -231,16 +237,16 @@ export class ApiService {
     });
   }
 
-  postPut<T>(method: string, enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void) {
+  postPut<T>(method: string, enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     if (method === 'POST') {
-      this.post<T>(enpoint, params, resource, success, error);
+      this.post<T>(enpoint, params, resource, success, error, complete);
     } else if (method === 'PUT') {
-      this.put<T>(enpoint, params, resource, success, error);
+      this.put<T>(enpoint, params, resource, success, error, complete);
     }
   }
 
   /** Restful api delete request */
-  delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void) {
+  delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       if (result) {
         let apiUrl = '';
@@ -257,10 +263,12 @@ export class ApiService {
         const obs = this._http.delete(apiUrl)
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
+            if (complete) complete(e);
             return this.handleError(e, id['silent']);
           }))
           .subscribe((resp) => {
             success(resp);
+            if (complete) complete(resp);
             obs.unsubscribe();
           });
       } else {

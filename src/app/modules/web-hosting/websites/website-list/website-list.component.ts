@@ -84,14 +84,20 @@ export class WebsiteListComponent extends WebHostingBaseListComponent<WhWebsiteM
   // }
 
   getList(callback: (list: WhWebsiteModel[]) => void) {
-    this.apiService.get<WhWebsiteModel[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => {
-
-      callback(results.map(item => {
+    super.getList(list => {
+      callback(list.map(item => {
         item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
         return item;
       }));
-
     });
+    // this.apiService.get<WhWebsiteModel[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => {
+
+    //   callback(results.map(item => {
+    //     item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
+    //     return item;
+    //   }));
+
+    // });
   }
 
 }

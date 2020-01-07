@@ -79,14 +79,20 @@ export class DatabaseUserListComponent extends WebHostingBaseListComponent<WhDat
   // }
 
   getList(callback: (list: WhDatabaseUserModel[]) => void) {
-    this.apiService.get<WhDatabaseUserModel[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => {
-
-      callback(results.map(item => {
+    super.getList(list => {
+      callback(list.map(item => {
         item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
         return item;
       }));
-
     });
+    // this.apiService.get<WhDatabaseUserModel[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => {
+
+    //   callback(results.map(item => {
+    //     item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
+    //     return item;
+    //   }));
+
+    // });
   }
 
 }

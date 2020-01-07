@@ -3,7 +3,7 @@ import { WebHostingBaseFormComponent } from '../../web-hosting-base-form.compone
 import { WhFtpModel } from '../../../../models/wh-ftp.model';
 import { WhWebsiteModel } from '../../../../models/wh-website.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -48,14 +48,15 @@ export class FtpFormComponent extends WebHostingBaseFormComponent<WhFtpModel> im
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, webHostingService);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.restrict();
+    this.websiteList = this.convertOptionList(await this.webHostingService.getWebsiteList(), 'domain_id', 'domain');
+    super.ngOnInit();
+    // this.apiService.get<WhWebsiteModel[]>('/web-hosting/websites', {}, websites => {
+    //   this.websiteList = this.convertOptionList(websites, 'domain_id', 'domain');
 
-    this.apiService.get<WhWebsiteModel[]>('/web-hosting/websites', {}, websites => {
-      this.websiteList = this.convertOptionList(websites, 'domain_id', 'domain');
-
-      super.ngOnInit();
-    });
+    //   super.ngOnInit();
+    // });
 
   }
 
@@ -68,8 +69,8 @@ export class FtpFormComponent extends WebHostingBaseFormComponent<WhFtpModel> im
   makeNewFormGroup(data?: WhFtpModel): FormGroup {
     const newForm = this.formBuilder.group({
       ftp_user_id: [''],
-      hosting: [''],
-      parent_domain_id: [''],
+      hosting: [this.webHostingService ? this.webHostingService.activeHosting : '', Validators.required],
+      parent_domain_id: ['', Validators.required],
       username: [''],
       password: [''],
     });

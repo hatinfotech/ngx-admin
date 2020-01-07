@@ -6,8 +6,25 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { OnInit } from '@angular/core';
 import { ReuseComponent } from '../../lib/reuse-component';
 import { WebHostingService } from './web-hosting-service';
+import { WhHostingModel } from '../../models/wh-hosting.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { WhWebsiteModel } from '../../models/wh-website.model';
+import { WhDatabaseUserModel } from '../../models/wh-database-user.model';
 
 export abstract class WebHostingBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
+
+  // hostingList: WhHostingModel[] = [];
+  // hostingListConfig: {
+  //   placeholder: 'Chọn hositng...',
+  //   allowClear: false,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   keyMap: {
+  //     id: 'Code',
+  //     text: 'Host',
+  //   },
+  // };
 
   constructor(
     protected apiService: ApiService,
@@ -21,13 +38,36 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
   }
 
   ngOnInit() {
-    super.ngOnInit();
+    const subscription = this.webHostingService.ready$.subscribe(ready => {
+      if (ready) {
+        super.ngOnInit();
+        // if (subscription) subscription.unsubscribe();
+      }
+    });
+
+    this.subcriptions.push(this.webHostingService.activeHostingChange$.subscribe(state => {
+      if (state.fromComponent === this.componentName) {
+        this.refresh();
+      } else {
+        this.refreshPendding = true;
+      }
+    }));
+  }
+
+  executeGet(params: any, success: (resources: M[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: M[] | HttpErrorResponse) => void) {
+    params['hosting'] = this.webHostingService.activeHosting;
+    super.executeGet(params, success, error, complete);
   }
 
   /** User for reuse component */
   onResume() {
     super.onResume();
   }
+
+  onChangeHosting(event) {
+    this.webHostingService.onChangeHosting(event, this.componentName);
+  }
+
 
   // getList(callback: (list: M[]) => void) {
   //   if (this.ivoipService.getPbxActiveDomainUuid()) {
@@ -61,15 +101,5 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
   //   return false;
   // }
 
-  // onChangeDomain(event: PbxDomainModel) {
-  //   // console.info(event);
-  //   if (event && event['id']) {
-  //     // this.ivoipService.setPbxActiveDomain(event['id']);
-  //     this.ivoipService.onChangeDomain(event['id']);
-  //     // this.activePbxDoamin = event['id'];
-  //     this.ivoipService.setPbxActiveDomain(event['id']);
-  //     // this.setAc
-  //     this.loadList();
-  //   }
-  // }
+
 }

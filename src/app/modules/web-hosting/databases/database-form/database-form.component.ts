@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WebHostingBaseFormComponent } from '../../web-hosting-base-form.component';
 import { WhDatabaseModel } from '../../../../models/wh-database.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -62,18 +62,22 @@ export class DatabaseFormComponent extends WebHostingBaseFormComponent<WhDatabas
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, webHostingService);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.restrict();
 
-    this.apiService.get<WhDatabaseUserModel[]>('/web-hosting/database-users', {}, dbUsers => {
-      this.databaseUserList = this.convertOptionList(dbUsers, 'database_user_id', 'database_user');
+    this.websiteList = this.convertOptionList(await this.webHostingService.getWebsiteList(), 'domain_id', 'domain');
+    this.databaseUserList = this.convertOptionList(await this.webHostingService.getDatabaseUserList(), 'database_user_id', 'database_user');
+    super.ngOnInit();
 
-      this.apiService.get<WhWebsiteModel[]>('/web-hosting/websites', {}, websites => {
-        this.websiteList = this.convertOptionList(websites, 'domain_id', 'domain');
+    // this.apiService.get<WhDatabaseUserModel[]>('/web-hosting/database-users', { hosting: this.webHostingService.activeHosting }, dbUsers => {
+    //   this.databaseUserList = this.convertOptionList(dbUsers, 'database_user_id', 'database_user');
 
-        super.ngOnInit();
-      });
-    });
+    //   this.apiService.get<WhWebsiteModel[]>('/web-hosting/websites', { hosting: this.webHostingService.activeHosting }, websites => {
+    //     this.websiteList = this.convertOptionList(websites, 'domain_id', 'domain');
+
+    //     super.ngOnInit();
+    //   });
+    // });
   }
 
   /** Execute api get */
@@ -85,7 +89,7 @@ export class DatabaseFormComponent extends WebHostingBaseFormComponent<WhDatabas
   makeNewFormGroup(data?: WhDatabaseModel): FormGroup {
     const newForm = this.formBuilder.group({
       database_id: [''],
-      hosting: [''],
+      hosting: [this.webHostingService ? this.webHostingService.activeHosting : '', Validators.required],
       parent_domain_id: [''],
       database_name: [''],
       database_user_id: [''],

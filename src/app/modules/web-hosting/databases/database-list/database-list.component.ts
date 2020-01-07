@@ -54,8 +54,6 @@ export class DatabaseListComponent extends WebHostingBaseListComponent<WhDatabas
     },
   });
 
-  databaseUserMap: { [key: string]: WhDatabaseUserModel } = {};
-
   constructor(
     protected apiService: ApiService,
     public router: Router,
@@ -79,24 +77,34 @@ export class DatabaseListComponent extends WebHostingBaseListComponent<WhDatabas
 
   }
 
-  getList(callback: (list: WhDatabaseModel[]) => void) {
-
-    this.apiService.get<WhDatabaseUserModel[]>('/web-hosting/database-users', {}, dbUsers => {
-      dbUsers.forEach(dbUser => {
-        this.databaseUserMap[dbUser.database_user_id] = dbUser;
-      });
-      this.apiService.get<WhDatabaseModel[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => {
-
-        callback(results.map(item => {
-          item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
-          if (item.database_user_id && this.databaseUserMap[item.database_user_id]) {
-            item.database_user_id = this.databaseUserMap[item.database_user_id].database_user;
-          }
-          return item;
-        }));
-
-      });
+  async getList(callback: (list: WhDatabaseModel[]) => void) {
+    const dbUserList = await this.webHostingService.getDatabaseUserMap();
+    super.getList(list => {
+      callback(list.map(item => {
+        item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
+        if (item.database_user_id && dbUserList[item.database_user_id]) {
+          item.database_user_id = dbUserList[item.database_user_id].database_user;
+        }
+        return item;
+      }));
     });
+
+    // this.apiService.get<WhDatabaseUserModel[]>('/web-hosting/database-users', {}, dbUsers => {
+    //   dbUsers.forEach(dbUser => {
+    //     this.databaseUserMap[dbUser.database_user_id] = dbUser;
+    //   });
+    //   this.apiService.get<WhDatabaseModel[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => {
+
+    //     callback(results.map(item => {
+    //       item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
+    //       if (item.database_user_id && this.databaseUserMap[item.database_user_id]) {
+    //         item.database_user_id = this.databaseUserMap[item.database_user_id].database_user;
+    //       }
+    //       return item;
+    //     }));
+
+    //   });
+    // });
 
 
   }

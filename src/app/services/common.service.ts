@@ -213,6 +213,10 @@ export class CommonService {
   private takeUltilCount = {};
   private takeUltilPastCount = {};
   takeUntil(context: string, delay: number, callback: () => void) {
+    if (delay === 0) {
+      callback();
+      return;
+    }
     if (!this.takeUltilCount[context]) this.takeUltilCount[context] = 0;
     this.takeUltilCount[context]++;
     ((takeCount) => {

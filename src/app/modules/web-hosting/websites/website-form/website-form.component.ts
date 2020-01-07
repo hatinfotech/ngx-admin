@@ -48,7 +48,7 @@ export class WebsiteFormComponent extends WebHostingBaseFormComponent<WhWebsiteM
   makeNewFormGroup(data?: WhWebsiteModel): FormGroup {
     const newForm = this.formBuilder.group({
       domain_id: [''],
-      hosting: [''],
+      hosting: [this.webHostingService ? this.webHostingService.activeHosting : '', Validators.required],
       domain: ['', Validators.required],
       ip_address: [''],
     });

@@ -72,7 +72,7 @@ export class HostingListComponent extends WebHostingBaseListComponent<WhHostingM
         width: '10%',
       },
       Enabled: {
-        title: 'Đã chặn',
+        title: 'H.hoạt',
         type: 'string',
         width: '10%',
       },

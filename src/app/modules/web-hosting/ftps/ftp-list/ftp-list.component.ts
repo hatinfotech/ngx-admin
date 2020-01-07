@@ -34,15 +34,15 @@ export class FtpListComponent extends WebHostingBaseListComponent<WhFtpModel> im
       No: {
         title: 'Stt',
         type: 'string',
-        width: '50%',
+        width: '5%',
       },
       username: {
         title: 'Ftp Username',
         type: 'string',
         width: '30%',
       },
-      domain: {
-        title: 'Domain',
+      parent_domain_id: {
+        title: 'Website',
         type: 'string',
         width: '35%',
       },
@@ -54,8 +54,6 @@ export class FtpListComponent extends WebHostingBaseListComponent<WhFtpModel> im
     },
   });
 
-  websiteMap: { [key: string]: WhWebsiteModel } = {};
-
   constructor(
     protected apiService: ApiService,
     public router: Router,
@@ -65,13 +63,6 @@ export class FtpListComponent extends WebHostingBaseListComponent<WhFtpModel> im
     public webHostingService: WebHostingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, webHostingService);
-    this.apiService.get<WhWebsiteModel[]>('/web-hosting/websites', {}, websites => {
-      this.websiteMap = {};
-      websites.forEach(website => {
-        this.websiteMap[website.domain_id] = website;
-      });
-
-    });
   }
 
   ngOnInit() {
@@ -79,18 +70,28 @@ export class FtpListComponent extends WebHostingBaseListComponent<WhFtpModel> im
     super.ngOnInit();
   }
 
-  getList(callback: (list: WhFtpModel[]) => void) {
-    this.apiService.get<WhFtpModel[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => {
-
-      callback(results.map(item => {
+  async getList(callback: (list: WhFtpModel[]) => void) {
+    const websiteMap = await this.webHostingService.getWebsiteMap();
+    super.getList(list => {
+      callback(list.map(item => {
         item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
-        if (this.websiteMap[item.parent_domain_id]) {
-          item.parent_domain_id = this.websiteMap[item.parent_domain_id].domain;
+        if (websiteMap[item.parent_domain_id]) {
+          item.parent_domain_id = websiteMap[item.parent_domain_id].domain;
         }
         return item;
       }));
-
     });
+    // this.apiService.get<WhFtpModel[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => {
+
+    //   callback(results.map(item => {
+    //     item['hosting'] = this.webHostingService.hostingMap[item['hosting']].Host;
+    //     if (this.websiteMap[item.parent_domain_id]) {
+    //       item.parent_domain_id = this.websiteMap[item.parent_domain_id].domain;
+    //     }
+    //     return item;
+    //   }));
+
+    // });
   }
 
 }

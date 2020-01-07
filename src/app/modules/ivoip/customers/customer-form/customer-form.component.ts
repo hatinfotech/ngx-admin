@@ -334,19 +334,19 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         ((callback: (newPbxDomain: PbxDomainModel, newAdminUser: PbxUserModel) => void) => {
 
           ((afterCreateDomain: (newDomain: PbxDomainModel) => void) => {
-            this.apiService.get<PbxDomainModel[]>('/ivoip/domains', { DomainName: formData.DomainName }, domains => {
 
-              if (domains.length > 0) {
-                afterCreateDomain(domains[0]);
-              } else {
-                // Create domain and assign user to owner domain
-                domain.Pbx = formData.Pbx;
-                domain.DomainName = formData.DomainName;
-                domain.Description = formData.Name;
-                // domain.Owner = newUser.Code;
-                // let tryCount = 0;
+            /** Try create pbx doamin */
+            const tryCreatePbxDomain = (tryCount: number) => {
+              this.apiService.get<PbxDomainModel[]>('/ivoip/domains', { DomainName: formData.DomainName }, domains => {
 
-                const tryCreatePbxDomain = (tryCount: number) => {
+                if (domains.length > 0) {
+                  afterCreateDomain(domains[0]);
+                } else {
+                  // Create domain and assign user to owner domain
+                  domain.Pbx = formData.Pbx;
+                  domain.DomainName = formData.DomainName;
+                  domain.Description = formData.Name;
+
                   if (longToastRef) {
                     longToastRef.close();
                   }
@@ -361,46 +361,21 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
                     const newDomain = newDomains[0];
                     if (newDomain) {
-                      afterCreateDomain(newDomain);
                       if (longToastRef) {
                         longToastRef.close();
                       }
+                      afterCreateDomain(newDomain);
                     } else {
-                      error('System could not create pbx domain');
+                      error('Hệ thống không thể khởi tạo tổng đài');
                     }
+
                   }, e => {
                     if (tryCount <= 5) {
-                      this.toastrService.show('Thử lại lần ' + tryCount + '/5', 'Đã xảy ra lỗi trong quá trình khởi tạo tổng đài', {
-                        status: 'warning',
-                        hasIcon: true,
-                        position: NbGlobalPhysicalPosition.TOP_RIGHT,
-                      });
-                      ((afterCleanPbxDomain: () => void) => {
-                        this.apiService.put<PbxModel[]>('/ivoip/pbxs', { cachePbxDomain: true }, [pbx], pbxs => {
-                          const domainList = pbxs[0].Domains;
-                          if (domainList) {
-                            const failDomain = domainList.filter(d => d.DomainName === formData.DomainName)[0];
-                            if (failDomain) {
-                              this.apiService.delete('/ivoip/domains', [failDomain.Id], result => {
-                                afterCleanPbxDomain();
-                              }, e2 => {
-                                console.info(e2);
-                                this.toastrService.show('Bỏ qua bước dọn dẹp domain', 'Lỗi trong quá trình xoá domain', {
-                                  status: 'warning',
-                                  hasIcon: true,
-                                  position: NbGlobalPhysicalPosition.TOP_RIGHT,
-                                });
-                                afterCleanPbxDomain();
-                              });
-                            } else {
-                              afterCleanPbxDomain();
-                            }
-                          } else {
-                            afterCleanPbxDomain();
-                          }
-                        });
-                      })(() => {
-                        // afterCleanPbxDomain();
+
+                      /** Sync pbx domains and get current pbx doamins */
+                      this.apiService.put<PbxModel[]>('/ivoip/pbxs', { cachePbxDomain: true }, [pbx], pbxs => { }, null, resp => {
+                        // On complete api request
+                        /** Retry after 15s */
                         this.toastrService.show('Thử lại trong 15s nữa', 'Khởi tạo tổng đài', {
                           status: 'warning',
                           hasIcon: true,
@@ -412,14 +387,13 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
                         }, 15000);
                       });
                     } else {
-                      // console.info(e);
                       error(e);
                     }
                   });
-                };
-                tryCreatePbxDomain(1);
-              }
-            });
+                }
+              });
+            };
+            tryCreatePbxDomain(1);
           })((newDomain) => {
 
             const domainUuid = newDomain.DomainId + '@' + newDomain.Pbx;

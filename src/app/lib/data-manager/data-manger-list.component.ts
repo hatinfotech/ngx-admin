@@ -7,6 +7,7 @@ import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/sh
 import { OnInit } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export class SmartTableSetting {
   mode?: string;
@@ -87,7 +88,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   getList(callback: (list: M[]) => void) {
-    this.apiService.get<M[]>(this.apiPath, { limit: 999999999, offset: 0 }, results => callback(results));
+    this.commonService.takeUntil(this.componentName, 300, () => {
+      this.executeGet({ limit: 999999999, offset: 0 }, results => callback(results));
+    });
   }
 
   /** Get data from api and push to list */
@@ -232,11 +235,21 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     });
   }
 
-  executeDelete(ids: string[], callback: (result: any) => void) {
-    this.apiService.delete(this.apiPath, ids, result => {
-      if (callback) callback(result);
-    });
+  /** Api get funciton */
+  executeGet(params: any, success: (resources: M[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: M[] | HttpErrorResponse) => void) {
+    this.apiService.get<M[]>(this.apiPath, params, success, error, complete);
   }
+
+  /** Api delete funciton */
+  executeDelete(id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+    this.apiService.delete(this.apiPath, id, success, error, complete);
+  }
+
+  // executeDelete(ids: string[], callback: (result: any) => void) {
+  //   this.apiService.delete(this.apiPath, ids, result => {
+  //     if (callback) callback(result);
+  //   });
+  // }
 
   /** Delete action */
   delete(event: any): void {
