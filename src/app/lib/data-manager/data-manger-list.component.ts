@@ -241,7 +241,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   /** Api delete funciton */
-  executeDelete(id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+  executeDelete(id: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
     this.apiService.delete(this.apiPath, id, success, error, complete);
   }
 

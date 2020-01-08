@@ -40,7 +40,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [{ title: 'Profile' }, { title: 'Log out', link: '/auth/logout' }];
+  userMenu = [
+    { title: 'Profile', link: '/users/profile/change-password' },
+    { title: 'Log out', link: '/auth/logout' }];
   mennuBarExpand = true;
   chatBarExpand = true;
   sidebars: NbSidebarComponent[];

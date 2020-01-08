@@ -96,10 +96,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.activeRoute.queryParams.subscribe(queryParams => {
       this.queryParam = queryParams;
     });
-    this.activeRoute.params.subscribe(params => {
-      // this.id = params['id']; // (+) converts string 'id' to a number
-      if (params['id']) {
-        this.id = decodeURIComponent(params['id']).split('&');
+    this.getRequestId(id => {
+      if (id) {
+        this.id = id;
         if (this.id.length > 0) {
           this.formLoad();
         } else {
@@ -112,6 +111,29 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         // this.formLoading = false;
         this.onProcessed();
       }
+    });
+    // this.activeRoute.params.subscribe(params => {
+    //   // this.id = params['id']; // (+) converts string 'id' to a number
+    //   if (params['id']) {
+    //     this.id = decodeURIComponent(params['id']).split('&');
+    //     if (this.id.length > 0) {
+    //       this.formLoad();
+    //     } else {
+    //       // this.formLoading = false;
+    //       this.onProcessed();
+    //     }
+    //   } else {
+    //     this.array.clear();
+    //     this.addFormGroup();
+    //     // this.formLoading = false;
+    //     this.onProcessed();
+    //   }
+    // });
+  }
+
+  getRequestId(callback: (id?: string[]) => void) {
+    this.activeRoute.params.subscribe(params => {
+      if (params['id']) callback(decodeURIComponent(params['id']).split('&')); else callback();
     });
   }
 

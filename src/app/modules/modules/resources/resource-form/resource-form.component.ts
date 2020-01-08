@@ -169,7 +169,7 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
 
   makeNewFormGroup(data?: ResourceModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id: [''],
+      Name_old: [''],
       Name: ['', Validators.required],
       Description: ['', Validators.required],
       Permissions: this.formBuilder.array([
@@ -181,7 +181,7 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
     });
 
     if (data) {
-      // data[this.idKey + '_old'] = data[this.idKey];
+      data[this.idKey + '_old'] = data[this.idKey];
       newForm.patchValue(data);
     }
 

@@ -18,13 +18,14 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { TreeModule } from 'angular-tree-component';
+import { UserChangePasswordFormComponent } from './profile/user-change-password-form/user-change-password-form.component';
 
 @NgModule({
   declarations: [
     UsersComponent, UserListComponent,
     UserFormComponent, UserViewComponent, UserReportComponent, UserGroupListComponent,
     UserGroupFormComponent, UserGroupViewComponent, UserGroupReportComponent,
-    UserListComponent, UserFormComponent, UserViewComponent, UserReportComponent, PermissionGrantComponent],
+    UserListComponent, UserFormComponent, UserViewComponent, UserReportComponent, PermissionGrantComponent, UserChangePasswordFormComponent],
   imports: [
     CommonModule,
     NbRouteTabsetModule,

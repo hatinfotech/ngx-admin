@@ -11,6 +11,7 @@ import { UserViewComponent } from './user-manager/user-view/user-view.component'
 import { UserReportComponent } from './user-manager/user-report/user-report.component';
 import { PermissionGrantComponent } from './permission-grant/permission-grant.component';
 import { AuthGuardService } from '../../services/auth-guard.service';
+import { UserChangePasswordFormComponent } from './profile/user-change-password-form/user-change-password-form.component';
 
 
 const routes: Routes = [{
@@ -93,11 +94,16 @@ const routes: Routes = [{
     },
     {
       path: 'permission/grant',
-      // canActivate: [AuthGuardService],
+      canActivate: [AuthGuardService],
       component: PermissionGrantComponent,
       data: {
         reuse: true,
       },
+    },
+    {
+      path: 'profile/change-password',
+      canActivate: [AuthGuardService],
+      component: UserChangePasswordFormComponent,
     },
   ],
 }];

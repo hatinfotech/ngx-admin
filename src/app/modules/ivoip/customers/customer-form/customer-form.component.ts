@@ -891,7 +891,9 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         maxTry: 3,
         delayTry: 15000,
         execute: async () => {
-          newPbxPstnNumber = await this.deployPbxPstnNumber(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, formData.PstnNumber, newPbxExtensions[0].extension);
+          if (formData.PstnNumber) {
+            newPbxPstnNumber = await this.deployPbxPstnNumber(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, formData.PstnNumber, newPbxExtensions[0].extension);
+          }
           return true;
         },
       },
