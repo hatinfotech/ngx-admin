@@ -145,7 +145,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         const newForm = this.makeNewFormGroup(item);
         this.array.push(newForm);
         this.onAddFormGroup(this.array.length - 1, newForm, item);
-
         if (formItemLoadCallback) {
           formItemLoadCallback(this.array.length - 1, newForm, item);
         }

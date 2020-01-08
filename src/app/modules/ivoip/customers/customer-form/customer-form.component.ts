@@ -217,7 +217,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
-          content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
+          content: e && e.error && e.error.logs ? e.error.logs.join('\n') : JSON.stringify(e),
           actions: [
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
             // {
@@ -255,7 +255,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
-          content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
+          content: e && e.error && e.error.logs ? e.error.logs.join('\n') : JSON.stringify(e),
           actions: [
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
             // {
@@ -299,15 +299,19 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         pbxUser.user_enabled = true;
 
         this.apiService.postPut<PbxUserModel[]>(method, '/ivoip/users', { domainId: domainId + '@' + pbx, autoGeneratePassword: true, autoGenerateApiKey: true, silent: true }, [pbxUser], newPbxUsers => {
+          if (newPbxUsers && newPbxUsers.length > 0) {
 
-          // Notify
-          this.toastrService.show('success', 'Đã tạo thông tin kêt nối api cho tổng đài', {
-            status: 'success',
-            hasIcon: true,
-            position: NbGlobalPhysicalPosition.TOP_RIGHT,
-          });
+            // Notify
+            this.toastrService.show('success', 'Đã tạo thông tin kêt nối api cho tổng đài', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
 
-          resolve(newPbxUsers[0]);
+            resolve(newPbxUsers[0]);
+          } else {
+            reject('Lỗi tạo thông tin kết nối api cho tổng đài');
+          }
         }, e => reject(e));
       }, e => reject(e));
     });
@@ -327,7 +331,6 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           domain.Description = description;
 
           this.apiService.post<PbxDomainModel[]>('/ivoip/domains', { silent: silent }, [domain], newDomains => {
-
             const newDomain = newDomains[0];
             if (newDomain) {
               // Notify
@@ -380,13 +383,18 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           this.apiService.post<PbxPstnNumberModel[]>('/ivoip/pstn-numbers', { domainId: domainId + '@' + pbx, silent: true }, [pstnNumber], newPstnNumbers => {
             const newPstnNumber = newPstnNumbers[0];
 
-            this.toastrService.show('success', 'Đã khai báo số đấu nối', {
-              status: 'success',
-              hasIcon: true,
-              position: NbGlobalPhysicalPosition.TOP_RIGHT,
-            });
+            if (newPstnNumber) {
 
-            resolve(newPstnNumber);
+              this.toastrService.show('success', 'Đã khai báo số đấu nối', {
+                status: 'success',
+                hasIcon: true,
+                position: NbGlobalPhysicalPosition.TOP_RIGHT,
+              });
+
+              resolve(newPstnNumber);
+            } else {
+              reject('Lỗi khai báo số đấu nối');
+            }
           }, e => reject(e));
         }
       }, e => reject(e));
@@ -437,21 +445,23 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         } else {
           if (extensions.length > 0) {
             this.apiService.post<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainId + '@' + pbx, silent: true }, extensions, newExtensions => {
+              if (newExtensions && newExtensions.length > 0) {
+                this.toastrService.show('success', 'Đã khai báo danh sách số mở rộng', {
+                  status: 'success',
+                  hasIcon: true,
+                  position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                });
 
-              this.toastrService.show('success', 'Đã khai báo danh sách số mở rộng', {
-                status: 'success',
-                hasIcon: true,
-                position: NbGlobalPhysicalPosition.TOP_RIGHT,
-              });
-
-              resolve(newExtensions);
+                resolve(newExtensions);
+              } else {
+                reject('Lỗi khai báo danh sách số mở rộng');
+              }
             }, e => reject(e));
           } else {
             resolve([]);
           }
         }
       }, e => reject(e));
-
     });
   }
 
@@ -473,16 +483,18 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
       this.apiService.post<PbxDialplanModel[]>('/ivoip/dialplans', { domainId: domainId + '@' + pbx, silent: true }, [dialplan], newDialplans => {
 
-        console.info(newDialplans);
+        if (newDialplans && newDialplans.length > 0) {
 
-        // Notify
-        this.toastrService.show('success', 'Đã thêm cấu hình gọi ra', {
-          status: 'success',
-          hasIcon: true,
-          position: NbGlobalPhysicalPosition.TOP_RIGHT,
-        });
+          this.toastrService.show('success', 'Đã thêm cấu hình gọi ra', {
+            status: 'success',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          });
 
-        resolve(dialplan);
+          resolve(dialplan);
+        } else {
+          reject('Lỗi thêm cấu hình gọi ra');
+        }
 
       }, e => reject(e));
     });
@@ -508,15 +520,14 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           const newWebsite = newWebsites[0];
           if (newWebsite) {
 
-            // Notify
-            this.toastrService.show('success', 'Đã khao báo website', {
+            this.toastrService.show('success', 'Đã khởi tạo website', {
               status: 'success',
               hasIcon: true,
               position: NbGlobalPhysicalPosition.TOP_RIGHT,
             });
             resolve(newWebsite);
           } else {
-            reject('System could not create website');
+            reject('Lỗi khởi tạo website');
           }
         }, e => reject(e));
       }, e => reject(e));
@@ -551,7 +562,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
             resolve(newDbUser);
           } else {
-            reject('System could not create websting db user');
+            reject('Lỗi tại tài khoản database cho website');
           }
         }, e => reject(e));
       }, e => reject(e));
@@ -583,7 +594,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
               resolve(newDatabase);
             } else {
-              reject('System could not create web hosting database');
+              reject('Lỗi tạo database cho website');
             }
           }, e => reject(e));
         }
@@ -622,7 +633,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
             resolve(newFtp);
           } else {
-            reject('System could not create web hosting ftp user');
+            reject('Lỗi tạo tài khoản FTP cho webiste');
           }
         }, e => reject(e));
         // }
@@ -634,7 +645,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     return new Promise<PbxDeploymentModel>((resovle, reject) => {
 
       this.apiService.get<PbxDeploymentModel[]>('/ivoip/deployments', { customer: customer, silent: true }, ivoipDeployments => {
-        if (ivoipDeployments.length > 0) {
+        if (ivoipDeployments && ivoipDeployments.length > 0) {
           const ivoipDeployment = ivoipDeployments[0];
 
           this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { deploy: true, silent: silent }, [ivoipDeployment], newPbxDeployments => {
@@ -688,14 +699,18 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
       this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
         this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, uploadMiniErpInstaller: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+          if (respMiniErpDeployments && respMiniErpDeployments.length > 0) {
 
-          this.toastrService.show('success', 'Đã tải bộ cài Mini ERP lên hosting', {
-            status: 'success',
-            hasIcon: true,
-            position: NbGlobalPhysicalPosition.TOP_RIGHT,
-          });
+            this.toastrService.show('success', 'Đã tải bộ cài Mini ERP lên hosting', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
 
-          resolve(respMiniErpDeployments[0]);
+            resolve(respMiniErpDeployments[0]);
+          } else {
+            reject('Lỗi upload bộ cài Mini ERP');
+          }
         }, e => reject(e));
       }, e => reject(e));
     });
@@ -720,14 +735,17 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
       this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
         this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, extractMiniErpInstaller: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+          if (respMiniErpDeployments && respMiniErpDeployments.length > 0) {
+            this.toastrService.show('success', 'Đã giải nén bộ cài Mini ERP', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
 
-          this.toastrService.show('success', 'Đã giải nén bộ cài Mini ERP', {
-            status: 'success',
-            hasIcon: true,
-            position: NbGlobalPhysicalPosition.TOP_RIGHT,
-          });
-
-          resolve(respMiniErpDeployments[0]);
+            resolve(respMiniErpDeployments[0]);
+          } else {
+            reject('Lỗi giải nến bộ cài Mini ERP');
+          }
         }, e => reject(e));
       }, e => reject(e));
     });
@@ -737,14 +755,17 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
       this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
         this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, configMiniErp: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+          if (respMiniErpDeployments && respMiniErpDeployments.length > 0) {
+            this.toastrService.show('success', 'Đã cấu hình căn bản cho Mini ERP', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
 
-          this.toastrService.show('success', 'Đã cấu hình căn bản cho Mini ERP', {
-            status: 'success',
-            hasIcon: true,
-            position: NbGlobalPhysicalPosition.TOP_RIGHT,
-          });
-
-          resolve(respMiniErpDeployments[0]);
+            resolve(respMiniErpDeployments[0]);
+          } else {
+            reject('Lỗi cấu hình Mini ERP');
+          }
         }, e => reject(e));
       }, e => reject(e));
     });
@@ -754,14 +775,17 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
       this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
         this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, configUserForMiniErp: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+          if (respMiniErpDeployments && respMiniErpDeployments.length > 0) {
+            this.toastrService.show('success', 'Đã khởi tạo tài khoản admin cho Mini ERP', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
 
-          this.toastrService.show('success', 'Đã khởi tạo user admin cho Mini ERP', {
-            status: 'success',
-            hasIcon: true,
-            position: NbGlobalPhysicalPosition.TOP_RIGHT,
-          });
-
-          resolve(respMiniErpDeployments[0]);
+            resolve(respMiniErpDeployments[0]);
+          } else {
+            reject('Lỗi khởi tạo tài khoản admin cho Mini ERP');
+          }
         }, e => reject(e));
       }, e => reject(e));
     });
@@ -844,7 +868,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       },
       {
         message: 'Tạo thông tin kết nối api cho tổng đài',
-        maxTry: 3,
+        maxTry: 5,
         delayTry: 15000,
         execute: async () => {
           newPbxUser = await this.deployPbxPbxUser(pbx.Code, newPbxDomain.DomainId, 'Admin', 'Admin', formData.Name, formData.Email, ['admin'], 'admin');
@@ -976,7 +1000,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       },
       {
         message: 'Cấu hình Mini ERP',
-        maxTry: 3,
+        maxTry: 10,
         delayTry: 15000,
         execute: async () => {
           miniErpDeployment = await this.configMiniErp(miniErpDeployment.Code);
@@ -985,7 +1009,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       },
       {
         message: 'Cấu hình người dùng cho Mini ERP',
-        maxTry: 3,
+        maxTry: 10,
         delayTry: 15000,
         execute: async () => {
           miniErpDeployment = await this.configUserForMiniErp(miniErpDeployment.Code);
@@ -1038,11 +1062,17 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
     /** Execute deployment */
     let execute: Executable;
-    setTimeout(() => this.onProcessing(), 500);
-
+    setTimeout(() => this.onProcessing(), 1001);
+    const numOfStep = executeList.length;
+    let processedStep = 0;
     while (execute = executeList.shift()) {
+      processedStep++;
+      this.onProcessing();
+      this.progressBarValue = processedStep / numOfStep * 100;
+      this.processBarlabel = execute.message;
       tryCount = 0;
       while (true) {
+        this.onProcessing();
         tryCount++;
         try {
           if (this.longToastRef) this.longToastRef.close();
@@ -1056,10 +1086,11 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           if (tryCount >= execute.maxTry) {
             error(e);
             this.onProcessed();
+            this.toastrService.show('STOP: ' + execute.message + (tryCount > 1 ? (` lần ${tryCount}/${execute.maxTry}`) : ''), 'Tiến trình đã dừng do lỗi bị lặp lại quá nhiều lần, Hãy kiểm tra lại thông tin và nhấn nút triển khai lại lần nữa', { status: 'warning', hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, duration: 0 });
             return;
           } else {
             // Notification auto close
-            this.toastrService.show('Thông báo lỗi', e && e.error && e.error.logs ? e.error.logs.join('<br>') : e, { status: 'warning', hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, duration: 15000 });
+            this.toastrService.show('Thông báo lỗi', e && e.error && e.error.logs ? e.error.logs.join('\n') : e, { status: 'warning', hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, duration: 15000 });
           }
         }
 
@@ -1068,6 +1099,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         this.longToastRef = this.toastrService.show('Thử lại trong ' + (execute.delayTry / 1000) + ' giây nữa...', 'Lỗi ' + execute.message, { status: 'danger', hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, duration: 0 });
         await new Promise(resolve => setTimeout(() => resolve(), execute.delayTry));
       }
+
     }
 
     this.onProcessed();
