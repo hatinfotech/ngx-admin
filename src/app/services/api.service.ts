@@ -302,13 +302,13 @@ export class ApiService {
     this.router.navigate(['/auth/login']);
   }
 
-  handleError(e: HttpErrorResponse, silient?: boolean) {
+  handleError(e: HttpErrorResponse, silent?: boolean) {
     if (e.status === 401) {
       console.warn('You were not logged in');
       this.router.navigate(['/auth/login']);
     }
     if (e.status === 405) {
-      if (!silient) this.dialogService.open(ShowcaseDialogComponent, {
+      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Yêu cầu quyền truy cập',
           content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
@@ -324,7 +324,7 @@ export class ApiService {
       });
     }
     if (e.status === 400) {
-      if (!silient) this.dialogService.open(ShowcaseDialogComponent, {
+      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Yêu cầu không thể thực thi',
           content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,

@@ -4,7 +4,7 @@ import { PbxCustomerModel } from '../../../../models/pbx-customer.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbGlobalPhysicalPosition, NbToastRef } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbGlobalPhysicalPosition, NbToastRef, NbComponentStatus } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -23,6 +23,19 @@ import { MiniErpDeploymentModel } from '../../../../models/minierp-deployment.mo
 import { WhHostingModel } from '../../../../models/wh-hosting.model';
 import { PbxUserModel } from '../../../../models/pbx-user.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { PbxDeploymentModel } from '../../../../models/pbx-deployment.model';
+
+export class Executable {
+  message: string;
+  title?: string;
+  icon?: string;
+  iconPack?: string;
+  status?: '' | NbComponentStatus;
+  durarion?: number;
+  maxTry: number;
+  delayTry: number;
+  execute: () => Promise<boolean>;
+}
 
 @Component({
   selector: 'ngx-customer-form',
@@ -37,6 +50,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
   baseFormUrl = '/ivoip/customers/form';
 
   gatewaylist: { id: string, text: string }[];
+  longToastRef: NbToastRef = null;
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -191,13 +205,13 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     super.onAfterCreateSubmit(newFormData);
     this.deployPbxAndMiniErp(newFormData, () => {
       this.onProcessed();
-      this.dialogService.open(ShowcaseDialogComponent, {
-        context: {
-          title: 'Triển khai Tổng Đài Điện Toán',
-          content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
-          actions: [{ label: 'Ok', icon: 'back', status: 'success', action: () => { } }],
-        },
-      });
+      // this.dialogService.open(ShowcaseDialogComponent, {
+      //   context: {
+      //     title: 'Triển khai Tổng Đài Điện Toán',
+      //     content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
+      //     actions: [{ label: 'Ok', icon: 'back', status: 'success', action: () => { } }],
+      //   },
+      // });
     }, e => {
       this.onProcessed();
       this.dialogService.open(ShowcaseDialogComponent, {
@@ -206,19 +220,19 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
           actions: [
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
-            {
-              label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
-                this.dialogService.open(ShowcaseDialogComponent, {
-                  context: {
-                    title: 'Lỗi triển khai Tổng Đài Điện Toán',
-                    content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
-                    actions: [
-                      { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
-                    ],
-                  },
-                });
-              },
-            },
+            // {
+            //   label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
+            //     this.dialogService.open(ShowcaseDialogComponent, {
+            //       context: {
+            //         title: 'Lỗi triển khai Tổng Đài Điện Toán',
+            //         content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
+            //         actions: [
+            //           { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
+            //         ],
+            //       },
+            //     });
+            //   },
+            // },
           ],
         },
       });
@@ -229,13 +243,13 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     super.onAfterUpdateSubmit(newFormData);
     this.deployPbxAndMiniErp(newFormData, () => {
       this.onProcessed();
-      this.dialogService.open(ShowcaseDialogComponent, {
-        context: {
-          title: 'Triển khai Tổng Đài Điện Toán',
-          content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
-          actions: [{ label: 'Ok', icon: 'back', status: 'success', action: () => { } }],
-        },
-      });
+      // this.dialogService.open(ShowcaseDialogComponent, {
+      //   context: {
+      //     title: 'Triển khai Tổng Đài Điện Toán',
+      //     content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
+      //     actions: [{ label: 'Ok', icon: 'back', status: 'success', action: () => { } }],
+      //   },
+      // });
     }, e => {
       this.onProcessed();
       this.dialogService.open(ShowcaseDialogComponent, {
@@ -244,26 +258,823 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
           actions: [
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
-            {
-              label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
-                this.dialogService.open(ShowcaseDialogComponent, {
-                  context: {
-                    title: 'Lỗi triển khai Tổng Đài Điện Toán',
-                    content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
-                    actions: [
-                      { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
-                    ],
-                  },
-                });
-              },
-            },
+            // {
+            //   label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
+            //     this.dialogService.open(ShowcaseDialogComponent, {
+            //       context: {
+            //         title: 'Lỗi triển khai Tổng Đài Điện Toán',
+            //         content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
+            //         actions: [
+            //           { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
+            //         ],
+            //       },
+            //     });
+            //   },
+            // },
           ],
         },
       });
     });
   }
 
-  deployPbxAndMiniErp(newFormDatas: PbxCustomerModel[], onAfterDeploy: () => void, error: (error: any) => void) {
+  async deployPbxPbxUser(pbx: string, domainId: string, givenName: string, familyName: string, organization: string, email: string, groups: string[], username: string) {
+    return new Promise<PbxUserModel>((resolve, reject) => {
+      this.apiService.get<PbxUserModel[]>('/ivoip/users', { username: username, domainId: domainId + '@' + pbx, silent: true }, oldPbxUsers => {
+        let pbxUser: PbxUserModel = null;
+        let method = 'POST';
+        if (oldPbxUsers.length > 0) {
+          pbxUser = oldPbxUsers[0];
+          method = 'PUT';
+        } else {
+          pbxUser = new PbxUserModel();
+        }
+
+        pbxUser.username = username;
+        pbxUser.user_email = email;
+        pbxUser.contact_name_given = givenName;
+        pbxUser.contact_name_family = familyName;
+        pbxUser.contact_organization = organization;
+        pbxUser.domain_uuid = domainId;
+        pbxUser.groups = groups;
+        pbxUser.user_enabled = true;
+
+        this.apiService.postPut<PbxUserModel[]>(method, '/ivoip/users', { domainId: domainId + '@' + pbx, autoGeneratePassword: true, autoGenerateApiKey: true, silent: true }, [pbxUser], newPbxUsers => {
+
+          // Notify
+          this.toastrService.show('success', 'Đã tạo thông tin kêt nối api cho tổng đài', {
+            status: 'success',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          });
+
+          resolve(newPbxUsers[0]);
+        }, e => reject(e));
+      }, e => reject(e));
+    });
+  }
+
+  async deployPbxDomain(pbx: string, domainName: string, description: string, silent: boolean) {
+    return new Promise<PbxDomainModel>((resolve, reject) => {
+      const domain = new PbxDomainModel();
+      this.apiService.get<PbxDomainModel[]>('/ivoip/domains', { DomainName: domainName, silent: true }, domains => {
+
+        if (domains.length > 0) {
+          resolve(domains[0]);
+        } else {
+          // Create domain and assign user to owner domain
+          domain.Pbx = pbx;
+          domain.DomainName = domainName;
+          domain.Description = description;
+
+          this.apiService.post<PbxDomainModel[]>('/ivoip/domains', { silent: silent }, [domain], newDomains => {
+
+            const newDomain = newDomains[0];
+            if (newDomain) {
+              // Notify
+              this.toastrService.show('success', 'Khởi tạo tổng đài thành công', {
+                status: 'success',
+                hasIcon: true,
+                position: NbGlobalPhysicalPosition.TOP_RIGHT,
+              });
+              resolve(newDomain);
+            } else {
+              reject('Hệ thống không thể khởi tạo tổng đài');
+            }
+
+          }, e => reject(e));
+        }
+      });
+    });
+  }
+
+  async updatePbxDomainCache(pbx: PbxModel) {
+    return new Promise<PbxModel[] | HttpErrorResponse>((resolve, reject) => {
+      /** Sync pbx domains and get current pbx doamins */
+      this.apiService.put<PbxModel[]>('/ivoip/pbxs', { cachePbxDomain: true, silent: true }, [pbx], pbxs => { }, null, resp => {
+        resolve(resp);
+      });
+    });
+
+  }
+
+  async deployPbxPstnNumber(pbx: string, domainId: string, domainName: string, pstnNumberStr: string, transferToExt: string) {
+    return new Promise<PbxPstnNumberModel>((resolve, reject) => {
+      this.apiService.get<PbxPstnNumberModel[]>('/ivoip/pstn-numbers', { domainId: domainId + '@' + pbx, destination_accountcode: pstnNumberStr, silent: true }, oldPstnNumbers => {
+        if (oldPstnNumbers.length > 0) {
+          resolve(oldPstnNumbers[0]);
+        } else {
+          const pstnNumber = new PbxPstnNumberModel();
+          pstnNumber.destination_accountcode = pstnNumberStr;
+          pstnNumber.destination_number = '(\\d{1,3}' + pstnNumberStr.replace(/^0/, '') + ')';
+          pstnNumber.domain_uuid = domainId;
+          pstnNumber.destination_type = 'inbound';
+          pstnNumber.destination_description = 'Goi vao';
+          pstnNumber.destination_record = true;
+          pstnNumber.destination_enabled = true;
+          pstnNumber.dialplan_details = [
+            {
+              dialplan_detail_data: 'transfer:' + transferToExt + ' XML ' + domainName,
+            },
+          ];
+
+          this.apiService.post<PbxPstnNumberModel[]>('/ivoip/pstn-numbers', { domainId: domainId + '@' + pbx, silent: true }, [pstnNumber], newPstnNumbers => {
+            const newPstnNumber = newPstnNumbers[0];
+
+            this.toastrService.show('success', 'Đã khai báo số đấu nối', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
+
+            resolve(newPstnNumber);
+          }, e => reject(e));
+        }
+      }, e => reject(e));
+    });
+  }
+
+  async deployPbxExtensions(pbx: string, domainId: string, domainName: string, extensionsStr: string) {
+    return new Promise<PbxExtensionModel[]>((resolve, reject) => {
+      // Config pstn number
+      let exts: string[] = [];
+      let minExtension: string;
+      let maxExtension: string;
+      let firstExtension: string;
+      if (/\,/.test(extensionsStr)) {
+        exts = extensionsStr.split(',');
+        firstExtension = exts[0];
+      } else {
+        const tmpList = extensionsStr.split('-');
+        if (tmpList.length > 1) {
+          minExtension = tmpList[0];
+          maxExtension = tmpList[1];
+          firstExtension = minExtension;
+
+          for (let i = +minExtension; i <= +maxExtension; i++) {
+            exts.push('' + i);
+          }
+        } else if (tmpList[0]) {
+          exts.push('' + tmpList[0]);
+        }
+      }
+
+      const extensions: PbxExtensionModel[] = [];
+      exts.forEach(ext => {
+        extensions.push({
+          extension: ext,
+          call_timeout: 30,
+          enabled: true,
+          password: '',
+          domain_uuid: domainId,
+          user_record: 'all',
+          description: ext + '@' + domainName.split('.')[0],
+        });
+      });
+
+      this.apiService.get<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainId + '@' + pbx, silent: true }, oldExtensions => {
+        if (oldExtensions.length > 0) {
+          resolve(oldExtensions);
+        } else {
+          if (extensions.length > 0) {
+            this.apiService.post<PbxExtensionModel[]>('/ivoip/extensions', { domainId: domainId + '@' + pbx, silent: true }, extensions, newExtensions => {
+
+              this.toastrService.show('success', 'Đã khai báo danh sách số mở rộng', {
+                status: 'success',
+                hasIcon: true,
+                position: NbGlobalPhysicalPosition.TOP_RIGHT,
+              });
+
+              resolve(newExtensions);
+            }, e => reject(e));
+          } else {
+            resolve([]);
+          }
+        }
+      }, e => reject(e));
+
+    });
+  }
+
+  async deployPbxOutboundRule(pbx: string, domainId: string, domainName, pstnNumberStr: string, gateway: string) {
+    return new Promise<PbxDialplanModel>((resolve, reject) => {
+
+      // Create outbound route
+      const dialplan = new PbxDialplanModel();
+      dialplan.dialplan_type = 'outbound';
+      dialplan.dialplan_gateway = gateway;
+      dialplan.dialplan_name = 'Goi ra ' + pstnNumberStr;
+      dialplan.dialplan_number = pstnNumberStr;
+      dialplan.dialplan_regex = '\d{7,12}';
+      dialplan.dialplan_context = domainName;
+      dialplan.domain_uuid = domainId;
+      dialplan.dialplan_description = 'Goi ra ' + pstnNumberStr;
+      dialplan.dialplan_order = 100;
+      dialplan.dialplan_enabled = true;
+
+      this.apiService.post<PbxDialplanModel[]>('/ivoip/dialplans', { domainId: domainId + '@' + pbx, silent: true }, [dialplan], newDialplans => {
+
+        console.info(newDialplans);
+
+        // Notify
+        this.toastrService.show('success', 'Đã thêm cấu hình gọi ra', {
+          status: 'success',
+          hasIcon: true,
+          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+        });
+
+        resolve(dialplan);
+
+      }, e => reject(e));
+    });
+  }
+
+  async deployMiniErpWebiste(hosting: string, domainName: string) {
+    return new Promise<WhWebsiteModel>((resolve, reject) => {
+
+      this.apiService.get<WhWebsiteModel[]>('/web-hosting/websites', { hosting: hosting, domain: domainName, silent: true }, oldWebsites => {
+
+        let website = oldWebsites[0];
+        let menthod = 'POST';
+        if (website) {
+          menthod = 'PUT';
+        } else {
+          website = new WhWebsiteModel();
+        }
+
+        website.hosting = hosting;
+        website.domain = domainName;
+
+        this.apiService.postPut<WhWebsiteModel[]>(menthod, '/web-hosting/websites', { hosting: hosting }, [website], newWebsites => {
+          const newWebsite = newWebsites[0];
+          if (newWebsite) {
+
+            // Notify
+            this.toastrService.show('success', 'Đã khao báo website', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
+            resolve(newWebsite);
+          } else {
+            reject('System could not create website');
+          }
+        }, e => reject(e));
+      }, e => reject(e));
+
+    });
+  }
+
+  async deployMiniErpDatabaseUser(hosting: string, clientId: string, username: string) {
+    return new Promise<WhDatabaseUserModel>((resolve, reject) => {
+
+      const dbUsername = 'c' + clientId + username;
+      this.apiService.get<WhDatabaseUserModel[]>('/web-hosting/database-users', { hosting: hosting, database_user: dbUsername, silent: true }, oldDbUsers => {
+        let dbUser = oldDbUsers[0];
+        let method = 'POST';
+        if (dbUser) {
+          method = 'PUT';
+        } else {
+          dbUser = new WhDatabaseUserModel();
+        }
+
+        dbUser.database_user = dbUsername;
+        this.apiService.postPut<WhDatabaseUserModel[]>(method, '/web-hosting/database-users', { hosting: hosting, autoGeneratePassword: true, silent: true }, [dbUser], newDbUsers => {
+          const newDbUser = newDbUsers[0];
+          if (newDbUser) {
+
+            // Notify
+            this.toastrService.show('success', 'Đã khao báo website database user', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
+
+            resolve(newDbUser);
+          } else {
+            reject('System could not create websting db user');
+          }
+        }, e => reject(e));
+      }, e => reject(e));
+    });
+  }
+
+  async deployMiniErpDatabase(hosting: string, websiteId: string, clientId: string, dbUserId: string, dbName: string) {
+    return new Promise<WhDatabaseModel>((resolve, reject) => {
+      const database = new WhDatabaseModel();
+      database.parent_domain_id = websiteId;
+      database.database_user_id = dbUserId;
+      database.database_name = 'c' + clientId + dbName;
+
+      this.apiService.get<WhDatabaseModel[]>('/web-hosting/databases', { hosting: hosting, database_name: database.database_name, silent: true }, oldDatabases => {
+        const oldDatabase = oldDatabases[0];
+        if (oldDatabase) {
+          resolve(oldDatabase);
+        } else {
+          this.apiService.post<WhDatabaseModel[]>('/web-hosting/databases', { hosting: hosting, silent: true }, [database], newDatabases => {
+            const newDatabase = newDatabases[0];
+            if (newDatabase) {
+
+              // Notify
+              this.toastrService.show('success', 'Đã khao báo website database', {
+                status: 'success',
+                hasIcon: true,
+                position: NbGlobalPhysicalPosition.TOP_RIGHT,
+              });
+
+              resolve(newDatabase);
+            } else {
+              reject('System could not create web hosting database');
+            }
+          }, e => reject(e));
+        }
+      }, e => reject(e));
+    });
+
+  }
+
+  async deployMiniErpFtp(hosting: string, clientName: string, websiteId: string, username: string) {
+    return new Promise<WhFtpModel>((resolve, reject) => {
+
+      const ftpUser = clientName + username;
+      this.apiService.get<WhFtpModel[]>('/web-hosting/ftps', { hosting: hosting, username: ftpUser, silent: true }, oldFtps => {
+
+        let ftp = oldFtps[0];
+        let method = 'POST';
+        if (ftp) {
+          method = 'PUT';
+        } else {
+          ftp = new WhFtpModel();
+        }
+
+        ftp.parent_domain_id = websiteId;
+        ftp.username = username;
+        this.apiService.postPut<WhFtpModel[]>(method, '/web-hosting/ftps', { hosting: hosting, autoGeneratePassword: true, silent: true }, [ftp], newFtps => {
+
+          const newFtp = newFtps[0];
+          if (newFtp) {
+            // Update new passowrd to deployment
+
+            this.toastrService.show('success', 'Đã tạo thông tin đăng nhập FTP', {
+              status: 'success',
+              hasIcon: true,
+              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            });
+
+            resolve(newFtp);
+          } else {
+            reject('System could not create web hosting ftp user');
+          }
+        }, e => reject(e));
+        // }
+      }, e => reject(e));
+    });
+  }
+
+  async deployPbx(customer: string, silent: boolean) {
+    return new Promise<PbxDeploymentModel>((resovle, reject) => {
+
+      this.apiService.get<PbxDeploymentModel[]>('/ivoip/deployments', { customer: customer, silent: true }, ivoipDeployments => {
+        if (ivoipDeployments.length > 0) {
+          const ivoipDeployment = ivoipDeployments[0];
+
+          this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { deploy: true, silent: silent }, [ivoipDeployment], newPbxDeployments => {
+            resovle(newPbxDeployments[0]);
+          }, e => reject(e));
+
+        } else {
+          reject('Pbx deploy ment was not declare');
+        }
+      });
+
+    });
+  }
+
+  async deployMiniErpCore(customer: string, silent: boolean) {
+    return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
+
+      this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { customer: customer, silent: true }, miniErpDeployments => {
+        if (miniErpDeployments.length > 0) {
+
+          const miniErpDeployment = miniErpDeployments[0];
+          this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { deploy: true, silent: true }, [miniErpDeployment], results => {
+            resolve(results[0]);
+          }, e => {
+            reject(e);
+          });
+
+        } else {
+          reject('Thông tin triển khai Mini ERP không tồn tại');
+        }
+      }, e => reject(e));
+    });
+  }
+
+  async checkFtpReady(miniErpDeploymentCode: string) {
+    return new Promise<boolean>((resolve, reject) => {
+      this.apiService.get<boolean>('/mini-erp/deployments', { id: miniErpDeploymentCode, checkFtpReady: true, silent: true }, status => {
+
+        this.toastrService.show('success', 'Kết nối FTP đã sẵn sàn', {
+          status: 'success',
+          hasIcon: true,
+          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+        });
+
+        resolve(status);
+      }, e => reject(e));
+    });
+  }
+
+  async uploadMiniErpInstaller(miniErpDeploymentCode: string) {
+    return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
+      this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
+        this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, uploadMiniErpInstaller: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+
+          this.toastrService.show('success', 'Đã tải bộ cài Mini ERP lên hosting', {
+            status: 'success',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          });
+
+          resolve(respMiniErpDeployments[0]);
+        }, e => reject(e));
+      }, e => reject(e));
+    });
+  }
+
+  async checkDomainReady(miniErpDeploymentCode: string) {
+    return new Promise<boolean>((resolve, reject) => {
+      this.apiService.get<boolean>('/mini-erp/deployments', { id: miniErpDeploymentCode, checkDomainReady: true, silent: true }, status => {
+
+        this.toastrService.show('success', 'Website đã online', {
+          status: 'success',
+          hasIcon: true,
+          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+        });
+
+        resolve(status);
+      }, e => reject(e));
+    });
+  }
+
+  async extractMiniErpInstaller(miniErpDeploymentCode: string) {
+    return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
+      this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
+        this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, extractMiniErpInstaller: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+
+          this.toastrService.show('success', 'Đã giải nén bộ cài Mini ERP', {
+            status: 'success',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          });
+
+          resolve(respMiniErpDeployments[0]);
+        }, e => reject(e));
+      }, e => reject(e));
+    });
+  }
+
+  async configMiniErp(miniErpDeploymentCode: string) {
+    return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
+      this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
+        this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, configMiniErp: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+
+          this.toastrService.show('success', 'Đã cấu hình căn bản cho Mini ERP', {
+            status: 'success',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          });
+
+          resolve(respMiniErpDeployments[0]);
+        }, e => reject(e));
+      }, e => reject(e));
+    });
+  }
+
+  async configUserForMiniErp(miniErpDeploymentCode: string) {
+    return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
+      this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
+        this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, configUserForMiniErp: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+
+          this.toastrService.show('success', 'Đã khởi tạo user admin cho Mini ERP', {
+            status: 'success',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          });
+
+          resolve(respMiniErpDeployments[0]);
+        }, e => reject(e));
+      }, e => reject(e));
+    });
+  }
+
+  async cleanMiniErpInstaller(miniErpDeploymentCode: string) {
+    return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
+      this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, silent: true }, miniErpDeployments => {
+        this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, cleanMiniErpInstaller: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
+
+          this.toastrService.show('success', 'Đã dọn dẹp các file cài đặt Mini ERP', {
+            status: 'success',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          });
+
+          resolve(respMiniErpDeployments[0]);
+        }, e => reject(e));
+      }, e => reject(e));
+    });
+  }
+
+  async updateMiniErpDeployment(miniErpDeployment: MiniErpDeploymentModel, params?: { [key: string]: any }) {
+    return new Promise<MiniErpDeploymentModel>((resolve, reject) => {
+      if (!params) params = {};
+      params['id'] = miniErpDeployment.Code;
+      params['silent'] = true;
+      this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', params, [miniErpDeployment], resp => resolve(resp[0]), e => reject(e));
+    });
+  }
+
+  async deployPbxAndMiniErp(newFormDatas: PbxCustomerModel[], onAfterDeploy: () => void, error: (error: any) => void) {
+
+    /** Prepare info */
+    const newFormData = newFormDatas[0];
+    const formData: {
+      Code: string,
+      Pbx: string,
+      DomainName: string,
+      Name: string,
+      Phone: string,
+      Email: string,
+      PstnNumber: string,
+      Extensions: string,
+      Hosting: string;
+      Gateway: string,
+    } = this.form.value['array'][0];
+
+    const hosting: WhHostingModel = this.hostingList.filter(w => w.Code === formData.Hosting)[0];
+    const pbx = this.pbxList.filter(p => p.Code === formData.Pbx)[0];
+    const deployName = formData.DomainName.split('.')[0];
+
+    let miniErpDeployment = await new Promise<MiniErpDeploymentModel>((resolve, reject) => {
+      this.apiService.get<MiniErpDeploymentModel[]>('/mini-erp/deployments', { customer: newFormData['Code'] }, resp => resolve(resp[0]), e => reject(e));
+    });
+
+    let tryCount = 0;
+    let newPbxDomain: PbxDomainModel;
+    let newPbxUser: PbxUserModel;
+    let newPbxExtensions: PbxExtensionModel[];
+    let newPbxPstnNumber: PbxPstnNumberModel;
+    let newPbxOutboundRule: PbxDialplanModel;
+    let newWesite: WhWebsiteModel;
+    let newWebsiteDbUser: WhDatabaseUserModel;
+    let newWesiteDb: WhDatabaseModel;
+    let newWebsiteFtp: WhFtpModel;
+    // let newMiniErpDeployment: MiniErpDeploymentModel;
+
+
+    const executeList: Executable[] = [
+      // Deply PBX
+      {
+        message: 'Khởi tạo tổng đài',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newPbxDomain = await this.deployPbxDomain(pbx.Code, formData.DomainName, formData.Name, true);
+          return true;
+        },
+      },
+      {
+        message: 'Tạo thông tin kết nối api cho tổng đài',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newPbxUser = await this.deployPbxPbxUser(pbx.Code, newPbxDomain.DomainId, 'Admin', 'Admin', formData.Name, formData.Email, ['admin'], 'admin');
+          miniErpDeployment.PbxApiKey = newPbxUser.api_key;
+          miniErpDeployment = await this.updateMiniErpDeployment(miniErpDeployment);
+          return true;
+        },
+      },
+      {
+        message: 'Tạo danh sách số mở rộng cho tổng đài',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newPbxExtensions = await this.deployPbxExtensions(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, formData.Extensions);
+          return true;
+        },
+      },
+      {
+        message: 'Khai báo số đấu nối cho tổng đài',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newPbxPstnNumber = await this.deployPbxPstnNumber(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, formData.PstnNumber, newPbxExtensions[0].extension);
+          return true;
+        },
+      },
+      // Deploy minierp
+      {
+        message: 'Cài đặt quy tắt gọi ra',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          if (formData.Gateway) {
+            newPbxOutboundRule = await this.deployPbxOutboundRule(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, newPbxPstnNumber.destination_accountcode, formData.Gateway);
+          }
+          return true;
+        },
+      },
+      {
+        message: 'Tạo trang quản lý',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newWesite = await this.deployMiniErpWebiste(hosting.Code, newPbxDomain.DomainName);
+          return true;
+        },
+      },
+      {
+        message: 'Tạo webiste database user',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newWebsiteDbUser = await this.deployMiniErpDatabaseUser(hosting.Code, hosting.ClientId, deployName);
+          miniErpDeployment.DbHost = 'localhost';
+          miniErpDeployment.DbUser = newWebsiteDbUser.database_user;
+          miniErpDeployment.DbPassword = newWebsiteDbUser.database_password;
+          miniErpDeployment = await this.updateMiniErpDeployment(miniErpDeployment);
+          return true;
+        },
+      },
+      {
+        message: 'Tạo website database',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newWesiteDb = await this.deployMiniErpDatabase(hosting.Code, newWesite.domain_id, hosting.ClientId, newWebsiteDbUser.database_user_id, deployName);
+          miniErpDeployment.DbName = newWesiteDb.database_name;
+          miniErpDeployment = await this.updateMiniErpDeployment(miniErpDeployment);
+          return true;
+        },
+      },
+      {
+        message: 'Tạo website ftp',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newWebsiteFtp = await this.deployMiniErpFtp(hosting.Code, hosting.ClientName, newWesite.domain_id, deployName);
+          miniErpDeployment.FtpUser = newWebsiteFtp.username;
+          miniErpDeployment.FtpPassword = newWebsiteFtp.password;
+          miniErpDeployment = await this.updateMiniErpDeployment(miniErpDeployment);
+          return true;
+        },
+      },
+      // {
+      //   message: 'Triển khai Mini ERP',
+      //   maxTry: 3,
+      //   delayTry: 15000,
+      //   execute: async () => {
+      //     newMiniErpDeployment = await this.deployMiniErpCore(formData.Code, true);
+      //     return true;
+      //   },
+      // },
+      // Deploy mini erp
+      {
+        message: 'Kiểm tra kết nối FTP',
+        maxTry: 30,
+        delayTry: 10000,
+        execute: async () => {
+          await this.checkFtpReady(miniErpDeployment.Code);
+          return true;
+        },
+      },
+      {
+        message: 'Tải lên webste bộ cài Mini ERP',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          await this.uploadMiniErpInstaller(miniErpDeployment.Code);
+          return true;
+        },
+      },
+      {
+        message: 'Kiểm tra website online',
+        maxTry: 30,
+        delayTry: 10000,
+        execute: async () => {
+          await this.checkDomainReady(miniErpDeployment.Code);
+          return true;
+        },
+      },
+      {
+        message: 'Giải nén bộ cài Mini ERP',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          miniErpDeployment = await this.extractMiniErpInstaller(miniErpDeployment.Code);
+          return true;
+        },
+      },
+      {
+        message: 'Cấu hình Mini ERP',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          miniErpDeployment = await this.configMiniErp(miniErpDeployment.Code);
+          return true;
+        },
+      },
+      {
+        message: 'Cấu hình người dùng cho Mini ERP',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          miniErpDeployment = await this.configUserForMiniErp(miniErpDeployment.Code);
+          return true;
+        },
+      },
+      {
+        message: 'Dọn dep file cài đặt Mini ERP',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          miniErpDeployment = await this.cleanMiniErpInstaller(miniErpDeployment.Code);
+          return true;
+        },
+      },
+      {
+        message: 'Đã triển khai xong Mini ERP cho ' + formData.Name,
+        title: formData.DomainName,
+        status: 'success',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          this.dialogService.open(ShowcaseDialogComponent, {
+            context: {
+              title: 'Triển khai Mini ERP',
+              content: 'Đã triển khai thành công Mini ERP cho khách ' + formData.Name,
+              actions: [
+                {
+                  label: 'Trở về',
+                  icon: 'back',
+                  status: 'info',
+                  action: () => { },
+                },
+                {
+                  label: 'Truy cập',
+                  icon: 'goto',
+                  status: 'success',
+                  action: () => {
+                    window.open(`https://${formData.DomainName}`);
+                  },
+                },
+              ],
+            },
+          });
+          return true;
+        },
+      },
+
+    ];
+
+    /** Execute deployment */
+    let execute: Executable;
+    setTimeout(() => this.onProcessing(), 500);
+
+    while (execute = executeList.shift()) {
+      tryCount = 0;
+      while (true) {
+        tryCount++;
+        try {
+          if (this.longToastRef) this.longToastRef.close();
+          this.longToastRef = this.toastrService.show(execute.title ? execute.title : 'Đang thực thi...', execute.message + (tryCount > 1 ? (` lần ${tryCount}/${execute.maxTry}`) : ''), { status: execute.status ? execute.status : 'primary', hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, duration: execute.durarion ? execute.durarion : 0 });
+          // newPbxDomain = await this.deployPbxDomain(pbx.Code, formData.DomainName, formData.Name, tryCount < 5);
+          if (execute.execute) {
+            await execute.execute();
+          }
+          break;
+        } catch (e) {
+          if (tryCount >= execute.maxTry) {
+            error(e);
+            this.onProcessed();
+            return;
+          } else {
+            // Notification auto close
+            this.toastrService.show('Thông báo lỗi', e && e.error && e.error.logs ? e.error.logs.join('<br>') : e, { status: 'warning', hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, duration: 15000 });
+          }
+        }
+
+        // Close previous notification and open new
+        if (this.longToastRef) this.longToastRef.close();
+        this.longToastRef = this.toastrService.show('Thử lại trong ' + (execute.delayTry / 1000) + ' giây nữa...', 'Lỗi ' + execute.message, { status: 'danger', hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, duration: 0 });
+        await new Promise(resolve => setTimeout(() => resolve(), execute.delayTry));
+      }
+    }
+
+    this.onProcessed();
+    onAfterDeploy();
+  }
+
+  deployPbxAndMiniErpX(newFormDatas: PbxCustomerModel[], onAfterDeploy: () => void, error: (error: any) => void) {
     // super.onAfterUpdateSubmit(newFormData);
 
     const newFormData = newFormDatas[0];
