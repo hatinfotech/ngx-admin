@@ -277,7 +277,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Thông báo lỗi',
-          content: e.error.logs.join('<br>'),
+          content: e.error.logs.join('\n'),
           actions: [
             {
               label: 'Trở về',
@@ -371,7 +371,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.form.disable();
     if (this.id.length > 0) {
       // Update
-      this.executePut({ id: this.id }, data.array, results => {
+      this.executePut({ id: this.id, silent: true }, data.array, results => {
         this.onAfterUpdateSubmit(results);
         // this.submiting = false;
         // this.form.enable();
@@ -384,7 +384,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       });
     } else {
       // Create
-      this.executePost({}, data.array, results => {
+      this.executePost({silent: true}, data.array, results => {
         this.onAfterCreateSubmit(results);
         this.onProcessed();
       }, e => {

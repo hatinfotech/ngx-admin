@@ -13,7 +13,7 @@ import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showc
   providedIn: 'root',
 })
 export class ApiService {
-  protected baseApiUrl = environment.api.baseUrl;
+  public baseApiUrl = environment.api.baseUrl;
   protected session = '';
   protected token = '';
 

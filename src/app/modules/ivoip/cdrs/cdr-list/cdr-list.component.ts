@@ -9,6 +9,7 @@ import { IvoipService } from '../../ivoip-service';
 import { PlayerDialogComponent } from '../../../dialog/player-dialog/player-dialog.component';
 import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { Cell } from 'ng2-smart-table';
 
 @Component({
   selector: 'ngx-cdr-list',
@@ -22,9 +23,9 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
   apiPath: string = '/ivoip/cdrs';
   idKey = 'cdr_uuid';
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
-    selectMode: 'multi',
+    // selectMode: 'multi',
     // actions: {
     //   position: 'right',
     // },
@@ -56,32 +57,46 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
       Direction: {
         title: 'Hướng gọi',
         type: 'html',
-        width: '10%',
+        width: '5%',valuePrepareFunction: (cell: string) => {
+          return `<span class="nowrap">${cell ? cell : ''}</span>`;
+        },
       },
       Extension: {
         title: 'Số nội bộ',
         type: 'html',
-        width: '10%',
+        width: '5%',
       },
       FromOrigin: {
         title: 'Số gọi vào',
         type: 'html',
         width: '10%',
+        valuePrepareFunction: (cell: string) => {
+          return `<span class="nowrap">${cell ? cell : ''}</span>`;
+        },
       },
       CallerName: {
         title: 'Tên người gọi',
         type: 'html',
+        valuePrepareFunction: (cell: string) => {
+          return `<span class="nowrap">${cell ? cell : ''}</span>`;
+        },
         width: '10%',
       },
       CallerNumber: {
         title: 'Số người gọi',
         type: 'html',
         width: '10%',
+        valuePrepareFunction: (cell: string) => {
+          return `<span class="nowrap">${cell ? cell : ''}</span>`;
+        },
       },
       CallerDestination: {
         title: 'Số nhận cuộc gọi',
         type: 'html',
-        width: '10%',
+        width: '15%',
+        valuePrepareFunction: (cell: string) => {
+          return `<span class="nowrap">${cell ? cell : ''}</span>`;
+        },
       },
       Start: {
         title: 'TG Bắt đầu',
@@ -96,7 +111,7 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
       Duration: {
         title: 'Thời lượng',
         type: 'html',
-        width: '10%',
+        width: '5%',
       },
       HangupCase: {
         title: 'Trạng thái',
@@ -138,7 +153,7 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
         },
       },
     },
-  };
+  });
 
   constructor(
     protected apiService: ApiService,
@@ -187,5 +202,10 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
       });
     }
 
+  }
+
+  exportCdrs() {
+    window.open(`${this.apiService.buildApiUrl('/ivoip/cdrs', { domainId: this.ivoipService.getPbxActiveDomainUuid(), export: true })}`, '_blank');
+    return false;
   }
 }

@@ -22,6 +22,8 @@ export class MiniErpDeploymentModel {
   PbxName?: string;
   PbxDomain?: string;
   PbxApiKey?: string;
+  AdminUser?: string;
+  AdminPassword?: string;
 
   constructor() { }
 

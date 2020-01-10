@@ -4,6 +4,12 @@ Mini erp
 Global style
 */
 
+/* style inject  */
+.nowrap {
+  white-space: nowrap;
+}
+/* end style inject*/
+
 /* Layout */
 body nb-layout[authState="logout"] .layout nb-layout-header,
 body nb-layout[authState="logout"] nb-sidebar {
@@ -352,7 +358,7 @@ body ng2-smart-table .no {
 }
 
 nb-card.small-header nb-card-header {
-  padding: 0.5rem 1.25rem !important;
+  padding: 0.5rem 1rem !important;
 }
 nb-card.small-header nb-card-header nav {
   height: 2.45rem !important;

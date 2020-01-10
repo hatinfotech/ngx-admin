@@ -13,6 +13,8 @@ export class MiniErpModel {
   Version?: string;
   License?: string;
   Enabled?: string;
+  ApiUser?: string;
+  ApiPassword?: string;
 
   constructor() { }
 

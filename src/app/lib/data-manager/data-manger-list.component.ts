@@ -1,4 +1,4 @@
-import { LocalDataSource } from 'ng2-smart-table';
+import { LocalDataSource, ViewCell } from 'ng2-smart-table';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
@@ -8,6 +8,7 @@ import { OnInit } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SmartTableButtonComponent } from '../custom-element/smart-table/smart-table-checkbox.component';
 
 export class SmartTableSetting {
   mode?: string;
@@ -40,6 +41,9 @@ export class SmartTableSetting {
       type: string,
       width?: string,
       filterFunction?: (value: string, query: string) => boolean,
+      valuePrepareFunction?: (cell: string, row?: any) => string,
+      renderComponent?: any,
+      onComponentInitFunction?: (instance: any) => void,
     },
   };
 }
@@ -315,9 +319,13 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   protected configSetting(settings: SmartTableSetting) {
 
     // Set default filter function
-    if (!settings['filterFunction']) {
-      settings['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
-    }
+    Object.keys(settings.columns).forEach(key => {
+
+      if (!settings.columns[key]['filterFunction']) {
+        settings.columns[key]['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
+      }
+    });
+
     return settings;
   }
 }
