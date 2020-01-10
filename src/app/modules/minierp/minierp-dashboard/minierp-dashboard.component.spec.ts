@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MinierpControllerComponent } from './minierp-controller.component';
+import { MinierpDashboardComponent } from './minierp-dashboard.component';
 
-describe('MinierpControllerComponent', () => {
-  let component: MinierpControllerComponent;
-  let fixture: ComponentFixture<MinierpControllerComponent>;
+describe('MinierpDashboardComponent', () => {
+  let component: MinierpDashboardComponent;
+  let fixture: ComponentFixture<MinierpDashboardComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MinierpControllerComponent ]
+      declarations: [ MinierpDashboardComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MinierpControllerComponent);
+    fixture = TestBed.createComponent(MinierpDashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

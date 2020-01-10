@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MinierpControllerComponent } from './minierp-controller.component';
+import { MinierpComponent } from './minierp.component';
 import { AuthGuardService } from '../../services/auth-guard.service';
-import { MinierpControllerDashboardComponent } from './minierp-controller-dashboard/minierp-controller-dashboard.component';
+import { MinierpDashboardComponent } from './minierp-dashboard/minierp-dashboard.component';
 import { MinierpFormComponent } from './minierps/minierp-form/minierp-form.component';
 import { MinierpListComponent } from './minierps/minierp-list/minierp-list.component';
 
 
 const routes: Routes = [{
   path: '',
-  component: MinierpControllerComponent,
+  component: MinierpComponent,
   children: [
     {
       path: '',
@@ -19,7 +19,7 @@ const routes: Routes = [{
     {
       path: 'dashboard',
       canActivate: [AuthGuardService],
-      component: MinierpControllerDashboardComponent,
+      component: MinierpDashboardComponent,
       data: {
         reuse: true,
       },
@@ -33,12 +33,12 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'pbxs/form',
+      path: 'minierps/form',
       canActivate: [AuthGuardService],
       component: MinierpFormComponent,
     },
     {
-      path: 'pbxs/form/:id',
+      path: 'minierps /form/:id',
       canActivate: [AuthGuardService],
       component: MinierpFormComponent,
     },
@@ -49,5 +49,5 @@ const routes: Routes = [{
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class IvoipRoutingModule {
+export class MinierpRoutingModule {
 }
