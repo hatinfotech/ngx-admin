@@ -9,7 +9,6 @@ import { IvoipService } from '../../ivoip-service';
 import { PlayerDialogComponent } from '../../../dialog/player-dialog/player-dialog.component';
 import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
-import { Cell } from 'ng2-smart-table';
 
 @Component({
   selector: 'ngx-cdr-list',
@@ -57,7 +56,7 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
       Direction: {
         title: 'Hướng gọi',
         type: 'html',
-        width: '5%',valuePrepareFunction: (cell: string) => {
+        width: '5%', valuePrepareFunction: (cell: string) => {
           return `<span class="nowrap">${cell ? cell : ''}</span>`;
         },
       },

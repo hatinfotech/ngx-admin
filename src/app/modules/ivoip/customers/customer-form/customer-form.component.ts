@@ -745,7 +745,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
     const hosting: WhHostingModel = this.hostingList.filter(w => w.Code === formData.Hosting)[0];
     const pbx = this.pbxList.filter(p => p.Code === formData.Pbx)[0];
-    const domainParse = formData.DomainName.split('.');
+    // const domainParse = formData.DomainName.split('.');
     // const deployName = domainParse[0] + (domainParse.length > 1 ? domainParse[1] : '');
     const deployName = formData.DomainName.replace(/\.+/g, '').slice(0, 13);
 

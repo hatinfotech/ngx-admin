@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WebHostingService } from '../../web-hosting-service';
-import { WhWebsiteModel } from '../../../../models/wh-website.model';
 
 @Component({
   selector: 'ngx-ftp-list',

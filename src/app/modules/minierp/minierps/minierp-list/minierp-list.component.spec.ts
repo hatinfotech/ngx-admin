@@ -8,7 +8,7 @@ describe('MinierpListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MinierpListComponent ]
+      declarations: [ MinierpListComponent ],
     })
     .compileComponents();
   }));

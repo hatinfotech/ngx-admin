@@ -5,9 +5,8 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { WebHostingService } from '../../../web-hosting/web-hosting-service';
 import { MinierpService } from '../../minierp-service.service';
-import { SmartTableButtonComponent, SmartTableIconComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableIconComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
 
 @Component({
   selector: 'ngx-minierp-list',

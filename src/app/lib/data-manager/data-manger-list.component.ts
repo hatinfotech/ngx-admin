@@ -1,4 +1,4 @@
-import { LocalDataSource, ViewCell } from 'ng2-smart-table';
+import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
@@ -8,7 +8,7 @@ import { OnInit } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table-checkbox.component';
 
 export class SmartTableSetting {
   mode?: string;

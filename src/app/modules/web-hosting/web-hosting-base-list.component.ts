@@ -6,10 +6,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { OnInit } from '@angular/core';
 import { ReuseComponent } from '../../lib/reuse-component';
 import { WebHostingService } from './web-hosting-service';
-import { WhHostingModel } from '../../models/wh-hosting.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { WhWebsiteModel } from '../../models/wh-website.model';
-import { WhDatabaseUserModel } from '../../models/wh-database-user.model';
 
 export abstract class WebHostingBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
@@ -38,7 +35,7 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
   }
 
   ngOnInit() {
-    const subscription = this.webHostingService.ready$.subscribe(ready => {
+    this.webHostingService.ready$.subscribe(ready => {
       if (ready) {
         super.ngOnInit();
         // if (subscription) subscription.unsubscribe();

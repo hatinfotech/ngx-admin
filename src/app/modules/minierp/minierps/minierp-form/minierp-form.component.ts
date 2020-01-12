@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { WebHostingService } from '../../../web-hosting/web-hosting-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MinierpService } from '../../minierp-service.service';
 

@@ -8,7 +8,7 @@ describe('MinierpFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MinierpFormComponent ]
+      declarations: [ MinierpFormComponent ],
     })
     .compileComponents();
   }));

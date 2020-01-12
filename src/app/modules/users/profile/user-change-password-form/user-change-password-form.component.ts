@@ -12,7 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'ngx-user-change-password-form',
   templateUrl: './user-change-password-form.component.html',
-  styleUrls: ['./user-change-password-form.component.scss']
+  styleUrls: ['./user-change-password-form.component.scss'],
 })
 export class UserChangePasswordFormComponent extends DataManagerFormComponent<UserModel> implements OnInit {
 

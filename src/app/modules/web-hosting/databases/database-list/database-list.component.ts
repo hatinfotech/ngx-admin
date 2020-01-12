@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WebHostingService } from '../../web-hosting-service';
-import { WhDatabaseUserModel } from '../../../../models/wh-database-user.model';
 
 @Component({
   selector: 'ngx-database-list',
