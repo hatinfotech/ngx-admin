@@ -8,7 +8,7 @@ import { OnInit } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent } from '../custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableButtonComponent, SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table-checkbox.component';
 
 export class SmartTableSetting {
   mode?: string;
@@ -39,6 +39,7 @@ export class SmartTableSetting {
     [key: string]: {
       title: string,
       type: string,
+      editable?: boolean,
       width?: string,
       filterFunction?: (value: string, query: string) => boolean,
       valuePrepareFunction?: (cell: string, row?: any) => string,
@@ -320,10 +321,34 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
     // Set default filter function
     Object.keys(settings.columns).forEach(key => {
-
+      const column = settings.columns[key];
       if (!settings.columns[key]['filterFunction']) {
         settings.columns[key]['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
       }
+
+      if (column.type === 'boolean') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableCheckboxComponent;
+        column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
+          instance.disable = !column.editable;
+          // instance.iconPack = 'eva';
+          // instance.icon = 'play-circle-outline';
+          // instance.label = 'Play';
+          // instance.display = true;
+          // instance.status = 'warning';
+          // instance.valueChange.subscribe(value => {
+          //   if (value) {
+          //     instance.disabled = false;
+          //   } else {
+          //     instance.disabled = true;
+          //   }
+          // });
+          // instance.click.subscribe((row: any) => {
+
+          // });
+        };
+      }
+
     });
 
     return settings;

@@ -7,6 +7,7 @@ export class LoginInfoModel {
   user?: UserModel;
   contact?: ContactModel;
   distribution?: {fileStores: {[key: string]: FileStoreModel}, cookie: string};
+  system?: {version?: string};
 
   constructor() { }
 

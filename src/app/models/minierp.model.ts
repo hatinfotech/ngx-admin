@@ -15,6 +15,9 @@ export class MiniErpModel {
   Enabled?: string;
   ApiUser?: string;
   ApiPassword?: string;
+  State?: string;
+  LastLog?: string;
+  RequireUpdate?: boolean;
 
   constructor() { }
 

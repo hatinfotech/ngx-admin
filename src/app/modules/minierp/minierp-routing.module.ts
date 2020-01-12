@@ -38,7 +38,7 @@ const routes: Routes = [{
       component: MinierpFormComponent,
     },
     {
-      path: 'minierps /form/:id',
+      path: 'minierps/form/:id',
       canActivate: [AuthGuardService],
       component: MinierpFormComponent,
     },

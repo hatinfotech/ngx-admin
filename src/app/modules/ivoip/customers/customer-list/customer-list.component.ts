@@ -38,7 +38,7 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
   editing = {};
   rows = [];
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
@@ -98,7 +98,7 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
         type: 'string',
         width: '20%',
       },
-      RecordingFile: {
+      Info: {
         title: 'Info',
         type: 'custom',
         width: '10%',
@@ -173,7 +173,7 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
         },
       },
     },
-  };
+  });
 
   ngOnnit() {
     this.restrict();

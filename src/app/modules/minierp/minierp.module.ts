@@ -13,7 +13,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { SmartTableButtonComponent } from '../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableIconComponent } from '../../lib/custom-element/smart-table/smart-table-checkbox.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +51,8 @@ import { SmartTableButtonComponent } from '../../lib/custom-element/smart-table/
   ],
   entryComponents: [
     SmartTableButtonComponent,
+    SmartTableCheckboxComponent,
+    SmartTableIconComponent,
   ],
 })
 export class MinierpModule { }
