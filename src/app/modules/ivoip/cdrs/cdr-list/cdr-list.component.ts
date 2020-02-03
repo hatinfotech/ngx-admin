@@ -97,6 +97,14 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
           return `<span class="nowrap">${cell ? cell : ''}</span>`;
         },
       },
+      DestinationNumber: {
+        title: 'Chuyển đến',
+        type: 'html',
+        width: '15%',
+        valuePrepareFunction: (cell: string) => {
+          return `<span class="nowrap">${cell ? cell : ''}</span>`;
+        },
+      },
       Start: {
         title: 'TG Bắt đầu',
         type: 'html',
@@ -120,7 +128,7 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
       RecordingFile: {
         title: 'Ghi âm',
         type: 'custom',
-        width: '10%',
+        width: '5%',
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
