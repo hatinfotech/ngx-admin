@@ -14,7 +14,7 @@ import { MinierpService } from '../../minierp-service.service';
   templateUrl: './minierp-form.component.html',
   styleUrls: ['./minierp-form.component.scss'],
 })
-export class MinierpFormComponent  extends MinierpBaseFormComponent<MiniErpModel> implements OnInit {
+export class MinierpFormComponent extends MinierpBaseFormComponent<MiniErpModel> implements OnInit {
 
   componentName: string = 'MinierpFormComponent';
   idKey = 'Code';

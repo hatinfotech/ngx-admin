@@ -1,6 +1,6 @@
 {
   "name": "mini-erp",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "NaM software license",
   "repository": {
     "type": "git",
@@ -29,6 +29,8 @@
     "release:changelog": "npm run conventional-changelog -- -p angular -i CHANGELOG.md -s"
   },
   "dependencies": {
+    "@ag-grid-community/all-modules": "^22.1.1",
+    "@ag-grid-community/angular": "^22.1.2",
     "@agm/core": "^1.0.0-beta.5",
     "@angular/animations": "^8.0.0",
     "@angular/cdk": "^8.0.0",
@@ -47,15 +49,16 @@
     "@ng-bootstrap/ng-bootstrap": "^5.1.2",
     "@swimlane/dragula": "^3.8.0",
     "@swimlane/ngx-charts": "^10.0.0",
-    "@swimlane/ngx-datatable": "^16.0.2",
+    "@swimlane/ngx-datatable": "^16.0.3",
     "@swimlane/ngx-dnd": "^8.1.0",
     "@types/dragula": "^2.1.34",
+    "ag-grid-community": "^22.1.1",
     "angular-ng-autocomplete": "^1.1.14",
     "angular-tree-component": "^7.2.0",
     "angular2-chartjs": "0.4.1",
     "angular2-toaster": "^7.0.0",
     "bootstrap": "^4.3.1",
-    "chart.js": "2.7.1",
+    "chart.js": "^2.9.3",
     "ckeditor": "4.7.3",
     "classlist.js": "1.1.20150312",
     "core-js": "2.5.1",
@@ -75,7 +78,7 @@
     "ngx-echarts": "^4.0.1",
     "ngx-mask": "^8.1.6",
     "ngx-sortablejs": "^3.1.3",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "normalize.css": "6.0.0",
     "pace-js": "1.0.2",
     "roboto-fontface": "0.8.0",
@@ -91,11 +94,11 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.800.2",
+    "@angular-devkit/build-angular": "^0.803.24",
     "@angular/cli": "^8.0.2",
     "@angular/compiler-cli": "^8.0.0",
     "@angular/language-service": "8.0.0",
-    "@compodoc/compodoc": "1.0.1",
+    "@compodoc/compodoc": "^1.1.11",
     "@fortawesome/fontawesome-free": "^5.2.0",
     "@types/d3-color": "1.0.5",
     "@types/googlemaps": "^3.30.4",

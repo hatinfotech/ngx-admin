@@ -119,9 +119,28 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return false;
   }
 
+  showFilter(event) {
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: 'Tìm kiếm nâng cao',
+        content: 'Filter',
+        actions: [
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'success',
+            action: () => { },
+          },
+        ],
+      },
+    });
+    return false;
+  }
+
   /** Go to form */
-  gotoForm(id?: string): void {
+  gotoForm(id?: string): false {
     this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
+    return false;
   }
 
   /** User select event */
@@ -151,65 +170,77 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   /** Create and multi edit/delete action */
   onSerialAction(event: any) {
     if (this.selectedIds.length > 0) {
-      this.dialogService.open(ShowcaseDialogComponent, {
-        context: {
-          title: 'Xác nhận',
-          content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
-          actions: [
-            {
-              label: 'Xoá',
-              icon: 'delete',
-              status: 'danger',
-              action: () => {
-                this.deleteConfirm(this.selectedIds, () => this.loadList());
-                // this.dialogService.open(ShowcaseDialogComponent, {
-                //   context: {
-                //     title: 'Xác nhận xoá dữ liệu',
-                //     content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',
-                //     actions: [
-                //       {
-                //         label: 'Trở về',
-                //         icon: 'back',
-                //         status: 'info',
-                //         action: () => { },
-                //       },
-                //       {
-                //         label: 'Xoá',
-                //         icon: 'delete',
-                //         status: 'danger',
-                //         action: () => {
-                //           this.apiService.delete(this.apiPath, this.selectedIds, result => {
-                //             this.loadList();
-                //           });
-                //         },
-                //       },
-                //     ],
-                //   },
-                // });
-              },
-            },
-            {
-              label: 'Trở về',
-              icon: 'back',
-              status: 'success',
-              action: () => { },
-            },
-            {
-              label: 'Chỉnh',
-              icon: 'edit',
-              status: 'warning',
-              action: () => {
-                // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
-                this.gotoForm(this.selectedIds.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')));
-              },
-            },
-          ],
-        },
-      });
+      this.editChoosedItems();
+      // this.dialogService.open(ShowcaseDialogComponent, {
+      //   context: {
+      //     title: 'Xác nhận',
+      //     content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
+      //     actions: [
+      //       {
+      //         label: 'Xoá',
+      //         icon: 'delete',
+      //         status: 'danger',
+      //         action: () => {
+      //           this.deleteConfirm(this.selectedIds, () => this.loadList());
+      //         },
+      //       },
+      //       {
+      //         label: 'Trở về',
+      //         icon: 'back',
+      //         status: 'success',
+      //         action: () => { },
+      //       },
+      //       {
+      //         label: 'Chỉnh',
+      //         icon: 'edit',
+      //         status: 'warning',
+      //         action: () => {
+      //           // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
+      //           this.gotoForm(this.selectedIds.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')));
+      //         },
+      //       },
+      //     ],
+      //   },
+      // });
     } else {
       // this.router.navigate(['modules/manager/form']);
       this.gotoForm();
     }
+  }
+
+  editChoosedItems(): false {
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: 'Xác nhận',
+        content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
+        actions: [
+          {
+            label: 'Xoá',
+            icon: 'delete',
+            status: 'danger',
+            action: () => {
+              this.deleteConfirm(this.selectedIds, () => this.loadList());
+            },
+          },
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'success',
+            action: () => { },
+          },
+          {
+            label: 'Chỉnh',
+            icon: 'edit',
+            status: 'warning',
+            action: () => {
+              // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
+              this.gotoForm(this.selectedIds.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')));
+            },
+          },
+        ],
+      },
+    });
+    return false;
   }
 
   deleteConfirm(ids: string[], callback?: () => void) {
@@ -286,6 +317,15 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   protected configAddButton() {
     return {
       addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for add button */
+  protected configFilterButton() {
+    return {
+      addButtonContent: '<i class="nb-search"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
     };

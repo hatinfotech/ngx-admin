@@ -1,4 +1,10 @@
 @import "~angular-tree-component/dist/angular-tree-component.css";
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+
+/* @import "@ag-grid-community/all-modules/dist/styles/ag-grid.css";
+@import "@ag-grid-community/all-modules/dist/styles/ag-theme-material.css"; */
+
 /*
 Mini erp
 Global style
@@ -291,9 +297,9 @@ body nb-layout .layout .layout-container nb-sidebar .main-container-fixed {
   top: 3.05rem !important;
 }
 
-body nb-layout .layout .layout-container .content nb-layout-footer nav {
+/* body nb-layout .layout .layout-container .content nb-layout-footer nav {
   padding: 0.5rem !important;
-}
+} */
 /* End layout */
 
 /* Smart Table */
@@ -365,19 +371,34 @@ nb-card.small-header nb-card-header nav {
   line-height: 2.45rem !important;
 }
 nb-card.small-header nb-card-header nav button {
-  float: right;
+  /* float: right; */
   margin: 0;
   margin-left: 0.5rem !important;
 }
 nb-card.small-header button[size="tiny"] {
   height: 2.45rem;
-  float: right;
+  /* float: right; */
   margin-top: 1px;
 }
 
-nb-card-body .ng2-smart-table-wrap {
-  margin: -1rem -1.25rem;
+nb-card.small-header .list-actions {
+  float: right;
 }
+nb-card.small-header {
+  overflow: hidden;
+}
+nb-card.small-header nb-card-body {
+  padding: 0;
+}
+nb-card.small-header .list-actions button {
+
+}
+
+nb-card.popup nb-card-body {
+  padding: 1rem 1.25rem;
+}
+
+
 
 nb-card nb-tabset nb-tab {
   padding: 0 !important;
@@ -504,6 +525,10 @@ body .form-group[state="warning"] textarea:focus {
   right: -14px;
   top: -14px;
 }
+
+form.popup {
+  margin-top: 20px; margin-bottom: 20px;
+}
 /* End form */
 
 /* Button */
@@ -526,6 +551,10 @@ body nb-dialog-container nb-card {
 /* .cdk-overlay-pane, .cdk-overlay-pane nb-dialog-container {
   width: 100%;
 } */
+
+.cdk-global-overlay-wrapper {
+  overflow: auto;
+}
 
 /* End Dialog */
 
@@ -551,3 +580,43 @@ nb-icon.fa {
   height: 1.05rem;
 }
 /* End Icon */
+
+/* AG-Grid */
+.ag-theme-balham .ag-root {
+  border: none;
+}
+nb-card.ag-grid-card nb-card-body .ag-grid-wrap {
+  /* margin: -1rem -1.25rem; */
+  height: 100%;
+}
+nb-card.ag-grid-card {
+  overflow: hidden;
+}
+nb-card.ag-grid-card nb-card-body {
+  padding: 0;
+}
+/*End AG-Grid*/
+
+/* Layout */
+body nb-layout .layout .layout-container .content .columns nb-layout-column {
+  padding: 0.95rem 0.95rem 0.95rem !important;
+}
+/* End Layout */
+
+/* Fotter */
+body .socials {
+  font-size: 1rem !important;
+}
+
+body nb-layout .layout .layout-container .content nb-layout-footer nav {
+  font-size: 0.8rem !important;
+}
+
+body nb-layout .layout .layout-container .content nb-layout-footer nav {
+  padding: 0.2rem !important;
+}
+
+body nb-layout .layout .layout-container .content nb-layout-footer nav {
+  line-height: 1rem !important;
+}
+/* End Fotter */

@@ -12,6 +12,8 @@ import { BaseComponent } from '../base-component';
 
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy {
 
+  mode: 'popup' | 'page' = 'page';
+
   /** Main form */
   form = this.formBuilder.group({
     array: this.formBuilder.array([
@@ -246,7 +248,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
     });
     this.id = newFormData.map(item => item[this.idKey]);
-    this.commonService.location.go(this.generateUrlByIds(this.id));
+    if (this.mode === 'page') {
+      this.commonService.location.go(this.generateUrlByIds(this.id));
+    }
     if (this.queryParam && this.queryParam['list']) {
       this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
     }
@@ -261,7 +265,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
     });
     this.id = newFormData.map(item => item[this.idKey]);
-    this.commonService.location.go(this.generateUrlByIds(this.id));
+    if (this.mode === 'page') {
+      this.commonService.location.go(this.generateUrlByIds(this.id));
+    }
     if (this.queryParam && this.queryParam['list']) {
       this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
     }
@@ -384,7 +390,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       });
     } else {
       // Create
-      this.executePost({silent: true}, data.array, results => {
+      this.executePost({ silent: true }, data.array, results => {
         this.onAfterCreateSubmit(results);
         this.onProcessed();
       }, e => {

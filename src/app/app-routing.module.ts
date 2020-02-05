@@ -125,6 +125,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/minierp/minierp.module')
       .then(m => m.MinierpModule),
   },
+  {
+    path: 'contact',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/contact/contact.module')
+      .then(m => m.ContactModule),
+  },
   // { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
   // { path: '**', redirectTo: 'mini-erp' },
 ];
