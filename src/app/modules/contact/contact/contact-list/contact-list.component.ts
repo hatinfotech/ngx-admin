@@ -9,44 +9,20 @@ import { AllCommunityModules, Module, IDatasource, IGetRowsParams, GridApi, Colu
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { HttpClient } from '@angular/common/http';
 import { ContactModule } from '../../contact.module';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ContactFormComponent } from '../contact-form/contact-form.component';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 
 @Component({
   selector: 'ngx-contact-list',
   templateUrl: './contact-list.component.html',
   styleUrls: ['./contact-list.component.scss'],
 })
-export class ContactListComponent extends BaseComponent implements OnInit {
+export class ContactListComponent extends AgGridDataManagerListComponent<ContactModel, ContactFormComponent> implements OnInit {
 
   componentName: string = 'ContactListComponent';
   formPath = '/contact/contact/form';
   apiPath = '/contact/contacts';
   idKey = 'Code';
-
-  @ViewChild('agGrid', { static: true }) agGrid: AgGridAngular;
-
-  public gridApi: GridApi;
-  public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
-
-  public columnDefs;
-  public defaultColDef;
-  public rowSelection;
-  public rowModelType;
-  public paginationPageSize;
-  public cacheOverflowSize;
-  public maxConcurrentDatasourceRequests;
-  public infiniteInitialRowCount;
-  public maxBlocksInCache;
-  public getRowNodeId;
-  public components;
-  public multiSortKey;
-  public rowDragManaged: boolean;
-  public rowHeight: number;
-  public getRowHeight;
-  public hadRowsSelected = false;
-  public rowData: ContactModule[];
 
   constructor(
     protected apiService: ApiService,
@@ -56,9 +32,9 @@ export class ContactListComponent extends BaseComponent implements OnInit {
     protected toastService: NbToastrService,
     private http: HttpClient,
   ) {
-    super(commonService, router, apiService);
+    super(apiService, router, commonService, dialogService, toastService);
 
-    this.columnDefs = [
+    this.columnDefs = this.configSetting([
       {
         headerName: '#',
         width: 52,
@@ -116,118 +92,47 @@ export class ContactListComponent extends BaseComponent implements OnInit {
         //   values: ['2000', '2004', '2008', '2012']
         // }
       },
-      // {
-      //   headerName: 'Date',
-      //   field: 'date',
-      //   width: 110,
-      // },
-      // {
-      //   headerName: 'Sport',
-      //   field: 'sport',
-      //   width: 110,
-      //   suppressMenu: true,
-      // },
-      // {
-      //   headerName: 'Gold',
-      //   field: 'gold',
-      //   width: 100,
-      //   suppressMenu: true,
-      // },
-      // {
-      //   headerName: 'Silver',
-      //   field: 'silver',
-      //   width: 100,
-      //   suppressMenu: true
-      // },
-      // {
-      //   headerName: 'Bronze',
-      //   field: 'bronze',
-      //   width: 100,
-      //   suppressMenu: true
-      // },
-      // {
-      //   headerName: 'Total',
-      //   field: 'total',
-      //   width: 100,
-      //   suppressMenu: true
-      // }
-    ];
-    this.defaultColDef = {
-      sortable: true,
-      resizable: true,
-      // suppressSizeToFit: true,
-    };
-    this.rowSelection = 'multiple';
-    this.rowModelType = 'infinite';
-    this.paginationPageSize = 100;
-    this.cacheOverflowSize = 2;
-    this.maxConcurrentDatasourceRequests = 2;
-    this.infiniteInitialRowCount = 1;
-    this.maxBlocksInCache = 2;
-    this.multiSortKey = 'ctrl';
-    this.rowDragManaged = false;
+    ]);
+    // this.defaultColDef = {
+    //   sortable: true,
+    //   resizable: true,
+    //   // suppressSizeToFit: true,
+    // };
+    // this.rowSelection = 'multiple';
+    // this.rowModelType = 'infinite';
+    // this.paginationPageSize = 100;
+    // this.cacheOverflowSize = 2;
+    // this.maxConcurrentDatasourceRequests = 2;
+    // this.infiniteInitialRowCount = 1;
+    // this.maxBlocksInCache = 2;
+    // this.multiSortKey = 'ctrl';
+    // this.rowDragManaged = false;
     // this.rowHeight = 100;
     // this.getRowHeight = (params: {data: any}) => {
     //   return 150;
     // };
-    this.getRowNodeId = (item: { id: string }) => {
-      return item.id;
-    };
-    this.components = {
-      loadingCellRenderer: (params) => {
-        if (params.value) {
-          return params.value;
-        } else {
-          return '<img src="https://raw.githubusercontent.com/ag-grid/ag-grid/master/packages/ag-grid-docs/src/images/loading.gif">';
-        }
-      },
-    };
+    // this.getRowNodeId = (item: { id: string }) => {
+    //   return item.id;
+    // };
+    // this.components = {
+    //   loadingCellRenderer: (params) => {
+    //     if (params.value) {
+    //       return params.value;
+    //     } else {
+    //       return '<img src="assets/images/loading.gif">';
+    //     }
+    //   },
+    // };
 
   }
 
   ngOnInit() {
-    this.apiService.get<ContactModel[]>('/contact/contacts', {}, list => this.rowData = list);
+    super.ngOnInit();
+    // this.apiService.get<ContactModel[]>('/contact/contacts', {}, list => this.rowData = list);
   }
 
   onColumnResized() {
     this.gridApi.resetRowHeights();
-  }
-
-  onGridReady(params) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-
-    const dataSource: IDatasource = {
-      rowCount: null,
-      getRows: (getRowParams: IGetRowsParams) => {
-        console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
-
-        const query = { limit: this.paginationPageSize, offset: getRowParams.startRow };
-        getRowParams.sortModel.forEach(sortItem => {
-          query['sort_' + sortItem['colId']] = sortItem['sort'];
-        });
-        Object.keys(getRowParams.filterModel).forEach(key => {
-          const condition: { filter: string, filterType: string, type: string } = getRowParams.filterModel[key];
-          query['filter_' + key] = condition.filter;
-        });
-
-        this.apiService.get<ContactModel[]>('/contact/contacts', query, contactList => {
-          contactList.forEach((item, index) => {
-            item['No'] = (getRowParams.startRow + index + 1);
-            item['id'] = item['Code'];
-          });
-
-          let lastRow = -1;
-          if (contactList.length < this.paginationPageSize) {
-            lastRow = getRowParams.startRow + contactList.length;
-          }
-          getRowParams.successCallback(contactList, lastRow);
-          this.gridApi.resetRowHeights();
-        });
-
-      }
-    };
-    params.api.setDatasource(dataSource);
   }
 
   autoSizeAll(skipHeader) {
@@ -249,31 +154,16 @@ export class ContactListComponent extends BaseComponent implements OnInit {
     this.hadRowsSelected = this.getSelectedRows().length > 0;
   }
 
-  editSelectedItem(): false {
-    console.info(this.getSelectedRows());
+  openFormDialplog(ids?: string[]) {
     this.dialogService.open(ContactFormComponent, {
       context: {
-        inputId: this.getSelectedRows().map(item => item.id),
-        title: 'Form',
-        content: 'Form',
-        actions: [
-          {
-            label: 'Trở về',
-            icon: 'back',
-            status: 'success',
-            action: () => {
+        inputId: ids,
+        onDialogSave: (newData: ContactModel[]) => {
 
-            },
-          },
-          {
-            label: 'Lưu',
-            icon: 'edit',
-            status: 'success',
-            action: () => {
+        },
+        onDialogClose: () => {
 
-            },
-          },
-        ],
+        },
       },
     });
     return false;

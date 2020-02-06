@@ -131,6 +131,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/contact/contact.module')
       .then(m => m.ContactModule),
   },
+  {
+    path: 'helpdesk',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/helpdesk/helpdesk.module')
+      .then(m => m.HelpdeskModule),
+  },
   // { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
   // { path: '**', redirectTo: 'mini-erp' },
 ];

@@ -153,13 +153,10 @@ select2,
   outline: none;
 }
 
-select2.disabled
-  .select2-container--default
-  .select2-selection__rendered {
+select2.disabled .select2-container--default .select2-selection__rendered {
   color: rgba(143, 155, 179, 0.48) !important;
 }
-select2.disabled
-  .select2-selection.select2-selection--single:focus {
+select2.disabled .select2-selection.select2-selection--single:focus {
   outline: none;
   box-shadow: none !important;
   border-color: #edf1f7 !important;
@@ -309,11 +306,11 @@ body ng2-smart-table table tr.ng2-smart-titles th:first-child {
 
 body ng2-smart-table table tr:nth-child(odd) th:first-child:hover,
 body ng2-smart-table table tr:nth-child(odd) td:first-child:hover {
-  background-image: linear-gradient(to right, #d9dce0 , #edf1f7);
+  background-image: linear-gradient(to right, #d9dce0, #edf1f7);
 }
 body ng2-smart-table table tr:nth-child(even) th:first-child:hover,
 body ng2-smart-table table tr:nth-child(even) td:first-child:hover {
-  background-image: linear-gradient(to right, #d9dce0 , #edf1f7);
+  background-image: linear-gradient(to right, #d9dce0, #edf1f7);
 }
 
 body ng2-smart-table table tr.ng2-smart-titles th:first-child input {
@@ -375,30 +372,26 @@ nb-card.small-header nb-card-header nav button {
   margin: 0;
   margin-left: 0.5rem !important;
 }
-nb-card.small-header button[size="tiny"] {
+nb-card.small-header button[size="tiny"],
+nb-card.small-header .action-list button {
   height: 2.45rem;
   /* float: right; */
   margin-top: 1px;
 }
 
-nb-card.small-header .list-actions {
+nb-card.small-header .action-list {
   float: right;
 }
 nb-card.small-header {
   overflow: hidden;
 }
 nb-card.small-header nb-card-body {
-  padding: 0;
-}
-nb-card.small-header .list-actions button {
-
+  /* padding: 0; */
 }
 
 nb-card.popup nb-card-body {
   padding: 1rem 1.25rem;
 }
-
-
 
 nb-card nb-tabset nb-tab {
   padding: 0 !important;
@@ -527,7 +520,8 @@ body .form-group[state="warning"] textarea:focus {
 }
 
 form.popup {
-  margin-top: 20px; margin-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 /* End form */
 

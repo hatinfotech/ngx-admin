@@ -20,11 +20,9 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   idKey = 'Code';
   apiPath = '/contact/contacts';
   baseFormUrl = '/contact/contact/form';
-
-  @Input() inputId: string[];
-  @Input() title: string;
-  @Input() content: string;
-  @Input() actions: { label: string, icon?: string, status?: string, action?: () => void }[];
+  // @Input() title: string;
+  // @Input() content: string;
+  // @Input() actions: { label: string, icon?: string, status?: string, action?: () => void }[];
 
   constructor(
     protected activeRoute: ActivatedRoute,

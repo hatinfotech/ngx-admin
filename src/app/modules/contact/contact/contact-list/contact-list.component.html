@@ -2,18 +2,9 @@
   <nb-card-header>
     <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách liên hệ
-      <div class="list-actions">
-        <button nbButton status="danger" hero size="tiny">
-          <nb-icon pack="eva" icon="trash-2"></nb-icon>
-        </button>
-        <button nbButton status="warning" hero size="tiny" (click)="editSelectedItem()" [disabled]="!hadRowsSelected">
-          <nb-icon pack="eva" icon="edit-2"></nb-icon>
-        </button>
-        <button nbButton status="primary" hero size="tiny">
-          <nb-icon pack="eva" icon="external-link"></nb-icon>
-        </button>
-        <button nbButton status="success" hero size="tiny">
-          <nb-icon pack="eva" icon="refresh"></nb-icon>
+      <div class="action-list">
+        <button *ngFor="let actionBtn of actionButtonList" nbButton [status]="actionBtn.status" hero [size]="actionBtn.size" [disabled]="actionBtn.disabled()" [title]="actionBtn.title" (click)="actionBtn.click()">
+          <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
         </button>
       </div>
     </nav>
@@ -29,7 +20,8 @@
         [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache"
         [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)"
         [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight"
-        [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()">
+        [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()"
+        [pagination]="true">
       </ag-grid-angular>
     </div>
   </nb-card-body>

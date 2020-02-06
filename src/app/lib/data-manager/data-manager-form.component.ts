@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy } from '@angular/core';
+import { OnInit, OnDestroy, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService } from '@nebular/theme';
@@ -20,6 +20,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       this.makeNewFormGroup(),
     ]),
   });
+
+  @Input() inputId: string[];
+  @Input() onDialogSave: (newData: M[]) => void;
+  @Input() onDialogClose: () => void;
 
   /** Form unique id = current time as milisecond */
   formUniqueId: string;
