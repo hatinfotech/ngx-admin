@@ -3,8 +3,11 @@
     <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách liên hệ
       <div class="action-list">
-        <button *ngFor="let actionBtn of actionButtonList" nbButton [status]="actionBtn.status" hero [size]="actionBtn.size" [disabled]="actionBtn.disabled()" [title]="actionBtn.title" (click)="actionBtn.click()">
-          <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
+        <button *ngFor="let actionBtn of actionButtonList" nbButton [status]="actionBtn.status" hero
+          [size]="actionBtn.size" [disabled]="actionBtn.disabled()" [title]="actionBtn.title"
+          (click)="actionBtn.click()">
+          <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span
+            *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
         </button>
       </div>
     </nav>
@@ -17,11 +20,10 @@
         [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowDeselection]="true"
         [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize"
         [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
-        [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache"
+        [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize"
         [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)"
         [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight"
-        [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()"
-        [pagination]="true">
+        [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
       </ag-grid-angular>
     </div>
   </nb-card-body>

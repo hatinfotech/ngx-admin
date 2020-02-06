@@ -12,7 +12,7 @@ import { BaseComponent } from '../base-component';
 
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy {
 
-  mode: 'popup' | 'page' = 'page';
+  mode: 'dialog' | 'page' = 'page';
 
   /** Main form */
   form = this.formBuilder.group({
@@ -21,6 +21,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     ]),
   });
 
+  @Input() inputMode: 'dialog' | 'page';
   @Input() inputId: string[];
   @Input() onDialogSave: (newData: M[]) => void;
   @Input() onDialogClose: () => void;
@@ -98,7 +99,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Form init */
   ngOnInit() {
-
+    if (this.inputMode) {
+      this.mode = this.inputMode;
+    }
     this.activeRoute.queryParams.subscribe(queryParams => {
       this.queryParam = queryParams;
     });
@@ -241,7 +244,12 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   get formControls() { return this.form.controls; }
 
   /** Goback action, reuire in extended class */
-  abstract goback(): false;
+  goback(): false {
+    if (this.mode === 'dialog' && this.onDialogClose) {
+      this.onDialogClose();
+    }
+    return false;
+  };
 
   /** After main form create event */
   onAfterCreateSubmit(newFormData: M[]) {
@@ -257,6 +265,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     }
     if (this.queryParam && this.queryParam['list']) {
       this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+    }
+
+    if (this.mode === 'dialog' && this.onDialogSave) {
+      this.onDialogSave(newFormData);
     }
   }
 
@@ -274,6 +286,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     }
     if (this.queryParam && this.queryParam['list']) {
       this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+    }
+
+    if (this.mode === 'dialog' && this.onDialogSave) {
+      this.onDialogSave(newFormData);
     }
   }
 

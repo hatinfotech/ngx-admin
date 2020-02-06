@@ -53,7 +53,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     {
       name: 'edit',
       status: 'warning',
-      label: '',
+      label: 'Chỉnh',
       icon: 'edit-2',
       title: 'Chỉnh sửa',
       size: 'tiny',
@@ -68,7 +68,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     {
       name: 'preview',
       status: 'primary',
-      label: '',
+      label: 'Xem',
       icon: 'external-link',
       title: 'Xem trước',
       size: 'tiny',
@@ -81,9 +81,24 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       },
     },
     {
+      name: 'add',
+      status: 'success',
+      label: 'Tạo',
+      icon: 'file-add',
+      title: 'Tạo mới',
+      size: 'tiny',
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.createNewItem();
+        return false;
+      },
+    },
+    {
       name: 'reset',
       status: 'info',
-      label: '',
+      label: 'Reset',
       icon: 'refresh',
       title: 'Đặt lại từ đầu',
       size: 'tiny',
@@ -98,7 +113,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     {
       name: 'refresh',
       status: 'success',
-      label: '',
+      label: 'Refresh',
       icon: 'sync',
       title: 'Làm mới',
       size: 'tiny',
@@ -127,14 +142,16 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   };
   public rowSelection = 'multiple';
   public rowModelType = 'infinite';
-  public paginationPageSize = 100;
+  public pagination = true;
+  public paginationPageSize = 40;
+  public cacheBlockSize = this.paginationPageSize;
   public cacheOverflowSize = 2;
   public maxConcurrentDatasourceRequests = 2;
   public infiniteInitialRowCount = 1;
-  public maxBlocksInCache = 2;
+  public maxBlocksInCache = 1;
   public getRowNodeId = (item: { id: string }) => {
     return item.id;
-  };
+  }
   public components = {
     loadingCellRenderer: (params) => {
       if (params.value) {
@@ -179,7 +196,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       getRows: (getRowParams: IGetRowsParams) => {
         console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
 
-        const query = { limit: this.paginationPageSize, offset: getRowParams.startRow };
+        const query = { limit: this.cacheBlockSize, offset: getRowParams.startRow };
         getRowParams.sortModel.forEach(sortItem => {
           query['sort_' + sortItem['colId']] = sortItem['sort'];
         });
@@ -275,17 +292,27 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     return false;
   }
 
+  createNewItem(): false {
+    this.openFormDialplog(null, newData => {
+      this.refresh();
+    }, () => { });
+    return false;
+  }
+
   getSelectedRows() {
     return this.gridApi.getSelectedRows();
   }
 
   editSelectedItem(): false {
     // console.info(this.getSelectedRows());
-    this.openFormDialplog(this.getSelectedRows().map(item => item.id));
+    this.openFormDialplog(this.getSelectedRows().map(item => item.id), newData => {
+      this.refresh();
+    }, () => { });
     return false;
   }
 
-  abstract openFormDialplog(ids?: string[]): void;
+  /** Implement on inheried class */
+  abstract openFormDialplog(ids?: string[], onDialogSave?: (newData: M[]) => void, onDialogClose?: () => void): void;
 
   /** User select event */
   onUserRowSelect(event: any) {
@@ -359,8 +386,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   deleteSelected() {
     const selectedRows = this.getSelectedRows();
     this.deleteConfirm(selectedRows.map(item => item.id), () => {
-      const result = this.gridApi.updateRowData({ remove: selectedRows });
-      console.info(result);
+      // const result = this.gridApi.updateRowData({ remove: selectedRows });
+      this.refresh();
+      this.gridApi.deselectAll();
+      this.updateActionState();
+      // console.info(result);
       this.toastService.show('success', 'Dữ liệu đã bị xoá', {
         status: 'success',
         hasIcon: true,
@@ -419,15 +449,28 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   refresh(): false {
-    this.loadList();
+    // this.loadList();
+    // this.gridApi.refreshInfiniteCache();
+    this.gridApi.refreshInfinitePageCache();
+    this.updateActionState();
     return false;
   }
 
   reset() {
     this.gridApi.setFilterModel(null);
     this.gridApi.setSortModel(null);
+    this.gridApi.deselectAll();
     this.loadList();
+    this.updateActionState();
     return false;
+  }
+
+  onRowSelected() {
+    this.updateActionState();
+  }
+
+  updateActionState() {
+    this.hadRowsSelected = this.getSelectedRows().length > 0;
   }
 
   onResume() {
@@ -438,7 +481,22 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     }
   }
 
+  autoSizeAll(skipHeader) {
+    const allColumnIds = [];
+    this.gridColumnApi.getAllColumns().forEach(function (column) {
+      console.info(column);
+      if (['0', 'Code', 'Name'].indexOf(column.getColId()) < 0) {
+        allColumnIds.push(column.getColId());
+      }
+    });
+    this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
+  }
+
   protected configSetting(settings: any[]) {
     return settings;
+  }
+
+  onColumnResized() {
+    this.gridApi.resetRowHeights();
   }
 }

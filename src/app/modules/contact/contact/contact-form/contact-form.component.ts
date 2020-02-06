@@ -40,9 +40,9 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
-    if (this.inputId) {
-      this.mode = 'popup';
-    }
+    // if (this.inputId) {
+    //   this.mode = 'dialog';
+    // }
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -75,10 +75,12 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
 
   }
   goback(): false {
+    super.goback();
     if (this.mode === 'page') {
       this.router.navigate(['/contact/contact/list']);
     } else {
       this.ref.close();
+      // this.dismiss();
     }
     return false;
   }
