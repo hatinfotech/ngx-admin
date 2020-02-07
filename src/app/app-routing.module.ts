@@ -8,6 +8,7 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { NotificationComponent } from './modules/notification/notification.component';
+import { VirtualPhoneComponent } from './modules/virtual-phone/virtual-phone.component';
 
 const routes: Routes = [
   // {
@@ -137,6 +138,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/helpdesk/helpdesk.module')
       .then(m => m.HelpdeskModule),
   },
+  // {
+  //   path: 'virtual-phone',
+  //   // canActivate: [AuthGuardService],
+  //   loadChildren: () => import('./modules/virtual-phone/virtual-phone.module')
+  //     .then(m => m.VirtualPhoneModule),
+  // },
   // { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
   // { path: '**', redirectTo: 'mini-erp' },
 ];

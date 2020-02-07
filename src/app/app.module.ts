@@ -37,8 +37,6 @@ import { IvoipModule } from './modules/ivoip/ivoip.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { DialogFormComponent } from './modules/dialog/dialog-form/dialog-form.component';
 import { CookieService } from 'ngx-cookie-service';
-import { ContactFormComponent } from './modules/contact/contact/contact-form/contact-form.component';
-import { ContactModule } from './modules/contact/contact.module';
 
 @NgModule({
   declarations: [

@@ -40,6 +40,8 @@ import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
 import { CustomElementModule } from '../lib/custom-element/custom-element.module';
+import { VirtualPhoneModule } from '../modules/virtual-phone/virtual-phone.module';
+import { DialpadComponent } from '../modules/virtual-phone/dialpad/dialpad.component';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -57,6 +59,7 @@ const NB_MODULES = [
   NbChatModule,
   NbIconModule,
   CustomElementModule,
+  VirtualPhoneModule,
 ];
 const COMPONENTS = [
   HeaderComponent,
@@ -79,6 +82,9 @@ const PIPES = [
   imports: [CommonModule, ...NB_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
   declarations: [...COMPONENTS, ...PIPES],
+  entryComponents: [
+    DialpadComponent,
+  ],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders {

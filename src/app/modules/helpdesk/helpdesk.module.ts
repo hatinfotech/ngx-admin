@@ -5,7 +5,6 @@ import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxMo
 import { HelpdeskRoutingModule } from './helpdesk-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
-import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
@@ -49,7 +48,6 @@ import { StatsBarAnimationChartComponent } from './profit-card/front-side/stats-
     NbIconModule,
     NbInputModule,
     NbCheckboxModule,
-    IvoipDashboardModule,
     NbRouteTabsetModule,
     NbStepperModule,
     NbButtonModule,

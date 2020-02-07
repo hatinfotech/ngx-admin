@@ -21,7 +21,8 @@ import { environment } from '../../../../environments/environment';
       </nb-layout-column>
 
       <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed">
-        <iframe *ngIf="enableLocalApp" class="itLocalapp" src="/app/ITLocal/index.html" style="height: 100% ; width:100%; border:0"></iframe>
+        <!-- <iframe *ngIf="enableLocalApp" class="itLocalapp" src="/app/ITLocal/index.html" style="height: 100% ; width:100%; border:0"></iframe> -->
+        <ngx-dialpad></ngx-dialpad>
       </nb-sidebar>
 
       <nb-layout-footer fixed>
