@@ -1,4 +1,3 @@
-import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
@@ -10,7 +9,6 @@ import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridApi, ColumnApi, Module, AllCommunityModules, IGetRowsParams, IDatasource } from '@ag-grid-community/all-modules';
-import { ContactFormComponent } from '../../modules/contact/contact/contact-form/contact-form.component';
 import { ActionControl } from '../../interface/action-control.interface';
 
 export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent implements OnInit, ReuseComponent {

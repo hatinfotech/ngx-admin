@@ -21,7 +21,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   componentName = 'HelpdeskDashboardComponent';
   idKey = 'Code';
 
-  private $: any;
+  // private $: any;
 
   private alive = true;
   select2Option = {
@@ -179,7 +179,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   ngAfterViewInit(): void {
+    // tslint:disable-next-line: ban
     const helpdeskDashboard = $(document.getElementById('helpdeskDashboard'));
+    // tslint:disable-next-line: ban
     const helpdeskHeaderEle = $(document.getElementById('helpdeskHeader'));
     this.subcriptions.push(this.layoutScrollService.getPosition().subscribe(position => {
       console.info(position);

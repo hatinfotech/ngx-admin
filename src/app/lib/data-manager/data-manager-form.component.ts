@@ -250,7 +250,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       this.onDialogClose();
     }
     return false;
-  };
+  }
 
   /** After main form create event */
   onAfterCreateSubmit(newFormData: M[]) {

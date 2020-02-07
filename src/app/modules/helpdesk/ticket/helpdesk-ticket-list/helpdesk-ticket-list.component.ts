@@ -5,7 +5,6 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient } from '@angular/common/http';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { HelpdeskTicketFormComponent } from '../helpdesk-ticket-form/helpdesk-ticket-form.component';
 

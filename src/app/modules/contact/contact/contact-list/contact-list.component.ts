@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ContactModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient } from '@angular/common/http';
 import { ContactFormComponent } from '../contact-form/contact-form.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 
@@ -26,7 +25,6 @@ export class ContactListComponent extends AgGridDataManagerListComponent<Contact
     protected commonService: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
-    private http: HttpClient,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
 
