@@ -4,7 +4,10 @@
       <nb-icon icon="menu-2-outline"></nb-icon>
     </a>
     <a class="logo" href="#" (click)="navigateHome()">
-      <div style="position: relative">Mini-ERP <div style="position: absolute; top: -5px; right: -18px; font-size: 20px">®</div></div></a>
+      <div style="position: relative">Mini-ERP <div
+          style="position: absolute; top: -5px; right: -18px; font-size: 20px">®</div>
+      </div>
+    </a>
   </div>
   <nb-select size="small" [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
     <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
@@ -12,6 +15,13 @@
   <!-- <ngx-select2 [data]="domainList" [value]="activePbxDoamin" [select2Option]="domainListConfig"
         (selectChange)="onChangeDomain($event)">
       </ngx-select2> -->
+
+  <div class="action-list">
+    <button *ngFor="let actionBtn of headerActionControlList" nbButton [status]="actionBtn.status" hero [size]="actionBtn.size"
+      [disabled]="actionBtn.disabled()" [title]="actionBtn.title" (click)="actionBtn.click()">
+      <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
+    </button>
+  </div>
 </div>
 
 <div class="header-container">
@@ -23,11 +33,9 @@
     <nb-action class="control-item" icon="email-outline"></nb-action>
     <nb-action class="control-item" icon="bell-outline"></nb-action>
     <nb-action (click)="toggleChatbar()" class="control-item" icon="message-circle-outline"></nb-action>
-    <nb-action class="user-action" *nbIsGranted="['view', 'user']" >
-      <nb-user [nbContextMenu]="userMenu"
-               [onlyPicture]="userPictureOnly"
-               [name]="commonService?.loginInfo?.user?.Name"
-               [picture]="commonService?.loginInfo?.user?.Avatar">
+    <nb-action class="user-action" *nbIsGranted="['view', 'user']">
+      <nb-user [nbContextMenu]="userMenu" [onlyPicture]="userPictureOnly" [name]="commonService?.loginInfo?.user?.Name"
+        [picture]="commonService?.loginInfo?.user?.Avatar">
       </nb-user>
     </nb-action>
   </nb-actions>

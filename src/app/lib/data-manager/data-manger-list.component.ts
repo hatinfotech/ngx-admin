@@ -84,6 +84,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** List init event */
   ngOnInit() {
+    super.ngOnInit();
     this.subcriptions.push(this.commonService.componentChange$.subscribe(info => {
       if (info.componentName === this.componentName) {
         this.refreshPendding = true;

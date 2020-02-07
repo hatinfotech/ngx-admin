@@ -7,6 +7,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { IvoipService } from '../../../modules/ivoip/ivoip-service';
 import { CommonService } from '../../../services/common.service';
+import { ActionControl } from '../../../interface/action-control.interface';
 
 @Component({
   selector: 'ngx-header',
@@ -59,6 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       text: 'DomainName',
     },
   };
+  headerActionControlList: ActionControl[] = [];
 
   constructor(
     private sidebarService: NbSidebarService,
@@ -99,6 +101,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       } else {
         this.collapseMenu();
       }
+    });
+
+    this.commonService.headerActionControlList$.subscribe(actionControlList => {
+      this.headerActionControlList = actionControlList;
     });
 
     // this.commonService.loginInfo$.subscribe(loginInfo => {

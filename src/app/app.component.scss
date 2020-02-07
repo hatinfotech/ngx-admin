@@ -1,3 +1,4 @@
+@import "./@theme/styles/themes";
 @import "~angular-tree-component/dist/angular-tree-component.css";
 @import "~ag-grid-community/dist/styles/ag-grid.css";
 @import "~ag-grid-community/dist/styles/ag-theme-balham.css";
@@ -362,21 +363,36 @@ body ng2-smart-table .no {
 
 nb-card.small-header nb-card-header {
   padding: 0.5rem 1rem !important;
+  display: block !important;
 }
 nb-card.small-header nb-card-header nav {
   height: 2.45rem !important;
   line-height: 2.45rem !important;
 }
-nb-card.small-header nb-card-header nav button {
+nb-card.small-header nb-card-header nav button,
+nb-card.small-header nb-card-header nav ngx-select2 {
   /* float: right; */
   margin: 0;
   margin-left: 0.5rem !important;
+  display: inline-block;
 }
-nb-card.small-header button[size="tiny"],
+
+.action-list button {
+  margin: 0;
+  margin-left: 0.5rem !important;
+  display: inline-block;
+  line-height: 1.25rem !important;
+}
+
+
+[size="tiny"],
 nb-card.small-header .action-list button {
   height: 2.45rem;
   /* float: right; */
   margin-top: 1px;
+}
+nb-card.small-header nb-card-header button {
+  line-height: 1.25rem !important;
 }
 
 nb-card.small-header .action-list {
@@ -385,8 +401,8 @@ nb-card.small-header .action-list {
 nb-card.small-header {
   overflow: hidden;
 }
-nb-card.small-header nb-card-body {
-  /* padding: 0; */
+nb-card.smart-table nb-card-body {
+  padding: 0;
 }
 
 nb-card.popup nb-card-body {
@@ -595,6 +611,129 @@ nb-card.ag-grid-card nb-card-body {
 body nb-layout .layout .layout-container .content .columns nb-layout-column {
   padding: 0.95rem 0.95rem 0.95rem !important;
 }
+.row {
+  margin-right: -9px;
+  margin-left: -9px;
+}
+.col-1,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-10,
+.col-11,
+.col-12,
+.col,
+.col-auto,
+.col-is-1,
+.col-is-2,
+.col-is-3,
+.col-is-4,
+.col-is-5,
+.col-is-6,
+.col-is-7,
+.col-is-8,
+.col-is-9,
+.col-is-10,
+.col-is-11,
+.col-is-12,
+.col-is,
+.col-is-auto,
+.col-sm-1,
+.col-sm-2,
+.col-sm-3,
+.col-sm-4,
+.col-sm-5,
+.col-sm-6,
+.col-sm-7,
+.col-sm-8,
+.col-sm-9,
+.col-sm-10,
+.col-sm-11,
+.col-sm-12,
+.col-sm,
+.col-sm-auto,
+.col-md-1,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-10,
+.col-md-11,
+.col-md-12,
+.col-md,
+.col-md-auto,
+.col-lg-1,
+.col-lg-2,
+.col-lg-3,
+.col-lg-4,
+.col-lg-5,
+.col-lg-6,
+.col-lg-7,
+.col-lg-8,
+.col-lg-9,
+.col-lg-10,
+.col-lg-11,
+.col-lg-12,
+.col-lg,
+.col-lg-auto,
+.col-xl-1,
+.col-xl-2,
+.col-xl-3,
+.col-xl-4,
+.col-xl-5,
+.col-xl-6,
+.col-xl-7,
+.col-xl-8,
+.col-xl-9,
+.col-xl-10,
+.col-xl-11,
+.col-xl-12,
+.col-xl,
+.col-xl-auto,
+.col-xxl-1,
+.col-xxl-2,
+.col-xxl-3,
+.col-xxl-4,
+.col-xxl-5,
+.col-xxl-6,
+.col-xxl-7,
+.col-xxl-8,
+.col-xxl-9,
+.col-xxl-10,
+.col-xxl-11,
+.col-xxl-12,
+.col-xxl,
+.col-xxl-auto,
+.col-xxxl-1,
+.col-xxxl-2,
+.col-xxxl-3,
+.col-xxxl-4,
+.col-xxxl-5,
+.col-xxxl-6,
+.col-xxxl-7,
+.col-xxxl-8,
+.col-xxxl-9,
+.col-xxxl-10,
+.col-xxxl-11,
+.col-xxxl-12,
+.col-xxxl,
+.col-xxxl-auto {
+  padding-right: 9px;
+  padding-left: 9px;
+}
+
+.nb-theme-default nb-card {
+  margin-bottom: 1.075rem;
+}
 /* End Layout */
 
 /* Fotter */
@@ -614,3 +753,20 @@ body nb-layout .layout .layout-container .content nb-layout-footer nav {
   line-height: 1rem !important;
 }
 /* End Fotter */
+
+/* My List style */
+.m-list {
+}
+.m-list-item {
+  border-bottom: 1px solid #edf1f7;
+  color: #192038;
+  font-family: Open Sans, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  // width: 100%;
+}
+.m-list-item-property {
+  // padding: 1.5rem;
+}
+/* End My List style */

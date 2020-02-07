@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridApi, ColumnApi, Module, AllCommunityModules, IGetRowsParams, IDatasource } from '@ag-grid-community/all-modules';
 import { ContactFormComponent } from '../../modules/contact/contact/contact-form/contact-form.component';
+import { ActionControl } from '../../interface/action-control.interface';
 
 export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent implements OnInit, ReuseComponent {
 
@@ -34,7 +35,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
 
   protected refreshPendding = false;
 
-  actionButtonList: { name?: string, status: string, label?: string, icon: string, title: string, size: string, disabled: () => boolean, click: () => false }[] = [
+  actionButtonList: ActionControl[] = [
     {
       name: 'delete',
       status: 'danger',
@@ -180,6 +181,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
 
   /** List init event */
   ngOnInit() {
+    super.ngOnInit();
     this.subcriptions.push(this.commonService.componentChange$.subscribe(info => {
       if (info.componentName === this.componentName) {
         this.refreshPendding = true;

@@ -1,0 +1,103 @@
+<!-- <ngx-profit-card style="height: 15%;"></ngx-profit-card> -->
+
+
+<div class="row">
+  <div id="trafficeChart" class="col-12 col-md-6">
+    <nb-card size="tiny" style="height: 8rem">
+      <ngx-stats-card-front></ngx-stats-card-front>
+      <!-- <nb-icon icon="chevron-right-outline" pack="eva" class="flip-icon"></nb-icon> -->
+    </nb-card>
+  </div>
+  <div class="col-12 col-md-6">
+    <nb-card size="tiny" style="height: 8rem">
+      <ngx-stats-card-back></ngx-stats-card-back>
+      <!-- <nb-icon icon="chevron-right-outline" pack="eva" class="flip-icon"></nb-icon> -->
+    </nb-card>
+  </div>
+</div>
+
+
+<nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
+  <nb-card-header id="helpdeskHeader">
+    <nav>
+      <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Yêu cầu mới
+      <div class="action-list">
+        <!-- <button nbButton status="success" hero size="tiny" (click)="refresh()">
+          <nb-icon pack="eva" icon="message-square"></nb-icon> Chat
+        </button>
+        <button nbButton status="primary" hero size="tiny" (click)="refresh()">
+          <nb-icon pack="eva" icon="phone-call"></nb-icon> Gọi
+        </button>
+        <button nbButton status="warning" hero size="tiny" (click)="refresh()">
+          <nb-icon pack="eva" icon="refresh-outline"></nb-icon> Tạo
+        </button>
+        <button nbButton status="info" hero size="tiny" (click)="refresh()">
+          <nb-icon pack="eva" icon="external-link"></nb-icon> Xem
+        </button>
+        <button nbButton status="danger" hero size="tiny" (click)="refresh()">
+          <nb-icon pack="eva" icon="close-circle"></nb-icon> Huỷ
+        </button> -->
+
+        <button *ngFor="let actionBtn of actionControlListList" nbButton [status]="actionBtn.status" hero
+          [size]="actionBtn.size" [disabled]="actionBtn.disabled()" [title]="actionBtn.title"
+          (click)="actionBtn.click()">
+          <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span
+            *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
+        </button>
+
+        <!-- <ngx-select2 [data]="[]" [value]=""
+                  [select2Option]="select2Option"
+                  style="min-width: 250px;">
+                </ngx-select2> -->
+      </div>
+    </nav>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="m-list">
+      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of dataList" (click)="toggleSelectItem($event, item)">
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Nội dung yêu cầu</div>
+          <div class="value">
+            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> {{ item.Description }}
+          </div>
+        </div>
+        <div class="col-md-2 m-list-item-property">
+          <div class="caption">Người yêu cầu</div>
+          <div class="value nowrap" *ngIf="!!item.SupportedPersonPhone">
+            <nb-icon icon="person" pack="ion"></nb-icon> {{ item.SupportedPersonName }}
+          </div>
+          <div class="value nowrap" *ngIf="!!item.SupportedPersonPhone">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.SupportedPersonPhone }}
+          </div>
+          <div class="value nowrap" *ngIf="!!item.SupportedPersonEmail">
+            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.SupportedPersonEmail }}
+          </div>
+        </div>
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Công ty</div>
+          <div class="value" *ngIf="!!item.OrganizationName">
+            <nb-icon icon="podium" pack="ion"></nb-icon> {{ item.OrganizationName }}
+          </div>
+          <div class="value nowrap" *ngIf="!!item.OrganizationPhone">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.OrganizationPhone }}
+          </div>
+          <div class="value nowrap" *ngIf="!!item.OrganizationEmail">
+            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.OrganizationEmail }}
+          </div>
+          <div class="value" *ngIf="!!item.OrganizationAddress">
+            <nb-icon icon="map" pack="ion"></nb-icon> {{ item.OrganizationAddress }}
+          </div>
+        </div>
+        <div class="col-md-2 m-list-item-property">
+          <div class="caption">Trạng thái</div>
+          <div class="value nowrap" *ngIf="!!item.State">
+            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> {{ item.State }}
+          </div>
+          <div class="value nowrap" *ngIf="!!item.DateOfCreate">
+            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> {{ item.DateOfCreate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>

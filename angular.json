@@ -44,7 +44,7 @@
               "node_modules/@swimlane/ngx-datatable/assets/icons.css",
               "node_modules/select2/dist/css/select2.min.css",
               "src/app/@theme/styles/styles.scss",
-              "src/app/app.component.css"
+              "src/app/app.component.scss"
             ],
             "scripts": [
               "node_modules/pace-js/pace.min.js",

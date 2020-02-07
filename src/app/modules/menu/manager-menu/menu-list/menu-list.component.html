@@ -1,4 +1,4 @@
-<nb-card class="small-header">
+<nb-card class="small-header smart-table">
   <nb-card-header>
     <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách menu
@@ -8,7 +8,7 @@
     </nav>
   </nb-card-header>
 
-  <nb-card-body>
+  <nb-card-body style="padding: 0;">
     <div class="ng2-smart-table-wrap">
       <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
         (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">

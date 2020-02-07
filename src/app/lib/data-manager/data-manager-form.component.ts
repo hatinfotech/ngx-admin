@@ -99,6 +99,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Form init */
   ngOnInit() {
+    super.ngOnInit();
     if (this.inputMode) {
       this.mode = this.inputMode;
     }
@@ -454,6 +455,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   ngOnDestroy(): void {
+    super.ngOnDestroy();
     this.destroy$.next();
     this.destroy$.complete();
   }

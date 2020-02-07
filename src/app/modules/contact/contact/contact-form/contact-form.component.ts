@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { MinierpService } from '../../../minierp/minierp-service.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 
@@ -20,9 +19,6 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   idKey = 'Code';
   apiPath = '/contact/contacts';
   baseFormUrl = '/contact/contact/form';
-  // @Input() title: string;
-  // @Input() content: string;
-  // @Input() actions: { label: string, icon?: string, status?: string, action?: () => void }[];
 
   constructor(
     protected activeRoute: ActivatedRoute,

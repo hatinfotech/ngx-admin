@@ -7,6 +7,7 @@ import { NbDialogService, NbMenuItem, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
+import { ActionControl } from '../interface/action-control.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,9 @@ export class CommonService {
 
   componentChangeSubject: BehaviorSubject<{ componentName: string, state: boolean, data?: any }> = new BehaviorSubject<{ componentName: string, state: boolean, data?: any }>({ componentName: '', state: false });
   componentChange$: Observable<{ componentName: string, state: boolean, data?: any }> = this.componentChangeSubject.asObservable();
+
+  headerActionControlListSubject: BehaviorSubject<ActionControl[]> = new BehaviorSubject<ActionControl[]>([]);
+  headerActionControlList$: Observable<ActionControl[]> = this.headerActionControlListSubject.asObservable();
 
   constructor(
     public authService: NbAuthService,
@@ -235,6 +239,10 @@ export class CommonService {
     return Array(length)
       .fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
       .map(x => x[Math.floor(Math.random() * x.length)]).join('');
+  }
+
+  updateHeaderActionControlList(actionControlList: ActionControl[]) {
+    this.headerActionControlListSubject.next(actionControlList);
   }
 
 }
