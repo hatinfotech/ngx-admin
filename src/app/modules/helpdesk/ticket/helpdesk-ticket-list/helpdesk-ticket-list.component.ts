@@ -27,7 +27,6 @@ export class HelpdeskTicketListComponent extends AgGridDataManagerListComponent<
     protected commonService: CommonService,
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
-    private http: HttpClient,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
 

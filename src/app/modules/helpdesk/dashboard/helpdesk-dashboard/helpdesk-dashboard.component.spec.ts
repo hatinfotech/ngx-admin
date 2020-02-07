@@ -8,7 +8,7 @@ describe('HelpdeskDashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HelpdeskDashboardComponent ]
+      declarations: [ HelpdeskDashboardComponent ],
     })
     .compileComponents();
   }));

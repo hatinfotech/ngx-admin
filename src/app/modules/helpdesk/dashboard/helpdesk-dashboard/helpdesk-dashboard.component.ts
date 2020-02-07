@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { takeWhile } from 'rxjs/operators';
 import { UserActive, UserActivityData } from '../../../../@core/data/user-activity';
-import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbCardComponent, NbCardHeaderComponent } from '@nebular/theme';
+import { NbThemeService, NbIconLibraries, NbLayoutScrollService } from '@nebular/theme';
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
 import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
@@ -22,6 +22,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   idKey = 'Code';
 
   private $: any;
+
   private alive = true;
   select2Option = {
     placeholder: 'Chọn...',
@@ -180,11 +181,6 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   ngAfterViewInit(): void {
     const helpdeskDashboard = $(document.getElementById('helpdeskDashboard'));
     const helpdeskHeaderEle = $(document.getElementById('helpdeskHeader'));
-    const trafficeChart = $(document.getElementById('trafficeChart'));
-    // tslint:disable-next-line: ban
-    // console.info($(helpdeskHeaderEle));
-    const fixedOffset = trafficeChart.offset();
-    const fixedWidth = helpdeskDashboard.width();
     this.subcriptions.push(this.layoutScrollService.getPosition().subscribe(position => {
       console.info(position);
     }));

@@ -8,7 +8,7 @@ describe('DialpadComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DialpadComponent ]
+      declarations: [ DialpadComponent ],
     })
     .compileComponents();
   }));

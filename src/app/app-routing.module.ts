@@ -8,7 +8,6 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { NotificationComponent } from './modules/notification/notification.component';
-import { VirtualPhoneComponent } from './modules/virtual-phone/virtual-phone.component';
 
 const routes: Routes = [
   // {
