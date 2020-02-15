@@ -24,6 +24,10 @@ import { StatsCardBackComponent } from './profit-card/back-side/stats-card-back.
 import { StatsCardFrontComponent } from './profit-card/front-side/stats-card-front.component';
 import { StatsAreaChartComponent } from './profit-card/back-side/stats-area-chart.component';
 import { StatsBarAnimationChartComponent } from './profit-card/front-side/stats-bar-animation-chart.component';
+import { ActionControlListComponent } from '../../lib/custom-element/action-control-list/action-control-list.component';
+import { QuickTicketFormComponent } from './dashboard/quick-ticket-form/quick-ticket-form.component';
+import { ContactFormComponent } from '../contact/contact/contact-form/contact-form.component';
+import { ContactModule } from '../contact/contact.module';
 
 @NgModule({
   declarations: [
@@ -37,6 +41,7 @@ import { StatsBarAnimationChartComponent } from './profit-card/front-side/stats-
     StatsCardFrontComponent,
     StatsAreaChartComponent,
     StatsBarAnimationChartComponent,
+    QuickTicketFormComponent,
   ],
   imports: [
     CommonModule,
@@ -84,6 +89,8 @@ import { StatsBarAnimationChartComponent } from './profit-card/front-side/stats-
   ],
   entryComponents: [
     SmartTableCheckboxComponent,
+    ActionControlListComponent,
+    QuickTicketFormComponent,
   ],
 })
 export class HelpdeskModule { }

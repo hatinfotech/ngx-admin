@@ -9,10 +9,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CommonService } from '../../services/common.service';
 import { BaseComponent } from '../base-component';
+import { ActionControl } from '../../interface/action-control.interface';
 
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy {
 
-  mode: 'dialog' | 'page' = 'page';
+  mode: 'dialog' | 'page' | 'inline' = 'page';
 
   /** Main form */
   form = this.formBuilder.group({
@@ -21,7 +22,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     ]),
   });
 
-  @Input() inputMode: 'dialog' | 'page';
+  @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() inputId: string[];
   @Input() onDialogSave: (newData: M[]) => void;
   @Input() onDialogClose: () => void;
@@ -64,6 +65,74 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   protected queryParam: any;
 
   protected formDataCache: any[];
+
+  actionControlList: ActionControl[] = [
+
+    {
+      type: 'button',
+      name: 'goback',
+      status: 'info',
+      label: 'Trở về',
+      icon: 'arrow-back',
+      title: 'Trở về',
+      size: 'tiny',
+      disabled: () => {
+        return !this.isProcessing;
+      },
+      click: () => {
+        this.goback();
+        return false;
+      },
+    },
+    {
+      type: 'button',
+      name: 'undo',
+      status: 'warning',
+      label: 'Hoàn tác',
+      icon: 'undo',
+      title: 'Hoàn tác',
+      size: 'tiny',
+      disabled: () => {
+        return !this.canUndo || this.isProcessing;
+      },
+      click: () => {
+        this.onFormUndo();
+        return false;
+      },
+    },
+    {
+      type: 'button',
+      name: 'reload',
+      status: 'success',
+      label: 'Tải lại',
+      icon: 'refresh',
+      title: 'Tải lại',
+      size: 'tiny',
+      disabled: () => {
+        return this.isProcessing;
+      },
+      click: () => {
+        this.formLoad();
+        return false;
+      },
+    },
+    {
+      type: 'button',
+      name: 'remove',
+      status: 'danger',
+      label: 'Xem',
+      icon: 'close-circle',
+      title: 'Xem thông tin TICKET',
+      size: 'tiny',
+      disabled: () => {
+        return this.isProcessing;
+      },
+      click: (event, option: {formIndex: number}) => {
+        this.removeFormGroup(option['formIndex']);
+        return false;
+      },
+    },
+  ];
 
   constructor(
     protected activeRoute: ActivatedRoute,

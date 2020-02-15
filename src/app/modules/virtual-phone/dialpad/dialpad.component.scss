@@ -1116,7 +1116,9 @@ abbr, acronym {
 }
 
 button {
-  cursor: pointer; }
+  cursor: pointer;
+  line-height: initial;
+}
 
 .action-call:hover {
   background: #f6fbfb !important; }

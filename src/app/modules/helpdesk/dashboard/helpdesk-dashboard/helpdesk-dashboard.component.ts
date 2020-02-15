@@ -5,11 +5,13 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { takeWhile } from 'rxjs/operators';
 import { UserActive, UserActivityData } from '../../../../@core/data/user-activity';
-import { NbThemeService, NbIconLibraries, NbLayoutScrollService } from '@nebular/theme';
+import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
 import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
 import { ActionControl } from '../../../../interface/action-control.interface';
+import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
+import { VirtualPhoneService } from '../../../virtual-phone/virtual-phone.service';
 
 @Component({
   selector: 'ngx-helpdesk-dashboard',
@@ -44,6 +46,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   dataList: HelpdeskTicketModel[] | { selected: boolean }[] = [];
   selectedItems: HelpdeskTicketModel[] = [];
+  selectedItemEles: { id: string, el: any }[] = [];
 
   ordersChartData: OrdersChart;
 
@@ -52,8 +55,25 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   hadRowsSelected = false;
   hadMultiRowSelected = false;
-  actionControlListList: ActionControl[] = [
+  actionControlList: ActionControl[] = [
     {
+      type: 'text',
+      name: 'search',
+      status: 'default',
+      label: 'Search',
+      icon: 'message-square',
+      title: 'Tìm kiếm',
+      size: 'tiny',
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        // this.refresh();
+        return false;
+      },
+    },
+    {
+      type: 'button',
       name: 'chat',
       status: 'success',
       label: 'Chat',
@@ -69,6 +89,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       },
     },
     {
+      type: 'button',
       name: 'call',
       status: 'primary',
       label: 'Gọi',
@@ -84,6 +105,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       },
     },
     {
+      type: 'button',
       name: 'create',
       status: 'warning',
       label: 'Tạo',
@@ -91,7 +113,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       title: 'Tạo TICKET mới',
       size: 'tiny',
       disabled: () => {
-        return this.hadRowsSelected;
+        return false;
       },
       click: () => {
         this.createNewItem();
@@ -99,6 +121,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       },
     },
     {
+      type: 'button',
       name: 'view',
       status: 'success',
       label: 'Xem',
@@ -114,6 +137,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       },
     },
     {
+      type: 'button',
       name: 'remove',
       status: 'danger',
       label: 'Huỷ',
@@ -129,6 +153,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       },
     },
     {
+      type: 'button',
       name: 'refresh',
       status: 'success',
       label: 'Refresh',
@@ -145,6 +170,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     },
   ];
 
+  showQuickForm = false;
+
   constructor(
     protected commonService: CommonService,
     protected router: Router,
@@ -155,6 +182,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     private layoutScrollService: NbLayoutScrollService,
     iconsLibrary: NbIconLibraries,
     private renderer: Renderer2,
+    protected dialogService: NbDialogService,
+    private virtualPhoneService: VirtualPhoneService,
   ) {
     super(commonService, router, apiService);
 
@@ -171,6 +200,12 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     this.getOrdersChartData('week');
 
     this.loadList();
+
+    this.subcriptions.push(this.virtualPhoneService.callState$.subscribe(callState => {
+      if (callState.state === 'incomming-accept') {
+        this.showQuickForm = true;
+      }
+    }));
 
   }
 
@@ -193,7 +228,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       if (!checkpoint && helpdeskHeaderOffset.top < 50) {
         checkpoint = helpdeskDashboardOffset.top;
 
-        this.commonService.updateHeaderActionControlList(this.actionControlListList);
+        this.commonService.updateHeaderActionControlList(this.actionControlList);
 
         //   helpdeskHeaderEle.css({ position: 'fixed', zIndex: 1, width: fixedWidth, top: fixedOffset.top, left: helpdeskHeaderOffset.left });
         //   helpdeskDashboard.css({paddingTop: helpdeskHeaderEle.height() + 17});
@@ -258,6 +293,29 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   createNewItem() {
+    // this.openFormDialplog();
+    this.showQuickForm = true;
+    return false;
+  }
+
+  onQuickFormClose() {
+    this.showQuickForm = false;
+  }
+
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: HelpdeskTicketModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(QuickTicketFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: HelpdeskTicketModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+        },
+      },
+    });
     return false;
   }
 
@@ -276,6 +334,18 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       this.renderer.removeClass(event.currentTarget, 'selected');
     }
     // console.info(this.selectedItems);
+    this.hadRowsSelected = this.selectedItems.length > 0;
+    this.hadMultiRowSelected = this.selectedItems.length > 1;
+    return false;
+  }
+
+  selectOne(event: any, item: HelpdeskTicketModel) {
+    this.selectedItemEles.forEach(selectedItemEle => {
+      this.renderer.removeClass(selectedItemEle.el, 'selected');
+    });
+    this.selectedItems = [item];
+    this.selectedItemEles = [{ id: item[this.idKey], el: event.currentTarget }];
+    this.renderer.addClass(event.currentTarget, 'selected');
     this.hadRowsSelected = this.selectedItems.length > 0;
     this.hadMultiRowSelected = this.selectedItems.length > 1;
     return false;

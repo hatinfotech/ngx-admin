@@ -85,6 +85,7 @@
     "rxjs": "6.5.2",
     "rxjs-compat": "6.3.0",
     "select2": "^4.0.11",
+    "sip.js": "^0.15.10",
     "socicon": "3.0.5",
     "sortablejs": "^1.9.0",
     "tinymce": "4.5.7",

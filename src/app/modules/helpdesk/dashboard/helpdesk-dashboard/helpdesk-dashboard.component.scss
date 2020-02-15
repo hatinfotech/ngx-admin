@@ -8,7 +8,6 @@
     // border: none;
     padding-top: nb-theme(card-header-with-select-padding-top);
     padding-bottom: nb-theme(card-header-with-select-padding-bottom);
-    background-color: #fff;
   }
 
   nb-list {
@@ -59,6 +58,9 @@
   }
 
   .helpdesk-dashoard {
+    nb-card-body {
+      padding-top: 0;
+    }
     .m-list-item {
       margin-left: -20px;
       margin-right: -20px;

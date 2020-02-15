@@ -16,12 +16,7 @@
         (selectChange)="onChangeDomain($event)">
       </ngx-select2> -->
 
-  <div class="action-list">
-    <button *ngFor="let actionBtn of headerActionControlList" nbButton [status]="actionBtn.status" hero [size]="actionBtn.size"
-      [disabled]="actionBtn.disabled()" [title]="actionBtn.title" (click)="actionBtn.click()">
-      <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
-    </button>
-  </div>
+  <ngx-action-control-list style="float: right;" [list]="headerActionControlList" [hideLabel]="true"></ngx-action-control-list>
 </div>
 
 <div class="header-container">

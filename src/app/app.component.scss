@@ -377,16 +377,15 @@ nb-card.small-header nb-card-header nav ngx-select2 {
   display: inline-block;
 }
 
-.action-list button {
-  margin: 0;
-  margin-left: 0.5rem !important;
-  display: inline-block;
-  line-height: 1.25rem !important;
-}
-
+// div.action-list button {
+//   margin: 0;
+//   margin-left: 0.5rem !important;
+//   display: inline-block;
+//   line-height: 1.25rem !important;
+// }
 
 [size="tiny"],
-nb-card.small-header .action-list button {
+nb-card.small-header div.action-list button {
   height: 2.45rem;
   /* float: right; */
   margin-top: 1px;
@@ -395,11 +394,11 @@ nb-card.small-header nb-card-header button {
   line-height: 1.25rem !important;
 }
 
-nb-card.small-header .action-list {
+nb-card.small-header div.action-list {
   float: right;
 }
 nb-card.small-header {
-  overflow: hidden;
+  // overflow: hidden;
 }
 nb-card.smart-table nb-card-body {
   padding: 0;
@@ -412,6 +411,14 @@ nb-card.popup nb-card-body {
 nb-card nb-tabset nb-tab {
   padding: 0 !important;
 }
+
+// ul.action-list li button {
+
+// }
+
+// ul.action-list li input {
+
+// }
 
 .nb-theme-default
   ng2-smart-table
@@ -600,9 +607,9 @@ nb-card.ag-grid-card nb-card-body .ag-grid-wrap {
   height: 100%;
 }
 nb-card.ag-grid-card {
-  overflow: hidden;
+  // overflow: hidden;
 }
-nb-card.ag-grid-card nb-card-body {
+s nb-card.ag-grid-card nb-card-body {
   padding: 0;
 }
 /*End AG-Grid*/
@@ -770,3 +777,28 @@ body nb-layout .layout .layout-container .content nb-layout-footer nav {
   // padding: 1.5rem;
 }
 /* End My List style */
+
+/* Action list */
+
+.action-list {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.action-list .action-list-item {
+  margin: 0;
+  margin-left: 0.5rem !important;
+  display: inline-block;
+  line-height: 1.25rem !important;
+}
+
+.action-list input[type="text"].action-list-item {
+  margin-top: 1px;
+  padding: 0.54rem 1.125rem;
+}
+ngx-header .action-list input[type="text"].action-list-item {
+  padding: 0.27rem 1.125rem;
+}
+
+/* End Action list */

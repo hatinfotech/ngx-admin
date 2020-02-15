@@ -1,7 +1,8 @@
 <!-- <ngx-profit-card style="height: 15%;"></ngx-profit-card> -->
 
+<ngx-quick-ticket-form *ngIf="showQuickForm" [inputMode]="'inline'" (onClose)="onQuickFormClose()"></ngx-quick-ticket-form>
 
-<div class="row">
+<div class="row" *ngIf="!showQuickForm">
   <div id="trafficeChart" class="col-12 col-md-6">
     <nb-card size="tiny" style="height: 8rem">
       <ngx-stats-card-front></ngx-stats-card-front>
@@ -16,45 +17,29 @@
   </div>
 </div>
 
-
 <nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
   <nb-card-header id="helpdeskHeader">
     <nav>
       <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Yêu cầu mới
-      <div class="action-list">
-        <!-- <button nbButton status="success" hero size="tiny" (click)="refresh()">
-          <nb-icon pack="eva" icon="message-square"></nb-icon> Chat
-        </button>
-        <button nbButton status="primary" hero size="tiny" (click)="refresh()">
-          <nb-icon pack="eva" icon="phone-call"></nb-icon> Gọi
-        </button>
-        <button nbButton status="warning" hero size="tiny" (click)="refresh()">
-          <nb-icon pack="eva" icon="refresh-outline"></nb-icon> Tạo
-        </button>
-        <button nbButton status="info" hero size="tiny" (click)="refresh()">
-          <nb-icon pack="eva" icon="external-link"></nb-icon> Xem
-        </button>
-        <button nbButton status="danger" hero size="tiny" (click)="refresh()">
-          <nb-icon pack="eva" icon="close-circle"></nb-icon> Huỷ
-        </button> -->
-
-        <button *ngFor="let actionBtn of actionControlListList" nbButton [status]="actionBtn.status" hero
-          [size]="actionBtn.size" [disabled]="actionBtn.disabled()" [title]="actionBtn.title"
-          (click)="actionBtn.click()">
-          <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span
-            *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
-        </button>
-
-        <!-- <ngx-select2 [data]="[]" [value]=""
-                  [select2Option]="select2Option"
-                  style="min-width: 250px;">
-                </ngx-select2> -->
-      </div>
+      <ngx-action-control-list style="float: right;" [list]="actionControlList"></ngx-action-control-list>
+      <!-- <div class="action-list" style="float: right;">
+        <ng-template ngFor let-actionBtn [ngForOf]="actionControlList" let-i="index">
+          <button class="action-list-item" *ngIf="actionBtn.type == 'button'" nbButton [status]="actionBtn.status" hero [size]="actionBtn.size"
+            [disabled]="actionBtn.disabled()" [title]="actionBtn.title" (click)="actionBtn.click()">
+            <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span
+              *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
+          </button>
+          <input class="action-list-item" *ngIf="actionBtn.type == 'text'" nbInput type="text" [size]="actionBtn.size"
+            [status]="actionBtn.status" [disabled]="actionBtn.disabled()" [placeholder]="actionBtn.title"
+            (change)="actionBtn.change()">
+        </ng-template>
+      </div> -->
     </nav>
   </nb-card-header>
   <nb-card-body>
     <div class="m-list">
-      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of dataList"  [style.color]="item.TicketStateColor" (click)="toggleSelectItem($event, item)">
+      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of dataList"
+        [style.color]="item.TicketStateColor" (click)="selectOne($event, item)">
         <div class="col-md-4 m-list-item-property">
           <div class="caption">Nội dung yêu cầu</div>
           <div class="value">

@@ -42,6 +42,7 @@ import { DARK_THEME } from './styles/theme.dark';
 import { CustomElementModule } from '../lib/custom-element/custom-element.module';
 import { VirtualPhoneModule } from '../modules/virtual-phone/virtual-phone.module';
 import { DialpadComponent } from '../modules/virtual-phone/dialpad/dialpad.component';
+import { ActionControlListComponent } from '../lib/custom-element/action-control-list/action-control-list.component';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -84,6 +85,7 @@ const PIPES = [
   declarations: [...COMPONENTS, ...PIPES],
   entryComponents: [
     DialpadComponent,
+    ActionControlListComponent,
   ],
 })
 export class ThemeModule {

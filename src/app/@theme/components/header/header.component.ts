@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { IvoipService } from '../../../modules/ivoip/ivoip-service';
 import { CommonService } from '../../../services/common.service';
 import { ActionControl } from '../../../interface/action-control.interface';
+import { VirtualPhoneService } from '../../../modules/virtual-phone/virtual-phone.service';
 
 @Component({
   selector: 'ngx-header',
@@ -70,7 +71,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
     private ivoipService: IvoipService,
-    public commonService: CommonService) {
+    public commonService: CommonService,
+    private virtualPhoneService: VirtualPhoneService,
+  ) {
   }
 
   ngOnInit() {
@@ -105,6 +108,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.commonService.headerActionControlList$.subscribe(actionControlList => {
       this.headerActionControlList = actionControlList;
+    });
+
+    this.virtualPhoneService.callState$.subscribe(callState => {
+      if (callState.state === 'incomming' || callState.state === 'incomming-acecept') {
+        this.expandChat();
+      }
     });
 
     // this.commonService.loginInfo$.subscribe(loginInfo => {

@@ -62,7 +62,7 @@
       </div> <!-- <input type="checkbox" id="autopickcheckbox" > -->
     </section><!--  END TOP BAR  -->
     <!-- PAGE CALLING  -->
-    <section id="page-calling" class="page display-none">
+    <section id="page-calling" class="page" [ngClass]="{'display-none': state != 'calling' && state != 'incomming-accept'}">
       <section class="wrap-status p-l-r-20 top-0 position-relative display-flex">
         <div class="wrap-status-text line-height-30"> <span class="status-text" data-translate="currently_in_call">Đang
             trong cuộc gọi..</span>
@@ -72,9 +72,9 @@
         </div>
       </section>
       <section class="wrap-info p-20">
-        <div class="info-name pb-10"> Pattrick Penna </div>
+        <div class="info-name pb-10"> {{partnerName}} </div>
         <div class="wrap-location"> <span class="location-via" data-translate="via">thông qua</span> <span
-            class="location-text" data-translate="location">Vietnam</span> </div>
+            class="location-text" data-translate="location">Vietnam</span> {{partnerNumber}}</div>
       </section>
       <div class="line-dotted"></div>
       <section class="wrap-action display-flex justify-content-space-between"> <button id="btnMic"
@@ -108,27 +108,43 @@
             class="btn-close border-none bg-transparent"> <img
               src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-close.svg"> </button> </div>
         <div class="wrap-diapad mb-20 diapad-size-medium">
-          <div class="diapad-row"> <button class="diapad-key" id="diapad-key-dtmf-1"> <span class="diapad-key-number"> 1
-              </span> </button> <button class="diapad-key" id="diapad-key-dtmf-2"> <span class="diapad-key-number"> 2
-              </span> </button> <button class="diapad-key" id="diapad-key-dtmf-3"> <span class="diapad-key-number"> 3
+          <div class="diapad-row"> <button (click)="keypress('1')" class="diapad-key" id="diapad-key-dtmf-1"> <span
+                class="diapad-key-number"> 1
+              </span> </button> <button (click)="keypress('2')" class="diapad-key" id="diapad-key-dtmf-2"> <span
+                class="diapad-key-number"> 2
+              </span> </button> <button (click)="keypress('3')" class="diapad-key" id="diapad-key-dtmf-3"> <span
+                class="diapad-key-number"> 3
               </span> </button> </div>
-          <div class="diapad-row"> <button class="diapad-key" id="diapad-key-dtmf-4"> <span class="diapad-key-number"> 4
-              </span> </button> <button class="diapad-key" id="diapad-key-dtmf-5"> <span class="diapad-key-number"> 5
-              </span> </button> <button class="diapad-key" id="diapad-key-dtmf-6"> <span class="diapad-key-number"> 6
+          <div class="diapad-row"> <button (click)="keypress('4')" class="diapad-key" id="diapad-key-dtmf-4"> <span
+                class="diapad-key-number"> 4
+              </span> </button> <button (click)="keypress('5')" class="diapad-key" id="diapad-key-dtmf-5"> <span
+                class="diapad-key-number"> 5
+              </span> </button> <button (click)="keypress('6')" class="diapad-key" id="diapad-key-dtmf-6"> <span
+                class="diapad-key-number"> 6
               </span> </button> </div>
-          <div class="diapad-row"> <button class="diapad-key" id="diapad-key-dtmf-7"> <span class="diapad-key-number"> 7
-              </span> </button> <button class="diapad-key" id="diapad-key-dtmf-8"> <span class="diapad-key-number"> 8
-              </span> </button> <button class="diapad-key" id="diapad-key-dtmf-9"> <span class="diapad-key-number"> 9
+          <div class="diapad-row"> <button (click)="keypress('7')" class="diapad-key" id="diapad-key-dtmf-7"> <span
+                class="diapad-key-number"> 7
+              </span> </button> <button (click)="keypress('8')" class="diapad-key" id="diapad-key-dtmf-8"> <span
+                class="diapad-key-number"> 8
+              </span> </button> <button (click)="keypress('9')" class="diapad-key" id="diapad-key-dtmf-9"> <span
+                class="diapad-key-number"> 9
               </span> </button> </div>
-          <div class="diapad-row"> <button class="diapad-key" id="diapad-key-dtmf-star"> <span
-                class="diapad-key-number"> * </span> </button> <button class="diapad-key" id="diapad-key-dtmf-0"> <span
-                class="diapad-key-number"> 0 </span> </button> <button class="diapad-key" id="diapad-key-dtmf-sharp">
-              <span class="diapad-key-number"> # </span> </button> </div>
+          <div class="diapad-row">
+            <button class="diapad-key" id="diapad-key-dtmf-star">
+              <span class="diapad-key-number"> * </span>
+            </button>
+            <button (click)="keypress('*')" class="diapad-key" id="diapad-key-dtmf-0">
+              <span class="diapad-key-number"> 0 </span>
+            </button>
+            <button (click)="keypress('0')" class="diapad-key" id="diapad-key-dtmf-sharp">
+              <span class="diapad-key-number" (click)="keypress('#')"> # </span>
+            </button>
+          </div>
         </div>
       </section>
     </section><!-- END PAGE CALLING  -->
     <!--  PAGE INCOMMING CALL  -->
-    <section id="page-incomming-call" class="page display-none">
+    <section id="page-incomming-call" class="page" [ngClass]="{'display-none': state != 'incomming'}">
       <div class="incomming-call-info box-shadow1 border-radius-18 bg-gradient-purple overflow-hidden mb-20">
         <div class="wrap-info-text bg-white pt-20 pb-20">
           <section class="wrap-status p-l-r-20 top-0 position-relative display-flex ">
@@ -154,44 +170,83 @@
           </div>
         </section>
       </div>
-      <div class="incomming-call-action display-flex justify-content-space-between"> <button id="btn-incomming-decline"
+      <div class="incomming-call-action display-flex justify-content-space-between">
+        <button id="btn-incomming-decline" (click)="reject()"
           class="btn-action-incomming btn-round btn-red btn-size-55 display-table-cell border-none"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon"
             style="transform: rotate(135deg)"> </button> <img
           src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-dotted-end.svg"> <img
-          src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-dotted-call.svg"> <button
+          src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-dotted-call.svg">
+          <button (click)="accept()"
           id="btn-incomming-accept"
           class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon"> </button>
       </div>
     </section><!-- END PAGE INCOMMING CALL -->
     <!-- PAGE DIAPAD -->
-    <section id="page-diapad" class="page">
+    <section id="page-diapad" class="page" [ngClass]="{'display-none': state != 'normal'}">
       <div class="wrap-typing-number pl-15 pr-15 mt-10 mb-30 display-flex justify-content-space-between"> <input
-          type="text" value="" placeholder="+84966050926" class="font-size-24 color-black border-none"> <button
-          class="btn-close border-none bg-transparent"> <img
+          type="text" [value]="phonenumber" placeholder="+84966050926" class="font-size-24 color-black border-none">
+        <button (click)="backspacekey()" class="btn-close border-none bg-transparent"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-close.svg"> </button> </div>
       <div class="wrap-diapad mb-10">
-        <div class="diapad-row"> <button class="diapad-key" id="diapad-key-1"> <span class="diapad-key-number"> 1
-            </span> <span class="diapad-key-text"> </span> </button> <button class="diapad-key" id="diapad-key-2"> <span
-              class="diapad-key-number"> 2 </span> <span class="diapad-key-text"> ABC </span> </button> <button
-            class="diapad-key" id="diapad-key-3"> <span class="diapad-key-number"> 3 </span> <span
-              class="diapad-key-text"> DEF </span> </button> </div>
-        <div class="diapad-row"> <button class="diapad-key" id="diapad-key-4"> <span class="diapad-key-number"> 4
-            </span> <span class="diapad-key-text"> GHI </span> </button> <button class="diapad-key" id="diapad-key-5">
-            <span class="diapad-key-number"> 5 </span> <span class="diapad-key-text"> JKL </span> </button> <button
-            class="diapad-key" id="diapad-key-6"> <span class="diapad-key-number"> 6 </span> <span
-              class="diapad-key-text"> MNO </span> </button> </div>
-        <div class="diapad-row"> <button class="diapad-key" id="diapad-key-7"> <span class="diapad-key-number"> 7
-            </span> <span class="diapad-key-text"> PQRS </span> </button> <button class="diapad-key" id="diapad-key-8">
-            <span class="diapad-key-number"> 8 </span> <span class="diapad-key-text"> TUV </span> </button> <button
-            class="diapad-key" id="diapad-key-9"> <span class="diapad-key-number"> 9 </span> <span
-              class="diapad-key-text"> WXYZ </span> </button> </div>
-        <div class="diapad-row"> <button class="diapad-key" id="diapad-key-star"> <span class="diapad-key-number"> *
-            </span> <span class="diapad-key-text"> </span> </button> <button class="diapad-key" id="diapad-key-0"> <span
-              class="diapad-key-number"> 0 </span> <span class="diapad-key-text" style="font-size: 18px;"> <span>
-                <!-- + --> </span> </span> </button> <button class="diapad-key" id="diapad-key-sharp"> <span
-              class="diapad-key-number"> # </span> <span class="diapad-key-text"> </span> </button> </div>
+        <div class="diapad-row">
+          <button (click)="keypress('1')" class="diapad-key" id="diapad-key-1">
+            <span class="diapad-key-number"> 1 </span>
+            <span class="diapad-key-text"> </span>
+          </button>
+          <button (click)="keypress('2')" class="diapad-key" id="diapad-key-2">
+            <span class="diapad-key-number"> 2 </span>
+            <span class="diapad-key-text"> ABC </span>
+          </button>
+          <button (click)="keypress('3')" class="diapad-key" id="diapad-key-3">
+            <span class="diapad-key-number"> 3 </span>
+            <span class="diapad-key-text"> DEF </span>
+          </button>
+        </div>
+        <div class="diapad-row">
+          <button (click)="keypress('4')" class="diapad-key" id="diapad-key-4">
+            <span class="diapad-key-number"> 4 </span>
+            <span class="diapad-key-text"> GHI </span>
+          </button>
+          <button (click)="keypress('5')" class="diapad-key" id="diapad-key-5">
+            <span class="diapad-key-number"> 5 </span>
+            <span class="diapad-key-text"> JKL </span>
+          </button>
+          <button (click)="keypress('6')" class="diapad-key" id="diapad-key-6">
+            <span class="diapad-key-number"> 6 </span>
+            <span class="diapad-key-text"> MNO </span>
+          </button>
+        </div>
+        <div class="diapad-row">
+          <button (click)="keypress('7')" class="diapad-key" id="diapad-key-7">
+            <span class="diapad-key-number"> 7 </span>
+            <span class="diapad-key-text"> PQRS </span>
+          </button>
+          <button (click)="keypress('8')" class="diapad-key" id="diapad-key-8">
+            <span class="diapad-key-number"> 8 </span>
+            <span class="diapad-key-text"> TUV </span>
+          </button>
+          <button (click)="keypress('9')" class="diapad-key" id="diapad-key-9">
+            <span class="diapad-key-number"> 9 </span>
+            <span class="diapad-key-text"> WXYZ </span>
+          </button>
+        </div>
+        <div class="diapad-row">
+          <button (click)="keypress('*')" class="diapad-key" id="diapad-key-star">
+            <span class="diapad-key-number"> * </span>
+            <span class="diapad-key-text"> </span>
+          </button>
+          <button (click)="keypress('0')" class="diapad-key" id="diapad-key-0">
+            <span class="diapad-key-number"> 0 </span>
+            <span class="diapad-key-text" style="font-size: 18px;">
+              <span> <!-- + --> </span>
+            </span>
+          </button>
+          <button (click)="keypress('#')" class="diapad-key" id="diapad-key-sharp">
+            <span class="diapad-key-number"> # </span>
+            <span class="diapad-key-text"> </span>
+          </button> </div>
       </div>
       <div class="wrap-call-using-dropdown position-relative display-none">
         <div id="list-from-numbers" class="call-using-dropdown box-shadow3 border-radius-8 bg-white">
@@ -212,7 +267,7 @@
       </div>
     </section><!-- END PAGE DIAPAD --->
     <!-- PAGE CONTACT -->
-    <section id="page-contact" class="page display-none">
+    <section id="page-contact" class="page" [ngClass]="{'display-none': !contactScreenActivated}">
       <div class="wrap-contact-filter p-l-r-20 mb-20 display-table">
         <div class="contact-filter display-flex font-size-12"> <button
             class="contact-filter-item active p-5 p-l-r-10 mr-10 mt-5 border-none">Tất cả</button> <button
@@ -344,7 +399,7 @@
       </div>
     </section><!-- END PAGE CONTACT -->
     <!-- PAGE ACTIVITY -->
-    <section id="page-activity" class="page display-none">
+    <section id="page-activity" class="page" [ngClass]="{'display-none': !activeityScreenActivated}">
       <!-- <div class="wrap-contact-filter p-l-r-20 mb-20 display-table">        <div class="contact-filter display-flex font-size-12">            <button class="contact-filter-item active p-5 p-l-r-10 mt-5 mr-10 border-none">Inbox</button>            <button class="contact-filter-item p-5 p-l-r-10 mt-5 border-none">All</button>        </div>    </div> -->
       <div class="line-dotted"></div>
       <div class="wrap-activity-list">
@@ -357,19 +412,23 @@
     <!-- END PAGE ACTIVITY -->
     <!-- TOOLBAR FOOTER -->
     <section
-      class="wrap-toolbar-bottom position-absolute bottom-0 height-100 width-100-percent box-shadow2 z-index-100 bg-white">
+      class="wrap-toolbar-bottom position-absolute bottom-0 height-100 width-100-percent box-shadow2 z-index-100 bg-white-x"
+      [ngClass]="{'bg-gradient-purple': state == 'calling', 'bg-white': state == 'normal', 'display-none': state == 'incomming'}">
       <div class="wrap-toolbar text-center display-flex justify-content-space-evenly"> <button id="btnToolActivity"
           class="toolbar-item display-table-cell border-none bg-transparent"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-list-gray.svg" class="icon-gray">
           <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-list.svg" class="icon">
-        </button> <button id="btnToolSetting"
+        </button>
+        <button id="btnToolSetting"
           class="toolbar-item display-table-cell border-none bg-transparent display-none"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-setting-gray.svg"
             class="icon-gray"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-setting.svg" class="icon">
-        </button> <button id="btnToolCall"
-          class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none mt-15-negative">
-          <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon-gray">
+        </button>
+        <button id="btnToolCall" (click)="call()"
+          class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none mt-15-negative"
+          [ngClass]="{'btn-green': state == 'normal', 'btn-red': state == 'calling' || state == 'incomming-accept'}">
+          <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon-gray" [ngStyle]="{'transform': state == 'calling' || state == 'incomming-accept' ? 'rotate(135deg)' : 'rotate(0deg)'}">
           <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon">
         </button>
         <!--		<button id="btnToolEndCall" class="btn-action-incomming btn-round btn-red btn-size-55 display-table-cell border-none mt-15-negative">            <img src="images/icon-phone.svg" class="icon-gray" />            <img src="images/icon-phone.svg" class="icon" />        </button>-->
@@ -400,7 +459,12 @@
               src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon-gray"
               width="15"> </span> <span data-translate="call_out">Gọi ra</span> </button> </div>
     </section><!-- Select call type -->
-  </div> <audio preload="auto" id="ringtonePlayer" playsinline="" style="width: 1px"
-    src="https://static.stringee.com/stringeex/web_phone/lastest/audio/Antique-Phone5.mp3" loop=""></audio> <video
-    id="remoteVideo" playsinline="" autoplay="" style="width: 1px"></video>
+  </div>
+  <audio preload="auto" id="ringtonePlayer" playsinline="" style="width: 1px"
+    src="https://static.stringee.com/stringeex/web_phone/lastest/audio/Antique-Phone5.mp3" loop=""></audio>
+  <video id="remoteVideo" playsinline="" autoplay="" style="width: 1px"></video>
+
+
 </div>
+<audio id="remoteVideo" style="height: 1px; height: 1px;"></audio>
+<video id="localVideo" muted="muted" style="height: 1px; height: 1px;"></video>
