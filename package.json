@@ -64,6 +64,7 @@
     "core-js": "2.5.1",
     "echarts": "^4.0.2",
     "eva-icons": "^1.1.0",
+    "framework7": "^5.4.1",
     "intl": "1.2.5",
     "ionicons": "2.0.1",
     "jquery": "^3.4.1",

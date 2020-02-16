@@ -37,6 +37,7 @@ import { IvoipModule } from './modules/ivoip/ivoip.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { DialogFormComponent } from './modules/dialog/dialog-form/dialog-form.component';
 import { CookieService } from 'ngx-cookie-service';
+import { MobileAppModule } from './modules/mobile-app/mobile-app.module';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { CookieService } from 'ngx-cookie-service';
     NbLayoutModule,
     ECommerceModule,
     DashboardModule,
+    MobileAppModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,

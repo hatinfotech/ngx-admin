@@ -8,6 +8,7 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { NotificationComponent } from './modules/notification/notification.component';
+import { MobileAppComponent } from './modules/mobile-app/mobile-app.component';
 
 const routes: Routes = [
   // {
@@ -56,6 +57,14 @@ const routes: Routes = [
     path: 'dashboard',
     component: ECommerceComponent,
     canActivate: [AuthGuardService],
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'mobile-app',
+    component: MobileAppComponent,
+    // canActivate: [AuthGuardService],
     data: {
       reuse: true,
     },
