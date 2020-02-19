@@ -43,6 +43,8 @@ import { CustomElementModule } from '../lib/custom-element/custom-element.module
 import { VirtualPhoneModule } from '../modules/virtual-phone/virtual-phone.module';
 import { DialpadComponent } from '../modules/virtual-phone/dialpad/dialpad.component';
 import { ActionControlListComponent } from '../lib/custom-element/action-control-list/action-control-list.component';
+import { MobileAppModule } from '../modules/mobile-app/mobile-app.module';
+import { MobileAppComponent } from '../modules/mobile-app/mobile-app.component';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -61,6 +63,7 @@ const NB_MODULES = [
   NbIconModule,
   CustomElementModule,
   VirtualPhoneModule,
+  MobileAppModule,
 ];
 const COMPONENTS = [
   HeaderComponent,
@@ -86,6 +89,7 @@ const PIPES = [
   entryComponents: [
     DialpadComponent,
     ActionControlListComponent,
+    MobileAppComponent,
   ],
 })
 export class ThemeModule {

@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as SIP from 'sip.js';
-import { VirtualPhoneService } from '../virtual-phone.service';
+import { MobileAppService } from '../mobile-app.service';
 
 @Component({
   selector: 'ngx-dialpad',
@@ -33,7 +33,7 @@ export class DialpadComponent implements OnInit, AfterViewInit {
   ringer = new Audio();
 
   constructor(
-    private virtualPhoneService: VirtualPhoneService,
+    private mobileAppService: MobileAppService,
   ) {
 
   }
@@ -58,7 +58,7 @@ export class DialpadComponent implements OnInit, AfterViewInit {
       this.partnerName = self.inviteServerContext.remoteIdentity.displayName;
       this.partnerNumber = self.inviteServerContext.remoteIdentity.uri.user;
       this.ring();
-      this.virtualPhoneService.hadIncommingCall({ state: self.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
+      this.mobileAppService.hadIncommingCall({ state: self.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
       self.receiveCallEventConfig(this.inviteServerContext);
       // console.info('!!! accept call manula by call fucntion : acceptcall()');
       // session.accept();
@@ -202,7 +202,7 @@ export class DialpadComponent implements OnInit, AfterViewInit {
       self.partnerName = this.phonenumber;
       self.partnerNumber = this.phonenumber;
 
-      this.virtualPhoneService.hadIncommingCall({ state: self.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
+      this.mobileAppService.hadIncommingCall({ state: self.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
 
       const isVideoCall = false;
       const currentSession = this.inviteClientContext = this.userAgent.invite(this.phonenumber, {
@@ -353,14 +353,14 @@ export class DialpadComponent implements OnInit, AfterViewInit {
     }
     this.state = 'normal';
     this.switchToNormalScreen();
-    this.virtualPhoneService.hadIncommingCall({ state: this.state });
+    this.mobileAppService.hadIncommingCall({ state: this.state });
   }
 
   reject() {
     this.inviteServerContext.reject();
     this.state = 'normal';
     this.switchToNormalScreen();
-    this.virtualPhoneService.hadIncommingCall({ state: this.state });
+    this.mobileAppService.hadIncommingCall({ state: this.state });
     this.stopRing();
   }
 
@@ -377,7 +377,7 @@ export class DialpadComponent implements OnInit, AfterViewInit {
     this.stopRing();
     this.inviteServerContext.accept();
     this.state = 'incomming-accept';
-    this.virtualPhoneService.hadIncommingCall({ state: this.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
+    this.mobileAppService.hadIncommingCall({ state: this.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
   }
 
   switchScreen(screen: string) {

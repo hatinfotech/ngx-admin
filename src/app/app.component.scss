@@ -6,6 +6,8 @@
 /* @import "@ag-grid-community/all-modules/dist/styles/ag-grid.css";
 @import "@ag-grid-community/all-modules/dist/styles/ag-theme-material.css"; */
 
+@import "../assets/framework7.bundle.scss";
+
 /*
 Mini erp
 Global style
@@ -802,3 +804,17 @@ ngx-header .action-list input[type="text"].action-list-item {
 }
 
 /* End Action list */
+
+.framework7 {
+  height: 100%;
+  .f7root {
+    height: 100%;
+    .ios {
+      height: 100%;
+    }
+  }
+  .navbar .title {
+    width: 100%;
+    text-align: center;
+  }
+}
