@@ -3,6 +3,10 @@ import { Observable } from 'rxjs';
 export interface User {
   name: string;
   picture: string;
+
+  // extend
+  id?: number;
+  avatar?: string;
 }
 
 export interface Contacts {

@@ -137,20 +137,6 @@ export class ApiService {
   get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       if (result) {
-        // let url = '';
-        // if (Array.isArray(params['id'])) {
-        //   // const idParam = {};
-        //   params['id'].forEach((item, index) => {
-        //     params['id' + index] = encodeURIComponent(item);
-        //   });
-        //   delete params['id'];
-        //   url = this.buildApiUrl(`${enpoint}`, params);
-        // } else if (params['id']) {
-        //   enpoint += `/${params['id']}`;
-        //   url = this.buildApiUrl(enpoint, params);
-        // } else {
-        //   url = this.buildApiUrl(enpoint, params);
-        // }
         const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
           .pipe(retry(0), catchError(e => {
             if (error) error(e);
@@ -166,6 +152,28 @@ export class ApiService {
         this.onUnauthorizied();
       }
     });
+  }
+
+  /** Restful api getting request - promise */
+  async getPromise<T>(enpoint: string, params?: any): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+        if (result) {
+          const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
+            .pipe(retry(0), catchError(e => {
+              reject(e);
+              return this.handleError(e, params['silent']);
+            }))
+            .subscribe((resources: T) => {
+              resolve(resources);
+              obs.unsubscribe();
+            });
+        } else {
+          this.onUnauthorizied();
+        }
+      });
+    });
+
   }
 
   getAsObservable<T>(enpoint: string, params: any, error?: (e: HttpErrorResponse) => void): Observable<T> {

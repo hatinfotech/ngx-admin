@@ -1,0 +1,181 @@
+<div class="framework7">
+  <div class="f7root">
+    <div class="ios">
+      <div id="mobile-app" class="framework7-root">
+        <div class="view view-main view-init">
+          <div class="page page-current">
+            <div class="navbar">
+              <div class="navbar-bg"></div>
+              <div class="navbar-inner sliding">
+                <div class="left">
+                  <a href="#" class="link back" (click)="false">
+                    <i class="icon icon-back"></i>
+                    <span class="if-not-md">Back</span>
+                  </a>
+                </div>
+                <div class="title">Timeline</div>
+                <div class="right">
+                  <a href="#" class="link" (click)="false">
+                    <i _ngcontent-qcx-c5="" class="icon f7-icons">bars</i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="toolbar messagebar">
+              <div class="toolbar-inner">
+                <div class="messagebar-area">
+                  <textarea class="resizable" placeholder="Message"></textarea>
+                </div>
+                <a class="link send-link" (click)="sendMessage($event)">Send</a>
+              </div>
+            </div>
+            <div class="page-content messages-content" #page>
+              <div class="messages" #messagesRef>
+                <div class="messages-title"><b>Sunday, Feb 9,</b> 12:58</div>
+
+                <!-- <div *ngFor="let message of messageList" [class]="'message ' + message.format.join(' ')" classx="message message-received message-first message-last message-tail">
+                  <div class="message-avatar"
+                    [ngStyle]="{'background-image': 'url('+message?.avatar+')'}"
+                    stylex="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
+                  <div class="message-content">
+                    <div class="message-name" *ngIf="message?.name">{{message.name}}</div>
+                    <div class="message-header" *ngIf="message?.headerContent">{{message.header}}</div>
+                    <div class="message-bubble">
+                      <div class="message-text-header" *ngIf="message?.headerContent">{{message.headerContent}}</div>
+                      <div class="message-image" *ngIf="message?.photo"><img [src]="message.photo" srcx="https://cdn.framework7.io/placeholder/cats-200x260-4.jpg"
+                        style="width:200px; height: 260px" class=""></div>
+                      <div class="message-text" *ngIf="message?.content">{{message.content}}</div>
+                      <div class="message-text-footer" *ngIf="message?.footerContent">{{message.footerContent}}</div>
+                    </div>
+                    <div class="message-footer" *ngIf="message?.footer">{{message.footer}}</div>
+                  </div>
+                </div> -->
+
+
+                <!-- <div class="message message-sent message-first message-last message-tail">
+                  <div class="message-avatar"
+                    style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
+                  <div class="message-content">
+                    <div class="message-name">John Doe</div>
+                    <div class="message-header">Message header</div>
+                    <div class="message-bubble">
+                      <div class="message-text-header">Text header</div>
+                      <div class="message-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+                      <div class="message-text-footer">Text footer</div>
+                    </div>
+                    <div class="message-footer">Message footer</div>
+                  </div>
+                </div>
+                <div class="message message-received message-first message-last message-tail">
+                  <div class="message-avatar"
+                    style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
+                  <div class="message-content">
+                    <div class="message-name">John Doe</div>
+                    <div class="message-header">Message header</div>
+                    <div class="message-bubble">
+                      <div class="message-text-header">Text header</div>
+                      <div class="message-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+                      <div class="message-text-footer">Text footer</div>
+                    </div>
+                    <div class="message-footer">Message footer</div>
+                  </div>
+                </div>
+                <div class="message message-sent message-first">
+                  <div class="message-content">
+                    <div class="message-bubble">
+                      <div class="message-text">Hi, Kate</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-sent message-last message-tail">
+                  <div class="message-content">
+                    <div class="message-bubble">
+                      <div class="message-text">How are you?</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-received message-first message-last message-tail">
+                  <div class="message-avatar"
+                    style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
+                  <div class="message-content">
+                    <div class="message-name">Kate</div>
+                    <div class="message-bubble">
+                      <div class="message-text">Hi, I am good!</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-received message-first message-last message-tail">
+                  <div class="message-avatar"
+                    style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
+                  <div class="message-content">
+                    <div class="message-name">Blue Ninja</div>
+                    <div class="message-bubble">
+                      <div class="message-text">Hi there, I am also fine, thanks! And how are you?</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-sent message-first">
+                  <div class="message-content">
+                    <div class="message-bubble">
+                      <div class="message-text">Hey, Blue Ninja! Glad to see you ;)</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-sent">
+                  <div class="message-content">
+                    <div class="message-bubble">
+                      <div class="message-text">Hey, look, cutest kitten ever!</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-sent message-last message-tail">
+                  <div class="message-content">
+                    <div class="message-bubble">
+                      <div class="message-image"><img src="https://cdn.framework7.io/placeholder/cats-200x260-4.jpg"
+                          style="width:200px; height: 260px" class=""></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-received message-first">
+                  <div class="message-avatar"
+                    style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
+                  <div class="message-content">
+                    <div class="message-name">Kate</div>
+                    <div class="message-bubble">
+                      <div class="message-text">Nice!</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-received message-last message-tail">
+                  <div class="message-avatar"
+                    style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
+                  <div class="message-content">
+                    <div class="message-name">Kate</div>
+                    <div class="message-bubble">
+                      <div class="message-text">Like it very much!</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="message message-received message-first message-last message-tail">
+                  <div class="message-avatar"
+                    style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
+                  <div class="message-content">
+                    <div class="message-name">Blue Ninja</div>
+                    <div class="message-bubble">
+                      <div class="message-text">Awesome!</div>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div><textarea class="textarea-resizable-shadow" disabled=""
+          style="padding: 6px 16px;
+      margin: 0px;
+      width: 1378.41px;
+      font-size: 17px;
+      font-family: -apple-system, 'SF Pro Text', 'SF UI Text', system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-style: normal; font-weight: 400; line-height: 20px; font-variant: normal; text-transform: none; letter-spacing: normal; border: 1px solid rgb(200, 200, 205); box-sizing: border-box; display: block; height: 0px;"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
