@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import { ChatService } from '../chat.service';
 import { ApiService } from '../../../services/api.service';
 import { CommonService } from '../../../services/common.service';
-import { User } from '../../../@core/data/users';
 import { ChatManager } from '../../../lib/nam-chat/chat-manager';
 import { IChatRoomContext, ChatRoom } from '../../../lib/nam-chat/chat-room';
 import { View } from 'framework7/components/view/view';
@@ -10,6 +9,10 @@ import Framework7 from 'framework7/framework7.esm.bundle';
 import { Messages } from 'framework7/components/messages/messages';
 import { MessagesPage, AboutPage } from './f7pages';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { Message } from '../../../lib/nam-chat/model/message';
+import { User } from '../../../lib/nam-chat/model/user';
+import { BaseComponent } from '../../../lib/base-component';
+import { Router } from '@angular/router';
 
 
 export interface F7Message {
@@ -29,7 +32,9 @@ export interface F7Message {
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.scss'],
 })
-export class ChatRoomComponent implements OnInit, AfterViewInit, IChatRoomContext {
+export class ChatRoomComponent extends BaseComponent implements OnInit, AfterViewInit, IChatRoomContext {
+
+  componentName = 'ChatRoomComponent';
 
   chatServiceInfo: {
     domain: string,
@@ -202,16 +207,14 @@ export class ChatRoomComponent implements OnInit, AfterViewInit, IChatRoomContex
   // app: Framework7;
   constructor(
     private chatService: ChatService,
-    private apiService: ApiService,
-    private commonService: CommonService,
+    // private apiService: ApiService,
+    // private commonService: CommonService,
+    protected commonService: CommonService,
+    protected router: Router,
+    protected apiService: ApiService,
   ) {
 
-    this.chatRoomId = 'test';
-    this.user = {
-      id: Date.now(),
-      name: 'user ' + Date.now(),
-      picture: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-    };
+    super(commonService, router, apiService);
 
     // this.apiService.get<{ domain: string, port: number }>('/chat/services/connect-info', {}, rs => {
     //   this.chatServiceInfo = rs;
@@ -223,16 +226,30 @@ export class ChatRoomComponent implements OnInit, AfterViewInit, IChatRoomContex
 
   async ngOnInit() {
 
-    // this.ready$ = new Observable<boolean>((obs) => {
-    this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
-      this.chatServiceInfo = rs;
-      this.chatServiceInfo.url = `http://${this.chatServiceInfo.domain}:${this.chatServiceInfo.port}`;
-      this.localChatClient = new ChatManager(this.chatServiceInfo.url, this.user);
-      this.localChatClient.onConnect().then(() => {
-        this.readySubject.next(true);
-      }).catch(e => console.error(e));
-      console.info('Conntect to local chat server success');
-    }).catch(e => console.error(e));
+    this.subcriptions.push(this.commonService.authenticated$.subscribe(loginInfo => {
+      if (loginInfo) {
+        this.chatRoomId = 'test';
+        this.user = {
+          id: loginInfo.user.Code,
+          name: loginInfo.user.Name,
+          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+        };
+
+        // this.ready$ = new Observable<boolean>((obs) => {
+        this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
+          this.chatServiceInfo = rs;
+          this.chatServiceInfo.url = `https://${this.chatServiceInfo.domain}:${this.chatServiceInfo.port}`;
+          this.localChatClient = new ChatManager(this.chatServiceInfo.url, this.user);
+          this.localChatClient.onConnect().then(() => {
+            this.readySubject.next(true);
+          }).catch(e => console.error(e));
+          console.info('Conntect to local chat server success');
+        }).catch(e => console.error(e));
+      }
+
+    }));
+
+
 
     // });
 
@@ -247,8 +264,8 @@ export class ChatRoomComponent implements OnInit, AfterViewInit, IChatRoomContex
     this.ready$.subscribe(isReady => {
       if (isReady) {
         const routes: any[] = [
-          new MessagesPage(this).f7Component,
-          new AboutPage(this).f7Component,
+          new MessagesPage(this, this.commonService).f7Component,
+          new AboutPage(this, this.commonService).f7Component,
         ];
 
         // Init Framework7 app
@@ -400,7 +417,7 @@ export class ChatRoomComponent implements OnInit, AfterViewInit, IChatRoomContex
   onChatRoomReconnect(): void {
     throw new Error('Method not implemented.');
   }
-  onChatRoomHadNewMessage(newMessage: import('../../../models/chat-message.model').ChatMessageModel): void {
+  onChatRoomHadNewMessage(newMessage: Message): void {
     throw new Error('Method not implemented.');
   }
 

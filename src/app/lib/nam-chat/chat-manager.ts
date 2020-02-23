@@ -1,7 +1,7 @@
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { MySocket } from './my-socket';
+import { User } from './model/user';
 import { ChatRoom, IChatRoomContext } from './chat-room';
-import { User } from '../../@core/data/users';
 
 export class ChatManager {
 
@@ -29,22 +29,26 @@ export class ChatManager {
     // Main socket
     this.mainSocket = new MySocket(this.socketServerUri);
 
-    this.mainSocket.socket.on('reconnect_attempt', (att: number) => console.info('main socket - reconnect_attempt : ' + att));
-    this.mainSocket.socket.on('reconnecting', (att: number) => console.info('main socket - reconnecting : ' + att));
+    this.mainSocket.socket.on('reconnect_attempt', (att: number) => {
+      console.log('main socket - reconnect_attempt : ' + att);
+    });
+    this.mainSocket.socket.on('reconnecting', (att: number) => {
+      console.log('main socket - reconnecting : ' + att);
+    });
     this.mainSocket.socket.on('reconnect', async (att: number) => {
 
-      console.info('main socket - reconnect : ' + att);
-      console.info('Re open namespace : ' + this.chatRoom);
-      let result: any;
-      try {
-        result = await this.mainSocket.emit<string>('open-namespace', { namespace: this.chatRoom, option: { user: this.user } });
-        console.info(result);
-      } catch (e) {
-        console.info('open namespace error');
-        console.error(e);
-      }
+      console.log('main socket - reconnect : ' + att);
+      // console.log('Re open namespace : ' + this.chatRoom);
+      // let result: any;
+      // try {
+      //   result = await this.mainSocket.emit<string>('open-namespace', { namespace: this.chatRoom, option: { user: this.user } });
+      //   console.log(result);
+      // } catch (e) {
+      //   console.log('open namespace error');
+      //   console.error(e);
+      // }
 
-      console.info('reconnect to namespace : ' + this.chatRoom + ' success');
+      // console.log('reconnect to namespace : ' + this.chatRoom + ' success');
     });
 
     // return new Promise<any>((resolve, reject) => {
@@ -58,18 +62,23 @@ export class ChatManager {
 
   onConnect() {
     return new Promise<any>((resolve, reject) => {
-      const sucription = this.mainSocket.onConnect().subscribe(rs => {
-        resolve();
-        sucription.unsubscribe();
+      const sucription = this.mainSocket.onConnect$.subscribe(rs => {
+        if (rs === true) {
+          resolve();
+        }
+        // if (typeof sucription !== 'undefined') {
+        // sucription.unsubscribe();
+        // }
       });
     });
   }
 
   async openChatRoom(context: IChatRoomContext, chatRoomId: string, user: User): Promise<ChatRoom> {
     if (!this.mainSocket.connected) {
-      if (!await this.mainSocket.retryConnect()) {
-        console.info('Client chat socket was not ready !!!');
-      }
+      throw Error('Main socket was not connected !!!');
+      // this.mainSocket.connect();
+      //   console.log('Client chat socket was not ready !!!');
+      // }
     }
     const chatRoom = this.chatRoomList[chatRoomId] = new ChatRoom(
       chatRoomId,
@@ -79,23 +88,23 @@ export class ChatManager {
       context,
     );
     chatRoom.roomSocket.socket.on('connect', () => {
-      console.info('Chat room ' + chatRoomId + ' connected');
+      console.log('Chat room ' + chatRoomId + ' connected');
     });
 
     return chatRoom;
   }
 
   async initNamespaceSocket(namespace: string) {
-    console.info('Init namespace socket : ' + namespace);
+    console.log('Init namespace socket : ' + namespace);
     let result: any;
     try {
       result = await this.mainSocket.emit<string>('open-namespace', { namespace: this.chatRoom, option: { user: this.user } });
-      console.info(result);
+      console.log(result);
     } catch (e) {
-      console.info('open namespace error');
+      console.log('open namespace error');
       console.error(e);
     }
-    console.info('connect to namespace : ' + this.chatRoom);
+    console.log('connect to namespace : ' + this.chatRoom);
     this.currentChatRoomSocket = new MySocket(this.socketServerUri + '/' + this.chatRoom, {
       reconnection: true,
       reconnectionAttempts: 100,
@@ -104,21 +113,21 @@ export class ChatManager {
 
     // Apply namespace event
     this.currentChatRoomSocket.socket.on('reconnect', async (att: number) => {
-      console.info(this.chatRoom + ' reconnected : ' + att);
+      console.log(this.chatRoom + ' reconnected : ' + att);
     });
-    this.currentChatRoomSocket.socket.on('reconnect_attempt', (att: number) => console.info(this.chatRoom + ' reconnect_attempt : ' + att));
-    this.currentChatRoomSocket.socket.on('reconnecting', (att: number) => console.info(this.chatRoom + ' reconnecting : ' + att));
+    this.currentChatRoomSocket.socket.on('reconnect_attempt', (att: number) => console.log(this.chatRoom + ' reconnect_attempt : ' + att));
+    this.currentChatRoomSocket.socket.on('reconnecting', (att: number) => console.log(this.chatRoom + ' reconnecting : ' + att));
 
-    this.currentChatRoomSocket.on<any>('connect').subscribe(rs => {
-      console.info('namespace connected - ' + this.chatRoom);
-      console.info(rs);
+    this.currentChatRoomSocket.on<any>('connect').subscribe(result => {
+      console.log('namespace connected - ' + this.chatRoom);
+      console.log(result);
     });
     this.currentChatRoomSocket.on<Message>('message').subscribe(request => {
       this.messages.push(request.data);
     });
 
     // Load last messages
-    console.info('load last messages...');
+    console.log('load last messages...');
     const lastMessages = await this.currentChatRoomSocket.emit<Message[]>('request-last-messages', 0);
     if (lastMessages) {
       lastMessages.forEach(msg => {
@@ -140,7 +149,7 @@ export class ChatManager {
       chatRoom: this.chatRoom,
       from: this.user,
       content: message,
-    }).then(result => console.info(result)).catch(error => console.error(error));
+    }).then(result => console.log(result)).catch(error => console.error(error));
 
     this.messageContent = null;
   }

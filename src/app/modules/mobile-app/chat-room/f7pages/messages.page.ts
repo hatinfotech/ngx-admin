@@ -2,7 +2,8 @@ import { ChatRoomComponent } from '../chat-room.component';
 import { ChatRoom, IChatRoomContext } from '../../../../lib/nam-chat/chat-room';
 import { User } from '../../../../@core/data/users';
 import { Messages } from 'framework7/components/messages/messages';
-import { ChatMessageModel } from '../../../../models/chat-message.model';
+import { Message } from '../../../../lib/nam-chat/model/message';
+import { CommonService } from '../../../../services/common.service';
 
 export class MessagesPage implements IChatRoomContext {
 
@@ -13,18 +14,34 @@ export class MessagesPage implements IChatRoomContext {
 
   constructor(
     public parentCompoent: ChatRoomComponent,
+    private commonService: CommonService,
   ) {
-    this.chatRoomId = 'test',
-      this.user = {
-        id: Math.floor(Math.random() * (1000000)) + 1,
-        name: 'user ' + Date.now(),
-        picture: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-      };
+    // this.chatRoomId = 'test';
+    // this.user = {
+    //   id: Math.floor(Math.random() * (1000000)) + 1,
+    //   name: 'user ' + Date.now(),
+    //   picture: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+    // };
     this.init();
   }
 
   async init() {
+  }
+
+  async initChatRoom() {
+    // this.commonService.loginInfo;
+    this.chatRoomId = 'test';
+    this.user = {
+      id: this.commonService.loginInfo.user.Code,
+      name: this.commonService.loginInfo.user.Name,
+      picture: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+    };
     this.currentChatRoom = await this.parentCompoent.localChatClient.openChatRoom(this, this.chatRoomId, this.user);
+    this.currentChatRoom.state$.subscribe(state => {
+      if (state === 'ready') {
+
+      }
+    });
   }
 
   onChatRoomInit(): void {
@@ -36,10 +53,10 @@ export class MessagesPage implements IChatRoomContext {
   onChatRoomReconnect(): void {
 
   }
-  onChatRoomHadNewMessage(newMessage: ChatMessageModel): void {
+  onChatRoomHadNewMessage(newMessage: Message): void {
     if (this.f7Messages) {
       this.f7Messages.addMessage({
-        type: 'received',
+        type: newMessage.from.id === this.user.id ? 'sent' : 'received',
         avatar: newMessage.from.avatar,
         name: newMessage.from.name,
         header: null,
@@ -106,89 +123,6 @@ export class MessagesPage implements IChatRoomContext {
         </div>
         <div class="page-content messages-content">
           <div class="messages">
-            <div class="messages-title"><b>Sunday, Feb 9,</b> 12:58</div>
-            <div class="message message-sent">
-              <div class="message-content">
-                <div class="message-bubble">
-                  <div class="message-text">Hi, Kate</div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-sent">
-              <div class="message-content">
-                <div class="message-bubble">
-                  <div class="message-text">How are you?</div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-received">
-              <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
-              <div class="message-content">
-                <div class="message-name">Kate</div>
-                <div class="message-bubble">
-                  <div class="message-text">Hi, I am good!</div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-received">
-              <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
-              <div class="message-content">
-                <div class="message-name">Blue Ninja</div>
-                <div class="message-bubble">
-                  <div class="message-text">Hi there, I am also fine, thanks! And how are you?</div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-sent">
-              <div class="message-content">
-                <div class="message-bubble">
-                  <div class="message-text">Hey, Blue Ninja! Glad to see you ;)</div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-sent">
-              <div class="message-content">
-                <div class="message-bubble">
-                  <div class="message-text">Hey, look, cutest kitten ever!</div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-sent">
-              <div class="message-content">
-                <div class="message-bubble">
-                  <div class="message-image">
-                    <img src="https://cdn.framework7.io/placeholder/cats-200x260-4.jpg" style="width:200px; height: 260px">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-received">
-              <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
-              <div class="message-content">
-                <div class="message-name">Kate</div>
-                <div class="message-bubble">
-                  <div class="message-text">Nice!</div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-received">
-              <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-9.jpg)"></div>
-              <div class="message-content">
-                <div class="message-name">Kate</div>
-                <div class="message-bubble">
-                  <div class="message-text">Like it very much!</div>
-                </div>
-              </div>
-            </div>
-            <div class="message message-received">
-              <div class="message-avatar" style="background-image:url(https://cdn.framework7.io/placeholder/people-100x100-7.jpg)"></div>
-              <div class="message-content">
-                <div class="message-name">Blue Ninja</div>
-                <div class="message-bubble">
-                  <div class="message-text">Awesome!</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -371,6 +305,7 @@ export class MessagesPage implements IChatRoomContext {
             });
 
             $this.f7Messages = self.messages;
+            $this.initChatRoom();
 
             // Listen new messages
           },

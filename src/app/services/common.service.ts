@@ -39,6 +39,9 @@ export class CommonService {
   headerActionControlListSubject: BehaviorSubject<ActionControl[]> = new BehaviorSubject<ActionControl[]>([]);
   headerActionControlList$: Observable<ActionControl[]> = this.headerActionControlListSubject.asObservable();
 
+  authenticatedSubject = new BehaviorSubject<LoginInfoModel>(null);
+  authenticated$ = this.authenticatedSubject.asObservable();
+
   constructor(
     public authService: NbAuthService,
     public apiService: ApiService,
@@ -60,6 +63,7 @@ export class CommonService {
         this.apiService.get<LoginInfoModel>('/user/login/info', {}, loginInfo => {
           // this.loginInfoSubject.next(loginInfo);
           this.loginInfo = loginInfo;
+          this.authenticatedSubject.next(loginInfo);
           // this.cookieService.set(loginInfo.distributeFileStore.name, loginInfo.distributeFileStore.value, null, '/', loginInfo.distributeFileStore.domain.replace(/https?:\/\/\./g, ''));
           // this.cookieService.set(loginInfo.distributeFileStore.name, loginInfo.distributeFileStore.value, null, null, loginInfo.distributeFileStore.domain);
           if (loginInfo.distribution && loginInfo.distribution.cookie && loginInfo.distribution.fileStores) {

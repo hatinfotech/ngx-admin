@@ -1,9 +1,11 @@
 import { ChatRoomComponent } from '../chat-room.component';
+import { CommonService } from '../../../../services/common.service';
 
 export class AboutPage {
 
   constructor(
     public parentComponent: ChatRoomComponent,
+    private commonService: CommonService,
   ) {
 
   }

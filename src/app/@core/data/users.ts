@@ -5,7 +5,7 @@ export interface User {
   picture: string;
 
   // extend
-  id?: number;
+  id?: string;
   avatar?: string;
 }
 
