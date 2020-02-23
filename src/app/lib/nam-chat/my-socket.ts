@@ -45,7 +45,9 @@ export class MySocket {
     this.initEvent();
     this.state$.subscribe(state => {
       if (state) {
-        console.info(`Socket ${this.socket.id} change state to : ${state}`);
+        try {
+          console.info(`Socket ${this.socket.id} change state to : ${state}`);
+        } catch (e) { console.info(e); }
       }
     });
 
@@ -79,7 +81,7 @@ export class MySocket {
     this.socket.on('callback', (result: SocketData<any>) => {
       console.info('On Callback : ', result);
       this.emitCallbackSubject.next(result);
-      // this.stateSubject.next('init-event');
+      // this.stateSubject.next('init-event ');
     });
 
     // Restore events register

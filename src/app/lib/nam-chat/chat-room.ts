@@ -4,8 +4,14 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Message } from './model/message';
 import { ChatManager } from './chat-manager';
 
+export interface JWTToken {
+  access_token?: string;
+  refresh_token?: string;
+}
+
 export interface IChatRoomContext {
 
+  getAuthenticateToken(): JWTToken;
   onChatRoomInit(): void;
   onChatRoomConnect(): void;
   onChatRoomReconnect(): void;
@@ -42,7 +48,6 @@ export class ChatRoom {
       if (state === 'emit-timeout') {
         this.stateSubject.next('socket-timeout');
       }
-
     });
   }
 
@@ -102,7 +107,6 @@ export class ChatRoom {
       this.register().catch(e => {
         console.info('Chat room reconnect when register failed on socket connect');
         this.roomSocket.connect();
-        this.context.onChatRoomConnect();
       });
     });
     // this.roomSocket.socket.on('connect', () => {
@@ -153,7 +157,7 @@ export class ChatRoom {
   }
 
   register(timeout?: number): Promise<boolean> {
-
+    timeout = timeout ? timeout : 3000;
     return new Promise<boolean>(async (resolve, reject) => {
       this.takeUntil('chat-room-socket-register', 500).then(async () => {
         console.info('socket register...');
@@ -163,7 +167,7 @@ export class ChatRoom {
         //   }
         // }
         // } else {
-        this.roomSocket.emit<boolean>('register', this.user, timeout).then(rs2 => {
+        this.roomSocket.emit<boolean>('register', {user: this.user, token: this.context.getAuthenticateToken()}, timeout).then(rs2 => {
           console.info(`Registered user ${this.user.id} to chat room ${this.id} : ${rs2}`);
           this.stateSubject.next('ready');
           resolve(true);
@@ -222,4 +226,11 @@ export class ChatRoom {
 
   }
 
+  connect() {
+    this.roomSocket.connect();
+  }
+
+  disconnect() {
+    this.roomSocket.disconnect();
+  }
 }

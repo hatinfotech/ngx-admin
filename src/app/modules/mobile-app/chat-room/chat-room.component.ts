@@ -7,12 +7,15 @@ import { IChatRoomContext, ChatRoom } from '../../../lib/nam-chat/chat-room';
 import { View } from 'framework7/components/view/view';
 import Framework7 from 'framework7/framework7.esm.bundle';
 import { Messages } from 'framework7/components/messages/messages';
+import { Router as F7Router } from 'framework7/modules/router/router';
 import { MessagesPage, AboutPage } from './f7pages';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Message } from '../../../lib/nam-chat/model/message';
 import { User } from '../../../lib/nam-chat/model/user';
 import { BaseComponent } from '../../../lib/base-component';
 import { Router } from '@angular/router';
+import { NbAuthService } from '@nebular/auth';
+import { MobileAppService } from '../mobile-app.service';
 
 
 export interface F7Message {
@@ -32,7 +35,7 @@ export interface F7Message {
   templateUrl: './chat-room.component.html',
   styleUrls: ['./chat-room.component.scss'],
 })
-export class ChatRoomComponent extends BaseComponent implements OnInit, AfterViewInit, IChatRoomContext {
+export class ChatRoomComponent extends BaseComponent implements OnInit, AfterViewInit {
 
   componentName = 'ChatRoomComponent';
 
@@ -46,7 +49,7 @@ export class ChatRoomComponent extends BaseComponent implements OnInit, AfterVie
   localChatClient: ChatManager;
   currentChatRoom: ChatRoom;
   chatRoomId: string;
-  f7app: Framework7;
+  f7app: Framework7 & {router?: F7Router.Router};
   messagebar: any;
   messages: Messages.Messages;
 
@@ -207,14 +210,17 @@ export class ChatRoomComponent extends BaseComponent implements OnInit, AfterVie
   // app: Framework7;
   constructor(
     private chatService: ChatService,
+    private mobileAppService: MobileAppService,
     // private apiService: ApiService,
     // private commonService: CommonService,
     protected commonService: CommonService,
     protected router: Router,
     protected apiService: ApiService,
+    private authService: NbAuthService,
   ) {
 
     super(commonService, router, apiService);
+    this.mobileAppService.registerMobileApp(this);
 
     // this.apiService.get<{ domain: string, port: number }>('/chat/services/connect-info', {}, rs => {
     //   this.chatServiceInfo = rs;
@@ -264,8 +270,8 @@ export class ChatRoomComponent extends BaseComponent implements OnInit, AfterVie
     this.ready$.subscribe(isReady => {
       if (isReady) {
         const routes: any[] = [
-          new MessagesPage(this, this.commonService).f7Component,
-          new AboutPage(this, this.commonService).f7Component,
+          new MessagesPage(this, this.commonService, this.authService).f7Component,
+          new AboutPage(this, this.commonService, this.authService).f7Component,
         ];
 
         // Init Framework7 app
@@ -349,6 +355,10 @@ export class ChatRoomComponent extends BaseComponent implements OnInit, AfterVie
     });
 
 
+  }
+
+  openChatRoom(id: string) {
+    this.mainView.router.navigate(`/chat-room/${id}`);
   }
 
   sendMessage(event: any) {

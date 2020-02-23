@@ -1,9 +1,12 @@
 import { ChatRoomComponent } from '../chat-room.component';
-import { ChatRoom, IChatRoomContext } from '../../../../lib/nam-chat/chat-room';
+import { ChatRoom, IChatRoomContext, JWTToken } from '../../../../lib/nam-chat/chat-room';
 import { User } from '../../../../@core/data/users';
 import { Messages } from 'framework7/components/messages/messages';
+// import { Messagebar } from 'framework7/components/messagebar/messagebar';
 import { Message } from '../../../../lib/nam-chat/model/message';
 import { CommonService } from '../../../../services/common.service';
+import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
+import { Component } from 'framework7';
 
 export class MessagesPage implements IChatRoomContext {
 
@@ -11,10 +14,14 @@ export class MessagesPage implements IChatRoomContext {
   chatRoomId: string;
   user: User;
   f7Messages: Messages.Messages;
+  token: JWTToken;
+
+  private chatRoomCacheList: { [key: string]: ChatRoom } = {};
 
   constructor(
     public parentCompoent: ChatRoomComponent,
     private commonService: CommonService,
+    private authService: NbAuthService,
   ) {
     // this.chatRoomId = 'test';
     // this.user = {
@@ -26,27 +33,69 @@ export class MessagesPage implements IChatRoomContext {
   }
 
   async init() {
-  }
 
-  async initChatRoom() {
-    // this.commonService.loginInfo;
-    this.chatRoomId = 'test';
-    this.user = {
-      id: this.commonService.loginInfo.user.Code,
-      name: this.commonService.loginInfo.user.Name,
-      picture: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-    };
-    this.currentChatRoom = await this.parentCompoent.localChatClient.openChatRoom(this, this.chatRoomId, this.user);
-    this.currentChatRoom.state$.subscribe(state => {
-      if (state === 'ready') {
+    this.authService.onTokenChange()
+      .subscribe((token: NbAuthOAuth2Token) => {
+        if (token.isValid()) {
+          this.token = JSON.parse(token.toString());
+        } else {
+          console.info('token no valid');
+        }
+      });
 
+    this.authService.getToken().subscribe((token: NbAuthOAuth2Token) => {
+      if (token.isValid()) {
+        this.token = JSON.parse(token.toString());
+      } else {
+        console.info('token no valid');
       }
     });
+
+  }
+
+  async initChatRoom(chatRoomId: string) {
+    // this.commonService.loginInfo;
+    const chatRoom = this.chatRoomCacheList[chatRoomId];
+    if (!chatRoom) {
+      if (chatRoomId) {
+        this.chatRoomId = chatRoomId;
+        this.user = {
+          id: this.commonService.loginInfo.user.Code,
+          name: this.commonService.loginInfo.user.Name,
+          picture: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+        };
+        this.currentChatRoom = await this.parentCompoent.localChatClient.openChatRoom(this, this.chatRoomId, this.user);
+        this.currentChatRoom.state$.subscribe(state => {
+          if (state === 'ready') {
+
+          }
+        });
+        this.chatRoomCacheList[chatRoomId] = this.currentChatRoom;
+      } else {
+        console.warn('Chat room id was not provided !!!');
+        return;
+      }
+    } else {
+      this.currentChatRoom = chatRoom;
+      this.currentChatRoom.connect();
+    }
+
+  }
+
+  onF7pageRemove(chatRoomId: string) {
+    if (this.chatRoomCacheList[chatRoomId]) {
+      this.chatRoomCacheList[chatRoomId].disconnect();
+    }
   }
 
   onChatRoomInit(): void {
 
   }
+
+  getAuthenticateToken(): JWTToken {
+    return this.token;
+  }
+
   onChatRoomConnect(): void {
 
   }
@@ -63,7 +112,7 @@ export class MessagesPage implements IChatRoomContext {
         textHeader: null,
         text: newMessage.content,
         textFooter: null,
-        footer: 'just received',
+        footer: newMessage.date,
         isTitle: false,
         image: '',
         imageSrc: '',
@@ -74,8 +123,8 @@ export class MessagesPage implements IChatRoomContext {
   get f7Component() {
     const $this = this;
     return {
-      name: 'messages',
-      path: '/messages/',
+      name: 'chat-room',
+      path: '/chat-room/:id',
       // Component Object
       component: {
         template: `
@@ -274,9 +323,10 @@ export class MessagesPage implements IChatRoomContext {
           },
         },
         on: {
-          pageBeforeRemove: function (e, page) {
-            const self = this;
+          pageBeforeRemove: function (e: any, page: any) {
+            const self: Component & { messagebar: any } = this;
             if (self.messagebar) self.messagebar.destroy();
+            $this.onF7pageRemove(self.$route.params['id']);
           },
           pageInit: function (e: any, page: any) {
             const self = this;
@@ -287,25 +337,32 @@ export class MessagesPage implements IChatRoomContext {
             });
             self.messages = app.messages.create({
               el: page.$el.find('.messages'),
-              firstMessageRule: function (message, previousMessage, nextMessage) {
+              firstMessageRule: function (message: Messages.Message, previousMessage: Messages.Message, nextMessage: Messages.Message) {
                 if (message.isTitle) return false;
                 if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
                 return false;
               },
-              lastMessageRule: function (message, previousMessage, nextMessage) {
+              lastMessageRule: function (message: Messages.Message, previousMessage: Messages.Message, nextMessage: Messages.Message) {
                 if (message.isTitle) return false;
                 if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
                 return false;
               },
-              tailMessageRule: function (message, previousMessage, nextMessage) {
+              tailMessageRule: function (message: Messages.Message, previousMessage: Messages.Message, nextMessage: Messages.Message) {
                 if (message.isTitle) return false;
                 if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
                 return false;
+              },
+              sameFooterMessageRule: function (message: Messages.Message, previousMessage: Messages.Message, nextMessage: Messages.Message) {
+                if (message.isTitle) return false;
+                if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return false;
+                return true;
               },
             });
 
             $this.f7Messages = self.messages;
-            $this.initChatRoom();
+            try {
+              $this.initChatRoom(self.$route.params['id']);
+            } catch (e) { }
 
             // Listen new messages
           },

@@ -12,6 +12,7 @@ import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
 import { ActionControl } from '../../../../interface/action-control.interface';
 import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
 import { VirtualPhoneService } from '../../../virtual-phone/virtual-phone.service';
+import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 
 @Component({
   selector: 'ngx-helpdesk-dashboard',
@@ -85,6 +86,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       },
       click: () => {
         // this.refresh();
+        if (this.selectedItems.length > 0) {
+          this.mmobileAppService.request('open-chat-room', this.selectedItems[0].ChatRoom);
+        }
         return false;
       },
     },
@@ -184,6 +188,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     private renderer: Renderer2,
     protected dialogService: NbDialogService,
     private virtualPhoneService: VirtualPhoneService,
+    private mmobileAppService: MobileAppService,
   ) {
     super(commonService, router, apiService);
 
