@@ -65,11 +65,19 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       icon: 'message-square',
       title: 'Tìm kiếm',
       size: 'tiny',
+      value: () => {
+        return this.keyword;
+      },
       disabled: () => {
         return false;
       },
       click: () => {
         // this.refresh();
+        return false;
+      },
+      change: (event, option) => {
+        this.keyword = event.target.value;
+        this.onFilterChange();
         return false;
       },
     },
@@ -174,7 +182,17 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     },
   ];
 
+  keyword: string = '';
+
   showQuickForm = false;
+
+  infiniteLoadModel = {
+    tickets: [],
+    placeholders: [],
+    loading: false,
+    pageToLoadNext: 1,
+  };
+  pageSize = 10;
 
   constructor(
     protected commonService: CommonService,
@@ -218,6 +236,42 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   }
 
+  onFilterChange() {
+    this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
+      this.infiniteLoadModel.pageToLoadNext = 1;
+      this.infiniteLoadModel.tickets = [];
+      this.loadNext(this.infiniteLoadModel);
+    });
+  }
+
+  loadNext(cardData) {
+    if (cardData.loading) { return; }
+
+    cardData.loading = true;
+    cardData.placeholders = new Array(this.pageSize);
+
+    this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', { search: this.keyword, limit: this.pageSize, offset: (cardData.pageToLoadNext - 1) * this.pageSize }, nextList => {
+      // this.dataList = list.map(item => {
+      //   item['selected'] = false;
+      //   return item;
+      // });
+
+      cardData.placeholders = [];
+        cardData.tickets.push(...nextList);
+        cardData.loading = false;
+        cardData.pageToLoadNext++;
+
+    });
+
+    // this.newsService.load(cardData.pageToLoadNext, this.pageSize)
+    //   .subscribe(nextNews => {
+    //     cardData.placeholders = [];
+    //     cardData.news.push(...nextNews);
+    //     cardData.loading = false;
+    //     cardData.pageToLoadNext++;
+    //   });
+  }
+
   ngAfterViewInit(): void {
     // tslint:disable-next-line: ban
     const helpdeskDashboard = $(document.getElementById('helpdeskDashboard'));
@@ -252,12 +306,12 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   loadList() {
-    this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', { limit: 20 }, list => {
-      this.dataList = list.map(item => {
-        item['selected'] = false;
-        return item;
-      });
-    });
+    // this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', { limit: 20 }, list => {
+    //   this.dataList = list.map(item => {
+    //     item['selected'] = false;
+    //     return item;
+    //   });
+    // });
   }
 
   getOrdersChartData(period: string) {
@@ -281,7 +335,11 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   refresh() {
-    this.loadList();
+    this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
+      this.infiniteLoadModel.pageToLoadNext = 1;
+      this.infiniteLoadModel.tickets = [];
+      this.loadNext(this.infiniteLoadModel);
+    });
     this.deleteSelected();
     return false;
   }

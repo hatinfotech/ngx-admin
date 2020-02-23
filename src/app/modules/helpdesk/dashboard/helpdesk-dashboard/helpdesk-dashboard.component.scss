@@ -88,6 +88,14 @@
     .m-list-item.selected {
       background-color: rgba(143, 155, 179, 0.16);
     }
+
+    .m-list-item.ghost {
+      color: gray;
+      // background-color: #eee;
+      .m-list-item-property .value {
+        background-color: #4645450f;
+      }
+    }
   }
   // .helpdesk-dashoard .m-list-item nb-icon {
   //   font-size: 1rem;

@@ -16,6 +16,8 @@ import { BaseComponent } from '../../../lib/base-component';
 import { Router } from '@angular/router';
 import { NbAuthService } from '@nebular/auth';
 import { MobileAppService } from '../mobile-app.service';
+import { NbThemeService } from '@nebular/theme';
+import { takeUntil, map } from 'rxjs/operators';
 
 
 export interface F7Message {
@@ -49,7 +51,7 @@ export class ChatRoomComponent extends BaseComponent implements OnInit, AfterVie
   localChatClient: ChatManager;
   currentChatRoom: ChatRoom;
   chatRoomId: string;
-  f7app: Framework7 & {router?: F7Router.Router};
+  f7app: Framework7 & { router?: F7Router.Router };
   messagebar: any;
   messages: Messages.Messages;
 
@@ -204,6 +206,8 @@ export class ChatRoomComponent extends BaseComponent implements OnInit, AfterVie
   // @ViewChild('page', { static: true }) pageRef: ElementRef;
   mainView: View.View;
 
+  isDarkTheme = false;
+
   readySubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   ready$: Observable<boolean> = this.readySubject.asObservable();
 
@@ -217,6 +221,7 @@ export class ChatRoomComponent extends BaseComponent implements OnInit, AfterVie
     protected router: Router,
     protected apiService: ApiService,
     private authService: NbAuthService,
+    public themeService: NbThemeService,
   ) {
 
     super(commonService, router, apiService);
@@ -255,12 +260,13 @@ export class ChatRoomComponent extends BaseComponent implements OnInit, AfterVie
 
     }));
 
+    // Auto update mobile theme
+    this.themeService.onThemeChange()
+      .pipe(map(({ name }) => name === 'cosmic' || name === 'dark'), takeUntil(this.destroy$))
+      .subscribe(isDark => {
+          this.isDarkTheme = isDark;
+      });
 
-
-    // });
-
-    // Open chat room
-    // this.currentChatRoom = await this.localChatClient.openChatRoom(this, this.chatRoomId, this.user);
   }
 
   ngAfterViewInit(): void {

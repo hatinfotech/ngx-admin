@@ -14,7 +14,7 @@ import { ActionControl } from '../../../interface/action-control.interface';
         </button>
         <input class="action-list-item" *ngIf="actionBtn.type == 'text'" nbInput type="text" [fieldSize]="actionBtn.size"
           [status]="actionBtn.status" [disabled]="actionBtn.disabled()" [placeholder]="actionBtn.title"
-          (change)="actionBtn.change($event, option)">
+          (change)="actionBtn.change($event, option)" (key.enter)="actionBtn.change($event, option)" [value]="actionBtn.value()">
       </ng-template>
     </div>
   `,

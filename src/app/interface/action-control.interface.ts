@@ -6,6 +6,7 @@ export interface ActionControl {
   icon?: string;
   title: string;
   size: string;
+  value?: () => string;
   disabled: () => boolean;
   click: (event?: any, option?: any) => false;
   change?: (event?: any, option?: any) => false;

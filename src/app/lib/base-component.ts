@@ -3,7 +3,7 @@ import { CommonService } from '../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { ReuseComponent } from './reuse-component';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent {
 
@@ -11,6 +11,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   requiredPermissions: string[] = ['ACCESS'];
 
   protected subcriptions: Subscription[] = [];
+  protected destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     protected commonService: CommonService,
@@ -56,6 +57,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         subciption.unsubscribe();
       });
     }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }

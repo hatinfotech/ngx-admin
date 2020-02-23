@@ -37,8 +37,13 @@
     </nav>
   </nb-card-header>
   <nb-card-body>
-    <div class="m-list">
-      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of dataList"
+    <div class="m-list"
+        nbInfiniteList
+        listenWindowScroll
+        [threshold]="500"
+        (bottomThreshold)="loadNext(infiniteLoadModel)"
+    >
+      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.tickets"
         [style.color]="item.TicketStateColor" (click)="selectOne($event, item)">
         <div class="col-md-4 m-list-item-property">
           <div class="caption">Nội dung yêu cầu</div>
@@ -83,6 +88,54 @@
           </div>
           <div class="value" *ngIf="!!item.DateOfCreate">
             <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.DateOfCreate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="row m-list-item ghost" *ngFor="let _ of infiniteLoadModel.placeholders">
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Nội dung yêu cầu</div>
+          <div class="value">
+            <nb-icon icon="document-text" pack="ion"></nb-icon>
+          </div>
+          <div class="value">
+            <nb-icon icon="chatbox-working" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="col-md-2 m-list-item-property">
+          <div class="caption">Người yêu cầu</div>
+          <div class="value nowrap">
+            <nb-icon icon="person" pack="ion"></nb-icon>
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon>
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="email" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Công ty</div>
+          <div class="value">
+            <nb-icon icon="podium" pack="ion"></nb-icon>
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon>
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="email" pack="ion"></nb-icon>
+          </div>
+          <div class="value">
+            <nb-icon icon="map" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="col-md-2 m-list-item-property">
+          <div class="caption">Trạng thái</div>
+          <div class="value nowrap">
+            <nb-icon icon="radio-waves" pack="ion"></nb-icon>
+          </div>
+          <div class="value">
+            <nb-icon icon="ios-time" pack="ion"></nb-icon>
           </div>
         </div>
       </div>
