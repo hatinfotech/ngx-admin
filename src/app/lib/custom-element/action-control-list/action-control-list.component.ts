@@ -8,7 +8,7 @@ import { ActionControl } from '../../../interface/action-control.interface';
       <ng-template ngFor let-actionBtn [ngForOf]="list" let-i="index">
         <button class="action-list-item" *ngIf="actionBtn.type == 'button'" nbButton
         [status]="actionBtn.status" hero [size]="actionBtn.size"
-          [disabled]="actionBtn.disabled()" [title]="actionBtn.title" (click)="actionBtn.click($event, option)">
+          [disabled]="actionBtn.disabled(option)" [title]="actionBtn.title" (click)="actionBtn.click($event, option)">
           <nb-icon *ngIf="!hideIcon" pack="eva" [icon]="actionBtn.icon"></nb-icon>
           <span *ngIf="!!actionBtn.label && !hideLabel">{{actionBtn.label}}</span>
         </button>

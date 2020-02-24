@@ -8,6 +8,9 @@ import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { environment } from '../../../../../environments/environment';
+import { ActionControl } from '../../../../interface/action-control.interface';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-quick-ticket-form',
@@ -16,12 +19,110 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 })
 export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskTicketModel> implements OnInit {
 
+  env = environment;
   componentName: string = 'QuickTicketFormComponent';
   idKey = 'Code';
-  apiPath = '/contact/contacts';
-  baseFormUrl = '/contact/contact/form';
+  apiPath = '/helpdesk/tickets';
+  baseFormUrl = '/helpdesk/ticket/form';
 
   @Output() onClose = new EventEmitter<boolean>();
+
+  select2Option = {
+    placeholder: 'Chọn liên hệ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 1,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return environment.api.baseUrl + '/contact/contacts?token='
+          + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
+  actionControlList: ActionControl[] = [
+    {
+      type: 'button',
+      name: 'save',
+      status: 'success',
+      label: 'Lưu',
+      icon: 'save',
+      title: 'Lưu yêu cầu',
+      size: 'tiny',
+      disabled: (option) => {
+        return !option.form.valid;
+        // return false;
+      },
+      click: () => {
+        return true;
+      },
+    },
+    {
+      type: 'button',
+      name: 'reset',
+      status: 'warning',
+      label: 'Tải lại',
+      icon: 'refresh',
+      title: 'Tải lại',
+      size: 'tiny',
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        // this.refresh();
+        this.formLoad();
+        return false;
+      },
+    },
+    {
+      type: 'button',
+      name: 'close',
+      status: 'danger',
+      label: 'Đóng',
+      icon: 'close-circle',
+      title: 'Đóng',
+      size: 'tiny',
+      disabled: () => {
+        return false;
+      },
+      click: (event, option: {formIndex: number}) => {
+        this.goback();
+        return false;
+      },
+    },
+    // {
+    //   type: 'button',
+    //   name: 'undo',
+    //   status: 'warning',
+    //   label: 'Hoàn tác',
+    //   icon: 'undo',
+    //   title: 'Hoàn tác',
+    //   size: 'tiny',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     this.onFormUndo();
+    //     return false;
+    //   },
+    // },
+  ];
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -43,6 +144,25 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     // }
   }
 
+  onObjectChange(item, formIndex: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (item) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (item['Code']) {
+
+          this.array.controls[formIndex].get('ObjectName').setValue(item['Name']);
+          this.array.controls[formIndex].get('ObjectPhone').setValue(item['Phone']);
+          this.array.controls[formIndex].get('ObjectEmail').setValue(item['Email']);
+          this.array.controls[formIndex].get('ObjectAddress').setValue(item['Address']);
+        }
+      }
+    }
+
+  }
+
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
   }
@@ -56,20 +176,21 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   makeNewFormGroup(data?: HelpdeskTicketModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
-      Type: [''],
-      Title: [''],
-      Description: [''],
+      // Type: [''],
+      // Title: [''],
+      Description: ['', Validators.required],
+      Object: [''],
       ObjectName: [''],
       ObjectPhone: [''],
       ObjectEmail: [''],
       ObjectAddress: [''],
-      WorkingName: [''],
-      SupportedPerson: [''],
-      SupportedPersonName: [''],
-      SupportedPersonPhone: [''],
-      SupportedPersonEmail: [''],
-      State: [''],
-      Service: [''],
+      // WorkingName: [''],
+      // SupportedPerson: [''],
+      // SupportedPersonName: [''],
+      // SupportedPersonPhone: [''],
+      // SupportedPersonEmail: [''],
+      // State: [''],
+      // Service: [''],
     });
     if (data) {
       newForm.patchValue(data);
@@ -90,7 +211,29 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     //   this.ref.close();
     //   // this.dismiss();
     // }
-    this.onClose.emit(true);
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: 'Phiếu yêu cầu hỗ trợ',
+        content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu có thể chưa được lưu!',
+        actions: [
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'warning',
+            action: () => { },
+          },
+          {
+            label: 'Đóng',
+            icon: 'close',
+            status: 'danger',
+            action: () => {
+              this.onClose.emit(true);
+             },
+          },
+        ],
+      },
+    });
+
     return false;
   }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }

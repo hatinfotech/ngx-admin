@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
-import { NbDialogService, NbMenuItem, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService, NbSidebarComponent } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
@@ -42,6 +42,9 @@ export class CommonService {
   authenticatedSubject = new BehaviorSubject<LoginInfoModel>(null);
   authenticated$ = this.authenticatedSubject.asObservable();
 
+  menuSidebar: NbSidebarComponent;
+  mobileSidebar: NbSidebarComponent;
+
   constructor(
     public authService: NbAuthService,
     public apiService: ApiService,
@@ -49,6 +52,7 @@ export class CommonService {
     public toastService: NbToastrService,
     public router: Router,
     public _location: Location,
+    private sidebarService: NbSidebarService,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
@@ -247,6 +251,23 @@ export class CommonService {
 
   updateHeaderActionControlList(actionControlList: ActionControl[]) {
     this.headerActionControlListSubject.next(actionControlList);
+  }
+
+  openMobileSidebar() {
+    if (this.menuSidebar && this.mobileSidebar) {
+      if (this.menuSidebar.expanded) {
+        this.sidebarService.toggle(true, 'menu-sidebar');
+      }
+      if (this.mobileSidebar.collapsed) {
+        this.sidebarService.toggle(true, 'chat-sidebar');
+      }
+    } else {
+      console.info('Sidebar was not ready !!!');
+    }
+  }
+
+  openMenuSidebar() {
+
   }
 
 }

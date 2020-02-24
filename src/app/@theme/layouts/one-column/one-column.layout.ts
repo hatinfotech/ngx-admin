@@ -2,6 +2,7 @@ import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/theme';
 import { NbAuthService } from '@nebular/auth';
 import { environment } from '../../../../environments/environment';
+import { CommonService } from '../../../services/common.service';
 
 @Component({
   selector: 'ngx-one-column-layout',
@@ -54,6 +55,7 @@ export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private authService: NbAuthService,
+    private commonService: CommonService,
   ) {
     // setTimeout(() => {
     //   this.authState = 'login';
@@ -68,6 +70,9 @@ export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
   // }
 
   ngAfterViewInit(): void {
+
+    this.commonService.menuSidebar = this.menuSidebar;
+    this.commonService.mobileSidebar = this.chatSiderbar;
 
     // console.info(this.siderbar);
     this.sidebarService.onToggle().subscribe(info => {

@@ -99,6 +99,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       click: () => {
         // this.refresh();
         if (this.selectedItems.length > 0) {
+          this.commonService.openMobileSidebar();
           this.mmobileAppService.request('open-chat-room', this.selectedItems[0].ChatRoom);
         }
         return false;
@@ -237,7 +238,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   ngOnInit() {
-
+    this.commonService.openMobileSidebar();
   }
 
   onFilterChange() {
@@ -367,6 +368,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   onQuickFormClose() {
     this.showQuickForm = false;
+    this.refresh();
   }
 
   /** Implement required */
