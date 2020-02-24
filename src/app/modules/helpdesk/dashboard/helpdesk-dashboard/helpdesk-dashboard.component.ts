@@ -80,6 +80,10 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         this.onFilterChange();
         return false;
       },
+      typing: (event, option) => {
+        this.keyword = event.target.value;
+        return false;
+      },
     },
     {
       type: 'button',

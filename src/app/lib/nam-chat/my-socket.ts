@@ -129,7 +129,7 @@ export class MySocket {
           if (subcription) {
             this.stateSubject.next('emit-timeout');
             subcription.unsubscribe();
-            reject(`Socket emit timeout ${this.emitTimeout}`);
+            reject(`Socket emit timeout ${timeout ? timeout : this.emitTimeout  }`);
           }
         }, timeout ? timeout : this.emitTimeout);
       });

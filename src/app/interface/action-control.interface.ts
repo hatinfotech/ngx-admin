@@ -10,4 +10,5 @@ export interface ActionControl {
   disabled: () => boolean;
   click: (event?: any, option?: any) => false;
   change?: (event?: any, option?: any) => false;
+  typing?: (event?: any, option?: any) => false;
 }

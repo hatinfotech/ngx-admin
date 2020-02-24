@@ -157,7 +157,7 @@ export class ChatRoom {
   }
 
   register(timeout?: number): Promise<boolean> {
-    timeout = timeout ? timeout : 3000;
+    timeout = timeout ? timeout : 1000;
     return new Promise<boolean>(async (resolve, reject) => {
       this.takeUntil('chat-room-socket-register', 500).then(async () => {
         console.info('socket register...');
@@ -167,7 +167,7 @@ export class ChatRoom {
         //   }
         // }
         // } else {
-        this.roomSocket.emit<boolean>('register', {user: this.user, token: this.context.getAuthenticateToken()}, timeout).then(rs2 => {
+        this.roomSocket.emit<boolean>('register', { user: this.user, token: this.context.getAuthenticateToken() }, timeout).then(rs2 => {
           console.info(`Registered user ${this.user.id} to chat room ${this.id} : ${rs2}`);
           this.stateSubject.next('ready');
           resolve(true);
