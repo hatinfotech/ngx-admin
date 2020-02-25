@@ -14,7 +14,7 @@
     </section><!--  END TOAST  -->
     <!--  TOP BAR -->
     <section class="wrap-top-bar height-40 position-absolute top-0 width-100-percent">
-      <div class="top-bar-status color-green" data-translate="not_connected">demo_7088</div>
+      <div class="top-bar-status color-green" data-translate="not_connected">{{sipUsername}}</div>
       <div class="text-center top-bar-title"></div>
       <div class="wrap-action-top-right float-right mr position-absolute right-15 top-10">
         <div class="wrapper-dropdown wrapper-dropdown-call">
@@ -62,7 +62,8 @@
       </div> <!-- <input type="checkbox" id="autopickcheckbox" > -->
     </section><!--  END TOP BAR  -->
     <!-- PAGE CALLING  -->
-    <section id="page-calling" class="page" [ngClass]="{'display-none': state != 'calling' && state != 'incomming-accept'}">
+    <section id="page-calling" class="page"
+      [ngClass]="{'display-none': state != 'calling' && state != 'incomming-accept'}">
       <section class="wrap-status p-l-r-20 top-0 position-relative display-flex">
         <div class="wrap-status-text line-height-30"> <span class="status-text" data-translate="currently_in_call">Đang
             trong cuộc gọi..</span>
@@ -177,8 +178,7 @@
             style="transform: rotate(135deg)"> </button> <img
           src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-dotted-end.svg"> <img
           src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-dotted-call.svg">
-          <button (click)="accept()"
-          id="btn-incomming-accept"
+        <button (click)="accept()" id="btn-incomming-accept"
           class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon"> </button>
       </div>
@@ -240,7 +240,8 @@
           <button (click)="keypress('0')" class="diapad-key" id="diapad-key-0">
             <span class="diapad-key-number"> 0 </span>
             <span class="diapad-key-text" style="font-size: 18px;">
-              <span> <!-- + --> </span>
+              <span>
+                <!-- + --> </span>
             </span>
           </button>
           <button (click)="keypress('#')" class="diapad-key" id="diapad-key-sharp">
@@ -414,21 +415,23 @@
     <section
       class="wrap-toolbar-bottom position-absolute bottom-0 height-100 width-100-percent box-shadow2 z-index-100 bg-white-x"
       [ngClass]="{'bg-gradient-purple': state == 'calling', 'bg-white': state == 'normal', 'display-none': state == 'incomming'}">
-      <div class="wrap-toolbar text-center display-flex justify-content-space-evenly"> <button id="btnToolActivity"
-          class="toolbar-item display-table-cell border-none bg-transparent"> <img
-            src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-list-gray.svg" class="icon-gray">
-          <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-list.svg" class="icon">
+      <div class="wrap-toolbar text-center display-flex justify-content-space-evenly">
+        <button id="btnToolActivity" (click)="switchScreen('f7app')"
+          class="toolbar-item display-table-cell border-none bg-transparent">
+          <nb-icon pack="eva" icon="home-outline" style="color: #b3b3b3;" ></nb-icon>
+          <!-- <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-list-gray.svg" class="icon-gray">
+          <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-list.svg" class="icon"> -->
         </button>
-        <button id="btnToolSetting"
-          class="toolbar-item display-table-cell border-none bg-transparent display-none"> <img
-            src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-setting-gray.svg"
+        <button id="btnToolSetting" class="toolbar-item display-table-cell border-none bg-transparent display-none">
+          <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-setting-gray.svg"
             class="icon-gray"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-setting.svg" class="icon">
         </button>
         <button id="btnToolCall" (click)="call()"
           class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none mt-15-negative"
           [ngClass]="{'btn-green': state == 'normal', 'btn-red': state == 'calling' || state == 'incomming-accept'}">
-          <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon-gray" [ngStyle]="{'transform': state == 'calling' || state == 'incomming-accept' ? 'rotate(135deg)' : 'rotate(0deg)'}">
+          <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon-gray"
+            [ngStyle]="{'transform': state == 'calling' || state == 'incomming-accept' ? 'rotate(135deg)' : 'rotate(0deg)'}">
           <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon">
         </button>
         <!--		<button id="btnToolEndCall" class="btn-action-incomming btn-round btn-red btn-size-55 display-table-cell border-none mt-15-negative">            <img src="images/icon-phone.svg" class="icon-gray" />            <img src="images/icon-phone.svg" class="icon" />        </button>-->
@@ -463,8 +466,8 @@
   <audio preload="auto" id="ringtonePlayer" playsinline="" style="width: 1px"
     src="https://static.stringee.com/stringeex/web_phone/lastest/audio/Antique-Phone5.mp3" loop=""></audio>
   <video id="remoteVideo" playsinline="" autoplay="" style="width: 1px"></video>
-
+  <audio id="remoteVideo" style="width: 1px"></audio>
+  <video id="localVideo" muted="muted" style="width: 1px"></video>
 
 </div>
-<audio id="remoteVideo" style="height: 1px; height: 1px;"></audio>
-<video id="localVideo" muted="muted" style="height: 1px; height: 1px;"></video>
+

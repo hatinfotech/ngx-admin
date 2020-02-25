@@ -11,6 +11,7 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { environment } from '../../../../../environments/environment';
 import { ActionControl } from '../../../../interface/action-control.interface';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { ContactModel } from '../../../../models/contact.model';
 
 @Component({
   selector: 'ngx-quick-ticket-form',
@@ -25,7 +26,10 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   apiPath = '/helpdesk/tickets';
   baseFormUrl = '/helpdesk/ticket/form';
 
-  @Output() onClose = new EventEmitter<boolean>();
+  @Input('index') index: string;
+  @Input('phoneNumber') phoneNumber: string;
+  @Output() onClose = new EventEmitter<string>();
+  @Output() onInit = new EventEmitter<QuickTicketFormComponent>();
 
   select2Option = {
     placeholder: 'Chọn liên hệ...',
@@ -101,7 +105,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       disabled: () => {
         return false;
       },
-      click: (event, option: {formIndex: number}) => {
+      click: (event, option: { formIndex: number }) => {
         this.goback();
         return false;
       },
@@ -142,17 +146,35 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     // if (this.inputId) {
     //   this.mode = 'dialog';
     // }
+    this.onInit.emit(this);
+  }
+
+  loadByPhoneNumber(phoneNumber?: string) {
+    phoneNumber = phoneNumber ? phoneNumber : this.phoneNumber;
+    this.apiService.getPromise<ContactModel[]>('/contact/contacts', { searchByPhone: phoneNumber }).then(contacts => {
+      const contact = contacts[0];
+      if (contact) {
+        contact['doNotAutoFill'] = true;
+        this.array.controls[0].get('Object').setValue(contact);
+        this.array.controls[0].get('ObjectName').setValue(contacts[0]['Name']);
+        this.array.controls[0].get('ObjectPhone').setValue(contacts[0]['Phone']);
+        this.array.controls[0].get('ObjectEmail').setValue(contacts[0]['Email']);
+        this.array.controls[0].get('ObjectAddress').setValue(contacts[0]['Address']);
+      }
+    });
+
+
+    // this.array.controls[0].get('ObjectPhone').setValue(phoneNumber);
   }
 
   onObjectChange(item, formIndex: number) {
     // console.info(item);
 
     if (!this.isProcessing) {
-      if (item) {
+      if (item && !item['doNotAutoFill']) {
 
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (item['Code']) {
-
           this.array.controls[formIndex].get('ObjectName').setValue(item['Name']);
           this.array.controls[formIndex].get('ObjectPhone').setValue(item['Phone']);
           this.array.controls[formIndex].get('ObjectEmail').setValue(item['Email']);
@@ -227,8 +249,8 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
             icon: 'close',
             status: 'danger',
             action: () => {
-              this.onClose.emit(true);
-             },
+              this.onClose.emit(this.index);
+            },
           },
         ],
       },

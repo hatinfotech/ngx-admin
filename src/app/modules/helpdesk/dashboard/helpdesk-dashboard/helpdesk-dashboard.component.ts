@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../../../lib/base-component';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import { takeWhile } from 'rxjs/operators';
+import { takeWhile, takeUntil } from 'rxjs/operators';
 import { UserActive, UserActivityData } from '../../../../@core/data/user-activity';
 import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { OrdersChart } from '../../../../@core/data/orders-chart';
@@ -99,7 +99,6 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       click: () => {
         // this.refresh();
         if (this.selectedItems.length > 0) {
-          this.commonService.openMobileSidebar();
           this.mmobileAppService.request('open-chat-room', this.selectedItems[0].ChatRoom);
         }
         return false;
@@ -117,6 +116,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         return !this.hadRowsSelected || this.hadMultiRowSelected;
       },
       click: () => {
+        this.commonService.openMenuSidebar();
+        this.mobileAppService.switchScreen('phone');
         // this.refresh();
         return false;
       },
@@ -191,6 +192,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   showQuickForm = false;
 
+  quickTicketFormList: { index: string, phoneNumber?: string, form?: QuickTicketFormComponent }[] = [];
+
   infiniteLoadModel = {
     tickets: [],
     placeholders: [],
@@ -198,6 +201,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     pageToLoadNext: 1,
   };
   pageSize = 10;
+
+  @ViewChild('quickTicketForm', { static: true }) quickTicketForm: QuickTicketFormComponent;
 
   constructor(
     protected commonService: CommonService,
@@ -210,7 +215,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     iconsLibrary: NbIconLibraries,
     private renderer: Renderer2,
     protected dialogService: NbDialogService,
-    private virtualPhoneService: VirtualPhoneService,
+    private mobileAppService: MobileAppService,
     private mmobileAppService: MobileAppService,
   ) {
     super(commonService, router, apiService);
@@ -229,11 +234,16 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
     this.loadList();
 
-    this.subcriptions.push(this.virtualPhoneService.callState$.subscribe(callState => {
-      if (callState.state === 'incomming-accept') {
-        this.showQuickForm = true;
-      }
-    }));
+    this.mobileAppService.callState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(callState => {
+        if (callState.state === 'incomming') {
+          this.createNewItem(callState.partnerNumber);
+        }
+        if (callState.state === 'waiting-incomming') {
+          this.createDependingTicketByPhoneNumber(callState.partnerNumber);
+        }
+      });
 
   }
 
@@ -262,9 +272,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       // });
 
       cardData.placeholders = [];
-        cardData.tickets.push(...nextList);
-        cardData.loading = false;
-        cardData.pageToLoadNext++;
+      cardData.tickets.push(...nextList);
+      cardData.loading = false;
+      cardData.pageToLoadNext++;
 
     });
 
@@ -360,14 +370,39 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  createNewItem() {
+  createNewItem(phoneNumber?: string) {
     // this.openFormDialplog();
     this.showQuickForm = true;
+    const quickForm = { index: phoneNumber ? phoneNumber : ('new_' + Date.now()), phoneNumber: phoneNumber };
+    this.quickTicketFormList.unshift(quickForm);
+    setTimeout(() => {
+
+      // this.quickTicketForm.loadByPhoneNumber(phoneNumber);
+    }, 500);
     return false;
   }
 
-  onQuickFormClose() {
-    this.showQuickForm = false;
+  createDependingTicketByPhoneNumber(phoneNumber?: string) {
+    // this.showQuickForm = true;
+    const quickForm = { index: phoneNumber, phoneNumber: phoneNumber };
+    this.quickTicketFormList.push(quickForm);
+    return false;
+  }
+
+  onQuickFormInit(event: QuickTicketFormComponent) {
+    console.info(event);
+    this.quickTicketFormList.filter(f => f.index === event.index)[0].form = event;
+    event.loadByPhoneNumber('');
+  }
+
+  onQuickFormClose(index: string) {
+
+    if (index) {
+      this.quickTicketFormList = this.quickTicketFormList.filter(f => f.index !== index);
+      console.info(this.quickTicketFormList);
+    }
+
+    // this.showQuickForm = false;
     this.refresh();
   }
 

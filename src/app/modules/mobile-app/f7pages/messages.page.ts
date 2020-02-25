@@ -1,12 +1,12 @@
-import { ChatRoomComponent } from '../chat-room.component';
-import { ChatRoom, IChatRoomContext, JWTToken } from '../../../../lib/nam-chat/chat-room';
-import { User } from '../../../../@core/data/users';
+import { ChatRoom, IChatRoomContext, JWTToken } from '../../../lib/nam-chat/chat-room';
+import { User } from '../../../@core/data/users';
 import { Messages } from 'framework7/components/messages/messages';
 // import { Messagebar } from 'framework7/components/messagebar/messagebar';
-import { Message } from '../../../../lib/nam-chat/model/message';
-import { CommonService } from '../../../../services/common.service';
+import { Message } from '../../../lib/nam-chat/model/message';
+import { CommonService } from '../../../services/common.service';
 import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
 import { Component } from 'framework7';
+import { MobileAppComponent } from '../mobile-app.component';
 
 export class MessagesPage implements IChatRoomContext {
 
@@ -19,7 +19,7 @@ export class MessagesPage implements IChatRoomContext {
   private chatRoomCacheList: { [key: string]: ChatRoom } = {};
 
   constructor(
-    public parentCompoent: ChatRoomComponent,
+    public parentCompoent: MobileAppComponent,
     private commonService: CommonService,
     private authService: NbAuthService,
   ) {

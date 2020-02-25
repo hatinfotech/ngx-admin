@@ -1,11 +1,11 @@
-import { ChatRoomComponent } from '../chat-room.component';
-import { CommonService } from '../../../../services/common.service';
 import { NbAuthService } from '@nebular/auth';
+import { CommonService } from '../../../services/common.service';
+import { MobileAppComponent } from '../mobile-app.component';
 
 export class AboutPage {
 
   constructor(
-    public parentComponent: ChatRoomComponent,
+    public parentComponent: MobileAppComponent,
     private commonService: CommonService,
     private authService: NbAuthService,
   ) {

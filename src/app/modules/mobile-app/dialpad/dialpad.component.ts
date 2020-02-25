@@ -1,6 +1,22 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as SIP from 'sip.js';
 import { MobileAppService } from '../mobile-app.service';
+import { SimpleStatus } from 'sip.js/lib/Web/Simple';
+
+export interface SipUser {
+  id?: string;
+  name?: string;
+  number?: string;
+  uri?: string;
+  domain?: string;
+}
+
+export class CallSession {
+  caller: SipUser;
+  callee: SipUser;
+  receiveSession?: SIP.InviteServerContext;
+  senderSession?: SIP.InviteClientContext;
+}
 
 @Component({
   selector: 'ngx-dialpad',
@@ -31,6 +47,9 @@ export class DialpadComponent implements OnInit, AfterViewInit {
   state = 'normal';
 
   ringer = new Audio();
+  sipUsername: string;
+
+  callingList: {}[] = [];
 
   constructor(
     private mobileAppService: MobileAppService,
@@ -40,6 +59,7 @@ export class DialpadComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     const self = this;
+    this.sipUsername = '101@test.probox.vn';
     this.userAgent = new SIP.UA({
       uri: '101@test.probox.vn',
       register: true,
@@ -50,18 +70,41 @@ export class DialpadComponent implements OnInit, AfterViewInit {
       password: 'mtsg@513733',
     });
 
-    this.userAgent.on('invite', (callReceiveSession) => {
+    this.userAgent.on('invite', async (callReceiveSession) => {
       self.inviteServerContext = callReceiveSession;
-
       // callkit.receiveCall("David Marcus");
-      self.state = 'incomming';
-      this.partnerName = self.inviteServerContext.remoteIdentity.displayName;
-      this.partnerNumber = self.inviteServerContext.remoteIdentity.uri.user;
-      this.ring();
-      this.mobileAppService.hadIncommingCall({ state: self.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
-      self.receiveCallEventConfig(this.inviteServerContext);
-      // console.info('!!! accept call manula by call fucntion : acceptcall()');
-      // session.accept();
+      if (self.state === 'normal') {
+        self.state = 'incomming';
+        this.partnerName = self.inviteServerContext.remoteIdentity.displayName;
+        this.partnerNumber = self.inviteServerContext.remoteIdentity.uri.user;
+        this.ring();
+        this.mobileAppService.hadIncommingCall({ state: self.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
+        self.receiveCallEventConfig(this.inviteServerContext);
+        // console.info('!!! accept call manula by call fucntion : acceptcall()');
+        // session.accept();
+      } else {
+        this.partnerName = self.inviteServerContext.remoteIdentity.displayName;
+        this.partnerNumber = self.inviteServerContext.remoteIdentity.uri.user;
+        this.mobileAppService.hadIncommingCall({ state: 'waiting-incomming', partnerName: this.partnerName, partnerNumber: this.partnerNumber });
+        while (await new Promise<boolean>(resolve => {
+          console.info('waiting for phone state update to normal...');
+          setTimeout(() => {
+            if (self.state !== 'normal') {
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          }, 1000);
+        })) {}
+        self.inviteServerContext = callReceiveSession;
+        self.state = 'incomming';
+        // self.inviteServerContext.accept();
+        this.partnerName = self.inviteServerContext.remoteIdentity.displayName;
+        this.partnerNumber = self.inviteServerContext.remoteIdentity.uri.user;
+        this.ring();
+        self.receiveCallEventConfig(self.inviteServerContext);
+
+      }
     });
   }
 
@@ -381,7 +424,7 @@ export class DialpadComponent implements OnInit, AfterViewInit {
   }
 
   switchScreen(screen: string) {
-
+    this.mobileAppService.switchScreen(screen);
   }
 
   ring() {

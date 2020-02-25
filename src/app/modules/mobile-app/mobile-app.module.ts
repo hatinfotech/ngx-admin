@@ -1,20 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MobileAppComponent } from './mobile-app.component';
-import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { DialpadComponent } from './dialpad/dialpad.component';
+import { NbIconModule } from '@nebular/theme';
 
 @NgModule({
-  declarations: [MobileAppComponent, ChatRoomComponent, DialpadComponent],
+  declarations: [MobileAppComponent, DialpadComponent],
   imports: [
     CommonModule,
+    NbIconModule,
   ],
   // exports: [
   //   MobileAppComponent,
   // ],
   exports: [
     // MobileAppComponent,
-    ChatRoomComponent,
+    MobileAppComponent,
   ],
 })
 export class MobileAppModule { }

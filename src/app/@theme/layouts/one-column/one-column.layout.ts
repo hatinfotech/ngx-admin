@@ -24,7 +24,8 @@ import { CommonService } from '../../../services/common.service';
       <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed">
         <!-- <iframe *ngIf="enableLocalApp" class="itLocalapp" src="/app/ITLocal/index.html" style="height: 100% ; width:100%; border:0"></iframe> -->
         <!-- <ngx-dialpad></ngx-dialpad> -->
-        <ngx-chat-room></ngx-chat-room>
+        <!-- <ngx-chat-room></ngx-chat-room> -->
+        <ngx-mobile-app></ngx-mobile-app>
       </nb-sidebar>
 
       <nb-layout-footer fixed>
