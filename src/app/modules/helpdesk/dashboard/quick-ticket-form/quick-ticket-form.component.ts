@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -136,6 +136,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
+    public elRef: ElementRef,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -149,20 +150,22 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     this.onInit.emit(this);
   }
 
-  loadByPhoneNumber(phoneNumber?: string) {
+  async loadByPhoneNumber(phoneNumber?: string): Promise<boolean> {
     phoneNumber = phoneNumber ? phoneNumber : this.phoneNumber;
-    this.apiService.getPromise<ContactModel[]>('/contact/contacts', { searchByPhone: phoneNumber }).then(contacts => {
-      const contact = contacts[0];
-      if (contact) {
-        contact['doNotAutoFill'] = true;
-        this.array.controls[0].get('Object').setValue(contact);
-        this.array.controls[0].get('ObjectName').setValue(contacts[0]['Name']);
-        this.array.controls[0].get('ObjectPhone').setValue(contacts[0]['Phone']);
-        this.array.controls[0].get('ObjectEmail').setValue(contacts[0]['Email']);
-        this.array.controls[0].get('ObjectAddress').setValue(contacts[0]['Address']);
-      }
+    return new Promise<boolean>(resolve => {
+      this.apiService.getPromise<ContactModel[]>('/contact/contacts', { searchByPhone: phoneNumber }).then(contacts => {
+        const contact = contacts[0];
+        if (contact) {
+          contact['doNotAutoFill'] = true;
+          this.array.controls[0].get('Object').setValue(contact);
+          this.array.controls[0].get('ObjectName').setValue(contacts[0]['Name']);
+          this.array.controls[0].get('ObjectPhone').setValue(contacts[0]['Phone']);
+          this.array.controls[0].get('ObjectEmail').setValue(contacts[0]['Email']);
+          this.array.controls[0].get('ObjectAddress').setValue(contacts[0]['Address']);
+        }
+        resolve(true);
+      });
     });
-
 
     // this.array.controls[0].get('ObjectPhone').setValue(phoneNumber);
   }
@@ -273,4 +276,12 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   // dismiss() {
   //   this.ref.close();
   // }
+
+  set description(value: string) {
+    this.array.controls[0].get('Description').setValue(value);
+  }
+
+  get description() {
+    return this.array.controls[0].get('Description').value;
+  }
 }

@@ -456,7 +456,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   /** Form submit event */
-  onSubmit() {
+  save() {
     // this.submitted = true;
     // this.submiting = true;
     this.onProcessing();
@@ -489,6 +489,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       });
     }
 
+  }
+
+  onSubmit() {
+    this.save();
   }
 
   /** Reset form */

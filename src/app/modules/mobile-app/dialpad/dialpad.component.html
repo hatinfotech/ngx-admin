@@ -69,7 +69,7 @@
             trong cuộc gọi..</span>
           <div class="line-red-short"></div>
         </div>
-        <div class="wrap-status-time line-height-30 position-absolute right-0"> <span class="status-time"> </span>
+        <div [ngClass]="{'had-waiting-incoming-call': hadWaitingIncomingCall}" class="wrap-status-time line-height-30 position-absolute right-0"> <span class="status-time"> </span>
         </div>
       </section>
       <section class="wrap-info p-20">

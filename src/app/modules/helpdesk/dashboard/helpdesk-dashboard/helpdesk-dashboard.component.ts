@@ -13,6 +13,7 @@ import { ActionControl } from '../../../../interface/action-control.interface';
 import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
 import { VirtualPhoneService } from '../../../virtual-phone/virtual-phone.service';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'ngx-helpdesk-dashboard',
@@ -204,6 +205,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   @ViewChild('quickTicketForm', { static: true }) quickTicketForm: QuickTicketFormComponent;
 
+  quickFormOnInitSubject = new BehaviorSubject<string>(null);
+  quickFormOnInit$ = this.quickFormOnInitSubject.asObservable();
+
   constructor(
     protected commonService: CommonService,
     protected router: Router,
@@ -238,10 +242,10 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       .pipe(takeUntil(this.destroy$))
       .subscribe(callState => {
         if (callState.state === 'incomming') {
-          this.createNewItem(callState.partnerNumber);
+          this.createNewItem(callState.partnerNumber, callState.session.id);
         }
         if (callState.state === 'waiting-incomming') {
-          this.createDependingTicketByPhoneNumber(callState.partnerNumber);
+          this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
         }
       });
 
@@ -370,29 +374,55 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  createNewItem(phoneNumber?: string) {
+  createNewItem(phoneNumber?: string, tracking?: string) {
     // this.openFormDialplog();
-    this.showQuickForm = true;
-    const quickForm = { index: phoneNumber ? phoneNumber : ('new_' + Date.now()), phoneNumber: phoneNumber };
-    this.quickTicketFormList.unshift(quickForm);
-    setTimeout(() => {
-
-      // this.quickTicketForm.loadByPhoneNumber(phoneNumber);
-    }, 500);
+    const existsQuickForm = this.quickTicketFormList.filter(f => f.index === tracking)[0];
+    if (!tracking || !existsQuickForm) {
+      this.showQuickForm = true;
+      const quickForm = { index: tracking ? tracking : ('new_' + Date.now()), phoneNumber: phoneNumber };
+      this.quickTicketFormList.unshift(quickForm);
+    } else {
+      // Scroll to center
+      const offsetTop = existsQuickForm.form.elRef.nativeElement.offsetTop;
+      this.layoutScrollService.scrollTo(0, offsetTop);
+      // this.layoutScrollService.onScroll().subscribe(p => console.info(p));
+    }
+    // Load tiket list by phone
+    this.keyword = phoneNumber;
+    this.refresh();
     return false;
   }
 
-  createDependingTicketByPhoneNumber(phoneNumber?: string) {
+  createDependingTicketByPhoneNumber(phoneNumber?: string, tracking?: string) {
     // this.showQuickForm = true;
-    const quickForm = { index: phoneNumber, phoneNumber: phoneNumber };
+    const quickForm = { index: tracking, phoneNumber: phoneNumber };
     this.quickTicketFormList.push(quickForm);
+
+    this.quickFormOnInit$.pipe(takeUntil(this.destroy$)).subscribe(trk => {
+      if (tracking === trk) {
+        const depForm = this.quickTicketFormList.filter(f => f.index === trk)[0];
+        if (depForm) {
+          depForm.form.description = 'Yêu cầu bị nhỡ từ khách hàng có số điện thoại ' + phoneNumber + ' vào ' + (new Date().toString());
+        }
+      }
+    });
     return false;
   }
 
   onQuickFormInit(event: QuickTicketFormComponent) {
     console.info(event);
     this.quickTicketFormList.filter(f => f.index === event.index)[0].form = event;
-    event.loadByPhoneNumber('');
+
+    // Load form by contact phone
+    event.loadByPhoneNumber().then(rs => {
+      this.quickFormOnInitSubject.next(event.index);
+
+      // Auto save after init 10s
+      setTimeout(() => {
+        event.save();
+      }, 10000);
+    });
+
   }
 
   onQuickFormClose(index: string) {
@@ -402,7 +432,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       console.info(this.quickTicketFormList);
     }
 
-    // this.showQuickForm = false;
+    if (this.quickTicketFormList.length === 0) {
+      this.showQuickForm = false;
+    }
     this.refresh();
   }
 

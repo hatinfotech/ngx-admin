@@ -5,7 +5,7 @@
   [phoneNumber]="quickForm.phoneNumber" [index]="quickForm.index" #quickTicketForm [inputMode]="'inline'"
   (onClose)="onQuickFormClose($event)"></ngx-quick-ticket-form>
 
-<div class="row">
+<div class="row" *ngIf="!showQuickForm">
   <div id="trafficeChart" class="col-12 col-md-6">
     <nb-card size="tiny" style="height: 8rem">
       <ngx-stats-card-front></ngx-stats-card-front>

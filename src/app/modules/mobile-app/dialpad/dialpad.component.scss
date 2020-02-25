@@ -1213,7 +1213,18 @@ button {
   background: linear-gradient(254.56deg, #66D54B 6.49%, #17C653 108.73%);
   box-shadow: 0px 4px 24px rgba(50, 153, 150, 0.25);
   border-radius: 12px 0px 0px 12px;
-  padding-left: 15px; }
+  padding-left: 15px;
+}
+
+.wrap-status-time.had-waiting-incoming-call {
+  // background: linear-gradient(254.56deg, #f93232 6.49%, #fb6969 108.73%);
+  animation: mymove 1s infinite;
+}
+
+@keyframes mymove {
+  from {background: linear-gradient(254.56deg, #66D54B 6.49%, #17C653 108.73%)}
+  to {background: linear-gradient(254.56deg, #f93232 6.49%, #fb6969 108.73%)}
+}
 
 .wrap-agent-time {
   /* Rectangle 2.3 */

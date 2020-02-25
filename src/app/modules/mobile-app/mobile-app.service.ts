@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MobileAppComponent } from './mobile-app.component';
+import { CallingSession } from './phone-manager/calling-session';
 
 export interface CallState {
   state: string;
   partnerName?: string;
   partnerNumber?: string;
+  session?: CallingSession;
 }
 
 @Injectable({
