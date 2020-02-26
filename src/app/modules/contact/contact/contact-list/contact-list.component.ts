@@ -56,7 +56,7 @@ export class ContactListComponent extends AgGridDataManagerListComponent<Contact
         headerName: 'Điện thoại',
         field: 'Phone',
         width: 200,
-        filter: 'agNumberColumnFilter',
+        filter: 'agTextColumnFilter',
         filterParams: {
           filterOptions: ['equals', 'lessThan', 'greaterThan'],
           suppressAndOrCondition: true,

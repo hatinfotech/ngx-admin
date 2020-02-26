@@ -1,6 +1,7 @@
 import { UserModel } from './user.model';
 import { ContactModel } from './contact.model';
 import { FileStoreModel } from './file-store.model';
+import { UserPhoneExtensionModel } from './user-phone-extension.model';
 
 export class LoginInfoModel {
 
@@ -8,6 +9,7 @@ export class LoginInfoModel {
   contact?: ContactModel;
   distribution?: {fileStores: {[key: string]: FileStoreModel}, cookie: string};
   system?: {version?: string};
+  phoneExtensions?: UserPhoneExtensionModel[];
 
   constructor() { }
 

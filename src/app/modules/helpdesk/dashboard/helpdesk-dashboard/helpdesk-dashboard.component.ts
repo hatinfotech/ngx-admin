@@ -11,9 +11,8 @@ import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-char
 import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
 import { ActionControl } from '../../../../interface/action-control.interface';
 import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
-import { VirtualPhoneService } from '../../../virtual-phone/virtual-phone.service';
-import { MobileAppService } from '../../../mobile-app/mobile-app.service';
-import { BehaviorSubject } from 'rxjs';
+import { MobileAppService, CallState } from '../../../mobile-app/mobile-app.service';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'ngx-helpdesk-dashboard',
@@ -86,25 +85,25 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         return false;
       },
     },
-    {
-      type: 'button',
-      name: 'chat',
-      status: 'success',
-      label: 'Chat',
-      icon: 'message-square',
-      title: 'Vào phòng chat',
-      size: 'tiny',
-      disabled: () => {
-        return !this.hadRowsSelected || this.hadMultiRowSelected;
-      },
-      click: () => {
-        // this.refresh();
-        if (this.selectedItems.length > 0) {
-          this.mmobileAppService.request('open-chat-room', this.selectedItems[0].ChatRoom);
-        }
-        return false;
-      },
-    },
+    // {
+    //   type: 'button',
+    //   name: 'chat',
+    //   status: 'success',
+    //   label: 'Chat',
+    //   icon: 'message-square',
+    //   title: 'Vào phòng chat',
+    //   size: 'tiny',
+    //   disabled: () => {
+    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
+    //   },
+    //   click: () => {
+    //     // this.refresh();
+    //     if (this.selectedItems.length > 0) {
+    //       this.openChatRoom(this.selectedItems[0].ChatRoom);
+    //     }
+    //     return false;
+    //   },
+    // },
     {
       type: 'button',
       name: 'call',
@@ -114,7 +113,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       title: 'Gọi cho người được hỗ trợ',
       size: 'tiny',
       disabled: () => {
-        return !this.hadRowsSelected || this.hadMultiRowSelected;
+        return false;
       },
       click: () => {
         this.commonService.openMenuSidebar();
@@ -139,6 +138,22 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         return false;
       },
     },
+    // {
+    //   type: 'button',
+    //   name: 'create',
+    //   status: 'info',
+    //   label: 'Cập nhật',
+    //   icon: 'edit',
+    //   title: 'Cập nhật TICKET',
+    //   size: 'tiny',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     this.editItem();
+    //     return false;
+    //   },
+    // },
     {
       type: 'button',
       name: 'view',
@@ -193,7 +208,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   showQuickForm = false;
 
-  quickTicketFormList: { index: string, phoneNumber?: string, form?: QuickTicketFormComponent }[] = [];
+  quickTicketFormList: { index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }[] = [];
 
   infiniteLoadModel = {
     tickets: [],
@@ -207,6 +222,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   quickFormOnInitSubject = new BehaviorSubject<string>(null);
   quickFormOnInit$ = this.quickFormOnInitSubject.asObservable();
+  private callStateSubscription: Subscription;
 
   constructor(
     protected commonService: CommonService,
@@ -238,6 +254,26 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
     this.loadList();
 
+    this.callStateSubscription = this.mobileAppService.callState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(callState => {
+        if (callState.state === 'incomming') {
+          this.createNewItem(callState.partnerNumber, callState.session.id);
+        }
+        if (callState.state === 'waiting-incomming') {
+          this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
+        }
+        if (callState.state === 'incomming-cancel') {
+          this.updateTemporaryTicketForIncommingCancel(callState);
+        }
+      });
+
+  }
+
+  onResume() {
+    this.commonService.openMobileSidebar();
+    super.onResume();
+    this.callStateSubscription.unsubscribe();
     this.mobileAppService.callState$
       .pipe(takeUntil(this.destroy$))
       .subscribe(callState => {
@@ -247,8 +283,10 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         if (callState.state === 'waiting-incomming') {
           this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
         }
+        if (callState.state === 'incomming-cancel') {
+          this.updateTemporaryTicketForIncommingCancel(callState);
+        }
       });
-
   }
 
   ngOnInit() {
@@ -381,15 +419,49 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       this.showQuickForm = true;
       const quickForm = { index: tracking ? tracking : ('new_' + Date.now()), phoneNumber: phoneNumber };
       this.quickTicketFormList.unshift(quickForm);
+
+      this.quickFormOnInit$.pipe(takeUntil(this.destroy$)).subscribe(trk => {
+        if (tracking === trk) {
+          const depForm = this.quickTicketFormList.filter(f => f.index === trk)[0];
+          if (depForm) {
+            depForm.form.description = 'Yêu cầu mới từ khách hàng có số điện thoại ' + phoneNumber + ' vào ' + (new Date().toString());
+          }
+        }
+      });
+      this.layoutScrollService.scrollTo(0, 0);
     } else {
       // Scroll to center
       const offsetTop = existsQuickForm.form.elRef.nativeElement.offsetTop;
-      this.layoutScrollService.scrollTo(0, offsetTop);
+      this.layoutScrollService.scrollTo(0, offsetTop - 55);
       // this.layoutScrollService.onScroll().subscribe(p => console.info(p));
     }
     // Load tiket list by phone
-    this.keyword = phoneNumber;
-    this.refresh();
+    if (phoneNumber) {
+      this.keyword = phoneNumber;
+      this.refresh();
+    }
+
+    return false;
+  }
+
+  editItem(id: string) {
+    this.showQuickForm = true;
+    const quickForm = { index: id, ticketCode: id };
+    this.quickTicketFormList.unshift(quickForm);
+    this.layoutScrollService.scrollTo(0, 0);
+    return false;
+  }
+
+  updateTemporaryTicketForIncommingCancel(callState: CallState) {
+    // this.openFormDialplog();
+    const tracking = callState.session.id;
+    const existsQuickForm = this.quickTicketFormList.filter(f => f.index === tracking)[0];
+    if (existsQuickForm) {
+      this.showQuickForm = true;
+      // if (!existsQuickForm.form.description) {
+      existsQuickForm.form.description += '\nYêu cầu bị nhỡ từ khách hàng có số điện thoại ' + callState.session.caller.phone + ' vào ' + (new Date().toString());
+      // }
+    }
     return false;
   }
 
@@ -409,20 +481,27 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  onQuickFormInit(event: QuickTicketFormComponent) {
+
+  async onQuickFormInit(event: QuickTicketFormComponent) {
     console.info(event);
     this.quickTicketFormList.filter(f => f.index === event.index)[0].form = event;
 
     // Load form by contact phone
-    event.loadByPhoneNumber().then(rs => {
-      this.quickFormOnInitSubject.next(event.index);
-
+    if (await event.loadByCallSessionId()) {
       // Auto save after init 10s
       setTimeout(() => {
         event.save();
       }, 10000);
-    });
+    } else {
+      event.loadByPhoneNumber().then(rs => {
+        if (rs) {
+          this.quickFormOnInitSubject.next(event.index);
 
+          // Auto save after init 10s
+          event.save();
+        }
+      });
+    }
   }
 
   onQuickFormClose(index: string) {
@@ -434,8 +513,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
     if (this.quickTicketFormList.length === 0) {
       this.showQuickForm = false;
+      this.keyword = '';
+      this.refresh();
     }
-    this.refresh();
   }
 
   /** Implement required */
@@ -487,4 +567,12 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
+  phoneCall(phone: string, name: string) {
+    this.mobileAppService.phoneCall(phone, name);
+    return false;
+  }
+
+  openChatRoom(chatRoomId: string) {
+    this.mmobileAppService.request('open-chat-room', chatRoomId);
+  }
 }

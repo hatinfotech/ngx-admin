@@ -1,10 +1,10 @@
-<div id="stringee_clound" class="overflow-hidden">
-  <div id="app-minimize" class="cursor-pointer">
+<div id="stringee_clound" class="overflow-hidden" [ngClass]="{'mode-minimize': minimized}">
+  <div id="app-minimize" class="cursor-pointer" (click)="maximizeScreen()">
     <div class="wrap-info-minimize display-flex justify-content-space-between font-size-16">
-      <div class="time bg-pink border-radius-16 color-white display-none">00:28</div>
-      <div class="line-vertical display-none"></div>
-      <div class="phone line-height-26 display-none">0966050828</div>
-      <div class="min-no-calls" data-translate="no_calls">Không có cuộc gọi</div>
+      <div class="time bg-pink border-radius-16 color-white">00:00</div>
+      <div class="line-vertical"></div>
+      <div class="phone line-height-26">{{partnerNumber}}</div>
+      <div class="min-no-calls display-none" data-translate="no_calls">Không có cuộc gọi</div>
     </div>
   </div>
   <div id="app">
@@ -41,7 +41,7 @@
                     gọi đến ipphone</span></a></li>
             </ul>
           </div> ​
-        </div> <button id="btnMinimize" class="btn-minimize border-none bg-transparent" title="Minimize"> <img
+        </div> <button (click)="minimizeScreen()" id="btnMinimize" class="btn-minimize border-none bg-transparent" title="Minimize"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-minimize.svg"> </button>
         <div class="wrapper-dropdown wrapper-dropdown-call auto" style="float:right">
           <div id="dropdown-auto-receive-call" class="wrapper-dropdown-3" tabindex="3"> <span id="settingAgent"> <img
@@ -69,7 +69,8 @@
             trong cuộc gọi..</span>
           <div class="line-red-short"></div>
         </div>
-        <div [ngClass]="{'had-waiting-incoming-call': hadWaitingIncomingCall}" class="wrap-status-time line-height-30 position-absolute right-0"> <span class="status-time"> </span>
+        <div [ngClass]="{'had-waiting-incoming-call': hadWaitingIncomingCall}"
+          class="wrap-status-time line-height-30 position-absolute right-0"> <span class="status-time"> </span>
         </div>
       </section>
       <section class="wrap-info p-20">
@@ -157,9 +158,9 @@
             </div>
           </section>
           <section class="wrap-info p-20">
-            <div class="info-name pb-10"> Pattrick Penna </div>
-            <div class="wrap-location"> <span class="location-via" data-translate="via">thông qua</span> <span
-                class="location-text" data-translate="location">Vietnam</span> </div>
+            <div class="info-name pb-10"> {{partnerName}} </div>
+            <div class="wrap-location"> <span class="location-via" data-translate="via">số </span> <span
+                class="location-text" data-translate="location"> {{partnerNumber}} </span> </div>
           </section>
         </div>
         <section class="wrap-background bg-gradient-purple height-350 width-100-percent">
@@ -186,7 +187,7 @@
     <!-- PAGE DIAPAD -->
     <section id="page-diapad" class="page" [ngClass]="{'display-none': state != 'normal'}">
       <div class="wrap-typing-number pl-15 pr-15 mt-10 mb-30 display-flex justify-content-space-between"> <input
-          type="text" [value]="phonenumber" placeholder="+84966050926" class="font-size-24 color-black border-none">
+          type="text" [(value)]="phonenumber" placeholder="0909553929" class="font-size-24 color-black border-none">
         <button (click)="backspacekey()" class="btn-close border-none bg-transparent"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-close.svg"> </button> </div>
       <div class="wrap-diapad mb-10">
@@ -418,7 +419,7 @@
       <div class="wrap-toolbar text-center display-flex justify-content-space-evenly">
         <button id="btnToolActivity" (click)="switchScreen('f7app')"
           class="toolbar-item display-table-cell border-none bg-transparent">
-          <nb-icon pack="eva" icon="home-outline" style="color: #b3b3b3;" ></nb-icon>
+          <nb-icon pack="eva" icon="home-outline" style="color: #b3b3b3;"></nb-icon>
           <!-- <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-list-gray.svg" class="icon-gray">
           <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-list.svg" class="icon"> -->
         </button>
@@ -427,7 +428,7 @@
             class="icon-gray"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-setting.svg" class="icon">
         </button>
-        <button id="btnToolCall" (click)="call()"
+        <button id="btnToolCall" (click)="onCallToggle()"
           class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none mt-15-negative"
           [ngClass]="{'btn-green': state == 'normal', 'btn-red': state == 'calling' || state == 'incomming-accept'}">
           <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-phone.svg" class="icon-gray"
@@ -439,9 +440,9 @@
           class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none mt-15-negative display-none">
           <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-pad.svg" class="icon-gray"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-pad.svg" class="icon"> </button>
-        <button id="btnToolContact" class="toolbar-item display-table-cell border-none bg-transparent"> <img
-            src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-user-gray.svg" class="icon-gray">
-          <img src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-user.svg" class="icon">
+        <button id="btnToolContact" class="toolbar-item display-table-cell border-none bg-transparent">
+          <nb-icon (click)="openRelateChatRoom()" pack="eva" icon="message-circle-outline" style="color: #b3b3b3;">
+          </nb-icon>
         </button> <button id="btnToolAdd"
           class="toolbar-item display-table-cell border-none bg-transparent display-none"> <img
             src="https://static.stringee.com/stringeex/web_phone/lastest/images/icon-add-gray.svg" class="icon-gray">
@@ -470,4 +471,3 @@
   <video id="localVideo" muted="muted" style="width: 1px"></video>
 
 </div>
-

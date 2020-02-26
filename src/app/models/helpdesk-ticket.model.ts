@@ -24,6 +24,7 @@ export class HelpdeskTicketModel {
   SupportedPersonName?: string;
   SupportedPersonPhone?: string;
   SupportedPersonEmail?: string;
+  SupportedPersonAddress?: string;
   TimeDuration?: string;
   DateOfStart?: string;
   State?: string;
@@ -42,6 +43,7 @@ export class HelpdeskTicketModel {
   ObjectType?: string;
   Service?: string;
   ObjectBranchBk?: string;
+  CallSessionId?: string;
 
 
   constructor() { }

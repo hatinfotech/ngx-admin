@@ -2,7 +2,7 @@
 
 
 <ngx-quick-ticket-form *ngFor="let quickForm of quickTicketFormList; let i = index;" (onInit)="onQuickFormInit($event)"
-  [phoneNumber]="quickForm.phoneNumber" [index]="quickForm.index" #quickTicketForm [inputMode]="'inline'"
+  [phoneNumber]="quickForm.phoneNumber" [index]="quickForm.index" [ticketCode]="quickForm.ticketCode" [inputMode]="'inline'"
   (onClose)="onQuickFormClose($event)"></ngx-quick-ticket-form>
 
 <div class="row" *ngIf="!showQuickForm">
@@ -53,31 +53,31 @@
             <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn {{ item.LastMessage }}
           </div>
         </div>
-        <div class="col-md-2 m-list-item-property">
+        <div class="col-md-3 m-list-item-property">
           <div class="caption">Người yêu cầu</div>
           <div class="value nowrap" *ngIf="!!item.SupportedPersonPhone">
             <nb-icon icon="person" pack="ion"></nb-icon> {{ item.SupportedPersonName }}
           </div>
           <div class="value nowrap" *ngIf="!!item.SupportedPersonPhone">
-            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.SupportedPersonPhone }}
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.SupportedPersonPhone }} (<a style="cursor: pointer;" href="#" (click)="phoneCall(item.SupportedPersonPhone, item.SupportedPersonName)">call</a>)
           </div>
           <div class="value nowrap" *ngIf="!!item.SupportedPersonEmail">
             <nb-icon icon="email" pack="ion"></nb-icon> {{ item.SupportedPersonEmail }}
           </div>
         </div>
-        <div class="col-md-4 m-list-item-property">
+        <div class="col-md-3 m-list-item-property">
           <div class="caption">Công ty</div>
-          <div class="value" *ngIf="!!item.OrganizationName">
-            <nb-icon icon="podium" pack="ion"></nb-icon> {{ item.OrganizationName }}
+          <div class="value" *ngIf="!!item.ObjectName">
+            <nb-icon icon="podium" pack="ion"></nb-icon> {{ item.ObjectName }}
           </div>
-          <div class="value nowrap" *ngIf="!!item.OrganizationPhone">
-            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.OrganizationPhone }}
+          <div class="value nowrap" *ngIf="!!item.ObjectPhone">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.ObjectPhone }}
           </div>
-          <div class="value nowrap" *ngIf="!!item.OrganizationEmail">
-            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.OrganizationEmail }}
+          <div class="value nowrap" *ngIf="!!item.ObjectEmail">
+            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.ObjectEmail }}
           </div>
-          <div class="value" *ngIf="!!item.OrganizationAddress">
-            <nb-icon icon="map" pack="ion"></nb-icon> {{ item.OrganizationAddress }}
+          <div class="value" *ngIf="!!item.ObjectAddress">
+            <nb-icon icon="map" pack="ion"></nb-icon> {{ item.ObjectAddress }}
           </div>
         </div>
         <div class="col-md-2 m-list-item-property">
@@ -87,6 +87,12 @@
           </div>
           <div class="value" *ngIf="!!item.DateOfCreate">
             <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.DateOfCreate }}
+          </div>
+          <div class="value">
+            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#" (click)="openChatRoom(item.ChatRoom)">Chi tiết</a>
+          </div>
+          <div class="value">
+            <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#" (click)="editItem(item.Code)">Cập nhật</a>
           </div>
         </div>
       </div>
@@ -101,7 +107,7 @@
             <nb-icon icon="chatbox-working" pack="ion"></nb-icon>
           </div>
         </div>
-        <div class="col-md-2 m-list-item-property">
+        <div class="col-md-3 m-list-item-property">
           <div class="caption">Người yêu cầu</div>
           <div class="value nowrap">
             <nb-icon icon="person" pack="ion"></nb-icon>
@@ -113,7 +119,7 @@
             <nb-icon icon="email" pack="ion"></nb-icon>
           </div>
         </div>
-        <div class="col-md-4 m-list-item-property">
+        <div class="col-md-3 m-list-item-property">
           <div class="caption">Công ty</div>
           <div class="value">
             <nb-icon icon="podium" pack="ion"></nb-icon>
@@ -135,6 +141,12 @@
           </div>
           <div class="value">
             <nb-icon icon="ios-time" pack="ion"></nb-icon>
+          </div>
+          <div class="value">
+            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> Chi tiết
+          </div>
+          <div class="value">
+            <nb-icon icon="android-create" pack="ion"></nb-icon> Cập nhật
           </div>
         </div>
       </div>

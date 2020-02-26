@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MobileAppComponent } from './mobile-app.component';
 import { CallingSession } from './phone-manager/calling-session';
+import { DialpadComponent } from './dialpad/dialpad.component';
 
 export interface CallState {
   state: string;
@@ -21,15 +22,23 @@ export class MobileAppService {
   requestOpenChatRoomSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   requestOpenChatRoom$: Observable<string> = this.requestOpenChatRoomSubject.asObservable();
 
-  private mobileApp: MobileAppComponent;
+  public mobileApp: MobileAppComponent;
+  public callScreen: DialpadComponent;
 
   constructor() { }
+
+  get callScrennMinimized() {
+    return this.callScreen.minimized;
+  }
 
   registerMobileApp(mobileApp: MobileAppComponent) {
     this.mobileApp = mobileApp;
   }
+  registerCallScreen(callScreen: DialpadComponent) {
+    this.callScreen = callScreen;
+  }
 
-  hadIncommingCall(incommingCallState: CallState) {
+  updateCallState(incommingCallState: CallState) {
     this.mobileApp.switchScreen('phone');
     this.callStateSubject.next(incommingCallState);
   }
@@ -61,5 +70,9 @@ export class MobileAppService {
 
   switchScreen(screen: string) {
     this.mobileApp.switchScreen(screen);
+  }
+
+  phoneCall(phone: string, name: string) {
+    this.callScreen.call(phone, name);
   }
 }

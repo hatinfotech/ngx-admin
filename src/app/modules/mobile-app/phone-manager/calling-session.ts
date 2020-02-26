@@ -1,13 +1,14 @@
 import { PhoneManager } from './phone-manager';
 import * as SIP from 'sip.js';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, Subject } from 'rxjs';
 import { User } from './user';
 
 export class CallingSession {
 
   public state = 'normal';
-  private stateChangedSubject = new BehaviorSubject<string>('normal');
-  stateChanged$ = this.stateChangedSubject.asObservable();
+  // private stateChangedSubject = new BehaviorSubject<string>('normal');
+  // stateChanged$ = this.stateChangedSubject.asObservable();
+  stateChanged$ = new Subject<string>();
   private receivedSession: SIP.InviteServerContext;
   private callingSession: SIP.InviteClientContext;
 
@@ -58,6 +59,10 @@ export class CallingSession {
   }
 
   destroy() {
+    // try {
+    //   this.hangup();
+    //   this.reject();
+    // } catch (e) { console.error(e); }
     setTimeout(() => {
       this.subscriptions.forEach(subscription => subscription.unsubscribe());
     }, 15000);
@@ -141,7 +146,7 @@ export class CallingSession {
       }
 
       // $this.manager.onSessionStateUpdate($this, 'accepted');
-      this.stateChangedSubject.next('accepted');
+      this.stateChanged$.next('accepted');
     });
     $this.session.on('rejected', () => {
       // callkit.endCall();
@@ -149,7 +154,7 @@ export class CallingSession {
       console.info('rejected');
       // $this.manager.onSessionStateUpdate($this, 'rejected');
       this.state = 'rejected';
-      this.stateChangedSubject.next('rejected');
+      this.stateChanged$.next('rejected');
     });
     $this.session.on('failed', () => {
       // cleanmedia();
@@ -158,7 +163,7 @@ export class CallingSession {
       // $this.switchToNormalScreen();
       // $this.manager.onSessionStateUpdate($this, 'failed');
       this.state = 'failed';
-      this.stateChangedSubject.next('failed');
+      this.stateChanged$.next('failed');
       console.info('failed');
 
     });
@@ -169,7 +174,7 @@ export class CallingSession {
       console.info('terminated');
       // $this.manager.onSessionStateUpdate($this, 'terminated');
       this.state = 'terminated';
-      this.stateChangedSubject.next('terminated');
+      this.stateChanged$.next('terminated');
     });
     $this.session.on('cancel', () => {
       // callkit.endCall();
@@ -178,7 +183,7 @@ export class CallingSession {
       console.info('cancel');
       // $this.manager.onSessionStateUpdate($this, 'cancel');
       this.state = 'cancel';
-      this.stateChangedSubject.next('cancel');
+      this.stateChanged$.next('cancel');
     });
     $this.session.on('reinvite', () => {
       // cleanmedia();
@@ -219,7 +224,7 @@ export class CallingSession {
       // $this.switchToNormalScreen();
       // $this.manager.onSessionStateUpdate($this, 'bye');
       this.state = 'bye';
-      this.stateChangedSubject.next('bye');
+      this.stateChanged$.next('bye');
       console.info('bye');
     });
   }
@@ -236,7 +241,7 @@ export class CallingSession {
       // cleanmedia();
       console.info('progress');
       $this.state = 'progress';
-      this.stateChangedSubject.next('progress');
+      this.stateChanged$.next('progress');
     });
     this.session.on('accepted', () => {
       $this.state = 'accepted';
@@ -275,14 +280,14 @@ export class CallingSession {
         }
       }
 
-      this.stateChangedSubject.next('accepted');
+      this.stateChanged$.next('accepted');
     });
     this.session.on('rejected', () => {
       $this.state = 'rejected';
       // callkit.endCall();
       // cleanmedia();
       console.info('rejected');
-      this.stateChangedSubject.next('rejected');
+      this.stateChanged$.next('rejected');
       // self.state = 'normal';
       // $this.switchToNormalScreen();
     });
@@ -291,7 +296,7 @@ export class CallingSession {
       // cleanmedia();
       console.info('failed');
       $this.state = 'failed';
-      this.stateChangedSubject.next('failed');
+      this.stateChanged$.next('failed');
       // $this.switchToNormalScreen();
     });
     this.session.on('terminated', () => {
@@ -299,7 +304,7 @@ export class CallingSession {
       // cleanmedia();
       console.info('terminated');
       $this.state = 'normal';
-      this.stateChangedSubject.next('terminated');
+      this.stateChanged$.next('terminated');
       // $this.switchToNormalScreen();
     });
     this.session.on('cancel', () => {
@@ -307,13 +312,13 @@ export class CallingSession {
       // cleanmedia();
       console.info('cancel');
       $this.state = 'normal';
-      this.stateChangedSubject.next('cancel');
+      this.stateChanged$.next('cancel');
       // $this.switchToNormalScreen();
     });
     this.session.on('reinvite', () => {
       // cleanmedia();
       console.info('reinvite');
-      this.stateChangedSubject.next('reinvite');
+      this.stateChanged$.next('reinvite');
     });
     this.session.on('referRequested', () => {
       // cleanmedia();
@@ -344,7 +349,7 @@ export class CallingSession {
       // cleanmedia();
       console.info('bye');
       $this.state = 'bye';
-      this.stateChangedSubject.next('bye');
+      this.stateChanged$.next('bye');
       // $this.switchToNormalScreen();
     });
   }

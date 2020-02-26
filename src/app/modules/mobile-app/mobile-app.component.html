@@ -707,4 +707,4 @@
     </div>
   </div>
 </div>
-<ngx-dialpad [ngStyle]="{'display': mobileScreen != 'phone' ? 'none' : ''}"></ngx-dialpad>
+<ngx-dialpad [ngClass]="{'minimized': mobileAppService.callScrennMinimized}" [ngStyle]="{'display': mobileScreen != 'phone' && mobileAppService.callScrennMinimized ? 'none' : ''}"></ngx-dialpad>

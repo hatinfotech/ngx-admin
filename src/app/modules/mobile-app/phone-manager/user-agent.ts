@@ -2,12 +2,13 @@ import { User } from './user';
 import { PhoneManager } from './phone-manager';
 import * as SIP from 'sip.js';
 import { CallingSession } from './calling-session';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export class UserAgent {
 
-  private stateChangedSubject = new BehaviorSubject<{ state: string, session?: CallingSession }>({state: 'normal'});
-  stateChanged$ = this.stateChangedSubject.asObservable();
+  // private stateChangedSubject = new BehaviorSubject<{ state: string, session?: CallingSession }>({state: 'normal'});
+  // stateChanged$ = this.stateChangedSubject.asObservable();
+  stateChanged$ = new Subject<{ state: string, session?: CallingSession }>();
   activated: boolean;
 
   constructor(
@@ -47,7 +48,7 @@ export class UserAgent {
         callReceiveSession.remoteIdentity.uri.user,
       );
       const callingSession = new CallingSession(this.manager, caller, this.user, callReceiveSession);
-      this.stateChangedSubject.next({ state: 'invited', session: callingSession });
+      this.stateChanged$.next({ state: 'invited', session: callingSession });
 
 
       // const callSession = new CallingSession(

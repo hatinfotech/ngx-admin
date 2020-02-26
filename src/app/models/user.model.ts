@@ -1,5 +1,6 @@
 import { ModuleModel } from '../models/module.model';
 import { PermissionModel } from './permission.model';
+import { UserPhoneExtensionModel } from './user-phone-extension.model';
 
 export class UserModel {
 
@@ -14,6 +15,7 @@ export class UserModel {
   Avatar?: string;
   Groups?: string[];
   modulePermissions?: {module: ModuleModel, permissions: PermissionModel[]}[];
+  UserPhoneExtensions?: UserPhoneExtensionModel[];
 
   constructor() { }
 

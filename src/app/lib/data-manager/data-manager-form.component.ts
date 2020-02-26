@@ -66,6 +66,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   protected formDataCache: any[];
 
+  protected silent = false;
+  protected autosave = false;
+
   actionControlList: ActionControl[] = [
 
     {
@@ -127,7 +130,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       disabled: () => {
         return this.isProcessing;
       },
-      click: (event, option: {formIndex: number}) => {
+      click: (event, option: { formIndex: number }) => {
         this.removeFormGroup(option['formIndex']);
         return false;
       },
@@ -324,11 +327,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** After main form create event */
   onAfterCreateSubmit(newFormData: M[]) {
     this.formLoad(newFormData);
-    this.toastrService.show('success', 'Dữ liệu đã được lưu lại', {
-      status: 'success',
-      hasIcon: true,
-      position: NbGlobalPhysicalPosition.TOP_RIGHT,
-    });
+    if (!this.silent) {
+      this.toastrService.show('success', 'Dữ liệu đã được lưu lại', {
+        status: 'success',
+        hasIcon: true,
+        position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      });
+    }
     this.id = newFormData.map(item => item[this.idKey]);
     if (this.mode === 'page') {
       this.commonService.location.go(this.generateUrlByIds(this.id));
@@ -345,11 +350,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Affter main form update event */
   onAfterUpdateSubmit(newFormData: M[]) {
     this.formLoad(newFormData);
-    this.toastrService.show('success', 'Dữ liệu đã được cập nhật', {
-      status: 'success',
-      hasIcon: true,
-      position: NbGlobalPhysicalPosition.TOP_RIGHT,
-    });
+    if (!this.silent) {
+      this.toastrService.show('success', 'Dữ liệu đã được cập nhật', {
+        status: 'success',
+        hasIcon: true,
+        position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      });
+    }
     this.id = newFormData.map(item => item[this.idKey]);
     if (this.mode === 'page') {
       this.commonService.location.go(this.generateUrlByIds(this.id));
@@ -525,6 +532,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         formItem.get(formControlName).patchValue(currentValue);
       }
     });
+  }
+
+  onControlEnter(event: KeyboardEvent) {
+    if ((event.target as HTMLElement).nodeName.toLowerCase() !== 'textarea') {
+      return false;
+    }
+    // return event.preventDefault();
+    // return true;
   }
 
   ngOnDestroy(): void {

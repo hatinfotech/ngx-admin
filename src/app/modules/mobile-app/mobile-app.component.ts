@@ -43,7 +43,7 @@ export interface F7Message {
 export class MobileAppComponent extends BaseComponent implements OnInit, AfterViewInit {
 
   componentName = 'ChatRoomComponent';
-  mobileScreen = 'f7app';
+  mobileScreen = 'phone';
 
   chatServiceInfo: {
     domain: string,
@@ -218,7 +218,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   // app: Framework7;
   constructor(
     private chatService: ChatService,
-    private mobileAppService: MobileAppService,
+    public mobileAppService: MobileAppService,
     // private apiService: ApiService,
     // private commonService: CommonService,
     protected commonService: CommonService,
@@ -368,9 +368,10 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   }
 
-  openChatRoom(id: string) {
+  openChatRoom(option: any) {
     this.commonService.openMobileSidebar();
     this.switchScreen('f7app');
+    const id = typeof option === 'string' ? option : option['ChatRoom'];
     this.mainView.router.navigate(`/chat-room/${id}`);
   }
 

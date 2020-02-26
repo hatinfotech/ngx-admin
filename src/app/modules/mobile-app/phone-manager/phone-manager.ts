@@ -11,7 +11,12 @@ export interface IPhoneContext {
   onWaitingIncomingCall(session: CallingSession): void;
   onHangup(session: CallingSession): void;
   onTerminate(session: CallingSession): void;
+  onBye(session: CallingSession): void;
+  onRejected(session: CallingSession): void;
+  onCancel(session: CallingSession): void;
   onCalling(session: CallingSession): void;
+  onProgress(session: CallingSession): void;
+  onFailed(session: CallingSession): void;
   getOutputMedia(): HTMLVideoElement;
 
 }
@@ -59,7 +64,21 @@ export class PhoneManager {
             if (state === 'terminated') {
               this.state = 'normal';
               this.onTerminate(stateInfo.session);
-              this.destroySession(stateInfo.session);
+            }
+            if (state === 'cancel') {
+              this.onCancel(stateInfo.session);
+            }
+            if (state === 'bye') {
+              this.onBye(stateInfo.session);
+            }
+            if (state === 'rejected') {
+              this.onRejected(stateInfo.session);
+            }
+            if (state === 'progress') {
+              this.onProgress(stateInfo.session);
+            }
+            if (state === 'failed') {
+              this.onFailed(stateInfo.session);
             }
           });
         }
@@ -68,11 +87,18 @@ export class PhoneManager {
     }
   }
 
-  unregister(user: User): boolean {
-    const ua = this.userAgentList.filter(u => u.user.id === user.id);
-    if (ua.length > 0) {
-      ua[0].unregister();
-      return true;
+  unregister(user?: User): boolean {
+    if (user) {
+      const ua = this.userAgentList.filter(u => u.user.id === user.id);
+      if (ua.length > 0) {
+        ua[0].unregister();
+        return true;
+      }
+    } else {
+      // Unregister all
+      this.userAgentList.forEach(agent => {
+        agent.unregister();
+      });
     }
     return false;
   }
@@ -175,6 +201,28 @@ export class PhoneManager {
 
   onTerminate(session: CallingSession): void {
     this.context.onTerminate(session);
+    this.destroySession(session);
+  }
+
+  onCancel(session: CallingSession) {
+    this.context.onCancel(session);
+  }
+
+  onBye(session: CallingSession): void {
+    this.context.onBye(session);
+  }
+  onRejected(session: CallingSession): void {
+    this.context.onRejected(session);
+  }
+  onProgress(session: CallingSession): void {
+    this.context.onProgress(session);
+  }
+  onFailed(session: CallingSession): void {
+    this.context.onFailed(session);
+  }
+
+  getOutputMedia(): HTMLVideoElement {
+    return this.context.getOutputMedia();
   }
 
   async waitForProgressed(): Promise<boolean> {
@@ -186,6 +234,10 @@ export class PhoneManager {
       })) return true;
     }
     return false;
+  }
+
+  getActiveSession(): CallingSession {
+    return this.callingSessionList.filter(f => ['accepted', 'progress', 'incoming', 'calling'].indexOf(f.state) > -1)[0];
   }
 
   ring() {
