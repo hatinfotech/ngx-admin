@@ -40,7 +40,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
 
   state = 'normal';
 
-  ringer = new Audio();
+  ringer: any;
   sipUsername: string;
 
   callingSessionList: {}[] = [];
@@ -101,6 +101,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   ngAfterViewInit() {
     this.remoteVideo = document.getElementById('remoteVideo');
     this.localVideo = document.getElementById('localVideo');
+    this.ringer = document.getElementById('ringtonePlayer');
     // this.ringer = new Audio();
   }
 
@@ -354,20 +355,21 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   }
 
   ring() {
-    try {
-      if (!this.ringer) {
-        this.ringer = new Audio();
-      }
-      this.ringer.src = 'assets/audio/ringing.mp3';
-      this.ringer.load();
-      this.ringer.loop = true;
-      this.ringer.play();
-    } catch (e) {
-      this.ringer = new Audio();
-      setTimeout(() => {
-        this.ring();
-      }, 300);
-    }
+    this.ringer.play();
+    // try {
+    //   if (!this.ringer) {
+    //     this.ringer = new Audio();
+    //   }
+    //   this.ringer.src = 'assets/audio/ringing.mp3';
+    //   this.ringer.load();
+    //   this.ringer.loop = true;
+    //   this.ringer.play();
+    // } catch (e) {
+    //   setTimeout(() => {
+    //     this.ringer = new Audio();
+    //     this.ring();
+    //   }, 300);
+    // }
   }
 
   stopRing() {
