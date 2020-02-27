@@ -1,13 +1,12 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { NbDialogRef } from '@nebular/theme';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Track } from '../../../@core/utils/player.service';
 
 @Component({
-  selector: 'ngx-player-dialog',
-  templateUrl: 'player-dialog.component.html',
-  styleUrls: ['player-dialog.component.scss'],
+  selector: 'ngx-media-player',
+  templateUrl: 'media-player.component.html',
+  styleUrls: ['media-player.component.scss'],
 })
-export class PlayerDialogComponent implements OnInit, OnDestroy {
+export class MediaPlayerComponent implements OnInit, OnDestroy {
 
   // // @Input()
   @Input() tracks: Track[];
@@ -25,25 +24,13 @@ export class PlayerDialogComponent implements OnInit, OnDestroy {
   shuffle: boolean;
 
   currentTrackIndex = 0;
-  // currentTrack: Track;
 
-  @ViewChild('player', {static: true}) playerRef: ElementRef;
-
-  constructor(
-    // private playerService: PlayerService,
-    protected ref: NbDialogRef<PlayerDialogComponent>) {
-    // this.track = this.playerService.random();
-
-    // this.createPlayer();
+  constructor() {
   }
 
   ngOnInit() {
-    this.player = this.playerRef.nativeElement;
     this.track = this.tracks[0];
-    this.player.src = this.track.url;
-    this.player.load();
-    // this.player.play();
-    // this.createPlayer();
+    this.createPlayer();
     this.player.play();
   }
 
@@ -121,10 +108,6 @@ export class PlayerDialogComponent implements OnInit, OnDestroy {
   private setTrack() {
     this.player.src = this.track.url;
     this.player.load();
-  }
-
-  dismiss() {
-    this.ref.close();
   }
 
   ngOnDestroy() {

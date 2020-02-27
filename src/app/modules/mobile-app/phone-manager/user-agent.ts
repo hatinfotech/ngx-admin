@@ -20,15 +20,20 @@ export class UserAgent {
   register(): boolean {
 
     if (!this.agent) {
-      this.agent = new SIP.UA({
+      const config: any = {
         uri: this.user.uri,
         register: true,
         transportOptions: {
           wsServers: [this.user.serviceUrl],
+          maxReconnectionAttempts: 1000,
+          keepAliveInterval: 30,
         },
         authorizationUser: this.user.phone,
         password: this.user.password,
-      });
+        wsServerMaxReconnection: 86400,
+        connectionRecoveryMaxInterval: 10,
+      };
+      this.agent = new SIP.UA(config);
       this.applyEvents();
     } else {
       this.agent.register();
@@ -49,62 +54,8 @@ export class UserAgent {
       );
       const callingSession = new CallingSession(this.manager, caller, this.user, callReceiveSession);
       this.stateChanged$.next({ state: 'invited', session: callingSession });
-
-
-      // const callSession = new CallingSession(
-      //   {
-      //     id: self.inviteServerContext.remoteIdentity.uri.user,
-      //     name: self.inviteServerContext.remoteIdentity.displayName,
-      //     number: self.inviteServerContext.remoteIdentity.uri.user,
-      //     uri: self.inviteServerContext.remoteIdentity.uri.user,
-      //   },
-      //   {
-      //     id: this.sipUsername,
-      //     name: this.sipUsername,
-      //     number: '101',
-      //     uri: this.sipUsername,
-      //   },
-      //   callReceiveSession,
-      // );
-
-      // this.callingSessionList.push(callSession);
-
-
-      // self.inviteServerContext = callReceiveSession;
-      // callkit.receiveCall("David Marcus");
-      // if (self.state === 'normal') {
-      //   self.state = 'incomming';
-      //   this.partnerName = self.inviteServerContext.remoteIdentity.displayName;
-      //   this.partnerNumber = self.inviteServerContext.remoteIdentity.uri.user;
-      //   this.ring();
-      //   this.mobileAppService.hadIncommingCall({ state: self.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
-      //   self.receiveCallEventConfig(this.inviteServerContext);
-      //   // console.info('!!! accept call manula by call fucntion : acceptcall()');
-      //   // session.accept();
-      // } else {
-      //   this.partnerName = self.inviteServerContext.remoteIdentity.displayName;
-      //   this.partnerNumber = self.inviteServerContext.remoteIdentity.uri.user;
-      //   this.mobileAppService.hadIncommingCall({ state: 'waiting-incomming', partnerName: this.partnerName, partnerNumber: this.partnerNumber });
-      //   while (await new Promise<boolean>(resolve => {
-      //     console.info('waiting for phone state update to normal...');
-      //     setTimeout(() => {
-      //       if (self.state !== 'normal') {
-      //         resolve(true);
-      //       } else {
-      //         resolve(false);
-      //       }
-      //     }, 1000);
-      //   })) { }
-      //   self.inviteServerContext = callReceiveSession;
-      //   self.state = 'incomming';
-      //   // self.inviteServerContext.accept();
-      //   this.partnerName = self.inviteServerContext.remoteIdentity.displayName;
-      //   this.partnerNumber = self.inviteServerContext.remoteIdentity.uri.user;
-      //   this.ring();
-      //   self.receiveCallEventConfig(self.inviteServerContext);
-
-      // }
     });
+
   }
 
   unregister(): boolean {

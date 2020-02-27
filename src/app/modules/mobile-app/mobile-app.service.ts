@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { MobileAppComponent } from './mobile-app.component';
 import { CallingSession } from './phone-manager/calling-session';
 import { DialpadComponent } from './dialpad/dialpad.component';
+import { Track } from '../../@core/utils/player.service';
 
 export interface CallState {
   state: string;
@@ -74,5 +75,9 @@ export class MobileAppService {
 
   phoneCall(phone: string, name: string) {
     this.callScreen.call(phone, name);
+  }
+
+  playMedia(tracks: Track[]) {
+    this.mobileApp.playMedias(tracks);
   }
 }

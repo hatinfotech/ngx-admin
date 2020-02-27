@@ -9,6 +9,7 @@ import { IvoipService } from '../../ivoip-service';
 import { PlayerDialogComponent } from '../../../dialog/player-dialog/player-dialog.component';
 import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 
 @Component({
   selector: 'ngx-cdr-list',
@@ -144,6 +145,16 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
             }
           });
           instance.click.subscribe((row: PbxCdrModel) => {
+
+            // this.mobileAppService.playMedia([
+            //   {
+            //     name: row.FromOrigin ? row.FromOrigin : (row.CallerDestination),
+            //     artist: 'IVOIP',
+            //     url: this.apiService.buildApiUrl('/ivoip/recordings', { id: row.Id, play_audio: 1, domainId: row.DomainUuid + '@' + row.Pbx }),
+            //     cover: 'assets/images/cover1.jpg',
+            //   },
+            // ]);
+
             this.dialogService.open(PlayerDialogComponent, {
               context: {
                 tracks: [
@@ -155,7 +166,9 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
                   },
                 ],
               },
+
             });
+
           });
         },
       },
@@ -169,6 +182,7 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
     public ivoipService: IvoipService,
+    private mobileAppService: MobileAppService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);
   }

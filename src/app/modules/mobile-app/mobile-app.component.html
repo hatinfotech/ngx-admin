@@ -140,6 +140,14 @@
                     </a>
                   </li>
                   <li>
+                    <a class="item-content item-link" (click)="switchScreen('media-player')">
+                      <div class="item-media"><i class="icon icon-f7"></i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Media PLayer</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
                     <a class="item-content item-link" href="/about/">
                       <div class="item-media"><i class="icon icon-f7"></i></div>
                       <div class="item-inner">
@@ -707,4 +715,5 @@
     </div>
   </div>
 </div>
-<ngx-dialpad [ngClass]="{'minimized': mobileAppService.callScrennMinimized}" [ngStyle]="{'display': mobileScreen != 'phone' && mobileAppService.callScrennMinimized ? 'none' : ''}"></ngx-dialpad>
+<ngx-dialpad [ngClass]="{'minimized': mobileAppService.callScrennMinimized}" [ngStyle]="{'display': mobileScreen != 'phone' && !mobileAppService.callScrennMinimized ? 'none' : ''}"></ngx-dialpad>
+<ngx-media-player *ngIf="mobileScreen == 'media-player'" [tracks]="mediaTracks" [ngStyle]="{'display': mobileScreen != 'media-player' ? 'none' : ''}"></ngx-media-player>

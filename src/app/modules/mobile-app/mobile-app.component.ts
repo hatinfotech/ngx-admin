@@ -21,6 +21,7 @@ import { takeUntil, map } from 'rxjs/operators';
 import { MessagesPage } from './f7pages/messages.page';
 import { AboutPage } from './f7pages/about.page';
 import { PhonePage } from './f7pages/phone.page';
+import { Track } from '../../@core/utils/player.service';
 
 
 export interface F7Message {
@@ -214,6 +215,8 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   readySubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   ready$: Observable<boolean> = this.readySubject.asObservable();
+
+  mediaTracks: Track[] = [];
 
   // app: Framework7;
   constructor(
@@ -448,6 +451,21 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   switchScreen(screen: string) {
     this.commonService.openMobileSidebar();
     this.mobileScreen = screen;
+  }
+
+  playMedias(tracks: Track[]) {
+    this.commonService.openMobileSidebar();
+    this.switchScreen('media-player');
+    // this.mediaTracks = [];
+    // this.mediaTracks = tracks;
+    this.mediaTracks = [
+      {
+        name: 'Ring tone',
+        artist: 'MTSG',
+        url: 'https://static.stringee.com/stringeex/web_phone/lastest/audio/Antique-Phone5.mp3',
+        cover: 'assets/images/cover1.jpg',
+      },
+    ];
   }
 
 }

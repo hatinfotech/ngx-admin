@@ -51,6 +51,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
 
   public hadWaitingIncomingCall = false;
   public minimized = false;
+  public registerFailed = false;
 
   // @Input('minimized') minimized: boolean;
 

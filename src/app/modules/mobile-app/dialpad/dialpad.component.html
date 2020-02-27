@@ -14,7 +14,7 @@
     </section><!--  END TOAST  -->
     <!--  TOP BAR -->
     <section class="wrap-top-bar height-40 position-absolute top-0 width-100-percent">
-      <div class="top-bar-status color-green" data-translate="not_connected">{{sipUsername}}</div>
+      <div class="top-bar-status" [ngClass]="{'color-red': registerFailed, 'color-green': !registerFailed}" data-translate="not_connected">{{sipUsername}}</div>
       <div class="text-center top-bar-title"></div>
       <div class="wrap-action-top-right float-right mr position-absolute right-15 top-10">
         <div class="wrapper-dropdown wrapper-dropdown-call">
