@@ -18,6 +18,7 @@ export class MiniErpModel {
   State?: string;
   LastLog?: string;
   RequireUpdate?: boolean;
+  AutoUpdate?: boolean;
 
   constructor() { }
 

@@ -266,6 +266,27 @@ export class ApiService {
     });
   }
 
+  /** Restful api put request */
+  putPromise<T>(enpoint: string, params: any, resource: T): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+        if (result) {
+          const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
+            .pipe(retry(0), catchError(e => {
+              reject(e);
+              return this.handleError(e, params['silent']);
+            }))
+            .subscribe((newResource: T) => {
+              resolve(newResource);
+              obs.unsubscribe();
+            });
+        } else {
+          this.onUnauthorizied();
+        }
+      });
+    });
+  }
+
   postPut<T>(method: string, enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     if (method === 'POST') {
       this.post<T>(enpoint, params, resource, success, error, complete);

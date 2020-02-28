@@ -57,6 +57,7 @@ export class MinierpFormComponent extends MinierpBaseFormComponent<MiniErpModel>
       ApiUser: [''],
       ApiPassword: ['******'],
       Enabled: [''],
+      AutoUpdate: [''],
     });
     if (data) {
       newForm.patchValue(data);

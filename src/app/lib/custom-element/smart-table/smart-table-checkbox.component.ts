@@ -4,7 +4,7 @@ import { ViewCell } from 'ng2-smart-table';
 
 @Component({
   template: `
-    <nb-checkbox [disabled]="disable" [checked]="renderValue"></nb-checkbox>
+    <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox>
   `,
 })
 export class SmartTableCheckboxComponent implements ViewCell, OnInit {
@@ -15,8 +15,15 @@ export class SmartTableCheckboxComponent implements ViewCell, OnInit {
   @Input() value: string | number;
   @Input() rowData: any;
 
+  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+
   ngOnInit() {
     this.renderValue = this.value ? true : false;
+  }
+
+  onChange(value: any) {
+    this.valueChange.emit(value);
+    this.value = value;
   }
 
 }
@@ -80,7 +87,7 @@ export class SmartTableIconComponent implements ViewCell, OnInit {
 
   ngOnInit() {
     // this.renderValue = this.value.toString().toUpperCase();
-    this.valueChange.emit({value: this.value, row: this.rowData});
+    this.valueChange.emit({ value: this.value, row: this.rowData });
   }
 
   onClick() {

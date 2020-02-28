@@ -74,10 +74,16 @@
                   <input type="password" nbInput fullWidth formControlName="ApiPassword" placeholder="Api Password">
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Enabled'), 'warning')">
-                  <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span></label>
+                  <label class="label"><span class="valid">Kích hoạt</span><span class="invalid"></span></label>
                   <nb-checkbox formControlName="Enabled" >Kích hoạt</nb-checkbox>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('AutoUpdate'), 'warning')">
+                  <label class="label"><span class="valid">Auto update</span><span class="invalid"></span></label>
+                  <nb-checkbox formControlName="AutoUpdate" >Auto update</nb-checkbox>
                 </div>
               </div>
             </div>

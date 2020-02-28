@@ -9,6 +9,7 @@ import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table-checkbox.component';
+import { takeUntil } from 'rxjs/operators';
 
 export class SmartTableSetting {
   mode?: string;
@@ -45,6 +46,7 @@ export class SmartTableSetting {
       valuePrepareFunction?: (cell: string, row?: any) => string,
       renderComponent?: any,
       onComponentInitFunction?: (instance: any) => void,
+      onChange?: (value: any, rowData: any) => void,
     },
   };
 }
@@ -372,6 +374,12 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         column.renderComponent = SmartTableCheckboxComponent;
         column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
           instance.disable = !column.editable;
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            // console.info(value);
+            if (column.onChange) {
+              column.onChange(value, instance.rowData);
+            }
+          });
           // instance.iconPack = 'eva';
           // instance.icon = 'play-circle-outline';
           // instance.label = 'Play';

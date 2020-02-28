@@ -7,6 +7,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { MinierpService } from '../../minierp-service.service';
 import { SmartTableIconComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-minierp-list',
@@ -89,6 +90,11 @@ export class MinierpListComponent extends MinierpBaseListComponent<MiniErpModel>
           instance.valueChange.subscribe((info: { value: any, row: any }) => {
             const state = info.row['State'] ? this.stateMap[info.row['State']] : '';
 
+            // if (!info.row['AutoUpdate']) {
+            //   instance.status = 'disabled';
+            //   instance.icon = 'close-circle';
+            // } else {
+
             if (state === 'UPDATEERROR') {
               instance.status = 'danger';
               instance.icon = 'close-circle';
@@ -109,16 +115,23 @@ export class MinierpListComponent extends MinierpBaseListComponent<MiniErpModel>
               }
 
             }
+            // }
           });
           instance.click.subscribe(async (row: MiniErpModel) => {
           });
         },
       },
-      Enabled: {
+      AutoUpdate: {
         title: 'KH',
         type: 'boolean',
-        editable: false,
+        editable: true,
         width: '5%',
+        onChange: (value, rowData: MiniErpModel) => {
+          // rowData.AutoUpdate = value;
+          this.apiService.putPromise<MiniErpModel[]>('/mini-erp/minierps', {}, [{ Code: rowData.Code, AutoUpdate: value }]).then(rs => {
+            console.info(rs);
+          });
+        },
       },
     },
   });
@@ -137,6 +150,47 @@ export class MinierpListComponent extends MinierpBaseListComponent<MiniErpModel>
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
+  }
+
+  setUpdateUpdate() {
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: 'Mini-ERP',
+        content: 'Đặt chế độ tự động cập nhật cho các site đã chọn',
+        actions: [
+          {
+            label: 'Tự động',
+            icon: 'auto',
+            status: 'success',
+            action: () => {
+              const data: MiniErpModel[] = this.selectedIds.map(i => {
+                return { Code: i, AutoUpdate: true };
+              });
+              this.apiService.putPromise<MiniErpModel[]>('/mini-erp/minierps', {}, data).then(rs => this.refresh());
+            },
+          },
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'primary',
+            action: () => {
+
+            },
+          },
+          {
+            label: 'Thủ công',
+            icon: 'manual',
+            status: 'warning',
+            action: () => {
+              const data: MiniErpModel[] = this.selectedIds.map(i => {
+                return { Code: i, AutoUpdate: false };
+              });
+              this.apiService.putPromise<MiniErpModel[]>('/mini-erp/minierps', {}, data).then(rs => this.refresh());
+             },
+          },
+        ],
+      },
+    });
   }
 
 }

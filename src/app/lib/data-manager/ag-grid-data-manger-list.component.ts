@@ -141,7 +141,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   };
   public rowSelection = 'multiple';
   public rowModelType = 'infinite';
-  public pagination = true;
+  public pagination = false;
   public paginationPageSize = 40;
   public cacheBlockSize = this.paginationPageSize;
   public cacheOverflowSize = 2;
