@@ -1,30 +1,97 @@
-<nb-card class="small-header ag-grid-card" style="height: 100%;">
-  <nb-card-header>
+<nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
+  <nb-card-header id="helpdeskHeader">
     <nav>
-      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách liên hệ
-      <div class="action-list">
-        <button *ngFor="let actionBtn of actionButtonList" nbButton [status]="actionBtn.status" hero
-          [size]="actionBtn.size" [disabled]="actionBtn.disabled()" [title]="actionBtn.title"
-          (click)="actionBtn.click()">
-          <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span
-            *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
-        </button>
-      </div>
+      <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Yêu cầu mới
+      <ngx-action-control-list style="float: right;" [list]="actionControlList"></ngx-action-control-list>
     </nav>
   </nb-card-header>
-
   <nb-card-body>
-    <div class="ag-grid-wrap">
-      <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham"
-        [modules]="modules" [columnDefs]="columnDefs" [floatingFilter]="false" [debug]="true"
-        [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowDeselection]="true"
-        [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize"
-        [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
-        [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize"
-        [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)"
-        [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight"
-        [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
-      </ag-grid-angular>
+    <div class="m-list" nbInfiniteList listenWindowScroll [threshold]="500"
+      (bottomThreshold)="loadNext(infiniteLoadModel)">
+      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.tickets"
+        [style.color]="'darkslategray'" (click)="selectOne($event, item)">
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Thông tin chung</div>
+          <div class="value">
+            <nb-icon icon="person" pack="ion"></nb-icon> {{ item.Name }}
+          </div>
+          <div class="value">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.Phone }}
+          </div>
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Liên hệ</div>
+          <div class="value" *ngIf="!!item.Email">
+            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.Email }}
+          </div>
+          <div class="value" *ngIf="!!item.Address">
+            <nb-icon icon="map" pack="ion"></nb-icon> {{ item.Address }}
+          </div>
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Nhóm</div>
+          <div class="value" *ngIf="!!item.Group">
+            <nb-icon icon="podium" pack="ion"></nb-icon> {{ item.Name }}
+          </div>
+        </div>
+        <div class="col-md-2 m-list-item-property">
+          <div class="caption">Trạng thái</div>
+          <div class="value nowrap" *ngIf="!!item.State">
+            <nb-icon icon="radio-waves" pack="ion"></nb-icon> {{ item.State }}
+          </div>
+          <div class="value" *ngIf="!!item.DateOfCreate">
+            <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.State }}
+          </div>
+          <div class="value">
+            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#">Chi tiết</a>
+          </div>
+          <div class="value">
+            <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#" (click)="editItem(item.Code)">Cập nhật</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row m-list-item ghost" *ngFor="let _ of infiniteLoadModel.placeholders">
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Thông tin chung</div>
+          <div class="value">
+            <nb-icon icon="document-text" pack="ion"></nb-icon> Tên
+          </div>
+          <div class="value">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> Số điện thoại
+          </div>
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Liên hệ</div>
+          <div class="value">
+            <nb-icon icon="email" pack="ion"></nb-icon> Email
+          </div>
+          <div class="value">
+            <nb-icon icon="map" pack="ion"></nb-icon> Địa chỉ
+          </div>
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Nhóm</div>
+          <div class="value">
+            <nb-icon icon="podium" pack="ion"></nb-icon> Nhóm
+          </div>
+        </div>
+        <div class="col-md-2 m-list-item-property">
+          <div class="caption">Trạng thái</div>
+          <div class="value nowrap">
+            <nb-icon icon="radio-waves" pack="ion"></nb-icon> Trạng thái
+          </div>
+          <div class="value">
+            <nb-icon icon="ios-time" pack="ion"></nb-icon> Ngày tạo
+          </div>
+          <div class="value">
+            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#">Chi tiết</a>
+          </div>
+          <div class="value">
+            <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#">Cập nhật</a>
+          </div>
+        </div>
+      </div>
     </div>
   </nb-card-body>
 </nb-card>

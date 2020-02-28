@@ -25,18 +25,6 @@
     <nav>
       <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Yêu cầu mới
       <ngx-action-control-list style="float: right;" [list]="actionControlList"></ngx-action-control-list>
-      <!-- <div class="action-list" style="float: right;">
-        <ng-template ngFor let-actionBtn [ngForOf]="actionControlList" let-i="index">
-          <button class="action-list-item" *ngIf="actionBtn.type == 'button'" nbButton [status]="actionBtn.status" hero [size]="actionBtn.size"
-            [disabled]="actionBtn.disabled()" [title]="actionBtn.title" (click)="actionBtn.click()">
-            <nb-icon pack="eva" [icon]="actionBtn.icon"></nb-icon><span
-              *ngIf="!!actionBtn.label">{{actionBtn.label}}</span>
-          </button>
-          <input class="action-list-item" *ngIf="actionBtn.type == 'text'" nbInput type="text" [size]="actionBtn.size"
-            [status]="actionBtn.status" [disabled]="actionBtn.disabled()" [placeholder]="actionBtn.title"
-            (change)="actionBtn.change()">
-        </ng-template>
-      </div> -->
     </nav>
   </nb-card-header>
   <nb-card-body>
