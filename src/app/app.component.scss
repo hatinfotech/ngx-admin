@@ -55,10 +55,21 @@ body nb-layout[authState="logout"] nb-layout-header.fixed ~ .layout-container {
   }
 }
 
-.nb-theme-dark, .nb-theme-cosmic {
+.nb-theme-dark,
+.nb-theme-cosmic {
   .color-darkslategray {
     color: #4ea7a7;
   }
+}
+
+.tag {
+  background: #8f9bb3;
+  margin: 2px;
+  padding: 2px 7px;
+  color: #fff;
+  border-radius: 0.2rem;
+  line-height: 1rem;
+  padding-top: 4px;
 }
 /* End Layout */
 
@@ -1094,7 +1105,6 @@ body nb-layout .layout .layout-container .content nb-layout-footer nav {
 .m-list-item-property {
   // padding: 1.5rem;
 }
-
 
 /* End My List style */
 

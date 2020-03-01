@@ -26,7 +26,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
-    minimumInputLength: 1,
+    minimumInputLength: 0,
     multiple: true,
     keyMap: {
       id: 'Code',
@@ -55,8 +55,9 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
-    minimumInputLength: 1,
+    minimumInputLength: 0,
     multiple: true,
+    tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -108,6 +109,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   /** Execute api get */
   executeGet(params: any, success: (resources: ContactModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeOrganizations'] = true;
+    params['includeGroups'] = true;
     super.executeGet(params, success, error);
   }
 

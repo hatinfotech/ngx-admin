@@ -341,8 +341,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     },
     ajax: {
       url: params => {
-        return environment.api.baseUrl + '/contact/contacts?token='
-          + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+        return this.apiService.buildApiUrl('/contact/contacts', {filter_Name: params['term']});
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -428,6 +427,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       search: this.keyword,
       sort_Id: 'desc',
       includeOrganizations: true,
+      includeGroups: true,
       limit: this.pageSize,
       offset: (cardData.pageToLoadNext - 1) * this.pageSize,
     };
