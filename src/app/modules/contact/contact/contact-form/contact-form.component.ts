@@ -34,8 +34,36 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     },
     ajax: {
       url: params => {
-        return environment.api.baseUrl + '/contact/contacts?token='
-          + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
+  select2GroupsOption = {
+    placeholder: 'Nhóm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 1,
+    multiple: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/contact/groups', { filter_Name: params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -86,7 +114,6 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   makeNewFormGroup(data?: ContactModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
-      Organizations: ['', Validators.required],
       Name: ['', Validators.required],
       Phone: [''],
       Phone2: [''],
@@ -99,6 +126,8 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
       ShortName: [''],
       // Sex: [''],
       Note: [''],
+      Organizations: [''],
+      Groups: [''],
     });
     if (data) {
       newForm.patchValue(data);

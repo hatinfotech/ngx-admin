@@ -1,3 +1,9 @@
+export class ContactGroupModel {
+  Code?: string;
+  Name?: string;
+  Descriptoin?: string;
+}
+
 export class ContactModel {
 
   Id?: string;
@@ -79,7 +85,9 @@ export class ContactModel {
   SipDomain?: string;
   SipPassword?: string;
 
+  // References
   Organizations?: ContactModel[];
+  Groups?: ContactGroupModel[];
 
   constructor() { }
 
