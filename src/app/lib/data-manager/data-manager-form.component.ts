@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CommonService } from '../../services/common.service';
 import { BaseComponent } from '../base-component';
-import { ActionControl } from '../../interface/action-control.interface';
+import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy {
 
@@ -509,6 +509,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   formControlValidate(formControl: FormControl, invalidText: string, valideText?: string): string {
+    // console.info('Form control validate', formControl);
     if (formControl.touched && formControl.errors && formControl.errors.required) {
       return invalidText;
     }

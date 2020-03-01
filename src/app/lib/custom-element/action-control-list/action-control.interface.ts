@@ -7,7 +7,8 @@ export interface ActionControl {
   title: string;
   size: string;
   value?: () => string;
-  disabled: (option?: any) => boolean;
+  disabled?: (option?: any) => boolean;
+  hidden?: (option?: any) => boolean;
   click: (event?: any, option?: any) => boolean;
   change?: (event?: any, option?: any) => false;
   typing?: (event?: any, option?: any) => false;

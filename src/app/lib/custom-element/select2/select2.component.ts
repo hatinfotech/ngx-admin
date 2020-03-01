@@ -79,25 +79,35 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     if (value) {
       const keyMap = this.select2Option['keyMap'];
       if (this.select2Option['ajax']) {
-        if (value[keyMap['id']] && value[keyMap['text']]) {
-          value['id'] = value[keyMap['id']];
-          value['text'] = value[keyMap['text']];
-          this.data = [
-            value,
-          ];
-          this.value = value[keyMap['id']];
+        if (value instanceof Array) {
+          // value = value.map(i => ({...i, id: i[keyMap['id']], text: i[keyMap['text']]}));
+          const tmpVal = [];
+          this.data = value.map(i => {
+            tmpVal.push(i[keyMap['id']]);
+            return { ...i, id: i[keyMap['id']], text: i[keyMap['text']] };
+          });
+          this.value = tmpVal;
         } else {
-          this.data = [
-            {
-              id: '',
-              text: 'Select option...',
-            },
-            {
-              id: value,
-              text: value,
-            },
-          ];
-          this.value = value;
+          if (value[keyMap['id']] && value[keyMap['text']]) {
+            value['id'] = value[keyMap['id']];
+            value['text'] = value[keyMap['text']];
+            this.data = [
+              value,
+            ];
+            this.value = value[keyMap['id']];
+          } else {
+            this.data = [
+              {
+                id: '',
+                text: 'Select option...',
+              },
+              {
+                id: value,
+                text: value,
+              },
+            ];
+            this.value = value;
+          }
         }
       } else if (value instanceof Array) {
         // this.value = value.map(item => item[keyMap['id']]);
@@ -132,7 +142,8 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     // const itemSelect = this.data.find(item => item['id'] === id);
     // this.writeValue(e.value);
     const changedValue = this.select2Option.multiple ? e.data : e.data[0];
-    if (this.onChange) this.onChange(Array.isArray(changedValue) ? changedValue.map(v => v.id) : changedValue.id);
+    // if (this.onChange) this.onChange(Array.isArray(changedValue) ? changedValue.map(v => v.id) : changedValue.id);
+    if (this.onChange) this.onChange(this.select2Option.multiple ? (changedValue ? changedValue : []) : (changedValue ? changedValue : null));
     Object.keys(this.select2Option['keyMap']).forEach(k => {
       e.data.forEach((i: any) => {
         i[this.select2Option['keyMap'][k]] = i[k];

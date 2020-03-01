@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ActionControl } from '../../interface/action-control.interface';
+import { ActionControl } from '../../lib/custom-element/action-control-list/action-control.interface';
 
 export interface CallState {
   state: string;

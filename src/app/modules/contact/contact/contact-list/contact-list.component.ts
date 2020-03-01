@@ -3,16 +3,17 @@ import { BaseComponent } from '../../../../lib/base-component';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import { takeWhile, takeUntil } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 import { UserActive, UserActivityData } from '../../../../@core/data/user-activity';
 import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
-import { ActionControl } from '../../../../interface/action-control.interface';
+import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { MobileAppService, CallState } from '../../../mobile-app/mobile-app.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ContactModel } from '../../../../models/contact.model';
 import { ContactFormComponent } from '../contact-form/contact-form.component';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-contact-list',
@@ -27,17 +28,17 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   // private $: any;
 
   private alive = true;
-  select2Option = {
-    placeholder: 'Chọn...',
-    allowClear: false,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'DomainUuid',
-      text: 'DomainName',
-    },
-  };
+  // select2Option = {
+  //   placeholder: 'Chọn...',
+  //   allowClear: false,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   keyMap: {
+  //     id: 'DomainUuid',
+  //     text: 'DomainName',
+  //   },
+  // };
 
   userActivity: UserActive[] = [];
   type = 'month';
@@ -57,34 +58,34 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   hadRowsSelected = false;
   hadMultiRowSelected = false;
   actionControlList: ActionControl[] = [
-    {
-      type: 'text',
-      name: 'search',
-      status: 'default',
-      label: 'Search',
-      icon: 'message-square',
-      title: 'Tìm kiếm',
-      size: 'tiny',
-      value: () => {
-        return this.keyword;
-      },
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        // this.refresh();
-        return false;
-      },
-      change: (event, option) => {
-        this.keyword = event.target.value;
-        this.onFilterChange();
-        return false;
-      },
-      typing: (event, option) => {
-        this.keyword = event.target.value;
-        return false;
-      },
-    },
+    // {
+    //   type: 'text',
+    //   name: 'search',
+    //   status: 'default',
+    //   label: 'Search',
+    //   icon: 'message-square',
+    //   title: 'Tìm kiếm',
+    //   size: 'tiny',
+    //   value: () => {
+    //     return this.keyword;
+    //   },
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     // this.refresh();
+    //     return false;
+    //   },
+    //   change: (event, option) => {
+    //     this.keyword = event.target.value;
+    //     this.onFilterChange();
+    //     return false;
+    //   },
+    //   typing: (event, option) => {
+    //     this.keyword = event.target.value;
+    //     return false;
+    //   },
+    // },
     // {
     //   type: 'button',
     //   name: 'chat',
@@ -126,15 +127,49 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       type: 'button',
       name: 'create',
       status: 'warning',
-      label: 'Tạo',
+      label: 'Tạo liên hệ',
       icon: 'file-add',
-      title: 'Tạo TICKET mới',
+      title: 'Tạo liên hệ mới',
       size: 'tiny',
       disabled: () => {
         return false;
       },
       click: () => {
-        this.createNew();
+        this.createNewItem();
+        return false;
+      },
+    },
+    {
+      type: 'button',
+      name: 'advanceFilter',
+      status: 'primary',
+      label: 'Tìm kiếm nâng cao',
+      icon: 'funnel',
+      title: 'Tìm kiếm nâng cao',
+      size: 'tiny',
+      hidden: () => {
+        return this.isAdvanceFilter;
+      },
+      click: () => {
+        this.isAdvanceFilter = true;
+        // this.reset();
+        return false;
+      },
+    },
+    {
+      type: 'button',
+      name: 'Bỏ lọc',
+      status: 'danger',
+      label: 'Đặt lại',
+      icon: 'refresh',
+      title: 'Đặt lại tìm kiếm và sắp xếp',
+      size: 'tiny',
+      hidden: () => {
+        return !this.isAdvanceFilter;
+      },
+      click: () => {
+        this.reset();
+        this.isAdvanceFilter = false;
         return false;
       },
     },
@@ -207,11 +242,81 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   keyword: string = '';
 
   showQuickForm = false;
+  isAdvanceFilter = false;
+
+  filter: { [key: string]: { type?: string, name?: string, placeholder?: string, value?: string } } = {
+    Title: {
+      type: 'text',
+      name: 'Name',
+      placeholder: 'Tên',
+      value: '',
+    },
+    Name: {
+      type: 'text',
+      name: 'Name',
+      placeholder: 'Tên',
+      value: '',
+    },
+    ShortName: {
+      type: 'text',
+      name: 'ShortName',
+      placeholder: 'Tên',
+      value: '',
+    },
+    Phone: {
+      type: 'text',
+      name: 'Phone',
+      placeholder: 'Số điện thoại',
+      value: '',
+    },
+    Phone2: {
+      type: 'text',
+      name: 'Phone',
+      placeholder: 'Số điện thoại',
+      value: '',
+    },
+    Phone3: {
+      type: 'text',
+      name: 'Phone',
+      placeholder: 'Số điện thoại',
+      value: '',
+    },
+    Email: {
+      type: 'text',
+      name: 'Email',
+      placeholder: 'Email',
+      value: '',
+    },
+    Address: {
+      type: 'text',
+      name: 'Address',
+      placeholder: 'Địa chỉ',
+      value: '',
+    },
+    Organization: {
+      type: 'text',
+      name: 'Organization',
+      placeholder: 'Công ty',
+      value: '',
+    },
+    Type: {
+      type: 'text',
+      name: 'Type',
+      placeholder: 'Công ty',
+      value: '',
+    },
+    Note: {
+      type: 'text',
+      name: 'Type',
+      placeholder: 'Công ty',
+      value: '',
+    },
+  };
 
   // quickTicketFormList: { index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }[] = [];
 
-  infiniteLoadModel = {
-    tickets: [],
+  infiniteLoadModel: {data: ContactModel[] & {selected?: boolean}, placeholders: any[], loading: boolean, pageToLoadNext: number} = {
+    data: [],
     placeholders: [],
     loading: false,
     pageToLoadNext: 1,
@@ -223,6 +328,35 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   quickFormOnInitSubject = new BehaviorSubject<string>(null);
   quickFormOnInit$ = this.quickFormOnInitSubject.asObservable();
   private callStateSubscription: Subscription;
+
+  select2Option = {
+    placeholder: 'Nhóm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 1,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return environment.api.baseUrl + '/contact/contacts?token='
+          + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
 
   constructor(
     protected commonService: CommonService,
@@ -256,7 +390,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   }
 
   onResume() {
-    this.commonService.openMobileSidebar();
+    // this.commonService.openMobileSidebar();
     super.onResume();
     this.callStateSubscription.unsubscribe();
   }
@@ -268,28 +402,49 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   onFilterChange() {
     this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
-      this.infiniteLoadModel.tickets = [];
+      this.infiniteLoadModel.data = [];
       this.loadNext(this.infiniteLoadModel);
     });
   }
 
-  loadNext(cardData) {
+  loadNext(cardData: {data: ContactModel[], placeholders: any[], loading: boolean, pageToLoadNext: number}) {
     if (cardData.loading) { return; }
 
     cardData.loading = true;
     cardData.placeholders = new Array(this.pageSize);
 
-    this.apiService.get<ContactModel[]>('/contact/contacts', { search: this.keyword, limit: this.pageSize, offset: (cardData.pageToLoadNext - 1) * this.pageSize }, nextList => {
+    const query = {
+      search: this.keyword,
+      sort_Id: 'desc',
+      includeOrganizations: true,
+      limit: this.pageSize,
+      offset: (cardData.pageToLoadNext - 1) * this.pageSize,
+    };
+
+    Object.keys(this.filter).forEach(k => {
+      if (this.filter[k].value) {
+        query['filter_' + k] = this.filter[k].value;
+      }
+    });
+
+    // if (this.filterName) query['filterName'] = this.filterName;
+    // if (this.filterPhone) query['filterPhone'] = this.filterPhone;
+    // if (this.filterEmail) query['filterEmail'] = this.filterEmail;
+    // if (this.filterAddress) query['filterAddress'] = this.filterAddress;
+
+    this.apiService.getPromise<ContactModel[]>('/contact/contacts', query).then(nextList => {
       // this.dataList = list.map(item => {
       //   item['selected'] = false;
       //   return item;
       // });
 
       cardData.placeholders = [];
-      cardData.tickets.push(...nextList);
+      cardData.data.push(...nextList);
       cardData.loading = false;
       cardData.pageToLoadNext++;
 
+    }).catch(e => {
+      cardData.loading = false;
     });
 
     // this.newsService.load(cardData.pageToLoadNext, this.pageSize)
@@ -366,7 +521,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   refresh() {
     this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
-      this.infiniteLoadModel.tickets = [];
+      this.infiniteLoadModel.data = [];
       this.loadNext(this.infiniteLoadModel);
     });
     this.deleteSelected();
@@ -384,8 +539,13 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   //   return false;
   // }
 
+  clearFilter() {
+    Object.keys(this.filter).forEach(k => this.filter[k].value = '');
+  }
+
   reset() {
     this.deleteSelected();
+    this.refresh();
     return false;
   }
 
@@ -448,10 +608,25 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     return false;
   }
 
-  createNew() {
+  // createNew() {
+  //   this.openFormDialplog(null, newData => {
+  //     this.refresh();
+  //   }, () => { });
+  //   return false;
+  // }
+
+  createNewItem(): false {
     this.openFormDialplog(null, newData => {
       this.refresh();
     }, () => { });
     return false;
+  }
+
+  onObjectChange(event) {
+
+  }
+
+  search() {
+    this.refresh();
   }
 }

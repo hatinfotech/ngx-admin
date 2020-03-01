@@ -7,7 +7,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { IvoipService } from '../../../modules/ivoip/ivoip-service';
 import { CommonService } from '../../../services/common.service';
-import { ActionControl } from '../../../interface/action-control.interface';
+import { ActionControl } from '../../../lib/custom-element/action-control-list/action-control.interface';
 import { VirtualPhoneService } from '../../../modules/virtual-phone/virtual-phone.service';
 
 @Component({

@@ -7,7 +7,7 @@ import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService, NbSideb
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
-import { ActionControl } from '../interface/action-control.interface';
+import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
 
 @Injectable({
   providedIn: 'root',

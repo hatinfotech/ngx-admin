@@ -8,7 +8,7 @@ import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { environment } from '../../../../../environments/environment';
-import { ActionControl } from '../../../../interface/action-control.interface';
+import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ContactModel } from '../../../../models/contact.model';
 

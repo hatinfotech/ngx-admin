@@ -9,7 +9,7 @@ import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
 import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
-import { ActionControl } from '../../../../interface/action-control.interface';
+import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
 import { MobileAppService, CallState } from '../../../mobile-app/mobile-app.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -271,7 +271,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   onResume() {
-    this.commonService.openMobileSidebar();
+    // this.commonService.openMobileSidebar();
     super.onResume();
     this.callStateSubscription.unsubscribe();
     this.mobileAppService.callState$

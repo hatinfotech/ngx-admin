@@ -8,19 +8,81 @@
   <nb-card-body>
     <div class="m-list" nbInfiniteList listenWindowScroll [threshold]="500"
       (bottomThreshold)="loadNext(infiniteLoadModel)">
-      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.tickets"
+      <div class="row m-list-filter" *ngIf="isAdvanceFilter" [style.color]="'darkslategray'">
+        <div style="height: 15px; width: 100%;"></div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label"><span class="valid">Tên</span></label>
+            <input type="text" nbInput fullWidth placeholder="Tên" [(ngModel)]="filter.Name.value" (keydown.enter)="search()">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label"><span class="valid">Tên rút gọn</span></label>
+            <input type="text" nbInput fullWidth placeholder="Tên rút gọn" [(ngModel)]="filter.ShortName.value" (keydown.enter)="search()">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="label"><span class="valid">Tổ chức</span></label>
+            <ngx-select2 [(ngModel)]="filter.Organization.value" [select2Option]="select2Option"
+                    (selectChange)="search()"></ngx-select2>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label"><span class="valid">Email</span></label>
+            <input type="text" nbInput fullWidth placeholder="Email" [(ngModel)]="filter.Email.value" (keydown.enter)="search()">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label"><span class="valid">Số điện thoại</span></label>
+            <input type="text" nbInput fullWidth placeholder="Phone" [(ngModel)]="filter.Phone.value" (keydown.enter)="search()">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label"><span class="valid">Số điện thoại</span></label>
+            <input type="text" nbInput fullWidth placeholder="Phone 2" [(ngModel)]="filter.Phone2.value" (keydown.enter)="search()">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="label"><span class="valid">Số điện thoại</span></label>
+            <input type="text" nbInput fullWidth placeholder="Phone 3" [(ngModel)]="filter.Phone3.value" (keydown.enter)="search()">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="label"><span class="valid">Ghi chú</span></label>
+            <input type="text" nbInput fullWidth placeholder="Địa chỉ" [(ngModel)]="filter.Address.value" (keydown.enter)="search()">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="label"><span class="valid">Ghi chú</span></label>
+            <input type="text" nbInput fullWidth placeholder="Ghi chú" [(ngModel)]="filter.Note.value" (keydown.enter)="search()">
+          </div>
+        </div>
+
+      </div>
+      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.data"
         [style.color]="'darkslategray'" (click)="selectOne($event, item)">
         <div class="col-md-4 m-list-item-property">
           <div class="caption">Thông tin chung</div>
-          <div class="value">
-            <nb-icon icon="person" pack="ion"></nb-icon> {{ item.Name }}
+          <div class="value" *ngIf="!!item.ShortName">
+            <nb-icon icon="ribbon-b" pack="ion"></nb-icon> {{ item.ShortName }}
           </div>
-          <div class="value">
-            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.Phone }}
+          <div class="value" *ngIf="!!item.Name">
+            <nb-icon icon="person" pack="ion"></nb-icon> {{ item.Title }} {{ item.Name }}
           </div>
         </div>
         <div class="col-md-3 m-list-item-property">
           <div class="caption">Liên hệ</div>
+          <div class="value" *ngIf="!!item.Phone">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.Phone }}
+          </div>
           <div class="value" *ngIf="!!item.Email">
             <nb-icon icon="email" pack="ion"></nb-icon> {{ item.Email }}
           </div>
@@ -29,9 +91,9 @@
           </div>
         </div>
         <div class="col-md-3 m-list-item-property">
-          <div class="caption">Nhóm</div>
-          <div class="value" *ngIf="!!item.Group">
-            <nb-icon icon="podium" pack="ion"></nb-icon> {{ item.Name }}
+          <div class="caption">Tổ chức</div>
+          <div class="value" *ngFor="let parent of item.Organizations">
+            <nb-icon icon="podium" pack="ion"></nb-icon> {{ parent.Name }}
           </div>
         </div>
         <div class="col-md-2 m-list-item-property">
@@ -42,9 +104,9 @@
           <div class="value" *ngIf="!!item.DateOfCreate">
             <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.State }}
           </div>
-          <div class="value">
+          <!-- <div class="value">
             <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#">Chi tiết</a>
-          </div>
+          </div> -->
           <div class="value">
             <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#" (click)="editItem(item.Code)">Cập nhật</a>
           </div>
@@ -55,38 +117,41 @@
         <div class="col-md-4 m-list-item-property">
           <div class="caption">Thông tin chung</div>
           <div class="value">
-            <nb-icon icon="document-text" pack="ion"></nb-icon> Tên
+            <nb-icon icon="ribbon-b" pack="ion"></nb-icon>
           </div>
           <div class="value">
-            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> Số điện thoại
+            <nb-icon icon="person" pack="ion"></nb-icon>
           </div>
         </div>
         <div class="col-md-3 m-list-item-property">
           <div class="caption">Liên hệ</div>
           <div class="value">
-            <nb-icon icon="email" pack="ion"></nb-icon> Email
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon>
           </div>
           <div class="value">
-            <nb-icon icon="map" pack="ion"></nb-icon> Địa chỉ
+            <nb-icon icon="email" pack="ion"></nb-icon>
+          </div>
+          <div class="value">
+            <nb-icon icon="map" pack="ion"></nb-icon>
           </div>
         </div>
         <div class="col-md-3 m-list-item-property">
-          <div class="caption">Nhóm</div>
+          <div class="caption">Tổ chức</div>
           <div class="value">
-            <nb-icon icon="podium" pack="ion"></nb-icon> Nhóm
+            <nb-icon icon="podium" pack="ion"></nb-icon>
           </div>
         </div>
         <div class="col-md-2 m-list-item-property">
           <div class="caption">Trạng thái</div>
           <div class="value nowrap">
-            <nb-icon icon="radio-waves" pack="ion"></nb-icon> Trạng thái
+            <nb-icon icon="radio-waves" pack="ion"></nb-icon>
           </div>
           <div class="value">
-            <nb-icon icon="ios-time" pack="ion"></nb-icon> Ngày tạo
+            <nb-icon icon="ios-time" pack="ion"></nb-icon>
           </div>
-          <div class="value">
+          <!-- <div class="value">
             <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#">Chi tiết</a>
-          </div>
+          </div> -->
           <div class="value">
             <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#">Cập nhật</a>
           </div>

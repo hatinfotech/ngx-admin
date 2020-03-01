@@ -9,7 +9,7 @@ import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridApi, ColumnApi, Module, AllCommunityModules, IGetRowsParams, IDatasource } from '@ag-grid-community/all-modules';
-import { ActionControl } from '../../interface/action-control.interface';
+import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 
 export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent implements OnInit, ReuseComponent {
 

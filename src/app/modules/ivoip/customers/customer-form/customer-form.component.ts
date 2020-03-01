@@ -45,7 +45,7 @@ export class Executable {
 })
 export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerModel> implements OnInit {
 
-  componentName: string = 'CallBlockFormComponent';
+  componentName: string = 'CustomerFormComponent';
   idKey = 'Code';
   apiPath = '/ivoip/customers';
   baseFormUrl = '/ivoip/customers/form';

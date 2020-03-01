@@ -7,6 +7,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-contact-form',
@@ -19,6 +20,37 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   idKey = 'Code';
   apiPath = '/contact/contacts';
   baseFormUrl = '/contact/contact/form';
+
+  select2Option = {
+    placeholder: 'Tổ chức...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 1,
+    multiple: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return environment.api.baseUrl + '/contact/contacts?token='
+          + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -47,17 +79,26 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
 
   /** Execute api get */
   executeGet(params: any, success: (resources: ContactModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeUsers'] = true;
+    params['includeOrganizations'] = true;
     super.executeGet(params, success, error);
   }
 
   makeNewFormGroup(data?: ContactModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
+      Organizations: ['', Validators.required],
       Name: ['', Validators.required],
-      Phone: ['', Validators.required],
-      Email: ['', Validators.required],
+      Phone: [''],
+      Phone2: [''],
+      Phone3: [''],
+      Email: [''],
       Address: [''],
+      Address2: [''],
+      Address3: [''],
+      Title: [''],
+      ShortName: [''],
+      // Sex: [''],
+      Note: [''],
     });
     if (data) {
       newForm.patchValue(data);

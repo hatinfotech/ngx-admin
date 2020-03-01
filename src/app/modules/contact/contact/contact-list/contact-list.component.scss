@@ -61,7 +61,7 @@
     nb-card-body {
       padding-top: 0;
     }
-    .m-list-item {
+    .m-list-item, .m-list-filter{
       margin-left: -20px;
       margin-right: -20px;
       &nb-icon {
@@ -80,6 +80,11 @@
       }
       .m-list-item-property:last-child {
         padding-right: 18px;
+      }
+    }
+    .m-list-filter {
+      .value {
+        margin-bottom: 15px;
       }
     }
     .m-list-item:hover {
