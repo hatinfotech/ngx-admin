@@ -187,7 +187,7 @@
     <!-- PAGE DIAPAD -->
     <section id="page-diapad" class="page" [ngClass]="{'display-none': state != 'normal'}">
       <div class="wrap-typing-number pl-15 pr-15 mt-10 mb-30 display-flex justify-content-space-between"> <input
-          type="text" [(value)]="phonenumber" placeholder="0909553929" class="font-size-24 color-black border-none">
+          type="tel" [(ngModel)]="phonenumber" placeholder="0909553929" class="font-size-24 color-black border-none">
         <button (click)="backspacekey()" class="btn-close border-none bg-transparent"> <img
             src="assets/phone-app/icon-close.svg"> </button> </div>
       <div class="wrap-diapad mb-10">
