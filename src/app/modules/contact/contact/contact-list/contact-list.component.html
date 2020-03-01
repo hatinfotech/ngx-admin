@@ -13,62 +13,70 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label"><span class="valid">Tên</span></label>
-            <input type="text" nbInput fullWidth placeholder="Tên" [(ngModel)]="filter.Name.value" (keydown.enter)="search()">
+            <input type="text" nbInput fullWidth placeholder="Tên" [(ngModel)]="filter.Name.value"
+              (keydown.enter)="search()">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label"><span class="valid">Tên rút gọn</span></label>
-            <input type="text" nbInput fullWidth placeholder="Tên rút gọn" [(ngModel)]="filter.ShortName.value" (keydown.enter)="search()">
+            <input type="text" nbInput fullWidth placeholder="Tên rút gọn" [(ngModel)]="filter.ShortName.value"
+              (keydown.enter)="search()">
           </div>
         </div>
         <div class="col-sm-6">
           <div class="form-group">
             <label class="label"><span class="valid">Tổ chức</span></label>
             <ngx-select2 [(ngModel)]="filter.Organization.value" [select2Option]="select2Option"
-                    (selectChange)="search()"></ngx-select2>
+              (selectChange)="search()"></ngx-select2>
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label"><span class="valid">Email</span></label>
-            <input type="text" nbInput fullWidth placeholder="Email" [(ngModel)]="filter.Email.value" (keydown.enter)="search()">
+            <input type="text" nbInput fullWidth placeholder="Email" [(ngModel)]="filter.Email.value"
+              (keydown.enter)="search()">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label"><span class="valid">Số điện thoại</span></label>
-            <input type="text" nbInput fullWidth placeholder="Phone" [(ngModel)]="filter.Phone.value" (keydown.enter)="search()">
+            <input type="text" nbInput fullWidth placeholder="Phone" [(ngModel)]="filter.Phone.value"
+              (keydown.enter)="search()">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label"><span class="valid">Số điện thoại</span></label>
-            <input type="text" nbInput fullWidth placeholder="Phone 2" [(ngModel)]="filter.Phone2.value" (keydown.enter)="search()">
+            <input type="text" nbInput fullWidth placeholder="Phone 2" [(ngModel)]="filter.Phone2.value"
+              (keydown.enter)="search()">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label class="label"><span class="valid">Số điện thoại</span></label>
-            <input type="text" nbInput fullWidth placeholder="Phone 3" [(ngModel)]="filter.Phone3.value" (keydown.enter)="search()">
+            <input type="text" nbInput fullWidth placeholder="Phone 3" [(ngModel)]="filter.Phone3.value"
+              (keydown.enter)="search()">
           </div>
         </div>
         <div class="col-sm-6">
           <div class="form-group">
             <label class="label"><span class="valid">Ghi chú</span></label>
-            <input type="text" nbInput fullWidth placeholder="Địa chỉ" [(ngModel)]="filter.Address.value" (keydown.enter)="search()">
+            <input type="text" nbInput fullWidth placeholder="Địa chỉ" [(ngModel)]="filter.Address.value"
+              (keydown.enter)="search()">
           </div>
         </div>
         <div class="col-sm-6">
           <div class="form-group">
             <label class="label"><span class="valid">Ghi chú</span></label>
-            <input type="text" nbInput fullWidth placeholder="Ghi chú" [(ngModel)]="filter.Note.value" (keydown.enter)="search()">
+            <input type="text" nbInput fullWidth placeholder="Ghi chú" [(ngModel)]="filter.Note.value"
+              (keydown.enter)="search()">
           </div>
         </div>
 
       </div>
       <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.data"
-        [style.color]="'darkslategray'" (click)="selectOne($event, item)">
+        [className]="'row m-list-item color-'+item.color" (click)="selectOne($event, item)">
         <div class="col-md-4 m-list-item-property">
           <div class="caption">Thông tin chung</div>
           <div class="value" *ngIf="!!item.ShortName">
@@ -101,8 +109,8 @@
           <div class="value nowrap" *ngIf="!!item.State">
             <nb-icon icon="radio-waves" pack="ion"></nb-icon> {{ item.State }}
           </div>
-          <div class="value" *ngIf="!!item.DateOfCreate">
-            <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.State }}
+          <div class="value" *ngIf="!!item.Created">
+            <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.Created }}
           </div>
           <!-- <div class="value">
             <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#">Chi tiết</a>

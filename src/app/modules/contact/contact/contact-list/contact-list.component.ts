@@ -315,7 +315,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
 
   // quickTicketFormList: { index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }[] = [];
 
-  infiniteLoadModel: {data: ContactModel[] & {selected?: boolean}, placeholders: any[], loading: boolean, pageToLoadNext: number} = {
+  infiniteLoadModel: {data: (ContactModel&{selected?: boolean, color?: string})[], placeholders: any[], loading: boolean, pageToLoadNext: number} = {
     data: [],
     placeholders: [],
     loading: false,
@@ -355,6 +355,17 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
           }),
         };
       },
+    },
+  };
+
+  textCorlors = {
+    darkslategray: {
+      light: 'darkslategray',
+      dark: '#519696',
+    },
+    orange: {
+      light: 'orange',
+      dark: 'orange',
     },
   };
 
@@ -407,7 +418,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     });
   }
 
-  loadNext(cardData: {data: ContactModel[], placeholders: any[], loading: boolean, pageToLoadNext: number}) {
+  loadNext(cardData: {data: (ContactModel&{selected?: boolean, color?: string})[], placeholders: any[], loading: boolean, pageToLoadNext: number}) {
     if (cardData.loading) { return; }
 
     cardData.loading = true;
@@ -432,14 +443,17 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     // if (this.filterEmail) query['filterEmail'] = this.filterEmail;
     // if (this.filterAddress) query['filterAddress'] = this.filterAddress;
 
-    this.apiService.getPromise<ContactModel[]>('/contact/contacts', query).then(nextList => {
+    this.apiService.getPromise<(ContactModel&{selected?: boolean, color?: string})[]>('/contact/contacts', query).then(nextList => {
       // this.dataList = list.map(item => {
       //   item['selected'] = false;
       //   return item;
       // });
 
       cardData.placeholders = [];
-      cardData.data.push(...nextList);
+      cardData.data.push(...nextList.map(i => {
+        i.color = 'darkslategray';
+        return i;
+      }));
       cardData.loading = false;
       cardData.pageToLoadNext++;
 

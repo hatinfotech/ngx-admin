@@ -79,7 +79,7 @@ export class ContactModel {
   SipDomain?: string;
   SipPassword?: string;
 
-  ParentList?: ContactModel[];
+  Organizations?: ContactModel[];
 
   constructor() { }
 
