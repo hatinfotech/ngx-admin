@@ -2,6 +2,7 @@ import { PhoneManager } from './phone-manager';
 import * as SIP from 'sip.js';
 import { BehaviorSubject, Observable, Subscription, Subject } from 'rxjs';
 import { User } from './user';
+import { IncomingResponseMessage } from 'sip.js/lib/core';
 
 export class CallingSession {
 
@@ -237,10 +238,29 @@ export class CallingSession {
     });
     const isVideoCall = false;
 
-    this.session.on('progress', () => {
+
+    this.session.on('progress', (response: IncomingResponseMessage) => {
       // cleanmedia();
       console.info('progress');
       $this.state = 'progress';
+
+
+      const pc = $this.session.sessionDescriptionHandler['peerConnection'];
+
+      const remoteStream = new MediaStream();
+      if (pc.getReceivers().length > 0) {
+        pc.getReceivers().forEach(function (receiver) {
+          const track = receiver['track'] ? receiver['track'] : receiver;
+          if (track.kind === 'audio') {
+            remoteStream.addTrack(track);
+          }
+        });
+        $this.manager.outputMedia.srcObject = remoteStream;
+        $this.manager.outputMedia.play();
+      }
+
+
+
       this.stateChanged$.next('progress');
     });
     this.session.on('accepted', () => {
@@ -248,20 +268,20 @@ export class CallingSession {
       // // Gets local tracks
       const pc = $this.session.sessionDescriptionHandler['peerConnection'];
 
-      // if (isVideoCall) {
-      //   const localStream = new MediaStream();
-      //   const senderPeers = pc.getSenders();
-      //   if (senderPeers.length > 0) {
-      //     senderPeers.forEach(function (receiver) {
-      //       const track = receiver['track'] ? receiver['track'] : receiver;
-      //       if (track.kind === 'video') {
-      //         localStream.addTrack(track);
-      //       }
-      //     });
-      //     $this.manager.outputMedia.srcObject = localStream;
-      //     $this.manager.outputMedia.play();
-      //   }
-      // }
+      // // if (isVideoCall) {
+      // //   const localStream = new MediaStream();
+      // //   const senderPeers = pc.getSenders();
+      // //   if (senderPeers.length > 0) {
+      // //     senderPeers.forEach(function (receiver) {
+      // //       const track = receiver['track'] ? receiver['track'] : receiver;
+      // //       if (track.kind === 'video') {
+      // //         localStream.addTrack(track);
+      // //       }
+      // //     });
+      // //     $this.manager.outputMedia.srcObject = localStream;
+      // //     $this.manager.outputMedia.play();
+      // //   }
+      // // }
 
       const remoteStream = new MediaStream();
       if (pc.getReceivers().length > 0) {
@@ -343,6 +363,22 @@ export class CallingSession {
     this.session.on('trackAdded', () => {
       // cleanmedia();
       console.info('trackAdded');
+
+
+      const pc = $this.session.sessionDescriptionHandler['peerConnection'];
+
+      const remoteStream = new MediaStream();
+      if (pc.getReceivers().length > 0) {
+        pc.getReceivers().forEach(function (receiver) {
+          const track = receiver['track'] ? receiver['track'] : receiver;
+          if (track.kind === 'audio') {
+            remoteStream.addTrack(track);
+          }
+        });
+        $this.manager.outputMedia.srcObject = remoteStream;
+        $this.manager.outputMedia.play();
+      }
+
     });
     this.session.on('bye', () => {
       // callkit.endCall();

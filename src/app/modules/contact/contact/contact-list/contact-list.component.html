@@ -86,7 +86,7 @@
             <nb-icon icon="person" pack="ion"></nb-icon> {{ item.Title }} {{ item.Name }}
           </div>
           <div class="value" *ngIf="item.Groups && item.Groups.length > 0">
-            <span *ngFor="let group of item.Groups" class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> {{group.Name}}</span>
+            <div *ngFor="let group of item.Groups" class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> {{group.Name}}</div>
           </div>
         </div>
         <div class="col-md-3 m-list-item-property">

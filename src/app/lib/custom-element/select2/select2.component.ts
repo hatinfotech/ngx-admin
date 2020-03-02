@@ -111,6 +111,10 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
         }
       } else if (value instanceof Array) {
         // this.value = value.map(item => item[keyMap['id']]);
+
+        if (!this.data || this.data.length === 0) {
+          this.data = value;
+        }
         this.value = value.map(i => i['id'] ? i['id'] : i);
       } else {
         if (value[keyMap['id']] && value[keyMap['text']]) {

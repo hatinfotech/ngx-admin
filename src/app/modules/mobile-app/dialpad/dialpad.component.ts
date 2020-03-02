@@ -41,6 +41,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   state = 'normal';
 
   ringer: any;
+  ringbackPlayer: any;
   sipUsername: string;
 
   callingSessionList: {}[] = [];
@@ -103,6 +104,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
     this.remoteVideo = document.getElementById('remoteVideo');
     this.localVideo = document.getElementById('localVideo');
     this.ringer = document.getElementById('ringtonePlayer');
+    this.ringbackPlayer = document.getElementById('ringbackPlayer');
     // this.ringer = new Audio();
   }
 
@@ -142,6 +144,12 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
       this.maximizeScreen();
     }
   }
+  onRingback() {
+    this.ringback();
+  }
+  onStopRingback(session: CallingSession): void {
+    this.stopRingback();
+  }
   onTerminate(session: CallingSession): void {
     console.info('On Terminated');
     if (!this.phoneManager.moreThanOneSession) {
@@ -180,6 +188,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   }
   onRejected(session: CallingSession): void {
     console.info('On Reject');
+    this.stopRingback();
   }
   onProgress(session: CallingSession): void {
     console.info('On Progress');
@@ -376,6 +385,19 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   stopRing() {
     if (this.ringer) {
       this.ringer.pause();
+      // delete this.ringer;
+    }
+  }
+
+
+
+  ringback() {
+    this.ringbackPlayer.play();
+  }
+
+  stopRingback() {
+    if (this.ringbackPlayer) {
+      this.ringbackPlayer.pause();
       // delete this.ringer;
     }
   }

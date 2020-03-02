@@ -146,6 +146,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/helpdesk/helpdesk.module')
       .then(m => m.HelpdeskModule),
   },
+  {
+    path: 'sms',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/sms/sms.module')
+      .then(m => m.SmsModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],

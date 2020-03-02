@@ -17,6 +17,8 @@ export interface IPhoneContext {
   onCalling(session: CallingSession): void;
   onProgress(session: CallingSession): void;
   onFailed(session: CallingSession): void;
+  onRingback(session: CallingSession): void;
+  onStopRingback(session: CallingSession): void;
   getOutputMedia(): HTMLVideoElement;
 
 }
@@ -131,6 +133,26 @@ export class PhoneManager {
       if (state === 'terminated') {
         this.state = 'normal';
         this.onTerminate(session);
+      }
+      if (state === 'progress') {
+        this.state = 'progress';
+        this.onProgress(session);
+        this.context.onRingback(session);
+      }
+      if (state === 'rejected') {
+        this.context.onStopRingback(session);
+      }
+      if (state === 'cancel') {
+        this.context.onStopRingback(session);
+      }
+      if (state === 'terminated') {
+        this.context.onStopRingback(session);
+      }
+      if (state === 'failed') {
+        this.context.onStopRingback(session);
+      }
+      if (state === 'accepted') {
+        this.context.onStopRingback(session);
       }
     });
 
