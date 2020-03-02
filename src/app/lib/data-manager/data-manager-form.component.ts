@@ -554,4 +554,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.formLoad();
   }
 
+  reset() {
+    this.id = [];
+    this.array.clear();
+    this.addFormGroup();
+    this.onProcessed();
+  }
+
 }

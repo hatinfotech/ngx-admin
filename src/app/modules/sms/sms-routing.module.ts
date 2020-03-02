@@ -8,6 +8,8 @@ import { SmsTemplateListComponent } from './sms-template/sms-template-list/sms-t
 import { SmsTemplateFormComponent } from './sms-template/sms-template-form/sms-template-form.component';
 import { SmsGatewayListComponent } from './sms-gateway/sms-gateway-list/sms-gateway-list.component';
 import { SmsGatewayFormComponent } from './sms-gateway/sms-gateway-form/sms-gateway-form.component';
+import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertisement-form/sms-advertisement-form.component';
+import { SmsAdvertisementListComponent } from './sms-advertisement/sms-advertisement-list/sms-advertisement-list.component';
 
 const routes: Routes = [{
   path: '',
@@ -79,6 +81,24 @@ const routes: Routes = [{
       path: 'gateway/form/:id',
       canActivate: [AuthGuardService],
       component: SmsGatewayFormComponent,
+    },
+    {
+      path: 'advertisement/list',
+      canActivate: [AuthGuardService],
+      component: SmsAdvertisementListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'advertisement/form',
+      canActivate: [AuthGuardService],
+      component: SmsAdvertisementFormComponent,
+    },
+    {
+      path: 'advertisement/form/:id',
+      canActivate: [AuthGuardService],
+      component: SmsAdvertisementFormComponent,
     },
   ],
 }];

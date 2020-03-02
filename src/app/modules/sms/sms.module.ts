@@ -19,11 +19,16 @@ import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-tabl
 import { SmsRoutingModule } from './sms-routing.module';
 import { SmsGatewayListComponent } from './sms-gateway/sms-gateway-list/sms-gateway-list.component';
 import { SmsGatewayFormComponent } from './sms-gateway/sms-gateway-form/sms-gateway-form.component';
+import { SmsAdvertisementListComponent } from './sms-advertisement/sms-advertisement-list/sms-advertisement-list.component';
+import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertisement-form/sms-advertisement-form.component';
 
 @NgModule({
   declarations: [SmsComponent, SmsTemplateListComponent,
     SmsTemplateFormComponent,
-    SmsSentListComponent, SmsSentFormComponent, SmsDashboardComponent, SmsGatewayListComponent, SmsGatewayFormComponent],
+    SmsSentListComponent, SmsSentFormComponent,
+    SmsDashboardComponent, SmsGatewayListComponent,
+    SmsGatewayFormComponent, SmsAdvertisementListComponent,
+    SmsAdvertisementFormComponent],
   imports: [
     CommonModule,
     SmsRoutingModule,

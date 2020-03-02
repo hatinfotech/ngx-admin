@@ -69,9 +69,13 @@ body nb-layout[authState="logout"] nb-layout-header.fixed ~ .layout-container {
   color: #fff;
   border-radius: 0.2rem;
   line-height: 1rem;
-  padding-top: 4px;
+  padding-top: 2px;
   float: left;
   margin-bottom: 2px;
+  font-size: 12px;
+}
+.tag nb-icon {
+  font-size: 12px;
 }
 /* End Layout */
 

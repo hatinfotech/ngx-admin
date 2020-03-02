@@ -43,6 +43,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
 
   ngOnInit(): void {
     this.commonService.updateHeaderActionControlList([]);
+    this.restrict();
   }
 
   onResume() {
