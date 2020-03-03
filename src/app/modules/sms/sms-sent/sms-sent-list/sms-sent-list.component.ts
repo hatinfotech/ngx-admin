@@ -11,6 +11,14 @@ import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { takeWhile } from 'rxjs/operators';
 import { QuickTicketFormComponent } from '../../../helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { SmsModel } from '../../../../models/sms.model';
+import { IInfiniteRowModel } from '@ag-grid-community/all-modules';
+
+interface MnfiniteLoadModel<M> {
+  data: (M & {selected: boolean})[];
+  placeholders: any[];
+  loading: boolean;
+  pageToLoadNext: number;
+}
 
 @Component({
   selector: 'ngx-sms-sent-list',
@@ -96,40 +104,40 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
     //     return false;
     //   },
     // },
-    {
-      type: 'button',
-      name: 'call',
-      status: 'primary',
-      label: 'Gọi',
-      icon: 'phone-call',
-      title: 'Gọi cho người được hỗ trợ',
-      size: 'tiny',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.commonService.openMenuSidebar();
-        this.mobileAppService.switchScreen('phone');
-        // this.refresh();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'create',
-      status: 'warning',
-      label: 'Tạo',
-      icon: 'file-add',
-      title: 'Tạo TICKET mới',
-      size: 'tiny',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        // this.createNewItem();
-        return false;
-      },
-    },
+    // {
+    //   type: 'button',
+    //   name: 'call',
+    //   status: 'primary',
+    //   label: 'Gọi',
+    //   icon: 'phone-call',
+    //   title: 'Gọi cho người được hỗ trợ',
+    //   size: 'tiny',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     this.commonService.openMenuSidebar();
+    //     this.mobileAppService.switchScreen('phone');
+    //     // this.refresh();
+    //     return false;
+    //   },
+    // },
+    // {
+    //   type: 'button',
+    //   name: 'create',
+    //   status: 'warning',
+    //   label: 'Tạo',
+    //   icon: 'file-add',
+    //   title: 'Tạo TICKET mới',
+    //   size: 'tiny',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     // this.createNewItem();
+    //     return false;
+    //   },
+    // },
     // {
     //   type: 'button',
     //   name: 'create',
@@ -146,38 +154,38 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
     //     return false;
     //   },
     // },
-    {
-      type: 'button',
-      name: 'view',
-      status: 'success',
-      label: 'Xem',
-      icon: 'external-link',
-      title: 'Xem thông tin TICKET',
-      size: 'tiny',
-      disabled: () => {
-        return !this.hadRowsSelected || this.hadMultiRowSelected;
-      },
-      click: () => {
-        // this.createNewItem();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'remove',
-      status: 'danger',
-      label: 'Huỷ',
-      icon: 'close-circle',
-      title: 'Huỷ yêu cầu',
-      size: 'tiny',
-      disabled: () => {
-        return !this.hadRowsSelected;
-      },
-      click: () => {
-        // this.reset();
-        return false;
-      },
-    },
+    // {
+    //   type: 'button',
+    //   name: 'view',
+    //   status: 'success',
+    //   label: 'Xem',
+    //   icon: 'external-link',
+    //   title: 'Xem thông tin TICKET',
+    //   size: 'tiny',
+    //   disabled: () => {
+    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
+    //   },
+    //   click: () => {
+    //     // this.createNewItem();
+    //     return false;
+    //   },
+    // },
+    // {
+    //   type: 'button',
+    //   name: 'remove',
+    //   status: 'danger',
+    //   label: 'Huỷ',
+    //   icon: 'close-circle',
+    //   title: 'Huỷ yêu cầu',
+    //   size: 'tiny',
+    //   disabled: () => {
+    //     return !this.hadRowsSelected;
+    //   },
+    //   click: () => {
+    //     // this.reset();
+    //     return false;
+    //   },
+    // },
     {
       type: 'button',
       name: 'refresh',
@@ -200,8 +208,8 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
 
   showQuickForm = false;
 
-  infiniteLoadModel = {
-    tickets: [],
+  infiniteLoadModel: MnfiniteLoadModel<SmsModel & {Preview: string}> = {
+    data: [],
     placeholders: [],
     loading: false,
     pageToLoadNext: 1,
@@ -247,21 +255,34 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
   onFilterChange() {
     this.commonService.takeUntil('sms-sent-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
-      this.infiniteLoadModel.tickets = [];
+      this.infiniteLoadModel.data = [];
       this.loadNext(this.infiniteLoadModel);
     });
   }
 
-  loadNext(cardData) {
+  loadNext(cardData: MnfiniteLoadModel<SmsModel & {Preview: string}>) {
     if (cardData.loading) { return; }
 
     cardData.loading = true;
     cardData.placeholders = new Array(this.pageSize);
 
-    this.apiService.get<SmsModel[]>('/sms/sms', { search: this.keyword, limit: this.pageSize, offset: (cardData.pageToLoadNext - 1) * this.pageSize }, nextList => {
+    this.apiService.get<(SmsModel & {selected: boolean, Preview: string})[]>('/sms/sms', { search: this.keyword, limit: this.pageSize, offset: (cardData.pageToLoadNext - 1) * this.pageSize }, nextList => {
+
+      nextList.forEach((i: any) => {
+        const firstRecipient = i.Recipients ? i.Recipients[0] : null;
+        if (firstRecipient) {
+          i['Preview'] = i['Content'].replace('$ten', firstRecipient['Name']);
+          i['Preview'] = i['Preview'].replace('$so_dien_thoai', firstRecipient['Phone']);
+          i['Preview'] = i['Preview'].replace('$email', firstRecipient['Email']);
+          i['Preview'] = i['Preview'].replace('$tham_so_1', i['Var1']);
+          i['Preview'] = i['Preview'].replace('$tham_so_2', i['Var2']);
+          i['Preview'] = i['Preview'].replace('$tham_so_3', i['Var3']);
+          i['Preview'] = i['Preview'].replace('$tham_so_4', i['Var4']);
+        }
+      });
 
       cardData.placeholders = [];
-      cardData.tickets.push(...nextList);
+      cardData.data.push(...nextList);
       cardData.loading = false;
       cardData.pageToLoadNext++;
 
@@ -313,7 +334,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
   refresh() {
     this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
-      this.infiniteLoadModel.tickets = [];
+      this.infiniteLoadModel.data = [];
       this.loadNext(this.infiniteLoadModel);
     });
     this.deleteSelected();

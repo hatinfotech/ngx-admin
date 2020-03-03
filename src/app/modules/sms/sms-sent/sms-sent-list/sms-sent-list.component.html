@@ -13,12 +13,15 @@
   <nb-card-body>
     <div class="m-list" nbInfiniteList listenWindowScroll [threshold]="500"
       (bottomThreshold)="loadNext(infiniteLoadModel)">
-      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.tickets"
-        [style.color]="item.TicketStateColor" (click)="selectOne($event, item)">
+      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.data"
+        [style.color]="item.State" (click)="selectOne($event, item)">
         <div class="col-md-4 m-list-item-property">
           <div class="caption">Nội dung tin nhắn</div>
           <div class="value">
             <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Content }}
+          </div>
+          <div class="value">
+            <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Preview }}
           </div>
           <!-- <div class="value">
             <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn {{ item.LastMessage }}
@@ -39,11 +42,12 @@
         <div class="col-md-3 m-list-item-property">
           <div class="caption">Gateway</div>
           <div class="value" *ngIf="!!item.Gateway">
-            <nb-icon icon="podium" pack="ion"></nb-icon> {{ item.Gateway.Name }}
+            <nb-icon icon="podium" pack="ion"></nb-icon>Gateway: {{ item.Gateway.Name }}
           </div>
-          <!-- <div class="value nowrap" *ngIf="!!item.ObjectPhone">
-            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.ObjectPhone }}
+          <div class="value nowrap" *ngIf="!!item.Brandname" title="Brand name">
+            <nb-icon icon="ribbon-a" pack="ion"></nb-icon>Brandname:  {{ item.Brandname?.text }}
           </div>
+          <!--</div>
           <div class="value nowrap" *ngIf="!!item.ObjectEmail">
             <nb-icon icon="email" pack="ion"></nb-icon> {{ item.ObjectEmail }}
           </div>
@@ -59,9 +63,9 @@
           <div class="value" *ngIf="!!item.SendingDate">
             <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.SendingDate }}
           </div>
-          <div class="value">
+          <!-- <div class="value">
             <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#">Chi tiết</a>
-          </div>
+          </div> -->
           <!-- <div class="value">
             <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#">Cập nhật</a>
           </div> -->

@@ -64,6 +64,7 @@ import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertise
   entryComponents: [
     SmartTableCheckboxComponent,
     SmsTemplateFormComponent,
+    SmsGatewayFormComponent,
   ],
 })
 export class SmsModule { }

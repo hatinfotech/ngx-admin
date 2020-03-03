@@ -43,8 +43,6 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
     ajax: {
       url: params => {
         return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '', byGroups: 'PERSONAL' });
-        // return environment.api.baseUrl + '/contact/contacts?token='
-        //   + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -74,8 +72,6 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
     ajax: {
       url: params => {
         return this.apiService.buildApiUrl('/contact/groups', { filter_Name: params['term'] ? params['term'] : '' });
-        // return environment.api.baseUrl + '/contact/contacts?token='
-        //   + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -104,8 +100,6 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
     ajax: {
       url: params => {
         return this.apiService.buildApiUrl('/sms/templates', { filter_Name: params['term'] ? params['term'] : '' });
-        // return environment.api.baseUrl + '/contact/contacts?token='
-        //   + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -118,6 +112,46 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
           }),
         };
       },
+    },
+  };
+
+  select2GatewayOption = {
+    placeholder: 'Chọn gateway...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/sms/gateway', { filter_Name: params['term'] ? params['term'] : '' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
+  select2BrandnameOption = {
+    placeholder: 'Chọn brandname...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
     },
   };
 
@@ -258,6 +292,8 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
   onTemplateChanged(event: any, formItem: FormControl) {
     // console.info(item);
 
+    localStorage.setItem('last_sms_template', JSON.stringify(event));
+
     if (!this.isProcessing) {
       // if (item && !item['doNotAutoFill']) {
 
@@ -283,6 +319,14 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
   }
 
   makeNewFormGroup(data?: SmsModel): FormGroup {
+    let lastSmsGateway = '';
+    let lastSmsBrandname = '';
+    let lastSmsTemplate = '';
+    try {
+      lastSmsGateway = JSON.parse(localStorage.getItem('last_sms_gateway'));
+      lastSmsBrandname = JSON.parse(localStorage.getItem('last_sms_brandname'));
+      lastSmsTemplate = JSON.parse(localStorage.getItem('last_sms_template'));
+    } catch (e) { console.error(e); }
     const newForm = this.formBuilder.group({
       Id: [''],
       Contact: [''],
@@ -293,6 +337,8 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
       Email: [''],
       Address: [''],
       Content: [''],
+      Gateway: ['', Validators.required],
+      Brandname: ['', Validators.required],
       Var1: [''],
       Var2: [''],
       Var3: [''],
@@ -300,37 +346,17 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
       Preview: [''],
     });
     if (data) {
-      // let formData: any;
-      // if (typeof data.SupportedPerson === 'string') {
-      //   data['SupportedPerson'] = '1';
-      //   formData = data;
-      //   formData['SupportedPerson'] = { id: data.SupportedPerson, text: data.SupportedPersonName };
-      // } else {
-      //   formData = data;
-      // }
       newForm.patchValue(data);
+    } else {
+      newForm.get('Template').setValue(lastSmsTemplate);
+      if(lastSmsTemplate) {
+        newForm.get('Content').setValue(lastSmsTemplate['Content']);
+        newForm.get('Preview').setValue(this.generatePreview(newForm));
+      }
+      newForm.get('Gateway').setValue(lastSmsGateway);
+      newForm.get('Brandname').setValue(lastSmsBrandname);
     }
 
-    const contact = newForm.get('Contact');
-    const contactGroups = newForm.get('ContactGroups');
-    // contact.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-    //   if (value) {
-    //     // contactGroups.setValue([]);
-    //     // contactGroups.disable();
-    //   } else {
-    //     // contactGroups.enable();
-    //   }
-    //   // this.loadList();
-    // });
-    // contactGroups.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-    //   // if (value && value.length > 0) {
-    //   this.loadList();
-    //   // }
-    // });
-
-    // newForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-
-    // });
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: SmsModel): void {
@@ -340,13 +366,6 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
 
   }
   goback(): false {
-    // super.goback();
-    // if (this.mode === 'page') {
-    //   this.router.navigate(['/contact/contact/list']);
-    // } else {
-    //   this.ref.close();
-    //   // this.dismiss();
-    // }
     this.dialogService.open(ShowcaseDialogComponent, {
       context: {
         title: 'Phiếu yêu cầu hỗ trợ',
@@ -402,7 +421,7 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
     return value && value.length > 0;
   }
 
-  generatePreview(formItem: FormControl) {
+  generatePreview(formItem: FormGroup) {
     return formItem.get('Content').value
       .replace('$ten', formItem.get('Name').value)
       .replace('$so_dien_thoai', formItem.get('Phone').value)
@@ -413,6 +432,14 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
       .replace('$tham_so_3', formItem.get('Var3').value)
       .replace('$tham_so_4', formItem.get('Var4').value)
       ;
+  }
+
+  onGatewayChanged(event: any, formItem: FormControl) {
+    localStorage.setItem('last_sms_gateway', JSON.stringify(event));
+  }
+
+  onBrandnameChanged(event: any, formItem: FormControl) {
+    localStorage.setItem('last_sms_brandname', JSON.stringify(event));
   }
 
 }

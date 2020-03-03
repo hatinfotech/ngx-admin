@@ -45,14 +45,16 @@
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên liên hệ">
                 </div>
               </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Template'), 'warning')">
-                  <label class="label"><span class="valid">Mẫu SMS</span><span class="invalid">Mẫ SMS là bắt buộc
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address'), 'warning')">
+                  <label class="label"><span class="valid">Địa chỉ: $dia_chi</span><span class="invalid">Địa chỉ
+                      là bắt
+                      buộc
                       (*)</span></label>
-                  <ngx-select2 formControlName="Template" (selectChange)="onTemplateChanged($event, formItem)" [select2Option]="select2TempateOption"></ngx-select2>
+                  <input type="text" nbInput fullWidth formControlName="Address" placeholder="Địa chỉ">
                 </div>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Email'), 'warning')">
                   <label class="label"><span class="valid">Email: $email</span><span class="invalid">Email là
                       bắt
@@ -61,13 +63,30 @@
                   <input type="text" nbInput fullWidth formControlName="Email" placeholder="Email">
                 </div>
               </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address'), 'warning')">
-                  <label class="label"><span class="valid">Địa chỉ: $dia_chi</span><span class="invalid">Địa chỉ
-                      là bắt
+
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Template'), 'warning')">
+                  <label class="label"><span class="valid">Mẫu SMS</span><span class="invalid">Mẫ SMS là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 formControlName="Template" (selectChange)="onTemplateChanged($event, formItem)" [select2Option]="select2TempateOption"></ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Gateway'), 'warning')">
+                  <label class="label"><span class="valid">Gateway (*)</span><span class="invalid">Gateway là
+                      bắt
                       buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Address" placeholder="Địa chỉ">
+                      <ngx-select2 formControlName="Gateway" [select2Option]="select2GatewayOption" (selectChange)="onGatewayChanged($event, formItem)"></ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Brandname'), 'warning')">
+                  <label class="label"><span class="valid">Brandname (*)</span><span class="invalid">Brandname là
+                      bắt
+                      buộc
+                      (*)</span></label>
+                      <ngx-select2 formControlName="Brandname" [select2Option]="select2BrandnameOption" (selectChange)="onBrandnameChanged($event, formItem)" [data]="formItem.get('Gateway').value?.Brandnames"></ngx-select2>
                 </div>
               </div>
               <div class="col-sm-3">

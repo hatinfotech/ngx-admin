@@ -11,7 +11,8 @@ export class SmsModel {
   Gateway?: SmsGatewayModel;
 
   // References
-  Recipients: SmsReceipientModel[];
+  Recipients?: SmsReceipientModel[];
+  Brandname?: { id?: string, text?: string };
 }
 
 export class SmsReceipientModel {
@@ -38,4 +39,5 @@ export class SmsGatewayModel {
   ApiUrl?: string;
   Username?: string;
   Password?: string;
+  Brandnames?: { id?: string, text?: string }[];
 }
