@@ -1,22 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { SmsTemplateModel } from '../../../../models/sms.model';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { EmailGatewayModel } from '../../../../models/email.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { SmsTemplateFormComponent } from '../sms-template-form/sms-template-form.component';
+import { SmsGatewayFormComponent } from '../../../sms/sms-gateway/sms-gateway-form/sms-gateway-form.component';
+import { EmailGatewayFormComponent } from '../email-gateway-form/email-gateway-form.component';
 
 @Component({
-  selector: 'ngx-sms-template-list',
-  templateUrl: './sms-template-list.component.html',
-  styleUrls: ['./sms-template-list.component.scss'],
+  selector: 'ngx-email-gateway-list',
+  templateUrl: './email-gateway-list.component.html',
+  styleUrls: ['./email-gateway-list.component.scss'],
 })
-export class SmsTemplateListComponent extends DataManagerListComponent<SmsTemplateModel> implements OnInit {
+export class EmailGatewayListComponent extends DataManagerListComponent<EmailGatewayModel> implements OnInit {
 
-  componentName: string = 'SmsTemplateListComponent';
-  formPath = '/sms/template/form';
-  apiPath = '/sms/templates';
+  componentName: string = 'EmailGatewayListComponent';
+  formPath = '/email-marketing/gateway/form';
+  apiPath = '/email-marketing/gateway';
   idKey = 'Code';
 
   constructor(
@@ -67,10 +68,15 @@ export class SmsTemplateListComponent extends DataManagerListComponent<SmsTempla
         type: 'string',
         width: '30%',
       },
-      Content: {
-        title: 'Nội dung',
+      Description: {
+        title: 'Mô tả',
         type: 'string',
-        width: '600%',
+        width: '30%',
+      },
+      ApiUrl: {
+        title: 'Api',
+        type: 'string',
+        width: '30%',
       },
     },
   };
@@ -80,13 +86,23 @@ export class SmsTemplateListComponent extends DataManagerListComponent<SmsTempla
     super.ngOnInit();
   }
 
+  getList(callback: (list: EmailGatewayModel[]) => void) {
+    super.getList((rs) => {
+      // rs.map((i: any) => {
+      //   i.Brandnames = i.Brandnames.map((i2: any) => i2.id).join(',');
+      //   return i;
+      // });
+      if (callback) callback(rs);
+    });
+  }
+
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsTemplateModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(SmsTemplateFormComponent, {
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailGatewayModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(EmailGatewayFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
-        onDialogSave: (newData: SmsTemplateModel[]) => {
+        onDialogSave: (newData: EmailGatewayModel[]) => {
           if (onDialogSave) onDialogSave(newData);
         },
         onDialogClose: () => {

@@ -152,6 +152,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/sms/sms.module')
       .then(m => m.SmsModule),
   },
+  {
+    path: 'email-marketing',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/email-marketing/email-marketing.module')
+      .then(m => m.EmailMarketingModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],

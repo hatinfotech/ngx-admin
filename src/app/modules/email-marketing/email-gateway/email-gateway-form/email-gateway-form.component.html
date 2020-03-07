@@ -1,0 +1,123 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()"
+  (keydown.enter)="$event.preventDefault()" class="popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <nav>
+            Cập nhật mail gateway
+            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="close-circle"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh"></nb-icon>
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+              style="float: right;" title="Hoàn tác">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Code">
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiUrl'), 'warning')">
+                  <label class="label"><span class="valid">Api (*)</span><span class="invalid">Api là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ApiUrl" placeholder="Api Url">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiToken'), 'warning')">
+                  <label class="label"><span class="valid">Api Teken</span><span class="invalid">Api Token là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ApiToken" placeholder="Api Token">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DefaultSenderName'), 'warning')">
+                  <label class="label"><span class="valid">Tên người gửi mặc định</span><span class="invalid">Tên người gửi mặc định là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="DefaultSenderName" placeholder="Tên người gửi mặc định">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DefaultSenderEmail'), 'warning')">
+                  <label class="label"><span class="valid">Email người gửi mặc định</span><span class="invalid">Email người gửi mặc định là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="DefaultSenderEmail" placeholder="Email người gửi mặc định">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpHost'), 'warning')">
+                  <label class="label"><span class="valid">Smtp Host</span><span class="invalid">Smtp Host là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="SmtpHost" placeholder="Smtp Host">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpPort'), 'warning')">
+                  <label class="label"><span class="valid">Smtp Port</span><span class="invalid">Smtp Port là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="SmtpPort" placeholder="Smtp Port">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpTransport'), 'warning')">
+                  <label class="label"><span class="valid">Smtp Transport</span><span class="invalid">Smtp Transport là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="SmtpTransport" placeholder="Smtp Transport">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpUsername'), 'warning')">
+                  <label class="label"><span class="valid">Smtp Username</span><span class="invalid">Username là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="SmtpUsername" placeholder="Smtp Username">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpPassword'), 'warning')">
+                  <label class="label"><span class="valid">Smtp Password</span><span class="invalid">Password là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="SmtpPassword" placeholder="Smtp Password">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpToken'), 'warning')">
+                  <label class="label"><span class="valid">Smtp Token</span><span class="invalid">Smtp Token là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="SmtpToken" placeholder="Smtp Token">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
+                  <label class="label"><span class="valid">Mô tả</span><span class="invalid">Mô tả bắt buộc
+                      (*)</span></label>
+                      <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

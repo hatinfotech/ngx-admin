@@ -1,25 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { SmsGatewayModel } from '../../../../models/sms.model';
+import { ContactModel } from '../../../../models/contact.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { SmsTemplateFormComponent } from '../../sms-template/sms-template-form/sms-template-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 
 @Component({
-  selector: 'ngx-sms-gateway-form',
-  templateUrl: './sms-gateway-form.component.html',
-  styleUrls: ['./sms-gateway-form.component.scss'],
+  selector: 'ngx-contact-form',
+  templateUrl: './contact-form.component.html',
+  styleUrls: ['./contact-form.component.scss'],
 })
-export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGatewayModel> implements OnInit {
+export class ContactFormComponent extends DataManagerFormComponent<ContactModel> implements OnInit {
 
-  componentName: string = 'SmsGatewayFormComponent';
+  componentName: string = 'ContactFormComponent';
   idKey = 'Code';
-  apiPath = '/sms/gateway';
-  baseFormUrl = '/sms/gateway/form';
+  apiPath = '/contact/contacts';
+  baseFormUrl = '/contact/contact/form';
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -29,74 +28,71 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
-    protected ref: NbDialogRef<SmsTemplateFormComponent>,
+    protected ref: NbDialogRef<ContactFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+  }
+
+  ngOnInit() {
+    this.restrict();
+    super.ngOnInit();
+    // if (this.inputId) {
+    //   this.mode = 'dialog';
+    // }
   }
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
   }
 
-  select2ParamsOption = {
-    placeholder: 'Brandname...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    multiple: true,
-    tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-  };
-
-  ngOnInit() {
-    this.restrict();
-    super.ngOnInit();
-  }
-
   /** Execute api get */
-  executeGet(params: any, success: (resources: SmsGatewayModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['includeUsers'] = true;
+  executeGet(params: any, success: (resources: ContactModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+    // params['includeUsers'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: SmsGatewayModel): FormGroup {
+  makeNewFormGroup(data?: ContactModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
       Name: ['', Validators.required],
-      Description: [''],
-      ApiUrl: ['', Validators.required],
-      ApiToken: ['', Validators.required],
-      SmtpUsername: ['', Validators.required],
-      SmtPassword: ['', Validators.required],
+      Phone: ['', Validators.required],
+      Email: ['', Validators.required],
+      Address: [''],
     });
     if (data) {
       newForm.patchValue(data);
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: SmsGatewayModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: ContactModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
 
   }
-
   goback(): false {
     super.goback();
     if (this.mode === 'page') {
-      this.router.navigate(['/sms/template/list']);
+      this.router.navigate(['/contact/contact/list']);
     } else {
       this.ref.close();
       // this.dismiss();
     }
     return false;
   }
-
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+  onAfterCreateSubmit(newFormData: ContactModel[]) {
+    super.onAfterCreateSubmit(newFormData);
+    // this.minierpService.reloadCache();
+  }
+  onAfterUpdateSubmit(newFormData: ContactModel[]) {
+    super.onAfterUpdateSubmit(newFormData);
+    // this.minierpService.reloadCache();
+  }
+
+  dismiss() {
+    this.ref.close();
+  }
 }

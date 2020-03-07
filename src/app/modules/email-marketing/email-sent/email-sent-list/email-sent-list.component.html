@@ -1,0 +1,124 @@
+<!-- <ngx-profit-card style="height: 15%;"></ngx-profit-card> -->
+
+
+<ngx-email-sent-form [inputMode]="'inline'" [inputId]="null"></ngx-email-sent-form>
+
+<nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
+  <nb-card-header id="helpdeskHeader">
+    <nav>
+      <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Lịch sử gửi email
+      <ngx-action-control-list style="float: right;" [list]="actionControlList"></ngx-action-control-list>
+    </nav>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="m-list" nbInfiniteList listenWindowScroll [threshold]="500"
+      (bottomThreshold)="loadNext(infiniteLoadModel)">
+      <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.data"
+        [style.color]="item.State" (click)="selectOne($event, item)">
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Nội dung</div>
+          <div class="value">
+            <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Subject }}
+          </div>
+          <!-- <div class="value">
+            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn {{ item.LastMessage }}
+          </div> -->
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Người nhận</div>
+          <div class="value nowrap" *ngFor="let recipient of item.Recipients">
+            <nb-icon icon="person" pack="ion"></nb-icon> {{ recipient.Name }} - {{ recipient.EmailAddress }}
+          </div>
+          <!-- <div class="value nowrap" *ngIf="!!item.SupportedPersonPhone">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.SupportedPersonPhone }}
+          </div>
+          <div class="value nowrap" *ngIf="!!item.SupportedPersonEmail">
+            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.SupportedPersonEmail }}
+          </div> -->
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Gateway</div>
+          <div class="value" *ngIf="!!item.Gateway">
+            <nb-icon icon="podium" pack="ion"></nb-icon>Gateway: {{ item.Gateway.Name }}
+          </div>
+          <!-- <div class="value nowrap" *ngIf="!!item.Brandname" title="Brand name">
+            <nb-icon icon="ribbon-a" pack="ion"></nb-icon>Brandname:  {{ item.Brandname?.text }}
+          </div> -->
+          <!--</div>
+          <div class="value nowrap" *ngIf="!!item.ObjectEmail">
+            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.ObjectEmail }}
+          </div>
+          <div class="value" *ngIf="!!item.ObjectAddress">
+            <nb-icon icon="map" pack="ion"></nb-icon> {{ item.ObjectAddress }}
+          </div> -->
+        </div>
+        <div class="col-md-2 m-list-item-property">
+          <div class="caption">Trạng thái</div>
+          <div class="value nowrap" *ngIf="!!item.State">
+            <nb-icon icon="radio-waves" pack="ion"></nb-icon> {{ item.State }}
+          </div>
+          <div class="value" *ngIf="!!item.SendingDate">
+            <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.SendingDate }}
+          </div>
+          <!-- <div class="value">
+            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#">Chi tiết</a>
+          </div> -->
+          <!-- <div class="value">
+            <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#">Cập nhật</a>
+          </div> -->
+        </div>
+      </div>
+
+      <div class="row m-list-item ghost" *ngFor="let _ of infiniteLoadModel.placeholders">
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Nội dung</div>
+          <div class="value">
+            <nb-icon icon="chatbox-working" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Người nhận</div>
+          <div class="value nowrap">
+            <nb-icon icon="person" pack="ion"></nb-icon>
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon>
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="email" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Gateway</div>
+          <div class="value">
+            <nb-icon icon="podium" pack="ion"></nb-icon>
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon>
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="email" pack="ion"></nb-icon>
+          </div>
+          <div class="value">
+            <nb-icon icon="map" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="col-md-2 m-list-item-property">
+          <div class="caption">Trạng thái</div>
+          <div class="value nowrap">
+            <nb-icon icon="radio-waves" pack="ion"></nb-icon>
+          </div>
+          <div class="value">
+            <nb-icon icon="ios-time" pack="ion"></nb-icon>
+          </div>
+          <div class="value">
+            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> Chi tiết
+          </div>
+          <div class="value">
+            <nb-icon icon="android-create" pack="ion"></nb-icon> Cập nhật
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
