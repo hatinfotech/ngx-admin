@@ -145,14 +145,14 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     // const id = parseInt(e.value);
     // const itemSelect = this.data.find(item => item['id'] === id);
     // this.writeValue(e.value);
-    let dataChanged: any[] = e.data;
-    if (!this.select2Option['ajax']) {
-      if (dataChanged) {
-        dataChanged = dataChanged.map(i => i['id'] ? i['id'] : i);
-      }
-    }
-    const changedValue = this.select2Option.multiple ? dataChanged : dataChanged[0];
-    // const changedValue = this.select2Option.multiple ? e.data : e.data[0];
+    // let dataChanged: any[] = e.data;
+    // if (!this.select2Option['ajax']) {
+    //   if (dataChanged) {
+    //     dataChanged = dataChanged.map(i => typeof i['id'] !== 'undefined' ? i['id'] : i);
+    //   }
+    // }
+    // const changedValue = this.select2Option.multiple ? dataChanged : dataChanged[0];
+    const changedValue = this.select2Option.multiple ? e.data : e.data[0];
     // if (this.onChange) this.onChange(Array.isArray(changedValue) ? changedValue.map(v => v.id) : changedValue.id);
     if (this.onChange) this.onChange(this.select2Option.multiple ? (changedValue ? changedValue : []) : (changedValue ? changedValue : null));
     Object.keys(this.select2Option['keyMap']).forEach(k => {
