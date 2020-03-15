@@ -152,6 +152,18 @@ const routes: Routes = [
     loadChildren: () => import('./modules/sms/sms.module')
       .then(m => m.SmsModule),
   },
+  {
+    path: 'crawler',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/crawl/crawl.module')
+      .then(m => m.CrawlModule),
+  },
+  {
+    path: 'wordpress',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/wordpress/wordpress.module')
+      .then(m => m.WordpressModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],
