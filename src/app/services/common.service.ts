@@ -227,23 +227,31 @@ export class CommonService {
 
   private takeUltilCount = {};
   private takeUltilPastCount = {};
-  takeUntil(context: string, delay: number, callback: () => void) {
-    if (delay === 0) {
-      callback();
-      return;
-    }
-    if (!this.takeUltilCount[context]) this.takeUltilCount[context] = 0;
-    this.takeUltilCount[context]++;
-    ((takeCount) => {
-      setTimeout(() => {
-        this.takeUltilPastCount[context] = takeCount;
-      }, delay);
-    })(this.takeUltilCount[context]);
-    setTimeout(() => {
-      if (this.takeUltilPastCount[context] === this.takeUltilCount[context]) {
-        callback();
+  async takeUntil(context: string, delay: number, callback?: () => void): Promise<boolean> {
+    const result = new Promise<boolean>(resolve => {
+      if (delay === 0) {
+        // if (callback) callback(); else return;
+        resolve(true);
+        return;
       }
-    }, delay);
+      if (!this.takeUltilCount[context]) this.takeUltilCount[context] = 0;
+      this.takeUltilCount[context]++;
+      ((takeCount) => {
+        setTimeout(() => {
+          this.takeUltilPastCount[context] = takeCount;
+        }, delay);
+      })(this.takeUltilCount[context]);
+      setTimeout(() => {
+        if (this.takeUltilPastCount[context] === this.takeUltilCount[context]) {
+          // callback();
+          resolve(true);
+        }
+      }, delay);
+    });
+    if (callback) {
+      callback();
+    }
+    return result;
   }
 
   generatePassword(length: number): string {

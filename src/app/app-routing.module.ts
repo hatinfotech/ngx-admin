@@ -153,6 +153,12 @@ const routes: Routes = [
       .then(m => m.SmsModule),
   },
   {
+    path: 'email-marketing',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/email-marketing/email-marketing.module')
+      .then(m => m.EmailMarketingModule),
+  },
+  {
     path: 'crawler',
     // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/crawl/crawl.module')

@@ -1,25 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { SmsGatewayModel } from '../../../../models/sms.model';
+import { EmailTemplateModel } from '../../../../models/email.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { SmsTemplateFormComponent } from '../../sms-template/sms-template-form/sms-template-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import './ckeditor.loader';
+import 'ckeditor';
 
 @Component({
-  selector: 'ngx-sms-gateway-form',
-  templateUrl: './sms-gateway-form.component.html',
-  styleUrls: ['./sms-gateway-form.component.scss'],
+  selector: 'ngx-email-template-form',
+  templateUrl: './email-template-form.component.html',
+  styleUrls: ['./email-template-form.component.scss'],
 })
-export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGatewayModel> implements OnInit {
+export class EmailTemplateFormComponent extends DataManagerFormComponent<EmailTemplateModel> implements OnInit {
 
-  componentName: string = 'SmsGatewayFormComponent';
+  componentName: string = 'EmailTemplateFormComponent';
   idKey = 'Code';
-  apiPath = '/sms/gateway';
-  baseFormUrl = '/sms/gateway/form';
+  apiPath = '/email-marketing/templates';
+  baseFormUrl = '/email-marketing/template/form';
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -29,7 +30,7 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
-    protected ref: NbDialogRef<SmsTemplateFormComponent>,
+    protected ref: NbDialogRef<EmailTemplateFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -39,7 +40,7 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
   }
 
   select2ParamsOption = {
-    placeholder: 'Brandname...',
+    placeholder: 'Tham số...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -58,27 +59,24 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
   }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: SmsGatewayModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: EmailTemplateModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeUsers'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: SmsGatewayModel): FormGroup {
+  makeNewFormGroup(data?: EmailTemplateModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
+      Subject: ['', Validators.required],
       Name: ['', Validators.required],
-      Description: [''],
-      ApiUrl: ['', Validators.required],
-      ApiToken: ['', Validators.required],
-      SmtpUsername: ['', Validators.required],
-      SmtPassword: ['', Validators.required],
+      Content: ['', Validators.required],
     });
     if (data) {
       newForm.patchValue(data);
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: SmsGatewayModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: EmailTemplateModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -88,7 +86,7 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
   goback(): false {
     super.goback();
     if (this.mode === 'page') {
-      this.router.navigate(['/sms/template/list']);
+      this.router.navigate(['/email-marketing/template/list']);
     } else {
       this.ref.close();
       // this.dismiss();

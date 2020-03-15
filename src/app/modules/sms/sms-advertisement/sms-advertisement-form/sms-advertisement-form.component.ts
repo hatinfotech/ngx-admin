@@ -21,7 +21,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 })
 export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsModel> implements OnInit {
 
-  componentName: string = 'SmsAdvertisementFormComponentextends';
+  componentName: string = 'SmsAdvertisementFormComponent';
   idKey = 'Code';
   apiPath = '/helpdesk/tickets';
   baseFormUrl = '/helpdesk/ticket/form';

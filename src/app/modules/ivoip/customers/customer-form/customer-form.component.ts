@@ -1639,8 +1639,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
   }
 
   onPbxChange(event: { id: string, text: string }, formGroup: FormGroup, index: number) {
-    if (event) {
-      this.apiService.get<PbxGatewayModel[]>('/ivoip/gateways', { pbx: event }, gateways => {
+    if (event && event.id) {
+      this.apiService.get<PbxGatewayModel[]>('/ivoip/gateways', { pbx: event.id }, gateways => {
 
         this.gatewaylist = gateways.map(item => {
           return { id: item.gateway_uuid, text: item.gateway };

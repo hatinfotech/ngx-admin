@@ -598,6 +598,12 @@ body nb-layout .layout .layout-container nb-sidebar .main-container-fixed {
 /* body nb-layout .layout .layout-container .content nb-layout-footer nav {
   padding: 0.5rem !important;
 } */
+
+.cdk-overlay-pane {
+  overflow: auto !important;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
 /* End layout */
 
 /* Smart Table */
@@ -866,9 +872,12 @@ body .form-group[state="warning"] textarea:focus {
 }
 
 form.popup {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  // margin-top: 20px;
+  // margin-bottom: 20px;
+  max-width: 90%;
+  margin: auto;
 }
+
 /* End form */
 
 /* Button */
