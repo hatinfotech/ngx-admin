@@ -89,6 +89,7 @@ export class ApiService {
     const token = this.getAccessToken();
     let paramsStr = '';
 
+    if (typeof params === 'undefined') params = {};
     // const _idParams = {};
     if (Array.isArray(params['id'])) {
       // const idParam = {};

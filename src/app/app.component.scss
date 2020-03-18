@@ -305,6 +305,10 @@ body nb-layout[authState="logout"] nb-layout-header.fixed ~ .layout-container {
       line-height: 1.5rem !important;
       padding: 0.4375rem 1.125rem;
     }
+    .select2-selection__clear {
+      position: absolute;
+      right: 0;
+    }
 
     .select2-selection__arrow {
       height: 2.3rem !important;
@@ -599,10 +603,19 @@ body nb-layout .layout .layout-container nb-sidebar .main-container-fixed {
   padding: 0.5rem !important;
 } */
 
-.cdk-overlay-pane {
+.cdk-global-overlay-wrapper .cdk-overlay-pane {
   overflow: auto !important;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+  width: 100% !important;
+}
+
+.cdk-global-overlay-wrapper nb-dialog-container {
+  width: 100% !important;
+}
+
+body nb-progress-bar.status-danger .progress-value {
+  white-space: nowrap;
 }
 /* End layout */
 

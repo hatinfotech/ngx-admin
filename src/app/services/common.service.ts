@@ -8,6 +8,7 @@ import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showc
 import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
+import { MySocket } from '../lib/nam-socket/my-socket';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,8 @@ export class CommonService {
   mobileSidebar: NbSidebarComponent;
 
   loginInfo$ = new BehaviorSubject<LoginInfoModel>(null);
+  private mainSocket: MySocket;
+  mainSocketInfo: { domain: string; port: number; url?: string };
 
   constructor(
     public authService: NbAuthService,
@@ -85,12 +88,38 @@ export class CommonService {
       }
     });
 
+    // Init main socket
+    this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
+      this.mainSocketInfo = rs;
+      this.mainSocketInfo.url = `https://${this.mainSocketInfo.domain}:${this.mainSocketInfo.port}`;
+      this.mainSocket = new MySocket(this.mainSocketInfo.url);
+      console.info('Conntect to local chat server success');
+    }).catch(e => console.error(e));
+
     // Subcribe authorized event
     this.apiService.unauthorizied$.subscribe(info => {
       if (info) {
         this.setPreviousUrl(info.previousUrl);
       }
     });
+  }
+
+  async getMainSocket(): Promise<MySocket> {
+    if (this.mainSocket) {
+      return this.mainSocket;
+    }
+    return this.initMainSocket();
+  }
+
+  async initMainSocket(): Promise<MySocket> {
+    return new Promise<MySocket>((resolve, reject) => {
+      this.mainSocket = new MySocket(this.mainSocketInfo.url);
+      const subscription = this.mainSocket.onConnect$.subscribe(rs => {
+        resolve(this.mainSocket);
+        subscription.unsubscribe();
+      });
+    });
+
   }
 
   getMenuTree(callback: (menuTree: NbMenuItem[]) => void) {

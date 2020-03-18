@@ -245,26 +245,27 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   async ngOnInit() {
 
     this.subcriptions.push(this.commonService.authenticated$.subscribe(loginInfo => {
-      if (loginInfo) {
-        this.chatRoomId = 'test';
-        this.user = {
-          id: loginInfo.user.Code,
-          name: loginInfo.user.Name,
-          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-        };
+      if (false) {
+        if (loginInfo) {
+          this.chatRoomId = 'test';
+          this.user = {
+            id: loginInfo.user.Code,
+            name: loginInfo.user.Name,
+            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+          };
 
-        // this.ready$ = new Observable<boolean>((obs) => {
-        this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
-          this.chatServiceInfo = rs;
-          this.chatServiceInfo.url = `https://${this.chatServiceInfo.domain}:${this.chatServiceInfo.port}`;
-          this.localChatClient = new ChatManager(this.chatServiceInfo.url, this.user);
-          this.localChatClient.onConnect().then(() => {
-            this.readySubject.next(true);
+          // this.ready$ = new Observable<boolean>((obs) => {
+          this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
+            this.chatServiceInfo = rs;
+            this.chatServiceInfo.url = `https://${this.chatServiceInfo.domain}:${this.chatServiceInfo.port}`;
+            this.localChatClient = new ChatManager(this.chatServiceInfo.url, this.user);
+            this.localChatClient.onConnect().then(() => {
+              this.readySubject.next(true);
+            }).catch(e => console.error(e));
+            console.info('Conntect to local chat server success');
           }).catch(e => console.error(e));
-          console.info('Conntect to local chat server success');
-        }).catch(e => console.error(e));
+        }
       }
-
     }));
 
     // Auto update mobile theme

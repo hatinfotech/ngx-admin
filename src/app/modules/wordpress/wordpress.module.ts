@@ -13,9 +13,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { SyncFormComponent } from './sync-form/sync-form.component';
 
 @NgModule({
-  declarations: [WordpressComponent, WpSiteListComponent, WpSiteFormComponent],
+  declarations: [WordpressComponent, WpSiteListComponent, WpSiteFormComponent, SyncFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -47,6 +48,10 @@ import { SortablejsModule } from 'ngx-sortablejs';
     SortablejsModule.forRoot({
       animation: 200,
     }),
+  ],
+  entryComponents: [
+    WpSiteFormComponent,
+    SyncFormComponent,
   ],
 })
 export class WordpressModule { }

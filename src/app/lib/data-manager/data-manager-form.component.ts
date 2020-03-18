@@ -442,6 +442,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Execute api put */
   executePut(params: any, data: M[], success: (data: M[]) => void, error: (e: any) => void) {
+    // this.prepareDataForSave(data);
     this.apiService.put<M[]>(this.apiPath, params, data, newFormData => {
       this.formDataCache = data;
       success(newFormData);
@@ -453,6 +454,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Execute api post */
   executePost(params: any, data: M[], success: (data: M[]) => void, error: (e: any) => void) {
+    // this.prepareDataForSave(data);
     this.apiService.post<M[]>(this.apiPath, params, data, newFormData => {
       this.formDataCache = data;
       success(newFormData);
@@ -462,39 +464,59 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     });
   }
 
+  prepareDataForSave(data: M[]) {
+    data.forEach(item => {
+      Object.keys(item).forEach(k => {
+        if (item[k]['id']) {
+          delete (item[k]['selected']);
+          delete (item[k]['disabled']);
+          delete (item[k]['_resultId']);
+          delete (item[k]['element']);
+        }
+      });
+    });
+  }
+
   /** Form submit event */
-  save() {
-    // this.submitted = true;
-    // this.submiting = true;
-    this.onProcessing();
-    const data: { array: any } = this.form.getRawValue();
+  async save(): Promise<M[]> {
+    return new Promise<M[]>((resolve, reject) => {
 
-    // console.info(data);
+      // this.submitted = true;
+      // this.submiting = true;
+      this.onProcessing();
+      const data: { array: any } = this.form.getRawValue();
 
-    this.form.disable();
-    if (this.id.length > 0) {
-      // Update
-      this.executePut({ id: this.id, silent: true }, data.array, results => {
-        this.onAfterUpdateSubmit(results);
-        // this.submiting = false;
-        // this.form.enable();
-        this.onProcessed();
-      }, e => {
-        // this.submiting = false;
-        // this.form.enable();
-        this.onProcessed();
-        this.onError(e);
-      });
-    } else {
-      // Create
-      this.executePost({ silent: true }, data.array, results => {
-        this.onAfterCreateSubmit(results);
-        this.onProcessed();
-      }, e => {
-        this.onError(e);
-        this.onProcessed();
-      });
-    }
+      // console.info(data);
+
+      this.form.disable();
+      if (this.id.length > 0) {
+        // Update
+        this.executePut({ id: this.id, silent: true }, data.array, results => {
+          this.onAfterUpdateSubmit(results);
+          // this.submiting = false;
+          // this.form.enable();
+          this.onProcessed();
+          resolve(results);
+        }, e => {
+          // this.submiting = false;
+          // this.form.enable();
+          this.onProcessed();
+          this.onError(e);
+          reject(e);
+        });
+      } else {
+        // Create
+        this.executePost({ silent: true }, data.array, results => {
+          this.onAfterCreateSubmit(results);
+          this.onProcessed();
+          resolve(results)
+        }, e => {
+          this.onError(e);
+          this.onProcessed();
+          reject(e);
+        });
+      }
+    });
 
   }
 

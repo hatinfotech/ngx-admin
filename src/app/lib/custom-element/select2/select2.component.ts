@@ -33,10 +33,10 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data && changes.data.previousValue !== changes.data.currentValue) {
-      this.data.unshift({
-        id: '',
-        text: this.select2Option.placeholder,
-      });
+      // this.data.unshift({
+      //   id: '',
+      //   text: this.select2Option.placeholder,
+      // });
     }
   }
 
