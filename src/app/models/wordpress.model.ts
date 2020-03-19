@@ -10,6 +10,8 @@ export class WpSiteModel {
   ApiToken?: string;
   State?: string;
   SyncTargets?: WpSiteSyncTaget[];
+  SyncCategories?: {id: string, text: string, slug: string}[];
+  SyncTags?: {id: string, text: string}[];
 }
 
 
@@ -18,5 +20,6 @@ export class WpSiteSyncTaget {
   WpSite?: string;
   TargetSite?: string;
   Resources?: {id: string, text: string}[];
+  PostTags?: {id: string, text: string}[];
   Active?: boolean;
 }

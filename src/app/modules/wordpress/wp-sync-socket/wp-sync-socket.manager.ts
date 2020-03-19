@@ -29,6 +29,15 @@ export class WpSyncSocketManager extends SocketManager {
 
       // Re-assign context
       existSocketNamespace.setContext(context);
+
+      existSocketNamespace.sendMessage({
+        namespace: namespace,
+        index: Date.now(),
+        content: 'Update sync process info',
+        command: 'update',
+        data: option,
+      }, user);
+
       return existSocketNamespace;
 
     }

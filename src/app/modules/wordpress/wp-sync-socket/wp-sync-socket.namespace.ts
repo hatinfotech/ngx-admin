@@ -7,7 +7,7 @@ export class WpSyncMessage extends Message {
   command?: string;
   data?: any;
   percent?: number;
-  part?: string;
+  state?: string;
   namespace?: string;
 }
 

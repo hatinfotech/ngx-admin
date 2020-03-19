@@ -32,7 +32,35 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    tags: false,
+    multiple: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  select2SyncPostTagsOption = {
+    placeholder: 'Thêm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
     tags: true,
+    multiple: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  select2SyncCategoiesOption = {
+    placeholder: 'Thêm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: false,
     multiple: true,
     keyMap: {
       id: 'id',
@@ -52,6 +80,8 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   progressBarStatus = 'danger';
   processBarlabel = 'Synchronous...';
 
+  originSiteCategories: { [key: string]: { id: number, text: string }[] } = {};
+
   progressBarMap: { [key: string]: { percent: number, status: string, label: string } } = {};
 
   logs: string[] = [];
@@ -59,7 +89,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   @ViewChild('logsEle', { static: false }) logsEle: ElementRef;
   logEleContain: any;
   socketManager: WpSyncSocketManager;
-  syncParts: { [key: string]: string } = {};
+  syncStates: { [key: string]: string } = {};
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -116,20 +146,32 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
       this.socketManager = new WpSyncSocketManager(this.commonService, user);
       this.socketManager.init().then(rs => {
         this.socketManager.onConnect().then(rs2 => {
-
           super.ngOnInit();
         });
       });
     });
-
-
 
   }
 
   /** Execute api get */
   executeGet(params: any, success: (resources: WpSiteModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeSyncTargets'] = true;
-    super.executeGet(params, success, error);
+    super.executeGet(params, (data) => {
+
+
+      this.commonService.getMainSocket().then(async mainSocket => {
+
+        for (let i = 0; i < data.length; i++) {
+          const siteInfo = data[i];
+          await mainSocket.emit<{ id: number, text: string }[]>('wp/get/categories', { siteInfo: siteInfo }).then((categories: { id: number, text: string }[]) => {
+            this.originSiteCategories[siteInfo.Code] = categories;
+          });
+        }
+        if (success) success(data);
+
+      });
+
+    }, error);
   }
 
   makeNewFormGroup(data?: WpSiteModel): FormGroup {
@@ -137,10 +179,8 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
       Code: [''],
       Name: ['', Validators.required],
       Domain: [''],
-      // BaseUrl: [''],
-      // ApiUrl: [''],
-      // ApiUsername: [''],
-      // ApiPassword: [''],
+      SyncCategories: [''],
+      // SyncTags: [''],
       SyncTargets: this.formBuilder.array([
 
       ]),
@@ -148,6 +188,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
     if (data) {
       newForm.patchValue(data);
     }
+
     return newForm;
   }
 
@@ -157,6 +198,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
       TargetSite: ['', Validators.required],
       Resources: [''],
       Active: [''],
+      // Categories: [''],
     });
 
     if (data) {
@@ -292,6 +334,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
               const socketNamespace = await this.socketManager.openNamesapce(this, namespace, user, {
                 originSite: originSite,
                 targetSite: targetSite,
+                // tags: syncTarget.PostTags.map(tag => tag.id),
               });
               socketNamespace.clearMessageList();
               socketNamespace.sendMessage({
@@ -390,10 +433,10 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   }
   onChatRoomHadNewMessage(newMessage: WpSyncMessage): void {
     const tartgetSiteCode = newMessage.namespace.split('-')[1];
-    this.syncParts[tartgetSiteCode] = newMessage.part;
+    this.syncStates[tartgetSiteCode] = newMessage.state;
 
     this.progressBarMap[tartgetSiteCode].percent = newMessage.percent;
-    this.progressBarMap[tartgetSiteCode].label = newMessage.part + '/' + newMessage.percent + '%';
+    this.progressBarMap[tartgetSiteCode].label = newMessage.state + '/' + newMessage.percent + '%';
     // this.logs.unshift(`[${targetSite.Name}] ` + (typeof progress.data.message === 'object' ? JSON.stringify(progress.data.message) : progress.data.message));
 
     this.logs.unshift(`[${tartgetSiteCode}] ` + (typeof newMessage.content === 'object' ? JSON.stringify(newMessage.content) : newMessage.content));
@@ -423,7 +466,11 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
         const socketNamespace = await this.socketManager.openNamesapce(this, namespace, user, {
           originSite: originSite,
           targetSite: targetSite,
+          // tags: syncTarget.PostTags.map(tag => tag.id),
         });
+
+        // Sync message cache
+        await socketNamespace.syncMessageList();
 
         // socketNamespace.sendMessage({
         //   namespace: namespace,
@@ -442,6 +489,6 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   }
 
   isSynchroizing() {
-    return Object.keys(this.syncParts).some(k => !this.syncParts[k] || (['COMPLETE', 'ERROR'].indexOf(this.syncParts[k]) < 0));
+    return Object.keys(this.syncStates).some(k => !this.syncStates[k] || (['running', 'runningerror'].indexOf(this.syncStates[k]) > -1));
   }
 }

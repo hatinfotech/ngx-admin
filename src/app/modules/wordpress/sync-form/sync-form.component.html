@@ -37,17 +37,25 @@
                   <input type="text" nbInput fullWidth formControlName="Domain" readonly placeholder="Domain">
                 </div>
               </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SyncCategories'), 'warning')">
+                  <label class="label"><span class="valid">Sync Categories</span><span class="invalid">Sync Categories
+                      là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="originSiteCategories[formItem.get('Code').value]" formControlName="SyncCategories" [select2Option]="select2SyncCategoiesOption"></ngx-select2>
+                </div>
+              </div>
             </div>
 
             <hr>
             <label class="label">Danh sách components</label>
             <div class="row">
               <div class="col-sm-1">STT</div>
-              <div class="col-sm-10">
+              <div class="col-sm-11">
                 <div class="row">
-                  <div class="col-sm-4">Target Site</div>
+                  <div class="col-sm-5">Target Site</div>
                   <div class="col-sm-6">Sync Resouces</div>
-                  <div class="col-sm-2">Active</div>
+                  <div class="col-sm-1">Active</div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -71,7 +79,7 @@
                   </div>
                   <div class="col-sm-10">
                     <div class="row">
-                      <div class="col-sm-4">
+                      <div class="col-sm-5">
                         <div class="form-group">
                           <label class="label">Target Site</label>
                           <nb-select size="medium" formControlName="TargetSite" fullWidth>
@@ -88,10 +96,10 @@
                             (selectChange)="onAddSyncTargetFormGroup(i, $event)"></ngx-select2>
                         </div>
                       </div>
-                      <div class="col-sm-2">
+                      <div class="col-sm-1">
                         <div class="form-group">
                           <label class="label">Active</label>
-                          <nb-checkbox formControlName="Active">K.hoạt</nb-checkbox>
+                          <nb-checkbox formControlName="Active"></nb-checkbox>
                         </div>
                       </div>
                     </div>
@@ -107,8 +115,9 @@
                   </div>
                   <div class="col-sm-12">
                     <nb-progress-bar style="margin-bottom: 1rem;"
-                    [value]="progressBarMap[targetSite.get('TargetSite').value]?.percent"
-                    [status]="progressBarMap[targetSite.get('TargetSite').value]?.status">{{progressBarMap[targetSite.get('TargetSite').value]?.label}}</nb-progress-bar>
+                      [value]="progressBarMap[targetSite.get('TargetSite').value]?.percent"
+                      [status]="progressBarMap[targetSite.get('TargetSite').value]?.status">
+                      {{progressBarMap[targetSite.get('TargetSite').value]?.label}}</nb-progress-bar>
                   </div>
                 </div>
 
@@ -130,8 +139,8 @@
 
           <div class="buttons-row" style="text-align: right;">
             <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
-            <button (click)="startCopy(formItem)" nbButton status="danger" [disabled]="!form.valid" *ngIf="!isSynchroizing()"
-              style="float: right;" hero>Sync</button>
+            <button (click)="startCopy(formItem)" nbButton status="danger" [disabled]="!form.valid"
+              *ngIf="!isSynchroizing()" style="float: right;" hero>Sync</button>
             <button (click)="stopCopy()" nbButton status="warning" [disabled]="!form.valid" *ngIf="isSynchroizing()"
               style="float: right;" hero>Stop</button>
           </div>
