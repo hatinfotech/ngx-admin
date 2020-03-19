@@ -431,12 +431,15 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   onChatRoomReconnect(): void {
 
   }
+
+  statusDis = {running: 'primary', stopped: 'warning', error: 'danger', complete: 'success'};
   onChatRoomHadNewMessage(newMessage: WpSyncMessage): void {
     const tartgetSiteCode = newMessage.namespace.split('-')[1];
     this.syncStates[tartgetSiteCode] = newMessage.state;
 
     this.progressBarMap[tartgetSiteCode].percent = newMessage.percent;
     this.progressBarMap[tartgetSiteCode].label = newMessage.state + '/' + newMessage.percent + '%';
+    this.progressBarMap[tartgetSiteCode].status = this.statusDis[newMessage.state] || 'info';
     // this.logs.unshift(`[${targetSite.Name}] ` + (typeof progress.data.message === 'object' ? JSON.stringify(progress.data.message) : progress.data.message));
 
     this.logs.unshift(`[${tartgetSiteCode}] ` + (typeof newMessage.content === 'object' ? JSON.stringify(newMessage.content) : newMessage.content));
