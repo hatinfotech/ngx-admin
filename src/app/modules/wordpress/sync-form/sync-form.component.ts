@@ -212,7 +212,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
       // Open sync namespace
       this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { id: data.WpSite }).then(rs => {
         const originSiteInfo = rs[0];
-        if (originSiteInfo) {
+        if (originSiteInfo && data.Active) {
           this.attachSyncProcess(originSiteInfo, data);
         }
       }).catch(e => console.error(e));
@@ -322,7 +322,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
         };
 
         originSite.SyncTargets.forEach(async syncTarget => {
-          if (syncTarget.Resources.some(i => i.id === 'POSTS')) {
+          if (syncTarget.Active && syncTarget.Resources.some(i => i.id === 'POSTS')) {
 
             const targetSite = (await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { id: syncTarget.TargetSite }))[0];
             const namespace = `wp/sync/site2site/${originSite.Code}-${targetSite.Code}`;
