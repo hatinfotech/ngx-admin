@@ -11,6 +11,7 @@ export class WpSiteModel {
   State?: string;
   SyncTargets?: WpSiteSyncTaget[];
   SyncCategories?: {id: string, text: string, slug: string}[];
+  SyncPages?: {id: string, text: string, slug: string}[];
   SyncTags?: {id: string, text: string}[];
 }
 

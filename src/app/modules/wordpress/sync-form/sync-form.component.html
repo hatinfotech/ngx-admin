@@ -45,6 +45,14 @@
                   <ngx-select2 [data]="originSiteCategories[formItem.get('Code').value]" formControlName="SyncCategories" [select2Option]="select2SyncCategoiesOption"></ngx-select2>
                 </div>
               </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SyncPages'), 'warning')">
+                  <label class="label"><span class="valid">Sync Pages</span><span class="invalid">Sync Pages
+                      là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 [data]="originSiteSyncPagess[formItem.get('Code').value]" formControlName="SyncPages" [select2Option]="select2SyncCategoiesOption"></ngx-select2>
+                </div>
+              </div>
             </div>
 
             <hr>

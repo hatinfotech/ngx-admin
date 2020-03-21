@@ -81,6 +81,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   processBarlabel = 'Synchronous...';
 
   originSiteCategories: { [key: string]: { id: number, text: string }[] } = {};
+  originSiteSyncPagess: { [key: string]: { id: number, text: string }[] } = {};
 
   progressBarMap: { [key: string]: { percent: number, status: string, label: string } } = {};
 
@@ -166,6 +167,10 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
           await mainSocket.emit<{ id: number, text: string }[]>('wp/get/categories', { siteInfo: siteInfo }).then((categories: { id: number, text: string }[]) => {
             this.originSiteCategories[siteInfo.Code] = categories;
           });
+
+          await mainSocket.emit<{ id: number, text: string, slug: string }[]>('wp/get/pages', { siteInfo: siteInfo }).then((pages: { id: number, text: string, slug: string }[]) => {
+            this.originSiteSyncPagess[siteInfo.Code] = pages;
+          });
         }
         if (success) success(data);
 
@@ -180,6 +185,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
       Name: ['', Validators.required],
       Domain: [''],
       SyncCategories: [''],
+      SyncPages: [''],
       // SyncTags: [''],
       SyncTargets: this.formBuilder.array([
 
