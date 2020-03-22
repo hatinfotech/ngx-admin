@@ -14,9 +14,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { CrawlPlanListComponent } from './plan/crawl-plan-list/crawl-plan-list.component';
+import { CrawlPlanFormComponent } from './plan/crawl-plan-form/crawl-plan-form.component';
 
 @NgModule({
-  declarations: [CrawlComponent, CrawlDashboardComponent, CrawlServerListComponent, CrawlServerFormComponent],
+  declarations: [CrawlComponent, CrawlDashboardComponent, CrawlServerListComponent, CrawlServerFormComponent, CrawlPlanListComponent, CrawlPlanFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -48,6 +50,10 @@ import { SortablejsModule } from 'ngx-sortablejs';
     SortablejsModule.forRoot({
       animation: 200,
     }),
+  ],
+  entryComponents: [
+    CrawlServerFormComponent,
+    CrawlPlanFormComponent,
   ],
 })
 export class CrawlModule { }

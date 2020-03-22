@@ -128,7 +128,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
 
   ngOnInit() {
     this.restrict();
-    this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites').then(list => {
+    this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', {limit: 99999999}).then(list => {
       this.wpSiteList = list.map(item => {
         return {
           id: item['Code'],
@@ -164,11 +164,11 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
 
         for (let i = 0; i < data.length; i++) {
           const siteInfo = data[i];
-          await mainSocket.emit<{ id: number, text: string }[]>('wp/get/categories', { siteInfo: siteInfo }).then((categories: { id: number, text: string }[]) => {
+          await mainSocket.emit<{ id: number, text: string }[]>('wp/get/categories', { siteInfo: siteInfo }, 30000).then((categories: { id: number, text: string }[]) => {
             this.originSiteCategories[siteInfo.Code] = categories;
           });
 
-          await mainSocket.emit<{ id: number, text: string, slug: string }[]>('wp/get/pages', { siteInfo: siteInfo }).then((pages: { id: number, text: string, slug: string }[]) => {
+          await mainSocket.emit<{ id: number, text: string, slug: string }[]>('wp/get/pages', { siteInfo: siteInfo }, 30000).then((pages: { id: number, text: string, slug: string }[]) => {
             this.originSiteSyncPagess[siteInfo.Code] = pages;
           });
         }

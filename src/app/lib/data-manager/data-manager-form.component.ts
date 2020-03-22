@@ -172,6 +172,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Form init */
   ngOnInit() {
     super.ngOnInit();
+  }
+
+  async init(): Promise<boolean> {
     if (this.inputMode) {
       this.mode = this.inputMode;
     }
@@ -194,6 +197,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         this.onProcessed();
       }
     });
+    return true;
     // this.activeRoute.params.subscribe(params => {
     //   // this.id = params['id']; // (+) converts string 'id' to a number
     //   if (params['id']) {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { CrawlServerModel } from '../../../../models/crawl.model';
+import { CrawlPlanModel } from '../../../../models/crawl.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -8,18 +8,19 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
 import { SyncFormComponent } from '../../../wordpress/sync-form/sync-form.component';
-import { CrawlServerFormComponent } from '../crawl-server-form/crawl-server-form.component';
+import { CrawlServerFormComponent } from '../../server/crawl-server-form/crawl-server-form.component';
+import { CrawlPlanFormComponent } from '../crawl-plan-form/crawl-plan-form.component';
 
 @Component({
-  selector: 'ngx-crawl-server-list',
-  templateUrl: './crawl-server-list.component.html',
-  styleUrls: ['./crawl-server-list.component.scss'],
+  selector: 'ngx-crawl-plan-list',
+  templateUrl: './crawl-plan-list.component.html',
+  styleUrls: ['./crawl-plan-list.component.scss'],
 })
-export class CrawlServerListComponent extends DataManagerListComponent<CrawlServerModel> implements OnInit {
+export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanModel> implements OnInit {
 
-  componentName: string = 'CrawlServerListComponent';
-  formPath = '/crawl/server/form';
-  apiPath = '/crawl/servers';
+  componentName: string = 'CrawlPlanListComponent';
+  formPath = '/crawl/plan/form';
+  apiPath = '/crawl/plans';
   idKey = 'Code';
   // protected _http: HttpClient;
 
@@ -100,13 +101,13 @@ export class CrawlServerListComponent extends DataManagerListComponent<CrawlServ
             //   instance.disabled = true;
             // }
           });
-          instance.click.subscribe(async (row: CrawlServerModel) => {
+          instance.click.subscribe(async (row: CrawlPlanModel) => {
 
             this.dialogService.open(SyncFormComponent, {
               context: {
                 inputMode: 'dialog',
                 inputId: [row.Code],
-                onDialogSave: (newData: CrawlServerModel[]) => {
+                onDialogSave: (newData: CrawlPlanModel[]) => {
                   // if (onDialogSave) onDialogSave(row);
                 },
                 onDialogClose: () => {
@@ -127,7 +128,7 @@ export class CrawlServerListComponent extends DataManagerListComponent<CrawlServ
     super.ngOnInit();
   }
 
-  getList(callback: (list: CrawlServerModel[]) => void) {
+  getList(callback: (list: CrawlPlanModel[]) => void) {
     super.getList((rs) => {
       // rs.map((i: any) => {
       //   i.Brandnames = i.Brandnames.map((i2: any) => i2.id).join(',');
@@ -138,12 +139,12 @@ export class CrawlServerListComponent extends DataManagerListComponent<CrawlServ
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: CrawlServerModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(CrawlServerFormComponent, {
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: CrawlPlanModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(CrawlPlanFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
-        onDialogSave: (newData: CrawlServerModel[]) => {
+        onDialogSave: (newData: CrawlPlanModel[]) => {
           if (onDialogSave) onDialogSave(newData);
         },
         onDialogClose: () => {

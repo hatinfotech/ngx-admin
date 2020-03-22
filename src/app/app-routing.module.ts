@@ -159,7 +159,7 @@ const routes: Routes = [
       .then(m => m.EmailMarketingModule),
   },
   {
-    path: 'crawler',
+    path: 'crawl',
     // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/crawl/crawl.module')
       .then(m => m.CrawlModule),

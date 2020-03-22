@@ -16,7 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class WpSiteFormComponent extends DataManagerFormComponent<WpSiteModel> implements OnInit {
 
-  componentName: string = 'EmailGatewayFormComponent';
+  componentName: string = 'WpSiteFormComponent';
   idKey = 'Code';
   apiPath = '/wordpress/wp-sites';
   baseFormUrl = '/wordpress/wp-site/form';

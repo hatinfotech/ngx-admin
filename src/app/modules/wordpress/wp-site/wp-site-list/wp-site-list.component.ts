@@ -18,8 +18,8 @@ import { SyncFormComponent } from '../../sync-form/sync-form.component';
 })
 export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> implements OnInit {
 
-  componentName: string = 'EmailGatewayListComponent';
-  formPath = '/email-marketing/gateway/form';
+  componentName: string = 'WpSiteListComponent';
+  formPath = '/wordpress/site/form';
   apiPath = '/wordpress/wp-sites';
   idKey = 'Code';
   // protected _http: HttpClient;

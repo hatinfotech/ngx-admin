@@ -4,6 +4,8 @@ import { AuthGuardService } from '../../services/auth-guard.service';
 import { CrawlComponent } from './crawl.component';
 import { CrawlServerFormComponent } from './server/crawl-server-form/crawl-server-form.component';
 import { CrawlServerListComponent } from './server/crawl-server-list/crawl-server-list.component';
+import { CrawlPlanListComponent } from './plan/crawl-plan-list/crawl-plan-list.component';
+import { CrawlPlanFormComponent } from './plan/crawl-plan-form/crawl-plan-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -23,7 +25,7 @@ const routes: Routes = [{
     //   },
     // },
     {
-      path: 'contact/list',
+      path: 'server/list',
       canActivate: [AuthGuardService],
       component: CrawlServerListComponent,
       data: {
@@ -31,14 +33,33 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'contact/form',
+      path: 'server/form',
       canActivate: [AuthGuardService],
       component: CrawlServerFormComponent,
     },
     {
-      path: 'contact/form/:id',
+      path: 'server/form/:id',
       canActivate: [AuthGuardService],
       component: CrawlServerFormComponent,
+    },
+
+    {
+      path: 'plan/list',
+      canActivate: [AuthGuardService],
+      component: CrawlPlanListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'plan/form',
+      canActivate: [AuthGuardService],
+      component: CrawlPlanFormComponent,
+    },
+    {
+      path: 'plan/form/:id',
+      canActivate: [AuthGuardService],
+      component: CrawlPlanFormComponent,
     },
   ],
 }];
