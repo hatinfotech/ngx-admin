@@ -44,7 +44,7 @@ export class CrawlPlanStoreModel {
 export class CrawlPlanBotModel {
   Id?: string;
   Plan?: string;
-  Bot?: string;
+  Bot?: CrawlServerModel | string;
   IsMain?: boolean;
   Active?: boolean;
   Status?: string;

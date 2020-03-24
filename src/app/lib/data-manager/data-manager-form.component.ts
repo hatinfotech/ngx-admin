@@ -1,7 +1,7 @@
-import { OnInit, OnDestroy, Input } from '@angular/core';
+import { OnInit, OnDestroy, Input, AfterViewInit, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../services/api.service';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
@@ -11,7 +11,7 @@ import { CommonService } from '../../services/common.service';
 import { BaseComponent } from '../base-component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 
-export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy {
+export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   mode: 'dialog' | 'page' | 'inline' = 'page';
 
@@ -164,6 +164,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       }
     });
 
+  }
+  ngAfterViewInit(): void {
+    // const nativeEle = this;
+    if (this['ref']) {
+      const dialog: NbDialogRef<DataManagerFormComponent<M>> = this['ref'];
+      const nativeEle = dialog.componentRef.location.nativeElement;
+      $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+    }
   }
 
   /** Make new form group sctructure */
@@ -336,6 +344,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         status: 'success',
         hasIcon: true,
         position: NbGlobalPhysicalPosition.TOP_RIGHT,
+        // duration: 5000,
       });
     }
     this.id = newFormData.map(item => item[this.idKey]);
@@ -359,6 +368,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         status: 'success',
         hasIcon: true,
         position: NbGlobalPhysicalPosition.TOP_RIGHT,
+        // duration: 5000,
       });
     }
     this.id = newFormData.map(item => item[this.idKey]);

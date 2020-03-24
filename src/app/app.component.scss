@@ -604,10 +604,19 @@ body nb-layout .layout .layout-container nb-sidebar .main-container-fixed {
 } */
 
 .cdk-global-overlay-wrapper .cdk-overlay-pane {
-  overflow: auto !important;
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
-  width: 100% !important;
+  // overflow: auto !important;
+
+  // width: 100% !important;
+  height: initial;
+  // max-height: initial;
+}
+.cdk-global-overlay-wrapper.dialog {
+  pointer-events: initial;
+}
+
+.cdk-global-overlay-wrapper .cdk-overlay-pane nb-card {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
 }
 
 .cdk-global-overlay-wrapper nb-dialog-container {
@@ -890,6 +899,17 @@ form.popup {
   max-width: 90%;
   margin: auto;
 }
+.dialog-wrap {
+  // max-width: 90%;
+  margin: auto;
+}
+// .cdk-global-overlay-wrapper,
+// .cdk-overlay-container {
+//   pointer-events: initial;
+// }
+// .cdk-overlay-pane:has(ngx-showcase-dialog) {
+//   width: 100%;
+// }
 
 /* End form */
 

@@ -111,6 +111,7 @@ export class MySocket {
     return new Promise<T>((resolve, reject) => {
 
       // Subcrice callback
+      let complete = false;
       let subcription = this.emitCallback$.subscribe(result => {
         if (result) {
           if (result.seq === checkpointSeq) {
@@ -121,6 +122,7 @@ export class MySocket {
             }
             subcription.unsubscribe();
             subcription = null;
+            complete = true;
           }
         }
 
@@ -129,7 +131,9 @@ export class MySocket {
           if (subcription) {
             this.stateSubject.next('emit-timeout');
             subcription.unsubscribe();
-            reject(`Socket emit timeout ${timeout ? timeout : this.emitTimeout  }`);
+            if (!complete) {
+              reject(`Socket emit timeout ${timeout ? timeout : this.emitTimeout}`);
+            }
           }
         }, timeout ? timeout : this.emitTimeout);
       });

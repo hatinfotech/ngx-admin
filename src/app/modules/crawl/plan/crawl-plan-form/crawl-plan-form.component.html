@@ -7,7 +7,7 @@
           <nav>
             Cập nhật kế hoạch thu thập dữ liệu
             <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
-              <nb-icon pack="eva" icon="close-circle"></nb-icon>
+              <nb-icon pack="eva" icon="close-outline"></nb-icon>
             </button>
             <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
               title="Tải lại">
@@ -145,15 +145,18 @@
                 <div class="form-group">
                   <label class="label"><span class="valid">Test crawl</span></label>
                   <div class="row">
-                    <div class="col-sm-4">
-                      <button fullWidth nbButton status="success" hero (click)="onTestCrawlClick(formItem)">Test</button>
+                    <!-- <div class="col-sm-4">
+                      <button fullWidth nbButton status="success" hero
+                        (click)="onTestCrawlClick(formItem)">Test</button>
                     </div>
                     <div class="col-sm-4">
-                      <button fullWidth nbButton status="danger" hero (click)="onStartCrawlClick(formItem)">Start</button>
+                      <button fullWidth nbButton status="danger" hero
+                        (click)="onStartCrawlClick(formItem)">Start</button>
                     </div>
                     <div class="col-sm-4">
-                      <button fullWidth nbButton status="warning" hero (click)="onStopCrawlClick(formItem)">Stop</button>
-                    </div>
+                      <button fullWidth nbButton status="warning" hero
+                        (click)="onStopCrawlClick(formItem)">Stop</button>
+                    </div> -->
                   </div>
                 </div>
               </div>
@@ -165,9 +168,11 @@
               <div class="col-sm-1">STT</div>
               <div class="col-sm-10">
                 <div class="row">
-                  <div class="col-sm-10">Crawl bot</div>
-                  <div class="col-sm-1">Main bot</div>
+                  <div class="col-sm-5">Crawl bot</div>
+                  <div class="col-sm-3">Action</div>
+                  <div class="col-sm-2">State</div>
                   <div class="col-sm-1">Active</div>
+                  <div class="col-sm-1">Main bot</div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -190,13 +195,38 @@
                   </div>
                   <div class="col-sm-10">
                     <div class="row">
-                      <div class="col-sm-10">
+                      <div class="col-sm-5">
                         <div class="form-group">
                           <label class="label">Crawl bot</label>
                           <nb-select size="medium" formControlName="Bot" fullWidth selected="">
                             <nb-option value="">Chọn bot</nb-option>
                             <nb-option *ngFor="let bot of botList" [value]="bot.Code"> {{ bot.Name }}</nb-option>
                           </nb-select>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="label">Action</label>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <button fullWidth nbButton status="success" hero
+                                (click)="onTestCrawlClick($event, formItem, bot, bot.get('Bot').value)">Test</button>
+                            </div>
+                            <div class="col-sm-4">
+                              <button fullWidth nbButton status="danger" hero
+                                (click)="onStartCrawlClick($event, formItem, bot, bot.get('Bot').value)">Start</button>
+                            </div>
+                            <div class="col-sm-4">
+                              <button fullWidth nbButton status="warning" hero
+                                (click)="onStopCrawlClick($event, formItem, bot, bot.get('Bot').value)">Stop</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group">
+                          <label class="label">State</label>
+                          <input nbInput fullWidth disabled="true" formControlName="State">
                         </div>
                       </div>
                       <div class="col-sm-1">

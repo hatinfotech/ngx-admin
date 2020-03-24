@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { CrawlPlanModel, CrawlPlanStoreModel, CrawlPlanBotModel, CrawlServerModel } from '../../../../models/crawl.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef, NbButtonComponent } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WpSiteModel } from '../../../../models/wordpress.model';
@@ -12,6 +12,14 @@ import { MySocket } from '../../../../lib/nam-socket/my-socket';
 import { CrawlService } from '../../crawl.service';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { takeUntil } from 'rxjs/operators';
+
+export interface CrawlLog {
+  plan: string;
+  bot: string;
+  message: string;
+  status: { state: string };
+  type: string;
+}
 
 @Component({
   selector: 'ngx-crawl-plan-form',
@@ -71,7 +79,13 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     this.botList = await this.apiService.getPromise<WpSiteModel[]>('/crawl/servers', { limit: 99999999 });
 
     // Parent init
-    return super.init();
+    const result = await super.init();
+    this.commonService.getMainSocket().then(mainSocket => {
+      mainSocket.on<CrawlLog>('crawl/log').pipe(takeUntil(this.destroy$)).subscribe(log => {
+        console.log(log);
+      });
+    });
+    return result;
   }
 
   formLoad(formData: CrawlPlanModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CrawlPlanModel) => void) {
@@ -108,15 +122,15 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       Code: [''],
       Description: ['', Validators.required],
       TargetUrl: ['', Validators.required],
-      TargetTitlePath: ['', Validators.required],
-      TargetDescriptionPath: ['', Validators.required],
+      TargetTitlePath: ['title=>text', Validators.required],
+      TargetDescriptionPath: ['meta[property="og:title"]=>attr.content', Validators.required],
       TargetCreatedPath: [''],
-      TargetCategoriesPath: [''],
-      TargetFeatureImagePath: [''],
+      TargetCategoriesPath: ['meta[property="article:section"]=>attr.content'],
+      TargetFeatureImagePath: ['meta[property="og:image"]=>attr.content'],
       TargetAuthorPath: [''],
       TargetContentPath: ['', Validators.required],
-      TargetImageSrc: [''],
-      Frequency: [''],
+      TargetImageSrc: ['src'],
+      Frequency: ['60'],
       State: ['INSTANT'],
       Stores: this.formBuilder.array([
 
@@ -176,10 +190,31 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       Bot: ['', Validators.required],
       IsMain: [''],
       Active: [''],
+      State: [''],
     });
 
     if (data) {
       newForm.patchValue(data);
+      if (data.Bot) {
+        this.commonService.getMainSocket().then(async mainSocket => {
+          const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: data.Bot }))[0];
+          if (botInfo) {
+            await mainSocket.emit<{ state: string, lastLog: string }>('crawl/init', botInfo);
+            this.getCrawlStatus(this.array.controls[0] as FormGroup, data.Bot as string).then(status => {
+              console.log(status);
+              newForm.get('State').setValue(status.state);
+            });
+            mainSocket.on<CrawlLog>('crawl/log').pipe(takeUntil(this.destroy$)).subscribe(log => {
+              if (log && log.data.plan === data.Plan && log.data.bot === data.Bot as string) {
+                console.log(log);
+                if (log.data.status) {
+                  newForm.get('State').setValue(log.data.status.state);
+                }
+              }
+            });
+          }
+        });
+      }
     }
     return newForm;
   }
@@ -218,129 +253,194 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  onTestCrawlClick(formItem: FormGroup) {
-    this.testCrawl(formItem);
-    return false;
-  }
-
-  async testCrawl(formItem: FormGroup) {
-    const formData: CrawlPlanModel = formItem.value;
-    console.log('Test crawl', formItem.value);
-
-    const mainBot = formData.Bots.filter(bot => bot.IsMain)[0];
-    console.log('Main bot', mainBot);
-
-    const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: mainBot.Bot }))[0];
-    if (botInfo) {
-      const botSocket = await this.service.getBotSocket(botInfo.ApiUrl);
-      // subscription.unsubscribe();
-      console.log('Main bot socket connected');
-      botSocket.emit<any>('test-crawl', formData, 300000).then(post => {
-        console.log('emit callback', post);
-        this.dialogService.open(ShowcaseDialogComponent, {
-          context: {
-            title: 'Crawl preview',
-            content: `Hình đại diện: <br><img src="${post.featured_media}" /><p>${post.description}</p><br>${post.content}`,
-            actions: [
-              {
-                label: 'Trở về',
-                icon: 'back',
-                status: 'info',
-                action: () => { },
-              },
-            ],
-          },
-        });
-      });
-
-    }
-
-    return false;
-  }
-
-  onStartCrawlClick(formItem: FormGroup) {
-    const plan: CrawlPlanModel = formItem.value;
-    this.startCrawl(plan);
-    return false;
-  }
-
-  async startCrawl(crawlPlan: CrawlPlanModel) {
-    await this.save();
-    // const formData: CrawlPlanModel = formItem.value;
-    console.log('Start crawl', crawlPlan);
-
-    crawlPlan.Bots.forEach(async bot => {
-
-      // const mainBot = crawlPlan.Bots.filter(bot => bot.IsMain)[0];
-      console.log('Main bot', bot);
-
-      const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: bot.Bot }))[0];
-      if (botInfo) {
-        const botSocket = await this.service.getBotSocket(botInfo.ApiUrl);
-        if (bot.Active) {
-          // subscription.unsubscribe();
-          console.log('Main bot socket connected');
-
-          const planInfo: CrawlPlanModel = JSON.parse(JSON.stringify(crawlPlan));
-          delete planInfo.Bots;
-
-          // Prepare store sites
-          const storeSiteInfo = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { id: planInfo.Stores.map(store => store.Site) });
-          for (let s = 0; s < planInfo.Stores.length; s++) {
-            planInfo.Stores[s].Site = storeSiteInfo.filter(site => site.Code === planInfo.Stores[s].Site)[0];
-          }
-
-          // Emit command
-          botSocket.emit<CrawlPlanModel>('start-crawl', planInfo, 300000).then(post => {
-            console.log('emit callback', post);
-          });
-        } else {
-          // Emit command
-          botSocket.emit<string>('stop-crawl', bot.Bot, 300000).then(post => {
-            console.log('emit callback', post);
-          });
-        }
-      }
+  onTestCrawlClick(event: any, formItem: FormGroup, botForm: FormGroup, botCode: string) {
+    const button = event.currentTarget;
+    button.disabled = true;
+    botForm.get('State').setValue('Testing');
+    this.testCrawl(formItem, botCode).then((rs) => {
+      button.disabled = false;
+      botForm.get('State').setValue('Test complete');
+    }).catch(e => {
+      button.disabled = false;
+      botForm.get('State').setValue('Test error');
     });
     return false;
   }
 
-  onStopCrawlClick(formItem: FormGroup) {
-    this.stopCrawl(formItem.value);
+  async testCrawl(formItem: FormGroup, botCode: string) {
+    const crawlPlan: CrawlPlanModel = JSON.parse(JSON.stringify(formItem.value));
+    console.log('Test crawl', formItem.value);
+
+    // Get crawl bots
+    // const bots: CrawlPlanBotModel[] = botCode ? crawlPlan.Bots.filter(b => b.Bot === botCode) : crawlPlan.Bots;
+
+    const mainBot = crawlPlan.Bots.filter(bot => botCode === bot.Bot)[0];
+    const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: mainBot.Bot }))[0];
+    crawlPlan.Bots = [
+      { Bot: botInfo, IsMain: true },
+    ];
+    console.log('Main bot', mainBot);
+    if (botInfo) {
+      return new Promise<any>(async (resolve, reject) => {
+        const mainSocket = await this.commonService.getMainSocket();
+        await mainSocket.emit<any>('crawl/init', botInfo);
+        mainSocket.emit<any>('crawl/test-crawl', { bot: botInfo, plan: crawlPlan }, 300000).then(post => {
+          console.log(post);
+          this.dialogService.open(ShowcaseDialogComponent, {
+            context: {
+              title: 'Crawl preview',
+              content: `Hình đại diện: <br><img src="${post.featured_media}" /><p>${post.description}</p><br>${post.content}`,
+              actions: [
+                {
+                  label: 'Trở về',
+                  icon: 'back',
+                  status: 'info',
+                  action: () => { },
+                },
+              ],
+            },
+            hasScroll: true,
+            closeOnEsc: true,
+          });
+          resolve(post);
+        });
+      });
+    }
     return false;
   }
 
-  async stopCrawl(crawlPlan: CrawlPlanModel) {
-    // const formData: CrawlPlanModel = formItem.value;
-    console.log('Stop crawl', crawlPlan);
+  onStartCrawlClick(event: any, planForm: FormGroup, botForm: FormGroup, botCode: string) {
+    const button = event.currentTarget;
+    button.disabled = true;
+    botForm.get('State').setValue('Starting');
+    this.startCrawl(planForm, botCode).then(rs => {
+      button.disabled = false;
+      botForm.get('State').setValue('Running');
+    }).catch(e => {
+      button.disabled = false;
+      botForm.get('State').setValue('Start error');
+    });
 
-    crawlPlan.Bots.forEach(async bot => {
-      // const mainBot = crawlPlan.Bots.filter(bot => bot.IsMain)[0];
-      console.log('Main bot', bot);
+    return false;
+  }
 
-      const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: bot.Bot }))[0];
+  async startCrawl(formItem: FormGroup, botCode: string) {
+    try {
+      const crawlPlan: CrawlPlanModel = formItem.value;
+      console.log('Start crawl', crawlPlan);
+
+      const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: botCode }))[0];
+
       if (botInfo) {
-        const botSocket = await this.service.getBotSocket(botInfo.ApiUrl);
+        const mainSocket = await this.commonService.getMainSocket();
+        await mainSocket.emit<any>('crawl/init', botInfo);
+        console.log('Main bot socket connected');
+
+        const planInfo: CrawlPlanModel = JSON.parse(JSON.stringify(crawlPlan));
+        planInfo.Bots = [
+          {
+            Bot: botInfo,
+          },
+        ];
+
+        // Prepare store sites
+        const storeSiteInfo = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { id: planInfo.Stores.map(store => store.Site) });
+        for (let s = 0; s < planInfo.Stores.length; s++) {
+          planInfo.Stores[s].Site = storeSiteInfo.filter(site => site.Code === planInfo.Stores[s].Site)[0];
+        }
+
+        return mainSocket.emit<{ state: string }>('crawl/start-crawl', { bot: botInfo, plan: planInfo }, 300000).then(status => {
+          console.info(status);
+        }).catch(e => {
+          console.error(e);
+        });
+
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return false;
+  }
+
+  onStopCrawlClick(event, formItem: FormGroup, botForm: FormGroup, botCode: string) {
+    const button = event.currentTarget;
+    button.disabled = true;
+    botForm.get('State').setValue('Stoping');
+    this.stopCrawl(formItem, botCode).then(rs => {
+      button.disabled = false;
+      botForm.get('State').setValue('Stopped');
+    }).catch(e => {
+      button.disabled = false;
+      botForm.get('State').setValue('Stop error');
+    });
+    return false;
+  }
+
+  async stopCrawl(formItem: FormGroup, botCode: string) {
+    try {
+      const crawlPlan: CrawlPlanModel = formItem.value;
+      console.log('Stop crawl', crawlPlan);
+
+      const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: botCode }))[0];
+      if (botInfo) {
+        // const botSocket = await this.service.getBotSocket(botInfo.ApiUrl);
+        const mainSocket = await this.commonService.getMainSocket();
         // subscription.unsubscribe();
         console.log('Main bot socket connected');
 
         const planInfo: CrawlPlanModel = JSON.parse(JSON.stringify(crawlPlan));
-        // delete planInfo.Bots;
+        planInfo.Bots = [
+          { Bot: botInfo },
+        ];
 
-        // Prepare store sites
-        // const storeSiteInfo = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { id: planInfo.Stores.map(store => store.Site) });
-        // for (let s = 0; s < planInfo.Stores.length; s++) {
-        //   planInfo.Stores[s].Site = storeSiteInfo.filter(site => site.Code === planInfo.Stores[s].Site)[0];
-        // }
-
-        // Emit command
-        botSocket.emit<string>('stop-crawl', planInfo.Code, 300000).then(status => {
-          console.log('emit callback', status);
-        });
+        const status = await mainSocket.emit<{ state: string }>('crawl/stop-crawl', { bot: botInfo, plan: planInfo }, 300000);
+        console.info(status);
+        return status;
+        // .then(status => {
+        //   // resolve(status);
+        //   console.info(status);
+        // }).catch(e => {
+        //   console.error(e);
+        // });
 
       }
-    });
-
+      // });
+    } catch (e) {
+      console.error(e);
+    }
     return false;
   }
+
+  async getCrawlStatus(formItem: FormGroup, botCode: string): Promise<{ state: string }> {
+    try {
+      const crawlPlan: CrawlPlanModel = JSON.parse(JSON.stringify(formItem.value));
+      console.log('Get crawl status', crawlPlan);
+
+      // Get crawl bots
+      const bots: CrawlPlanBotModel[] = botCode ? crawlPlan.Bots.filter(b => b.Bot === botCode) : crawlPlan.Bots;
+
+      const bot = bots[0];
+      if (bot) {
+        console.log('Main bot', bot);
+        const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: bot.Bot }))[0];
+        if (botInfo) {
+          crawlPlan.Bots = [
+            { Bot: botInfo },
+          ];
+          // return new Promise<{ state: string }>(async (resolve, reject) => {
+          const mainSocket = await this.commonService.getMainSocket();
+
+          const status = await mainSocket.emit<{ state: string }>('crawl/get-status', { bot: botInfo, plan: crawlPlan }, 15000);
+          console.info(status);
+          return status;
+        }
+      } else {
+        throw Error('Bot info not defined');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  }
+
 }

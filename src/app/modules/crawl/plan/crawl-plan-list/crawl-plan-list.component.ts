@@ -68,58 +68,58 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
         type: 'string',
         width: '10%',
       },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '30%',
-      },
+      // Name: {
+      //   title: 'Tên',
+      //   type: 'string',
+      //   width: '30%',
+      // },
       Description: {
         title: 'Mô tả',
         type: 'string',
-        width: '30%',
+        width: '70%',
       },
       ApiVersion: {
         title: 'Api Version',
         type: 'string',
         width: '20%',
       },
-      Action: {
-        title: 'Action',
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'copy';
-          instance.label = 'Copy nội dung sang site khác';
-          instance.display = true;
-          instance.status = 'success';
-          instance.valueChange.subscribe(value => {
-            // if (value) {
-            //   instance.disabled = false;
-            // } else {
-            //   instance.disabled = true;
-            // }
-          });
-          instance.click.subscribe(async (row: CrawlPlanModel) => {
+      // Action: {
+      //   title: 'Action',
+      //   type: 'custom',
+      //   width: '10%',
+      //   renderComponent: SmartTableButtonComponent,
+      //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+      //     instance.iconPack = 'eva';
+      //     instance.icon = 'copy';
+      //     instance.label = 'Copy nội dung sang site khác';
+      //     instance.display = true;
+      //     instance.status = 'success';
+      //     instance.valueChange.subscribe(value => {
+      //       // if (value) {
+      //       //   instance.disabled = false;
+      //       // } else {
+      //       //   instance.disabled = true;
+      //       // }
+      //     });
+      //     instance.click.subscribe(async (row: CrawlPlanModel) => {
 
-            this.dialogService.open(SyncFormComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [row.Code],
-                onDialogSave: (newData: CrawlPlanModel[]) => {
-                  // if (onDialogSave) onDialogSave(row);
-                },
-                onDialogClose: () => {
-                  // if (onDialogClose) onDialogClose();
-                  this.refresh();
-                },
-              },
-            });
+      //       this.dialogService.open(SyncFormComponent, {
+      //         context: {
+      //           inputMode: 'dialog',
+      //           inputId: [row.Code],
+      //           onDialogSave: (newData: CrawlPlanModel[]) => {
+      //             // if (onDialogSave) onDialogSave(row);
+      //           },
+      //           onDialogClose: () => {
+      //             // if (onDialogClose) onDialogClose();
+      //             this.refresh();
+      //           },
+      //         },
+      //       });
 
-          });
-        },
-      },
+      //     });
+      //   },
+      // },
     },
   };
 
@@ -152,6 +152,9 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
           this.refresh();
         },
       },
+      hasScroll: true,
+      closeOnEsc: false,
+      // closeOnBackdropClick: false,
     });
   }
 
