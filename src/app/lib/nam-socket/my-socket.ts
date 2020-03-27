@@ -19,7 +19,7 @@ export class MySocket {
   id: string;
   get connected() { return this.socket.connected; }
   get disconnected() { return this.socket.disconnected; }
-  emitTimeout = 10000;
+  emitTimeout = 30000;
 
   private seq = 0;
 
@@ -40,7 +40,10 @@ export class MySocket {
 
   private events: { [key: string]: Subscriber<any>[] } = {};
 
-  constructor(uri: string, opts?: SocketIOClient.ConnectOpts) {
+  constructor(
+    protected uri: string,
+    protected opts?: SocketIOClient.ConnectOpts,
+  ) {
     this.socket = socketIo(uri, opts);
     this.initEvent();
     this.state$.subscribe(state => {
@@ -95,6 +98,7 @@ export class MySocket {
   }
 
   removeAllListeners() {
+    console.log('Remove socket event listener');
     this.stateSubject.next('no-event');
     this.socket.removeAllListeners();
   }
@@ -107,6 +111,16 @@ export class MySocket {
     //     throw Error('Socket ' + this.socket.id + ' was disconnected !!!');
     //   }
     // }
+
+    if (!this.socket.connected) {
+      await new Promise<boolean>((resolve, reject) => {
+        this.connect();
+        const subsc = this.onConnect$.subscribe(status => {
+          resolve(true);
+          try { subsc.unsubscribe(); } catch (e) { console.log(e); }
+        });
+      });
+    }
     this.socket.emit(event, { seq: checkpointSeq, type: 'success', data });
     return new Promise<T>((resolve, reject) => {
 
@@ -115,23 +129,25 @@ export class MySocket {
       let subcription = this.emitCallback$.subscribe(result => {
         if (result) {
           if (result.seq === checkpointSeq) {
+            subcription.unsubscribe();
+            subcription = null;
+            complete = true;
             if (result.type === 'success') {
               resolve(result.data);
             } else {
               reject(result.data);
             }
-            subcription.unsubscribe();
-            subcription = null;
-            complete = true;
           }
         }
 
         // Reject on timeout
-        setTimeout(() => {
+        setTimeout(async () => {
           if (subcription) {
-            this.stateSubject.next('emit-timeout');
-            subcription.unsubscribe();
+            try { subcription.unsubscribe(); } catch (e) { console.log(e) };
+
             if (!complete) {
+              console.log('Retry emit ' + event);
+              this.stateSubject.next('emit-timeout');
               reject(`Socket emit timeout ${timeout ? timeout : this.emitTimeout}`);
             }
           }
@@ -142,27 +158,37 @@ export class MySocket {
   }
 
   async retryConnect(): Promise<boolean> {
-    let tryCount = 0;
-    while (!this.socket.connected) {
-      this.stateSubject.next('retry-connect');
-      tryCount++;
-      console.info('Retry to connect socket : ' + this.socket);
-      const result = await new Promise<boolean>((resolve, reject) => {
-        this.socket.connect();
-        setTimeout(() => {
-          resolve(false);
-        }, 1000);
-      });
-      if (result) {
-        break;
-      }
-      if (tryCount > 3) {
-        this.stateSubject.next('retry-connect-failed');
-        return false;
-      }
-    }
 
-    return true;
+    return this.reset();
+
+    // let tryCount = 0;
+    // while (true) {
+    //   this.stateSubject.next('retry-connect');
+    //   tryCount++;
+    //   console.info('Retry to connect socket : ' + this.socket);
+    //   const result = await new Promise<boolean>((resolve, reject) => {
+    //     this.socket.connect();
+    //     setTimeout(() => {
+    //       resolve(false);
+    //     }, 1000);
+    //   });
+    //   if (result) {
+    //     return true;
+    //   }
+    //   if (tryCount > 2) {
+    //     console.log('Retry connect timeout ' + tryCount);
+    //     this.stateSubject.next('retry-connect-failed');
+    //     await this.reset();
+    //     return true;
+    //     // return false;
+    //   }
+    //   if (tryCount > 5) {
+    //     console.log('Retry connect timeout ' + tryCount);
+    //     return false;
+    //   }
+    // }
+
+    // return true;
   }
 
   connect() {
@@ -255,4 +281,15 @@ export class MySocket {
     this.socket.emit('callback', { seq, type: 'success', data });
   }
 
+  async reset() {
+    console.log('Reset socket connenction');
+    this.removeAllListeners();
+    // this.socket.disconnect();
+    this.socket.close();
+    this.socket = socketIo(this.uri, this.opts);
+    this.initEvent();
+
+    await new Promise(resolve => setTimeout(() => resolve(), 5000));
+    return true;
+  }
 }

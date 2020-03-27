@@ -122,6 +122,13 @@
                 </div>
               </div>
               <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ExcludeContentElements'), 'warning')">
+                  <label class="label"><span class="valid">Exclude Content Elements</span><span class="invalid">Exclude Content Elements là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="ExcludeContentElements" placeholder="jquery selectors">
+                </div>
+              </div>
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Frequency'), 'warning')">
                   <label class="label"><span class="valid">Frequency (*)</span><span class="invalid">Frequency
                       là bắt buộc

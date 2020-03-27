@@ -412,8 +412,9 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   }
 
   ngAfterViewInit(): void {
+    super.ngAfterViewInit();
     // this.logEleContain = this.logsEle.nativeElement;
-    // this.logEleContain.changes.subscribe(_ => {
+    // this.logEleContai`n.changes.subscribe(_ => {
     //   this.logEleContain.scroll({
     //     top: this.logEleContain.scrollHeight,
     //     left: 0,

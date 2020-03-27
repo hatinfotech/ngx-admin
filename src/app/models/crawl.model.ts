@@ -26,6 +26,7 @@ export class CrawlPlanModel {
   TargetAuthorPath?: string;
   TargetContentPath?: string;
   TargetImageSrc?: string;
+  ExcludeContentElements?: string;
   Frequency?: number;
   State?: string;
   Status?: string;

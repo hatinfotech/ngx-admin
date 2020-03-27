@@ -30,6 +30,8 @@ export class SocketNamespace {
   private takeUltilPastCount = {};
   public roomSocket: MySocket;
 
+  registered = false;
+
   constructor(
     public id: string,
     // public roomSocket: MySocket,
@@ -67,13 +69,16 @@ export class SocketNamespace {
   async init() {
     console.info('Init namespace socket : ' + this.id);
     // let result: any;
-    await this.chatManager.mainSocket.emit<string>('open-namespace', { namespace: this.id, option: { user: this.user, ...this.option } }).then(rs => {
-      console.info('response of open-namespace');
-      console.info(rs);
-    }).catch(e => {
-      console.info('open namespace error');
-      console.error(e);
-    });
+    const rs = await this.chatManager.mainSocket.emit<string>('open-namespace', { namespace: this.id, option: { user: this.user, ...this.option } });
+    console.info('response of open-namespace');
+    console.info(rs);
+    // .then(rs => {
+    //   console.info('response of open-namespace');
+    //   console.info(rs);
+    // }).catch(e => {
+    //   console.info('open namespace error');
+    //   console.error(e);
+    // });
 
     console.info('connect to namespace : ' + this.id);
     // if (!this.roomSocket) {
@@ -84,28 +89,30 @@ export class SocketNamespace {
     // }
 
     // Apply namespace event
-    this.roomSocket.onConnect$.subscribe(state => {
+    this.roomSocket.onConnect$.subscribe(async state => {
       console.info('namespace connected - ' + this.id);
       this.stateSubject.next('connect');
 
       console.info('Register for connect');
-      this.register().catch(e => {
-        console.info('Namespsace reconnect when register failed on socket connect');
-        this.roomSocket.connect();
-      });
+      await this.register();
+      // .catch(e => {
+      //   console.info('Namespsace reconnect when register failed on socket connect');
+      //   this.roomSocket.connect();
+      // });
     });
 
-    this.roomSocket.onReconnect$.subscribe(att => {
+    this.roomSocket.onReconnect$.subscribe(async att => {
       console.info(this.id + ' reconnected : ' + att);
       this.stateSubject.next('reconnected');
 
-      this.reInit();
+      await this.reInit();
 
       console.info('Register for re-connect');
-      this.register().catch(e => {
-        console.info('Chat room reconnect when register failed on socket reconnect');
-        this.roomSocket.connect();
-      });
+      await this.register();
+      // .catch(e => {
+      //   console.info('Chat room reconnect when register failed on socket reconnect');
+      //   this.roomSocket.connect();
+      // });
     });
 
     this.roomSocket.on<Message>('message').subscribe(newMessage => {
@@ -115,18 +122,19 @@ export class SocketNamespace {
     this.state$.subscribe(async (state) => {
       // Load last messages
       if (state === 'ready') {
-        this.takeUntil('load-last-message', 500).then(async () => {
-          console.info('load last messages...');
-          const lastMessage = this.messageList[this.messageList.length - 1];
-          const lastMessages = await this.roomSocket.emit<Message[]>('request-last-messages', lastMessage ? lastMessage.index : 0);
+        this.registered = true;
+        // this.takeUntil('load-last-message', 500).then(async () => {
+        //   console.info('load last messages...');
+        //   const lastMessage = this.messageList[this.messageList.length - 1];
+        //   const lastMessages = await this.roomSocket.emit<Message[]>('request-last-messages', lastMessage ? lastMessage.index : 0);
 
-          if (lastMessages && lastMessages.length > 0) {
-            lastMessages.forEach(newMessage => {
-              this.messageList.push(newMessage);
-              this.context.onChatRoomHadNewMessage(newMessage);
-            });
-          }
-        });
+        //   if (lastMessages && lastMessages.length > 0) {
+        //     lastMessages.forEach(newMessage => {
+        //       this.messageList.push(newMessage);
+        //       this.context.onChatRoomHadNewMessage(newMessage);
+        //     });
+        //   }
+        // });
       }
     });
 
@@ -155,34 +163,36 @@ export class SocketNamespace {
     this.messageList = [];
   }
 
-  reInit() {
+  async reInit() {
     this.roomSocket.removeAllListeners();
 
     console.info('Init namespace socket : ' + this.id);
     // let result: any;
-    this.chatManager.mainSocket.emit<string>('open-namespace', { namespace: this.id, option: { user: this.user, ...this.option } }).then(rs => {
-      console.info('response of open-namespace');
-      console.info(rs);
-    }).catch(e => {
-      console.info('open namespace error');
-      console.error(e);
-    });
+    const rs = await this.chatManager.mainSocket.emit<string>('open-namespace', { namespace: this.id, option: { user: this.user, ...this.option } });
+    // .then(rs => {
+    console.info('response of open-namespace');
+    console.info(rs);
+    // }).catch(e => {
+    // console.info('open namespace error');
+    // console.error(e);
+    // });
 
     // this.initNamespaceSocket();
     this.roomSocket.initEvent();
   }
 
   register(timeout?: number): Promise<boolean> {
-    timeout = timeout ? timeout : 10000;
+    timeout = timeout ? timeout : 60000;
     return new Promise<boolean>(async (resolve, reject) => {
       this.takeUntil('chat-room-socket-register', 500).then(async () => {
-        console.info('socket register...');
+        // console.info('socket register...');
         // if (!this.roomSocket.connected) {
         //   if (!await this.roomSocket.retryConnect()) {
         //     reject('Can not retry socket connect');
         //   }
         // }
         // } else {
+        console.log('Socket register...');
         this.roomSocket.emit<boolean>('register', { user: this.user, token: this.context.getAuthenticateToken() }, timeout).then(rs2 => {
           console.info(`Registered user ${this.user.id} to chat room ${this.id} : ${rs2}`);
           this.stateSubject.next('ready');
@@ -198,14 +208,23 @@ export class SocketNamespace {
 
   sendMessage(message: Message, user: User): Promise<Message> {
     console.log('Send message', message);
-    return new Promise<Message>((resolve, reject) => {
-      if (this.stateSubject.value === 'ready') {
+    return new Promise<Message>(async (resolve, reject) => {
+      // if (this.stateSubject.value !== 'ready') {
+      //   while (true) {
+      //     try {
+      //       if (await this.register()) break;
+      //     } catch (e) {
+      //       console.error(e);
+      //     }
+      //   }
+      // }
+      if (this.registered) {
         console.info('Send message ' + JSON.stringify(message));
         message.index = Date.now();
         resolve(this.roomSocket.emit<Message>('message', message));
       } else {
-        this.register();
-        console.info('socket was not ready !!!');
+        // this.register();
+        console.info(`socket was not ready !!! [state:${this.stateSubject.value}]`);
         reject('socket was not ready, retry againt !');
       }
     });

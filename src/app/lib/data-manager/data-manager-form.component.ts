@@ -165,6 +165,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     });
 
   }
+
   ngAfterViewInit(): void {
     // const nativeEle = this;
     if (this['ref']) {
