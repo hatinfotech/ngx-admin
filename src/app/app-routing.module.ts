@@ -170,6 +170,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/wordpress/wordpress.module')
       .then(m => m.WordpressModule),
   },
+  {
+    path: 'network',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/network/network.module')
+      .then(m => m.NetworkModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],
