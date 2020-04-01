@@ -35,6 +35,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
 
   wpSiteList: WpSiteModel[] = [];
   botList: CrawlServerModel[] = [];
+  // strategyList: {id: string, text: string}[] = [];
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -132,6 +133,8 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       TargetImageSrc: ['src'],
       ExcludeContentElements: [''],
       Frequency: ['60'],
+      Strategy: ['CRAWLNEW'],
+      RequestHeaders: [''],
       State: ['INSTANT'],
       Stores: this.formBuilder.array([
 

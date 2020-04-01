@@ -149,6 +149,17 @@
                 </div>
               </div>
               <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Strategy'), 'warning')">
+                  <label class="label"><span class="valid">Strategy</span><span class="invalid">Strategy
+                      là bắt buộc
+                      (*)</span></label>
+                  <nb-select size="medium" formControlName="Strategy" fullWidth selected="CRAWLNEW">
+                    <nb-option value="CRAWLNEW">Cào mới</nb-option>
+                    <nb-option value="CRAWlHALL">Cào tất cả</nb-option>
+                  </nb-select>
+                </div>
+              </div>
+              <div class="col-sm-3">
                 <div class="form-group">
                   <label class="label"><span class="valid">Test crawl</span></label>
                   <div class="row">
@@ -165,6 +176,13 @@
                         (click)="onStopCrawlClick(formItem)">Stop</button>
                     </div> -->
                   </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('RequestHeaders'), 'warning')">
+                  <label class="label"><span class="valid">Request Headers</span><span class="invalid">Request Headers là bắt buộc
+                      (*)</span></label>
+                  <textarea nbInput fullWidth formControlName="RequestHeaders" placeholder="Request Headers" rows="10"></textarea>
                 </div>
               </div>
             </div>
