@@ -122,10 +122,13 @@
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ExcludeContentElements'), 'warning')">
-                  <label class="label"><span class="valid">Exclude Content Elements</span><span class="invalid">Exclude Content Elements là bắt buộc
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('ExcludeContentElements'), 'warning')">
+                  <label class="label"><span class="valid">Exclude Content Elements</span><span class="invalid">Exclude
+                      Content Elements là bắt buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ExcludeContentElements" placeholder="jquery selectors">
+                  <input type="text" nbInput fullWidth formControlName="ExcludeContentElements"
+                    placeholder="jquery selectors">
                 </div>
               </div>
               <div class="col-sm-3">
@@ -160,29 +163,63 @@
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group">
-                  <label class="label"><span class="valid">Test crawl</span></label>
-                  <div class="row">
-                    <!-- <div class="col-sm-4">
-                      <button fullWidth nbButton status="success" hero
-                        (click)="onTestCrawlClick(formItem)">Test</button>
-                    </div>
-                    <div class="col-sm-4">
-                      <button fullWidth nbButton status="danger" hero
-                        (click)="onStartCrawlClick(formItem)">Start</button>
-                    </div>
-                    <div class="col-sm-4">
-                      <button fullWidth nbButton status="warning" hero
-                        (click)="onStopCrawlClick(formItem)">Stop</button>
-                    </div> -->
-                  </div>
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('LastPublished'), 'warning')">
+                  <label class="label"><span class="valid">LastPublished</span><span class="invalid">LastPublished
+                      là bắt buộc
+                      (*)</span></label>
+                      <input type="number" nbInput fullWidth formControlName="LastPublished" placeholder="Ngày đăng không được trễ quá x ngày">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('NumOfThread'), 'warning')">
+                  <label class="label"><span class="valid">NumOfThread</span><span class="invalid">NumOfThread
+                      là bắt buộc
+                      (*)</span></label>
+                      <input type="number" nbInput fullWidth formControlName="NumOfThread" placeholder="Số tiến trình cùng lúc">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DefaultCategory'), 'warning')">
+                  <label class="label"><span class="valid">DefaultCategory</span><span class="invalid">DefaultCategory
+                      là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="DefaultCategory" placeholder="Danh mục mặc định">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Proxies'), 'warning')">
+                  <label class="label"><span class="valid">Proxies</span><span class="invalid">Proxies
+                      là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 formControlName="Proxies" [select2Option]="select2ProxiesOption">
+                  </ngx-select2>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('RequestHeaders'), 'warning')">
-                  <label class="label"><span class="valid">Request Headers</span><span class="invalid">Request Headers là bắt buộc
+                  <label class="label"><span class="valid">Request Headers</span><span class="invalid">Request Headers
+                      là bắt buộc
                       (*)</span></label>
-                  <textarea nbInput fullWidth formControlName="RequestHeaders" placeholder="Request Headers" rows="10"></textarea>
+                  <textarea nbInput fullWidth formControlName="RequestHeaders" placeholder="Request Headers"
+                    rows="10"></textarea>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('AllowPaths'), 'warning')">
+                  <label class="label"><span class="valid">AllowPaths</span><span class="invalid">AllowPaths
+                      là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 formControlName="AllowPaths" [select2Option]="select2AllowPathOption">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DenyPaths'), 'warning')">
+                  <label class="label"><span class="valid">DenyPaths</span><span class="invalid">DenyPaths
+                      là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 formControlName="DenyPaths" [select2Option]="select2DenyPathOption">
+                  </ngx-select2>
                 </div>
               </div>
             </div>

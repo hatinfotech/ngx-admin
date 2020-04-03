@@ -1,4 +1,5 @@
 import { WpSiteModel } from './wordpress.model';
+import { NetworkProxyModel } from './network.model';
 
 export class CrawlServerModel {
   Id?: string;
@@ -31,10 +32,17 @@ export class CrawlPlanModel {
   RequestHeaders?: string;
   Frequency?: number;
   State?: string;
+  LastPublished?: number;
+  DefaultCategory?: string;
+  NumOfThread?: number;
   Status?: string;
+
+  AllowPaths?: {id: string, text: string}[];
+  DenyPaths?: {id: string, text: string}[];
 
   Stores?: CrawlPlanStoreModel[];
   Bots?: CrawlPlanBotModel[];
+  Proxies?: (NetworkProxyModel & {id: string, text: string})[];
 }
 
 export class CrawlPlanStoreModel {
@@ -52,4 +60,6 @@ export class CrawlPlanBotModel {
   Active?: boolean;
   Status?: string;
 }
+
+
 

@@ -32,10 +32,69 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
   idKey = 'Code';
   apiPath = '/crawl/plans';
   baseFormUrl = '/crawl/plan/form';
+  silent = true;
 
   wpSiteList: WpSiteModel[] = [];
   botList: CrawlServerModel[] = [];
   // strategyList: {id: string, text: string}[] = [];
+
+  select2ProxiesOption = {
+    placeholder: 'Chọn...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: false,
+    multiple: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/network/proxies', { filter_Name: params['term'], filter_Enabled: true });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = `${item['Description']} (${item['Host']}:${item['Port']})`;
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
+  select2AllowPathOption = {
+    placeholder: 'Chọn...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: true,
+    multiple: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  select2DenyPathOption = {
+    placeholder: 'Chọn...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: true,
+    multiple: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -125,7 +184,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       TargetUrl: ['', Validators.required],
       TargetTitlePath: ['title=>text', Validators.required],
       TargetDescriptionPath: ['meta[property="og:title"]=>attr.content', Validators.required],
-      TargetCreatedPath: [''],
+      TargetCreatedPath: ['meta[property="article:published_time"]=>attr.content'],
       TargetCategoriesPath: ['meta[property="article:section"]=>attr.content'],
       TargetFeatureImagePath: ['meta[property="og:image"]=>attr.content'],
       TargetAuthorPath: [''],
@@ -136,6 +195,14 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       Strategy: ['CRAWLNEW'],
       RequestHeaders: [''],
       State: ['INSTANT'],
+      LastPublished: [''],
+      DefaultCategory: [''],
+      NumOfThread: [1],
+      Proxies: [''],
+
+      AllowPaths: [''],
+      DenyPaths: [''],
+
       Stores: this.formBuilder.array([
 
       ]),
@@ -350,9 +417,20 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
 
         // Prepare store sites
         const storeSiteInfo = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { id: planInfo.Stores.map(store => store.Site) });
-        for (let s = 0; s < planInfo.Stores.length; s++) {
-          planInfo.Stores[s].Site = storeSiteInfo.filter(site => site.Code === planInfo.Stores[s].Site)[0];
-        }
+        planInfo.Stores = planInfo.Stores.filter(store => {
+          if (store.Active) {
+            store.Site = storeSiteInfo.filter(site => site.Code === store.Site)[0];
+            return true;
+          }
+          return false;
+        });
+        // for (let s = 0; s < planInfo.Stores.length; s++) {
+        //   if (planInfo.Stores[s].Active) {
+        //     planInfo.Stores[s].Site = storeSiteInfo.filter(site => site.Code === planInfo.Stores[s].Site)[0];
+        //   } else {
+
+        //   }
+        // }
 
         return mainSocket.emit<{ state: string }>('crawl/start-crawl', { bot: botInfo, plan: planInfo }, 300000).then(status => {
           console.info(status);
