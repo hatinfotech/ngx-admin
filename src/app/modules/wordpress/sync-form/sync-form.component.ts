@@ -13,6 +13,7 @@ import { WpSyncSocketManager } from '../wp-sync-socket/wp-sync-socket.manager';
 import { User } from '../../../lib/nam-socket/model/user';
 import { ISocketNamespaceContext } from '../../../lib/nam-socket/socket.namspace';
 import { WpSyncMessage } from '../wp-sync-socket/wp-sync-socket.namespace';
+import { IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 
 @Component({
   selector: 'ngx-sync-form',
@@ -80,7 +81,10 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   progressBarStatus = 'danger';
   processBarlabel = 'Synchronous...';
 
-  originSiteCategories: { [key: string]: { id: number, text: string }[] } = {};
+  // originSiteCategories: { [key: string]: { id: number, text: string }[] } = {};
+  originSiteCategories: { [key: string]: IDatasource } = {};
+  originSiteCategoriesColumnDefs: { [key: string]: any } = {};
+
   originSiteSyncPagess: { [key: string]: { id: number, text: string }[] } = {};
 
   progressBarMap: { [key: string]: { percent: number, status: string, label: string } } = {};
@@ -128,7 +132,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
 
   ngOnInit() {
     this.restrict();
-    this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', {limit: 99999999}).then(list => {
+    this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { limit: 99999999 }).then(list => {
       this.wpSiteList = list.map(item => {
         return {
           id: item['Code'],
@@ -157,16 +161,67 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   /** Execute api get */
   executeGet(params: any, success: (resources: WpSiteModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeSyncTargets'] = true;
-    super.executeGet(params, (data) => {
-
-
-      this.commonService.getMainSocket().then(async mainSocket => {
+    this.commonService.getMainSocket().then(mainSocket => {
+      super.executeGet(params, async (data) => {
 
         for (let i = 0; i < data.length; i++) {
           const siteInfo = data[i];
-          await mainSocket.emit<{ id: number, text: string }[]>('wp/get/categories', { siteInfo: siteInfo }, 30000).then((categories: { id: number, text: string }[]) => {
-            this.originSiteCategories[siteInfo.Code] = categories;
-          });
+          // await mainSocket.emit<{ id: number, text: string }[]>('wp/get/categories', { siteInfo: siteInfo }, 30000).then((categories: { id: number, text: string }[]) => {
+          //   this.originSiteCategories[siteInfo.Code] = categories;
+          // });
+
+          this.originSiteCategories[siteInfo.Code] = {
+            rowCount: null,
+            getRows: (getRowParams: IGetRowsParams) => {
+              console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
+              // this.commonService.getMainSocket().then(mainSocket => {
+              // const query = { limit: 40, offset: getRowParams.startRow };
+              mainSocket.emit<{ id: number, text: string }[]>('wp/get/categories', { siteInfo: siteInfo, limit: 40, offset: getRowParams.startRow }, 30000).then((categories: { id: number, text: string }[]) => {
+                // this.originSiteCategories[data.Code] = categories;
+                let lastRow = -1;
+                if (categories.length < 40) {
+                  lastRow = getRowParams.startRow + categories.length;
+                }
+                getRowParams.successCallback(categories, lastRow);
+                // this.gridApi.resetRowHeights();
+              });
+              // });
+            },
+          };
+
+          this.originSiteCategoriesColumnDefs[siteInfo.Code] = [
+            {
+              headerName: '#',
+              width: 100,
+              valueGetter: 'node.data.id',
+              cellRenderer: 'loadingCellRenderer',
+              sortable: false,
+              // pinned: 'left',
+              checkboxSelection: true,
+            },
+            {
+              headerName: 'Tên',
+              field: 'name',
+              width: 1024,
+              sortable: false,
+              filter: 'agTextColumnFilter',
+              // pinned: 'left',
+            },
+            // {
+            //   headerName: 'Số điện thoại',
+            //   field: 'Phone',
+            //   width: 250,
+            //   filter: 'agTextColumnFilter',
+            //   pinned: 'left',
+            //   autoHeight: true,
+            // },
+            // {
+            //   headerName: 'Tin nhắn',
+            //   field: 'Message',
+            //   width: 1000,
+            //   filter: 'agTextColumnFilter',
+            // },
+          ];
 
           await mainSocket.emit<{ id: number, text: string, slug: string }[]>('wp/get/pages', { siteInfo: siteInfo }, 30000).then((pages: { id: number, text: string, slug: string }[]) => {
             this.originSiteSyncPagess[siteInfo.Code] = pages;
@@ -193,6 +248,9 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
     });
     if (data) {
       newForm.patchValue(data);
+
+
+
     }
 
     return newForm;
@@ -299,6 +357,10 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
         }
       });
     });
+  }
+
+  originSiteCategoryChange(event: any, siteCode: string) {
+    console.log('Categories changed', event);
   }
 
 
@@ -439,7 +501,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
 
   }
 
-  statusDis = {running: 'primary', stopped: 'warning', error: 'danger', complete: 'success'};
+  statusDis = { running: 'primary', stopped: 'warning', error: 'danger', complete: 'success' };
   onChatRoomHadNewMessage(newMessage: WpSyncMessage): void {
     const tartgetSiteCode = newMessage.namespace.split('-')[1];
     this.syncStates[tartgetSiteCode] = newMessage.state;

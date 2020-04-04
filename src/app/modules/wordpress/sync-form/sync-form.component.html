@@ -42,7 +42,12 @@
                   <label class="label"><span class="valid">Sync Categories</span><span class="invalid">Sync Categories
                       là bắt buộc
                       (*)</span></label>
-                  <ngx-select2 [data]="originSiteCategories[formItem.get('Code').value]" formControlName="SyncCategories" [select2Option]="select2SyncCategoiesOption"></ngx-select2>
+                  <!-- <ngx-select2 [data]="originSiteCategories[formItem.get('Code').value]" formControlName="SyncCategories" [select2Option]="select2SyncCategoiesOption"></ngx-select2> -->
+                  <ngx-ag-list formControlName="SyncCategories"
+                  [columnDefs]="originSiteCategoriesColumnDefs[formItem.get('Code').value]"
+                  [data]="originSiteCategories[formItem.get('Code').value]"
+                  (selectChange)="originSiteCategoryChange($event, formItem.get('Code').value)"></ngx-ag-list>
+
                 </div>
               </div>
               <div class="col-sm-12">

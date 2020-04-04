@@ -6,6 +6,8 @@ import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconC
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule } from '@nebular/theme';
 import { FormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
+import { AgListComponent } from './ag-list/ag-list.component';
+import { AgGridModule } from '@ag-grid-community/angular';
 
 @NgModule({
   declarations: [
@@ -14,6 +16,7 @@ import { ActionControlListComponent } from './action-control-list/action-control
     SmartTableButtonComponent,
     SmartTableIconComponent,
     ActionControlListComponent,
+    AgListComponent,
   ],
   imports: [
     CommonModule,
@@ -23,6 +26,7 @@ import { ActionControlListComponent } from './action-control-list/action-control
     NbButtonModule,
     FormsModule,
     NbInputModule,
+    AgGridModule,
   ],
   exports: [
     Select2Component,
@@ -30,6 +34,7 @@ import { ActionControlListComponent } from './action-control-list/action-control
     SmartTableButtonComponent,
     SmartTableIconComponent,
     ActionControlListComponent,
+    AgListComponent,
   ],
 })
 export class CustomElementModule { }
