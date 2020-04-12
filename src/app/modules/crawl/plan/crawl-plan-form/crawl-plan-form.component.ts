@@ -96,6 +96,8 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     },
   };
 
+  crawlAlgorithmList: { id: string, text: string }[] = [];
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -139,11 +141,12 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     this.botList = await this.apiService.getPromise<WpSiteModel[]>('/crawl/servers', { limit: 99999999 });
 
     // Parent init
+    const mainSocket = await this.commonService.getMainSocket();
+    const crawlAlgorithms = await mainSocket.emit<{ id: string, text: string }[]>('crawl/get-algorithms', {});
+    this.crawlAlgorithmList = crawlAlgorithms;
     const result = await super.init();
-    this.commonService.getMainSocket().then(mainSocket => {
-      mainSocket.on<CrawlLog>('crawl/log').pipe(takeUntil(this.destroy$)).subscribe(log => {
-        console.log(log);
-      });
+    mainSocket.on<CrawlLog>('crawl/log').pipe(takeUntil(this.destroy$)).subscribe(log => {
+      console.log(log);
     });
     return result;
   }
@@ -199,6 +202,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       DefaultCategory: [''],
       NumOfThread: [1],
       Proxies: [''],
+      CrawlAlgorithm: ['CrawlBot', Validators.required],
 
       AllowPaths: [''],
       DenyPaths: [''],

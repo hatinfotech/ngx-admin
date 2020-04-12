@@ -72,6 +72,7 @@ export class WpSiteFormComponent extends DataManagerFormComponent<WpSiteModel> i
       ApiUrl: [''],
       ApiUsername: [''],
       ApiPassword: [''],
+      ApiToken: [''],
     });
     if (data) {
       newForm.patchValue(data);

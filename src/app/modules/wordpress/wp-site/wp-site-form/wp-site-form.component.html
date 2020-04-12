@@ -44,11 +44,18 @@
                       <input type="text" nbInput fullWidth formControlName="BaseUrl" placeholder="Base Url">
                 </div>
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiUrl'), 'warning')">
                   <label class="label"><span class="valid">Api (*)</span><span class="invalid">Api là bắt buộc
                       (*)</span></label>
                       <input type="text" nbInput fullWidth formControlName="ApiUrl" placeholder="Api Url">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiToken'), 'warning')">
+                  <label class="label"><span class="valid">ApiToken (*)</span><span class="invalid">ApiToken là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ApiToken" placeholder="ApiToken">
                 </div>
               </div>
               <div class="col-sm-6">

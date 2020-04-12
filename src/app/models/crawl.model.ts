@@ -36,6 +36,7 @@ export class CrawlPlanModel {
   DefaultCategory?: string;
   NumOfThread?: number;
   Status?: string;
+  CrawlAlgorithm?: string;
 
   AllowPaths?: {id: string, text: string}[];
   DenyPaths?: {id: string, text: string}[];

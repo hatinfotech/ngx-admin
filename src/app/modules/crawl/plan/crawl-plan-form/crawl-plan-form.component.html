@@ -23,11 +23,21 @@
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code">
-              <div class="col-sm-12">
+              <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('CrawlAlgorithm'), 'warning')">
+                  <label class="label"><span class="valid">CrawlAlgorithm</span><span class="invalid">CrawlAlgorithm
+                      là bắt buộc
+                      (*)</span></label>
+                  <nb-select size="medium" formControlName="CrawlAlgorithm" fullWidth selected="CrawlBot">
+                    <nb-option *ngFor="let algorithm of crawlAlgorithmList" [value]="algorithm.id">{{algorithm.text}}</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <div class="col-sm-3">
