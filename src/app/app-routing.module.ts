@@ -176,6 +176,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/network/network.module')
       .then(m => m.NetworkModule),
   },
+  {
+    path: 'ads',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/ads/ads.module')
+      .then(m => m.AdsModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],
