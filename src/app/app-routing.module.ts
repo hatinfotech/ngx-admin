@@ -182,6 +182,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/ads/ads.module')
       .then(m => m.AdsModule),
   },
+  {
+    path: 'short-link',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/short-link/short-link.module')
+      .then(m => m.ShortLinkModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],

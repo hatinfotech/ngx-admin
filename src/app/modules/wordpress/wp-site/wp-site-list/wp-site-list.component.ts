@@ -22,7 +22,6 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
   formPath = '/wordpress/site/form';
   apiPath = '/wordpress/wp-sites';
   idKey = 'Code';
-  // protected _http: HttpClient;
 
   constructor(
     protected apiService: ApiService,
@@ -135,10 +134,6 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
 
   getList(callback: (list: WpSiteModel[]) => void) {
     super.getList((rs) => {
-      // rs.map((i: any) => {
-      //   i.Brandnames = i.Brandnames.map((i2: any) => i2.id).join(',');
-      //   return i;
-      // });
       if (callback) callback(rs);
     });
   }
@@ -162,36 +157,8 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
 
   /** Go to form */
   gotoForm(id?: string): false {
-    // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
     this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
     return false;
   }
-
-  /** Api get funciton */
-  // executeGet(params: any, success: (resources: WpSiteModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: WpSiteModel[] | HttpErrorResponse) => void) {
-  //   // this.apiService.get<M[]>(this.apiPath, params, success, error, complete);
-  //   params['token'] = 'undefined';
-  //   const obs = this._http.get<WpSiteModel[]>('https://local.namsoftware.com:3001/wp-sites', {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTZkYWE1ODZiM2JjODczMTU1ZmZkZTkiLCJpYXQiOjE1ODQyNDUzMzd9.DWJ9WPxxT3qRwL-vjpsvUNCq4iL9dg__VtHs71yb5hY',
-  //     },
-  //   })
-  //     .pipe(retry(0), catchError(e => {
-  //       if (error) error(e);
-  //       if (complete) complete(e);
-  //       return this.apiService.handleError(e, params['silent']);
-  //     }))
-  //     .subscribe((resources: WpSiteModel[]) => {
-  //       success(resources);
-  //       if (complete) complete(resources);
-  //       obs.unsubscribe();
-  //     });
-  // }
-
-  /** Api delete funciton */
-  // executeDelete(id: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
-  //   // this.apiService.delete(this.apiPath, id, success, error, complete);
-  // }
 
 }

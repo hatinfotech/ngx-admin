@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdsComponent } from './ads.component';
-import { AdsContentListComponent } from './ads-content/ads-content-list/ads-content-list.component';
-import { AdsContentFormComponent } from './ads-content/ads-content-form/ads-content-form.component';
-import { AdsCodeListComponent } from './ads-code/ads-code-list/ads-code-list.component';
-import { AdsCodeFormComponent } from './ads-code/ads-code-form/ads-code-form.component';
-import { AdsRoutingModule } from './ads-routing.module';
+import { ShortLinkComponent } from './short-link.component';
+import { ShortLinkListComponent } from './short-link/short-link-list/short-link-list.component';
+import { ShortLinkFormComponent } from './short-link/short-link-form/short-link-form.component';
 import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
+import { ShortLinkRoutingModule } from './ads-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
@@ -15,13 +13,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table-checkbox.component';
 
 @NgModule({
-  declarations: [AdsComponent, AdsContentListComponent, AdsContentFormComponent, AdsCodeListComponent, AdsCodeFormComponent],
+  declarations: [ShortLinkComponent, ShortLinkListComponent, ShortLinkFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
-    AdsRoutingModule,
+    ShortLinkRoutingModule,
     NbCardModule,
     Ng2SmartTableModule,
     CustomElementModule,
@@ -51,8 +50,8 @@ import { SortablejsModule } from 'ngx-sortablejs';
     }),
   ],
   entryComponents: [
-    AdsContentFormComponent,
-    AdsCodeFormComponent,
+    ShortLinkFormComponent,
+    SmartTableCheckboxComponent,
   ],
 })
-export class AdsModule { }
+export class ShortLinkModule { }

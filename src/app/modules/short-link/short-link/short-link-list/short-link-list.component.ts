@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { AdsContentModel } from '../../../../models/ads.model';
+import { ShortLinkModel } from '../../../../models/short-link.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
-import { AdsContentFormComponent } from '../ads-content-form/ads-content-form.component';
+import { ShortLinkFormComponent } from '../short-link-form/short-link-form.component';
 
 @Component({
-  selector: 'ngx-ads-content-list',
-  templateUrl: './ads-content-list.component.html',
-  styleUrls: ['./ads-content-list.component.scss'],
+  selector: 'ngx-short-link-list',
+  templateUrl: './short-link-list.component.html',
+  styleUrls: ['./short-link-list.component.scss'],
 })
-export class AdsContentListComponent extends DataManagerListComponent<AdsContentModel> implements OnInit {
+export class ShortLinkListComponent extends DataManagerListComponent<ShortLinkModel> implements OnInit {
 
-  componentName: string = 'AdsContentListComponent';
-  formPath = '/ads/content/form';
-  apiPath = '/ads/contents';
-  idKey = 'Code';
+  componentName: string = 'ShortLinkListComponent';
+  formPath = '/short-link/short-link/form';
+  apiPath = '/short-link/short-links';
+  idKey = 'Hash';
 
   constructor(
     protected apiService: ApiService,
@@ -34,50 +34,41 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
   editing = {};
   rows = [];
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
       position: 'right',
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
+    add: this.configAddButton(),
+    edit: this.configEditButton(),
+    delete: this.configDeleteButton(),
+    pager: this.configPaging(),
     columns: {
-      Code: {
+      Hash: {
         title: 'Code',
         type: 'string',
-        width: '10%',
-      },
-      Type: {
-        title: 'Type',
-        type: 'string',
-        width: '10%',
-      },
-      Content: {
-        title: 'Content',
-        type: 'string',
-        width: '40%',
+        width: '30%',
       },
       Target: {
         title: 'Target',
         type: 'string',
         width: '30%',
+      },
+      Owner: {
+        title: 'Owner',
+        type: 'string',
+        width: '10%',
+      },
+      Created: {
+        title: 'Created',
+        type: 'string',
+        width: '10%',
+      },
+      Active: {
+        title: 'Active',
+        type: 'boolean',
+        width: '10%',
       },
     //   Copy: {
     //     title: 'Copy',
@@ -97,13 +88,13 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
     //         //   instance.disabled = true;
     //         // }
     //       });
-    //       instance.click.subscribe(async (row: AdsContentModel) => {
+    //       instance.click.subscribe(async (row: ShortLinkModel) => {
 
     //         this.dialogService.open(SyncFormComponent, {
     //           context: {
     //             inputMode: 'dialog',
     //             inputId: [row.Code],
-    //             onDialogSave: (newData: AdsContentModel[]) => {
+    //             onDialogSave: (newData: ShortLinkModel[]) => {
     //               // if (onDialogSave) onDialogSave(row);
     //             },
     //             onDialogClose: () => {
@@ -117,26 +108,26 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
     //     },
     //   },
     },
-  };
+  });
 
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
   }
 
-  getList(callback: (list: AdsContentModel[]) => void) {
+  getList(callback: (list: ShortLinkModel[]) => void) {
     super.getList((rs) => {
       if (callback) callback(rs);
     });
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: AdsContentModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(AdsContentFormComponent, {
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: ShortLinkModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(ShortLinkFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
-        onDialogSave: (newData: AdsContentModel[]) => {
+        onDialogSave: (newData: ShortLinkModel[]) => {
           if (onDialogSave) onDialogSave(newData);
         },
         onDialogClose: () => {

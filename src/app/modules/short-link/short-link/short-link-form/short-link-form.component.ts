@@ -1,25 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { AdsContentModel } from '../../../../models/ads.model';
+import { ShortLinkModel } from '../../../../models/short-link.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { WpSiteFormComponent } from '../../../wordpress/wp-site/wp-site-form/wp-site-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'ngx-ads-content-form',
-  templateUrl: './ads-content-form.component.html',
-  styleUrls: ['./ads-content-form.component.scss'],
+  selector: 'ngx-short-link-form',
+  templateUrl: './short-link-form.component.html',
+  styleUrls: ['./short-link-form.component.scss'],
 })
-export class AdsContentFormComponent extends DataManagerFormComponent<AdsContentModel> implements OnInit {
+export class ShortLinkFormComponent extends DataManagerFormComponent<ShortLinkModel> implements OnInit {
 
-  componentName: string = 'AdsContentFormComponent';
+  componentName: string = 'ShortLinkFormComponent';
   idKey = 'Code';
-  apiPath = '/ads/contents';
-  baseFormUrl = '/ads/content/form';
+  apiPath = '/short-link/short-links';
+  baseFormUrl = '/short-link/short-link/form';
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -29,7 +28,7 @@ export class AdsContentFormComponent extends DataManagerFormComponent<AdsContent
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
-    protected ref: NbDialogRef<AdsContentFormComponent>,
+    protected ref: NbDialogRef<ShortLinkFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -58,24 +57,22 @@ export class AdsContentFormComponent extends DataManagerFormComponent<AdsContent
   }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: AdsContentModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: ShortLinkModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     // params['includeUsers'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: AdsContentModel): FormGroup {
+  makeNewFormGroup(data?: ShortLinkModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
-      Type: ['FRAME', Validators.required],
-      Content: ['', Validators.required],
-      Target: [''],
+      Hash: [''],
+      Target: ['', Validators.required],
     });
     if (data) {
       newForm.patchValue(data);
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: AdsContentModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: ShortLinkModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -85,7 +82,7 @@ export class AdsContentFormComponent extends DataManagerFormComponent<AdsContent
   goback(): false {
     super.goback();
     if (this.mode === 'page') {
-      this.router.navigate(['/ads/content/list']);
+      this.router.navigate(['/short-link/short-link/list']);
     } else {
       this.ref.close();
       // this.dismiss();

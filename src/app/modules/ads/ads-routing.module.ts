@@ -4,8 +4,8 @@ import { AuthGuardService } from '../../services/auth-guard.service';
 import { AdsContentListComponent } from './ads-content/ads-content-list/ads-content-list.component';
 import { AdsContentFormComponent } from './ads-content/ads-content-form/ads-content-form.component';
 import { AdsCodeFormComponent } from './ads-code/ads-code-form/ads-code-form.component';
-import { AdsCodeListComponent } from './ads-code/ads-code-list/ads-code-list.component';
 import { AdsComponent } from './ads.component';
+import { AdsCodeListComponent } from './ads-code/ads-code-list/ads-code-list.component';
 
 const routes: Routes = [{
   path: '',

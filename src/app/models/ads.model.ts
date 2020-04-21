@@ -13,4 +13,5 @@ export class AdsCodeModel {
   Owner?: string;
   Area?: string;
   Site?: string;
+  Embed?: string;
 }

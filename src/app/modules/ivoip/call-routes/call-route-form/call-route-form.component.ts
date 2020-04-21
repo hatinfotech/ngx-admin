@@ -150,7 +150,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
       follow_me_destination: [''],
       follow_me_delay: [0],
       follow_me_timeout: [30],
-      follow_me_prompt: [true],
+      follow_me_prompt: [false],
     });
 
     if (data) {
