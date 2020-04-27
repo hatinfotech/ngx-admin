@@ -79,43 +79,43 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
         type: 'string',
         width: '30%',
       },
-    //   Copy: {
-    //     title: 'Copy',
-    //     type: 'custom',
-    //     width: '10%',
-    //     renderComponent: SmartTableButtonComponent,
-    //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-    //       instance.iconPack = 'eva';
-    //       instance.icon = 'copy';
-    //       instance.label = 'Copy nội dung sang site khác';
-    //       instance.display = true;
-    //       instance.status = 'success';
-    //       instance.valueChange.subscribe(value => {
-    //         // if (value) {
-    //         //   instance.disabled = false;
-    //         // } else {
-    //         //   instance.disabled = true;
-    //         // }
-    //       });
-    //       instance.click.subscribe(async (row: AdsContentModel) => {
+      //   Copy: {
+      //     title: 'Copy',
+      //     type: 'custom',
+      //     width: '10%',
+      //     renderComponent: SmartTableButtonComponent,
+      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+      //       instance.iconPack = 'eva';
+      //       instance.icon = 'copy';
+      //       instance.label = 'Copy nội dung sang site khác';
+      //       instance.display = true;
+      //       instance.status = 'success';
+      //       instance.valueChange.subscribe(value => {
+      //         // if (value) {
+      //         //   instance.disabled = false;
+      //         // } else {
+      //         //   instance.disabled = true;
+      //         // }
+      //       });
+      //       instance.click.subscribe(async (row: AdsContentModel) => {
 
-    //         this.dialogService.open(SyncFormComponent, {
-    //           context: {
-    //             inputMode: 'dialog',
-    //             inputId: [row.Code],
-    //             onDialogSave: (newData: AdsContentModel[]) => {
-    //               // if (onDialogSave) onDialogSave(row);
-    //             },
-    //             onDialogClose: () => {
-    //               // if (onDialogClose) onDialogClose();
-    //               this.refresh();
-    //             },
-    //           },
-    //         });
+      //         this.dialogService.open(SyncFormComponent, {
+      //           context: {
+      //             inputMode: 'dialog',
+      //             inputId: [row.Code],
+      //             onDialogSave: (newData: AdsContentModel[]) => {
+      //               // if (onDialogSave) onDialogSave(row);
+      //             },
+      //             onDialogClose: () => {
+      //               // if (onDialogClose) onDialogClose();
+      //               this.refresh();
+      //             },
+      //           },
+      //         });
 
-    //       });
-    //     },
-    //   },
+      //       });
+      //     },
+      //   },
     },
   };
 
@@ -126,6 +126,9 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
 
   getList(callback: (list: AdsContentModel[]) => void) {
     super.getList((rs) => {
+      rs.forEach(item => {
+        item.Content = item.Content.substring(0, 256) + '...';
+      });
       if (callback) callback(rs);
     });
   }

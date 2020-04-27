@@ -23,6 +23,13 @@
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code">
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên quảng cáo">
+                </div>
+              </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Type'), 'warning')">
                   <label class="label"><span class="valid">Loại (*)</span><span class="invalid">Loại là bắt buộc
@@ -46,7 +53,7 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Content'), 'warning')">
                   <label class="label"><span class="valid">Nội dung (*)</span><span class="invalid">Nội dung là bắt buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Content" placeholder="Nội dung quảng cáo">
+                      <textarea nbInput fullWidth formControlName="Content" placeholder="Nội dung quảng cáo" rows="10"></textarea>
                 </div>
               </div>
             </div>

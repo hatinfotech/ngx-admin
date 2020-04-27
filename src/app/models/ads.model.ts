@@ -2,6 +2,7 @@ export class AdsContentModel {
   Id?: number;
   Code?: string;
   Type?: string;
+  Name?: string;
   Content?: string;
   Target?: string;
 }

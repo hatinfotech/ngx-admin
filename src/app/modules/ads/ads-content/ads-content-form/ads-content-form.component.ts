@@ -67,6 +67,7 @@ export class AdsContentFormComponent extends DataManagerFormComponent<AdsContent
     const newForm = this.formBuilder.group({
       Code: [''],
       Type: ['FRAME', Validators.required],
+      Name: ['', Validators.required],
       Content: ['', Validators.required],
       Target: [''],
     });

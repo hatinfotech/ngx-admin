@@ -245,7 +245,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   async ngOnInit() {
 
     this.subcriptions.push(this.commonService.authenticated$.subscribe(loginInfo => {
-      if (false) {
+      // if (false) {
         if (loginInfo) {
           this.chatRoomId = 'test';
           this.user = {
@@ -265,7 +265,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
             console.info('Conntect to local chat server success');
           }).catch(e => console.error(e));
         }
-      }
+      // }
     }));
 
     // Auto update mobile theme
