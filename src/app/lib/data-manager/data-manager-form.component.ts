@@ -539,6 +539,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.save();
   }
 
+  saveAndClose() {
+    this.save().then(rs => this.goback());
+    return false;
+  }
+
   /** Reset form */
   onReset() {
     this.submitted = false;

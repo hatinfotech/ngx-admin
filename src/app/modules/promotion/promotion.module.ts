@@ -13,6 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+
 
 @NgModule({
   declarations: [PromotionComponent, PromotionListComponent, PromotionFormComponent],
@@ -43,14 +45,19 @@ import { SortablejsModule } from 'ngx-sortablejs';
     DialogModule,
     NbProgressBarModule,
     AgGridModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,
     }),
   ],
   entryComponents: [
-    // AdsContentFormComponent,
-    // AdsCodeFormComponent,
+    PromotionFormComponent,
+  ],
+  providers: [
+    // use french locale
+    {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
   ],
 })
 export class PromotionModule { }

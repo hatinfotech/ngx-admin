@@ -83,14 +83,14 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
           // value = value.map(i => ({...i, id: i[keyMap['id']], text: i[keyMap['text']]}));
           const tmpVal = [];
           this.data = value.map(i => {
-            tmpVal.push(i[keyMap['id']]);
-            return { ...i, id: i[keyMap['id']], text: i[keyMap['text']] };
+            tmpVal.push(this.getItemId(i));
+            return { ...i, id: this.getItemId(i), text: this.getItemText(i) };
           });
           this.value = tmpVal;
         } else {
-          if (value[keyMap['id']] && value[keyMap['text']]) {
-            value['id'] = value[keyMap['id']];
-            value['text'] = value[keyMap['text']];
+          if (this.getItemId(value) && this.getItemText(value)) {
+            value['id'] = this.getItemId(value);
+            value['text'] = this.getItemText(value);
             this.data = [
               value,
             ];
@@ -127,6 +127,14 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
       this.value = '';
     }
     // this.selectChange.emit(value);
+  }
+
+  protected getItemId(item: any) {
+    return item['id'] ? item['id'] : item[this.select2Option['keyMap']['id']];
+  }
+
+  protected getItemText(item: any) {
+    return item['text'] ? item['text'] : item[this.select2Option['keyMap']['text']];
   }
 
   registerOnChange(fn: (item: any) => void) {

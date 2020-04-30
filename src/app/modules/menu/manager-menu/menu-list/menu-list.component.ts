@@ -18,37 +18,23 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
   apiPath = '/menu/menu-items';
   idKey = 'Code';
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
       position: 'right',
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
+    add: this.configAddButton(),
+    edit: this.configEditButton(),
+    delete: this.configDeleteButton(),
+    pager: this.configPaging(),
     columns: {
       No: {
         title: 'Stt',
         type: 'text',
         width: '5%',
-        class: 'no',
-        filter: false,
+        // class: 'no',
+        // filter: false,
       },
       ParentTitle: {
         title: 'Menu cha',
@@ -83,7 +69,7 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
         width: '10%',
       },
     },
-  };
+  });
 
   constructor(
     protected apiService: ApiService,

@@ -43,6 +43,7 @@
               "node_modules/@swimlane/ngx-datatable/themes/material.css",
               "node_modules/@swimlane/ngx-datatable/assets/icons.css",
               "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/ng-pick-datetime/assets/style/picker.min.css",
               "src/app/@theme/styles/styles.scss",
               "src/app/app.component.scss"
             ],
