@@ -32,7 +32,7 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
     actions: false,
     pager: {
       display: true,
-      perPage: 100,
+      perPage: 40,
     },
     add: {
       addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
@@ -190,6 +190,26 @@ export class CdrListComponent extends IvoipBaseListComponent<any> implements OnI
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
+  }
+
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    source.prepareData = (data: CdrModel[]) => {
+      data.forEach(item => {
+        item.Start = item.Start.replace(' ', '<br>');
+      });
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    // source.prepareParams = (params: any) => {
+    //   params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
+    //   return params;
+    // };
+
+    return source;
   }
 
   getList(callback: (list: PbxCdrModel[]) => void) {

@@ -109,6 +109,26 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
     });
   }
 
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    source.prepareData = (data: any[]) => {
+      data.forEach(item => {
+        item.PbxDescription = this.pbxList.find(pbx => pbx.id === item.Pbx).text;
+      });
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    // source.prepareParams = (params: any) => {
+    //   params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
+    //   return params;
+    // };
+
+    return source;
+  }
+
   getList(callback: (list: PbxDomainModel[]) => void) {
     this.apiService.get<PbxDomainModel[]>(this.apiPath, { limit: 999999999, offset: 0, includePbxDescription: true, belongTopPbx: this.ivoipService.getActivePbx() }, results => callback(results));
   }

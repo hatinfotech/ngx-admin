@@ -177,22 +177,49 @@ export class ApiService {
 
   }
 
-  getAsObservable<T>(enpoint: string, params: any, error?: (e: HttpErrorResponse) => void): Observable<T> {
-    let id: string;
-    if (Array.isArray(params['id'])) {
-      id = params['id'].join('-');
-      enpoint += `/${id}`;
-      delete params['id'];
-    } else if (params['id']) {
-      id = params['id'];
-      enpoint += `/${id}`;
-    }
-    return this._http.get<T>(this.buildApiUrl(enpoint, params))
-      .pipe(retry(0), catchError(e => {
-        if (error) error(e);
-        return this.handleError(e);
-      }));
+  /** Restful api getting request - promise */
+  getObservable<T>(enpoint: string, params?: any): Observable<HttpResponse<T>> {
+    return this._http.get<T>(this.buildApiUrl(enpoint, params), { observe: 'response' })
+      .pipe(
+        retry(0),
+        catchError(e => {
+          return this.handleError(e, params['silent']);
+        }));
+    // return await new Promise<Observable<HttpResponse<T>>>((resolve, reject) => {
+    //   this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+    //     if (result) {
+    //       const obs = this._http.get<T>(this.buildApiUrl(enpoint, params), { observe: 'response' })
+    //         .pipe(
+    //           retry(0),
+    //           catchError(e => {
+    //           reject(e);
+    //           return this.handleError(e, params['silent']);
+    //         }));
+    //         resolve(obs);
+    //     } else {
+    //       this.onUnauthorizied();
+    //     }
+    //   });
+    // });
+
   }
+
+  // getAsObservable<T>(enpoint: string, params: any, error?: (e: HttpErrorResponse) => void): Observable<T> {
+  //   let id: string;
+  //   if (Array.isArray(params['id'])) {
+  //     id = params['id'].join('-');
+  //     enpoint += `/${id}`;
+  //     delete params['id'];
+  //   } else if (params['id']) {
+  //     id = params['id'];
+  //     enpoint += `/${id}`;
+  //   }
+  //   return this._http.get<T>(this.buildApiUrl(enpoint, params))
+  //     .pipe(retry(0), catchError(e => {
+  //       if (error) error(e);
+  //       return this.handleError(e);
+  //     }));
+  // }
 
   /** Restful api post request */
   post<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {

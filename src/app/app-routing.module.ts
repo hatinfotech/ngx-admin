@@ -194,6 +194,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/promotion/promotion.module')
       .then(m => m.PromotionModule),
   },
+  {
+    path: 'admin-product',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/admin-product/admin-product.module')
+      .then(m => m.AdminProductModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],

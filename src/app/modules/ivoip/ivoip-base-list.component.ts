@@ -7,8 +7,10 @@ import { IvoipService, PbxDomainSelection } from './ivoip-service';
 import { OnInit } from '@angular/core';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
 import { ReuseComponent } from '../../lib/reuse-component';
+import { ServerDataManagerListComponent } from '../../lib/data-manager/searver-data-manger-list.component';
+import { CdrModel } from '../../models/cdr.model';
 
-export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
+export abstract class IvoipBaseListComponent<M> extends ServerDataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   domainList: PbxDomainSelection[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
@@ -38,6 +40,33 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
     super.onResume();
     this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
   }
+
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    source.prepareData = (data: CdrModel[]) => {
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
+      return params;
+    };
+
+    return source;
+  }
+
+  // loadList(callback?: (list: CdrModel[])) {
+  //   // Set DataSource: prepareParams
+  //   this.source.prepareParams = (params: any) => {
+  //     // params['includeCategories'] = true;
+  //     // params['includeUnit'] = true;
+  //     return params;
+  //   };
+  //   super.loadList(callback);
+  // }
 
   getList(callback: (list: M[]) => void) {
     if (this.ivoipService.getPbxActiveDomainUuid()) {

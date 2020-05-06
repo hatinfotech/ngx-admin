@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'ngx-promotion-form',
   templateUrl: './promotion-form.component.html',
-  styleUrls: ['./promotion-form.component.scss']
+  styleUrls: ['./promotion-form.component.scss'],
 })
 export class PromotionFormComponent extends DataManagerFormComponent<PromotionModel> implements OnInit {
 
