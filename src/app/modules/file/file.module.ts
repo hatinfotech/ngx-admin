@@ -1,0 +1,71 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FileComponent } from './file.component';
+import { FileListComponent } from './file/file-list/file-list.component';
+import { FileFormComponent } from './file/file-form/file-form.component';
+import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
+import { FileRoutingModule } from './file-routing.module';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
+import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from '../dialog/dialog.module';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+import { CKEditorModule } from 'ng2-ckeditor';
+import { SortablejsModule } from 'ngx-sortablejs';
+import { FileStoreListComponent } from './store/file-store-list/file-store-list.component';
+import { FileStoreFormComponent } from './store/file-store-form/file-store-form.component';
+import { FileUploadComponent } from './file/file-upload/file-upload.component';
+import { NgxUploaderModule } from '../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
+
+@NgModule({
+  declarations: [FileComponent, FileListComponent, FileFormComponent, FileStoreListComponent, FileStoreFormComponent, FileUploadComponent],
+  imports: [
+    CommonModule,
+    NbTabsetModule,
+    FileRoutingModule,
+    NbCardModule,
+    Ng2SmartTableModule,
+    CustomElementModule,
+    NbIconModule,
+    NbInputModule,
+    NbCheckboxModule,
+    IvoipDashboardModule,
+    NbRouteTabsetModule,
+    NbStepperModule,
+    NbButtonModule,
+    NbListModule,
+    NbAccordionModule,
+    NbUserModule,
+    NbSelectModule,
+    NbActionsModule,
+    NbRadioModule,
+    NbDatepickerModule,
+    CurrencyMaskModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DialogModule,
+    NbProgressBarModule,
+    AgGridModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    CKEditorModule,
+    NgxUploaderModule,
+    NbDialogModule.forChild(),
+    SortablejsModule.forRoot({
+      animation: 200,
+    }),
+  ],
+  entryComponents: [
+    FileStoreFormComponent,
+    FileFormComponent,
+    FileUploadComponent,
+  ],
+  providers: [
+    // use french locale
+    {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
+  ],
+})
+export class FileModule { }

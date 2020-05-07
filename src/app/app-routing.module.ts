@@ -200,6 +200,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/admin-product/admin-product.module')
       .then(m => m.AdminProductModule),
   },
+  {
+    path: 'file',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/file/file.module')
+      .then(m => m.FileModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],

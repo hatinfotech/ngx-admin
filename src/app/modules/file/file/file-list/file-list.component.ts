@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { ProductUnitModel } from '../../../../models/product.model';
+import { FileModel } from '../../../../models/file.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ProductUnitFormComponent } from '../product-unit-form/product-unit-form.component';
+import { FileFormComponent } from '../file-form/file-form.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/searver-data-manger-list.component';
 
 @Component({
-  selector: 'ngx-product-unit-list',
-  templateUrl: './product-unit-list.component.html',
-  styleUrls: ['./product-unit-list.component.scss'],
+  selector: 'ngx-file-list',
+  templateUrl: './file-list.component.html',
+  styleUrls: ['./file-list.component.scss'],
 })
-export class ProductUnitListComponent extends DataManagerListComponent<ProductUnitModel> implements OnInit {
+export class FileListComponent extends ServerDataManagerListComponent<FileModel> implements OnInit {
 
-  componentName: string = 'ProductUnitListComponent';
-  formPath = '/admin-product/unit/form';
-  apiPath = '/admin-product/units';
-  idKey = 'Code';
+  componentName: string = 'FileListComponent';
+  formPath = '/file/file/form';
+  apiPath = '/file/files';
+  idKey = 'Id';
 
   constructor(
     protected apiService: ApiService,
@@ -45,23 +45,33 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
     delete: this.configDeleteButton(),
     pager: this.configPaging(),
     columns: {
-      Code: {
-        title: 'Code',
+      Id: {
+        title: 'Id',
         type: 'string',
         width: '10%',
       },
+      Store: {
+        title: 'Kho lưu trữ',
+        type: 'string',
+        width: '20%',
+      },
       Name: {
-        title: 'Tên',
+        title: 'Tên file',
         type: 'string',
         width: '30%',
       },
-      FullName: {
-        title: 'Tên đầy đủ',
+      Created: {
+        title: 'Ngày upload',
         type: 'string',
-        width: '40%',
+        width: '10%',
       },
-      Symbol: {
-        title: 'Biểu tượng',
+      Update: {
+        title: 'Cập nhật',
+        type: 'string',
+        width: '10%',
+      },
+      Protected: {
+        title: 'Bảo mật',
         type: 'string',
         width: '10%',
       },
@@ -83,13 +93,13 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
       //         //   instance.disabled = true;
       //         // }
       //       });
-      //       instance.click.subscribe(async (row: ProductUnitModel) => {
+      //       instance.click.subscribe(async (row: FileModel) => {
 
       //         this.dialogService.open(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
-      //             onDialogSave: (newData: ProductUnitModel[]) => {
+      //             onDialogSave: (newData: FileModel[]) => {
       //               // if (onDialogSave) onDialogSave(row);
       //             },
       //             onDialogClose: () => {
@@ -110,13 +120,30 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
     super.ngOnInit();
   }
 
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    source.prepareData = (data: FileModel[]) => {
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['sort_Id'] = 'desc';
+      return params;
+    };
+
+    return source;
+  }
+
   /** Api get funciton */
-  executeGet(params: any, success: (resources: ProductUnitModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductUnitModel[] | HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: FileModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: FileModel[] | HttpErrorResponse) => void) {
     // params['includeParent'] = true;
     super.executeGet(params, success, error, complete);
   }
 
-  getList(callback: (list: ProductUnitModel[]) => void) {
+  getList(callback: (list: FileModel[]) => void) {
     super.getList((rs) => {
       // rs.forEach(item => {
       //   item.Content = item.Content.substring(0, 256) + '...';
@@ -126,12 +153,12 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductUnitModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductUnitFormComponent, {
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: FileModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(FileFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
-        onDialogSave: (newData: ProductUnitModel[]) => {
+        onDialogSave: (newData: FileModel[]) => {
           if (onDialogSave) onDialogSave(newData);
         },
         onDialogClose: () => {

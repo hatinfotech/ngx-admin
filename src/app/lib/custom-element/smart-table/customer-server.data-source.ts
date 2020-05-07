@@ -20,6 +20,9 @@ export class CustomeServerDataSource<M> extends LocalDataSource {
 
   getElements(): Promise<any> {
     let params = {};
+    if (this.prepareParams) {
+      params = this.prepareParams(params);
+    }
     if (this.sortConf) {
       this.sortConf.forEach((fieldConf) => {
         params[`sort_${fieldConf.field}`] = fieldConf.direction.toLowerCase();
@@ -37,10 +40,6 @@ export class CustomeServerDataSource<M> extends LocalDataSource {
           params[`filter_${fieldConf['field']}`] = fieldConf['search'];
         }
       });
-    }
-
-    if (this.prepareParams) {
-      params = this.prepareParams(params);
     }
 
     return this.apiService.getObservable<M>(this.url, params).pipe(

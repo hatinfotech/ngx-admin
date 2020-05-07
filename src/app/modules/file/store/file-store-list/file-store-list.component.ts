@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { ProductUnitModel } from '../../../../models/product.model';
+import { FileStoreModel } from '../../../../models/file.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ProductUnitFormComponent } from '../product-unit-form/product-unit-form.component';
+import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
+import { FileStoreFormComponent } from '../file-store-form/file-store-form.component';
 
 @Component({
-  selector: 'ngx-product-unit-list',
-  templateUrl: './product-unit-list.component.html',
-  styleUrls: ['./product-unit-list.component.scss'],
+  selector: 'ngx-file-store-list',
+  templateUrl: './file-store-list.component.html',
+  styleUrls: ['./file-store-list.component.scss'],
 })
-export class ProductUnitListComponent extends DataManagerListComponent<ProductUnitModel> implements OnInit {
+export class FileStoreListComponent extends DataManagerListComponent<FileStoreModel> implements OnInit {
 
-  componentName: string = 'ProductUnitListComponent';
-  formPath = '/admin-product/unit/form';
-  apiPath = '/admin-product/units';
+  componentName: string = 'FileStoreListComponent';
+  formPath = '/file/store/form';
+  apiPath = '/file/file-stores';
   idKey = 'Code';
 
   constructor(
@@ -53,17 +54,12 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
       Name: {
         title: 'Tên',
         type: 'string',
-        width: '30%',
-      },
-      FullName: {
-        title: 'Tên đầy đủ',
-        type: 'string',
         width: '40%',
       },
-      Symbol: {
-        title: 'Biểu tượng',
+      Host: {
+        title: 'Host',
         type: 'string',
-        width: '10%',
+        width: '40%',
       },
       //   Copy: {
       //     title: 'Copy',
@@ -83,13 +79,13 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
       //         //   instance.disabled = true;
       //         // }
       //       });
-      //       instance.click.subscribe(async (row: ProductUnitModel) => {
+      //       instance.click.subscribe(async (row: FileStoreModel) => {
 
       //         this.dialogService.open(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
-      //             onDialogSave: (newData: ProductUnitModel[]) => {
+      //             onDialogSave: (newData: FileStoreModel[]) => {
       //               // if (onDialogSave) onDialogSave(row);
       //             },
       //             onDialogClose: () => {
@@ -111,12 +107,12 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
   }
 
   /** Api get funciton */
-  executeGet(params: any, success: (resources: ProductUnitModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductUnitModel[] | HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: FileStoreModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: FileStoreModel[] | HttpErrorResponse) => void) {
     // params['includeParent'] = true;
     super.executeGet(params, success, error, complete);
   }
 
-  getList(callback: (list: ProductUnitModel[]) => void) {
+  getList(callback: (list: FileStoreModel[]) => void) {
     super.getList((rs) => {
       // rs.forEach(item => {
       //   item.Content = item.Content.substring(0, 256) + '...';
@@ -126,12 +122,12 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductUnitModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductUnitFormComponent, {
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: FileStoreModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(FileStoreFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
-        onDialogSave: (newData: ProductUnitModel[]) => {
+        onDialogSave: (newData: FileStoreModel[]) => {
           if (onDialogSave) onDialogSave(newData);
         },
         onDialogClose: () => {

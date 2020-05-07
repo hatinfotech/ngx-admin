@@ -1,0 +1,30 @@
+<nb-card class="small-header smart-table drop-container" ngFileDrop [options]="options"
+  (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
+  <nb-card-body>
+    <div style="padding: 1rem;">
+      <!-- <div class="drop-container"> -->
+      <h1>Kéo &amp; thả file vào đây để tải lên</h1>
+
+      <div style="margin-bottom: 1rem;">
+        <nb-progress-bar style="margin-top: 1rem;" *ngFor="let file of files" [value]="file.progress.status == 1 ? file.progress.data.percentage*90/100 : file.progress.data.percentage"
+          [status]="file.progress.status == 1 ? 'danger' : 'success'" size="medium">
+          {{file.progress.data.percentage > 40 ? file.name : ''}} upload
+          {{file.progress.data.percentage < 100 ? (file.progress.data.percentage + '%') : 'complete'}}
+        </nb-progress-bar>
+      </div>
+
+      <label class="upload-button">
+        <input #uploadButton style="display: none;" type="file" ngFileSelect [options]="options"
+          (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple>
+        <button nbButton (click)="uploadButton.click()">Chọn file tải lên</button>
+      </label>
+
+      <!-- <button nbButton type="button" class="start-upload-btn" (click)="startUpload()">
+    Start Upload
+  </button> -->
+
+      <!-- </div> -->
+
+    </div>
+  </nb-card-body>
+</nb-card>
