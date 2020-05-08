@@ -11,6 +11,8 @@ export class FileModel {
   Protected?: string;
   Owner?: string;
   Store?: string;
+  Thumbnail?: string;
+  DownloadLink?: string;
 }
 
 export class FileStoreModel {

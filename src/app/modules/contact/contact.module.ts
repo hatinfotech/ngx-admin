@@ -12,7 +12,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { AgGridModule } from '@ag-grid-community/angular';
 
 @NgModule({

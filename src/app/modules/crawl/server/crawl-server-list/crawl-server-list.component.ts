@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SyncFormComponent } from '../../../wordpress/sync-form/sync-form.component';
 import { CrawlServerFormComponent } from '../crawl-server-form/crawl-server-form.component';
 

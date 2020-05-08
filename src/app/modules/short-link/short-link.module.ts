@@ -13,7 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 
 @NgModule({
   declarations: [ShortLinkComponent, ShortLinkListComponent, ShortLinkFormComponent],

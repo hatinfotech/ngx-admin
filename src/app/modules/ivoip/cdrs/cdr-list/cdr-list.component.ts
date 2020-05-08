@@ -8,7 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { PlayerDialogComponent } from '../../../dialog/player-dialog/player-dialog.component';
 import { CdrModel } from '../../../../models/cdr.model';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 
 @Component({

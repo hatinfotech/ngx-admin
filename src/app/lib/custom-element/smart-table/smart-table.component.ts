@@ -61,8 +61,6 @@ export class SmartTableButtonComponent implements ViewCell, OnInit {
   }
 }
 
-
-
 @Component({
   selector: 'ngx-smart-table-button',
   template: `
@@ -70,6 +68,39 @@ export class SmartTableButtonComponent implements ViewCell, OnInit {
   `,
 })
 export class SmartTableIconComponent implements ViewCell, OnInit {
+
+  renderValue: string;
+  iconPack: string;
+  icon: string;
+  label: string = '';
+  status: string = 'success';
+  display: boolean = false;
+  disabled: boolean = false;
+
+  @Input() value: string | number;
+  @Input() rowData: any;
+
+  // @Output() save: EventEmitter<any> = new EventEmitter();
+  @Output() click: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+
+  ngOnInit() {
+    // this.renderValue = this.value.toString().toUpperCase();
+    this.valueChange.emit({ value: this.value, row: this.rowData });
+  }
+
+  onClick() {
+    this.click.emit(this.rowData);
+  }
+}
+
+@Component({
+  selector: 'ngx-smart-table-thumbnail',
+  template: `
+  <div class="thumbnail" [ngStyle]="{'background-image': 'url(' + value + ')'}"></div>
+  `,
+})
+export class SmartTableThumbnailComponent implements ViewCell, OnInit {
   renderValue: string;
   iconPack: string;
   icon: string;

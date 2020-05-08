@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Input } from '@angular/core';
-import { UploaderOptions, UploadFile, UploadInput, UploadOutput, humanizeBytes } from '../../../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
+import { UploaderOptions, UploadFile, UploadInput, UploadOutput, humanizeBytes, UploadStatus } from '../../../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
 import { BaseComponent } from '../../../../lib/base-component';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
@@ -84,10 +84,10 @@ export class FileUploadComponent extends BaseComponent implements OnInit {
         // console.log('Current files: ', this.files);
         setTimeout(() => {
           this.files.splice(this.files.findIndex(f => f.id === output.file.id), 1);
-          if (this.fileListComponent && this.files.length === 0) {
-            this.fileListComponent.refresh();
-          }
-        }, 5000);
+        }, 10000);
+        if (this.fileListComponent && this.files.filter(f => f.progress.status !== UploadStatus.Done).length === 0) {
+          this.fileListComponent.refresh();
+        }
         break;
     }
   }

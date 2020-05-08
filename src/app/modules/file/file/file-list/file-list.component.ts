@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { FileModel } from '../../../../models/file.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -7,6 +7,8 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FileFormComponent } from '../file-form/file-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/searver-data-manger-list.component';
+import { SmartTableThumbnailComponent, SmartTableIconComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
 
 @Component({
   selector: 'ngx-file-list',
@@ -29,6 +31,13 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
     protected _http: HttpClient,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
+
+    /** ngx-uploader */
+    this.options = { concurrency: 3, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
+    this.files = []; // local uploading files array
+    this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
+    this.humanizeBytes = humanizeBytes;
+    /** End ngx-uploader */
   }
 
   editing = {};
@@ -45,73 +54,66 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
     delete: this.configDeleteButton(),
     pager: this.configPaging(),
     columns: {
-      Id: {
-        title: 'Id',
-        type: 'string',
-        width: '10%',
-      },
-      Store: {
-        title: 'Kho lưu trữ',
-        type: 'string',
-        width: '20%',
+      Thumbnail: {
+        title: 'Hình',
+        type: 'custom',
+        width: '5%',
+        renderComponent: SmartTableThumbnailComponent,
+        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.subscribe(async (row: FileModel) => {
+          });
+        },
       },
       Name: {
         title: 'Tên file',
         type: 'string',
-        width: '30%',
+        width: '25%',
       },
       Created: {
         title: 'Ngày upload',
         type: 'string',
-        width: '10%',
+        width: '15%',
       },
       Update: {
         title: 'Cập nhật',
         type: 'string',
+        width: '15%',
+      },
+      Store: {
+        title: 'Kho lưu trữ',
+        type: 'string',
         width: '10%',
+      },
+      Id: {
+        title: 'Id',
+        type: 'string',
+        width: '5%',
       },
       Protected: {
         title: 'Bảo mật',
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: FileModel) => {
-
-      //         this.dialogService.open(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: FileModel[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
-
-      //       });
-      //     },
-      //   },
+      Download: {
+        title: 'Tải',
+        type: 'custom',
+        width: '5%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'download-outline';
+          instance.label = 'Tải về';
+          instance.display = true;
+          instance.status = 'success';
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.subscribe(async (row: FileModel) => {
+            window.open(row['DownloadLink'], '_blank');
+          });
+        },
+      },
     },
   });
 
@@ -125,6 +127,9 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
 
     // Set DataSource: prepareData
     source.prepareData = (data: FileModel[]) => {
+      // data.forEach(item => {
+      //   item['Thumbnail'] = '';
+      // });
       return data;
     };
 
@@ -175,4 +180,88 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
     return false;
   }
 
+
+  /** ngx-uploader */
+  options: UploaderOptions;
+  formData: FormData;
+  files: UploadFile[];
+  uploadInput: EventEmitter<UploadInput>;
+  humanizeBytes: Function;
+  dragOver: boolean;
+
+  onUploadOutput(output: UploadOutput): void {
+    // console.log(output);
+    // console.log(this.files);
+    switch (output.type) {
+      case 'allAddedToQueue':
+        // uncomment this if you want to auto upload files when added
+        const event: UploadInput = {
+          type: 'uploadAll',
+          url: this.apiService.buildApiUrl('/file/files'),
+          method: 'POST',
+          data: { foo: 'bar' },
+        };
+        this.uploadInput.emit(event);
+        break;
+      case 'addedToQueue':
+        if (typeof output.file !== 'undefined') {
+          this.files.push(output.file);
+        }
+        break;
+      case 'uploading':
+        if (typeof output.file !== 'undefined') {
+          // update current data in files array for uploading file
+          const index = this.files.findIndex((file) => typeof output.file !== 'undefined' && file.id === output.file.id);
+          this.files[index] = output.file;
+          console.log(`[${output.file.progress.data.percentage}%] Upload file ${output.file.name}`);
+        }
+        break;
+      case 'removed':
+        // remove file from array when removed
+        this.files = this.files.filter((file: UploadFile) => file !== output.file);
+        break;
+      case 'dragOver':
+        this.dragOver = true;
+        break;
+      case 'dragOut':
+      case 'drop':
+        this.dragOver = false;
+        break;
+      case 'done':
+        // The file is downloaded
+        console.log('Upload complete');
+        if (this.files.filter(f => f.progress.status !== UploadStatus.Done).length === 0) {
+          setTimeout(() => {
+            this.files = [];
+          }, 10000);
+          this.refresh();
+        }
+        break;
+    }
+  }
+
+  startUpload(): void {
+    const event: UploadInput = {
+      type: 'uploadAll',
+      url: this.apiService.buildApiUrl('/file/files'),
+      method: 'POST',
+      data: { foo: 'bar' },
+    };
+
+    this.uploadInput.emit(event);
+  }
+
+  cancelUpload(id: string): void {
+    this.uploadInput.emit({ type: 'cancel', id: id });
+  }
+
+  removeFile(id: string): void {
+    this.uploadInput.emit({ type: 'remove', id: id });
+  }
+
+  removeAllFiles(): void {
+    this.uploadInput.emit({ type: 'removeAll' });
+  }
+
+  /** End ngx-uploader */
 }

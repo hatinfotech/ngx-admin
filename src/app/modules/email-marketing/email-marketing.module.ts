@@ -18,7 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { EmailGatewayListComponent } from './email-gateway/email-gateway-list/email-gateway-list.component';
 import { EmailGatewayFormComponent } from './email-gateway/email-gateway-form/email-gateway-form.component';
 import { CKEditorModule } from 'ng2-ckeditor';

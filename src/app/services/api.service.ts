@@ -140,20 +140,20 @@ export class ApiService {
   get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
     //   if (result) {
-        const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
-          .pipe(retry(0), catchError(e => {
-            if (error) error(e);
-            if (complete) complete(e);
-            return this.handleError(e, params['silent']);
-          }))
-          .subscribe((resources: T) => {
-            success(resources);
-            if (complete) complete(resources);
-            obs.unsubscribe();
-          });
-      // } else {
-      //   this.onUnauthorizied();
-      // }
+    const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
+      .pipe(retry(0), catchError(e => {
+        if (error) error(e);
+        if (complete) complete(e);
+        return this.handleError(e, params['silent']);
+      }))
+      .subscribe((resources: T) => {
+        success(resources);
+        if (complete) complete(resources);
+        obs.unsubscribe();
+      });
+    // } else {
+    //   this.onUnauthorizied();
+    // }
     // });
   }
 
@@ -242,17 +242,17 @@ export class ApiService {
   post<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
     //   if (result) {
-        const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
-          .pipe(retry(0), catchError(e => {
-            if (error) error(e);
-            if (complete) complete(e);
-            return this.handleError(e, params['silent']);
-          }))
-          .subscribe((newResource: T) => {
-            success(newResource);
-            if (complete) complete(newResource);
-            obs.unsubscribe();
-          });
+    const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
+      .pipe(retry(0), catchError(e => {
+        if (error) error(e);
+        if (complete) complete(e);
+        return this.handleError(e, params['silent']);
+      }))
+      .subscribe((newResource: T) => {
+        success(newResource);
+        if (complete) complete(newResource);
+        obs.unsubscribe();
+      });
     //   } else {
     //     this.onUnauthorizied();
     //   }
@@ -264,15 +264,15 @@ export class ApiService {
     return new Promise<T>((resolve, reject) => {
       // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       //   if (result) {
-          const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
-            .pipe(retry(0), catchError(e => {
-              reject(e);
-              return this.handleError(e, params['silent']);
-            }))
-            .subscribe((newResource: T) => {
-              resolve(newResource);
-              obs.unsubscribe();
-            });
+      const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
+        .pipe(retry(0), catchError(e => {
+          reject(e);
+          return this.handleError(e, params['silent']);
+        }))
+        .subscribe((newResource: T) => {
+          resolve(newResource);
+          obs.unsubscribe();
+        });
       //   } else {
       //     this.onUnauthorizied();
       //   }
@@ -284,27 +284,27 @@ export class ApiService {
   put<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
     // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
     //   if (result) {
-        // let url = '';
-        // if (Array.isArray(params)) {
-        //   const _params = {};
-        //   params.forEach((item, index) => {
-        //     _params['id' + index] = encodeURIComponent(item);
-        //   });
-        //   url = this.buildApiUrl(`${enpoint}`, _params);
-        // } else {
-        //   this.buildApiUrl(`${enpoint}/${params}`);
-        // }
-        const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
-          .pipe(retry(0), catchError(e => {
-            if (error) error(e);
-            if (complete) complete(e);
-            return this.handleError(e, params['silent']);
-          }))
-          .subscribe((newResource: T) => {
-            success(newResource);
-            if (complete) complete(newResource);
-            obs.unsubscribe();
-          });
+    // let url = '';
+    // if (Array.isArray(params)) {
+    //   const _params = {};
+    //   params.forEach((item, index) => {
+    //     _params['id' + index] = encodeURIComponent(item);
+    //   });
+    //   url = this.buildApiUrl(`${enpoint}`, _params);
+    // } else {
+    //   this.buildApiUrl(`${enpoint}/${params}`);
+    // }
+    const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
+      .pipe(retry(0), catchError(e => {
+        if (error) error(e);
+        if (complete) complete(e);
+        return this.handleError(e, params['silent']);
+      }))
+      .subscribe((newResource: T) => {
+        success(newResource);
+        if (complete) complete(newResource);
+        obs.unsubscribe();
+      });
     //   } else {
     //     this.onUnauthorizied();
     //   }
@@ -316,15 +316,15 @@ export class ApiService {
     return new Promise<T>((resolve, reject) => {
       // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
       //   if (result) {
-          const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
-            .pipe(retry(0), catchError(e => {
-              reject(e);
-              return this.handleError(e, params['silent']);
-            }))
-            .subscribe((newResource: T) => {
-              resolve(newResource);
-              obs.unsubscribe();
-            });
+      const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
+        .pipe(retry(0), catchError(e => {
+          reject(e);
+          return this.handleError(e, params['silent']);
+        }))
+        .subscribe((newResource: T) => {
+          resolve(newResource);
+          obs.unsubscribe();
+        });
       //   } else {
       //     this.onUnauthorizied();
       //   }
@@ -344,28 +344,28 @@ export class ApiService {
   delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
     // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
     //   if (result) {
-        let apiUrl = '';
-        if (Array.isArray(id)) {
-          // const _id = id.join(encodeURIComponent('-'));
-          const params = {};
-          id.forEach((item, index) => {
-            params['id' + index] = encodeURIComponent(item);
-          });
-          apiUrl = this.buildApiUrl(`${enpoint}`, params);
-        } else if (typeof id === 'object') {
-          apiUrl = this.buildApiUrl(enpoint, id);
-        }
-        const obs = this._http.delete(apiUrl)
-          .pipe(retry(0), catchError(e => {
-            if (error) error(e);
-            if (complete) complete(e);
-            return this.handleError(e, id['silent']);
-          }))
-          .subscribe((resp) => {
-            success(resp);
-            if (complete) complete(resp);
-            obs.unsubscribe();
-          });
+    let apiUrl = '';
+    if (Array.isArray(id)) {
+      // const _id = id.join(encodeURIComponent('-'));
+      const params = {};
+      id.forEach((item, index) => {
+        params['id' + index] = encodeURIComponent(item);
+      });
+      apiUrl = this.buildApiUrl(`${enpoint}`, params);
+    } else if (typeof id === 'object') {
+      apiUrl = this.buildApiUrl(enpoint, id);
+    }
+    const obs = this._http.delete(apiUrl)
+      .pipe(retry(0), catchError(e => {
+        if (error) error(e);
+        if (complete) complete(e);
+        return this.handleError(e, id['silent']);
+      }))
+      .subscribe((resp) => {
+        success(resp);
+        if (complete) complete(resp);
+        obs.unsubscribe();
+      });
     //   } else {
     //     this.onUnauthorizied();
     //   }
@@ -434,6 +434,22 @@ export class ApiService {
         },
       });
     }
+    if (e.status === 403) {
+      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Yêu cầu không có quyền',
+          content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
+          actions: [
+            {
+              label: 'Trở về',
+              icon: 'back',
+              status: 'info',
+              action: () => { },
+            },
+          ],
+        },
+      });
+    }
     let errorMessage = '';
     if (e.error instanceof ErrorEvent) {
       // client-side error
@@ -457,7 +473,7 @@ export class ApiInterceptor implements HttpInterceptor {
   constructor(
     protected authService: NbAuthService,
     protected apiService: ApiService,
-    ) { }
+  ) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Check endpont != /user/login/refresh
     // const modified = req.clone({ setHeaders: { 'Custom-Header-1': '1' } });

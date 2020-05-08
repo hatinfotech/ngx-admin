@@ -8,7 +8,7 @@ import { OnInit } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
 
 export class SmartTableSetting {

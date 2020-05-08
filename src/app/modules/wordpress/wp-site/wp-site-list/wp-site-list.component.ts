@@ -8,7 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WpSiteFormComponent } from '../wp-site-form/wp-site-form.component';
 import { HttpClient } from '@angular/common/http';
 import { retry, catchError } from 'rxjs/operators';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table-checkbox.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SyncFormComponent } from '../../sync-form/sync-form.component';
 
 @Component({
