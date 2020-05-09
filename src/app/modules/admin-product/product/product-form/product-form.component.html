@@ -1,10 +1,10 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()"
-(keydown.shift.enter)="onControlEnter($event)"
-(keydown.enter)="onControlEnter($event)"
-class="popup">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
+  (keydown.enter)="onControlEnter($event)" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup">
+      <nb-card class="small-header popup" ngFileDrop [options]="options"
+      (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput"
+      [ngClass]="{ 'is-drop-over': dragOver }">
         <nb-card-header>
           <nav>
             Cập nhật sản phẩm
@@ -25,28 +25,32 @@ class="popup">
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code_old">
+              <input type="hidden" formControlName="FeaturePicture">
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                  <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt buộc
+                  <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt
+                      buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Code" maxlength="30" placeholder="Tự động tạo mã">
+                  <input type="text" nbInput fullWidth formControlName="Code" maxlength="30"
+                    placeholder="Tự động tạo mã">
                 </div>
               </div>
               <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên quảng cáo">
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên quảng cáo">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')">
                   <label class="label"><span class="valid">Đơn vị tính (*)</span><span class="invalid">ĐVT là bắt buộc
                       (*)</span></label>
-                      <nb-select size="medium" formControlName="WarehouseUnit" fullWidth>
-                        <nb-option value="">Chọn ĐVT</nb-option>
-                        <nb-option *ngFor="let unit of unitList" [value]="unit.Code">{{unit.Name}} ({{unit.Symbol}})</nb-option>
-                      </nb-select>
+                  <nb-select size="medium" formControlName="WarehouseUnit" fullWidth>
+                    <nb-option value="">Chọn ĐVT</nb-option>
+                    <nb-option *ngFor="let unit of unitList" [value]="unit.Code">{{unit.Name}} ({{unit.Symbol}})
+                    </nb-option>
+                  </nb-select>
                 </div>
               </div>
               <!-- <div class="col-sm-3">
@@ -66,29 +70,73 @@ class="popup">
                       <input type="text" nbInput fullWidth formControlName="MaxUse" placeholder="Số lần KM">
                 </div>
               </div> -->
+
               <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
                   <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
                       (*)</span></label>
-                      <ngx-select2 formControlName="Categories"
-                            [select2Option]="select2OptionForCategories">
-                          </ngx-select2>
+                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories">
+                  </ngx-select2>
                 </div>
+              </div>
+            </div>
+            <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
+            <div class="row">
+              <div class="col-sm-12" style="min-height: 10rem">
+
+                <div formArrayName="Pictures" class="form-details">
+                  <div class="row">
+                    <div class="form-detail-item col-sm-2"
+                      *ngFor="let picture of getPictures(i).controls; let ic=index"
+                      [formGroup]="picture">
+                      <input type="hidden" formControlName="Id">
+                      <div class="imageFormControl"
+                        [ngStyle]="{'background-image': 'url(' + picture.get('Thumbnail').value + ')'}">
+                        <nb-progress-bar style="padding: 1rem;" *ngIf="picture.get('ProgressId').value != ''"
+                          [value]="filesIndex[picture.get('ProgressId').value]?.progress?.status == 1 ? filesIndex[picture.get('ProgressId').value]?.progress?.data?.percentage*90/100 : filesIndex[picture.get('ProgressId').value]?.progress?.data?.percentage"
+                          [status]="filesIndex[picture.get('ProgressId').value]?.progress?.status == 1 ? 'danger' : 'success'" size="medium">
+                          {{filesIndex[picture.get('ProgressId').value]?.progress?.data?.percentage + '%'}}
+                        </nb-progress-bar>
+
+                        <div class="buttons-row controls">
+                          <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+                          <button nbButton status="primary" hero size="tiny"
+                          (click)="setAsFeaturePicture(i, picture)" title="Đặt làm hình chính">Chính</button>
+                          <button nbButton status="success" hero size="tiny"
+                            (click)="previewPicture(picture)">Xem</button>
+                          <button nbButton status="danger" hero size="tiny"
+                            (click)="removePictureGroup(i, ic)">Xoá</button>
+                        </div>
+
+                        <input type="hidden" nbInput fullWidth formControlName="Image" placeholder="Image">
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <!-- <nb-progress-bar style="margin: 1rem;" *ngFor="let file of files"
+                      [value]="file.progress.status == 1 ? file.progress.data.percentage*90/100 : file.progress.data.percentage"
+                      [status]="file.progress.status == 1 ? 'danger' : 'success'" size="medium">
+                      {{file.progress.data.percentage > 40 ? file.name : ''}} upload
+                      {{file.progress.data.percentage < 100 ? (file.progress.data.percentage + '%') : 'complete'}}
+                    </nb-progress-bar> -->
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span></label>
-                      <!-- <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="10"></textarea> -->
-                      <ckeditor formControlName="Description" [config]="{ extraPlugins: 'divarea', height: '320' }"></ckeditor>
+                  <!-- <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="10"></textarea> -->
+                  <ckeditor formControlName="Description" [config]="{ extraPlugins: 'divarea', height: '320' }">
+                  </ckeditor>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Technical'), 'warning')">
-                  <label class="label"><span class="valid">Thông tin kỹ thuật (*)</span><span class="invalid">Thông tin kỹ thuật là bắt buộc
+                  <label class="label"><span class="valid">Thông tin kỹ thuật (*)</span><span class="invalid">Thông tin
+                      kỹ thuật là bắt buộc
                       (*)</span></label>
-                      <!-- <textarea nbInput fullWidth formControlName="Technical" placeholder="Thông tin kỹ thuật" rows="10"></textarea> -->
-                      <ckeditor formControlName="Technical" [config]="{ extraPlugins: 'divarea', height: '320' }"></ckeditor>
+                  <ckeditor formControlName="Technical" [config]="{ extraPlugins: 'divarea', height: '320' }">
+                  </ckeditor>
                 </div>
               </div>
             </div>
@@ -283,7 +331,8 @@ class="popup">
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
             <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
-            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">Lưu & Đóng</button>
             <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
           </div>
         </nb-card-footer>

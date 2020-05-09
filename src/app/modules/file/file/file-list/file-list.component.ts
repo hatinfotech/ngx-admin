@@ -127,9 +127,10 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
 
     // Set DataSource: prepareData
     source.prepareData = (data: FileModel[]) => {
-      // data.forEach(item => {
-      //   item['Thumbnail'] = '';
-      // });
+      data.forEach(item => {
+        item['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+        item['DownloadLink'] += '?token=' + this.apiService.getAccessToken();
+      });
       return data;
     };
 
@@ -180,7 +181,6 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
     return false;
   }
 
-
   /** ngx-uploader */
   options: UploaderOptions;
   formData: FormData;
@@ -229,7 +229,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
         break;
       case 'done':
         // The file is downloaded
-        console.log('Upload complete');
+        console.log('Upload complete', output);
         if (this.files.filter(f => f.progress.status !== UploadStatus.Done).length === 0) {
           setTimeout(() => {
             this.files = [];
@@ -262,6 +262,5 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
   removeAllFiles(): void {
     this.uploadInput.emit({ type: 'removeAll' });
   }
-
   /** End ngx-uploader */
 }

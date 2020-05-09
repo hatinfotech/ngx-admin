@@ -5,9 +5,11 @@ export class ProductModel {
   WarehouseUnit?: string;
   Description?: string;
   Technical?: string;
+  FeaturePicture?: string;
 
   // References
   Categories: ProductCategoryModel[];
+  Pictures?: ProductPictureModel[];
 
   constructor() { }
 
@@ -24,4 +26,11 @@ export class ProductUnitModel {
   Name?: string;
   Symbol?: string;
   FullName?: string;
+}
+
+export class ProductPictureModel {
+  Id?: number;
+  Product?: string;
+  Image?: string;
+  Description?: string;
 }
