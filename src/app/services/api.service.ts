@@ -478,7 +478,8 @@ export class ApiInterceptor implements HttpInterceptor {
     // Check endpont != /user/login/refresh
     // const modified = req.clone({ setHeaders: { 'Custom-Header-1': '1' } });
     console.log('Http intercept: ', req.url);
-    if (!/https?:\/\/[^\/]+\/v\d\/user\/login/.test(req.url)) {
+    // if (!/https?:\/\/[^\/]+\/v\d\/user\/login/.test(req.url)) {
+    if (!/\/v\d+\/user\/login/.test(req.url)) {
       return this.authService.isAuthenticated().pipe(switchMap(isAuth => {
         if (!isAuth) {
           // Refresh token and continue request

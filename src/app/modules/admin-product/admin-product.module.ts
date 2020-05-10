@@ -20,6 +20,7 @@ import { ProductCategoryFormComponent } from './category/product-category-form/p
 import { ProductUnitListComponent } from './unit/product-unit-list/product-unit-list.component';
 import { ProductUnitFormComponent } from './unit/product-unit-form/product-unit-form.component';
 import { NgxUploaderModule } from '../../lib/ngx-uploader/projects/ngx-uploader/src/lib/ngx-uploader.module';
+import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
@@ -65,6 +66,7 @@ import { NgxUploaderModule } from '../../lib/ngx-uploader/projects/ngx-uploader/
     ProductFormComponent,
     ProductCategoryFormComponent,
     ProductUnitFormComponent,
+    SmartTableThumbnailComponent,
   ],
   providers: [
     // use french locale

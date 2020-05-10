@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/searver-data-manger-list.component';
+import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 
 @Component({
   selector: 'ngx-product-list',
@@ -46,10 +47,17 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     delete: this.configDeleteButton(),
     pager: this.configPaging(),
     columns: {
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
+      FeaturePictureThumbnail: {
+        title: 'Hình',
+        type: 'custom',
+        width: '5%',
+        renderComponent: SmartTableThumbnailComponent,
+        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.subscribe(async (row: ProductModel) => {
+          });
+        },
       },
       Name: {
         title: 'Tên',
@@ -59,10 +67,15 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       Categories: {
         title: 'Danh mục',
         type: 'string',
-        width: '30%',
+        width: '25%',
       },
       WarehouseUnit: {
         title: 'ĐVT',
+        type: 'string',
+        width: '10%',
+      },
+      Code: {
+        title: 'Code',
         type: 'string',
         width: '10%',
       },
@@ -121,6 +134,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         if (product['Categories']) {
           product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
         }
+        if (product['FeaturePictureThumbnail']) {
+          product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
+        }
         return product;
       });
       return data;
@@ -130,6 +146,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
       params['includeUnit'] = true;
+      params['includeFeaturePicture'] = true;
       return params;
     };
 
