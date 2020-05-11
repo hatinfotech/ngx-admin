@@ -164,6 +164,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     const newForm = this.formBuilder.group({
       Code_old: [''],
       Code: [''],
+      Sku: [''],
       WarehouseUnit: ['CAI'],
       Name: ['', Validators.required],
       FeaturePicture: [''],

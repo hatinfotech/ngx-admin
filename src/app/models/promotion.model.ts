@@ -4,6 +4,7 @@ export class PromotionModel {
   Type?: string;
   Name?: string;
   Description?: string;
+  Content?: string;
   MaxUse?: number;
   Creator?: string;
   NumOfUse?: number;

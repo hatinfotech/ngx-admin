@@ -35,11 +35,20 @@
                     placeholder="Tự động tạo mã">
                 </div>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
+                  <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt
+                      buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Sku"
+                    placeholder="Sku">
+                </div>
+              </div>
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên quảng cáo">
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
                 </div>
               </div>
               <div class="col-sm-3">

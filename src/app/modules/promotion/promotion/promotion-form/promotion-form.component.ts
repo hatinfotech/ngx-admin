@@ -7,6 +7,8 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import '../../../../lib/ckeditor.loader';
+import 'ckeditor';
 
 @Component({
   selector: 'ngx-promotion-form',
@@ -145,7 +147,8 @@ export class PromotionFormComponent extends DataManagerFormComponent<PromotionMo
       Code: [''],
       Type: ['', Validators.required],
       Name: ['', Validators.required],
-      Description: [''],
+      Description: ['', Validators.required],
+      Content: ['', Validators.required],
       MaxUse: [''],
       State: [''],
       ProductGroups: [''],

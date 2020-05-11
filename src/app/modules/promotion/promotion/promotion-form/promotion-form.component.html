@@ -79,7 +79,15 @@ class="popup">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span></label>
-                      <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="10"></textarea>
+                      <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="3"></textarea>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Content'), 'warning')">
+                  <label class="label"><span class="valid">Nội dung (*)</span><span class="invalid">Nội dung là bắt buộc
+                      (*)</span></label>
+                      <ckeditor formControlName="Content" [config]="{ extraPlugins: 'divarea', height: '320' }">
+                      </ckeditor>
                 </div>
               </div>
             </div>
@@ -95,7 +103,7 @@ class="popup">
                   <div class="col-sm-3 label">So sánh</div>
                   <div class="col-sm-2 label">Kiểu DL</div>
                   <div class="col-sm-2 label">Giá trị</div>
-                  <div class="col-sm-1 label">Break</div>
+                  <div class="col-sm-1 label">Dừng nếu sai</div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -231,9 +239,10 @@ class="popup">
                           <label class="label">Loại</label>
                           <nb-select size="medium" formControlName="Type" fullWidth>
                             <nb-option value="">Loại hành động...</nb-option>
-                            <nb-option value="PRODUCT">Tặng kèm sản phẩm</nb-option>
-                            <nb-option value="DISCOUNTPERCENT">Giảm giá theo % giá trịđơn hàng</nb-option>
-                            <nb-option value="DISCOUNTAMOUNT">Tặng phiếu mua hàng</nb-option>
+                            <nb-option value="BONUSPRODUCT">Tặng kèm sản phẩm</nb-option>
+                            <nb-option value="BONUSVOUCHER">Tặng phiếu mua hàng</nb-option>
+                            <nb-option value="DISCOUNTPERCENT">Giảm giá theo % giá trị đơn hàng</nb-option>
+                            <nb-option value="DISCOUNTAMOUNT">Giảm tiền</nb-option>
                           </nb-select>
                         </div>
                       </div>

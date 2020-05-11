@@ -14,6 +14,7 @@ import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+import { CKEditorModule } from 'ng2-ckeditor';
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from
     AgGridModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    CKEditorModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

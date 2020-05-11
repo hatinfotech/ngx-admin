@@ -1,6 +1,7 @@
 export class ProductModel {
 
   Code: string;
+  Sku?: string;
   Name: string;
   WarehouseUnit?: string;
   Description?: string;
