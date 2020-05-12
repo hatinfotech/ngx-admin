@@ -66,6 +66,7 @@ export class EmailGatewayFormComponent extends DataManagerFormComponent<EmailGat
   makeNewFormGroup(data?: EmailGatewayModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
+      Type: ['', Validators.required],
       Name: ['', Validators.required],
       Description: [''],
       ApiUrl: [''],

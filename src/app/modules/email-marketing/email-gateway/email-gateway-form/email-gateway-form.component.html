@@ -23,11 +23,34 @@
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code">
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpTransport'), 'warning')">
+                  <label class="label"><span class="valid">Transport</span><span class="invalid">Smtp Transport là bắt buộc
+                      (*)</span></label>
+                      <nb-select size="medium" formControlName="SmtpTransport" fullWidth>
+                        <nb-option value="">SMTP Transport...</nb-option>
+                        <nb-option value=normal>Normal</nb-option>
+                        <nb-option value="ssl">SSL</nb-option>
+                        <nb-option value="tls">TLS</nb-option>
+                        <nb-option value="api">API</nb-option>
+                      </nb-select>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label class="label">Loại</label>
+                  <nb-select size="medium" formControlName="Type" fullWidth>
+                    <nb-option value="">Loại gateway...</nb-option>
+                    <nb-option value="SMTP2GOAPI">SMTP2GO API</nb-option>
+                    <nb-option value="SMTP">SMTP</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <div class="col-sm-6">
@@ -65,18 +88,11 @@
                       <input type="text" nbInput fullWidth formControlName="SmtpHost" placeholder="Smtp Host">
                 </div>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpPort'), 'warning')">
                   <label class="label"><span class="valid">Smtp Port</span><span class="invalid">Smtp Port là bắt buộc
                       (*)</span></label>
                       <input type="text" nbInput fullWidth formControlName="SmtpPort" placeholder="Smtp Port">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpTransport'), 'warning')">
-                  <label class="label"><span class="valid">Smtp Transport</span><span class="invalid">Smtp Transport là bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="SmtpTransport" placeholder="Smtp Transport">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -112,7 +128,8 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">Lưu & Đóng</button>
             <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
           </div>
         </nb-card-footer>
