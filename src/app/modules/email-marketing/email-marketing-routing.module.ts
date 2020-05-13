@@ -10,6 +10,8 @@ import { EmailTemplateListComponent } from './email-template/email-template-list
 import { EmailGatewayListComponent } from './email-gateway/email-gateway-list/email-gateway-list.component';
 import { EmailAdvertisementListComponent } from './email-advertisement/email-advertisement-list/email-advertisement-list.component';
 import { EmailMarketingComponent } from './email-marketing.component';
+import { EmailAddressListComponent } from './address/email-address-list/email-address-list.component';
+import { EmailAddressFormComponent } from './address/email-address-form/email-address-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -83,7 +85,7 @@ const routes: Routes = [{
       component: EmailGatewayFormComponent,
     },
     {
-      path: 'advertisement/list',
+      path: 'ads-email/list',
       canActivate: [AuthGuardService],
       component: EmailAdvertisementListComponent,
       data: {
@@ -91,14 +93,32 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'advertisement/form',
+      path: 'ads-email/form',
       canActivate: [AuthGuardService],
       component: EmailAdvertisementFormComponent,
     },
     {
-      path: 'advertisement/form/:id',
+      path: 'ads-email/form/:id',
       canActivate: [AuthGuardService],
       component: EmailAdvertisementFormComponent,
+    },
+    {
+      path: 'address/list',
+      canActivate: [AuthGuardService],
+      component: EmailAddressListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'address/form',
+      canActivate: [AuthGuardService],
+      component: EmailAddressFormComponent,
+    },
+    {
+      path: 'address/form/:id',
+      canActivate: [AuthGuardService],
+      component: EmailAddressFormComponent,
     },
   ],
 }];

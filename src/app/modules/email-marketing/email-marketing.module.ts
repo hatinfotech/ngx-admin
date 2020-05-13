@@ -22,6 +22,8 @@ import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-tabl
 import { EmailGatewayListComponent } from './email-gateway/email-gateway-list/email-gateway-list.component';
 import { EmailGatewayFormComponent } from './email-gateway/email-gateway-form/email-gateway-form.component';
 import { CKEditorModule } from 'ng2-ckeditor';
+import { EmailAddressListComponent } from './address/email-address-list/email-address-list.component';
+import { EmailAddressFormComponent } from './address/email-address-form/email-address-form.component';
 
 @NgModule({
   declarations: [EmailMarketingComponent,
@@ -29,7 +31,8 @@ import { CKEditorModule } from 'ng2-ckeditor';
     EmailSentFormComponent,
     EmailTemplateListComponent, EmailTemplateFormComponent,
     EmailAdvertisementListComponent, EmailAdvertisementFormComponent,
-    EmailGatewayListComponent, EmailGatewayFormComponent],
+    EmailGatewayListComponent, EmailGatewayFormComponent,
+    EmailAddressListComponent, EmailAddressFormComponent],
   imports: [
     CommonModule,
     EmailMarketingRoutingModule,
