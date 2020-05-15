@@ -1,0 +1,15 @@
+.is-drop-over {
+  border: 1px solid #fe4676;
+}
+
+nb-card.is-drop-over nb-card-header {
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#ff708d),
+    to(#ff3d71)
+  ) !important;
+  background-image: linear-gradient(to right, #ff708d, #ff3d71) !important;
+  color: #ffffff !important;
+}

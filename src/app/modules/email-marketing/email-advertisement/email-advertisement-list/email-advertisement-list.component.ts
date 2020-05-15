@@ -26,7 +26,7 @@ interface MnfiniteLoadModel<M> {
 })
 export class EmailAdvertisementListComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  componentName = 'EmailSentListComponent';
+  componentName = 'EmailAdvertisementListComponent';
   idKey = 'Code';
 
   // private $: any;

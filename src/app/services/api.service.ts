@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
+import { NbAuthService, NbAuthOAuth2Token, NbAuthJWTToken, NbAuthToken } from '@nebular/auth';
 import { environment } from '../../environments/environment';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { map, retry, catchError, switchMap } from 'rxjs/operators';
+import { map, retry, catchError, switchMap, take, filter, delay } from 'rxjs/operators';
 import { EmployeeModel } from '../models/employee.model';
 import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
@@ -11,13 +11,19 @@ import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showc
 import { SubjectSubscriber } from 'rxjs/internal/Subject';
 import * as url from 'url';
 
+export class ApiToken {
+  access_token: string;
+  refresh_token: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   public baseApiUrl = environment.api.baseUrl;
   protected session = '';
-  protected token = '';
+  public token: ApiToken;
+  public nbToken: NbAuthToken;
 
   private unauthoriziedSubject: BehaviorSubject<{ previousUrl: string }> = new BehaviorSubject<{ previousUrl: string }>(null);
   public unauthorizied$: Observable<{ previousUrl: string }> = this.unauthoriziedSubject.asObservable();
@@ -32,13 +38,13 @@ export class ApiService {
   ) {
 
     this.authService.onTokenChange()
-      .subscribe((token: NbAuthOAuth2Token) => {
+      .subscribe((token: NbAuthToken) => {
         if (token.isValid()) {
           this.setToken(token);
         }
       });
 
-    this.authService.getToken().subscribe((token: NbAuthOAuth2Token) => {
+    this.authService.getToken().subscribe((token: NbAuthToken) => {
       if (token.isValid()) {
         this.setToken(token);
       }
@@ -49,12 +55,13 @@ export class ApiService {
     return this.baseApiUrl;
   }
 
-  setToken(token: NbAuthOAuth2Token) {
+  setToken(token: NbAuthToken) {
     if (token) {
-      const t = JSON.parse(token.toString());
-      if (t) {
-        this.setAccessToken(t['access_token']);
-        this.setRefreshToken(t['refresh_token']);
+      this.nbToken = token;
+      this.token = JSON.parse(token.toString());
+      if (this.token) {
+        this.setAccessToken(this.token['access_token']);
+        this.setRefreshToken(this.token['refresh_token']);
       }
     }
   }
@@ -160,21 +167,21 @@ export class ApiService {
   /** Restful api getting request - promise */
   async getPromise<T>(enpoint: string, params?: any): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-      this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-        if (result) {
-          const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
-            .pipe(retry(0), catchError(e => {
-              reject(e);
-              return this.handleError(e, params['silent']);
-            }))
-            .subscribe((resources: T) => {
-              resolve(resources);
-              obs.unsubscribe();
-            });
-        } else {
-          this.onUnauthorizied();
-        }
-      });
+      // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+      //   if (result) {
+      const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
+        .pipe(retry(0), catchError(e => {
+          reject(e);
+          return this.handleError(e, params['silent']);
+        }))
+        .subscribe((resources: T) => {
+          resolve(resources);
+          obs.unsubscribe();
+        });
+      // } else {
+      //   this.onUnauthorizied();
+      // }
+      // });
     });
 
   }
@@ -390,17 +397,54 @@ export class ApiService {
       });
   }
 
-  onUnauthorizied() {
-    this.unauthoriziedSubject.next({
-      previousUrl: this.router.url,
+  private takeUltilCount = {};
+  private takeUltilPastCount = {};
+  async takeUntil(context: string, delay: number, callback?: () => void): Promise<boolean> {
+    const result = new Promise<boolean>(resolve => {
+      if (delay === 0) {
+        // if (callback) callback(); else return;
+        resolve(true);
+        return;
+      }
+      if (!this.takeUltilCount[context]) this.takeUltilCount[context] = 0;
+      this.takeUltilCount[context]++;
+      ((takeCount) => {
+        setTimeout(() => {
+          this.takeUltilPastCount[context] = takeCount;
+        }, delay);
+      })(this.takeUltilCount[context]);
+      setTimeout(() => {
+        if (this.takeUltilPastCount[context] === this.takeUltilCount[context]) {
+          // callback();
+          resolve(true);
+        }
+      }, delay);
     });
-    this.router.navigate(['/auth/login']);
+    if (callback) {
+      callback();
+    }
+    return result;
+  }
+
+  onUnauthorizied() {
+    this.takeUntil('ultil_unauthorize', 5000).then(() => {
+      // Fix stress requests
+      this.authService.isAuthenticated().subscribe(isAuth => {
+        if (!isAuth) {
+          this.unauthoriziedSubject.next({
+            previousUrl: this.router.url,
+          });
+          this.router.navigate(['/auth/login']);
+        }
+      });
+    });
   }
 
   handleError(e: HttpErrorResponse, silent?: boolean) {
     if (e.status === 401) {
       console.warn('You were not logged in');
-      this.router.navigate(['/auth/login']);
+      // this.router.navigate(['/auth/login']);
+      this.onUnauthorizied();
     }
     if (e.status === 405) {
       if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
@@ -470,39 +514,77 @@ export class ApiService {
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
+  refreshTokenInProgress = false;
+  private refreshTokenSubject: BehaviorSubject<boolean> = new BehaviorSubject<any>(false);
   constructor(
     protected authService: NbAuthService,
     protected apiService: ApiService,
   ) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Check endpont != /user/login/refresh
-    // const modified = req.clone({ setHeaders: { 'Custom-Header-1': '1' } });
-    console.log('Http intercept: ', req.url);
-    // if (!/https?:\/\/[^\/]+\/v\d\/user\/login/.test(req.url)) {
-    if (!/\/v\d+\/user\/login/.test(req.url)) {
-      return this.authService.isAuthenticated().pipe(switchMap(isAuth => {
-        if (!isAuth) {
-          // Refresh token and continue request
-          return this.authService.isAuthenticatedOrRefresh().pipe(switchMap(ok => {
-            if (ok) {
-              return this.authService.getToken().pipe(switchMap((token: any) => {
-                // const urlParse = url.parse(req.url);
-                return next.handle(req.clone({
-                  // setHeaders: {
-                  //   token: token.token.access_token,
-                  // },
-                  url: req.url.replace(/token=([^\/=\?&]+)/, `token=${token.token.access_token}`),
-                }));
-              }));
-            }
-            this.apiService.onUnauthorizied();
-            return Observable.throw('Not login');
 
-          }));
-        }
-        return next.handle(req);
-      }));
+    console.log('Http intercept: ', req.url);
+
+    if (req.url.includes('v1/user/login')) {
+      return next.handle(req);
     }
-    return next.handle(req);
+
+    return this.authService.isAuthenticated().pipe(switchMap(isAuth => {
+      if (!isAuth) {
+        console.log(`Live check authtication status: ${isAuth}`);
+        return this.refreshToken(req, next);
+      } else {
+
+        return next.handle(req).catch(error => {
+          if (req.url.includes('v1/user/login')) {
+            this.apiService.onUnauthorizied();
+            return next.handle(error);
+          }
+          if (error.status !== 401) {
+            return next.handle(error);
+          }
+
+          return this.refreshToken(req, next);
+
+        });
+
+      }
+    }));
+
+  }
+
+  refreshToken(req: HttpRequest<any>, next: HttpHandler) {
+    if (this.refreshTokenInProgress) {
+      console.log('Refresh token in progress');
+      return this.refreshTokenSubject
+        .pipe(filter(result => result === true),
+          take(1), switchMap(() => this.continueRequest(req, next, this.apiService.token.access_token)));
+    }
+
+    this.refreshTokenInProgress = true;
+    console.log('Refresh token start');
+
+    return this.authService.refreshToken('email', { token: this.apiService.token }).pipe(switchMap(authResult => {
+
+      this.refreshTokenInProgress = false;
+      if (authResult.isSuccess) {
+        this.apiService.setToken(authResult.getToken());
+        this.refreshTokenSubject.next(true);
+        console.log('Refresh token success');
+        return this.continueRequest(req, next, this.apiService.token.access_token);
+      }
+      this.apiService.onUnauthorizied();
+      return throwError('AutRefresh token fail');
+
+    })).catch(error2 => {
+      this.refreshTokenInProgress = false;
+      console.log(error2);
+      return throwError('AutRefresh token fail');
+    });
+  }
+
+  continueRequest(req: HttpRequest<any>, next: HttpHandler, accessToken: string) {
+    return next.handle(req.clone({
+      url: req.url.replace(/token=([^\/=\?&]+)/, `token=${accessToken}`),
+    }));
   }
 }

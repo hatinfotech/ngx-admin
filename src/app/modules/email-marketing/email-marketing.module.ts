@@ -24,6 +24,7 @@ import { EmailGatewayFormComponent } from './email-gateway/email-gateway-form/em
 import { CKEditorModule } from 'ng2-ckeditor';
 import { EmailAddressListComponent } from './address/email-address-list/email-address-list.component';
 import { EmailAddressFormComponent } from './address/email-address-form/email-address-form.component';
+import { NgxUploaderModule } from '../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
 
 @NgModule({
   declarations: [EmailMarketingComponent,
@@ -61,6 +62,7 @@ import { EmailAddressFormComponent } from './address/email-address-form/email-ad
     NbProgressBarModule,
     AgGridModule,
     CKEditorModule,
+    NgxUploaderModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,
@@ -70,6 +72,7 @@ import { EmailAddressFormComponent } from './address/email-address-form/email-ad
     SmartTableCheckboxComponent,
     EmailGatewayFormComponent,
     EmailTemplateFormComponent,
+    EmailAddressFormComponent,
   ],
 })
 export class EmailMarketingModule { }

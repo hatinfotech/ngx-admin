@@ -12,6 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { AllCommunityModules, Module } from '@ag-grid-community/all-modules';
 
 @Component({
   selector: 'ngx-email-advertisement-form',
@@ -20,7 +21,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 })
 export class EmailAdvertisementFormComponent extends DataManagerFormComponent<EmailModel> implements OnInit {
 
-  componentName: string = 'EmailSentFormComponent';
+  componentName: string = 'EmailAdvertisementFormComponent';
   idKey = 'Id';
   apiPath = '/email-marketing/emails';
   baseFormUrl = '/email-marketing/sent/form';

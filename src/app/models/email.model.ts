@@ -66,3 +66,18 @@ export class EmailTemplateModel {
   Content?: string;
   Parameter?: string;
 }
+
+export class EmailAddressListModel {
+  Id?: number;
+  Code?: string;
+  Name?: string;
+  Description?: string;
+}
+
+export class EmailAddressListDetailModel {
+  Id?: number;
+  List?: string;
+  Name?: string;
+  EmailAddress?: string;
+  Contact?: string;
+}
