@@ -23,35 +23,47 @@
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code">
-              <div class="col-sm-12">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Type'), 'warning')">
+                  <label class="label"><span class="valid">Loại (*)</span><span class="invalid">Loại là bắt buộc
+                      (*)</span></label>
+                      <nb-select size="medium" formControlName="Type" fullWidth>
+                        <nb-option value="">Chọn loại...</nb-option>
+                        <nb-option value=ITEL>iTEL</nb-option>
+                        <nb-option value="DINSTAR">Dinstar</nb-option>
+                        <nb-option value="PHONEAPP">Phone app</nb-option>
+                      </nb-select>
+                </div>
+              </div>
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
                 </div>
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Brandnames'), 'warning')">
                   <label class="label"><span class="valid">Brandnames</span><span class="invalid">Brandnames bắt buộc
                       (*)</span></label>
                       <ngx-select2 [select2Option]="select2ParamsOption" formControlName="Brandnames"></ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiUrl'), 'warning')">
                   <label class="label"><span class="valid">Api (*)</span><span class="invalid">Api là bắt buộc
                       (*)</span></label>
                       <input type="text" nbInput fullWidth formControlName="ApiUrl" placeholder="Tên">
                 </div>
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Username'), 'warning')">
                   <label class="label"><span class="valid">Username (*)</span><span class="invalid">Username là bắt buộc
                       (*)</span></label>
                       <input type="text" nbInput fullWidth formControlName="Username" placeholder="Username">
                 </div>
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Password'), 'warning')">
                   <label class="label"><span class="valid">Password (*)</span><span class="invalid">Password là bắt buộc
                       (*)</span></label>
@@ -63,7 +75,8 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">Lưu & Đóng</button>
             <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
           </div>
         </nb-card-footer>

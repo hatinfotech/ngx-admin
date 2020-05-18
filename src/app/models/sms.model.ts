@@ -41,3 +41,23 @@ export class SmsGatewayModel {
   Password?: string;
   Brandnames?: { id?: string, text?: string }[];
 }
+
+export class SmsPhoneNumberListModel {
+  Id ?: number;
+  Code ?: string;
+  Name ?: string;
+  Description ?: string;
+  Owner ?: string;
+  Creator ?: string;
+  Created ?: string;
+  Updated ?: string;
+}
+
+export class SmsPhoneNumberListDetailModel {
+  Id ?: number;
+  PhoneNumberList ?: string;
+  PhoneNumber ?: string;
+  Name ?: string;
+  NumOfSent ?: string;
+}
+

@@ -21,6 +21,9 @@ import { SmsGatewayListComponent } from './sms-gateway/sms-gateway-list/sms-gate
 import { SmsGatewayFormComponent } from './sms-gateway/sms-gateway-form/sms-gateway-form.component';
 import { SmsAdvertisementListComponent } from './sms-advertisement/sms-advertisement-list/sms-advertisement-list.component';
 import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertisement-form/sms-advertisement-form.component';
+import { SmsPhoneNumberListComponent } from './phone-number/sms-phone-number-list/sms-phone-number-list.component';
+import { SmsPhoneNumberFormComponent } from './phone-number/sms-phone-number-form/sms-phone-number-form.component';
+import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 
 @NgModule({
   declarations: [SmsComponent, SmsTemplateListComponent,
@@ -28,7 +31,9 @@ import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertise
     SmsSentListComponent, SmsSentFormComponent,
     SmsDashboardComponent, SmsGatewayListComponent,
     SmsGatewayFormComponent, SmsAdvertisementListComponent,
-    SmsAdvertisementFormComponent],
+    SmsAdvertisementFormComponent,
+    SmsPhoneNumberListComponent,
+    SmsPhoneNumberFormComponent],
   imports: [
     CommonModule,
     SmsRoutingModule,
@@ -56,6 +61,7 @@ import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertise
     DialogModule,
     NbProgressBarModule,
     AgGridModule,
+    NgxUploaderModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,
@@ -65,6 +71,7 @@ import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertise
     SmartTableCheckboxComponent,
     SmsTemplateFormComponent,
     SmsGatewayFormComponent,
+    SmsPhoneNumberFormComponent,
   ],
 })
 export class SmsModule { }

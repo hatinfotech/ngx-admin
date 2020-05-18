@@ -66,12 +66,14 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
   makeNewFormGroup(data?: SmsGatewayModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
+      Type: ['', Validators.required],
       Name: ['', Validators.required],
+      Brandnames: [''],
       Description: [''],
-      ApiUrl: ['', Validators.required],
-      ApiToken: ['', Validators.required],
-      SmtpUsername: ['', Validators.required],
-      SmtPassword: ['', Validators.required],
+      ApiUrl: [''],
+      ApiToken: [''],
+      Username: [''],
+      Password: [''],
     });
     if (data) {
       newForm.patchValue(data);

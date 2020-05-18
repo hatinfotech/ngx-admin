@@ -6,7 +6,7 @@
         [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
         <nb-card-header>
           <nav>
-            Danh sách gửi email (kéo thả file csv để import)
+            Danh sách gửi số điện thoại (kéo thả file csv để import)
             <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
               <nb-icon pack="eva" icon="close-circle"></nb-icon>
             </button>
@@ -30,7 +30,7 @@
             <div class="row">
               <input type="hidden" formControlName="Code_old">
               <input type="hidden" formControlName="ImportFile">
-              <input type="hidden" nbInput fullWidth formControlName="ImportEmailIndex" placeholder="STT cột email : 1->n">
+              <input type="hidden" nbInput fullWidth formControlName="ImportPhoneNumberIndex" placeholder="STT cột số điện thoại : 1->n">
                   <input type="hidden" nbInput fullWidth formControlName="ImportNameIndex" placeholder="STT cột tên : 1->n">
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">

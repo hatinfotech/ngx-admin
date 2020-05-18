@@ -70,12 +70,17 @@ export class SmsGatewayListComponent extends DataManagerListComponent<SmsGateway
       Brandnames: {
         title: 'Brandnames',
         type: 'string',
-        width: '30%',
+        width: '20%',
       },
       ApiUrl: {
         title: 'Api',
         type: 'string',
         width: '30%',
+      },
+      Type: {
+        title: 'Loại',
+        type: 'string',
+        width: '10%',
       },
     },
   };
@@ -88,7 +93,9 @@ export class SmsGatewayListComponent extends DataManagerListComponent<SmsGateway
   getList(callback: (list: SmsGatewayModel[]) => void) {
     super.getList((rs) => {
       rs.map((i: any) => {
-        i.Brandnames = i.Brandnames.map((i2: any) => i2.id).join(',');
+        if (i.Brandnames) {
+          i.Brandnames = i.Brandnames.map((i2: any) => i2.id).join(',');
+        }
         return i;
       });
       if (callback) callback(rs);

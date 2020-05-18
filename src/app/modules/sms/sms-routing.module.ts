@@ -10,6 +10,8 @@ import { SmsGatewayListComponent } from './sms-gateway/sms-gateway-list/sms-gate
 import { SmsGatewayFormComponent } from './sms-gateway/sms-gateway-form/sms-gateway-form.component';
 import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertisement-form/sms-advertisement-form.component';
 import { SmsAdvertisementListComponent } from './sms-advertisement/sms-advertisement-list/sms-advertisement-list.component';
+import { SmsPhoneNumberListComponent } from './phone-number/sms-phone-number-list/sms-phone-number-list.component';
+import { SmsPhoneNumberFormComponent } from './phone-number/sms-phone-number-form/sms-phone-number-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -99,6 +101,25 @@ const routes: Routes = [{
       path: 'advertisement/form/:id',
       canActivate: [AuthGuardService],
       component: SmsAdvertisementFormComponent,
+    },
+
+    {
+      path: 'phone-number/list',
+      canActivate: [AuthGuardService],
+      component: SmsPhoneNumberListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'phone-number/form',
+      canActivate: [AuthGuardService],
+      component: SmsPhoneNumberFormComponent,
+    },
+    {
+      path: 'phone-number/form/:id',
+      canActivate: [AuthGuardService],
+      component: SmsPhoneNumberFormComponent,
     },
   ],
 }];
