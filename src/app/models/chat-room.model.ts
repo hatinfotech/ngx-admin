@@ -1,4 +1,3 @@
-import { ChatMessageModel } from './chat-message.model';
 
 export class ChatRoomModel {
 

@@ -1,5 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { ChatService } from './chat.service';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { CommonService } from '../../services/common.service';
 import { ChatManager } from './../../lib/nam-chat/chat-manager';
@@ -220,7 +219,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   // app: Framework7;
   constructor(
-    private chatService: ChatService,
+    // private chatService: ChatService,
     public mobileAppService: MobileAppService,
     // private apiService: ApiService,
     // private commonService: CommonService,

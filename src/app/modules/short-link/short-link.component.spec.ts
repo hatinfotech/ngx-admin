@@ -8,7 +8,7 @@ describe('ShortLinkComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ShortLinkComponent ]
+      declarations: [ ShortLinkComponent ],
     })
     .compileComponents();
   }));

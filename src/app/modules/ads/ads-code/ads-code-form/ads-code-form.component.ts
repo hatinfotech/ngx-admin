@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { AdsContentFormComponent } from '../../ads-content/ads-content-form/ads-content-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

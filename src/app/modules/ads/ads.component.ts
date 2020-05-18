@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'ngx-ads',
   templateUrl: './ads.component.html',
-  styleUrls: ['./ads.component.scss']
+  styleUrls: ['./ads.component.scss'],
 })
 export class AdsComponent implements OnInit {
 

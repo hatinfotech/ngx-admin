@@ -8,7 +8,7 @@ describe('CrawlPlanFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CrawlPlanFormComponent ]
+      declarations: [ CrawlPlanFormComponent ],
     })
     .compileComponents();
   }));

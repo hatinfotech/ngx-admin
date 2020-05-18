@@ -8,7 +8,7 @@ describe('AdsContentFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdsContentFormComponent ]
+      declarations: [ AdsContentFormComponent ],
     })
     .compileComponents();
   }));

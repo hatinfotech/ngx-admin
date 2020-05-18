@@ -8,7 +8,7 @@ describe('ProxyListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProxyListComponent ]
+      declarations: [ ProxyListComponent ],
     })
     .compileComponents();
   }));

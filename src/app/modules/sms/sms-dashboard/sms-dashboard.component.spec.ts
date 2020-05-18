@@ -8,7 +8,7 @@ describe('SmsDashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SmsDashboardComponent ]
+      declarations: [ SmsDashboardComponent ],
     })
     .compileComponents();
   }));

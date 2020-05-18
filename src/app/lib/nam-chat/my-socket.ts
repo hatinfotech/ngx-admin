@@ -183,7 +183,7 @@ export class MySocket {
           data: request && request.data ? request.data : null,
           callback: (response?: any) => {
             this.callback<any>(request.seq, response);
-          }
+          },
         });
       });
     });
@@ -226,7 +226,7 @@ export class MySocket {
         data: request && request.data ? request.data : null,
         callback: (response?: any) => {
           this.callback<any>(request.seq, response);
-        }
+        },
       });
     });
   }

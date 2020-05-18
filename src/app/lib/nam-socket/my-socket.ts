@@ -143,7 +143,7 @@ export class MySocket {
         // Reject on timeout
         setTimeout(async () => {
           if (subcription) {
-            try { subcription.unsubscribe(); } catch (e) { console.log(e) };
+            try { subcription.unsubscribe(); } catch (e) { console.log(e); }
 
             if (!complete) {
               console.log('Retry emit ' + event);
@@ -213,7 +213,7 @@ export class MySocket {
           data: request && request.data ? request.data : null,
           callback: (response?: any) => {
             this.callback<any>(request.seq, response);
-          }
+          },
         });
       });
     });
@@ -256,7 +256,7 @@ export class MySocket {
         data: request && request.data ? request.data : null,
         callback: (response?: any) => {
           this.callback<any>(request.seq, response);
-        }
+        },
       });
     });
   }

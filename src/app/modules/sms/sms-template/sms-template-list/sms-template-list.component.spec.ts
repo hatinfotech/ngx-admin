@@ -8,7 +8,7 @@ describe('SmsTemplateListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SmsTemplateListComponent ]
+      declarations: [ SmsTemplateListComponent ],
     })
     .compileComponents();
   }));

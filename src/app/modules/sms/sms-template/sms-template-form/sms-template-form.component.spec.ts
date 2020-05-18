@@ -8,7 +8,7 @@ describe('SmsTemplateFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SmsTemplateFormComponent ]
+      declarations: [ SmsTemplateFormComponent ],
     })
     .compileComponents();
   }));

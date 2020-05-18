@@ -8,7 +8,7 @@ describe('FileListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FileListComponent ]
+      declarations: [ FileListComponent ],
     })
     .compileComponents();
   }));

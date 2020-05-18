@@ -6,10 +6,9 @@ import { ApiService } from '../../../../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { FormBuilder, Validators, FormGroup, FormControl, AbstractControl } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-sms-sent-form',
@@ -349,7 +348,7 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
       newForm.patchValue(data);
     } else {
       newForm.get('Template').setValue(lastSmsTemplate);
-      if(lastSmsTemplate) {
+      if (lastSmsTemplate) {
         newForm.get('Content').setValue(lastSmsTemplate['Content']);
         newForm.get('Preview').setValue(this.generatePreview(newForm));
       }

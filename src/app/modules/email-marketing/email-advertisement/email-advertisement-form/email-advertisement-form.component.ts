@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { EmailModel } from '../../../../models/email.model';
-import { EmailSentFormComponent } from '../../email-sent/email-sent-form/email-sent-form.component';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -12,7 +11,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { AllCommunityModules, Module } from '@ag-grid-community/all-modules';
 
 @Component({
   selector: 'ngx-email-advertisement-form',

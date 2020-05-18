@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SmsModel, SmsReceipientModel } from '../../../../models/sms.model';
-import { SmsSentFormComponent } from '../../sms-sent/sms-sent-form/sms-sent-form.component';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { IDatasource, GridApi, ColumnApi, Module, AllCommunityModules, IGetRowsParams } from '@ag-grid-community/all-modules';
 import { ContactModel } from '../../../../models/contact.model';

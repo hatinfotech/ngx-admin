@@ -8,7 +8,7 @@ describe('PromotionFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PromotionFormComponent ]
+      declarations: [ PromotionFormComponent ],
     })
     .compileComponents();
   }));

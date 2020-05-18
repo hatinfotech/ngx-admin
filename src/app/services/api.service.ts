@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { NbAuthService, NbAuthOAuth2Token, NbAuthJWTToken, NbAuthToken } from '@nebular/auth';
+import { NbAuthService, NbAuthToken } from '@nebular/auth';
 import { environment } from '../../environments/environment';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { map, retry, catchError, switchMap, take, filter, delay } from 'rxjs/operators';
+import { map, retry, catchError, switchMap, take, filter } from 'rxjs/operators';
 import { EmployeeModel } from '../models/employee.model';
 import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { SubjectSubscriber } from 'rxjs/internal/Subject';
-import * as url from 'url';
 
 export class ApiToken {
   access_token: string;

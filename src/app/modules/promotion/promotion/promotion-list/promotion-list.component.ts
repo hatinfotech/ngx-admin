@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
-import { AdsContentFormComponent } from '../../../ads/ads-content/ads-content-form/ads-content-form.component';
 import { PromotionFormComponent } from '../promotion-form/promotion-form.component';
 
 @Component({

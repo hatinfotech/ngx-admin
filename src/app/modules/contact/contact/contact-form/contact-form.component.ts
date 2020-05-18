@@ -7,7 +7,6 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-contact-form',

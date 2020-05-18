@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { WpSiteFormComponent } from '../../../wordpress/wp-site/wp-site-form/wp-site-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

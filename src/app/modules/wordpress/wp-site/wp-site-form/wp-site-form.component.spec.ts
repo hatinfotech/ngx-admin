@@ -8,7 +8,7 @@ describe('WpSiteFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WpSiteFormComponent ]
+      declarations: [ WpSiteFormComponent ],
     })
     .compileComponents();
   }));

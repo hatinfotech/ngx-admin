@@ -5,7 +5,6 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { SmsGatewayFormComponent } from '../../../sms/sms-gateway/sms-gateway-form/sms-gateway-form.component';
 import { EmailGatewayFormComponent } from '../email-gateway-form/email-gateway-form.component';
 
 @Component({

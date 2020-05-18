@@ -1,5 +1,3 @@
-import { UserAgent } from './user-agent';
-import * as SIP from 'sip.js';
 
 export class User {
   // id?: string;

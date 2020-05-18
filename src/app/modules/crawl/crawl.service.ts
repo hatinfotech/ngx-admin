@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ActionControl } from '../../lib/custom-element/action-control-list/action-control.interface';
 import { MySocket } from '../../lib/nam-socket/my-socket';
 
 @Injectable({

@@ -7,8 +7,8 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FileFormComponent } from '../file-form/file-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/searver-data-manger-list.component';
-import { SmartTableThumbnailComponent, SmartTableIconComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
+import { SmartTableThumbnailComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../lib/ngx-uploader/public_api';
 
 @Component({
   selector: 'ngx-file-list',

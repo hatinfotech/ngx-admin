@@ -8,7 +8,7 @@ describe('PromotionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PromotionComponent ]
+      declarations: [ PromotionComponent ],
     })
     .compileComponents();
   }));

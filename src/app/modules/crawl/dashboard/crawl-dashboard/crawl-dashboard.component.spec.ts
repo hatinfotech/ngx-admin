@@ -8,7 +8,7 @@ describe('CrawlDashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CrawlDashboardComponent ]
+      declarations: [ CrawlDashboardComponent ],
     })
     .compileComponents();
   }));

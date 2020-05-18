@@ -8,7 +8,7 @@ describe('AgListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AgListComponent ]
+      declarations: [ AgListComponent ],
     })
     .compileComponents();
   }));

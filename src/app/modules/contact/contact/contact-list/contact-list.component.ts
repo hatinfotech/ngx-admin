@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2 } from '@angular/core';
 import { BaseComponent } from '../../../../lib/base-component';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
@@ -9,11 +9,9 @@ import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { MobileAppService, CallState } from '../../../mobile-app/mobile-app.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ContactModel } from '../../../../models/contact.model';
 import { ContactFormComponent } from '../contact-form/contact-form.component';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-contact-list',
@@ -379,8 +377,8 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     iconsLibrary: NbIconLibraries,
     private renderer: Renderer2,
     protected dialogService: NbDialogService,
-    private mobileAppService: MobileAppService,
-    private mmobileAppService: MobileAppService,
+    // private mobileAppService: MobileAppService,
+    // private mmobileAppService: MobileAppService,
   ) {
     super(commonService, router, apiService);
 

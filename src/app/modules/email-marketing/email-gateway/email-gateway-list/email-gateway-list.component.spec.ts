@@ -8,7 +8,7 @@ describe('EmailGatewayListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EmailGatewayListComponent ]
+      declarations: [ EmailGatewayListComponent ],
     })
     .compileComponents();
   }));

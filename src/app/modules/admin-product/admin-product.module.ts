@@ -19,7 +19,7 @@ import { ProductCategoryListComponent } from './category/product-category-list/p
 import { ProductCategoryFormComponent } from './category/product-category-form/product-category-form.component';
 import { ProductUnitListComponent } from './unit/product-unit-list/product-unit-list.component';
 import { ProductUnitFormComponent } from './unit/product-unit-form/product-unit-form.component';
-import { NgxUploaderModule } from '../../lib/ngx-uploader/projects/ngx-uploader/src/lib/ngx-uploader.module';
+import { NgxUploaderModule } from '../../lib/ngx-uploader/lib/ngx-uploader.module';
 import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 
 @NgModule({

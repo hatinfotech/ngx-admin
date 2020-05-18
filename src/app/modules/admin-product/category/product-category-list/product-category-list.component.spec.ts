@@ -8,7 +8,7 @@ describe('ProductCategoryListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductCategoryListComponent ]
+      declarations: [ ProductCategoryListComponent ],
     })
     .compileComponents();
   }));

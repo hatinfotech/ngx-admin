@@ -8,7 +8,7 @@ describe('MobileAppComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MobileAppComponent ]
+      declarations: [ MobileAppComponent ],
     })
     .compileComponents();
   }));

@@ -74,7 +74,7 @@ export class DialpadComponent implements OnInit, AfterViewInit {
   receiveCallEventConfig(receiveCallSession: SIP.InviteServerContext) {
     // pc = session.sessionDescriptionHandler.peerConnection;
     const self = this;
-    const session = receiveCallSession;
+    // const session = receiveCallSession;
     // const isVideoCall = false;
 
     receiveCallSession.on('trackAdded', () => {
@@ -205,7 +205,8 @@ export class DialpadComponent implements OnInit, AfterViewInit {
       this.virtualPhoneService.hadIncommingCall({ state: self.state, partnerName: this.partnerName, partnerNumber: this.partnerNumber });
 
       const isVideoCall = false;
-      const currentSession = this.inviteClientContext = this.userAgent.invite(this.phonenumber, {
+      // const currentSession = this.inviteClientContext = this.userAgent.invite(this.phonenumber, {
+      this.inviteClientContext = this.userAgent.invite(this.phonenumber, {
         sessionDescriptionHandlerOptions: {
           constraints: {
             audio: true,

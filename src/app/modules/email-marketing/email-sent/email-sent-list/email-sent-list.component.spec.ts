@@ -8,7 +8,7 @@ describe('EmailSentListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EmailSentListComponent ]
+      declarations: [ EmailSentListComponent ],
     })
     .compileComponents();
   }));

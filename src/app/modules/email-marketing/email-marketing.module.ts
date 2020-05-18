@@ -24,7 +24,7 @@ import { EmailGatewayFormComponent } from './email-gateway/email-gateway-form/em
 import { CKEditorModule } from 'ng2-ckeditor';
 import { EmailAddressListComponent } from './address/email-address-list/email-address-list.component';
 import { EmailAddressFormComponent } from './address/email-address-form/email-address-form.component';
-import { NgxUploaderModule } from '../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
+import { NgxUploaderModule } from '../../lib/ngx-uploader/public_api';
 import { DialogFormComponent } from '../dialog/dialog-form/dialog-form.component';
 
 @NgModule({

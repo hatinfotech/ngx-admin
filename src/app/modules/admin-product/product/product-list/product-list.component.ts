@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';

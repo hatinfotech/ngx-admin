@@ -107,11 +107,11 @@ export class PlayerDialogComponent implements OnInit, OnDestroy {
     return this.player.currentTime / this.player.duration * 100 || 0;
   }
 
-  private createPlayer() {
-    this.player = new Audio();
-    this.player.onended = () => this.next();
-    this.setTrack();
-  }
+  // private createPlayer() {
+  //   this.player = new Audio();
+  //   this.player.onended = () => this.next();
+  //   this.setTrack();
+  // }
 
   private reload() {
     this.setTrack();

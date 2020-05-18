@@ -2,10 +2,7 @@ import { SocketManager } from '../../../lib/nam-socket/socket.manager';
 import { ISocketNamespaceContext } from '../../../lib/nam-socket/socket.namspace';
 import { WpSyncSocketNamespace } from './wp-sync-socket.namespace';
 import { User } from '../../../lib/nam-socket/model/user';
-import { WpSiteModel } from '../../../models/wordpress.model';
-import { MySocket } from '../../../lib/nam-socket/my-socket';
 import { CommonService } from '../../../services/common.service';
-import { stat } from 'fs';
 
 export class WpSyncSocketManager extends SocketManager {
 

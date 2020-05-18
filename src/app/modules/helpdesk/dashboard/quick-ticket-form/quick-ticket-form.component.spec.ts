@@ -8,7 +8,7 @@ describe('QuickTicketFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuickTicketFormComponent ]
+      declarations: [ QuickTicketFormComponent ],
     })
     .compileComponents();
   }));

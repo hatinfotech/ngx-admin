@@ -11,7 +11,6 @@ import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { takeWhile } from 'rxjs/operators';
 import { QuickTicketFormComponent } from '../../../helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { SmsModel } from '../../../../models/sms.model';
-import { IInfiniteRowModel } from '@ag-grid-community/all-modules';
 
 interface MnfiniteLoadModel<M> {
   data: (M & {selected: boolean})[];
@@ -228,7 +227,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
     iconsLibrary: NbIconLibraries,
     private renderer: Renderer2,
     protected dialogService: NbDialogService,
-    private mobileAppService: MobileAppService,
+    // private mobileAppService: MobileAppService,
   ) {
     super(commonService, router, apiService);
 

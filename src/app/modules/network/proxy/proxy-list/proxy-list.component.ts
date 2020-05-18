@@ -6,9 +6,6 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SyncFormComponent } from '../../../wordpress/sync-form/sync-form.component';
-import { WpSiteFormComponent } from '../../../wordpress/wp-site/wp-site-form/wp-site-form.component';
 import { ProxyFormComponent } from '../proxy-form/proxy-form.component';
 
 @Component({

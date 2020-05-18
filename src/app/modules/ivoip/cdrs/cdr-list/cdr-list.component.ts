@@ -8,7 +8,6 @@ import { IvoipService } from '../../ivoip-service';
 import { PlayerDialogComponent } from '../../../dialog/player-dialog/player-dialog.component';
 import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
 
 @Component({
@@ -182,7 +181,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
     public ivoipService: IvoipService,
-    private mobileAppService: MobileAppService,
+    // private mobileAppService: MobileAppService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);
   }

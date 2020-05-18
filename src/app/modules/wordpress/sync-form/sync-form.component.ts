@@ -8,7 +8,6 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../services/common.service';
 import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { PermissionModel } from '../../../models/permission.model';
-import * as WPAPI from 'wpapi';
 import { WpSyncSocketManager } from '../wp-sync-socket/wp-sync-socket.manager';
 import { User } from '../../../lib/nam-socket/model/user';
 import { ISocketNamespaceContext } from '../../../lib/nam-socket/socket.namspace';

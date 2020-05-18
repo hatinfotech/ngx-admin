@@ -8,7 +8,7 @@ describe('ProxyFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProxyFormComponent ]
+      declarations: [ ProxyFormComponent ],
     })
     .compileComponents();
   }));

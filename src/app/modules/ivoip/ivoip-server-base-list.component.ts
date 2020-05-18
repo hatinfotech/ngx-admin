@@ -1,4 +1,3 @@
-import { DataManagerListComponent } from '../../lib/data-manager/data-manger-list.component';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
@@ -9,7 +8,6 @@ import { PbxDomainModel } from '../../models/pbx-domain.model';
 import { ReuseComponent } from '../../lib/reuse-component';
 import { ServerDataManagerListComponent } from '../../lib/data-manager/searver-data-manger-list.component';
 import { CdrModel } from '../../models/cdr.model';
-import { IvoipBaseListComponent } from './ivoip-base-list.component';
 
 export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerListComponent<M> implements OnInit, ReuseComponent {
 

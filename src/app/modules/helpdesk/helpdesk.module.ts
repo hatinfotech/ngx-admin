@@ -26,8 +26,6 @@ import { StatsAreaChartComponent } from './profit-card/back-side/stats-area-char
 import { StatsBarAnimationChartComponent } from './profit-card/front-side/stats-bar-animation-chart.component';
 import { ActionControlListComponent } from '../../lib/custom-element/action-control-list/action-control-list.component';
 import { QuickTicketFormComponent } from './dashboard/quick-ticket-form/quick-ticket-form.component';
-import { ContactFormComponent } from '../contact/contact/contact-form/contact-form.component';
-import { ContactModule } from '../contact/contact.module';
 
 @NgModule({
   declarations: [

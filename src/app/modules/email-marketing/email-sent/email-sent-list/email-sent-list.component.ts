@@ -7,7 +7,6 @@ import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbThemeService, NbLayoutScrollService, NbIconLibraries, NbDialogService } from '@nebular/theme';
-import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { takeWhile } from 'rxjs/operators';
 import { QuickTicketFormComponent } from '../../../helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { EmailModel } from '../../../../models/email.model';
@@ -227,7 +226,7 @@ export class EmailSentListComponent extends BaseComponent implements OnInit, OnD
     iconsLibrary: NbIconLibraries,
     private renderer: Renderer2,
     protected dialogService: NbDialogService,
-    private mobileAppService: MobileAppService,
+    // private mobileAppService: MobileAppService,
   ) {
     super(commonService, router, apiService);
 

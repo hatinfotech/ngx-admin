@@ -2,7 +2,7 @@ import { User } from './user';
 import { PhoneManager } from './phone-manager';
 import * as SIP from 'sip.js';
 import { CallingSession } from './calling-session';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export class UserAgent {
 
@@ -44,7 +44,7 @@ export class UserAgent {
   }
 
   private applyEvents() {
-    const $this = this;
+    // const $this = this;
     this.agent.on('invite', async (callReceiveSession) => {
 
       const caller = new User(

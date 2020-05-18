@@ -1,4 +1,4 @@
-import { MySocket, ISocketResult } from './my-socket';
+import { MySocket } from './my-socket';
 import { User } from './model/user';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Message } from './model/message';

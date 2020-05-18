@@ -2,14 +2,14 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ProductModel, ProductUnitModel, ProductPictureModel } from '../../../../models/product.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import '../../../../lib/ckeditor.loader';
 import 'ckeditor';
-import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput, UploadStatus } from '../../../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
+import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../lib/ngx-uploader/public_api';
 import { FileModel } from '../../../../models/file.model';
 
 @Component({

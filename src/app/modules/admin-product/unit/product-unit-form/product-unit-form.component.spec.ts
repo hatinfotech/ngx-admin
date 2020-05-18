@@ -8,7 +8,7 @@ describe('ProductUnitFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductUnitFormComponent ]
+      declarations: [ ProductUnitFormComponent ],
     })
     .compileComponents();
   }));

@@ -62,7 +62,8 @@ export class ChatManager {
 
   onConnect() {
     return new Promise<any>((resolve, reject) => {
-      const sucription = this.mainSocket.onConnect$.subscribe(rs => {
+      // const sucription = this.mainSocket.onConnect$.subscribe(rs => {
+      this.mainSocket.onConnect$.subscribe(rs => {
         if (rs === true) {
           resolve();
         }
@@ -118,9 +119,9 @@ export class ChatManager {
     this.currentChatRoomSocket.socket.on('reconnect_attempt', (att: number) => console.info(this.chatRoom + ' reconnect_attempt : ' + att));
     this.currentChatRoomSocket.socket.on('reconnecting', (att: number) => console.info(this.chatRoom + ' reconnecting : ' + att));
 
-    this.currentChatRoomSocket.on<any>('connect').subscribe(result => {
+    this.currentChatRoomSocket.on<any>('connect').subscribe(result2 => {
       console.info('namespace connected - ' + this.chatRoom);
-      console.info(result);
+      console.info(result2);
     });
     this.currentChatRoomSocket.on<Message>('message').subscribe(request => {
       this.messages.push(request.data);
@@ -136,9 +137,9 @@ export class ChatManager {
     }
   }
 
-  private getRandomId(): number {
-    return Math.floor(Math.random() * (1000000)) + 1;
-  }
+  // private getRandomId(): number {
+  //   return Math.floor(Math.random() * (1000000)) + 1;
+  // }
 
   public sendMessage(message: string): void {
     if (!message) {

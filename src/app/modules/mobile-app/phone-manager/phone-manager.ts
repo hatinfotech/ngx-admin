@@ -1,9 +1,7 @@
 import { CallingSession } from './calling-session';
 import { UserAgent } from './user-agent';
-import * as SIP from 'sip.js';
 import { User } from './user';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 export interface IPhoneContext {
 

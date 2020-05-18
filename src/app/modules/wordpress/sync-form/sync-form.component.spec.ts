@@ -8,7 +8,7 @@ describe('SyncFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SyncFormComponent ]
+      declarations: [ SyncFormComponent ],
     })
     .compileComponents();
   }));

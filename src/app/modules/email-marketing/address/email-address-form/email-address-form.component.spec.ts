@@ -8,7 +8,7 @@ describe('EmailAddressFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EmailAddressFormComponent ]
+      declarations: [ EmailAddressFormComponent ],
     })
     .compileComponents();
   }));

@@ -8,7 +8,7 @@ describe('CrawlServerListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CrawlServerListComponent ]
+      declarations: [ CrawlServerListComponent ],
     })
     .compileComponents();
   }));

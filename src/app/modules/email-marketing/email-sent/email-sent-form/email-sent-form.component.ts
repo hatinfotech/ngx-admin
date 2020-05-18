@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { EmailModel } from '../../../../models/email.model';
-import { SmsSentFormComponent } from '../../../sms/sms-sent/sms-sent-form/sms-sent-form.component';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';

@@ -1,6 +1,6 @@
 import { PhoneManager } from './phone-manager';
 import * as SIP from 'sip.js';
-import { BehaviorSubject, Observable, Subscription, Subject } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { User } from './user';
 import { IncomingResponseMessage } from 'sip.js/lib/core';
 
@@ -90,7 +90,7 @@ export class CallingSession {
   initReceivedSession() {
     // pc = session.sessionDescriptionHandler.peerConnection;
     const $this = this;
-    const session = this.session;
+    // const session = this.session;
     // const isVideoCall = false;
 
     this.state = 'incoming';

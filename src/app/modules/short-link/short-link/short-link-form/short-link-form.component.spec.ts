@@ -8,7 +8,7 @@ describe('ShortLinkFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ShortLinkFormComponent ]
+      declarations: [ ShortLinkFormComponent ],
     })
     .compileComponents();
   }));

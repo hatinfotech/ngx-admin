@@ -1,5 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
-import * as SIP from 'sip.js';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MobileAppService } from '../mobile-app.service';
 import { IPhoneContext, PhoneManager } from '../phone-manager/phone-manager';
 import { CallingSession } from '../phone-manager/calling-session';
@@ -7,10 +6,7 @@ import { User } from '../phone-manager/user';
 import { ApiService } from '../../../services/api.service';
 import { ContactModel } from '../../../models/contact.model';
 import { HelpdeskTicketModel } from '../../../models/helpdesk-ticket.model';
-import { tick } from '@angular/core/testing';
-import { AbstractEmitterVisitor } from '@angular/compiler/src/output/abstract_emitter';
 import { CommonService } from '../../../services/common.service';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-dialpad',
@@ -19,9 +15,9 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
 
-  private userAgent: SIP.UA;
-  private inviteClientContext: SIP.InviteClientContext;
-  private inviteServerContext: SIP.InviteServerContext;
+  // private userAgent: SIP.UA;
+  // private inviteClientContext: SIP.InviteClientContext;
+  // private inviteServerContext: SIP.InviteServerContext;
   phonenumber = '';
 
   partnerNumber = '';

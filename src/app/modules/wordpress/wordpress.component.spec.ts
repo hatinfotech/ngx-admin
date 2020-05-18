@@ -8,7 +8,7 @@ describe('WordpressComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WordpressComponent ]
+      declarations: [ WordpressComponent ],
     })
     .compileComponents();
   }));

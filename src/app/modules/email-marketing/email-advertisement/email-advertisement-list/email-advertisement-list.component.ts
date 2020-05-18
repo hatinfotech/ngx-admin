@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EmailModel } from '../../../../models/email.model';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';

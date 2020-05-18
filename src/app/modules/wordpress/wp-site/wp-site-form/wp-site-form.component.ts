@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { EmailGatewayFormComponent } from '../../../email-marketing/email-gateway/email-gateway-form/email-gateway-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

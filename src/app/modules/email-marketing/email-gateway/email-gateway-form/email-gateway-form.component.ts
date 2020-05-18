@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { SmsTemplateFormComponent } from '../../../sms/sms-template/sms-template-form/sms-template-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

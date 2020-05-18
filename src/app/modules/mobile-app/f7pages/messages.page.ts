@@ -238,7 +238,8 @@ export class MessagesPage implements IChatRoomContext {
           },
           handleAttachment: function (e: any) {
             const self = this;
-            const $$ = self.$$;
+            // const $$ = self.$$;
+            // tslint:disable-next-line: ban
             const index = $(e.target).parents('label.checkbox').index();
             const image = self.images[index];
             if (e.target.checked) {

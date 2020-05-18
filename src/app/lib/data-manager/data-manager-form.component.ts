@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy, Input, AfterViewInit, ElementRef } from '@angular/core';
+import { OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService, NbDialogRef } from '@nebular/theme';
@@ -171,6 +171,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     if (this['ref']) {
       const dialog: NbDialogRef<DataManagerFormComponent<M>> = this['ref'];
       const nativeEle = dialog.componentRef.location.nativeElement;
+      // tslint:disable-next-line: ban
       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
     }
   }

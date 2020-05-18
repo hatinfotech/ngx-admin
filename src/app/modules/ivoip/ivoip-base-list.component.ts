@@ -7,8 +7,6 @@ import { IvoipService, PbxDomainSelection } from './ivoip-service';
 import { OnInit } from '@angular/core';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
 import { ReuseComponent } from '../../lib/reuse-component';
-import { ServerDataManagerListComponent } from '../../lib/data-manager/searver-data-manger-list.component';
-import { CdrModel } from '../../models/cdr.model';
 
 export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 

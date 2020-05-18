@@ -8,7 +8,7 @@ describe('SmsGatewayFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SmsGatewayFormComponent ]
+      declarations: [ SmsGatewayFormComponent ],
     })
     .compileComponents();
   }));

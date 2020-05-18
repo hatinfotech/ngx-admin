@@ -3,7 +3,7 @@ import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
