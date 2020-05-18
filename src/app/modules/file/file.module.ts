@@ -18,9 +18,8 @@ import { SortablejsModule } from 'ngx-sortablejs';
 import { FileStoreListComponent } from './store/file-store-list/file-store-list.component';
 import { FileStoreFormComponent } from './store/file-store-form/file-store-form.component';
 import { FileUploadComponent } from './file/file-upload/file-upload.component';
-// import { NgxUploaderModule } from '../../lib/ngx-uploader/public_api';
 import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-table/smart-table.component';
-import { NgxUploaderModule } from '../../lib/ngx-uploader';
+import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 
 @NgModule({
   declarations: [FileComponent, FileListComponent, FileFormComponent, FileStoreListComponent, FileStoreFormComponent, FileUploadComponent],

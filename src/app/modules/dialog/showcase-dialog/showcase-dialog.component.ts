@@ -33,6 +33,7 @@ export class ShowcaseDialogComponent implements AfterViewInit {
     if (this['ref']) {
       const dialog: NbDialogRef<ShowcaseDialogComponent> = this['ref'];
       const nativeEle = dialog.componentRef.location.nativeElement;
+      // tslint:disable-next-line: ban
       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
     }
   }

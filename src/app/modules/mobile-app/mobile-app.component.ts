@@ -1,5 +1,4 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { ChatService } from './chat.service';
 import { ApiService } from '../../services/api.service';
 import { CommonService } from '../../services/common.service';
 import { ChatManager } from './../../lib/nam-chat/chat-manager';

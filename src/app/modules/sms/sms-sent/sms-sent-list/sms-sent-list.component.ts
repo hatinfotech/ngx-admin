@@ -7,7 +7,6 @@ import { UserActive } from '../../../../@core/data/user-activity';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbThemeService, NbLayoutScrollService, NbIconLibraries, NbDialogService } from '@nebular/theme';
-import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { takeWhile } from 'rxjs/operators';
 import { QuickTicketFormComponent } from '../../../helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { SmsModel } from '../../../../models/sms.model';

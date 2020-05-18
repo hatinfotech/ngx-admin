@@ -1,10 +1,10 @@
 import { Component, OnInit, EventEmitter, Input } from '@angular/core';
-import { UploaderOptions, UploadFile, UploadInput, UploadOutput, humanizeBytes, UploadStatus } from '../../../../lib/ngx-uploader';
 import { BaseComponent } from '../../../../lib/base-component';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { FileListComponent } from '../file-list/file-list.component';
+import { UploaderOptions, UploadInput, UploadFile, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 
 @Component({
   selector: 'ngx-file-upload',

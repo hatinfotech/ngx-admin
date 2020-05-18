@@ -8,7 +8,7 @@ describe('CrawlServerFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CrawlServerFormComponent ]
+      declarations: [ CrawlServerFormComponent ],
     })
     .compileComponents();
   }));

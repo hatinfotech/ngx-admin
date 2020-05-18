@@ -1,6 +1,5 @@
 import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
-import { NbSidebarComponent, NbSidebarService, NbMenuService }
- from '@nebular/theme';
+import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/theme';
 import { NbAuthService } from '@nebular/auth';
 import { environment } from '../../../../environments/environment';
 import { CommonService } from '../../../services/common.service';
