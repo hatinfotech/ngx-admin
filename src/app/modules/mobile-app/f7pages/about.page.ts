@@ -1,11 +1,13 @@
 import { MobileAppComponent } from '../mobile-app.component';
+import { CommonService } from '../../../services/common.service';
+import { NbAuthService } from '@nebular/auth';
 
 export class AboutPage {
 
   constructor(
     public parentComponent: MobileAppComponent,
-    // private commonService: CommonService,
-    // private authService: NbAuthService,
+    private commonService: CommonService,
+    private authService: NbAuthService,
   ) {
 
   }
