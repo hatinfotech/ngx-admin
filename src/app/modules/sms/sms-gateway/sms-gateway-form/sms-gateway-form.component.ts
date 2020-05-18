@@ -21,6 +21,37 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
   apiPath = '/sms/gateway';
   baseFormUrl = '/sms/gateway/form';
 
+  select2GroupsOption = {
+    placeholder: 'Nhóm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: true,
+    tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/sms/gateway-groups', { filter_Name: params['term'] });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            delete item['Id'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -60,12 +91,14 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
   /** Execute api get */
   executeGet(params: any, success: (resources: SmsGatewayModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeUsers'] = true;
+    params['includeGroups'] = true;
     super.executeGet(params, success, error);
   }
 
   makeNewFormGroup(data?: SmsGatewayModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
+      Groups: [''],
       Type: ['', Validators.required],
       Name: ['', Validators.required],
       Brandnames: [''],

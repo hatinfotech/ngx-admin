@@ -50,20 +50,27 @@
                 </div>
               </div>
               <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
+                  <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
+                      (*)</span></label>
+                      <ngx-select2 [select2Option]="select2GroupsOption" formControlName="Groups"></ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiUrl'), 'warning')">
                   <label class="label"><span class="valid">Api (*)</span><span class="invalid">Api là bắt buộc
                       (*)</span></label>
                       <input type="text" nbInput fullWidth formControlName="ApiUrl" placeholder="Tên">
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Username'), 'warning')">
                   <label class="label"><span class="valid">Username (*)</span><span class="invalid">Username là bắt buộc
                       (*)</span></label>
                       <input type="text" nbInput fullWidth formControlName="Username" placeholder="Username">
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Password'), 'warning')">
                   <label class="label"><span class="valid">Password (*)</span><span class="invalid">Password là bắt buộc
                       (*)</span></label>
