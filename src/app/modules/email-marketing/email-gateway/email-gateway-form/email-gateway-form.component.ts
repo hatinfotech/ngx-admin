@@ -21,6 +21,37 @@ export class EmailGatewayFormComponent extends DataManagerFormComponent<EmailGat
   apiPath = '/email-marketing/gateway';
   baseFormUrl = '/email-marketing/gateway/form';
 
+  select2GroupsOption = {
+    placeholder: 'Nhóm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: true,
+    tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/email-marketing/gateway-groups', { filter_Name: params['term'] });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            delete item['Id'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -59,13 +90,15 @@ export class EmailGatewayFormComponent extends DataManagerFormComponent<EmailGat
 
   /** Execute api get */
   executeGet(params: any, success: (resources: EmailGatewayModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['includeUsers'] = true;
+    // params['includeUsers'] = true;
+    params['includeGroups'] = true;
     super.executeGet(params, success, error);
   }
 
   makeNewFormGroup(data?: EmailGatewayModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
+      Groups: [''],
       Type: ['', Validators.required],
       Name: ['', Validators.required],
       Description: [''],

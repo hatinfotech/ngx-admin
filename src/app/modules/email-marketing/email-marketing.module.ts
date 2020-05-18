@@ -25,6 +25,7 @@ import { CKEditorModule } from 'ng2-ckeditor';
 import { EmailAddressListComponent } from './address/email-address-list/email-address-list.component';
 import { EmailAddressFormComponent } from './address/email-address-form/email-address-form.component';
 import { NgxUploaderModule } from '../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
+import { DialogFormComponent } from '../dialog/dialog-form/dialog-form.component';
 
 @NgModule({
   declarations: [EmailMarketingComponent,
@@ -73,6 +74,8 @@ import { NgxUploaderModule } from '../../lib/ngx-uploader/projects/ngx-uploader/
     EmailGatewayFormComponent,
     EmailTemplateFormComponent,
     EmailAddressFormComponent,
+    DialogFormComponent,
+    EmailAdvertisementFormComponent,
   ],
 })
 export class EmailMarketingModule { }

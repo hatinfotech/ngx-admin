@@ -524,7 +524,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         this.executePost({ silent: true }, data.array, results => {
           this.onAfterCreateSubmit(results);
           this.onProcessed();
-          resolve(results)
+          resolve(results);
         }, e => {
           this.onError(e);
           this.onProcessed();

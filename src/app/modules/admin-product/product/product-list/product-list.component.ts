@@ -136,6 +136,8 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         }
         if (product['FeaturePictureThumbnail']) {
           product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
+        } else {
+          delete product['FeaturePictureThumbnail'];
         }
         return product;
       });

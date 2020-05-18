@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { PbxCdrModel } from '../../../../models/pbx-cdr.model';
-import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -10,13 +9,14 @@ import { PlayerDialogComponent } from '../../../dialog/player-dialog/player-dial
 import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
+import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
 
 @Component({
   selector: 'ngx-cdr-list',
   templateUrl: './cdr-list.component.html',
   styleUrls: ['./cdr-list.component.scss'],
 })
-export class CdrListComponent extends IvoipBaseListComponent<any> implements OnInit {
+export class CdrListComponent extends IvoipServerBaseListComponent<any> implements OnInit {
 
   componentName = 'CdrListComponent';
   formPath: string;

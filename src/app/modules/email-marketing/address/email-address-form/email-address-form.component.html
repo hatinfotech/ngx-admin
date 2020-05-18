@@ -6,7 +6,7 @@
         [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
         <nb-card-header>
           <nav>
-            Cập nhật danh sach gửi email
+            Danh sách gửi email (kéo thả file csv để import)
             <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
               <nb-icon pack="eva" icon="close-circle"></nb-icon>
             </button>
@@ -18,8 +18,8 @@
               style="float: right;" title="Hoàn tác">
               <nb-icon pack="eva" icon="undo-outline"></nb-icon>
             </button>
-            <button nbButton size="tiny" status="danger" (click)="uploadButton.click()" style="float: right;">
-              <nb-icon pack="eva" icon="cloud-upload-outline"></nb-icon>Chọn file tải lên
+            <button nbButton size="tiny" status="danger" (click)="resetSentCount()" style="float: right;">
+              Đặt lại trạng thái
             </button>
             <input #uploadButton style="display: none;" type="file" ngFileSelect [options]="options"
               (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple>
@@ -30,6 +30,8 @@
             <div class="row">
               <input type="hidden" formControlName="Code_old">
               <input type="hidden" formControlName="ImportFile">
+              <input type="hidden" nbInput fullWidth formControlName="ImportEmailIndex" placeholder="STT cột email : 1->n">
+                  <input type="hidden" nbInput fullWidth formControlName="ImportNameIndex" placeholder="STT cột tên : 1->n">
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
                   <label class="label"><span class="valid">Mã</span><span class="invalid">Mã là bắt buộc
@@ -49,21 +51,6 @@
                   <label class="label"><span class="valid">Mô tả</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả">
-                </div>
-              </div>
-
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ImportEmailIndex'), 'warning')">
-                  <label class="label"><span class="valid">STT cột email</span><span class="invalid">STT cột email là bắt buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ImportEmailIndex" placeholder="STT cột email : 1->n">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ImportNameIndex'), 'warning')">
-                  <label class="label"><span class="valid">STT cột tên</span><span class="invalid">STT cột tên bắt buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ImportNameIndex" placeholder="STT cột tên : 1->n">
                 </div>
               </div>
               <div class="col-sm-12">

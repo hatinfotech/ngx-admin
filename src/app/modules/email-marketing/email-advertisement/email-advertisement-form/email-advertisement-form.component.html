@@ -7,7 +7,7 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <nav>
-            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Email mới
+            Cập nhật email quảng cáo
             <ngx-action-control-list style="float: right;" [list]="actionControlList" [option]="{formIndex: i, form: formItem}"></ngx-action-control-list>
           </nav>
         </nb-card-header>
@@ -16,79 +16,43 @@
             <div class="row">
               <input type="hidden" formControlName="Id">
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Contact'), 'warning')">
-                  <label class="label"><span class="valid">Liên hệ</span><span class="invalid">Liên hệ là bắt buộc
-                      (*)</span></label>
-                  <ngx-select2 formControlName="Contact" [select2Option]="select2ContactOption"
-                    (selectChange)="onObjectChange($event, i)"></ngx-select2>
-                </div>
-              </div>
-              <!-- <div class="col-sm-9">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ContactGroups'), 'warning')">
-                  <label class="label"><span class="valid">Nhóm liên hệ</span><span class="invalid">Nhóm liên hệ là bắt buộc
-                      (*)</span></label>
-                  <ngx-select2 formControlName="ContactGroups" [select2Option]="select2ContactGroupOption"></ngx-select2>
-                </div>
-              </div> -->
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Phone'), 'warning')">
-                  <label class="label"><span class="valid">Số điện thoại: $so_dien_thoai</span><span class="invalid">Số điện thoại là
-                      bắt buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Số điện thoại">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                  <label class="label"><span class="valid">Tên: $ten</span><span class="invalid">Tên liên hệ
-                      là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên liên hệ">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address'), 'warning')">
-                  <label class="label"><span class="valid">Địa chỉ: $dia_chi</span><span class="invalid">Địa chỉ
-                      là bắt
-                      buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Address" placeholder="Địa chỉ">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Email'), 'warning')">
-                  <label class="label"><span class="valid">Email: $email</span><span class="invalid">Email là
-                      bắt
-                      buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Email" placeholder="Email">
-                </div>
-              </div>
-
-              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Template'), 'warning')">
-                  <label class="label"><span class="valid">Mẫu SMS</span><span class="invalid">Mẫ SMS là bắt buộc
+                  <label class="label"><span class="valid">Mẫu Email</span><span class="invalid">Mẫ Email là bắt buộc
                       (*)</span></label>
                   <ngx-select2 formControlName="Template" (selectChange)="onTemplateChanged($event, formItem)" [select2Option]="select2TempateOption"></ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Gateway'), 'warning')">
-                  <label class="label"><span class="valid">Gateway (*)</span><span class="invalid">Gateway là
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('GatewayGroup'), 'warning')">
+                  <label class="label"><span class="valid">Nhóm gateway (*)</span><span class="invalid">Nhóm gateway là
                       bắt
                       buộc
                       (*)</span></label>
-                      <ngx-select2 formControlName="Gateway" [select2Option]="select2GatewayOption" (selectChange)="onGatewayChanged($event, formItem)"></ngx-select2>
+                      <ngx-select2 formControlName="GatewayGroup" [select2Option]="select2GatewayGroupOption"></ngx-select2>
                 </div>
               </div>
-              <!-- <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Brandname'), 'warning')">
-                  <label class="label"><span class="valid">Brandname (*)</span><span class="invalid">Brandname là
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('AddressList'), 'warning')">
+                  <label class="label"><span class="valid">Danh sách địa chỉ email (*)</span><span class="invalid">Danh sách địa chỉ email List là
                       bắt
                       buộc
                       (*)</span></label>
-                      <ngx-select2 formControlName="Brandname" [select2Option]="select2BrandnameOption" (selectChange)="onBrandnameChanged($event, formItem)" [data]="formItem.get('Gateway').value?.Brandnames"></ngx-select2>
+                      <ngx-select2 formControlName="AddressList" [select2Option]="select2AddressListOption"></ngx-select2>
                 </div>
-              </div> -->
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SentAlgorithm'), 'warning')">
+                  <label class="label"><span class="valid">Thuật toán gửi mail (*)</span><span class="invalid">Thuật toán gửi mail là
+                      bắt
+                      buộc
+                      (*)</span></label>
+                      <nb-select size="medium" formControlName="SentAlgorithm" fullWidth>
+                        <nb-option value="">Thuật toán gửi mail ...</nb-option>
+                        <nb-option value=SMARTMARKETING>Gửi mail marketing</nb-option>
+                        <nb-option value="SENTPROMTION">Gửi mail khuyến mãi</nb-option>
+                      </nb-select>
+                </div>
+              </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Var1'), 'warning')">
                   <label class="label"><span class="valid">Tham số 1: $tham_so_1</span><span class="invalid">Tham số 1 là
@@ -127,7 +91,7 @@
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Subject'), 'warning')">
-                  <label class="label"><span class="valid">Subject</span><span class="invalid">Subject là
+                  <label class="label"><span class="valid">Tiêu đề</span><span class="invalid">Tiêu đề là
                       bắt
                       buộc
                       (*)</span></label>
@@ -162,13 +126,12 @@
             </div>
           </div>
         </nb-card-body>
-        <!-- <nb-card-footer> -->
-          <!-- <div class="buttons-row" style="text-align: right;"> -->
-            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
-            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
-            <!-- <button nbButton status="success" [disabled]="!form.valid" hero>Lưu</button> -->
-          <!-- </div> -->
-        <!-- </nb-card-footer> -->
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="success" [disabled]="!form.valid" hero style="float: right;">Lưu</button>
+            <button nbButton status="danger" [disabled]="!form.valid" (click)="onSaveAndSendClick()" hero>Bắt đầu gửi</button>
+          </div>
+        </nb-card-footer>
       </nb-card>
 
     </div>

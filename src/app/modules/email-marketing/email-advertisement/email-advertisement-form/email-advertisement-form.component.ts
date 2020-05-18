@@ -6,7 +6,7 @@ import { ActionControl } from '../../../../lib/custom-element/action-control-lis
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -23,75 +23,17 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
 
   componentName: string = 'EmailAdvertisementFormComponent';
   idKey = 'Id';
-  apiPath = '/email-marketing/emails';
-  baseFormUrl = '/email-marketing/sent/form';
+  apiPath = '/email-marketing/ads-emails';
+  baseFormUrl = '/email-marketing/ads-email/form';
 
   // @Input('in') ticketCode: string;
-  @Input('index') index: string;
-  @Input('phoneNumber') phoneNumber: string;
-  @Output() onClose = new EventEmitter<string>();
-  @Output() onInit = new EventEmitter<EmailAdvertisementFormComponent>();
-
-  select2ContactOption = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '', byGroups: 'PERSONAL' });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
-        };
-      },
-    },
-  };
-
-  select2ContactGroupOption = {
-    placeholder: 'Chọn nhóm liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    multiple: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/contact/groups', { filter_Name: params['term'] ? params['term'] : '' });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
-        };
-      },
-    },
-  };
+  // @Input('index') index: string;
+  // @Input('phoneNumber') phoneNumber: string;
+  // @Output() onClose = new EventEmitter<string>();
+  // @Output() onInit = new EventEmitter<EmailAdvertisementFormComponent>();
 
   select2TempateOption = {
-    placeholder: 'Chọn mẫu SMS...',
+    placeholder: 'Chọn mẫu Email...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -118,19 +60,20 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
     },
   };
 
-  select2GatewayOption = {
-    placeholder: 'Chọn gateway...',
+  select2GatewayGroupOption = {
+    placeholder: 'Chọn nhóm gateway...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    multiple: false,
     keyMap: {
       id: 'Code',
       text: 'Name',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/email-marketing/gateway', { filter_Name: params['term'] ? params['term'] : '' });
+        return this.apiService.buildApiUrl('/email-marketing/gateway-groups', { filter_Name: params['term'] ? params['term'] : '' });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -146,15 +89,31 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
     },
   };
 
-  select2BrandnameOption = {
-    placeholder: 'Chọn brandname...',
+  select2AddressListOption = {
+    placeholder: 'Chọn danh sách địa chỉ email...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     keyMap: {
-      id: 'id',
-      text: 'text',
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/email-marketing/address-lists', { filter_Name: params['term'] ? params['term'] : '' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
     },
   };
 
@@ -189,8 +148,30 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
         // return false;
       },
       click: () => {
-        this.saveAndSend();
-        return true;
+        this.dialogService.open(ShowcaseDialogComponent, {
+          context: {
+            title: 'Xác nhận',
+            content: 'Email sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 mail mỗi giờ',
+            actions: [
+              {
+                label: 'Start',
+                icon: 'delete',
+                status: 'danger',
+                action: () => {
+                  this.saveAndSend();
+                },
+              },
+              {
+                label: 'Trở về',
+                icon: 'back',
+                status: 'success',
+                action: () => { },
+              },
+            ],
+          },
+        });
+
+        return false;
       },
     },
     {
@@ -210,13 +191,31 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
         return false;
       },
     },
+    // {
+    //   type: 'button',
+    //   name: 'new',
+    //   status: 'primary',
+    //   label: 'Mới',
+    //   icon: 'file-text',
+    //   title: 'Tạo mới',
+    //   size: 'tiny',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: (event, option: { formIndex: number }) => {
+    //     // this.goback();
+    //     // this.id = null;
+    //     this.reset();
+    //     return false;
+    //   },
+    // },
     {
       type: 'button',
-      name: 'new',
-      status: 'primary',
-      label: 'Mới',
-      icon: 'file-text',
-      title: 'Tạo mới',
+      name: 'Back',
+      status: 'danger',
+      label: 'Đóng',
+      icon: 'close',
+      title: 'Đóng',
       size: 'tiny',
       disabled: () => {
         return false;
@@ -224,7 +223,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
       click: (event, option: { formIndex: number }) => {
         // this.goback();
         // this.id = null;
-        this.reset();
+        this.goback();
         return false;
       },
     },
@@ -258,6 +257,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
     public elRef: ElementRef,
+    protected ref: NbDialogRef<EmailAdvertisementFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
     this.silent = true;
@@ -268,32 +268,36 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
   }
 
   ngOnInit() {
-    // this.restrict();
+    this.restrict();
     super.ngOnInit();
-    if (this.inputId) {
-      // this.mode = 'dialog';
-      this.id = this.inputId;
-    }
-    this.onInit.emit(this);
+    // if (this.inputId) {
+    //   // this.mode = 'dialog';
+    //   this.id = this.inputId;
+    // }
+    // this.onInit.emit(this);
   }
 
-  onObjectChange(item, formIndex: number) {
-    // console.info(item);
-
-    if (!this.isProcessing) {
-      if (item && !item['doNotAutoFill']) {
-
-        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-        if (item['Code']) {
-          this.array.controls[formIndex].get('Name').setValue(item['Name']);
-          this.array.controls[formIndex].get('Phone').setValue(item['Phone']);
-          this.array.controls[formIndex].get('Email').setValue(item['Email']);
-          this.array.controls[formIndex].get('Address').setValue(item['Address']);
-        }
-      }
-    }
-
+  getRequestId(callback: (id?: string[]) => void) {
+    callback(this.inputId);
   }
+
+  // onObjectChange(item, formIndex: number) {
+  //   // console.info(item);
+
+  //   if (!this.isProcessing) {
+  //     if (item && !item['doNotAutoFill']) {
+
+  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+  //       if (item['Code']) {
+  //         this.array.controls[formIndex].get('Name').setValue(item['Name']);
+  //         this.array.controls[formIndex].get('Phone').setValue(item['Phone']);
+  //         this.array.controls[formIndex].get('Email').setValue(item['Email']);
+  //         this.array.controls[formIndex].get('Address').setValue(item['Address']);
+  //       }
+  //     }
+  //   }
+
+  // }
   onTemplateChanged(event: any, formItem: FormControl) {
     // console.info(item);
 
@@ -320,7 +324,9 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
 
   /** Execute api get */
   executeGet(params: any, success: (resources: EmailModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeUsers'] = true;
+    params['includeAddressList'] = true;
+    params['includeGatewayGroup'] = true;
+    params['includeEmailTemplate'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -335,15 +341,15 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
     // } catch (e) { console.error(e); }
     const newForm = this.formBuilder.group({
       Id: [''],
-      Contact: [''],
+      // Contact: [''],
       // ContactGroups: [''],
-      Name: [''],
-      Phone: [''],
+      // Name: [''],
+      // Phone: [''],
       Template: [''],
-      Email: [''],
-      Address: [''],
+      // Email: [''],
+      // Address: [''],
       Content: [''],
-      Gateway: ['', Validators.required],
+      // Gateway: ['', Validators.required],
       // Brandname: ['', Validators.required],
       Var1: [''],
       Var2: [''],
@@ -352,6 +358,9 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
       Preview: [''],
       Subject: [''],
       SubjectPreview: [''],
+      AddressList: ['', Validators.required],
+      GatewayGroup: ['', Validators.required],
+      SentAlgorithm: ['SMARTMARKETING', Validators.required],
     });
     if (data) {
       newForm.patchValue(data);
@@ -368,11 +377,11 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
     const previewEditor = newForm.get('Preview');
     const subjectPreview = newForm.get('SubjectPreview');
     const template = newForm.get('Template');
-    const contact = newForm.get('Contact');
-    const name = newForm.get('Name');
-    const phone = newForm.get('Phone');
-    const email = newForm.get('Email');
-    const address = newForm.get('Address');
+    // const contact = newForm.get('Contact');
+    // const name = newForm.get('Name');
+    // const phone = newForm.get('Phone');
+    // const email = newForm.get('Email');
+    // const address = newForm.get('Address');
     const var1 = newForm.get('Var1');
     const var2 = newForm.get('Var2');
     const var3 = newForm.get('Var3');
@@ -383,11 +392,11 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
 
     new Observable<string>(obs => {
       template.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
-      contact.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
-      name.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
-      phone.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
-      email.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
-      address.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
+      // contact.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
+      // name.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
+      // phone.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
+      // email.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
+      // address.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
       var1.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
       var2.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
       var3.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
@@ -410,40 +419,50 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
 
   }
   goback(): false {
-    this.dialogService.open(ShowcaseDialogComponent, {
-      context: {
-        title: 'Phiếu yêu cầu hỗ trợ',
-        content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',
-        actions: [
-          {
-            label: 'Tiếp tục',
-            icon: 'back',
-            status: 'warning',
-            action: () => { },
-          },
-          {
-            label: 'Lưu và đóng',
-            icon: 'save',
-            status: 'success',
-            action: () => {
-              this.save();
-              this.onClose.emit(this.index);
-            },
-          },
-          {
-            label: 'Đóng',
-            icon: 'close',
-            status: 'danger',
-            action: () => {
-              this.onClose.emit(this.index);
-            },
-          },
-        ],
-      },
-    });
-
+    super.goback();
+    if (this.mode === 'page') {
+      this.router.navigate(['/email-marketing/ads-email/list']);
+    } else {
+      this.ref.close();
+      // this.dismiss();
+    }
     return false;
   }
+  // goback(): false {
+  //   // this.dialogService.open(ShowcaseDialogComponent, {
+  //   //   context: {
+  //   //     title: 'Phiếu yêu cầu hỗ trợ',
+  //   //     content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',
+  //   //     actions: [
+  //   //       {
+  //   //         label: 'Tiếp tục',
+  //   //         icon: 'back',
+  //   //         status: 'warning',
+  //   //         action: () => { },
+  //   //       },
+  //   //       {
+  //   //         label: 'Lưu và đóng',
+  //   //         icon: 'save',
+  //   //         status: 'success',
+  //   //         action: () => {
+  //   //           this.save();
+  //   //           this.onClose.emit(this.index);
+  //   //         },
+  //   //       },
+  //   //       {
+  //   //         label: 'Đóng',
+  //   //         icon: 'close',
+  //   //         status: 'danger',
+  //   //         action: () => {
+  //   //           this.onClose.emit(this.index);
+  //   //         },
+  //   //       },
+  //   //     ],
+  //   //   },
+  //   // });
+
+  //   return false;
+  // }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
@@ -460,10 +479,10 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
 
   generatePreview(formItem: FormGroup) {
     return formItem.get('Content').value
-      .replace('$ten', formItem.get('Name').value)
-      .replace('$so_dien_thoai', formItem.get('Phone').value)
-      .replace('$email', formItem.get('Email').value)
-      .replace('$dia_chi', formItem.get('Address').value)
+      // .replace('$ten', formItem.get('Name').value)
+      // .replace('$so_dien_thoai', formItem.get('Phone').value)
+      // .replace('$email', formItem.get('Email').value)
+      // .replace('$dia_chi', formItem.get('Address').value)
       .replace('$tham_so_1', formItem.get('Var1').value)
       .replace('$than_so_2', formItem.get('Var2').value)
       .replace('$tham_so_3', formItem.get('Var3').value)
@@ -473,10 +492,10 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
 
   generateSubjectPreview(formItem: FormGroup) {
     return formItem.get('Subject').value
-      .replace('$ten', formItem.get('Name').value)
-      .replace('$so_dien_thoai', formItem.get('Phone').value)
-      .replace('$email', formItem.get('Email').value)
-      .replace('$dia_chi', formItem.get('Address').value)
+      // .replace('$ten', formItem.get('Name').value)
+      // .replace('$so_dien_thoai', formItem.get('Phone').value)
+      // .replace('$email', formItem.get('Email').value)
+      // .replace('$dia_chi', formItem.get('Address').value)
       .replace('$tham_so_1', formItem.get('Var1').value)
       .replace('$than_so_2', formItem.get('Var2').value)
       .replace('$tham_so_3', formItem.get('Var3').value)
@@ -484,13 +503,13 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
       ;
   }
 
-  onGatewayChanged(event: any, formItem: FormControl) {
-    localStorage.setItem('last_sms_gateway', JSON.stringify(event));
-  }
+  // onGatewayChanged(event: any, formItem: FormControl) {
+  //   localStorage.setItem('last_sms_gateway', JSON.stringify(event));
+  // }
 
-  onBrandnameChanged(event: any, formItem: FormControl) {
-    localStorage.setItem('last_sms_brandname', JSON.stringify(event));
-  }
+  // onBrandnameChanged(event: any, formItem: FormControl) {
+  //   localStorage.setItem('last_sms_brandname', JSON.stringify(event));
+  // }
 
   saveAndSend() {
     this.isSendMail = true;
@@ -514,6 +533,32 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
   onAfterUpdateSubmit(newFormData: EmailModel[]) {
     this.isSendMail = false;
     super.onAfterUpdateSubmit(newFormData);
+  }
+
+  onSaveAndSendClick() {
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: 'Xác nhận',
+        content: 'Email sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 mail mỗi giờ',
+        actions: [
+          {
+            label: 'Start',
+            icon: 'delete',
+            status: 'danger',
+            action: () => {
+              this.saveAndSend();
+            },
+          },
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'success',
+            action: () => { },
+          },
+        ],
+      },
+    });
+    return false;
   }
 
 }

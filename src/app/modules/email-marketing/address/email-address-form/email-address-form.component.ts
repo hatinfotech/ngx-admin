@@ -4,7 +4,7 @@ import { EmailAddressListModel, EmailAddressListDetailModel } from '../../../../
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -12,6 +12,8 @@ import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsP
 import { SmsReceipientModel } from '../../../../models/sms.model';
 import { UploaderOptions, UploadFile, UploadInput, UploadOutput, humanizeBytes } from '../../../../lib/ngx-uploader/projects/ngx-uploader/src/public_api';
 import { FileModel } from '../../../../models/file.model';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-email-address-form',
@@ -58,16 +60,22 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
       {
         headerName: 'Tên',
         field: 'Name',
-        width: 500,
+        width: 400,
         filter: 'agTextColumnFilter',
         // pinned: 'left',
+      },
+      {
+        headerName: 'Số lần gửi',
+        field: 'SentCount',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        pinned: 'right',
       },
     ];
 
     this.pagination = false;
     this.maxBlocksInCache = 5;
-    this.paginationPageSize = 100;
-    this.cacheBlockSize = 100;
+    this.paginationPageSize = this.cacheBlockSize = 1000;
     /** End AG-Grid */
 
 
@@ -174,7 +182,7 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
       getRows: (getRowParams: IGetRowsParams) => {
         console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
 
-        const query = { limit: this.cacheBlockSize, offset: getRowParams.startRow };
+        const query = { limit: this.paginationPageSize, offset: getRowParams.startRow };
         getRowParams.sortModel.forEach(sortItem => {
           query['sort_' + sortItem['colId']] = sortItem['sort'];
         });
@@ -183,7 +191,8 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
           query['filter_' + key] = condition.filter;
         });
 
-        query['filter_List'] = this.id[0];
+        query['noCount'] = true;
+        query['filter_AddressList'] = this.id[0] ? this.id[0] : 'X';
 
         // const contact = this.array.controls[0].get('Contact');
         // const contactGroups = this.array.controls[0].get('ContactGroups');
@@ -264,13 +273,54 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
     switch (output.type) {
       case 'allAddedToQueue':
         // uncomment this if you want to auto upload files when added
-        const event: UploadInput = {
-          type: 'uploadAll',
-          url: this.apiService.buildApiUrl('/file/files'),
-          method: 'POST',
-          data: { foo: 'bar' },
-        };
-        this.uploadInput.emit(event);
+
+        this.dialogService.open(DialogFormComponent, {
+          context: {
+            title: 'Thứ tự cột email và tên',
+            controls: [
+              {
+                name: 'ImportEmailIndex',
+                label: 'Sốt thứ tự cột email',
+                placeholder: '1,2,3,...',
+                type: 'text',
+              },
+              {
+                name: 'ImportNameIndex',
+                label: 'Sốt thứ tự cột name',
+                placeholder: '1,2,3,...',
+                type: 'text',
+              },
+            ],
+            actions: [
+              {
+                label: 'Trở về',
+                icon: 'back',
+                status: 'info',
+                action: () => { },
+              },
+              {
+                label: 'Tải lên',
+                icon: 'generate',
+                status: 'success',
+                action: (form: FormGroup) => {
+
+                  this.array.controls[0].get('ImportEmailIndex').setValue(form.value['ImportEmailIndex']);
+                  this.array.controls[0].get('ImportNameIndex').setValue(form.value['ImportNameIndex']);
+
+                  const event: UploadInput = {
+                    type: 'uploadAll',
+                    url: this.apiService.buildApiUrl('/file/files'),
+                    method: 'POST',
+                    data: { foo: 'bar' },
+                  };
+                  this.uploadInput.emit(event);
+
+                },
+              },
+            ],
+          },
+        });
+
         break;
       case 'addedToQueue':
         if (typeof output.file !== 'undefined') {
@@ -407,4 +457,51 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+  resetSentCount() {
+
+    if (this.id[0]) {
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Xác nhận',
+          content: 'Bạn có muốn đặt lại trạng thái gửi cho danh sách này không ?',
+          actions: [
+            {
+              label: 'Đặt lại',
+              icon: 'reset',
+              status: 'danger',
+              action: () => {
+                const runningToast = this.toastrService.show('running', 'Đang đặt lại danh sách địa chỉ email', {
+                  status: 'danger',
+                  hasIcon: true,
+                  position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                  duration: 0,
+                });
+                this.apiService.putPromise<EmailAddressListModel[]>('/email-marketing/address-lists', { id: [this.id[0]], resetSentCount: true }, [{ Code: this.id[0] as any }]).then(rs => {
+                  runningToast.close();
+                  this.toastrService.show('success', 'Danh sách địa chỉ email đã được đặt lại', {
+                    status: 'success',
+                    hasIcon: true,
+                    position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                    // duration: 5000,
+                  });
+
+                  this.loadList();
+
+                });
+              },
+            },
+            {
+              label: 'Trở về',
+              icon: 'back',
+              status: 'success',
+              action: () => { },
+            },
+          ],
+        },
+      });
+
+    }
+
+    return false;
+  }
 }

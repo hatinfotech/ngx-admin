@@ -1,409 +1,237 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { BaseComponent } from '../../../../lib/base-component';
-import { UserActive } from '../../../../@core/data/user-activity';
 import { EmailModel } from '../../../../models/email.model';
-import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import { NbThemeService, NbLayoutScrollService, NbIconLibraries, NbDialogService } from '@nebular/theme';
-import { MobileAppService } from '../../../mobile-app/mobile-app.service';
-import { takeWhile } from 'rxjs/operators';
-import { QuickTicketFormComponent } from '../../../helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
+import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
+import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { EmailAdvertisementFormComponent } from '../email-advertisement-form/email-advertisement-form.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
-interface MnfiniteLoadModel<M> {
-  data: (M & {selected: boolean})[];
-  placeholders: any[];
-  loading: boolean;
-  pageToLoadNext: number;
-}
+// interface MnfiniteLoadModel<M> {
+//   data: (M & { selected: boolean })[];
+//   placeholders: any[];
+//   loading: boolean;
+//   pageToLoadNext: number;
+// }
 
 @Component({
   selector: 'ngx-email-advertisement-list',
   templateUrl: './email-advertisement-list.component.html',
   styleUrls: ['./email-advertisement-list.component.scss'],
 })
-export class EmailAdvertisementListComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class EmailAdvertisementListComponent extends DataManagerListComponent<EmailModel> implements OnInit {
 
-  componentName = 'EmailAdvertisementListComponent';
-  idKey = 'Code';
-
-  // private $: any;
-
-  private alive = true;
-  select2Option = {
-    placeholder: 'Chọn...',
-    allowClear: false,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'DomainUuid',
-      text: 'DomainName',
-    },
-  };
-
-  userActivity: UserActive[] = [];
-  type = 'month';
-  types = ['week', 'month', 'year'];
-  currentTheme: string;
-  option: any;
-
-  selectedItems: EmailModel[] = [];
-  selectedItemEles: { id: string, el: any }[] = [];
-
-  hadRowsSelected = false;
-  hadMultiRowSelected = false;
-  actionControlList: ActionControl[] = [
-    {
-      type: 'text',
-      name: 'search',
-      status: 'default',
-      label: 'Search',
-      icon: 'message-square',
-      title: 'Tìm kiếm',
-      size: 'tiny',
-      value: () => {
-        return this.keyword;
-      },
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        // this.refresh();
-        return false;
-      },
-      change: (event, option) => {
-        this.keyword = event.target.value;
-        this.onFilterChange();
-        return false;
-      },
-      typing: (event, option) => {
-        this.keyword = event.target.value;
-        return false;
-      },
-    },
-    // {
-    //   type: 'button',
-    //   name: 'chat',
-    //   status: 'success',
-    //   label: 'Chat',
-    //   icon: 'message-square',
-    //   title: 'Vào phòng chat',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
-    //   },
-    //   click: () => {
-    //     // this.refresh();
-    //     if (this.selectedItems.length > 0) {
-    //       this.openChatRoom(this.selectedItems[0].ChatRoom);
-    //     }
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'call',
-    //   status: 'primary',
-    //   label: 'Gọi',
-    //   icon: 'phone-call',
-    //   title: 'Gọi cho người được hỗ trợ',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     this.commonService.openMenuSidebar();
-    //     this.mobileAppService.switchScreen('phone');
-    //     // this.refresh();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'create',
-    //   status: 'warning',
-    //   label: 'Tạo',
-    //   icon: 'file-add',
-    //   title: 'Tạo TICKET mới',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     // this.createNewItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'create',
-    //   status: 'info',
-    //   label: 'Cập nhật',
-    //   icon: 'edit',
-    //   title: 'Cập nhật TICKET',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     this.editItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'view',
-    //   status: 'success',
-    //   label: 'Xem',
-    //   icon: 'external-link',
-    //   title: 'Xem thông tin TICKET',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
-    //   },
-    //   click: () => {
-    //     // this.createNewItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'remove',
-    //   status: 'danger',
-    //   label: 'Huỷ',
-    //   icon: 'close-circle',
-    //   title: 'Huỷ yêu cầu',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected;
-    //   },
-    //   click: () => {
-    //     // this.reset();
-    //     return false;
-    //   },
-    // },
-    {
-      type: 'button',
-      name: 'refresh',
-      status: 'success',
-      label: 'Refresh',
-      icon: 'sync',
-      title: 'Làm mới',
-      size: 'tiny',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.refresh();
-        return false;
-      },
-    },
-  ];
-
-  keyword: string = '';
-
-  showQuickForm = false;
-
-  infiniteLoadModel: MnfiniteLoadModel<EmailModel & {Preview: string}> = {
-    data: [],
-    placeholders: [],
-    loading: false,
-    pageToLoadNext: 1,
-  };
-  pageSize = 10;
-
-  quickFormOnInitSubject = new BehaviorSubject<string>(null);
-  quickFormOnInit$ = this.quickFormOnInitSubject.asObservable();
+  componentName: string = 'EmailAdvertisementListComponent';
+  formPath = '/email-marketing/ads-email/form';
+  apiPath = '/email-marketing/ads-emails';
+  idKey = 'Id';
 
   constructor(
-    protected commonService: CommonService,
-    protected router: Router,
     protected apiService: ApiService,
-    private themeService: NbThemeService,
-    private layoutScrollService: NbLayoutScrollService,
-    iconsLibrary: NbIconLibraries,
-    private renderer: Renderer2,
+    public router: Router,
+    protected commonService: CommonService,
     protected dialogService: NbDialogService,
-    private mobileAppService: MobileAppService,
+    protected toastService: NbToastrService,
+    protected _http: HttpClient,
   ) {
-    super(commonService, router, apiService);
-
-    iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
-
-    this.themeService.getJsTheme()
-      .pipe(takeWhile(() => this.alive))
-      .subscribe(theme => {
-        this.currentTheme = theme.name;
-      });
-
-    this.loadList();
-
+    super(apiService, router, commonService, dialogService, toastService);
   }
 
-  onResume() {
-    super.onResume();
-  }
+  editing = {};
+  rows = [];
+
+  settings = this.configSetting({
+    mode: 'external',
+    selectMode: 'multi',
+    actions: {
+      position: 'right',
+    },
+    add: this.configAddButton(),
+    edit: this.configEditButton(),
+    delete: this.configDeleteButton(),
+    pager: this.configPaging(),
+    columns: {
+      Id: {
+        title: 'Id',
+        type: 'string',
+        width: '5%',
+      },
+      Subject: {
+        title: 'Tiêu đề',
+        type: 'string',
+        width: '30%',
+      },
+      SentAlgorithm: {
+        title: 'Thuật toán',
+        type: 'string',
+        width: '10%',
+      },
+      Template: {
+        title: 'Email mẫu',
+        type: 'string',
+        width: '10%',
+      },
+      GatewayGroup: {
+        title: 'Nhóm Gateway',
+        type: 'string',
+        width: '10%',
+      },
+      SentCount: {
+        title: 'Đã gửi',
+        type: 'string',
+        width: '10%',
+      },
+      SendingDate: {
+        title: 'Lần gửi cuối',
+        type: 'string',
+        width: '15%',
+      },
+      // State: {
+      //   title: 'Trạng thái',
+      //   type: 'string',
+      //   width: '10%',
+      // },
+      State: {
+        title: 'Trạng thái',
+        type: 'custom',
+        width: '10%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'play-circle';
+          instance.label = 'Start';
+          instance.display = true;
+          instance.status = 'danger';
+          instance.valueChange.subscribe(value => {
+            if (value !== 'SENDING') {
+              instance.label = 'Start';
+              instance.icon = 'play-circle';
+              instance.status = 'danger';
+            } else {
+              instance.label = 'Stop';
+              instance.icon = 'stop-circle';
+              instance.status = 'warning';
+            }
+          });
+          instance.click.subscribe(async (row: EmailModel) => {
+            if (row.State !== 'SENDING') {
+              this.dialogService.open(ShowcaseDialogComponent, {
+                context: {
+                  title: 'Xác nhận',
+                  content: 'Bạn có muốn bắt đầu tiến trình gửi mail ?',
+                  actions: [
+                    {
+                      label: 'Start',
+                      icon: 'start',
+                      status: 'danger',
+                      action: () => {
+                        this.apiService.putPromise<EmailModel[]>('/email-marketing/ads-emails', { id: [row['Id']], startSentMail: true }, [{ Id: row.Id }]).then(rs => {
+                          this.toastService.show('success', 'Tiến trình gửi mail đã bắt đầu chạy', {
+                            status: 'danger',
+                            hasIcon: true,
+                            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                            // duration: 5000,
+                          });
+                          this.refresh();
+                        });
+                      },
+                    },
+                    {
+                      label: 'Trở về',
+                      icon: 'back',
+                      status: 'success',
+                      action: () => { },
+                    },
+                  ],
+                },
+              });
+            } else {
+              this.dialogService.open(ShowcaseDialogComponent, {
+                context: {
+                  title: 'Xác nhận',
+                  content: 'Bạn có muốn dừng trình gửi mail ?',
+                  actions: [
+                    {
+                      label: 'Stop',
+                      icon: 'stop',
+                      status: 'warning',
+                      action: () => {
+                        this.apiService.putPromise<EmailModel[]>('/email-marketing/ads-emails', { id: [row['Id']], stopSentMail: true }, [{ Id: row.Id }]).then(rs => {
+                          this.toastService.show('success', 'Tiến trình gửi mail đã dừng', {
+                            status: 'warning',
+                            hasIcon: true,
+                            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                            // duration: 5000,
+                          });
+                          this.refresh();
+                        });
+                      },
+                    },
+                    {
+                      label: 'Trở về',
+                      icon: 'back',
+                      status: 'success',
+                      action: () => { },
+                    },
+                  ],
+                },
+              });
+            }
+          });
+        },
+      },
+    },
+  });
 
   ngOnInit() {
-    // this.commonService.openMobileSidebar();
+    this.restrict();
+    super.ngOnInit();
   }
 
-  onFilterChange() {
-    this.commonService.takeUntil('email-sent-filter-change', 500, () => {
-      this.infiniteLoadModel.pageToLoadNext = 1;
-      this.infiniteLoadModel.data = [];
-      this.loadNext(this.infiniteLoadModel);
-    });
-  }
-
-  loadNext(cardData: MnfiniteLoadModel<EmailModel & {Preview: string}>) {
-    if (cardData.loading) { return; }
-
-    cardData.loading = true;
-    cardData.placeholders = new Array(this.pageSize);
-
-    this.apiService.get<(EmailModel & {selected: boolean, Preview: string})[]>('/email-marketing/emails', { sort_Id: 'desc', search: this.keyword, limit: this.pageSize, offset: (cardData.pageToLoadNext - 1) * this.pageSize }, nextList => {
-
-      nextList.forEach((i: any) => {
-        const firstRecipient = i.Recipients ? i.Recipients[0] : null;
-        if (firstRecipient) {
-          i['Preview'] = i['Content'].replace('$ten', firstRecipient['Name']);
-          i['Preview'] = i['Preview'].replace('$so_dien_thoai', firstRecipient['Phone']);
-          i['Preview'] = i['Preview'].replace('$email', firstRecipient['Email']);
-          i['Preview'] = i['Preview'].replace('$tham_so_1', i['Var1']);
-          i['Preview'] = i['Preview'].replace('$tham_so_2', i['Var2']);
-          i['Preview'] = i['Preview'].replace('$tham_so_3', i['Var3']);
-          i['Preview'] = i['Preview'].replace('$tham_so_4', i['Var4']);
-        }
+  /** Api get funciton */
+  executeGet(params: any, success: (resources: EmailModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: EmailModel[] | HttpErrorResponse) => void) {
+    params['sort_Id'] = 'desc';
+    params['includeSentCount'] = true;
+    super.executeGet(params, (list) => {
+      list.forEach(item => {
+          item['SentCount'] = `${item['NumOfSent']}/${item['Total']}`;
       });
+      success(list);
+    }, error, complete);
+  }
 
-      cardData.placeholders = [];
-      cardData.data.push(...nextList);
-      cardData.loading = false;
-      cardData.pageToLoadNext++;
-
+  getList(callback: (list: EmailModel[]) => void) {
+    super.getList((rs) => {
+      // rs.forEach(item => {
+      //   item.Content = item.Content.substring(0, 256) + '...';
+      // });
+      if (callback) callback(rs);
     });
-
   }
 
-  ngAfterViewInit(): void {
-    // tslint:disable-next-line: ban
-    const helpdeskDashboard = $(document.getElementById('helpdeskDashboard'));
-    // tslint:disable-next-line: ban
-    const helpdeskHeaderEle = $(document.getElementById('helpdeskHeader'));
-    this.subcriptions.push(this.layoutScrollService.getPosition().subscribe(position => {
-      console.info(position);
-    }));
-    let checkpoint = null;
-    this.subcriptions.push(this.layoutScrollService.onScroll().subscribe(position => {
-      const helpdeskHeaderOffset = helpdeskHeaderEle.offset();
-      const helpdeskDashboardOffset = helpdeskDashboard.offset();
-      if (!checkpoint && helpdeskHeaderOffset.top < 50) {
-        checkpoint = helpdeskDashboardOffset.top;
-
-        this.commonService.updateHeaderActionControlList(this.actionControlList);
-
-      }
-
-      if (checkpoint && helpdeskDashboardOffset.top > checkpoint) {
-        this.commonService.updateHeaderActionControlList([]);
-        checkpoint = null;
-      }
-
-
-    }));
-  }
-
-  loadList() {
-    // this.apiService.get<EmailModel[]>('/helpdesk/tickets', { limit: 20 }, list => {
-    //   this.dataList = list.map(item => {
-    //     item['selected'] = false;
-    //     return item;
-    //   });
-    // });
-  }
-
-  ngOnDestroy() {
-    this.alive = false;
-  }
-
-  refresh() {
-    this.commonService.takeUntil('email-filter-change', 500, () => {
-      this.infiniteLoadModel.pageToLoadNext = 1;
-      this.infiniteLoadModel.data = [];
-      this.loadNext(this.infiniteLoadModel);
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(EmailAdvertisementFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: EmailModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+          this.refresh();
+        },
+      },
     });
-    this.deleteSelected();
-    return false;
   }
 
-  deleteSelected() {
-    this.selectedItems = [];
-    this.hadRowsSelected = false;
-    this.hadMultiRowSelected = false;
-    return false;
-  }
-
-  editSelectedItem() {
-    return false;
-  }
-
-
-
-  async onQuickFormInit(event: QuickTicketFormComponent) {
-    console.info(event);
-    // this.quickTicketFormList.filter(f => f.index === event.index)[0].form = event;
-
-    // // Load form by contact phone
-    // if (await event.loadByCallSessionId()) {
-    //   // Auto save after init 10s
-    //   setTimeout(() => {
-    //     event.save();
-    //   }, 10000);
-    // } else {
-    //   event.loadByPhoneNumber().then(rs => {
-    //     if (rs) {
-    //       this.quickFormOnInitSubject.next(event.index);
-
-    //       // Auto save after init 10s
-    //       event.save();
-    //     }
-    //   });
-    // }
-  }
-
-
-  reset() {
-    this.deleteSelected();
-    return false;
-  }
-
-  toggleSelectItem(event: any, item: EmailModel) {
-    item['selected'] = !item['selected'];
-    if (item['selected']) {
-      this.selectedItems.push(item);
-      this.renderer.addClass(event.currentTarget, 'selected');
-    } else {
-      this.selectedItems = this.selectedItems.filter(sItem => sItem[this.idKey] !== item[this.idKey]);
-      this.renderer.removeClass(event.currentTarget, 'selected');
-    }
-    this.hadRowsSelected = this.selectedItems.length > 0;
-    this.hadMultiRowSelected = this.selectedItems.length > 1;
-    return false;
-  }
-
-  selectOne(event: any, item: EmailModel) {
-    this.selectedItemEles.forEach(selectedItemEle => {
-      this.renderer.removeClass(selectedItemEle.el, 'selected');
-    });
-    this.selectedItems = [item];
-    this.selectedItemEles = [{ id: item[this.idKey], el: event.currentTarget }];
-    this.renderer.addClass(event.currentTarget, 'selected');
-    this.hadRowsSelected = this.selectedItems.length > 0;
-    this.hadMultiRowSelected = this.selectedItems.length > 1;
+  /** Go to form */
+  gotoForm(id?: string): false {
+    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
     return false;
   }
 

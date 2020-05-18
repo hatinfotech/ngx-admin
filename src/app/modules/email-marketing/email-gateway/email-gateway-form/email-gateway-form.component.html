@@ -109,11 +109,18 @@
                       <input type="text" nbInput fullWidth formControlName="SmtpPassword" placeholder="Smtp Password">
                 </div>
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('SmtpToken'), 'warning')">
                   <label class="label"><span class="valid">Smtp Token</span><span class="invalid">Smtp Token là bắt buộc
                       (*)</span></label>
                       <input type="text" nbInput fullWidth formControlName="SmtpToken" placeholder="Smtp Token">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
+                  <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
+                      (*)</span></label>
+                      <ngx-select2 [select2Option]="select2GroupsOption" formControlName="Groups"></ngx-select2>
                 </div>
               </div>
               <div class="col-sm-12">

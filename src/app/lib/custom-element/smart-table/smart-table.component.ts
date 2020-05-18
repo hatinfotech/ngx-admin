@@ -31,7 +31,7 @@ export class SmartTableCheckboxComponent implements ViewCell, OnInit {
 @Component({
   selector: 'ngx-smart-table-button',
   template: `
-  <button *ngIf="display" [disabled]="disabled" nbButton status="success" hero size="tiny" (click)="onClick()">
+  <button *ngIf="display" [disabled]="disabled" nbButton [status]="status" hero size="tiny" (click)="onClick()">
     <nb-icon [pack]="iconPack" [icon]="icon"> {{label}}</nb-icon>
   </button>`,
 })
