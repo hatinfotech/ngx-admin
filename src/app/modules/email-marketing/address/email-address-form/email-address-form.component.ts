@@ -9,7 +9,7 @@ import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 import { SmsReceipientModel } from '../../../../models/sms.model';
-import { UploaderOptions, UploadFile, UploadInput, UploadOutput, humanizeBytes } from '../../../../lib/ngx-uploader/public_api';
+import { UploaderOptions, UploadFile, UploadInput, UploadOutput, humanizeBytes } from '../../../../lib/ngx-uploader';
 import { FileModel } from '../../../../models/file.model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';

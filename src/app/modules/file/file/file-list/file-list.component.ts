@@ -8,7 +8,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FileFormComponent } from '../file-form/file-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/searver-data-manger-list.component';
 import { SmartTableThumbnailComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../lib/ngx-uploader/public_api';
+import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../lib/ngx-uploader';
 
 @Component({
   selector: 'ngx-file-list',

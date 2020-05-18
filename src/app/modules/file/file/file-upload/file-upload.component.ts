@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Input } from '@angular/core';
-import { UploaderOptions, UploadFile, UploadInput, UploadOutput, humanizeBytes, UploadStatus } from '../../../../lib/ngx-uploader/public_api';
+import { UploaderOptions, UploadFile, UploadInput, UploadOutput, humanizeBytes, UploadStatus } from '../../../../lib/ngx-uploader';
 import { BaseComponent } from '../../../../lib/base-component';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';

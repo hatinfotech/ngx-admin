@@ -9,7 +9,7 @@ import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import '../../../../lib/ckeditor.loader';
 import 'ckeditor';
-import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../lib/ngx-uploader/public_api';
+import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../lib/ngx-uploader';
 import { FileModel } from '../../../../models/file.model';
 
 @Component({
