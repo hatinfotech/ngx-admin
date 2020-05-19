@@ -416,6 +416,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
   onRemoveFormGroup(index: number): void {
 
   }
+
   goback(): false {
     super.goback();
     if (this.mode === 'page') {
@@ -426,6 +427,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
     }
     return false;
   }
+
   // goback(): false {
   //   // this.dialogService.open(ShowcaseDialogComponent, {
   //   //   context: {

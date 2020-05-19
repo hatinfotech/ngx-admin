@@ -72,6 +72,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     SmsTemplateFormComponent,
     SmsGatewayFormComponent,
     SmsPhoneNumberFormComponent,
+    SmsAdvertisementFormComponent,
   ],
 })
 export class SmsModule { }

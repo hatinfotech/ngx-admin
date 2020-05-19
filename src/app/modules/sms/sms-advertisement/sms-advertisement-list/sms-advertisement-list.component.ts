@@ -1,21 +1,14 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2 } from '@angular/core';
-import { BaseComponent } from '../../../../lib/base-component';
-import { UserActive } from '../../../../@core/data/user-activity';
+import { Component, OnInit } from '@angular/core';
 import { SmsModel } from '../../../../models/sms.model';
-import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import { NbThemeService, NbLayoutScrollService, NbIconLibraries, NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
-import { MobileAppService } from '../../../mobile-app/mobile-app.service';
-import { takeWhile } from 'rxjs/operators';
-import { QuickTicketFormComponent } from '../../../helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
+import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { EmailAdvertisementFormComponent } from '../../../email-marketing/email-advertisement/email-advertisement-form/email-advertisement-form.component';
+import { SmsAdvertisementFormComponent } from '../sms-advertisement-form/sms-advertisement-form.component';
 
 @Component({
   selector: 'ngx-sms-advertisement-list',
@@ -59,8 +52,8 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
         type: 'string',
         width: '5%',
       },
-      Subject: {
-        title: 'Tiêu đề',
+      Content: {
+        title: 'Nội dung',
         type: 'string',
         width: '30%',
       },
@@ -70,7 +63,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
         width: '10%',
       },
       Template: {
-        title: 'Email mẫu',
+        title: 'Sms mẫu',
         type: 'string',
         width: '10%',
       },
@@ -128,7 +121,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
                       icon: 'start',
                       status: 'danger',
                       action: () => {
-                        this.apiService.putPromise<SmsModel[]>('/email-marketing/ads-emails', { id: [row['Id']], startSentMail: true }, [{ Id: row.Id }]).then(rs => {
+                        this.apiService.putPromise<SmsModel[]>('/sms/ads-sms', { id: [row['Id']], startSentSms: true }, [{ Id: row.Id }]).then(rs => {
                           this.toastService.show('success', 'Tiến trình gửi mail đã bắt đầu chạy', {
                             status: 'danger',
                             hasIcon: true,
@@ -159,7 +152,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
                       icon: 'stop',
                       status: 'warning',
                       action: () => {
-                        this.apiService.putPromise<SmsModel[]>('/email-marketing/ads-emails', { id: [row['Id']], stopSentMail: true }, [{ Id: row.Id }]).then(rs => {
+                        this.apiService.putPromise<SmsModel[]>('/sms/ads-sms', { id: [row['Id']], stopSentSms: true }, [{ Id: row.Id }]).then(rs => {
                           this.toastService.show('success', 'Tiến trình gửi mail đã dừng', {
                             status: 'warning',
                             hasIcon: true,
@@ -197,7 +190,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
     params['includeSentCount'] = true;
     super.executeGet(params, (list) => {
       list.forEach(item => {
-          item['SentCount'] = `${item['NumOfSent']}/${item['Total']}`;
+        item['SentCount'] = `${item['NumOfSent']}/${item['Total']}`;
       });
       success(list);
     }, error, complete);
@@ -214,7 +207,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(EmailAdvertisementFormComponent, {
+    this.dialogService.open(SmsAdvertisementFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

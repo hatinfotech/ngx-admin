@@ -7,73 +7,55 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <nav>
-            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn mới
+            Cập nhật email quảng cáo
             <ngx-action-control-list style="float: right;" [list]="actionControlList" [option]="{formIndex: i, form: formItem}"></ngx-action-control-list>
           </nav>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <input type="hidden" formControlName="Code">
-              <input type="hidden" formControlName="CallSessionId">
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Contact'), 'warning')">
-                  <label class="label"><span class="valid">Liên hệ</span><span class="invalid">Liên hệ là bắt buộc
-                      (*)</span></label>
-                  <ngx-select2 formControlName="Contact" [select2Option]="select2ContactOption"
-                    (selectChange)="onObjectChange($event, i)"></ngx-select2>
-                </div>
-              </div>
-              <div class="col-sm-9">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ContactGroups'), 'warning')">
-                  <label class="label"><span class="valid">Nhóm liên hệ</span><span class="invalid">Nhóm liên hệ là bắt buộc
-                      (*)</span></label>
-                  <ngx-select2 formControlName="ContactGroups" [select2Option]="select2ContactGroupOption"></ngx-select2>
-                </div>
-              </div>
+              <input type="hidden" formControlName="Id">
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Template'), 'warning')">
-                  <label class="label"><span class="valid">Mẫu SMS</span><span class="invalid">Mẫ SMS là bắt buộc
+                  <label class="label"><span class="valid">Mẫu Email</span><span class="invalid">Mẫ Email là bắt buộc
                       (*)</span></label>
                   <ngx-select2 formControlName="Template" (selectChange)="onTemplateChanged($event, formItem)" [select2Option]="select2TempateOption"></ngx-select2>
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Phone'), 'warning')">
-                  <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại là
-                      bắt buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Số điện thoại">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên liên hệ
-                      là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên liên hệ">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Email'), 'warning')">
-                  <label class="label"><span class="valid">Email</span><span class="invalid">Email là
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('GatewayGroup'), 'warning')">
+                  <label class="label"><span class="valid">Nhóm gateway (*)</span><span class="invalid">Nhóm gateway là
                       bắt
                       buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Email" placeholder="Email">
+                      <ngx-select2 formControlName="GatewayGroup" [select2Option]="select2GatewayGroupOption"></ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-9">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address'), 'warning')">
-                  <label class="label"><span class="valid">Địa chỉ</span><span class="invalid">Địa chỉ
-                      là bắt
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PhoneNumberList'), 'warning')">
+                  <label class="label"><span class="valid">Danh sách địa chỉ email (*)</span><span class="invalid">Danh sách địa chỉ email List là
+                      bắt
                       buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Address" placeholder="Địa chỉ">
+                      <ngx-select2 formControlName="PhoneNumberList" [select2Option]="select2PhoneNumberListOption"></ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SentAlgorithm'), 'warning')">
+                  <label class="label"><span class="valid">Thuật toán gửi mail (*)</span><span class="invalid">Thuật toán gửi mail là
+                      bắt
+                      buộc
+                      (*)</span></label>
+                      <nb-select size="medium" formControlName="SentAlgorithm" fullWidth>
+                        <nb-option value="">Thuật toán gửi mail ...</nb-option>
+                        <nb-option value=SMARTMARKETING>Gửi mail marketing</nb-option>
+                        <nb-option value="SENTPROMTION">Gửi mail khuyến mãi</nb-option>
+                      </nb-select>
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Var1'), 'warning')">
-                  <label class="label"><span class="valid">Tham số 1</span><span class="invalid">Tham số 1 là
+                  <label class="label"><span class="valid">Tham số 1: $tham_so_1</span><span class="invalid">Tham số 1 là
                       bắt
                       buộc
                       (*)</span></label>
@@ -82,7 +64,7 @@
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Var2'), 'warning')">
-                  <label class="label"><span class="valid">Tham số 2</span><span class="invalid">Tham số 2 là
+                  <label class="label"><span class="valid">Tham số 2: $tham_so_2</span><span class="invalid">Tham số 2 là
                       bắt
                       buộc
                       (*)</span></label>
@@ -91,7 +73,7 @@
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Var3'), 'warning')">
-                  <label class="label"><span class="valid">Tham số 3</span><span class="invalid">Tham số 3 là
+                  <label class="label"><span class="valid">Tham số 3: $tham_so_3</span><span class="invalid">Tham số 3 là
                       bắt
                       buộc
                       (*)</span></label>
@@ -100,7 +82,7 @@
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Var4'), 'warning')">
-                  <label class="label"><span class="valid">Tham số 4</span><span class="invalid">Tham số 4 là
+                  <label class="label"><span class="valid">Tham số 4: $tham_so_4</span><span class="invalid">Tham số 4 là
                       bắt
                       buộc
                       (*)</span></label>
@@ -113,33 +95,18 @@
                       là bắt
                       buộc
                       (*)</span></label>
-                  <textarea nbInput fullWidth rows="3" formControlName="Content"
-                    placeholder="Mô tả"></textarea>
+                      <textarea nbInput fullWidth rows="3" formControlName="Content"
+                    placeholder="Nội dung"></textarea>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Preview'), 'warning')">
-                  <label class="label"><span class="valid">Xem trước <span [ngStyle]="{'color': formItem.get('Content').value.length > 160 ? 'red' : 'green'}">({{formItem.get('Content').value.length}}/160)</span></span><span class="invalid">Xem trước
+                  <label class="label"><span class="valid">Xem trước</span><span class="invalid">Xem trước
                       là bắt
                       buộc
                       (*)</span></label>
-                  <textarea nbInput fullWidth rows="3" formControlName="Preview"
-                    placeholder="Xem trước" [value]="generatePreview(formItem)"></textarea>
-                </div>
-              </div>
-              <div class="col-sm-12">
-                <label class="label"><span class="valid">Danh sách số nhận tin nhắn</span></label>
-                <div class="ag-grid-wrap" style="height: 250px; border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
-                  <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham"
-                    [modules]="modules" [columnDefs]="columnDefs" [floatingFilter]="false" [debug]="true"
-                    [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowDeselection]="true"
-                    [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize"
-                    [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
-                    [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize"
-                    [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)"
-                    [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight"
-                    [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
-                  </ag-grid-angular>
+                      <textarea nbInput fullWidth rows="3" formControlName="Preview"
+                      placeholder="Xem trước" [value]="generatePreview(formItem)"></textarea>
                 </div>
               </div>
 
@@ -148,9 +115,8 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button>
-            <!-- <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button> -->
-            <!-- <button nbButton status="success" [disabled]="!form.valid" hero>Lưu</button> -->
+            <button nbButton status="success" [disabled]="!form.valid" hero style="float: right;">Lưu</button>
+            <button nbButton status="danger" [disabled]="!form.valid" (click)="onSaveAndSendClick()" hero>Bắt đầu gửi</button>
           </div>
         </nb-card-footer>
       </nb-card>

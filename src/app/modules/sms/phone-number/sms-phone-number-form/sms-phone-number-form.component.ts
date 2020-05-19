@@ -64,7 +64,7 @@ export class SmsPhoneNumberFormComponent extends DataManagerFormComponent<SmsPho
       },
       {
         headerName: 'Số lần gửi',
-        field: 'SentCount',
+        field: 'NumOfSent',
         width: 100,
         filter: 'agTextColumnFilter',
         pinned: 'right',
