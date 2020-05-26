@@ -494,7 +494,9 @@ export class EmailSentFormComponent extends DataManagerFormComponent<EmailModel>
 
   saveAndSend() {
     this.isSendMail = true;
-    this.save();
+    this.save().then(rs => {
+      this.isSendMail = false;
+    });
   }
 
   executePut(params: any, data: EmailModel[], success: (data: EmailModel[]) => void, error: (e: any) => void) {

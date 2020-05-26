@@ -185,6 +185,7 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
         // return false;
       },
       click: () => {
+        this.saveAndSend();
         return true;
       },
     },
@@ -242,6 +243,8 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
   ];
 
   updateMode = 'live';
+  isSendSms = false;
+  brandnameList: { id: string, text: string }[];
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -319,7 +322,7 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
 
   makeNewFormGroup(data?: SmsModel): FormGroup {
     let lastSmsGateway = '';
-    let lastSmsBrandname = '';
+    let lastSmsBrandname: any = '';
     let lastSmsTemplate = '';
     try {
       lastSmsGateway = JSON.parse(localStorage.getItem('last_sms_gateway'));
@@ -337,7 +340,7 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
       Address: [''],
       Content: [''],
       Gateway: ['', Validators.required],
-      Brandname: ['', Validators.required],
+      Brandname: [''],
       Var1: [''],
       Var2: [''],
       Var3: [''],
@@ -353,7 +356,10 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
         newForm.get('Preview').setValue(this.generatePreview(newForm));
       }
       newForm.get('Gateway').setValue(lastSmsGateway);
-      newForm.get('Brandname').setValue(lastSmsBrandname);
+      if (lastSmsBrandname) {
+        this.brandnameList = [lastSmsBrandname];
+        newForm.get('Brandname').setValue(lastSmsBrandname);
+      }
     }
 
     return newForm;
@@ -435,10 +441,36 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
 
   onGatewayChanged(event: any, formItem: FormControl) {
     localStorage.setItem('last_sms_gateway', JSON.stringify(event));
+    let isFirst = true;
+    if (formItem.get('Gateway').value['Brandnames']) {
+      this.brandnameList = formItem.get('Gateway').value['Brandnames'].map(item => {
+        if (isFirst) {
+          item['selected'] = true;
+          isFirst = false;
+        }
+        return item;
+      });
+    }
   }
 
   onBrandnameChanged(event: any, formItem: FormControl) {
     localStorage.setItem('last_sms_brandname', JSON.stringify(event));
+  }
+
+  async saveAndSend() {
+    this.isSendSms = true;
+    const rs = await this.save();
+    this.isSendSms = false;
+  }
+
+  executePut(params: any, data: SmsModel[], success: (data: SmsModel[]) => void, error: (e: any) => void) {
+    params['sendsms'] = this.isSendSms;
+    super.executePut(params, data, success, error);
+  }
+
+  executePost(params: any, data: SmsModel[], success: (data: SmsModel[]) => void, error: (e: any) => void) {
+    params['sendsms'] = this.isSendSms;
+    super.executePost(params, data, success, error);
   }
 
 }

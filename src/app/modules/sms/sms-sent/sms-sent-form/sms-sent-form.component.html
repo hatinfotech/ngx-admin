@@ -82,11 +82,11 @@
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Brandname'), 'warning')">
-                  <label class="label"><span class="valid">Brandname (*)</span><span class="invalid">Brandname là
+                  <label class="label"><span class="valid">Brandname</span><span class="invalid">Brandname là
                       bắt
                       buộc
                       (*)</span></label>
-                      <ngx-select2 formControlName="Brandname" [select2Option]="select2BrandnameOption" (selectChange)="onBrandnameChanged($event, formItem)" [data]="formItem.get('Gateway').value?.Brandnames"></ngx-select2>
+                      <ngx-select2 formControlName="Brandname" [data]="brandnameList" [select2Option]="select2BrandnameOption" (selectChange)="onBrandnameChanged($event, formItem)" [data]="formItem.get('Gateway').value?.Brandnames"></ngx-select2>
                 </div>
               </div>
               <div class="col-sm-3">
