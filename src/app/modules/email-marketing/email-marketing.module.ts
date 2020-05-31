@@ -26,6 +26,7 @@ import { EmailAddressListComponent } from './address/email-address-list/email-ad
 import { EmailAddressFormComponent } from './address/email-address-form/email-address-form.component';
 import { DialogFormComponent } from '../dialog/dialog-form/dialog-form.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
+import { EmailSentStatsListComponent } from './email-sent-stats-list/email-sent-stats-list.component';
 
 @NgModule({
   declarations: [EmailMarketingComponent,
@@ -34,7 +35,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     EmailTemplateListComponent, EmailTemplateFormComponent,
     EmailAdvertisementListComponent, EmailAdvertisementFormComponent,
     EmailGatewayListComponent, EmailGatewayFormComponent,
-    EmailAddressListComponent, EmailAddressFormComponent],
+    EmailAddressListComponent, EmailAddressFormComponent, EmailSentStatsListComponent],
   imports: [
     CommonModule,
     EmailMarketingRoutingModule,
@@ -76,6 +77,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     EmailAddressFormComponent,
     DialogFormComponent,
     EmailAdvertisementFormComponent,
+    EmailSentStatsListComponent,
   ],
 })
 export class EmailMarketingModule { }

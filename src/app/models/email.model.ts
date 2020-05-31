@@ -18,6 +18,7 @@ export class EmailModel {
   MessageId?: string;
   State?: string;
   Type?: string;
+  AddressList?: string;
 
   // References
   Recipients?: EmailRecipientModel[];

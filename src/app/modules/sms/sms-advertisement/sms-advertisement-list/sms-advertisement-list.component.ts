@@ -9,6 +9,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { SmsAdvertisementFormComponent } from '../sms-advertisement-form/sms-advertisement-form.component';
+import { SmsSentStatsListComponent } from '../../sms-sent-stats-list/sms-sent-stats-list.component';
 
 @Component({
   selector: 'ngx-sms-advertisement-list',
@@ -87,6 +88,24 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
       //   type: 'string',
       //   width: '10%',
       // },
+      Detail: {
+        title: 'Chi tết',
+        type: 'custom',
+        width: '10%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'list-outline';
+          instance.label = 'Trạng thái đã gửi';
+          instance.display = true;
+          instance.status = 'success';
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.subscribe(async (row: SmsModel) => {
+            this.openSentStateList(row);
+          });
+        },
+      },
       State: {
         title: 'Trạng thái',
         type: 'custom',
@@ -190,7 +209,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
     params['includeSentCount'] = true;
     super.executeGet(params, (list) => {
       list.forEach(item => {
-        item['SentCount'] = `${item['NumOfSent']}/${item['Total']}`;
+        item['SentCount'] = `${item['SentCount'] ? item['SentCount'] : 0}/${item['TotalRecipient'] ? item['TotalRecipient'] : 0}`;
       });
       success(list);
     }, error, complete);
@@ -226,6 +245,20 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
   gotoForm(id?: string): false {
     this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
     return false;
+  }
+
+  openSentStateList(sms: SmsModel) {
+    this.dialogService.open(SmsSentStatsListComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: [sms.PhoneNumberList],
+        inputSms: sms.Id,
+        onDialogSave: (newData: SmsModel[]) => { },
+        onDialogClose: () => {
+          // this.refresh();
+        },
+      },
+    });
   }
 
 }

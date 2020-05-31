@@ -12,6 +12,7 @@ import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertise
 import { SmsAdvertisementListComponent } from './sms-advertisement/sms-advertisement-list/sms-advertisement-list.component';
 import { SmsPhoneNumberListComponent } from './phone-number/sms-phone-number-list/sms-phone-number-list.component';
 import { SmsPhoneNumberFormComponent } from './phone-number/sms-phone-number-form/sms-phone-number-form.component';
+import { SmsSentStatsListComponent } from './sms-sent-stats-list/sms-sent-stats-list.component';
 
 const routes: Routes = [{
   path: '',
@@ -120,6 +121,11 @@ const routes: Routes = [{
       path: 'phone-number/form/:id',
       canActivate: [AuthGuardService],
       component: SmsPhoneNumberFormComponent,
+    },
+    {
+      path: 'sent-state/list',
+      canActivate: [AuthGuardService],
+      component: SmsSentStatsListComponent,
     },
   ],
 }];

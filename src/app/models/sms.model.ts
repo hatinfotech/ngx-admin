@@ -1,5 +1,5 @@
 export class SmsModel {
-  Id?: string;
+  Id?: string & number;
   SenderDeviceId?: string;
   SenderName?: string;
   SenderPhone?: string;
@@ -9,6 +9,7 @@ export class SmsModel {
   SendingDate?: string;
   State?: string;
   Gateway?: SmsGatewayModel;
+  PhoneNumberList?: string & number;
 
   // References
   Recipients?: SmsReceipientModel[];
@@ -59,5 +60,18 @@ export class SmsPhoneNumberListDetailModel {
   PhoneNumber ?: string;
   Name ?: string;
   NumOfSent ?: string;
+}
+
+export class SmsSentStateModel {
+  Id ?: number;
+  Sms ?: string;
+  PhoneNumberListDetail ?: string;
+  PhoneNumberList ?: string;
+  TransactionId ?: string;
+  EventDate ?: string;
+  State ?: string;
+  Log ?: string;
+  PhoneNumber ?: string;
+  SmsGateway ?: string;
 }
 

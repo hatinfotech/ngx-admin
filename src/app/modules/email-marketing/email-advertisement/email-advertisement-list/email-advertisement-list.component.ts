@@ -9,6 +9,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { EmailAdvertisementFormComponent } from '../email-advertisement-form/email-advertisement-form.component';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { EmailSentStatsListComponent } from '../../email-sent-stats-list/email-sent-stats-list.component';
 
 // interface MnfiniteLoadModel<M> {
 //   data: (M & { selected: boolean })[];
@@ -94,6 +95,24 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
       //   type: 'string',
       //   width: '10%',
       // },
+      Detail: {
+        title: 'Chi tết',
+        type: 'custom',
+        width: '10%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'list-outline';
+          instance.label = 'Trạng thái đã gửi';
+          instance.display = true;
+          instance.status = 'success';
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.subscribe(async (row: EmailModel) => {
+            this.openSentStateList(row);
+          });
+        },
+      },
       State: {
         title: 'Trạng thái',
         type: 'custom',
@@ -197,7 +216,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
     params['includeSentCount'] = true;
     super.executeGet(params, (list) => {
       list.forEach(item => {
-          item['SentCount'] = `${item['NumOfSent']}/${item['Total']}`;
+        item['SentCount'] = `${item['SentCount'] ? item['SentCount'] : 0}/${item['TotalRecipient'] ? item['TotalRecipient'] : 0}`;
       });
       success(list);
     }, error, complete);
@@ -233,6 +252,16 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
   gotoForm(id?: string): false {
     this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
     return false;
+  }
+
+  openSentStateList(email: EmailModel) {
+    this.dialogService.open(EmailSentStatsListComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: [email.AddressList],
+        inputEmail: email.Id,
+      },
+    });
   }
 
 }

@@ -24,6 +24,7 @@ import { SmsAdvertisementFormComponent } from './sms-advertisement/sms-advertise
 import { SmsPhoneNumberListComponent } from './phone-number/sms-phone-number-list/sms-phone-number-list.component';
 import { SmsPhoneNumberFormComponent } from './phone-number/sms-phone-number-form/sms-phone-number-form.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
+import { SmsSentStatsListComponent } from './sms-sent-stats-list/sms-sent-stats-list.component';
 
 @NgModule({
   declarations: [SmsComponent, SmsTemplateListComponent,
@@ -33,7 +34,8 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     SmsGatewayFormComponent, SmsAdvertisementListComponent,
     SmsAdvertisementFormComponent,
     SmsPhoneNumberListComponent,
-    SmsPhoneNumberFormComponent],
+    SmsPhoneNumberFormComponent,
+    SmsSentStatsListComponent],
   imports: [
     CommonModule,
     SmsRoutingModule,
@@ -73,6 +75,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     SmsGatewayFormComponent,
     SmsPhoneNumberFormComponent,
     SmsAdvertisementFormComponent,
+    SmsSentStatsListComponent,
   ],
 })
 export class SmsModule { }

@@ -1,0 +1,71 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()"
+  (keydown.enter)="$event.preventDefault()" class="popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <nav>
+            Danh sách trạng thái gửi tin nhắn
+            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+              <nb-icon pack="eva" icon="close-circle"></nb-icon>
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Code_old">
+              <input type="hidden" formControlName="ImportFile">
+              <input type="hidden" nbInput fullWidth formControlName="ImportPhoneNumberIndex" placeholder="STT cột số điện thoại : 1->n">
+                  <input type="hidden" nbInput fullWidth formControlName="ImportNameIndex" placeholder="STT cột tên : 1->n">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
+                  <label class="label"><span class="valid">Mã</span><span class="invalid">Mã là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Code" placeholder="Có thể tạo thủ công">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên danh sách">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
+                  <label class="label"><span class="valid">Mô tả</span><span class="invalid">Mô tả là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <label class="label"><span class="valid">Danh sách địa chỉ email</span></label>
+                <div class="ag-grid-wrap"
+                  style="height: 250px; border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
+                  <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham"
+                    [modules]="modules" [columnDefs]="columnDefs" [floatingFilter]="false" [debug]="true"
+                    [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowDeselection]="true"
+                    [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize"
+                    [cacheOverflowSize]="cacheOverflowSize"
+                    [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
+                    [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache"
+                    [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components"
+                    [rowData]="rowData" (gridReady)="onGridReady($event)" [multiSortKey]="multiSortKey"
+                    [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight"
+                    (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
+                  </ag-grid-angular>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+
+    </div>
+  </div>
+</form>
