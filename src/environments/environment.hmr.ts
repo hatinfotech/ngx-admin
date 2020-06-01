@@ -10,7 +10,7 @@
 
 export const environment = {
   production: false,
-  hmr: false,
+  hmr: true,
   api: {
     // baseUrl: '/v1', // prod
     baseUrl: 'https://local.namsoftware.com/v1',

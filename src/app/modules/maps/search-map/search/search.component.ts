@@ -21,24 +21,24 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
     // load Places Autocomplete
     this.mapsAPILoader.load().then(() => {
-      const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
-        types: ['address'],
-      });
-      autocomplete.addListener('place_changed', () => {
-        this.ngZone.run(() => {
-          // get the place result
-          const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+      // const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+      //   types: ['address'],
+      // });
+      // autocomplete.addListener('place_changed', () => {
+      //   this.ngZone.run(() => {
+      //     // get the place result
+      //     // const place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
-          // verify result
-          if (place.geometry === undefined || place.geometry === null) {
-            return;
-          }
+      //     // verify result
+      //     // if (place.geometry === undefined || place.geometry === null) {
+      //     //   return;
+      //     // }
 
-          this.positionChanged.emit(
-            new Location(place.geometry.location.lat(),
-              place.geometry.location.lng()));
-        });
-      });
+      //   //   this.positionChanged.emit(
+      //   //     // new Location(place.geometry.location.lat(),
+      //   //       // place.geometry.location.lng()));
+      //   // });
+      // });
     });
   }
 }

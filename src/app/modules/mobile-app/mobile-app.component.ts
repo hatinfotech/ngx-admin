@@ -22,6 +22,8 @@ import { AboutPage } from './f7pages/about.page';
 import { PhonePage } from './f7pages/phone.page';
 import { Track } from '../../@core/utils/player.service';
 
+// Global var
+let f7app = null;
 
 export interface F7Message {
   format?: string[];
@@ -245,25 +247,25 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
     this.subcriptions.push(this.commonService.authenticated$.subscribe(loginInfo => {
       // if (false) {
-        if (loginInfo) {
-          this.chatRoomId = 'test';
-          this.user = {
-            id: loginInfo.user.Code,
-            name: loginInfo.user.Name,
-            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-          };
+      if (loginInfo) {
+        this.chatRoomId = 'test';
+        this.user = {
+          id: loginInfo.user.Code,
+          name: loginInfo.user.Name,
+          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+        };
 
-          // this.ready$ = new Observable<boolean>((obs) => {
-          this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
-            this.chatServiceInfo = rs;
-            this.chatServiceInfo.url = `https://${this.chatServiceInfo.domain}:${this.chatServiceInfo.port}`;
-            this.localChatClient = new ChatManager(this.chatServiceInfo.url, this.user);
-            this.localChatClient.onConnect().then(() => {
-              this.readySubject.next(true);
-            }).catch(e => console.error(e));
-            console.info('Conntect to local chat server success');
+        // this.ready$ = new Observable<boolean>((obs) => {
+        this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
+          this.chatServiceInfo = rs;
+          this.chatServiceInfo.url = `https://${this.chatServiceInfo.domain}:${this.chatServiceInfo.port}`;
+          this.localChatClient = new ChatManager(this.chatServiceInfo.url, this.user);
+          this.localChatClient.onConnect().then(() => {
+            this.readySubject.next(true);
           }).catch(e => console.error(e));
-        }
+          console.info('Conntect to local chat server success');
+        }).catch(e => console.error(e));
+      }
       // }
     }));
 
@@ -289,82 +291,85 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
         ];
 
         // Init Framework7 app
-        this.f7app = new Framework7({
-          // App root element
-          root: '#mobile-app',
-          // App Name
-          name: 'My App',
-          theme: 'ios',
-          // App id
-          id: 'com.myapp.test',
-          // Enable swipe panel
-          panel: {
-            // swipe: 'left',
-          },
-          // Add default routes
-          routes: routes,
-          // ... other parameters˛
-        });
+        if (f7app) {
+          this.f7app = f7app;
+        } else {
+          f7app = this.f7app = new Framework7({
+            // App root element
+            root: '#mobile-app',
+            // App Name
+            name: 'My App',
+            theme: 'ios',
+            // App id
+            id: 'com.myapp.test',
+            // Enable swipe panel
+            panel: {
+              // swipe: 'left',
+            },
+            // Add default routes
+            routes: routes,
+            // ... other parameters˛
+          });
 
-        this.mainView = this.f7app.views.create('.view-main');
-        this.f7app.$('.navbars.navbar-hidden').removeClass('navbar-hidden');
+          this.mainView = this.f7app.views.create('.view-main');
+          this.f7app.$('.navbars.navbar-hidden').removeClass('navbar-hidden');
 
-        const chatRoomGuiConfig: Messages.Parameters = {
+          const chatRoomGuiConfig: Messages.Parameters = {
 
-          // First message rule
-          firstMessageRule: function (message, previousMessage, nextMessage) {
-            // Skip if title
-            if (message.isTitle) return false;
-            /* if:
-              - there is no previous message
-              - or previous message type (send/received) is different
-              - or previous message sender name is different
-            */
-            if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
-            return false;
-          },
-          // Last message rule
-          lastMessageRule: function (message, previousMessage, nextMessage) {
-            // Skip if title
-            if (message.isTitle) return false;
-            /* if:
+            // First message rule
+            firstMessageRule: function (message, previousMessage, nextMessage) {
+              // Skip if title
+              if (message.isTitle) return false;
+              /* if:
+                - there is no previous message
+                - or previous message type (send/received) is different
+                - or previous message sender name is different
+              */
+              if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+              return false;
+            },
+            // Last message rule
+            lastMessageRule: function (message, previousMessage, nextMessage) {
+              // Skip if title
+              if (message.isTitle) return false;
+              /* if:
+                - there is no next message
+                - or next message type (send/received) is different
+                - or next message sender name is different
+              */
+              if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+              return false;
+            },
+            // Last message rule
+            tailMessageRule: function (message, previousMessage, nextMessage) {
+              // Skip if title
+              if (message.isTitle) return false;
+              /* if (bascially same as lastMessageRule):
               - there is no next message
               - or next message type (send/received) is different
               - or next message sender name is different
             */
-            if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
-            return false;
-          },
-          // Last message rule
-          tailMessageRule: function (message, previousMessage, nextMessage) {
-            // Skip if title
-            if (message.isTitle) return false;
-            /* if (bascially same as lastMessageRule):
-            - there is no next message
-            - or next message type (send/received) is different
-            - or next message sender name is different
-          */
-            if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
-            return false;
-          },
-        };
-        chatRoomGuiConfig['el'] = '.messages';
+              if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+              return false;
+            },
+          };
+          chatRoomGuiConfig['el'] = '.messages';
 
-        // this.messages = this.f7app.messages.create(chatRoomGuiConfig);
+          // this.messages = this.f7app.messages.create(chatRoomGuiConfig);
 
-        // console.info(this.chatRoom);
+          // console.info(this.chatRoom);
 
-        // Init Messagebar
-        // this.messagebar = this.f7app.messagebar.create({
-        //   el: '.messagebar',
-        // });
+          // Init Messagebar
+          // this.messagebar = this.f7app.messagebar.create({
+          //   el: '.messagebar',
+          // });
 
 
-        // this.messageList.forEach(message => {
-        //   this.messages.addMessage(message, 'append');
-        // });
-        // console.info(this.messagebar);
-
+          // this.messageList.forEach(message => {
+          //   this.messages.addMessage(message, 'append');
+          // });
+          // console.info(this.messagebar);
+        }
       }
     });
 

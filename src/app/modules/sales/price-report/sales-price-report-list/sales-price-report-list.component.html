@@ -1,0 +1,18 @@
+<nb-card class="small-header smart-table">
+  <nb-card-header>
+    <nav>
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách phiếu báo giá
+      <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
+        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+      </button>
+    </nav>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="ng2-smart-table-wrap">
+      <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
+        (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+      </ng2-smart-table>
+    </div>
+  </nb-card-body>
+</nb-card>

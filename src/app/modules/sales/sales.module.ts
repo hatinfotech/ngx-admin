@@ -1,31 +1,60 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SalesComponent } from './sales.component';
+import { SalesPriceReportListComponent } from './price-report/sales-price-report-list/sales-price-report-list.component';
+import { SalesPriceReportFormComponent } from './price-report/sales-price-report-form/sales-price-report-form.component';
+import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
 import { SalesRoutingModule } from './sales-routing.module';
-import { SalesVoucherListComponent } from './vouchers/sales-voucher-list/sales-voucher-list.component';
-import { SalesVoucherFormComponent } from './vouchers/sales-voucher-form/sales-voucher-form.component';
-import { SalesVoucherViewComponent } from './vouchers/sales-voucher-view/sales-voucher-view.component';
-import { PriceTableListComponent } from './price-tables/price-table-list/price-table-list.component';
-import { PriceTableFormComponent } from './price-tables/price-table-form/price-table-form.component';
-import { PriceTableViewComponent } from './price-tables/price-table-view/price-table-view.component';
-import { SalesReportProfitComponent } from './reports/sales-report-profit/sales-report-profit.component';
-import { SalesReportRevenueComponent } from './reports/sales-report-revenue/sales-report-revenue.component';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
+import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from '../dialog/dialog.module';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { CKEditorModule } from 'ng2-ckeditor';
+import { SortablejsModule } from 'ngx-sortablejs';
 
 @NgModule({
-  declarations: [
-    SalesComponent,
-    SalesVoucherListComponent,
-    SalesVoucherFormComponent,
-    SalesVoucherViewComponent,
-    PriceTableListComponent,
-    PriceTableFormComponent,
-    PriceTableViewComponent,
-    SalesReportProfitComponent,
-    SalesReportRevenueComponent,
-  ],
+  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent],
   imports: [
     CommonModule,
+    NbTabsetModule,
     SalesRoutingModule,
+    NbCardModule,
+    Ng2SmartTableModule,
+    CustomElementModule,
+    NbIconModule,
+    NbInputModule,
+    NbCheckboxModule,
+    IvoipDashboardModule,
+    NbRouteTabsetModule,
+    NbStepperModule,
+    NbButtonModule,
+    NbListModule,
+    NbAccordionModule,
+    NbUserModule,
+    NbSelectModule,
+    NbActionsModule,
+    NbRadioModule,
+    NbDatepickerModule,
+    CurrencyMaskModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DialogModule,
+    NbProgressBarModule,
+    AgGridModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    CKEditorModule,
+    NbDialogModule.forChild(),
+    SortablejsModule.forRoot({
+      animation: 200,
+    }),
+  ],
+  entryComponents: [
+    SalesPriceReportFormComponent,
   ],
 })
 export class SalesModule { }
