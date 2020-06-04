@@ -8,7 +8,7 @@ class="popup">
         <nb-card-header>
           <nav>
             {{this.id && this.id[0] ? 'Cập nhật' : 'Tạo mới'}} phiếu báo giá
-            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Đóng biều mẫu">
+            <button nbButton status="danger" hero size="tiny" (cli_indexck)="goback()" style="float: right;" title="Đóng biều mẫu">
               <nb-icon pack="eva" icon="close-circle"></nb-icon> Đóng
             </button>
             <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
@@ -28,6 +28,7 @@ class="popup">
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
+              <input type="hidden" [value]="i" formControlName="_index">
               <input type="hidden" formControlName="Code">
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
@@ -147,10 +148,11 @@ class="popup">
               </div>
             </div>
 
-            <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(i)"
-            [sortablejsOptions]="{ handle: '.sorting-handle' }">
-              <div class="form-detail-item" *ngFor="let detail of getDetails(i).controls; let ic=index"
+            <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)"  [sortablejsOptions]="{ handle: '.sorting-handle' }">
+            <!-- <div formArrayName="Details" class="form-details"> -->
+              <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index"
                 [formGroup]="detail">
+                <input type="hidden" [value]="ic" formControlName="_index">
                 <hr>
                 <div class="row">
                   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
@@ -163,7 +165,7 @@ class="popup">
                         </div>
                         <div class="form-group">
                           <label class="label">CM</label>
-                          <button nbButton status="danger" hero size="tiny" (click)="removeDetailGroup(detail)"
+                          <button nbButton status="danger" hero size="tiny" (click)="removeDetailGroup(formItem, detail)"
                             style="width: 100%; margin-bottom: 3px; padding: 0">
                             <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                           </button>
@@ -267,7 +269,7 @@ class="popup">
             </div>
             <div class="row">
               <div class="col-sm-12" style="text-align: right;">
-                <button nbButton status="success" (click)="addDetailFormGroup(i)" size="tiny" hero>
+                <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="tiny" hero>
                   <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon> Thêm hàng hoá/dịch vụ
                 </button>
               </div>

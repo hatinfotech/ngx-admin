@@ -213,9 +213,10 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       if (itemFormData.Details) {
         itemFormData.Details.forEach(condition => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(condition);
-          this.getDetails(index).push(newDetailFormGroup);
-          const comIndex = this.getDetails(index).length - 1;
-          this.onAddDetailFormGroup(index, comIndex, newDetailFormGroup);
+          const details = this.getDetails(newForm);
+          details.push(newDetailFormGroup);
+          // const comIndex = details.length - 1;
+          this.onAddDetailFormGroup(newForm, newDetailFormGroup);
         });
       }
 
@@ -239,6 +240,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
     const newForm = this.formBuilder.group({
+      _index: [''],
       Code: [''],
       Object: ['', Validators.required],
       ObjectName: [''],
@@ -259,6 +261,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     if (data) {
       // data['Code_old'] = data['Code'];
       newForm.patchValue(data);
+    } else {
+      // this.addDetailFormGroup(newForm);
     }
     return newForm;
   }
@@ -287,6 +291,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   makeNewDetailFormGroup(data?: SalesPriceReportDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Id_old: [''],
+      _index: [],
       Id: [''],
       No: [''],
       Type: [''],
@@ -308,26 +313,26 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     }
     return newForm;
   }
-  getDetails(formGroupIndex: number) {
-    return this.array.controls[formGroupIndex].get('Details') as FormArray;
+  getDetails(parentFormGroup: FormGroup) {
+    return parentFormGroup.get('Details') as FormArray;
   }
-  addDetailFormGroup(formGroupIndex: number) {
+  addDetailFormGroup(parentFormGroup: FormGroup) {
     // this.componentList[formGroupIndex].push([]);
-    const newFormGroup = this.makeNewDetailFormGroup();
-    this.getDetails(formGroupIndex).push(newFormGroup);
-    this.onAddDetailFormGroup(formGroupIndex, this.getDetails(formGroupIndex).length - 1, newFormGroup);
+    const newChildFormGroup = this.makeNewDetailFormGroup();
+    this.getDetails(parentFormGroup).push(newChildFormGroup);
+    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
     return false;
   }
-  removeDetailGroup(formGroupIndex: number, index: number) {
-    this.getDetails(formGroupIndex).removeAt(index);
+  removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup) {
+    this.getDetails(parentFormGroup).removeAt(detail.get('_index').value);
     // this.componentList[formGroupIndex].splice(index, 1);
-    this.onRemoveDetailFormGroup(formGroupIndex, index);
+    this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
-  onAddDetailFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
     // this.componentList[mainIndex].push([]);
   }
-  onRemoveDetailFormGroup(mainIndex: number, index: number) {
+  onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
     // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Detail Form */
