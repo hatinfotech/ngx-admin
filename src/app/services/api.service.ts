@@ -520,7 +520,7 @@ export class ApiInterceptor implements HttpInterceptor {
   ) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    console.log('Http intercept: ', req.url);
+    // console.log('Http intercept: ', req.url);
 
     if (req.url.includes('v1/user/login')) {
       return next.handle(req);
@@ -528,7 +528,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
     return this.authService.isAuthenticated().pipe(switchMap(isAuth => {
       if (!isAuth) {
-        console.log(`Live check authtication status: ${isAuth}`);
+        // console.log(`Live check authtication status: ${isAuth}`);
         return this.refreshToken(req, next);
       } else {
 
@@ -552,14 +552,14 @@ export class ApiInterceptor implements HttpInterceptor {
 
   refreshToken(req: HttpRequest<any>, next: HttpHandler) {
     if (this.refreshTokenInProgress) {
-      console.log('Refresh token in progress');
+      // console.log('Refresh token in progress');
       return this.refreshTokenSubject
         .pipe(filter(result => result === true),
           take(1), switchMap(() => this.continueRequest(req, next, this.apiService.token.access_token)));
     }
 
     this.refreshTokenInProgress = true;
-    console.log('Refresh token start');
+    // console.log('Refresh token start');
 
     return this.authService.refreshToken('email', { token: this.apiService.token }).pipe(switchMap(authResult => {
 
@@ -567,7 +567,7 @@ export class ApiInterceptor implements HttpInterceptor {
       if (authResult.isSuccess) {
         this.apiService.setToken(authResult.getToken());
         this.refreshTokenSubject.next(true);
-        console.log('Refresh token success');
+        // console.log('Refresh token success');
         return this.continueRequest(req, next, this.apiService.token.access_token);
       }
       this.apiService.onUnauthorizied();

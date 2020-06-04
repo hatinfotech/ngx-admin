@@ -7,234 +7,272 @@ class="popup">
       <nb-card class="small-header popup">
         <nb-card-header>
           <nav>
-            Cập nhật khuyến mãi
-            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
-              <nb-icon pack="eva" icon="close-circle"></nb-icon>
+            {{this.id && this.id[0] ? 'Cập nhật' : 'Tạo mới'}} phiếu báo giá
+            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Đóng biều mẫu">
+              <nb-icon pack="eva" icon="close-circle"></nb-icon> Đóng
             </button>
             <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
               title="Tải lại">
-              <nb-icon pack="eva" icon="refresh"></nb-icon>
+              <nb-icon pack="eva" icon="refresh"></nb-icon> Tải lại
+            </button>
+            <button nbButton status="primary" hero size="tiny" (click)="preview(formItem)" style="float: right;"
+              title="Tải lại">
+              <nb-icon pack="eva" icon="refresh"></nb-icon> Xem trước
             </button>
             <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
               style="float: right;" title="Hoàn tác">
-              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon> Hoàn tác
             </button>
           </nav>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <input type="hidden" formControlName="Code_old">
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                  <label class="label"><span class="valid">Mã</span><span class="invalid">Mã bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Code" maxlength="30" placeholder="Mã quảng cáo">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
-                  <label class="label"><span class="valid">Tiêu đề</span><span class="invalid">Tiêu đề là bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Title" placeholder="Tiêu đề">
-                </div>
-              </div>
+              <input type="hidden" formControlName="Code">
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
-                  <label class="label"><span class="valid">Khách hàng</span><span class="invalid">Khách hàng là bắt buộc
+                  <label class="label"><span class="valid">Tổ chức/Cá nhân</span><span class="invalid">Tổ chức/Cá nhân là bắt buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Object" placeholder="Khách hàng">
+                      <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption"
+                    (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectName'), 'warning')">
-                  <label class="label"><span class="valid">Tiêu đề</span><span class="invalid">Tiêu đề là bắt buộc
+                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="Tiêu đề">
+                      <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="Tên">
                 </div>
               </div>
               <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Recipient'), 'warning')">
+                  <label class="label"><span class="valid">Người nhận</span><span class="invalid">Người nhận là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="Recipient" placeholder="Người nhận">
+                </div>
+              </div>
+              <div class="col-sm-9">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectAddress'), 'warning')">
+                  <label class="label"><span class="valid">Địa chỉ</span><span class="invalid">Địa chỉ là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="Địa chỉ">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
+                  <label class="label"><span class="valid">Điện thoại</span><span class="invalid">Điện thoại là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="Điện thoại">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectEmail'), 'warning')">
+                  <label class="label"><span class="valid">Email</span><span class="invalid">Email là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="Email">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectTaxCode'), 'warning')">
+                  <label class="label"><span class="valid">Mã số thuế</span><span class="invalid">Mã số thuế là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="Mã số thuế">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectBankName'), 'warning')">
+                  <label class="label"><span class="valid">Tên ngân hàng</span><span class="invalid">Tên ngân hàng là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectBankName" placeholder="Tên ngân hàng">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectBankCode'), 'warning')">
+                  <label class="label"><span class="valid">Số tài khoản</span><span class="invalid">Số tài khoản là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectBankCode" placeholder="Số tài khoản">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DirectReceiverName'), 'warning')">
+                  <label class="label"><span class="valid">Người trực tiếp nhận hàng</span><span class="invalid">Người trực tiếp nhận hàng là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="DirectReceiverName" placeholder="Người trực tiếp nhận hàng">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DeliveryAddress'), 'warning')">
+                  <label class="label"><span class="valid">Địa chỉ nhận hàng</span><span class="invalid">Địa chỉ nhận hàng là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="Địa chỉ nhận hàng">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PaymentStep'), 'warning')">
+                  <label class="label"><span class="valid">Bước thanh toán nhận hàng</span><span class="invalid">Bước thanh toán nhận hàng là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="PaymentStep" placeholder="Bước thanh toán nhận hàng">
+                </div>
+              </div>
+              <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
                   <label class="label"><span class="valid">Tiêu đề</span><span class="invalid">Tiêu đề là bắt buộc
                       (*)</span></label>
                       <input type="text" nbInput fullWidth formControlName="Title" placeholder="Tiêu đề">
                 </div>
               </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
-                  <label class="label"><span class="valid">Tiêu đề</span><span class="invalid">Tiêu đề là bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Title" placeholder="Tiêu đề">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
-                  <label class="label"><span class="valid">Tiêu đề</span><span class="invalid">Tiêu đề là bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Title" placeholder="Tiêu đề">
-                </div>
-              </div>
-              <!-- <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Type'), 'warning')">
-                  <label class="label"><span class="valid">Loại (*)</span><span class="invalid">Loại là bắt buộc
-                      (*)</span></label>
-                      <nb-select size="medium" formControlName="Type" fullWidth selected="PROGRAM">
-                        <nb-option value="PROGRAM">Chương trình khuyến mãi</nb-option>
-                        <nb-option value="COUPON">Mã khuyến mãi</nb-option>
-                      </nb-select>
-                </div>
-              </div> -->
-              <!-- <div class="col-sm-3"> -->
-                <!-- <div class="form-group" [attr.state]="formControlValidate(formItem.get('State'), 'warning')">
-                  <label class="label"><span class="valid">Trạng thái (*)</span><span class="invalid">Trạng thái là bắt buộc
-                      (*)</span></label>
-                      <nb-select size="medium" formControlName="State" fullWidth selected="OPEN">
-                        <nb-option value="OPEN">Mở</nb-option>
-                        <nb-option value="CLOSED">Đóng</nb-option>
-                      </nb-select>
-                </div>
-              </div> -->
-              <!-- <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('MaxUse'), 'warning')">
-                  <label class="label"><span class="valid">Số lần khuyến mãi</span><span class="invalid">Số lần KM là bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="MaxUse" placeholder="Số lần KM">
-                </div>
-              </div> -->
-              <!-- <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ProductGroups'), 'warning')">
-                  <label class="label"><span class="valid">Nhóm sản phẩm</span><span class="invalid">Nhóm sản phẩm là bắt buộc
-                      (*)</span></label>
-                      <ngx-select2 formControlName="ProductGroups"
-                            [select2Option]="select2OptionForProductGroup">
-                          </ngx-select2>
-                </div>
-              </div> -->
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
-                  <label class="label"><span class="valid">Ghi chú (*)</span><span class="invalid">Ghi chú là bắt buộc
+                  <label class="label"><span class="valid">Ghi chú</span><span class="invalid">Ghi chú là bắt buộc
                       (*)</span></label>
-                      <textarea nbInput fullWidth formControlName="Note" placeholder="Ghi chú" rows="3"></textarea>
+                      <textarea nbInput fullWidth formControlName="Note" placeholder="Ghi chú" rows="4"></textarea>
                 </div>
               </div>
-              <!-- <div class="col-sm-12">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Content'), 'warning')">
-                  <label class="label"><span class="valid">Nội dung (*)</span><span class="invalid">Nội dung là bắt buộc
-                      (*)</span></label>
-                      <ckeditor formControlName="Content" [config]="{ extraPlugins: 'divarea', height: '320' }">
-                      </ckeditor>
-                </div>
-              </div> -->
             </div>
 
-            <!-- Confition form -->
-            <!-- <hr>
-            <label class="label">Các điều kiện để khuyến mãi có hiệu lực</label>
+            <!-- Detail form -->
+            <!-- <hr> -->
+            <label class="label">Hàng hoá/dịch vụ</label>
             <div class="row">
-              <div class="col-sm-1 label">Stt</div>
-              <div class="col-sm-10">
+              <div class="col-sm-2 label">Stt/Hình</div>
+              <div class="col-sm-3 label">Hàng hoá/dịch vụ</div>
+              <div class="col-sm-7 label">
                 <div class="row">
-                  <div class="col-sm-4 label">Điều kiện</div>
-                  <div class="col-sm-3 label">So sánh</div>
-                  <div class="col-sm-2 label">Kiểu DL</div>
-                  <div class="col-sm-2 label">Giá trị</div>
-                  <div class="col-sm-1 label">Dừng nếu sai</div>
+                  <div class="col-sm-2 label align-right">Số lượng</div>
+                  <div class="col-sm-2 label">ĐVT</div>
+                  <div class="col-sm-2 label align-right">Đơn giá</div>
+                  <div class="col-sm-3 label">Thuế</div>
+                  <div class="col-sm-3 label align-right">Thành tiền</div>
                 </div>
               </div>
-              <div class="col-sm-1" style="text-align: center;">
-                <button nbButton status="success" (click)="addConditionFormGroup(i)" size="tiny"
-                  style="width: 100%; margin-bottom: 3px;" hero>
-                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
-                </button>
-              </div>
-            </div> -->
+            </div>
 
-            <!-- <div formArrayName="Conditions" class="form-details" [sortablejs]="getConditions(i)"
+            <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(i)"
             [sortablejsOptions]="{ handle: '.sorting-handle' }">
-              <div class="form-detail-item" *ngFor="let condition of getConditions(i).controls; let ic=index"
-                [formGroup]="condition">
+              <div class="form-detail-item" *ngFor="let detail of getDetails(i).controls; let ic=index"
+                [formGroup]="detail">
+                <hr>
                 <div class="row">
-                  <div class="col-sm-1">
-                    <div class="form-group">
-                      <label class="label">Stt</label>
-                      <input nbInput fullWidth class="sorting-handle" disabled="true" value="{{ ic + 1 }}" style="text-align: center; cursor: grab;">
-                      <input type="hidden" formControlName="Id">
-                    </div>
-                  </div>
-                  <div class="col-sm-10">
+                  <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                     <div class="row">
-                      <div class="col-sm-4">
+                      <div class="col-md-3 col-sm-3 col-xs-3">
                         <div class="form-group">
-                          <label class="label">Điều kiện</label>
-                          <nb-select size="medium" formControlName="Cond" fullWidth>
-                            <nb-option value="">Điều kiện...</nb-option>
-                            <nb-option value="QUANTITY">Số lượng</nb-option>
-                            <nb-option value="TOTALPAYMENT">Tổng giá trị đơn hàng</nb-option>
-                            <nb-option value="ORDERDATE">Ngày đặt hàng</nb-option>
-                            <nb-option value="PRODUCTGROUP">Danh mục sản phẩm</nb-option>
-                          </nb-select>
+                          <label class="label">Stt</label>
+                          <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}" style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
+                          <input type="hidden" formControlName="Id">
+                        </div>
+                        <div class="form-group">
+                          <label class="label">CM</label>
+                          <button nbButton status="danger" hero size="tiny" (click)="removeDetailGroup(detail)"
+                            style="width: 100%; margin-bottom: 3px; padding: 0">
+                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                          </button>
                         </div>
                       </div>
-                      <div class="col-sm-3">
+
+                      <div class="col-md-9 col-sm-9 col-xs-9">
                         <div class="form-group">
-                          <label class="label">So sánh</label>
-                          <nb-select size="medium" formControlName="Operator" fullWidth>
-                            <nb-option value="">So sánh...</nb-option>
-                            <nb-option value="LT">Nhỏ hơn</nb-option>
-                            <nb-option value="LE">Nhỏ hơn hoặc bằng</nb-option>
-                            <nb-option value="EQ">Bằng</nb-option>
-                            <nb-option value="GE">Lớn hơn hoặc bằng</nb-option>
-                            <nb-option value="GT">Lớn hơn</nb-option>
-                            <nb-option value="NE">Khác</nb-option>
-                          </nb-select>
-                        </div>
-                      </div>
-                      <div class="col-sm-2">
-                        <div class="form-group">
-                          <label class="label">Kiểu DL</label>
-                          <nb-select size="medium" formControlName="Type" fullWidth>
-                            <nb-option value="">Kiểu DL...</nb-option>
-                            <nb-option value="INTEGER">Số nguyên</nb-option>
-                            <nb-option value="DOUBLE">Số thực</nb-option>
-                            <nb-option value="DATETIME">Ngày giờ</nb-option>
-                            <nb-option value="PRODUCTGROUP">Danh mục sản phẩm</nb-option>
-                          </nb-select>
-                        </div>
-                      </div>
-                      <div class="col-sm-2">
-                        <div class="form-group">
-                          <label class="label">Giá trị</label>
-                          <ngx-select2 *ngIf="condition.get('Type').value == 'PRODUCTGROUP'"formControlName="TextValue"
-                            [select2Option]="select2OptionForProductGroup">
-                          </ngx-select2>
-                          <input type="text" *ngIf="condition.get('Type').value == 'INTEGER'" nbInput fullWidth formControlName="IntegerValue" placeholder="Số nguyên">
-                          <input type="text" *ngIf="condition.get('Type').value == 'DOUBLE'" nbInput fullWidth formControlName="DoubleValue" placeholder="Sớ thực">
-                          <input type="text" *ngIf="condition.get('Type').value == 'DATETIME'" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" nbInput fullWidth formControlName="DateValue" placeholder="Ngày giờ">
-                          <owl-date-time #dt1></owl-date-time>
-                        </div>
-                      </div>
-                      <div class="col-sm-1">
-                        <div class="form-group">
-                          <label class="label">Break</label>
-                          <nb-checkbox formControlName="BreakOnFalse" title="Dừng khi điều kiện này sai"></nb-checkbox>
+                          <label class="label">Hình</label>
+                          <input type="button" nbInput fullWidth formControlName="Image" placeholder="Hình" style="
+                          height: 6rem;
+                          background-repeat: no-repeat;
+                          background-size: contain;
+                          background-position: center;
+                          background-image: url(assets/icon/eva/image-outline.svg);" class="sorting-handle">
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-sm-1">
+                  <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
+                          <label class="label"><span class="valid">Hàng hoá/dịch vụ</span><span class="invalid">Hàng hoá/dịch vụ là bắt buộc
+                            (*)</span></label>
+                          <ngx-select2 formControlName="Product"
+                            [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event)">
+                          </ngx-select2>
+                        </div>
+                      </div>
+                      <div class="col-md-4 col-sm-4 col-sx-4">
+                        <div class="form-group">
+                          <label class="label">Stt</label>
+                          <input type="text" nbInput fullWidth formControlName="No" placeholder="Stt">
+                        </div>
+                      </div>
+                      <div class="col-md-8 col-sm-8 col-xs-8">
+                        <div class="form-group">
+                          <label class="label">Loại</label>
+                          <input type="text" nbInput fullWidth formControlName="Type" placeholder="Loại">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                    <div class="row">
+                      <div class="col-md-2 col-sm-4 col-xs-4">
+                        <div class="form-group">
+                          <label class="label">Số lượng</label>
+                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="Số lượng" class="align-right" (keyup)="toMoney(detail)">
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-4 col-xs-4">
+                        <div class="form-group">
+                          <label class="label">Đơn vị tính</label>
+                          <ngx-select2 formControlName="Unit" [data]="unitList"
+                            [select2Option]="select2OptionForUnit">
+                          </ngx-select2>
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-4 col-xs-4">
+                        <div class="form-group">
+                          <label class="label">Đơn giá</label>
+                          <input type="text" nbInput fullWidth formControlName="Price" placeholder="Đơn giá" class="align-right" (keyup)="toMoney(detail)">
+                        </div>
+                      </div>
+                      <div class="col-md-3 col-sm-4 col-xs-4">
+                        <div class="form-group">
+                          <label class="label align-right">Thuế</label>
+                          <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(detail)"
+                            [select2Option]="select2OptionForTax">
+                          </ngx-select2>
+                        </div>
+                      </div>
+                      <div class="col-md-3 col-sm-8 col-xs-8">
+                        <div class="form-group">
+                          <label class="label align-right">Thành tiền</label>
+                          <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right">
+                        </div>
+                      </div>
+                      <div class="col-md-12 col-sm-12">
+                        <div class="form-group">
+                          <label class="label">Description</label>
+                          <input type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-1">
                     <div class="form-group">
                       <label class="label">CM</label>
-                      <button nbButton status="danger" hero size="tiny" (click)="removeConditionGroup(i, ic)"
+                      <button nbButton status="danger" hero size="tiny" (click)="removeDetailGroup(i, ic)"
                         style="width: 100%; margin-bottom: 3px;">
                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                       </button>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
 
               </div>
-            </div> -->
-            <!-- End Confition form -->
+            </div>
+            <div class="row">
+              <div class="col-sm-12" style="text-align: right;">
+                <button nbButton status="success" (click)="addDetailFormGroup(i)" size="tiny" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon> Thêm hàng hoá/dịch vụ
+                </button>
+              </div>
+            </div>
+            <!-- End Detail form -->
 
             <!-- Action form -->
             <!-- <hr>

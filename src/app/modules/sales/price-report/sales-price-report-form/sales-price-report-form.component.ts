@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { SalesPriceReportModel } from '../../../../models/sales.model';
+import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
@@ -8,7 +8,12 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { PromotionFormComponent } from '../../../promotion/promotion/promotion-form/promotion-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PromotionConditionModel, PromotionActionModel } from '../../../../models/promotion.model';
+import { PromotionActionModel } from '../../../../models/promotion.model';
+import { ContactModel } from '../../../../models/contact.model';
+import { ProductModel } from '../../../../models/product.model';
+import { TaxModel } from '../../../../models/tax.model';
+import { UnitModel } from '../../../../models/unit.model';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-sales-price-report-form',
@@ -21,6 +26,43 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   idKey = 'Code';
   apiPath = '/sales/price-reports';
   baseFormUrl = '/sales/price-report/form';
+
+  /** Tax list */
+  static _taxList: (TaxModel & { id?: string, text?: string })[];
+  taxList: (TaxModel & { id?: string, text?: string })[];
+
+  /** Unit list */
+  static _unitList: (UnitModel & { id?: string, text?: string })[];
+  unitList: (UnitModel & { id?: string, text?: string })[];
+
+  select2ContactOption = {
+    placeholder: 'Chọn liên hệ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -40,7 +82,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   select2OptionForProduct = {
-    placeholder: 'Chọn sản phẩm...',
+    placeholder: 'Chọn Hàng hoá/dịch vụ...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -51,11 +93,11 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { includeUnit: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
-        console.info(data, params);
+        // console.info(data, params);
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
@@ -67,33 +109,61 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
   };
 
-  select2OptionForProductGroup = {
-    placeholder: 'Chọn nhóm sản phẩm...',
+  select2OptionForUnit = {
+    placeholder: 'Chọn ĐVT...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     keyMap: {
-      id: 'ProductGroup',
-      text: 'ProductGroupName',
+      id: 'Code',
+      text: 'Name',
     },
-    multiple: true,
-    ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'], select: 'ProductGroup=>Code,ProductGroupName=>Name' });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['ProductGroup'];
-            item['text'] = item['ProductGroupName'];
-            return item;
-          }),
-        };
-      },
+    // ajax: {
+    //   url: params => {
+    //     return this.apiService.buildApiUrl('/admin-product/units', { 'filter_Name': params['term'] });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     // console.info(data, params);
+    //     return {
+    //       results: data.map(item => {
+    //         item['id'] = item['Code'];
+    //         item['text'] = item['Name'];
+    //         return item;
+    //       }),
+    //     };
+    //   },
+    // },
+  };
+
+  select2OptionForTax = {
+    placeholder: 'Chọn thuế...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
     },
+    // multiple: false,
+    // ajax: {
+    //   url: params => {
+    //     return this.apiService.buildApiUrl('/accounting/taxes', { 'filter_Name': params['term'] });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     // console.info(data, params);
+    //     return {
+    //       results: data.map(item => {
+    //         item['id'] = item['Code'];
+    //         item['text'] = item['Name'];
+    //         return item;
+    //       }),
+    //     };
+    //   },
+    // },
   };
 
   ngOnInit() {
@@ -101,27 +171,53 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     super.ngOnInit();
   }
 
+  async init(): Promise<boolean> {
+
+    /** Load and cache tax list */
+    if (!SalesPriceReportFormComponent._taxList) {
+      this.taxList = SalesPriceReportFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+        tax['id'] = tax.Code;
+        tax['text'] = tax.Name;
+        return tax;
+      });
+    } else {
+      this.taxList = SalesPriceReportFormComponent._taxList;
+    }
+
+    /** Load and cache unit list */
+    if (!SalesPriceReportFormComponent._unitList) {
+      this.unitList = SalesPriceReportFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+        tax['id'] = tax.Code;
+        tax['text'] = tax.Name;
+        return tax;
+      });
+    } else {
+      this.taxList = SalesPriceReportFormComponent._taxList;
+    }
+    return super.init();
+  }
+
   /** Execute api get */
   executeGet(params: any, success: (resources: SalesPriceReportModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     // params['includeConditions'] = true;
-    // params['includeActions'] = true;
-    // params['forNgPickDateTime'] = true;
-    // params['includeProductGroups'] = true;
+    // params['includeProduct'] = true;
+    params['includeContact'] = true;
+    params['includeDetails'] = true;
     super.executeGet(params, success, error);
   }
 
   formLoad(formData: SalesPriceReportModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesPriceReportModel) => void) {
     super.formLoad(formData, (index, newForm, itemFormData) => {
 
-      // Conditions form load
-      // if (itemFormData.Conditions) {
-      //   itemFormData.Conditions.forEach(condition => {
-      //     const newConditionFormGroup = this.makeNewConditionFormGroup(condition);
-      //     this.getConditions(index).push(newConditionFormGroup);
-      //     const comIndex = this.getConditions(index).length - 1;
-      //     this.onAddConditionFormGroup(index, comIndex, newConditionFormGroup);
-      //   });
-      // }
+      // Details form load
+      if (itemFormData.Details) {
+        itemFormData.Details.forEach(condition => {
+          const newDetailFormGroup = this.makeNewDetailFormGroup(condition);
+          this.getDetails(index).push(newDetailFormGroup);
+          const comIndex = this.getDetails(index).length - 1;
+          this.onAddDetailFormGroup(index, comIndex, newDetailFormGroup);
+        });
+      }
 
       // // Actions form load
       // if (itemFormData.Actions) {
@@ -143,18 +239,25 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code_old: [''],
       Code: [''],
       Object: ['', Validators.required],
       ObjectName: [''],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
+      Recipient: [''],
+      ObjectTaxCode: [''],
+      DirectReceiverName: [''],
+      ObjectBankName: [''],
+      ObjectBankCode: [''],
+      PaymentStep: [''],
+      DeliveryAddress: [''],
+      Title: [''],
       Note: [''],
-      // Details: this.formBuilder.array([]),
+      Details: this.formBuilder.array([]),
     });
     if (data) {
-      data['Code_old'] = data['Code'];
+      // data['Code_old'] = data['Code'];
       newForm.patchValue(data);
     }
     return newForm;
@@ -180,50 +283,54 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  /** Condition Form */
-  makeNewConditionFormGroup(data?: PromotionConditionModel): FormGroup {
+  /** Detail Form */
+  makeNewDetailFormGroup(data?: SalesPriceReportDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Id_old: [''],
       Id: [''],
-      Type: ['INTEGER', Validators.required],
-      Cond: ['', Validators.required],
-      Operator: ['GT', Validators.required],
-      DateValue: [''],
-      DoubleValue: [''],
-      IntegerValue: [''],
-      TextValue: [''],
-      BreakOnFalse: [''],
+      No: [''],
+      Type: [''],
+      Product: [''],
+      Description: ['', Validators.required],
+      Quantity: [1],
+      Price: [0],
+      Unit: [''],
+      Tax: [''],
+      ToMoney: [0],
+      Image: [''],
+      Reason: [''],
     });
 
     if (data) {
       // data['Id_old'] = data['Id'];
       newForm.patchValue(data);
+      this.toMoney(newForm);
     }
     return newForm;
   }
-  getConditions(formGroupIndex: number) {
-    return this.array.controls[formGroupIndex].get('Conditions') as FormArray;
+  getDetails(formGroupIndex: number) {
+    return this.array.controls[formGroupIndex].get('Details') as FormArray;
   }
-  addConditionFormGroup(formGroupIndex: number) {
+  addDetailFormGroup(formGroupIndex: number) {
     // this.componentList[formGroupIndex].push([]);
-    const newFormGroup = this.makeNewConditionFormGroup();
-    this.getConditions(formGroupIndex).push(newFormGroup);
-    this.onAddConditionFormGroup(formGroupIndex, this.getConditions(formGroupIndex).length - 1, newFormGroup);
+    const newFormGroup = this.makeNewDetailFormGroup();
+    this.getDetails(formGroupIndex).push(newFormGroup);
+    this.onAddDetailFormGroup(formGroupIndex, this.getDetails(formGroupIndex).length - 1, newFormGroup);
     return false;
   }
-  removeConditionGroup(formGroupIndex: number, index: number) {
-    this.getConditions(formGroupIndex).removeAt(index);
+  removeDetailGroup(formGroupIndex: number, index: number) {
+    this.getDetails(formGroupIndex).removeAt(index);
     // this.componentList[formGroupIndex].splice(index, 1);
-    this.onRemoveConditionFormGroup(formGroupIndex, index);
+    this.onRemoveDetailFormGroup(formGroupIndex, index);
     return false;
   }
-  onAddConditionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+  onAddDetailFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
     // this.componentList[mainIndex].push([]);
   }
-  onRemoveConditionFormGroup(mainIndex: number, index: number) {
+  onRemoveDetailFormGroup(mainIndex: number, index: number) {
     // this.componentList[mainIndex].splice(index, 1);
   }
-  /** End Condition Form */
+  /** End Detail Form */
 
   /** Action Form */
   makeNewActionFormGroup(data?: PromotionActionModel): FormGroup {
@@ -264,5 +371,80 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Action Form */
+
+  onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('ObjectName').setValue(selectedData.Name);
+          formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          formGroup.get('ObjectAddress').setValue(selectedData.Address);
+          formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
+
+  }
+
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+    console.log(selectedData);
+    if (selectedData) {
+      detail.get('Description').setValue(selectedData.Name);
+      detail.get('Unit').patchValue({
+        id: selectedData.WarehouseUnit['Code'],
+        text: selectedData.WarehouseUnit['Name'],
+        Code: selectedData.WarehouseUnit['Code'],
+        Name: selectedData.WarehouseUnit['Name'],
+        Symbol: selectedData.WarehouseUnit['Symbol'],
+      });
+    } else {
+      detail.get('Description').setValue('');
+      detail.get('Unit').setValue('');
+    }
+    return false;
+  }
+
+  toMoney(detail: FormGroup) {
+    // console.log('calculate to money: ' + (detail.get('Quantity').value * detail.get('Price').value));
+    let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+    let tax = detail.get('Tax').value;
+    if (tax) {
+      if (typeof tax === 'string') {
+        tax = this.taxList.filter(t => t.Code === tax)[0];
+      }
+      toMoney += toMoney * tax.Tax / 100;
+    }
+    detail.get('ToMoney').setValue(toMoney);
+    return false;
+  }
+
+  getTotal() {
+
+  }
+
+  preview() {
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: 'Xem trước',
+        content: 'Nội dung xem trước',
+        actions: [
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'success',
+            action: () => { },
+          },
+        ],
+      },
+    });
+    return false;
+  }
 
 }

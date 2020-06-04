@@ -70,10 +70,13 @@ export class SalesPriceReportModel {
   ObjectBankCode?: string;
   ObjectBankName?: string;
 
+  // References
+  Details?: SalesPriceReportDetailModel[];
+
 }
 
 
-export class PriceReportDetail {
+export class SalesPriceReportDetailModel {
   Id?: string & number;
   Product?: string;
   Description: string;
