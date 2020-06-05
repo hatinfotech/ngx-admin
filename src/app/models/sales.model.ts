@@ -78,6 +78,7 @@ export class SalesPriceReportModel {
 
 export class SalesPriceReportDetailModel {
   Id?: string & number;
+  No?: number;
   Product?: string;
   Description: string;
   Quantity: number;

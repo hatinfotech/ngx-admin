@@ -15,9 +15,10 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { SalesPriceReportPrintComponent } from './price-report/sales-price-report-print/sales-price-report-print.component';
 
 @NgModule({
-  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent],
+  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -55,6 +56,7 @@ import { SortablejsModule } from 'ngx-sortablejs';
   ],
   entryComponents: [
     SalesPriceReportFormComponent,
+    SalesPriceReportPrintComponent,
   ],
 })
 export class SalesModule { }

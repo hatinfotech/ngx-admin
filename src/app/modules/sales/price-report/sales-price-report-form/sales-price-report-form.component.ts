@@ -14,6 +14,7 @@ import { ProductModel } from '../../../../models/product.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
 
 @Component({
   selector: 'ngx-sales-price-report-form',
@@ -434,19 +435,17 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   }
 
-  preview() {
-    this.dialogService.open(ShowcaseDialogComponent, {
+  preview(formItem: FormGroup) {
+    const data: SalesPriceReportModel = formItem.value;
+    data.Details.forEach(detail => {
+      if (typeof detail['Tax'] === 'string') {
+        detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+      }
+    });
+    this.dialogService.open(SalesPriceReportPrintComponent, {
       context: {
         title: 'Xem trước',
-        content: 'Nội dung xem trước',
-        actions: [
-          {
-            label: 'Trở về',
-            icon: 'back',
-            status: 'success',
-            action: () => { },
-          },
-        ],
+        data: data,
       },
     });
     return false;

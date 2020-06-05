@@ -1,0 +1,115 @@
+<div class="dialog-wrap" #dialogWrap>
+  <nb-card style="max-height: initial; margin: 0 auto;" class="small-header">
+    <nb-card-header>
+      <nav>
+        {{ title }}
+        <button nbButton status="danger" hero size="tiny" (click)="dismiss()" style="float: right;" title="Trở về">
+          <nb-icon pack="eva" icon="close-outline"></nb-icon>
+        </button>
+      </nav>
+    </nb-card-header>
+    <nb-card-body #printContent>
+      <style>
+        #print-area * {
+          font-size: 0.9rem;
+        }
+
+        #print-area .under-line {
+          border-bottom: 1px solid #ccc;
+        }
+
+        #print-area .text-align-right {
+          text-align: right;
+        }
+
+        #print-area .print-voucher-detail-line {
+          line-height: 0.9rem;
+        }
+      </style>
+      <div id="print-area">
+        <div class="row">
+          <div class="col-md-6">
+            MTSG CORP<br>
+            Tầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu, P. Đakao, Q.1, TPHCM<br>
+            Điện thoại : 02877701666 | Mã số thuế : 0310522373
+          </div>
+          <div class="col-md-6" style="text-align: right;">
+            <img src="assets/images/logo/probox-voucher-logo.png" style="height: 4rem;">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" style="text-align: center; font-size: 2rem; font-weight: bold; line-height: 3rem;">BÁO
+            GIÁ</div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 under-line">Kính gửi quý khách hàng : {{renderValue(data.ObjectName)}}</div>
+          <div class="col-md-12 under-line">Địa chỉ : {{renderValue(data.ObjectAddress)}}</div>
+        </div>
+        <div class="row">
+          <table style="width: 100%;" class="print-voucher-detail-table">
+            <colgroup>
+              <col span="1" style="width: 2rem;">
+              <!--STT-->
+              <col span="1" style="width: 40%;">
+              <!--Dien giai-->
+              <col span="1" style="width: 4rem;">
+              <!--DVT-->
+              <col span="1" style="width: 5rem; text-align: right;">
+              <!--So luong-->
+              <col span="1" style="width: 5rem; text-align: right;">
+              <!--Don gia-->
+              <col span="1" style="width: 5rem;">
+              <!--Thue-->
+              <col span="1" style="width: 6rem; text-align: right;">
+              <!--Thanh tien-->
+            </colgroup>
+            <tr class="print-voucher-detail-header">
+              <th>STT</th>
+              <th>Diễn giải thông số kỹ thuật</th>
+              <th>ĐVT</th>
+              <th class="text-align-right">Số lượng</th>
+              <th class="text-align-right">Đơn giá</th>
+              <th class="text-align-right">Thuế</th>
+              <th class="text-align-right">Thành tiền</th>
+            </tr>
+            <tr class="under-line print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{renderValue(detail.Description)}}<br>
+                <i style="font-size: 0.7rem;">ghi chú : mã kiểm soát : {{renderValue(detail.Product['id'])}}, sắp xếp
+                  tại
+                  : {{renderValue(detail.No)}}</i></td>
+              <td>Cái</td>
+              <td class="text-align-right">{{renderValue(detail.Quantity)}}</td>
+              <td class="text-align-right">{{renderValue(detail.Price)}}</td>
+              <td class="text-align-right">{{renderValue(detail.Tax)}}</td>
+              <td class="text-align-right">{{toMoney(detail)}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-md-12 under-line">Ghi chú: {{renderValue(data.Note)}}</div>
+          <div class="col-md-12 under-line">Địa chỉ nhận hàng: {{renderValue(data.DeliveryAddress)}}</div>
+          <div class="col-md-12 under-line">Người trực tiếp nhận hàng: {{renderValue(data.DirectReceiverName)}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6" style="text-align: center;">
+            Nhân viên
+            <br><br><br>
+          </div>
+          <div class="col-md-6">
+            Khách hàng
+            <br><br><br>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="buttons-row">
+        <button nbButton hero status="success" (click)="print();">Print</button>
+        <button nbButton hero status="warning" (click)="dismiss();">Xuất Excel</button>
+        <button nbButton hero status="info" (click)="dismiss();">Xuất PDF</button>
+        <button nbButton hero status="danger" (click)="dismiss();">Lưu và đóng</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</div>
