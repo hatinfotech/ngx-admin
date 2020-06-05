@@ -15,6 +15,7 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-sales-price-report-form',
@@ -27,6 +28,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   idKey = 'Code';
   apiPath = '/sales/price-reports';
   baseFormUrl = '/sales/price-report/form';
+
+  evn = environment;
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];

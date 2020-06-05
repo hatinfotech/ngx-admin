@@ -16,6 +16,10 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SalesPriceReportPrintComponent } from './price-report/sales-price-report-print/sales-price-report-print.component';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent],
@@ -53,6 +57,7 @@ import { SalesPriceReportPrintComponent } from './price-report/sales-price-repor
     SortablejsModule.forRoot({
       animation: 200,
     }),
+    NgxMaskModule.forRoot(options),
   ],
   entryComponents: [
     SalesPriceReportFormComponent,

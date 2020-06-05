@@ -215,7 +215,7 @@ class="popup">
                       <div class="col-md-2 col-sm-4 col-xs-4">
                         <div class="form-group">
                           <label class="label">Số lượng</label>
-                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="Số lượng" class="align-right" (keyup)="toMoney(detail)">
+                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="Số lượng" class="align-right" (keyup)="toMoney(detail)" [thousandSeparator]="env.number.thousandSeparator">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-4">
