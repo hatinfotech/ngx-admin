@@ -7,6 +7,12 @@ import { NbDialogRef } from '@nebular/theme';
 import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 
+// import { registerLocaleData } from '@angular/common';
+// import localeVi from '@angular/common/locales/vi';
+
+// // the second parameter 'fr' is optional
+// registerLocaleData(localeVi, 'vi');
+
 @Component({
   selector: 'ngx-sales-price-report-print',
   templateUrl: './sales-price-report-print.component.html',
@@ -61,19 +67,25 @@ export class SalesPriceReportPrintComponent extends BaseComponent implements OnI
   }
 
   getTotal() {
-
+    let total = 0;
+    const details = this.data.Details;
+    for (let i = 0; i < details.length; i++) {
+      total += this.toMoney(details[i]);
+    }
+    return total;
   }
 
   print() {
-    var printFrame = document.createElement('iframe');
+    const printFrame = document.createElement('iframe');
     printFrame.name = 'printFrame';
     printFrame.style.position = 'absolute';
     printFrame.style.top = '-1000000px';
+    // tslint:disable-next-line: comment-format
     //printFrame.style.top = "1px";
     printFrame.style.width = '21cm';
     printFrame.style.height = '29.7cm';
     document.body.appendChild(printFrame);
-    var frameDoc = printFrame.contentWindow ? printFrame.contentWindow : printFrame.contentDocument['document'] ? printFrame.contentDocument['document'] : printFrame.contentDocument;
+    const frameDoc = printFrame.contentWindow ? printFrame.contentWindow : printFrame.contentDocument['document'] ? printFrame.contentDocument['document'] : printFrame.contentDocument;
     frameDoc.document.open();
     frameDoc.document.write('<html><head><title>DIV Contents</title>');
     frameDoc.document.write('</head><body>');

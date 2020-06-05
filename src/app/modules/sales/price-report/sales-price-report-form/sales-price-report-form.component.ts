@@ -29,7 +29,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   apiPath = '/sales/price-reports';
   baseFormUrl = '/sales/price-report/form';
 
-  evn = environment;
+  env = environment;
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];

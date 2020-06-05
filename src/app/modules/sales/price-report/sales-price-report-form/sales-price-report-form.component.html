@@ -152,7 +152,6 @@ class="popup">
             <!-- <div formArrayName="Details" class="form-details"> -->
               <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index"
                 [formGroup]="detail">
-                <input type="hidden" [value]="ic" formControlName="_index">
                 <hr>
                 <div class="row">
                   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
@@ -162,6 +161,7 @@ class="popup">
                           <label class="label">Stt</label>
                           <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}" style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
                           <input type="hidden" formControlName="Id">
+                          <input type="hidden" [value]="ic" formControlName="_index">
                         </div>
                         <div class="form-group">
                           <label class="label">CM</label>
@@ -215,7 +215,7 @@ class="popup">
                       <div class="col-md-2 col-sm-4 col-xs-4">
                         <div class="form-group">
                           <label class="label">Số lượng</label>
-                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="Số lượng" class="align-right" (keyup)="toMoney(detail)" [thousandSeparator]="env.number.thousandSeparator">
+                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="Số lượng" class="align-right" (keyup)="toMoney(detail)" mask="separator" [thousandSeparator]="env.number.thousandSeparator">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-4">
@@ -229,7 +229,7 @@ class="popup">
                       <div class="col-md-2 col-sm-4 col-xs-4">
                         <div class="form-group">
                           <label class="label">Đơn giá</label>
-                          <input type="text" nbInput fullWidth formControlName="Price" placeholder="Đơn giá" class="align-right" (keyup)="toMoney(detail)">
+                          <input type="text" nbInput fullWidth formControlName="Price" placeholder="Đơn giá" class="align-right" (keyup)="toMoney(detail)" mask="separator" [thousandSeparator]="env.number.thousandSeparator">
                         </div>
                       </div>
                       <div class="col-md-3 col-sm-4 col-xs-4">
@@ -243,7 +243,7 @@ class="popup">
                       <div class="col-md-3 col-sm-8 col-xs-8">
                         <div class="form-group">
                           <label class="label align-right">Thành tiền</label>
-                          <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right">
+                          <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" mask="separator" [thousandSeparator]="env.number.thousandSeparator">
                         </div>
                       </div>
                       <div class="col-md-12 col-sm-12">

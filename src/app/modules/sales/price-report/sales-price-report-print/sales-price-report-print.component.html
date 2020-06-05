@@ -79,10 +79,19 @@
                   tại
                   : {{renderValue(detail.No)}}</i></td>
               <td class="text-align-right">Cái</td>
-              <td class="text-align-right">{{renderValue(detail.Quantity)}}</td>
-              <td class="text-align-right">{{renderValue(detail.Price)}}</td>
+              <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
+              <td class="text-align-right">{{renderValue(detail.Price) | currency}}</td>
               <td class="text-align-right">{{renderValue(detail.Tax)}}</td>
-              <td class="text-align-right">{{toMoney(detail)}}</td>
+              <td class="text-align-right">{{toMoney(detail) | currency}}</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td class="text-align-right">&nbsp;</td>
+              <td class="text-align-right">&nbsp;</td>
+              <td class="text-align-right">&nbsp;</td>
+              <td class="text-align-right">&nbsp;</td>
+              <td class="text-align-right">{{getTotal() | currency}}</td>
             </tr>
           </table>
         </div>
