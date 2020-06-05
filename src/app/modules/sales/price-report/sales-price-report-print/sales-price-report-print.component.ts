@@ -31,6 +31,7 @@ export class SalesPriceReportPrintComponent extends BaseComponent implements OnI
   }
 
   ngOnInit() {
+    this.restrict();
     super.ngOnInit();
   }
 
