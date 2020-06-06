@@ -1,3 +1,5 @@
+import { TaxModel } from './tax.model';
+
 export class SalesVoucherModel {
   Id?: string & number;
   Code?: string;
@@ -82,9 +84,9 @@ export class SalesPriceReportDetailModel {
   Product?: string;
   Description: string;
   Quantity: number;
-  Price: number;
+  Price: number & string;
   Unit: string;
-  Tax?: string;
+  Tax?: string & TaxModel;
   Image?: string;
   Reason?: string;
 }

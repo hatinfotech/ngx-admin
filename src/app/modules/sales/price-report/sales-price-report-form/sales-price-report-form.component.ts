@@ -17,6 +17,11 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
 import { environment } from '../../../../../environments/environment';
 
+import localeVi from '@angular/common/locales/vi';
+import localeViExtra from '@angular/common/locales/extra/vi';
+import { getLocaleNumberFormat, NumberFormatStyle } from '@angular/common';
+import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
+
 @Component({
   selector: 'ngx-sales-price-report-form',
   templateUrl: './sales-price-report-form.component.html',
@@ -30,6 +35,12 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   baseFormUrl = '/sales/price-report/form';
 
   env = environment;
+
+  locale = localeVi;
+  localeExtra = localeViExtra;
+  curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
+  numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
+  // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
@@ -312,6 +323,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
     if (data) {
       // data['Id_old'] = data['Id'];
+      // data.Price = parseFloat(data.Price) as any;
       newForm.patchValue(data);
       this.toMoney(newForm);
     }
@@ -449,6 +461,12 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       context: {
         title: 'Xem trước',
         data: data,
+        onSaveAndClose: (priceReportCode: string) => {
+          this.saveAndClose();
+        },
+        onSaveAndPrint: (priceReportCode: string) => {
+          this.save();
+        },
       },
     });
     return false;

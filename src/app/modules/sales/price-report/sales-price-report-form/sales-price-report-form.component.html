@@ -7,17 +7,17 @@ class="popup">
       <nb-card class="small-header popup">
         <nb-card-header>
           <nav>
-            {{this.id && this.id[0] ? 'Cập nhật' : 'Tạo mới'}} phiếu báo giá
+            {{this.id && this.id[0] ? 'Cập nhật' : 'Tạo mới'}} <span i18n>price report</span>
             <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Đóng biều mẫu">
               <nb-icon pack="eva" icon="close-circle"></nb-icon> Đóng
             </button>
-            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;" [disabled]="isProcessing"
               title="Tải lại">
               <nb-icon pack="eva" icon="refresh"></nb-icon> Tải lại
             </button>
-            <button nbButton status="primary" hero size="tiny" (click)="preview(formItem)" style="float: right;"
+            <button nbButton status="primary" hero size="tiny" (click)="preview(formItem)" style="float: right;" [disabled]="isProcessing"
               title="Tải lại">
-              <nb-icon pack="eva" icon="refresh"></nb-icon> Xem trước
+              <nb-icon pack="eva" icon="search"></nb-icon> Xem trước
             </button>
             <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
               style="float: right;" title="Hoàn tác">
@@ -215,7 +215,7 @@ class="popup">
                       <div class="col-md-2 col-sm-4 col-xs-4">
                         <div class="form-group">
                           <label class="label">Số lượng</label>
-                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="Số lượng" class="align-right" (keyup)="toMoney(detail)" mask="separator" [thousandSeparator]="env.number.thousandSeparator">
+                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="Số lượng" class="align-right" (keyup)="toMoney(detail)" currencyMask [options]="numberFormat">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-4">
@@ -229,7 +229,7 @@ class="popup">
                       <div class="col-md-2 col-sm-4 col-xs-4">
                         <div class="form-group">
                           <label class="label">Đơn giá</label>
-                          <input type="text" nbInput fullWidth formControlName="Price" placeholder="Đơn giá" class="align-right" (keyup)="toMoney(detail)" mask="separator" [thousandSeparator]="env.number.thousandSeparator">
+                          <input type="text" nbInput fullWidth formControlName="Price" placeholder="Đơn giá" class="align-right" (keyup)="toMoney(detail)" currencyMask [options]="curencyFormat">
                         </div>
                       </div>
                       <div class="col-md-3 col-sm-4 col-xs-4">
@@ -243,7 +243,7 @@ class="popup">
                       <div class="col-md-3 col-sm-8 col-xs-8">
                         <div class="form-group">
                           <label class="label align-right">Thành tiền</label>
-                          <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" mask="separator" [thousandSeparator]="env.number.thousandSeparator">
+                          <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="curencyFormat">
                         </div>
                       </div>
                       <div class="col-md-12 col-sm-12">
@@ -269,7 +269,7 @@ class="popup">
             </div>
             <div class="row">
               <div class="col-sm-12" style="text-align: right;">
-                <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="tiny" hero>
+                <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="tiny" hero [disabled]="isProcessing">
                   <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon> Thêm hàng hoá/dịch vụ
                 </button>
               </div>
@@ -358,8 +358,8 @@ class="popup">
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
             <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
-            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
-            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+            <button nbButton status="primary" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>Lưu</button>
           </div>
         </nb-card-footer>
       </nb-card>

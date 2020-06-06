@@ -11,11 +11,13 @@
 export const environment = {
   production: false,
   hmr: true,
+  basePath: 'mini-erp',
   api: {
     // baseUrl: '/v1', // prod
     baseUrl: 'https://local.namsoftware.com/v1',
   },
   number: {
+    // replace by system locale
     thousandSeparator: ',',
   },
   localApp: {

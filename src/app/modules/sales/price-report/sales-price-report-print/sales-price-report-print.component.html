@@ -9,103 +9,87 @@
       </nav>
     </nb-card-header>
     <nb-card-body #printContent>
-      <style>
-        #print-area * {
-          font-size: 0.9rem;
-        }
-
-        #print-area .under-line {
-          border-bottom: 1px solid #ccc;
-        }
-
-        #print-area .text-align-right {
-          text-align: right;
-        }
-
-        #print-area .print-voucher-detail-line {
-          line-height: 0.9rem;
-        }
-      </style>
       <div id="print-area">
-        <div class="row">
-          <div class="col-md-6">
+        <div style="display: flex; flex-wrap: wrap">
+          <div style="flex: 0 0 60%;">
             MTSG CORP<br>
             Tầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu, P. Đakao, Q.1, TPHCM<br>
             Điện thoại : 02877701666 | Mã số thuế : 0310522373
           </div>
-          <div class="col-md-6" style="text-align: right;">
-            <img src="assets/images/logo/probox-voucher-logo.png" style="height: 4rem;">
+          <div style="text-align: right; flex: 0 0 40%;">
+            <img src="assets/images/logo/probox-voucher-logo.png" style="height: 50px;">
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12" style="text-align: center; font-size: 2rem; font-weight: bold; line-height: 3rem;">BÁO
-            GIÁ</div>
+        <div>
+          <div class="print-title">PRICE REPORT VOUCHER</div>
         </div>
-        <div class="row">
-          <div class="col-md-12 under-line">Kính gửi quý khách hàng : {{renderValue(data.ObjectName)}}</div>
-          <div class="col-md-12 under-line">Địa chỉ : {{renderValue(data.ObjectAddress)}}</div>
+        <div>
+          <div class="under-line">Kính gửi quý khách hàng : {{renderValue(data.ObjectName)}}</div>
+          <div class="under-line">Địa chỉ : {{renderValue(data.ObjectAddress)}}</div>
         </div>
-        <div class="row">
-          <table style="width: 100%;" class="print-voucher-detail-table">
-            <colgroup>
-              <col span="1" style="width: 2rem;">
-              <!--STT-->
-              <col span="1" style="width: 40%;">
-              <!--Dien giai-->
-              <col span="1" style="width: 3rem;">
-              <!--DVT-->
-              <col span="1" style="width: 4rem; text-align: right;">
-              <!--So luong-->
-              <col span="1" style="width: 5rem; text-align: right;">
-              <!--Don gia-->
-              <col span="1" style="width: 5rem;">
-              <!--Thue-->
-              <col span="1" style="width: 6rem; text-align: right;">
-              <!--Thanh tien-->
-            </colgroup>
-            <tr class="print-voucher-detail-header">
-              <th>STT</th>
-              <th>Diễn giải thông số kỹ thuật</th>
-              <th class="text-align-right">ĐVT</th>
-              <th class="text-align-right">Số lượng</th>
-              <th class="text-align-right">Đơn giá</th>
-              <th class="text-align-right">Thuế</th>
-              <th class="text-align-right">Thành tiền</th>
-            </tr>
-            <tr class="under-line print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
-              <td>{{i + 1}}</td>
-              <td>{{renderValue(detail.Description)}}<br>
-                <i style="font-size: 0.7rem;">ghi chú : mã kiểm soát : {{renderValue(detail.Product['id'])}}, sắp xếp
-                  tại
-                  : {{renderValue(detail.No)}}</i></td>
-              <td class="text-align-right">Cái</td>
-              <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
-              <td class="text-align-right">{{renderValue(detail.Price) | currency}}</td>
-              <td class="text-align-right">{{renderValue(detail.Tax)}}</td>
-              <td class="text-align-right">{{toMoney(detail) | currency}}</td>
-            </tr>
-            <tr>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td class="text-align-right">&nbsp;</td>
-              <td class="text-align-right">&nbsp;</td>
-              <td class="text-align-right">&nbsp;</td>
-              <td class="text-align-right">&nbsp;</td>
-              <td class="text-align-right">{{getTotal() | currency}}</td>
-            </tr>
-          </table>
+        <div>
+          <div>
+            <table style="width: 100%;" class="print-voucher-detail-table">
+              <colgroup>
+                <!--STT-->
+                <col span="1" style="width: 1cm;">
+                <!--Dien giai-->
+                <col span="1" style="width: 5.5cm;">
+                <!--DVT-->
+                <col span="1" style="width: 1cm;">
+                <!--So luong-->
+                <col span="1" style="width: 2cm; text-align: right;">
+                <!--Don gia-->
+                <col span="1" style="width: 2.8cm; text-align: right;">
+                <!--Thue-->
+                <col span="1" style="width: 2;">
+                <!--Thanh tien-->
+                <col span="1" style="width: 2.7; text-align: right;">
+              </colgroup>
+              <tr class="print-voucher-detail-header">
+                <th>STT</th>
+                <th>Diễn giải thông số kỹ thuật</th>
+                <th class="text-align-right">ĐVT</th>
+                <th class="text-align-right">Số lượng</th>
+                <th class="text-align-right">Đơn giá</th>
+                <th class="text-align-right">Thuế</th>
+                <th class="text-align-right">Thành tiền</th>
+              </tr>
+              <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{renderValue(detail.Description)}} <br>
+                  <span style="font-size: 10px; font-style: italic;">
+                    ghi chú :
+                    mã kiểm soát : ,
+                    sắp xếp tại:
+                  </span>
+                </td>
+                <td class="text-align-right">Cái</td>
+                <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
+                <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
+                <td class="text-align-right">{{detail.Tax?.Label2}}</td>
+                <td class="text-align-right">{{toMoney(detail) | currency:'VND'}}</td>
+              </tr>
+              <tr>
+                <td colspan="6" class="text-align-right" i18n>Total</td>
+                <td class="text-align-right">{{getTotal() | currency:'VND'}}</td>
+              </tr>
+            </table>
+          </div>
         </div>
-        <div class="row">
-          <div class="col-md-12 under-line">Ghi chú: {{renderValue(data.Note)}}</div>
-          <div class="col-md-12 under-line">Địa chỉ nhận hàng: {{renderValue(data.DeliveryAddress)}}</div>
-          <div class="col-md-12 under-line">Người trực tiếp nhận hàng: {{renderValue(data.DirectReceiverName)}}</div>
+        <div>
+          <div class="under-line">Ghi chú: {{renderValue(data.Note)}}</div>
+          <div class="under-line">Địa chỉ nhận hàng: {{renderValue(data.DeliveryAddress)}}</div>
+          <div class="under-line">Người trực tiếp nhận hàng: {{renderValue(data.DirectReceiverName)}}</div>
         </div>
-        <div class="row">
-          <div class="col-md-6" style="text-align: center;">
+        <div style="display: flex; flex-wrap: wrap">
+          <div style="text-align: center; flex: 0 0 50%;">
+            <br>
             Nhân viên
             <br><br><br>
           </div>
-          <div class="col-md-6">
+          <div style="text-align: center; flex: 0 0 50%;">
+            <br>
             Khách hàng
             <br><br><br>
           </div>
@@ -114,10 +98,10 @@
     </nb-card-body>
     <nb-card-footer>
       <div class="buttons-row">
-        <button nbButton hero status="success" (click)="print();">Print</button>
-        <button nbButton hero status="warning" (click)="dismiss();">Xuất Excel</button>
-        <button nbButton hero status="info" (click)="dismiss();">Xuất PDF</button>
-        <button nbButton hero status="danger" (click)="dismiss();">Lưu và đóng</button>
+        <button nbButton hero status="danger" (click)="print();" [disabled]="!identifier"><nb-icon pack="eva" icon="printer"></nb-icon>Print</button>
+        <button nbButton hero status="success" (click)="saveAndClose();"><nb-icon pack="eva" icon="save"></nb-icon>Lưu và đóng</button>
+        <button nbButton hero status="warning" (click)="exportExcel('excel');">Xuất Excel</button>
+        <button nbButton hero status="info" (click)="exportExcel('pdf');">Xuất PDF</button>
       </div>
     </nb-card-footer>
   </nb-card>

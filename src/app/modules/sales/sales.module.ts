@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SalesComponent } from './sales.component';
 import { SalesPriceReportListComponent } from './price-report/sales-price-report-list/sales-price-report-list.component';
@@ -19,6 +19,7 @@ import { SalesPriceReportPrintComponent } from './price-report/sales-price-repor
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
+
 
 @NgModule({
   declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent],
@@ -61,6 +62,9 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
   entryComponents: [
     SalesPriceReportFormComponent,
     SalesPriceReportPrintComponent,
+  ],
+  providers: [
+    // { provide: LOCALE_ID, useValue: 'vi' },
   ],
 })
 export class SalesModule { }

@@ -6,10 +6,12 @@
 export const environment = {
   production: true,
   hmr: false,
+  basePath: 'mini-erp',
   api: {
     baseUrl: '/v1',
   },
   number: {
+    // replace by system locale
     thousandSeparator: ',',
   },
   localApp: {

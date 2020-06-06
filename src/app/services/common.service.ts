@@ -9,6 +9,7 @@ import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
 import { MySocket } from '../lib/nam-socket/my-socket';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -308,6 +309,10 @@ export class CommonService {
 
   openMenuSidebar() {
 
+  }
+
+  getBaseUrl() {
+    return `${window.location.origin}/${environment.basePath}`;
   }
 
 }

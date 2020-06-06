@@ -1,0 +1,80 @@
+#print-area {
+  width: 21cm;
+  /*padding: 1cm;*/
+  /*padding-right: 2cm;*/ /** Chinh cho may in kim (!!phai xem lai cho tat ca cac loai may in khac) */
+  /* margin: 1cm auto; */
+  /* border: 1px #d3d3d3 solid; */
+  /* border-radius: 5px; */
+  /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); */
+  /* padding-left: 15px;
+  padding-right: 15px; */
+}
+
+#print-area .print-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 2rem;
+  padding: 0.5px;
+}
+
+#print-area .under-title {
+  text-align: center;
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1rem;
+  padding: 0.5px;
+}
+
+#print-area * {
+  font-size: 0.9rem;
+  text-shadow: initial !important;
+  font-family: Open Sans, sans-serif;
+}
+
+.print-voucher-detail-table {
+  page-break-inside: auto;
+}
+
+.print-voucher-detail-table tr {
+  page-break-inside: avoid;
+  page-break-after: auto;
+}
+.print-voucher-detail-table tr td {
+  border-top: 1px solid #ccc;
+}
+
+#print-area .under-line {
+  border-bottom: 1px solid #ccc;
+}
+
+#print-area .text-align-right {
+  text-align: right;
+}
+
+#print-area .print-voucher-detail-line {
+  line-height: 1rem;
+}
+
+#print-area .print-voucher-detail-line td {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+  #print-area {
+    min-height: 29.7cm;
+    margin: 0;
+    padding: 0;
+    border: initial;
+    border-radius: initial;
+    width: initial;
+    min-height: initial;
+    box-shadow: initial;
+    background: initial;
+    page-break-after: always;
+  }
+}

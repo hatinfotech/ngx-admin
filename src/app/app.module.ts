@@ -5,7 +5,7 @@
  */
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
@@ -39,6 +39,13 @@ import { DialogFormComponent } from './modules/dialog/dialog-form/dialog-form.co
 import { CookieService } from 'ngx-cookie-service';
 import { MobileAppModule } from './modules/mobile-app/mobile-app.module';
 import { ApiInterceptor } from './services/api.service';
+
+import { registerLocaleData } from '@angular/common';
+import localeVi from '@angular/common/locales/vi';
+import localeViExtra from '@angular/common/locales/extra/vi';
+
+registerLocaleData(localeVi, 'vi', localeViExtra);
+
 
 @NgModule({
   declarations: [
@@ -139,6 +146,7 @@ import { ApiInterceptor } from './services/api.service';
       useClass: ApiInterceptor,
       multi: true,
     },
+    { provide: LOCALE_ID, useValue: 'vi' },
   ],
 })
 export class AppModule {
