@@ -1,0 +1,106 @@
+{
+  "HOME": {
+    "TITLE": "Chào angular ngx translate",
+    "TEXT": "Ví dụ này được tạo cùng với ngx translate",
+    "SELECT": "Chọn ngôn ngữ"
+  },
+  "Infomation": {
+    "Voucher": {
+      "register": "MTSG CORP\nTầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu,\nP. Đakao, Q.1, TPHCM\nĐiện thoại : 02877701666 | Mã số thuế : 0310522373"
+    }
+  },
+  "Sales": {
+    "PriceReport": {
+      "title": "{{definition}}{{action}} phiếu báo giá",
+      "List": {
+        "Title": ""
+      },
+      "Form": {
+        "title": "{{action}} phiếu báo giá"
+      }
+    },
+    "addProduct": "thêm hàng hoá/dịch vụ",
+    "directReceiver": "người trực tiếp nhận hàng",
+    "deliveryAddress": "địa chỉ nhận hàng",
+    "paymentStep": "bước thanh toán",
+    "technicalDescription": "Diễn giải thông số kỹ thuật"
+  },
+  "Common": {
+    "create": "tạo",
+    "update": "cập nhật",
+    "delete": "xoá",
+    "remove": "gở bỏ",
+    "edit": "chỉnh",
+    "ok": "ok",
+    "cancel": "huỷ",
+    "yes": "có",
+    "no": "không",
+    "noNumber": "stt",
+    "confirm": "xác nhận",
+    "enable": "kích hoạt",
+    "disable": "vô hiệu hoá",
+    "list": "danh sách",
+    "preview": "xem trước",
+    "print": "in",
+    "save": "lưu",
+    "saveAndClose": "lưu & đóng",
+    "title": "tiêu đề",
+    "recipient": "người nhận",
+    "taxCode": "mã số thuê",
+    "note": "ghi chú",
+    "description": "mô tả",
+    "type": "loại",
+    "imgae": "ảnh",
+    "picture": "hình",
+    "photo": "hình",
+    "reload": "tải lại",
+    "refresh": "làm mới",
+    "undo": "hoàn tác",
+    "close": "đóng",
+    "customer": "khách hàng",
+    "dateOfcreated": "ngày tạo",
+    "isApprove": "đã duyệt",
+    "name": "tên",
+    "address": "địa chỉ",
+    "phone": "điện thoại",
+    "email": "email",
+    "code": "mã",
+    "employee": "nhân viên",
+    "exportTo": "xuất {{to}}",
+    "goback": "trở về",
+    "sort": "sắp xếp"
+  },
+  "Contact": {
+    "name": "tên liên hệ",
+    "address": "địa chỉ",
+    "email": "email",
+    "phone": "điện thoại",
+    "taxCode": "mã số thuế"
+  },
+  "Bank": {
+    "name": "tên ngân hàng",
+    "code": "số tài khoàn"
+  },
+  "Customer": {
+    "name": "tên khách hàng"
+  },
+  "Product": {
+    "name": "tên sản phẩm"
+  },
+  "Voucher": {
+    "organizationOrPersornal": "tổ chức/cá nhân",
+    "productOrservice": "hàng hoá/dịch vụ",
+    "quantity": "số lượng",
+    "unit": "đơn vị tính",
+    "shortQuantity": "SL",
+    "shortUnit": "ĐVT",
+    "price": "đơn giá",
+    "tax": "thuế",
+    "toMoney": "thành tiền",
+    "dearCustomer": "Kính gửi quý khách hàng",
+    "total": "tổng cộng"
+  },
+  "Form": {
+    "requireLabel": "{{field}} là bắt buộc"
+  }
+}

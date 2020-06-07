@@ -17,6 +17,7 @@ import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SalesPriceReportPrintComponent } from './price-report/sales-price-report-print/sales-price-report-print.component';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { TranslateModule } from '@ngx-translate/core';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -58,6 +59,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
       animation: 200,
     }),
     NgxMaskModule.forRoot(options),
+    TranslateModule,
   ],
   entryComponents: [
     SalesPriceReportFormComponent,

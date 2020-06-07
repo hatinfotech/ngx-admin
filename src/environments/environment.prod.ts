@@ -7,6 +7,11 @@ export const environment = {
   production: true,
   hmr: false,
   basePath: 'mini-erp',
+  register: {
+    logo: {
+      voucher: 'assets/images/logo/probox-voucher-logo.png',
+    },
+  },
   api: {
     baseUrl: '/v1',
   },

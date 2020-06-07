@@ -1,0 +1,106 @@
+{
+  "HOME": {
+    "TITLE": "Hello angular with ngx translate",
+    "TEXT": "This demo has been create using ngx translate",
+    "SELECT": "Select language"
+  },
+  "Infomation": {
+    "Voucher": {
+      "register": "MTSG CORP\nTầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu\nP. Đakao, Q.1, TPHCM\nĐiện thoại : 02877701666 | Mã số thuế : 0310522373"
+    }
+  },
+  "Sales": {
+    "PriceReport": {
+      "title": "{{action}} price report voucher {{definition}}",
+      "List": {
+        "title": "danh sách phiếu báo giá"
+      },
+      "Form": {
+        "title": "{{action}} price report voucher"
+      }
+    },
+    "addProduct": "add product/dịch vụ",
+    "directReceiver": "direct receiver",
+    "deliveryAddress": "delivery address",
+    "paymentStep": "payment step",
+    "technicalDescription": "technical description"
+  },
+  "Common": {
+    "create": "create",
+    "update": "update",
+    "delete": "delete",
+    "remove": "remove",
+    "ddit": "edit",
+    "ok": "ok",
+    "cancel": "cancel",
+    "yes": "yes",
+    "no": "no",
+    "noNumber": "no",
+    "confirm": "confirm",
+    "enable": "enable",
+    "disable": "disable",
+    "list": "danh sách",
+    "preview": "preview",
+    "print": "print",
+    "save": "save",
+    "saveAndClose": "save & close",
+    "title":"title",
+    "recipient": "recipient",
+    "taxCode": "tax code",
+    "note": "note",
+    "description": "description",
+    "type": "type",
+    "imgae": "image",
+    "picture": "picture",
+    "photo": "photo",
+    "reload": "reload",
+    "refresh": "refresh",
+    "undo": "undo",
+    "close": "close",
+    "customer": "customer",
+    "dateOfcreated": "date of created",
+    "isApprove": "approved",
+    "name": "name",
+    "address": "address",
+    "phone": "phone",
+    "email": "email",
+    "code": "code",
+    "employee": "employee",
+    "exportTo": "export {{to}}",
+    "goback": "go back",
+    "sort": "sort"
+  },
+  "Contact":{
+    "name": "contact name",
+    "address": "address",
+    "email": "email",
+    "phone": "phone",
+    "taxCode": "mã số thuế"
+  },
+  "Bank": {
+    "name": "bank name",
+    "code": "bank code"
+  },
+  "Customer": {
+    "name": "customer name"
+  },
+  "Product": {
+    "name": "product name"
+  },
+  "Voucher": {
+    "organizationOrPersornal": "organization/persornal",
+    "productOrservice": "product/service",
+    "quantity": "quantity",
+    "unit": "unit",
+    "shortQuantity": "qty",
+    "shortUnit": "unit",
+    "price": "price",
+    "tax": "tax",
+    "toMoney": "to money",
+    "dearCustomer": "Dear customer",
+    "total": "total"
+  },
+  "Form": {
+    "requireLabel": "{{field}} is require"
+  }
+}

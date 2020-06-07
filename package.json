@@ -49,6 +49,8 @@
     "@nebular/security": "4.4.0",
     "@nebular/theme": "4.4.0",
     "@ng-bootstrap/ng-bootstrap": "^5.1.2",
+    "@ngx-translate/core": "^12.1.2",
+    "@ngx-translate/http-loader": "^4.0.0",
     "@swimlane/dragula": "^3.8.0",
     "@swimlane/ngx-charts": "^10.0.0",
     "@swimlane/ngx-datatable": "^16.0.3",

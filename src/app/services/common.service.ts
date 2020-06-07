@@ -10,6 +10,7 @@ import { LoginInfoModel } from '../models/login-info.model';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
 import { MySocket } from '../lib/nam-socket/my-socket';
 import { environment } from '../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
@@ -59,6 +60,7 @@ export class CommonService {
     public router: Router,
     public _location: Location,
     private sidebarService: NbSidebarService,
+    public translate: TranslateService,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {

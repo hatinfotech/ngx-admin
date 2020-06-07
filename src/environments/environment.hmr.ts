@@ -12,6 +12,11 @@ export const environment = {
   production: false,
   hmr: true,
   basePath: 'mini-erp',
+  register: {
+    logo: {
+      voucher: 'assets/images/logo/probox-voucher-logo.png',
+    },
+  },
   api: {
     // baseUrl: '/v1', // prod
     baseUrl: 'https://local.namsoftware.com/v1',

@@ -21,6 +21,7 @@ import localeVi from '@angular/common/locales/vi';
 import localeViExtra from '@angular/common/locales/extra/vi';
 import { getLocaleNumberFormat, NumberFormatStyle } from '@angular/common';
 import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-sales-price-report-form',

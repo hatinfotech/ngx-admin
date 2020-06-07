@@ -1,9 +1,9 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
     <nav>
-      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách phiếu báo giá
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> {{ 'Sales.PriceReport.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | titlecase }}
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
-        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>{{'Common.refresh' | translate | titlecase}}
       </button>
     </nav>
   </nb-card-header>

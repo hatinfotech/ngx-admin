@@ -9,6 +9,7 @@ import { IvoipService } from '../../../modules/ivoip/ivoip-service';
 import { CommonService } from '../../../services/common.service';
 import { ActionControl } from '../../../lib/custom-element/action-control-list/action-control.interface';
 import { VirtualPhoneService } from '../../../modules/virtual-phone/virtual-phone.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-header',
@@ -73,7 +74,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private ivoipService: IvoipService,
     public commonService: CommonService,
     private virtualPhoneService: VirtualPhoneService,
+    public translate: TranslateService,
   ) {
+    translate.addLangs(['en', 'vi']);
+    translate.setDefaultLang('en');
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang.match(/en|vi/) ? browserLang : 'en');
   }
 
   ngOnInit() {
@@ -222,5 +228,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onChangeDomain(event) {
     this.ivoipService.onChangeDomain(event);
+  }
+
+  changeLanguage(event: any) {
+      this.translate.use(event);
   }
 }

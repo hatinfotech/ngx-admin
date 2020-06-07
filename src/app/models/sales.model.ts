@@ -1,4 +1,6 @@
 import { TaxModel } from './tax.model';
+import { UnitModel } from './unit.model';
+import { ProductModel } from './product.model';
 
 export class SalesVoucherModel {
   Id?: string & number;
@@ -81,11 +83,11 @@ export class SalesPriceReportModel {
 export class SalesPriceReportDetailModel {
   Id?: string & number;
   No?: number;
-  Product?: string;
+  Product?: string & ProductModel;
   Description: string;
   Quantity: number;
   Price: number & string;
-  Unit: string;
+  Unit: string & UnitModel;
   Tax?: string & TaxModel;
   Image?: string;
   Reason?: string;

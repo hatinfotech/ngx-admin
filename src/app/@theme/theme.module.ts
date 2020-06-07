@@ -45,6 +45,7 @@ import { DialpadComponent } from '../modules/virtual-phone/dialpad/dialpad.compo
 import { ActionControlListComponent } from '../lib/custom-element/action-control-list/action-control-list.component';
 import { MobileAppModule } from '../modules/mobile-app/mobile-app.module';
 import { MobileAppComponent } from '../modules/mobile-app/mobile-app.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -64,6 +65,7 @@ const NB_MODULES = [
   CustomElementModule,
   VirtualPhoneModule,
   MobileAppModule,
+  TranslateModule,
 ];
 const COMPONENTS = [
   HeaderComponent,

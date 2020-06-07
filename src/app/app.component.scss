@@ -1226,3 +1226,13 @@ nb-card.is-drop-over nb-card-header {
   color: #ffffff !important;
 }
 /** End ngx-uploader */
+
+
+/** Icon, Button,... */
+.icon-start:not(.icon-end) nb-icon {
+  margin-right: 0.35rem !important;
+}
+.icon-end:not(.icon-start) nb-icon {
+  margin-left: 0.35rem !important;
+}
+/** End Icon, Button */

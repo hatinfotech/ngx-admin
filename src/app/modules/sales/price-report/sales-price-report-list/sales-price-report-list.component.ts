@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { PromotionFormComponent } from '../../../promotion/promotion/promotion-form/promotion-form.component';
 import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-sales-price-report-list',
@@ -47,32 +48,32 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
     pager: this.configPaging(),
     columns: {
       Code: {
-        title: 'Code',
+        title: this.commonService.translate.instant('Common.code'),
         type: 'string',
         width: '10%',
       },
       ObjectName: {
-        title: 'Khách hàng',
+        title: this.commonService.translate.instant('Common.customer'),
         type: 'string',
         width: '20%',
       },
       Note: {
-        title: 'Mô tả',
+        title: this.commonService.translate.instant('Common.description'),
         type: 'string',
         width: '30%',
       },
       Title: {
-        title: 'Tiêu đề',
+        title: this.commonService.translate.instant('Common.title'),
         type: 'string',
         width: '20%',
       },
       Created: {
-        title: 'Ngày tạo',
+        title: this.commonService.translate.instant('Common.dateOfcreated'),
         type: 'string',
         width: '10%',
       },
       IsApprove: {
-        title: 'Duyệt',
+        title: this.commonService.translate.instant('Common.isApprove'),
         type: 'string',
         width: '10%',
       },
