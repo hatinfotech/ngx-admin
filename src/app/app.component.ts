@@ -8,6 +8,7 @@ import { AnalyticsService } from './@core/utils/analytics.service';
 import { NbIconLibraries, NbMenuItem } from '@nebular/theme';
 import { CommonService } from './services/common.service';
 import { NbAuthService } from '@nebular/auth';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-app',
@@ -38,19 +39,20 @@ export class AppComponent implements OnInit {
     iconsLibrary: NbIconLibraries,
     public commonService: CommonService,
     public authService: NbAuthService,
-    @Inject(LOCALE_ID) public locale: string,
+    // @Inject(LOCALE_ID) public locale: string,
   ) {
+
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.commonService.getMenuTree(menuTree => this.menu = menuTree);
 
     this.authService.onAuthenticationChange().subscribe(state => {
       if (state) {
         this.commonService.getMenuTree(menuTree => this.menu = menuTree);
-        this.commonService.langCode$.subscribe(langCode => {
-          if (langCode) {
-            this.locale = langCode;
-          }
-        });
+        // this.commonService.langCode$.subscribe(langCode => {
+        //   if (langCode) {
+        //     this.locale = langCode;
+        //   }
+        // });
       } else {
         this.menu = [
           {

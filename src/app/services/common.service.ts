@@ -54,6 +54,8 @@ export class CommonService {
   private mainSocket: MySocket;
   mainSocketInfo: { domain: string; port: number; url?: string };
 
+  // localStorageAvailable$: BehaviorSubject<WindowLocalStorage> = new BehaviorSubject<WindowLocalStorage>(null);
+
   constructor(
     public authService: NbAuthService,
     public apiService: ApiService,
@@ -69,6 +71,33 @@ export class CommonService {
     //     this.loadPermissionToCache();
     //   }
     // });
+
+    /** Load langCode */
+    translate.addLangs(['en', 'vi']);
+    translate.setDefaultLang('en');
+    this.langCode$.subscribe(langCode => {
+      if (langCode) {
+        translate.use(langCode);
+        localStorage.setItem('langCode', langCode);
+      }
+    });
+
+    const $this = this;
+    (function checkLocalStorageOnline() {
+      if (localStorage) {
+        let langCode = localStorage.getItem('langCode');
+        if (!langCode) {
+          const browserLangCode = translate.getBrowserLang();
+          langCode = browserLangCode.match(/en|vi/) ? browserLangCode : 'en';
+        }
+        $this.langCode$.next(langCode);
+      } else {
+        setTimeout(() => {
+          checkLocalStorageOnline();
+        }, 100);
+      }
+    })();
+    /** End Load langCode */
 
     this.authService.onAuthenticationChange().subscribe(state => {
       console.info('Authentication change with state ' + state);
@@ -86,7 +115,9 @@ export class CommonService {
             const firstFileStore = loginInfo.distribution.fileStores[fileStoreCode];
             this.distributeFileStoreCookieRequestSubject.next(firstFileStore.requestCookieUrl + '&time=' + (Date.now()));
           }
-          this.langCode$.next(loginInfo['langCode'] ? loginInfo['langCode'] : 'vi');
+          const langCode = loginInfo['langCode'] ? loginInfo['langCode'] : 'vi';
+          this.langCode$.next(langCode);
+          localStorage.setItem('langCode', langCode);
         });
       } else {
         // this.loginInfoSubject.next(new LoginInfoModel());

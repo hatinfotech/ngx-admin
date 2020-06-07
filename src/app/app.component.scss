@@ -1235,4 +1235,7 @@ nb-card.is-drop-over nb-card-header {
 .icon-end:not(.icon-start) nb-icon {
   margin-left: 0.35rem !important;
 }
+body [nbButton].size-medium {
+  line-height: 1.3rem !important;
+}
 /** End Icon, Button */

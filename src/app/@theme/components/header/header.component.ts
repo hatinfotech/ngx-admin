@@ -76,13 +76,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private virtualPhoneService: VirtualPhoneService,
     public translate: TranslateService,
   ) {
-    translate.addLangs(['en', 'vi']);
-    translate.setDefaultLang('en');
+    // translate.addLangs(['en', 'vi']);
+    // translate.setDefaultLang('en');
     // const browserLang = translate.getBrowserLang();
     // translate.use(browserLang.match(/en|vi/) ? browserLang : 'en');
-    commonService.langCode$.subscribe(langCode => {
-      translate.use(langCode);
-    });
+    // commonService.langCode$.subscribe(langCode => {
+    //   translate.use(langCode);
+    // });
 
   }
 
@@ -235,6 +235,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   changeLanguage(event: any) {
-    this.translate.use(event);
+    this.commonService.langCode$.next(event);
   }
 }
