@@ -5,22 +5,22 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <nav>
-            {{ 'Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | titlecase }}
+            {{ 'Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
             <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
               title="Đóng biều mẫu">
-              <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | titlecase}}
+              <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
             </button>
             <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
               [disabled]="isProcessing" title="Tải lại">
-              <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | titlecase}}
+              <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | headtitlecase}}
             </button>
             <button nbButton status="primary" hero size="tiny" (click)="preview(formItem)" style="float: right;"
               [disabled]="isProcessing" title="Tải lại">
-              <nb-icon pack="eva" icon="search"></nb-icon>{{'Common.preview' | translate | titlecase}}
+              <nb-icon pack="eva" icon="search"></nb-icon>{{'Common.preview' | translate | headtitlecase}}
             </button>
             <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
               style="float: right;" title="Hoàn tác">
-              <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | titlecase}}
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
             </button>
           </nav>
         </nb-card-header>
@@ -31,123 +31,123 @@
               <input type="hidden" formControlName="Code">
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
-                  <label class="label"><span class="valid">{{'Voucher.organizationOrPersornal' | translate | titlecase}}</span><span class="invalid">
-                    {{'Voucher.organizationOrPersornal' | translate | titlecase}} (*)</span></label>
+                  <label class="label"><span class="valid">{{'Voucher.organizationOrPersornal' | translate | headtitlecase}}</span><span class="invalid">
+                    {{'Voucher.organizationOrPersornal' | translate | headtitlecase}} (*)</span></label>
                   <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption"
                     (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectName'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.name' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="{{'Common.name' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="{{'Common.name' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Recipient'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.recipient' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.recipient')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Common.recipient' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.recipient')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Recipient" placeholder="{{'Common.recipient' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="Recipient" placeholder="{{'Common.recipient' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectAddress'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.address' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.address')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Common.address' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.address')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{'Common.address' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{'Common.address' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.phone' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.phone')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Common.phone' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.phone')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{'Common.phone' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{'Common.phone' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectEmail'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.email' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.email')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Common.email' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.email')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="{{'Common.email' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="{{'Common.email' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectTaxCode'), 'warning')">
-                  <label class="label"><span class="valid">{{'Contact.taxCode' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Contact.taxCode')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Contact.taxCode' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Contact.taxCode')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="{{'Contact.taxCode' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="{{'Contact.taxCode' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectBankName'), 'warning')">
-                  <label class="label"><span class="valid">{{'Bank.name' | translate | titlecase}}</span><span class="invalid">Tên ngân hàng là{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Bank.name')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Bank.name' | translate | headtitlecase}}</span><span class="invalid">Tên ngân hàng là{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Bank.name')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectBankName" placeholder="{{'Bank.name' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="ObjectBankName" placeholder="{{'Bank.name' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectBankCode'), 'warning')">
-                  <label class="label"><span class="valid">{{'Bank.code' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Bank.code')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Bank.code' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Bank.code')} | headtitlecase }}
                       buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectBankCode" placeholder="{{'Bank.code' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="ObjectBankCode" placeholder="{{'Bank.code' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group"
                   [attr.state]="formControlValidate(formItem.get('DirectReceiverName'), 'warning')">
-                  <label class="label"><span class="valid">{{'Sales.directReceiver' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.directReceiver')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Sales.directReceiver' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.directReceiver')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="DirectReceiverName"
-                    placeholder="{{'Sales.directReceiver' | translate | titlecase}}">
+                    placeholder="{{'Sales.directReceiver' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('DeliveryAddress'), 'warning')">
-                  <label class="label"><span class="valid">{{'Sales.deliveryAddress' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.deliveryAddress')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Sales.deliveryAddress' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.deliveryAddress')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="DeliveryAddress"
-                    placeholder="{{'Sales.deliveryAddress' | translate | titlecase}}">
+                    placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('PaymentStep'), 'warning')">
-                  <label class="label"><span class="valid">{{'Sales.paymentStep' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.paymentStep')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Sales.paymentStep' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.paymentStep')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="PaymentStep"
-                    placeholder="{{'Sales.paymentStep' | translate | titlecase}}">
+                    placeholder="{{'Sales.paymentStep' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.title' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.title')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Common.title' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.title')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | titlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.note' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.note')} | titlecase }}
+                  <label class="label"><span class="valid">{{'Common.note' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.note')} | headtitlecase }}
                       (*)</span></label>
-                  <textarea nbInput fullWidth formControlName="Note" placeholder="{{'Common.note' | translate | titlecase}}" rows="4"></textarea>
+                  <textarea nbInput fullWidth formControlName="Note" placeholder="{{'Common.note' | translate | headtitlecase}}" rows="4"></textarea>
                 </div>
               </div>
             </div>
 
             <!-- Detail form -->
             <!-- <hr> -->
-            <label class="label">{{'Voucher.productOrservice' | translate | titlecase}}</label>
+            <label class="label">{{'Voucher.productOrservice' | translate | headtitlecase}}</label>
             <div class="row">
-              <div class="col-sm-2 label">{{'Common.noNumber' | translate | titlecase}}/{{'Common.photo' | translate | titlecase}}</div>
-              <div class="col-sm-3 label">{{'Voucher.productOrService' | translate | titlecase}}</div>
+              <div class="col-sm-2 label">{{'Common.noNumber' | translate | headtitlecase}}/{{'Common.photo' | translate | headtitlecase}}</div>
+              <div class="col-sm-3 label">{{'Voucher.productOrService' | translate | headtitlecase}}</div>
               <div class="col-sm-7 label">
                 <div class="row">
-                  <div class="col-sm-2 label align-right">{{'Voucher.quantity' | translate | titlecase}}</div>
-                  <div class="col-sm-2 label">{{'Voucher.unit' | translate | titlecase}}</div>
-                  <div class="col-sm-2 label align-right">{{'Voucher.price' | translate | titlecase}}</div>
-                  <div class="col-sm-3 label">{{'Voucher.tax' | translate | titlecase}}</div>
-                  <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | titlecase}}</div>
+                  <div class="col-sm-2 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label align-right">{{'Voucher.price' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label">{{'Voucher.tax' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div>
                 </div>
               </div>
             </div>
@@ -163,14 +163,14 @@
                     <div class="row">
                       <div class="col-md-3 col-sm-3 col-xs-3">
                         <div class="form-group">
-                          <label class="label">{{'Common.noNumber' | translate | titlecase}}</label>
+                          <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
                           <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}"
                             style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
                           <input type="hidden" formControlName="Id">
                           <input type="hidden" [value]="ic" formControlName="_index">
                         </div>
                         <div class="form-group">
-                          <label class="label">{{'Form.cm' | translate | titlecase}}</label>
+                          <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
                           <button nbButton status="danger" hero size="tiny"
                             (click)="removeDetailGroup(formItem, detail)"
                             style="width: 100%; margin-bottom: 3px; padding: 0">
@@ -181,8 +181,8 @@
 
                       <div class="col-md-9 col-sm-9 col-xs-9">
                         <div class="form-group">
-                          <label class="label">{{'Common.image' | translate | titlecase}}</label>
-                          <input type="button" nbInput fullWidth formControlName="Image" placeholder="{{'Common.image' | translate | titlecase}}" style="
+                          <label class="label">{{'Common.image' | translate | headtitlecase}}</label>
+                          <input type="button" nbInput fullWidth formControlName="Image" placeholder="{{'Common.image' | translate | headtitlecase}}" style="
                           height: 6rem;
                           background-repeat: no-repeat;
                           background-size: contain;
@@ -196,7 +196,7 @@
                     <div class="row">
                       <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
-                          <label class="label"><span class="valid">{{'Voucher.productOrService' | translate | titlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Vouhcer.productOrService')} | titlecase }}
+                          <label class="label"><span class="valid">{{'Voucher.productOrService' | translate | headtitlecase}}</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Vouhcer.productOrService')} | headtitlecase }}
                               (*)</span></label>
                           <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct"
                             (selectChange)="onSelectProduct(detail, $event)">
@@ -211,8 +211,8 @@
                       </div>
                       <div class="col-md-8 col-sm-8 col-xs-8">
                         <div class="form-group">
-                          <label class="label">{{'Common.type' | translate | titlecase}}</label>
-                          <input type="text" nbInput fullWidth formControlName="Type" placeholder="{{'Common.type' | translate | titlecase}}">
+                          <label class="label">{{'Common.type' | translate | headtitlecase}}</label>
+                          <input type="text" nbInput fullWidth formControlName="Type" placeholder="{{'Common.type' | translate | headtitlecase}}">
                         </div>
                       </div>
                     </div>
@@ -221,28 +221,28 @@
                     <div class="row">
                       <div class="col-md-2 col-sm-4 col-xs-4">
                         <div class="form-group">
-                          <label class="label">{{'Voucher.quantity' | translate | titlecase}}</label>
-                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | titlecase}}"
+                          <label class="label">{{'Voucher.quantity' | translate | headtitlecase}}</label>
+                          <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}"
                             class="align-right" (keyup)="toMoney(detail)" currencyMask [options]="numberFormat">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-4">
                         <div class="form-group">
-                          <label class="label">{{'Voucher.unit' | translate | titlecase}}</label>
+                          <label class="label">{{'Voucher.unit' | translate | headtitlecase}}</label>
                           <ngx-select2 formControlName="Unit" [data]="unitList" [select2Option]="select2OptionForUnit">
                           </ngx-select2>
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-4">
                         <div class="form-group">
-                          <label class="label">{{'Voucher.price' | translate | titlecase}}</label>
-                          <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | titlecase}}"
+                          <label class="label">{{'Voucher.price' | translate | headtitlecase}}</label>
+                          <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}"
                             class="align-right" (keyup)="toMoney(detail)" currencyMask [options]="curencyFormat">
                         </div>
                       </div>
                       <div class="col-md-3 col-sm-4 col-xs-4">
                         <div class="form-group">
-                          <label class="label align-right">{{'Voucher.tax' | translate | titlecase}}</label>
+                          <label class="label align-right">{{'Voucher.tax' | translate | headtitlecase}}</label>
                           <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(detail)"
                             [select2Option]="select2OptionForTax">
                           </ngx-select2>
@@ -250,15 +250,15 @@
                       </div>
                       <div class="col-md-3 col-sm-8 col-xs-8">
                         <div class="form-group">
-                          <label class="label align-right">{{'Voucher.toMoney' | translate | titlecase}}</label>
+                          <label class="label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</label>
                           <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền"
                             class="align-right" currencyMask [options]="curencyFormat">
                         </div>
                       </div>
                       <div class="col-md-12 col-sm-12">
                         <div class="form-group">
-                          <label class="label">{{'Common.description' | translate | titlecase}}</label>
-                          <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | titlecase}}">
+                          <label class="label">{{'Common.description' | translate | headtitlecase}}</label>
+                          <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
                         </div>
                       </div>
                     </div>
@@ -280,7 +280,7 @@
               <div class="col-sm-12" style="text-align: right;">
                 <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="tiny" hero
                   [disabled]="isProcessing">
-                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon> {{'Sales.addProduct' | translate | titlecase}}
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon> {{'Sales.addProduct' | translate | headtitlecase}}
                 </button>
               </div>
             </div>
@@ -369,9 +369,9 @@
           <div class="buttons-row" style="text-align: right;">
             <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
             <button nbButton status="primary" [disabled]="!form.valid || isProcessing" style="float: right;" hero
-              (click)="saveAndClose()">{{'Common.saveAndClose' | translate | titlecase}}</button>
+              (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
             <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;"
-              hero>{{'Common.save' | translate | titlecase}}</button>
+              hero>{{'Common.save' | translate | headtitlecase}}</button>
           </div>
         </nb-card-footer>
       </nb-card>

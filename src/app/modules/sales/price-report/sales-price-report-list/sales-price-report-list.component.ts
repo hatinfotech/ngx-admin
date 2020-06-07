@@ -48,32 +48,32 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
     pager: this.configPaging(),
     columns: {
       Code: {
-        title: this.commonService.translate.instant('Common.code'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
         type: 'string',
         width: '10%',
       },
       ObjectName: {
-        title: this.commonService.translate.instant('Common.customer'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.customer'), 'head-title'),
         type: 'string',
         width: '20%',
       },
       Note: {
-        title: this.commonService.translate.instant('Common.description'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
         type: 'string',
         width: '30%',
       },
       Title: {
-        title: this.commonService.translate.instant('Common.title'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
         width: '20%',
       },
       Created: {
-        title: this.commonService.translate.instant('Common.dateOfcreated'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
         type: 'string',
         width: '10%',
       },
       IsApprove: {
-        title: this.commonService.translate.instant('Common.isApprove'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
         type: 'string',
         width: '10%',
       },

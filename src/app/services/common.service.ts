@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
 import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService, NbSidebarComponent } from '@nebular/theme';
@@ -27,6 +27,8 @@ export class CommonService {
   ];
   private previousUrl = null;
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
+
+  public langCode$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   // private loginInfo: LoginInfoModel;
   // loginInfoSubject: BehaviorSubject<LoginInfoModel> = new BehaviorSubject<LoginInfoModel>(null);
@@ -84,6 +86,7 @@ export class CommonService {
             const firstFileStore = loginInfo.distribution.fileStores[fileStoreCode];
             this.distributeFileStoreCookieRequestSubject.next(firstFileStore.requestCookieUrl + '&time=' + (Date.now()));
           }
+          this.langCode$.next(loginInfo['langCode'] ? loginInfo['langCode'] : 'vi');
         });
       } else {
         // this.loginInfoSubject.next(new LoginInfoModel());
@@ -315,6 +318,29 @@ export class CommonService {
 
   getBaseUrl() {
     return `${window.location.origin}/${environment.basePath}`;
+  }
+
+  textTitleCase(string) {
+    const sentence = string.toLowerCase().split(' ');
+    for (let i = 0; i < sentence.length; i++) {
+      sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+    }
+    document.write(sentence.join(' '));
+    return sentence;
+  }
+
+  textTransform(text: string, transform: 'title' | 'upper' | 'lower' | 'head-title') {
+    switch (transform) {
+      case 'title':
+        return this.textTitleCase(text);
+      case 'upper':
+        return text.toUpperCase();
+      case 'lower':
+        return text.toLowerCase();
+      case 'head-title':
+        return text.replace(/^./, text.charAt(0).toUpperCase());
+      default: return text;
+    }
   }
 
 }

@@ -78,8 +78,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {
     translate.addLangs(['en', 'vi']);
     translate.setDefaultLang('en');
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/en|vi/) ? browserLang : 'en');
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/en|vi/) ? browserLang : 'en');
+    commonService.langCode$.subscribe(langCode => {
+      translate.use(langCode);
+    });
+
   }
 
   ngOnInit() {
@@ -231,6 +235,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   changeLanguage(event: any) {
-      this.translate.use(event);
+    this.translate.use(event);
   }
 }

@@ -41,13 +41,13 @@ import { MobileAppModule } from './modules/mobile-app/mobile-app.module';
 import { ApiInterceptor } from './services/api.service';
 
 import { registerLocaleData } from '@angular/common';
-import localeVi from '@angular/common/locales/vi';
-import localeViExtra from '@angular/common/locales/extra/vi';
+// import localeVi from '@angular/common/locales/vi';
+// import localeViExtra from '@angular/common/locales/extra/vi';
+// registerLocaleData(localeVi, 'vi', localeViExtra);
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-registerLocaleData(localeVi, 'vi', localeViExtra);
+import { HeadTitlePipe } from './lib/pipes/head-title.pipe';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -159,7 +159,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: ApiInterceptor,
       multi: true,
     },
-    { provide: LOCALE_ID, useValue: 'vi' },
+    { provide: LOCALE_ID, useValue: 'en' },
   ],
 })
 export class AppModule {

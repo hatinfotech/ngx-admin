@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
 import { AgListComponent } from './ag-list/ag-list.component';
 import { AgGridModule } from '@ag-grid-community/angular';
+import { HeadTitlePipe } from '../pipes/head-title.pipe';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
     SmartTableThumbnailComponent,
     ActionControlListComponent,
     AgListComponent,
+    HeadTitlePipe,
   ],
   imports: [
     CommonModule,
@@ -37,6 +39,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
     SmartTableThumbnailComponent,
     ActionControlListComponent,
     AgListComponent,
+    HeadTitlePipe,
   ],
 })
 export class CustomElementModule { }
