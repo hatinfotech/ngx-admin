@@ -39,18 +39,26 @@ import { DialogFormComponent } from './modules/dialog/dialog-form/dialog-form.co
 import { CookieService } from 'ngx-cookie-service';
 import { MobileAppModule } from './modules/mobile-app/mobile-app.module';
 import { ApiInterceptor } from './services/api.service';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { registerLocaleData } from '@angular/common';
-// import localeVi from '@angular/common/locales/vi';
-// import localeViExtra from '@angular/common/locales/extra/vi';
-// registerLocaleData(localeVi, 'vi', localeViExtra);
-
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HeadTitlePipe } from './lib/pipes/head-title.pipe';
+import localeVi from '@angular/common/locales/vi';
+import localeViExtra from '@angular/common/locales/extra/vi';
+registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
+
+export class DynamicLocaleId extends String {
+  constructor(protected service: TranslateService) {
+    super();
+  }
+
+  toString() {
+    return this.service.currentLang;
+  }
 }
 
 @NgModule({
@@ -159,7 +167,11 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: ApiInterceptor,
       multi: true,
     },
-    { provide: LOCALE_ID, useValue: 'en' },
+    {
+      provide: LOCALE_ID,
+      useClass: DynamicLocaleId,
+      deps: [TranslateService],
+    },
   ],
 })
 export class AppModule {

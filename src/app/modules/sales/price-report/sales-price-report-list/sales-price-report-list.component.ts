@@ -23,12 +23,12 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
   idKey = 'Code';
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
-    protected _http: HttpClient,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public _http: HttpClient,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }

@@ -23,10 +23,10 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   env = environment;
 
   constructor(
-    protected commonService: CommonService,
-    protected router: Router,
-    protected apiService: ApiService,
-    protected ref: NbDialogRef<SalesPriceReportPrintComponent>,
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
+    public ref: NbDialogRef<SalesPriceReportPrintComponent>,
   ) {
     super(commonService, router, apiService);
   }

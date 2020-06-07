@@ -3,7 +3,7 @@
  * Copyright Akveo. All Rights Reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { NbIconLibraries, NbMenuItem } from '@nebular/theme';
 import { CommonService } from './services/common.service';
@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
     iconsLibrary: NbIconLibraries,
     public commonService: CommonService,
     public authService: NbAuthService,
+    @Inject(LOCALE_ID) public locale: string,
   ) {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.commonService.getMenuTree(menuTree => this.menu = menuTree);
@@ -45,6 +46,11 @@ export class AppComponent implements OnInit {
     this.authService.onAuthenticationChange().subscribe(state => {
       if (state) {
         this.commonService.getMenuTree(menuTree => this.menu = menuTree);
+        this.commonService.langCode$.subscribe(langCode => {
+          if (langCode) {
+            this.locale = langCode;
+          }
+        });
       } else {
         this.menu = [
           {
