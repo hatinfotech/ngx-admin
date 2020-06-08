@@ -23,7 +23,8 @@
     "directReceiver": "direct receiver",
     "deliveryAddress": "delivery address",
     "paymentStep": "payment step",
-    "technicalDescription": "technical description"
+    "technicalDescription": "technical description",
+    "dateOfReported": "date of reported"
   },
   "Common": {
     "create": "create",

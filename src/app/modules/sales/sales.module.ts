@@ -12,12 +12,13 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SalesPriceReportPrintComponent } from './price-report/sales-price-report-print/sales-price-report-print.component';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { TranslateModule } from '@ngx-translate/core';
+import { SmartTableDateTimeComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -64,9 +65,11 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
   entryComponents: [
     SalesPriceReportFormComponent,
     SalesPriceReportPrintComponent,
+    SmartTableDateTimeComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },
+    // {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
   ],
 })
 export class SalesModule { }

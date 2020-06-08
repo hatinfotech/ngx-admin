@@ -219,6 +219,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     // params['includeProduct'] = true;
     params['includeContact'] = true;
     params['includeDetails'] = true;
+    params['useBaseTimezone'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -228,7 +229,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       // Details form load
       if (itemFormData.Details) {
         itemFormData.Details.forEach(condition => {
-          const newDetailFormGroup = this.makeNewDetailFormGroup(condition);
+          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
           const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
@@ -270,8 +271,10 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       ObjectBankCode: [''],
       PaymentStep: [''],
       DeliveryAddress: [''],
-      Title: [''],
+      Title: ['', Validators.required],
       Note: [''],
+      Reported: [''],
+      _total: [''],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -304,7 +307,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
   /** Detail Form */
-  makeNewDetailFormGroup(data?: SalesPriceReportDetailModel): FormGroup {
+  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesPriceReportDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Id_old: [''],
       _index: [],
@@ -326,7 +329,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       // data['Id_old'] = data['Id'];
       // data.Price = parseFloat(data.Price) as any;
       newForm.patchValue(data);
-      this.toMoney(newForm);
+      this.toMoney(parentFormGroup, newForm);
     }
     return newForm;
   }
@@ -335,7 +338,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
   addDetailFormGroup(parentFormGroup: FormGroup) {
     // this.componentList[formGroupIndex].push([]);
-    const newChildFormGroup = this.makeNewDetailFormGroup();
+    const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
     this.getDetails(parentFormGroup).push(newChildFormGroup);
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
     return false;
@@ -433,8 +436,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     return false;
   }
 
-  toMoney(detail: FormGroup) {
-    // console.log('calculate to money: ' + (detail.get('Quantity').value * detail.get('Price').value));
+  calculatToMoney(detail: FormGroup) {
     let toMoney = detail.get('Quantity').value * detail.get('Price').value;
     let tax = detail.get('Tax').value;
     if (tax) {
@@ -443,13 +445,31 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       }
       toMoney += toMoney * tax.Tax / 100;
     }
-    detail.get('ToMoney').setValue(toMoney);
+    return toMoney;
+  }
+
+  toMoney(formItem: FormGroup, detail: FormGroup) {
+    // console.log('calculate to money: ' + (detail.get('Quantity').value * detail.get('Price').value));
+    // let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+    // let tax = detail.get('Tax').value;
+    // if (tax) {
+    //   if (typeof tax === 'string') {
+    //     tax = this.taxList.filter(t => t.Code === tax)[0];
+    //   }
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
+    detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+
+    // Call culate total
+    const details = this.getDetails(formItem);
+    let total = 0;
+    for (let i = 0; i < details.controls.length; i++) {
+      total += this.calculatToMoney(details.controls[i] as FormGroup);
+    }
+    formItem.get('_total').setValue(total);
     return false;
   }
 
-  getTotal() {
-
-  }
 
   preview(formItem: FormGroup) {
     const data: SalesPriceReportModel = formItem.value;

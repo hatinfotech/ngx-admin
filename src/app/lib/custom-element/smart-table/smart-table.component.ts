@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 import { ViewCell } from 'ng2-smart-table';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   template: `
@@ -129,3 +130,31 @@ export class SmartTableThumbnailComponent implements ViewCell, OnInit {
   }
 
 }
+
+@Component({
+  template: `{{this.value | date:(format$ | async)}}`,
+})
+export class SmartTableDateTimeComponent implements ViewCell, OnInit {
+
+  // renderValue: string;
+  disable: boolean = false;
+  format$ = new BehaviorSubject('short');
+
+  @Input() value: string;
+  @Input() rowData: any;
+
+  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+
+  ngOnInit() {
+    // this.renderValue = this.value;
+  }
+
+  onChange(value: any) {
+    this.valueChange.emit(value);
+    this.value = value;
+  }
+
+}
+
+
+

@@ -7,6 +7,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { environment } from '../../../../../environments/environment';
+import { DatePipe } from '@angular/common';
 
 declare var $: JQueryStatic;
 
@@ -27,6 +28,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<SalesPriceReportPrintComponent>,
+    private datePipe: DatePipe,
   ) {
     super(commonService, router, apiService);
   }
@@ -38,7 +40,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
 
   async init() {
     const result = await super.init();
-    this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.data.Reported) : '');
+    this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
     return result;
   }
 

@@ -62,12 +62,14 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         ${this.printContent.element.nativeElement.innerHTML}
       </body>
     </html>`);
+    const currentTitle = document.title;
     document.title = this.title;
     frameDoc.document.close();
     printFrame.onload = () => {
       window.frames['printFrame'].focus();
       window.frames['printFrame'].print();
       document.body.removeChild(printFrame);
+      document.title = currentTitle;
     };
 
     // setTimeout(function () {

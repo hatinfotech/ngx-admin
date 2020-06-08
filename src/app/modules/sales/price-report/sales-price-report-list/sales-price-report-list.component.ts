@@ -5,10 +5,13 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { PromotionFormComponent } from '../../../promotion/promotion/promotion-form/promotion-form.component';
 import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { ProductModel } from '../../../../models/product.model';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-sales-price-report-list',
@@ -31,6 +34,12 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
     public _http: HttpClient,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
+  }
+
+  /** Api get funciton */
+  executeGet(params: any, success: (resources: SalesPriceReportModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: SalesPriceReportModel[] | HttpErrorResponse) => void) {
+    params['useBaseTimezone'] = true;
+    super.executeGet(params, success, error, complete);
   }
 
   editing = {};
@@ -69,8 +78,12 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
       },
       Created: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
-        type: 'string',
+        type: 'custom',
         width: '10%',
+        renderComponent: SmartTableDateTimeComponent,
+        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+          // instance.format$.next('medium');
+        },
       },
       IsApprove: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
@@ -120,6 +133,13 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
+
+    this.apiService.getObservable<ProductModel[]>('/admin-product/products', {})
+      .pipe(map(product => {
+        return {
+          product: product,
+        };
+      }));
   }
 
   getList(callback: (list: SalesPriceReportModel[]) => void) {

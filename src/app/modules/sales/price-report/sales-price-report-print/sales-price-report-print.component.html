@@ -7,12 +7,18 @@
           title="{{'Common.goback' | translate | headtitlecase}}">
           <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
         </button>
+        <button nbButton status="primary" hero size="tiny" (click)="print()" style="float: right;"
+          title="{{'Common.print' | translate | headtitlecase}}">
+          <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+        </button>
       </nav>
     </nb-card-header>
     <nb-card-body #printContent>
       <div id="print-area">
         <div style="display: flex; flex-wrap: wrap">
-          <div style="flex: 0 0 60%;"><pre>{{'Infomation.Voucher.register' | translate }}</pre></div>
+          <div style="flex: 0 0 60%;">
+            <pre>{{'Infomation.Voucher.register' | translate }}</pre>
+          </div>
           <div style="text-align: right; flex: 0 0 40%;">
             <img [src]="env.register.logo.voucher" style="height: 50px;">
           </div>
@@ -20,9 +26,11 @@
         <div>
           <div class="print-title">{{ 'Sales.PriceReport.title' | translate:{action: '', definition: ''} | uppercase }}
           </div>
+          <div class="under-title">{{ data.Code }} - {{ data.Reported | date:'short' }}</div>
         </div>
         <div>
-          <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} : {{renderValue(data.ObjectName)}}
+          <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+            {{renderValue(data.ObjectName)}}
           </div>
           <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}
           </div>
@@ -100,10 +108,10 @@
     </nb-card-body>
     <nb-card-footer>
       <div class="buttons-row">
-        <button nbButton hero status="danger" (click)="print();" [disabled]="!identifier">
+        <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
           <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
         </button>
-        <button nbButton hero status="success" (click)="saveAndClose();">
+        <button nbButton hero status="danger" (click)="saveAndClose();">
           <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
         </button>
         <button nbButton hero status="warning"

@@ -45,6 +45,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { registerLocaleData } from '@angular/common';
 import localeVi from '@angular/common/locales/vi';
 import localeViExtra from '@angular/common/locales/extra/vi';
+import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -172,6 +173,11 @@ export class DynamicLocaleId extends String {
       useClass: DynamicLocaleId,
       deps: [TranslateService],
     },
+    {
+      provide: OWL_DATE_TIME_LOCALE,
+      useClass: DynamicLocaleId,
+      deps: [TranslateService],
+    }
   ],
 })
 export class AppModule {

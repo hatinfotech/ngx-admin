@@ -23,7 +23,8 @@
     "directReceiver": "người trực tiếp nhận hàng",
     "deliveryAddress": "địa chỉ nhận hàng",
     "paymentStep": "bước thanh toán",
-    "technicalDescription": "Diễn giải thông số kỹ thuật"
+    "technicalDescription": "Diễn giải thông số kỹ thuật",
+    "dateOfReported": "ngày báo giá"
   },
   "Common": {
     "create": "tạo",

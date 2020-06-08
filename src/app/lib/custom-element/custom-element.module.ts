@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
 import { Select2Module } from 'ng2-select2';
-import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent } from './smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule } from '@nebular/theme';
 import { FormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
@@ -20,6 +20,7 @@ import { HeadTitlePipe } from '../pipes/head-title.pipe';
     ActionControlListComponent,
     AgListComponent,
     HeadTitlePipe,
+    SmartTableDateTimeComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +41,7 @@ import { HeadTitlePipe } from '../pipes/head-title.pipe';
     ActionControlListComponent,
     AgListComponent,
     HeadTitlePipe,
+    SmartTableDateTimeComponent,
   ],
 })
 export class CustomElementModule { }
