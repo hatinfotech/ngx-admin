@@ -73,7 +73,9 @@
     "value": "value",
     "module": "module",
     "selectTimezone": "Select timezone",
-    "choose": "choose"
+    "choose": "choose",
+    "clearFilter": "clear filter",
+    "reset": "reset"
   },
   "Contact":{
     "name": "contact name",

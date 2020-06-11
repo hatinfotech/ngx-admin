@@ -10,6 +10,7 @@ import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @Component({
   selector: 'ngx-cdr-list',
@@ -126,6 +127,10 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.startTime'), 'head-title'),
         type: 'custom',
         width: '10%',
+        filter: {
+          type: 'custom',
+          component: SmartTableDateTimeRangeFilterComponent,
+        },
         renderComponent: SmartTableDateTimeComponent,
         onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
           // instance.format$.next('medium');
@@ -165,7 +170,10 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         title: 'Ghi âm',
         type: 'custom',
         width: '5%',
-        filter: false,
+        // filter: {
+        //   type: 'custom',
+        //   component: SmartTableClearingFilterComponent,
+        // },
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
@@ -234,8 +242,10 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
 
     // Set DataSource: prepareData
     source.prepareData = (data: CdrModel[]) => {
-      data.forEach(item => {
-        item.Start = item.Start.replace(' ', '<br>');
+      const paging = this.source.getPaging();
+      data.forEach((item, index) => {
+        item['No'] = (paging.page - 1) * paging.perPage + index + 1;
+        // item.Start = item.Start.replace(' ', '<br>');
       });
       return data;
     };
@@ -286,5 +296,9 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
   exportCdrs() {
     window.open(`${this.apiService.buildApiUrl('/ivoip/cdrs', { domainId: this.ivoipService.getPbxActiveDomainUuid(), export: true })}`, '_blank');
     return false;
+  }
+
+  custom(event: any) {
+    console.log(event);
   }
 }

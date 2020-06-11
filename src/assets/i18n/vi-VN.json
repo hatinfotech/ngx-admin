@@ -73,7 +73,9 @@
     "value": "giá trị",
     "module": "module",
     "selectTimezone": "Chọn muối giờ",
-    "choose": "chọn"
+    "choose": "chọn",
+    "clearFilter": "đặt lại bộ lọc",
+    "reset": "đặt lại"
   },
   "Contact": {
     "name": "tên liên hệ",

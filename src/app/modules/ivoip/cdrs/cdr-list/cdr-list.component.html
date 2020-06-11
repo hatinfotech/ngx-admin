@@ -5,7 +5,10 @@
       <button nbButton status="success" hero size="tiny" (click)="onReloadBtnClick()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
-      <button nbButton status="danger" hero size="tiny" (click)="exportCdrs()" style="float: right;">
+      <button nbButton status="danger" hero size="tiny" (click)="reset()" title="{{'Common.reset' | translate | headtitlecase}}" style="float: right;">
+        <nb-icon pack="eva" icon="slash"></nb-icon>
+      </button>
+      <button nbButton status="primary" hero size="tiny" (click)="exportCdrs()" style="float: right;">
         <nb-icon pack="eva" icon="external-link-outline"></nb-icon> Xuất
       </button>
       <ngx-select2 [data]="domainList" [value]="ivoipService.activeDomainUuid" [select2Option]="select2OptionForDoaminList"

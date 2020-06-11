@@ -4,11 +4,14 @@ import { Select2Component } from './select2/select2.component';
 import { Select2Module } from 'ng2-select2';
 import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule } from '@nebular/theme';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
 import { AgListComponent } from './ag-list/ag-list.component';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { HeadTitlePipe } from '../pipes/head-title.pipe';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent } from './smart-table/smart-table.filter.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -21,6 +24,8 @@ import { HeadTitlePipe } from '../pipes/head-title.pipe';
     AgListComponent,
     HeadTitlePipe,
     SmartTableDateTimeComponent,
+    SmartTableDateTimeRangeFilterComponent,
+    SmartTableClearingFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -31,6 +36,10 @@ import { HeadTitlePipe } from '../pipes/head-title.pipe';
     FormsModule,
     NbInputModule,
     AgGridModule,
+    ReactiveFormsModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    TranslateModule,
   ],
   exports: [
     Select2Component,
@@ -42,6 +51,8 @@ import { HeadTitlePipe } from '../pipes/head-title.pipe';
     AgListComponent,
     HeadTitlePipe,
     SmartTableDateTimeComponent,
+    SmartTableDateTimeRangeFilterComponent,
+    SmartTableClearingFilterComponent,
   ],
 })
 export class CustomElementModule { }

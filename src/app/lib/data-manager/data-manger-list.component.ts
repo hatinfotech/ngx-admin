@@ -403,4 +403,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
     return settings;
   }
+
+  reset() {
+    this.source.reset();
+    return false;
+  }
 }

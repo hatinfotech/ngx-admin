@@ -51,6 +51,7 @@ import { UserListComponent } from './users/user-list/user-list.component';
 import { UserFormComponent } from './users/user-form/user-form.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { RoutingResolve } from '../../app-routing.module';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [
@@ -131,6 +132,8 @@ import { RoutingResolve } from '../../app-routing.module';
     ButtonViewComponent,
     SmartTableButtonComponent,
     SmartTableDateTimeComponent,
+    SmartTableDateTimeRangeFilterComponent,
+    SmartTableClearingFilterComponent,
   ],
 })
 export class IvoipModule { }
