@@ -1,13 +1,14 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()"
+(keydown.enter)="$event.preventDefault()" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header">
         <nb-card-header>
           <nav>
             Cập nhật chặn cuộc gọi
-            <button nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;"
+            <button nbButton status="danger" hero size="tiny" (click)="goback(i)" style="float: right;"
               title="Xoá">
-              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+              <nb-icon pack="eva" icon="close"></nb-icon>
             </button>
             <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
               title="Tải lại">
@@ -17,9 +18,9 @@
               style="float: right;" title="Hoàn tác">
               <nb-icon pack="eva" icon="undo-outline"></nb-icon>
             </button>
-            <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
+            <!-- <button nbButton status="info" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
               <nb-icon pack="eva" icon="arrow-back"></nb-icon>
-            </button>
+            </button> -->
           </nav>
         </nb-card-header>
         <nb-card-body>
@@ -35,20 +36,20 @@
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('call_block_name'), 'warning')">
-                  <label class="label"><span class="valid">Tên (*)</span></label>
+                  <label class="label"><span class="valid">Tên</span></label>
                   <input type="text" nbInput fullWidth formControlName="call_block_name" placeholder="Tên">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('call_block_action'), 'warning')">
-                  <label class="label"><span class="valid">Nhóm cha (*)</span></label>
+                  <label class="label"><span class="valid">Kiểu chặn (*)</span></label>
                   <ngx-select2 [data]="blockActions" formControlName="call_block_action" [select2Option]="select2OptionForBlockActions">
                     </ngx-select2>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('call_block_enabled'), 'warning')">
-                  <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span></label>
+                  <label class="label"><span class="valid">Kích hoạt</span><span class="invalid"></span></label>
                   <nb-checkbox formControlName="call_block_enabled" >Kích hoạt</nb-checkbox>
                 </div>
               </div>

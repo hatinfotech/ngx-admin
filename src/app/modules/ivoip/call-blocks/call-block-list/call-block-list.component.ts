@@ -6,6 +6,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { IvoipService } from '../../ivoip-service';
+import { CallBlockFormComponent } from '../call-block-form/call-block-form.component';
 
 @Component({
   selector: 'ngx-call-block-list',
@@ -99,6 +100,31 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
+  }
+
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallBlockModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(CallBlockFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: PbxCallBlockModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+          this.refresh();
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
+    });
+  }
+
+  /** Go to form */
+  gotoForm(id?: string): false {
+    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+    return false;
   }
 
 }

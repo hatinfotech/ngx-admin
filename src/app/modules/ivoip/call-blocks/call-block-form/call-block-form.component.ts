@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
@@ -30,6 +30,7 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref: NbDialogRef<CallBlockFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }
@@ -74,7 +75,7 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
 
   /** Execute api get */
   executeGet(params: any, success: (resources: PbxCallBlockModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['includeUsers'] = true;
+    // params['includeUsers'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -97,11 +98,26 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
   onRemoveFormGroup(index: number): void {
 
   }
+  // goback(): false {
+  //   this.router.navigate(['/ivoip/call-blocks/list']);
+  //   return false;
+  // }
   goback(): false {
-    this.router.navigate(['/ivoip/call-blocks/list']);
+    super.goback();
+    if (this.mode === 'page') {
+      this.router.navigate(['/ivoip/call-blocks/list']);
+    } else {
+      this.ref.close();
+      // this.dismiss();
+    }
     return false;
   }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
+
+  /** For popup */
+  getRequestId(callback: (id?: string[]) => void) {
+    callback(this.inputId);
+  }
 
 }

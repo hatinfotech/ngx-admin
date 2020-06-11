@@ -73,22 +73,22 @@ export class AppComponent implements OnInit {
     // this.commonService.;
 
 
-    (function checkLocalStorageOnline() {
-      if (localStorage) {
-        let localeCode = localStorage.getItem('configuration.locale');
-        // let locale = {locale: localeCode, skipUpdate: true};
-        if (!localeCode) {
-          const browserLangCode = this.translate.getBrowserLang();
-          localeCode = browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US';
-          // locale = {locale: browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US', skipUpdate: true};
-        }
-        // $this.locale$.next({locale: locale, skipUpdate: true});
-        this.translate.use(localeCode);
-      } else {
-        setTimeout(() => {
-          checkLocalStorageOnline();
-        }, 100);
-      }
-    })();
+    // (function checkLocalStorageOnline() {
+    //   if (localStorage) {
+    //     let localeCode = localStorage.getItem('configuration.locale');
+    //     // let locale = {locale: localeCode, skipUpdate: true};
+    //     if (!localeCode) {
+    //       const browserLangCode = this.translate.getBrowserLang();
+    //       localeCode = browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US';
+    //       // locale = {locale: browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US', skipUpdate: true};
+    //     }
+    //     // $this.locale$.next({locale: locale, skipUpdate: true});
+    //     this.translate.use(localeCode);
+    //   } else {
+    //     setTimeout(() => {
+    //       checkLocalStorageOnline();
+    //     }, 100);
+    //   }
+    // })();
   }
 }
