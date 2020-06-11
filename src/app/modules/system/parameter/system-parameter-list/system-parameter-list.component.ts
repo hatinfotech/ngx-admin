@@ -1,27 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { SalesPriceReportModel } from '../../../../models/sales.model';
+import { SystemParameterModel } from '../../../../models/system.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
-import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { ProductModel } from '../../../../models/product.model';
-import { map } from 'rxjs/operators';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/searver-data-manger-list.component';
+import { SystemParameterFormComponent } from '../system-parameter-form/system-parameter-form.component';
 
 @Component({
-  selector: 'ngx-sales-price-report-list',
-  templateUrl: './sales-price-report-list.component.html',
-  styleUrls: ['./sales-price-report-list.component.scss'],
+  selector: 'ngx-system-parameter-list',
+  templateUrl: './system-parameter-list.component.html',
+  styleUrls: ['./system-parameter-list.component.scss'],
 })
-export class SalesPriceReportListComponent extends DataManagerListComponent<SalesPriceReportModel> implements OnInit {
+export class SystemParameterListComponent extends ServerDataManagerListComponent<SystemParameterModel> implements OnInit {
 
-  componentName: string = 'SalesPriceReportListComponent';
-  formPath = '/sales/price-report/form';
-  apiPath = '/sales/price-reports';
-  idKey = 'Code';
+  componentName: string = 'SystemParameterListComponent';
+  formPath = '/system/parameter/form';
+  apiPath = '/system/parameters';
+  idKey = 'Name';
 
   constructor(
     public apiService: ApiService,
@@ -34,8 +31,29 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
     super(apiService, router, commonService, dialogService, toastService);
   }
 
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    source.prepareData = (data: SystemParameterModel[]) => {
+      // data.forEach(item => {
+      //   item['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+      //   item['DownloadLink'] += '?token=' + this.apiService.getAccessToken();
+      // });
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      // params['sort_Id'] = 'desc';
+      return params;
+    };
+
+    return source;
+  }
+
   /** Api get funciton */
-  executeGet(params: any, success: (resources: SalesPriceReportModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: SalesPriceReportModel[] | HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: SystemParameterModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: SystemParameterModel[] | HttpErrorResponse) => void) {
     params['useBaseTimezone'] = true;
     super.executeGet(params, success, error, complete);
   }
@@ -54,39 +72,37 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
     delete: this.configDeleteButton(),
     pager: this.configPaging(),
     columns: {
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '10%',
-      },
-      ObjectName: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.customer'), 'head-title'),
-        type: 'string',
-        width: '20%',
-      },
-      Note: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+      Name: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
         type: 'string',
         width: '30%',
       },
-      Title: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+      Type: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.type'), 'head-title'),
+        type: 'string',
+        width: '10%',
+      },
+      Value: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.value'), 'head-title'),
+        type: 'string',
+        width: '30%',
+      },
+      Module: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.module'), 'head-title'),
         type: 'string',
         width: '20%',
       },
-      Created: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
-        type: 'custom',
+      IsApplied: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.enable'), 'head-title'),
+        type: 'boolean',
+        editable: true,
         width: '10%',
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
+        onChange: (value, rowData: SystemParameterModel) => {
+          // rowData.AutoUpdate = value;
+          this.apiService.putPromise<SystemParameterModel[]>('/system/parameters', {}, [{ Name: rowData.Name, IsApplied: value }]).then(rs => {
+            console.info(rs);
+          });
         },
-      },
-      IsApprove: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
-        type: 'string',
-        width: '10%',
       },
       //   Copy: {
       //     title: 'Copy',
@@ -106,13 +122,13 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
       //         //   instance.disabled = true;
       //         // }
       //       });
-      //       instance.click.subscribe(async (row: SalesPriceReportModel) => {
+      //       instance.click.subscribe(async (row: ParameterModel) => {
 
       //         this.dialogService.open(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
-      //             onDialogSave: (newData: SalesPriceReportModel[]) => {
+      //             onDialogSave: (newData: ParameterModel[]) => {
       //               // if (onDialogSave) onDialogSave(row);
       //             },
       //             onDialogClose: () => {
@@ -140,19 +156,19 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
     //   }));
   }
 
-  getList(callback: (list: SalesPriceReportModel[]) => void) {
+  getList(callback: (list: SystemParameterModel[]) => void) {
     super.getList((rs) => {
       if (callback) callback(rs);
     });
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesPriceReportModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(SalesPriceReportFormComponent, {
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: SystemParameterModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(SystemParameterFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
-        onDialogSave: (newData: SalesPriceReportModel[]) => {
+        onDialogSave: (newData: SystemParameterModel[]) => {
           if (onDialogSave) onDialogSave(newData);
         },
         onDialogClose: () => {

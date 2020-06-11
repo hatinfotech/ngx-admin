@@ -36,6 +36,7 @@ import { CustomerListComponent } from './customers/customer-list/customer-list.c
 import { CustomerFormComponent } from './customers/customer-form/customer-form.component';
 import { UserListComponent } from './users/user-list/user-list.component';
 import { UserFormComponent } from './users/user-form/user-form.component';
+import { RoutingResolve } from '../../app-routing.module';
 
 
 const routes: Routes = [{
@@ -95,6 +96,9 @@ const routes: Routes = [{
       path: 'cdrs/list',
       canActivate: [AuthGuardService],
       component: CdrListComponent,
+      // resolve: {
+      //   configuration: RoutingResolve,
+      // },
       data: {
         reuse: true,
       },

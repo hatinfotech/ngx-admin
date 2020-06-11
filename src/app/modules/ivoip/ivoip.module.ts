@@ -25,7 +25,7 @@ import { DeviceFormComponent } from './devices/device-form/device-form.component
 import { DomainListComponent } from './domains/domain-list/domain-list.component';
 import { DomainFormComponent } from './domains/domain-form/domain-form.component';
 import { CdrListComponent } from './cdrs/cdr-list/cdr-list.component';
-import { SmartTableButtonComponent } from '../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { PstnNumberListComponent } from './pstn-numbers/pstn-number-list/pstn-number-list.component';
 import { PstnNumberFormComponent } from './pstn-numbers/pstn-number-form/pstn-number-form.component';
 import { GatewayListComponent } from './gateways/gateway-list/gateway-list.component';
@@ -49,6 +49,8 @@ import { CustomerListComponent } from './customers/customer-list/customer-list.c
 import { CustomerFormComponent } from './customers/customer-form/customer-form.component';
 import { UserListComponent } from './users/user-list/user-list.component';
 import { UserFormComponent } from './users/user-form/user-form.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { RoutingResolve } from '../../app-routing.module';
 
 @NgModule({
   declarations: [
@@ -112,18 +114,23 @@ import { UserFormComponent } from './users/user-form/user-form.component';
     ReactiveFormsModule,
     DialogModule,
     NbProgressBarModule,
+    TranslateModule,
     SortablejsModule.forRoot({
       animation: 200,
     }),
   ],
   // exports: [PbxFormComponent],
-  // providers: [{
-  //   provide: RouteReuseStrategy,
-  //   useClass: CustomRouteReuseStrategy,
-  // }],
+  providers: [
+    // {
+    //   provide: RouteReuseStrategy,
+    //   useClass: CustomRouteReuseStrategy,
+    // },
+    // RoutingResolve,
+  ],
   entryComponents: [
     ButtonViewComponent,
     SmartTableButtonComponent,
+    SmartTableDateTimeComponent,
   ],
 })
 export class IvoipModule { }

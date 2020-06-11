@@ -1,0 +1,61 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
+  (keydown.enter)="onControlEnter($event)" class="popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <nav>
+            {{ 'System.Prameter.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
+            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
+              title="{{'Common.close' | translate | headtitlecase}}">
+              <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
+            </button>
+            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+              [disabled]="isProcessing" title="{{'Common.reload' | translate | headtitlecase}}">
+              <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | headtitlecase}}
+            </button>
+            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()"
+              [disabled]="!canUndo || isProcessing" style="float: right;"
+              title="{{'Common.undo' | translate | headtitlecase}}">
+              <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" [value]="i" formControlName="_index">
+              <input type="hidden" formControlName="Name_old">
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Name"
+                    placeholder="{{'Common.name' | translate | headtitlecase}}">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Value'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.value' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.value')} | headtitlecase }}
+                      (*)</span></label>
+                  <textarea nbInput fullWidth formControlName="Value" placeholder="{{'Common.value' | translate | headtitlecase}}"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero
+              (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+            <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;"
+              hero>{{'Common.save' | translate | headtitlecase}}</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

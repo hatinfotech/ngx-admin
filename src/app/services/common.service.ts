@@ -11,6 +11,7 @@ import { ActionControl } from '../lib/custom-element/action-control-list/action-
 import { MySocket } from '../lib/nam-socket/my-socket';
 import { environment } from '../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { LocaleConfigModel } from '../models/system.model';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,8 @@ export class CommonService {
   private previousUrl = null;
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
 
-  public langCode$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  public locale$: BehaviorSubject<{ locale: string, skipUpdate?: boolean }> = new BehaviorSubject<{ locale: string, skipUpdate?: boolean }>(null);
+  public timezone$: BehaviorSubject<{ timezone: string, skipUpdate?: boolean }> = new BehaviorSubject<{ timezone: string, skipUpdate?: boolean }>(null);
 
   // private loginInfo: LoginInfoModel;
   // loginInfoSubject: BehaviorSubject<LoginInfoModel> = new BehaviorSubject<LoginInfoModel>(null);
@@ -73,30 +75,47 @@ export class CommonService {
     // });
 
     /** Load langCode */
-    translate.addLangs(['en', 'vi']);
-    translate.setDefaultLang('en');
-    this.langCode$.subscribe(langCode => {
-      if (langCode) {
-        translate.use(langCode);
-        localStorage.setItem('langCode', langCode);
+    translate.addLangs(['en-US', 'vi-VN']);
+    translate.setDefaultLang('en-US');
+    // translate.setDefaultLang('vi-VN');
+    this.locale$.subscribe(info => {
+      if (info) {
+        translate.use(info.locale);
+        localStorage.setItem('configuration.locale', info.locale);
+        if (!info.skipUpdate) {
+          this.apiService.putPromise<LocaleConfigModel[]>('/system/user-locales', {}, [{ LocaleCode: info.locale }]).then(rs => {
+            console.log('Update locale success');
+          });
+        }
+      }
+    });
+    this.timezone$.subscribe(info => {
+      if (info) {
+        localStorage.setItem('configuration.timezone', info.timezone);
+        if (!info.skipUpdate) {
+          this.apiService.putPromise<LocaleConfigModel[]>('/system/user-locales', {}, [{ Timezone: info.timezone }]).then(rs => {
+            console.log('Update timezone success');
+          });
+        }
       }
     });
 
-    const $this = this;
-    (function checkLocalStorageOnline() {
-      if (localStorage) {
-        let langCode = localStorage.getItem('langCode');
-        if (!langCode) {
-          const browserLangCode = translate.getBrowserLang();
-          langCode = browserLangCode.match(/en|vi/) ? browserLangCode : 'en';
-        }
-        $this.langCode$.next(langCode);
-      } else {
-        setTimeout(() => {
-          checkLocalStorageOnline();
-        }, 100);
-      }
-    })();
+    // const $this = this;
+    // (function checkLocalStorageOnline() {
+    //   if (localStorage) {
+    //     let locale = localStorage.getItem('configuration.locale');
+    //     if (!locale) {
+    //       const browserLangCode = translate.getBrowserLang();
+    //       locale = browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US';
+    //     }
+    //     // $this.locale$.next({locale: locale, skipUpdate: true});
+    //     translate.use(locale);
+    //   } else {
+    //     setTimeout(() => {
+    //       checkLocalStorageOnline();
+    //     }, 100);
+    //   }
+    // })();
     /** End Load langCode */
 
     this.authService.onAuthenticationChange().subscribe(state => {
@@ -115,9 +134,12 @@ export class CommonService {
             const firstFileStore = loginInfo.distribution.fileStores[fileStoreCode];
             this.distributeFileStoreCookieRequestSubject.next(firstFileStore.requestCookieUrl + '&time=' + (Date.now()));
           }
-          const langCode = loginInfo['langCode'] ? loginInfo['langCode'] : 'vi';
-          this.langCode$.next(langCode);
-          localStorage.setItem('langCode', langCode);
+          const locale = loginInfo['configuration']['locale'] || 'vi-VN';
+          const timezone = loginInfo['configuration']['timezone'] || 'America/Los_Angeles';
+          this.locale$.next({ locale, skipUpdate: true });
+          this.timezone$.next({ timezone, skipUpdate: true });
+          // localStorage.setItem('configuration.locale', locale);
+          // localStorage.setItem('configuration.timezone', timezone);
         });
       } else {
         // this.loginInfoSubject.next(new LoginInfoModel());

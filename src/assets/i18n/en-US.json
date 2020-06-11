@@ -69,7 +69,11 @@
     "employee": "employee",
     "exportTo": "export {{to}}",
     "goback": "go back",
-    "sort": "sort"
+    "sort": "sort",
+    "value": "value",
+    "module": "module",
+    "selectTimezone": "Select timezone",
+    "choose": "choose"
   },
   "Contact":{
     "name": "contact name",
@@ -103,5 +107,27 @@
   },
   "Form": {
     "requireLabel": "{{field}} is require"
+  },
+  "System": {
+    "title": "{{action}} system parameter {{definition}}",
+    "Config": {
+      "userLocale": "User locale config"
+    }
+  },
+  "Ivoip": {
+    "List": {
+      "title": "Call detail record list"
+    },
+    "CallState": {
+      "ORIGINATOR_CANCEL": "originator cancel",
+      "NORMAL_CLEARING": "normal clearing",
+      "CALL_REJECTED": "call rejected",
+      "INCOMPATIBLE_DESTINATION": "incompatible destination"
+    },
+    "local": "local",
+    "inbound": "inbound",
+    "outbound": "outbound",
+    "direction": "direction",
+    "startTime": "start time"
   }
 }

@@ -234,7 +234,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.ivoipService.onChangeDomain(event);
   }
 
-  changeLanguage(event: any) {
-    this.commonService.langCode$.next(event);
+  changeLanguage(localeCode: any) {
+    this.commonService.locale$.next({locale: localeCode});
   }
 }

@@ -10,7 +10,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common
 import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, RoutingResolve } from './app-routing.module';
 import { environment } from './../environments/environment';
 import {
   NbChatModule,
@@ -53,12 +53,29 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 export class DynamicLocaleId extends String {
-  constructor(protected service: TranslateService) {
+  constructor(public translate: TranslateService) {
     super();
+
+    // (function checkLocalStorageOnline() {
+    //   if (localStorage && translate) {
+    //     let locale = localStorage.getItem('configuration.locale');
+    //     if (!locale) {
+    //       const browserLangCode = translate.getBrowserLang();
+    //       locale = browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US';
+    //     }
+    //     // $this.locale$.next({locale: locale, skipUpdate: true});
+    //     translate.use(locale);
+    //   } else {
+    //     setTimeout(() => {
+    //       checkLocalStorageOnline();
+    //     }, 100);
+    //   }
+    // })();
+
   }
 
   toString() {
-    return this.service.currentLang;
+    return this.translate.currentLang;
   }
 }
 
@@ -177,7 +194,8 @@ export class DynamicLocaleId extends String {
       provide: OWL_DATE_TIME_LOCALE,
       useClass: DynamicLocaleId,
       deps: [TranslateService],
-    }
+    },
+    RoutingResolve,
   ],
 })
 export class AppModule {

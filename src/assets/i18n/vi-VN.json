@@ -69,7 +69,11 @@
     "employee": "nhân viên",
     "exportTo": "xuất {{to}}",
     "goback": "trở về",
-    "sort": "sắp xếp"
+    "sort": "sắp xếp",
+    "value": "giá trị",
+    "module": "module",
+    "selectTimezone": "Chọn muối giờ",
+    "choose": "chọn"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -103,5 +107,27 @@
   },
   "Form": {
     "requireLabel": "{{field}} là bắt buộc"
+  },
+  "System": {
+    "title": "{{definition}}{{action}} tham số hệ thống",
+    "Config": {
+      "userLocale": "Cấu hình ngôn ngữ & vùng miền"
+    }
+  },
+  "Ivoip": {
+    "List": {
+      "title": "Danh sách chi tiết cuộc gọi"
+    },
+    "CallState": {
+      "ORIGINATOR_CANCEL": "Cuộc gọi nhỡ",
+      "NORMAL_CLEARING": "Hoàn tất cuộc gọi",
+      "CALL_REJECTED": "Bị chặn",
+      "INCOMPATIBLE_DESTINATION": "Không xác định"
+    },
+    "local": "nội bộ",
+    "inbound": "gọi vào",
+    "outbound": "gọi ra",
+    "direction": "hướng gọi",
+    "startTime": "TG bắt đầu"
   }
 }

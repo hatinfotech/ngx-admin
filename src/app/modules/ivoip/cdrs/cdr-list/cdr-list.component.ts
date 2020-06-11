@@ -7,8 +7,9 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { PlayerDialogComponent } from '../../../dialog/player-dialog/player-dialog.component';
 import { CdrModel } from '../../../../models/cdr.model';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-cdr-list',
@@ -54,9 +55,21 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         width: '5%',
       },
       Direction: {
-        title: 'Hướng gọi',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.choose'), 'head-title'),
         type: 'html',
-        width: '5%', valuePrepareFunction: (cell: string) => {
+        filter: {
+          type: 'list',
+          config: {
+            selectText: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.direction'), 'head-title'),
+            list: [
+              { value: 'local', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.local'), 'head-title') },
+              { value: 'inbound', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.inbound'), 'head-title') },
+              { value: 'outbound', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.outbound'), 'head-title') },
+            ],
+          },
+        },
+        width: '10%',
+        valuePrepareFunction: (cell: string) => {
           return `<span class="nowrap">${cell ? cell : ''}</span>`;
         },
       },
@@ -65,26 +78,27 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         type: 'html',
         width: '5%',
       },
-      FromOrigin: {
-        title: 'Số gọi vào',
-        type: 'html',
-        width: '10%',
-        valuePrepareFunction: (cell: string) => {
-          return `<span class="nowrap">${cell ? cell : ''}</span>`;
-        },
-      },
-      CallerName: {
-        title: 'Tên người gọi',
-        type: 'html',
-        valuePrepareFunction: (cell: string) => {
-          return `<span class="nowrap">${cell ? cell : ''}</span>`;
-        },
-        width: '10%',
-      },
+      // FromOrigin: {
+      //   title: 'Số gọi vào',
+      //   type: 'html',
+      //   width: '10%',
+      //   filter: false,
+      //   valuePrepareFunction: (cell: string) => {
+      //     return `<span class="nowrap">${cell ? cell : ''}</span>`;
+      //   },
+      // },
+      // CallerName: {
+      //   title: 'Tên người gọi',
+      //   type: 'html',
+      //   valuePrepareFunction: (cell: string) => {
+      //     return `<span class="nowrap">${cell ? cell : ''}</span>`;
+      //   },
+      //   width: '10%',
+      // },
       CallerNumber: {
         title: 'Số người gọi',
         type: 'html',
-        width: '10%',
+        width: '20%',
         valuePrepareFunction: (cell: string) => {
           return `<span class="nowrap">${cell ? cell : ''}</span>`;
         },
@@ -106,9 +120,16 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         },
       },
       Start: {
-        title: 'TG Bắt đầu',
-        type: 'html',
+        // title: 'TG Bắt đầu',
+        // type: 'html',
+        // width: '10%',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.startTime'), 'head-title'),
+        type: 'custom',
         width: '10%',
+        renderComponent: SmartTableDateTimeComponent,
+        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+          // instance.format$.next('medium');
+        },
       },
       Tta: {
         title: 'TG đỗ chuông',
@@ -121,14 +142,30 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         width: '5%',
       },
       HangupCase: {
-        title: 'Trạng thái',
-        type: 'string',
+        // title: 'Trạng thái',
+        // type: 'string',
         width: '10%',
+
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.state'), 'head-title'),
+        type: 'text',
+        filter: {
+          type: 'list',
+          config: {
+            selectText: this.commonService.textTransform(this.commonService.translate.instant('Common.choose'), 'head-title'),
+            list: [
+              { value: 'ORIGINATOR_CANCEL', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.ORIGINATOR_CANCEL'), 'head-title') },
+              { value: 'NORMAL_CLEARING', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.NORMAL_CLEARING'), 'head-title') },
+              { value: 'CALL_REJECTED', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.CALL_REJECTED'), 'head-title') },
+              { value: 'INCOMPATIBLE_DESTINATION', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.INCOMPATIBLE_DESTINATION'), 'head-title') },
+            ],
+          },
+        },
       },
       RecordingFile: {
         title: 'Ghi âm',
         type: 'custom',
         width: '5%',
+        filter: false,
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
@@ -175,12 +212,13 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
   });
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
     public ivoipService: IvoipService,
+    public translate: TranslateService,
     // private mobileAppService: MobileAppService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);
@@ -213,7 +251,8 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
 
   getList(callback: (list: PbxCdrModel[]) => void) {
     super.getList((list: PbxCdrModel[]) => {
-      callback(list.map(item => {
+      callback(list.map((item, index) => {
+        item['No'] = index + 1;
         item.Start = item.Start.replace(' ', '<br>');
         return item;
       }));

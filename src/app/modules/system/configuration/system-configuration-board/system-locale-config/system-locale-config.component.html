@@ -1,0 +1,48 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
+  (keydown.enter)="onControlEnter($event)">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <nav>
+            {{ 'System.Config.locale' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" [value]="i" formControlName="_index">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Locale'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
+                      (*)</span></label>
+                  <nb-select size="medium" formControlName="Locale" fullWidth>
+                    <nb-option value="vi-VN">Việt Name (vi)</nb-option>
+                    <nb-option value="en-US">English and US region (en-US)</nb-option>
+                  </nb-select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Timezone'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.value' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.value')} | headtitlecase }}
+                      (*)</span></label>
+                  <ngx-select2 [data]="tz" formControlName="Timezone" [select2Option]="select2OptionTimezone">
+                  </ngx-select2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;"
+              hero>{{'Common.save' | translate | headtitlecase}}</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

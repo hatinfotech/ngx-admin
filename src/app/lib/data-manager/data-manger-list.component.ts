@@ -38,6 +38,7 @@ export class SmartTableSetting {
   };
   columns: {
     [key: string]: {
+      [key: string]: any,
       title: string,
       type: string,
       editable?: boolean,

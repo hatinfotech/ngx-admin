@@ -3,7 +3,7 @@
  * Copyright Akveo. All Rights Reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
-import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { NbIconLibraries, NbMenuItem } from '@nebular/theme';
 import { CommonService } from './services/common.service';
@@ -35,15 +35,17 @@ export class AppComponent implements OnInit {
   // distributeFileStoreCookieRequest: string;
 
   constructor(
-    private analytics: AnalyticsService,
-    iconsLibrary: NbIconLibraries,
+    public analytics: AnalyticsService,
+    public iconsLibrary: NbIconLibraries,
     public commonService: CommonService,
     public authService: NbAuthService,
-    // @Inject(LOCALE_ID) public locale: string,
+    public translate: TranslateService,
   ) {
 
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.commonService.getMenuTree(menuTree => this.menu = menuTree);
+
+    // translate.use('vi');
 
     this.authService.onAuthenticationChange().subscribe(state => {
       if (state) {
@@ -69,5 +71,24 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.analytics.trackPageViews();
     // this.commonService.;
+
+
+    (function checkLocalStorageOnline() {
+      if (localStorage) {
+        let localeCode = localStorage.getItem('configuration.locale');
+        // let locale = {locale: localeCode, skipUpdate: true};
+        if (!localeCode) {
+          const browserLangCode = this.translate.getBrowserLang();
+          localeCode = browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US';
+          // locale = {locale: browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US', skipUpdate: true};
+        }
+        // $this.locale$.next({locale: locale, skipUpdate: true});
+        this.translate.use(localeCode);
+      } else {
+        setTimeout(() => {
+          checkLocalStorageOnline();
+        }, 100);
+      }
+    })();
   }
 }

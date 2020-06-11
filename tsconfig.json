@@ -20,6 +20,7 @@
     "plugins": [
       { "name": "tslint-language-service"}
     ],
-    "types": ["node"]
+    "types": ["node"],
+    "resolveJsonModule": true
   }
 }

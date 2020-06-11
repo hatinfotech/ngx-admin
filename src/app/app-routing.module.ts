@@ -1,5 +1,5 @@
-import { ExtraOptions, RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
+import { ExtraOptions, RouterModule, Routes, Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { NgModule, Injectable } from '@angular/core';
 import {
   NbAuthComponent,
   NbLoginComponent,
@@ -9,6 +9,37 @@ import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { NotificationComponent } from './modules/notification/notification.component';
 import { MobileAppComponent } from './modules/mobile-app/mobile-app.component';
+import { TranslateService } from '@ngx-translate/core';
+
+@Injectable()
+export class RoutingResolve implements Resolve<any> {
+
+  constructor(public translate: TranslateService) { }
+
+  resolve(route: ActivatedRouteSnapshot): Promise<any> {
+    const $this = this;
+    return new Promise<any>(resolve => {
+      (function checkLocalStorageOnline() {
+        if (localStorage && $this.translate) {
+          let locale = localStorage.getItem('configuration.locale');
+          if (!locale) {
+            const browserLangCode = $this.translate.getBrowserLang();
+            locale = browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US';
+          }
+          // $this.locale$.next({locale: locale, skipUpdate: true});
+          $this.translate.use(locale).subscribe(res => {
+            resolve(locale);
+          });
+
+        } else {
+          setTimeout(() => {
+            checkLocalStorageOnline();
+          }, 100);
+        }
+      })();
+    });
+  }
+}
 
 const routes: Routes = [
   // {
@@ -101,6 +132,9 @@ const routes: Routes = [
   {
     path: 'ivoip',
     // canActivate: [AuthGuardService],
+    // resolve: {
+    //   configuration: RoutingResolve,
+    // },
     loadChildren: () => import('./modules/ivoip/ivoip.module')
       .then(m => m.IvoipModule),
   },
@@ -206,6 +240,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/file/file.module')
       .then(m => m.FileModule),
   },
+  {
+    path: 'system',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/system/system.module')
+      .then(m => m.SystemModule),
+  },
   // {
   //   path: 'virtual-phone',
   //   // canActivate: [AuthGuardService],
@@ -214,7 +254,12 @@ const routes: Routes = [
   // },
   // { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
   // { path: '**', redirectTo: 'mini-erp' },
-];
+].map(route => {
+  route['resolve'] = {
+    configuration: RoutingResolve,
+  };
+  return route;
+});
 
 const config: ExtraOptions = {
   useHash: false,
