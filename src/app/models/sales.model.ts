@@ -1,6 +1,7 @@
 import { TaxModel } from './tax.model';
 import { UnitModel } from './unit.model';
 import { ProductModel } from './product.model';
+import { ContactModel } from './contact.model';
 
 export class SalesVoucherModel {
   Id?: string & number;
@@ -95,7 +96,6 @@ export class SalesPriceReportModel {
 
 }
 
-
 export class SalesPriceReportDetailModel {
   Id?: string & number;
   No?: number;
@@ -107,4 +107,46 @@ export class SalesPriceReportDetailModel {
   Tax?: string & TaxModel;
   Image?: string;
   Reason?: string;
+}
+
+
+export class SalesPriceTableModel {
+  Id?: string & number;
+  Code?: string;
+  Branch?: string;
+  CustomerGroup?: string;
+  AppliedStartDate?: string;
+  AppliedClosingDate?: string;
+  Creator?: string;
+  DateOfCreate?: string;
+  DateOfUpdate?: string;
+  IsApprove?: string;
+  DateOfApprove?: string;
+  Object?: string & ContactModel;
+  File?: string;
+  Contract?: string;
+  ObjectName?: string;
+  ObjectPhone?: string;
+  ObjectEmail?: string;
+  ObjectAddress?: string;
+  Tax?: string & TaxModel;
+  Description?: string;
+
+  Details?: SalesPriceTableDetailModel[];
+}
+
+export class SalesPriceTableDetailModel {
+  Id?: string;
+  PriceTable?: string;
+  Product?: string & ProductModel;
+  PriceDefinition?: string;
+  Price?: string;
+  DateOfUpdate?: string;
+  Tax?: string & TaxModel;
+  Note?: string;
+  TempPrice?: string;
+  Unit?: string & UnitModel;
+  No?: string;
+  Type?: string;
+  Sku?: string;
 }

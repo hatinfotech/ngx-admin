@@ -6,6 +6,8 @@ import { SalesPriceReportFormComponent } from './price-report/sales-price-report
 import { SalesComponent } from './sales.component';
 import { SalesVoucherListComponent } from './sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { SalesVoucherFormComponent } from './sales-voucher/sales-voucher-form/sales-voucher-form.component';
+import { PriceTableListComponent } from './price-table/price-table-list/price-table-list.component';
+import { PriceTableFormComponent } from './price-table/price-table-form/price-table-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -48,6 +50,25 @@ const routes: Routes = [{
       path: 'sales-voucher/form/:id',
       canActivate: [AuthGuardService],
       component: SalesVoucherFormComponent,
+    },
+    // Sales price table
+    {
+      path: 'price-table/list',
+      canActivate: [AuthGuardService],
+      component: PriceTableListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'price-table/form',
+      canActivate: [AuthGuardService],
+      component: PriceTableFormComponent,
+    },
+    {
+      path: 'price-table/form/:id',
+      canActivate: [AuthGuardService],
+      component: PriceTableFormComponent,
     },
   ],
 }];

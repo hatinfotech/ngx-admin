@@ -1,9 +1,11 @@
+import { UnitModel } from './unit.model';
+
 export class ProductModel {
 
   Code: string;
   Sku?: string;
   Name: string;
-  WarehouseUnit?: string;
+  WarehouseUnit?: string & UnitModel;
   Description?: string;
   Technical?: string;
   FeaturePicture?: string;

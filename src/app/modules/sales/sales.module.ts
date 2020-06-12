@@ -22,12 +22,15 @@ import { SmartTableDateTimeComponent } from '../../lib/custom-element/smart-tabl
 import { SalesVoucherListComponent } from './sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { SalesVoucherFormComponent } from './sales-voucher/sales-voucher-form/sales-voucher-form.component';
 import { SalesVoucherPrintComponent } from './sales-voucher/sales-voucher-print/sales-voucher-print.component';
+import { PriceTableListComponent } from './price-table/price-table-list/price-table-list.component';
+import { PriceTableFormComponent } from './price-table/price-table-form/price-table-form.component';
+import { PriceTablePrintComponent } from './price-table/price-table-print/price-table-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 
 @NgModule({
-  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent, SalesVoucherListComponent, SalesVoucherFormComponent, SalesVoucherPrintComponent],
+  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent, SalesVoucherListComponent, SalesVoucherFormComponent, SalesVoucherPrintComponent, PriceTableListComponent, PriceTableFormComponent, PriceTablePrintComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -72,6 +75,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     SalesPriceReportPrintComponent,
     SalesVoucherFormComponent,
     SalesVoucherPrintComponent,
+    PriceTableFormComponent,
+    PriceTablePrintComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },

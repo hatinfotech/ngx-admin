@@ -6,19 +6,14 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { PromotionFormComponent } from '../../../promotion/promotion/promotion-form/promotion-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PromotionActionModel } from '../../../../models/promotion.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
 import { environment } from '../../../../../environments/environment';
-
-import localeVi from '@angular/common/locales/vi';
-import localeViExtra from '@angular/common/locales/extra/vi';
 import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 
 @Component({
@@ -35,8 +30,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   env = environment;
 
-  locale = localeVi;
-  localeExtra = localeViExtra;
+  locale = this.commonService.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
@@ -255,7 +249,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
     const newForm = this.formBuilder.group({
-      _index: [''],
       Code: [''],
       Object: ['', Validators.required],
       ObjectName: [''],
@@ -307,8 +300,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesPriceReportDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      // Id_old: [''],
-      _index: [],
       Id: [''],
       No: [''],
       Type: [''],
@@ -341,8 +332,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
     return false;
   }
-  removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup) {
-    this.getDetails(parentFormGroup).removeAt(detail.get('_index').value);
+  removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
+    this.getDetails(parentFormGroup).removeAt(index);
     // this.componentList[formGroupIndex].splice(index, 1);
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;

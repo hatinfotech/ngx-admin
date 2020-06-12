@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { SalesPriceTableModel, SalesPriceTableDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
 import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { TaxModel } from '../../../../models/tax.model';
@@ -11,30 +12,25 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { SalesPriceReportFormComponent } from '../../price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PromotionActionModel } from '../../../../models/promotion.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
-import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
-import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
-// import localeVi from '@angular/common/locales/vi';
-// import localeViExtra from '@angular/common/locales/extra/vi';
+import { PriceTablePrintComponent } from '../price-table-print/price-table-print.component';
 
 @Component({
-  selector: 'ngx-sales-voucher-form',
-  templateUrl: './sales-voucher-form.component.html',
-  styleUrls: ['./sales-voucher-form.component.scss'],
+  selector: 'ngx-price-table-form',
+  templateUrl: './price-table-form.component.html',
+  styleUrls: ['./price-table-form.component.scss'],
 })
-export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVoucherModel> implements OnInit {
+export class PriceTableFormComponent extends DataManagerFormComponent<SalesPriceTableModel> implements OnInit {
 
-  componentName: string = 'SalesVoucherFormComponent';
+  componentName: string = 'PriceTableFormComponent';
   idKey = 'Code';
-  apiPath = '/sales/sales-vouchers';
-  baseFormUrl = '/sales/sales-voucher/form';
+  apiPath = '/sales/price-tables';
+  baseFormUrl = '/sales/price-table/form';
 
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
-  // localeExtra = localeViExtra;
   curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
@@ -84,7 +80,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<SalesVoucherFormComponent>,
+    public ref: NbDialogRef<PriceTableFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -210,7 +206,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: SalesVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: SalesPriceTableModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     // params['includeConditions'] = true;
     // params['includeProduct'] = true;
     params['includeContact'] = true;
@@ -219,7 +215,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: SalesVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesVoucherModel) => void) {
+  formLoad(formData: SalesPriceTableModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesPriceTableModel) => void) {
     super.formLoad(formData, (index, newForm, itemFormData) => {
 
       // Details form load
@@ -233,16 +229,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         });
       }
 
-      // // Actions form load
-      // if (itemFormData.Actions) {
-      //   itemFormData.Actions.forEach(action => {
-      //     const newActionFormGroup = this.makeNewActionFormGroup(action);
-      //     this.getActions(index).push(newActionFormGroup);
-      //     const comIndex = this.getActions(index).length - 1;
-      //     this.onAddActionFormGroup(index, comIndex, newActionFormGroup);
-      //   });
-      // }
-
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
@@ -251,25 +237,24 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
   }
 
-  makeNewFormGroup(data?: SalesVoucherModel): FormGroup {
+  makeNewFormGroup(data?: SalesPriceTableModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
-      Object: ['', Validators.required],
+      Object: [''],
       ObjectName: [''],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
+      Recipient: [''],
       ObjectTaxCode: [''],
       DirectReceiverName: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
-      Tax: [''],
+      PaymentStep: [''],
       DeliveryAddress: [''],
       Title: [''],
-      Note: [''],
-      DateOfDelivery: [''],
-      PriceReportVoucher: [''],
-      PriceTable: [''],
+      Description: [''],
+      DateOfApprove: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -281,7 +266,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: SalesVoucherModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: SalesPriceTableModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -294,7 +279,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       this.router.navigate(['/promotion/promotion/list']);
     } else {
       this.ref.close();
-      // this.dismiss();
     }
     return false;
   }
@@ -303,13 +287,13 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
   /** Detail Form */
-  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesVoucherDetailModel): FormGroup {
+  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesPriceTableDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
       No: [''],
       Type: [''],
-      Product: [''],
-      ProductName: ['', Validators.required],
+      Product: ['', Validators.required],
+      Description: ['', Validators.required],
       Quantity: [1],
       Price: [0],
       Unit: [''],
@@ -321,9 +305,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
     if (data) {
       // data['Id_old'] = data['Id'];
-      // data.Price = parseFloat(data.Price) as any;
       newForm.patchValue(data);
-      this.toMoney(parentFormGroup, newForm);
+      // this.toMoney(parentFormGroup, newForm);
     }
     return newForm;
   }
@@ -331,7 +314,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     return parentFormGroup.get('Details') as FormArray;
   }
   addDetailFormGroup(parentFormGroup: FormGroup) {
-    // this.componentList[formGroupIndex].push([]);
     const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
     this.getDetails(parentFormGroup).push(newChildFormGroup);
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
@@ -339,65 +321,18 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
     this.getDetails(parentFormGroup).removeAt(index);
-    // this.componentList[formGroupIndex].splice(index, 1);
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
-  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
-    // this.componentList[mainIndex].push([]);
-  }
-  onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
-    // this.componentList[mainIndex].splice(index, 1);
-  }
+  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) { }
+  onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) { }
   /** End Detail Form */
 
-  /** Action Form */
-  makeNewActionFormGroup(data?: PromotionActionModel): FormGroup {
-    const newForm = this.formBuilder.group({
-      Id: [''],
-      Type: ['', Validators.required],
-      Product: [''],
-      Amount: [''],
-      // Discount: [''],
-    });
-
-    if (data) {
-      // data['Id_old'] = data['Id'];
-      newForm.patchValue(data);
-    }
-    return newForm;
-  }
-  getActions(formGroupIndex: number) {
-    return this.array.controls[formGroupIndex].get('Actions') as FormArray;
-  }
-  addActionFormGroup(formGroupIndex: number) {
-    // this.componentList[formGroupIndex].push([]);
-    const newFormGroup = this.makeNewActionFormGroup();
-    this.getActions(formGroupIndex).push(newFormGroup);
-    this.onAddActionFormGroup(formGroupIndex, this.getActions(formGroupIndex).length - 1, newFormGroup);
-    return false;
-  }
-  removeActionGroup(formGroupIndex: number, index: number) {
-    this.getActions(formGroupIndex).removeAt(index);
-    // this.componentList[formGroupIndex].splice(index, 1);
-    this.onRemoveActionFormGroup(formGroupIndex, index);
-    return false;
-  }
-  onAddActionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
-    // this.componentList[mainIndex].push([]);
-  }
-  onRemoveActionFormGroup(mainIndex: number, index: number) {
-    // this.componentList[mainIndex].splice(index, 1);
-  }
-  /** End Action Form */
-
   onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
-    // console.info(item);
 
     if (!this.isProcessing) {
       if (selectedData && !selectedData['doNotAutoFill']) {
 
-        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
           formGroup.get('ObjectName').setValue(selectedData.Name);
           formGroup.get('ObjectPhone').setValue(selectedData.Phone);
@@ -415,16 +350,18 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
     if (selectedData) {
-      detail.get('ProductName').setValue(selectedData.Name);
-      detail.get('Unit').patchValue({
-        id: selectedData.WarehouseUnit['Code'],
-        text: selectedData.WarehouseUnit['Name'],
-        Code: selectedData.WarehouseUnit['Code'],
-        Name: selectedData.WarehouseUnit['Name'],
-        Symbol: selectedData.WarehouseUnit['Symbol'],
-      });
+      detail.get('Description').setValue(selectedData.Name);
+      if (selectedData.WarehouseUnit && selectedData.WarehouseUnit.Code) {
+        detail.get('Unit').patchValue({
+          id: selectedData.WarehouseUnit['Code'],
+          text: selectedData.WarehouseUnit['Name'],
+          Code: selectedData.WarehouseUnit['Code'],
+          Name: selectedData.WarehouseUnit['Name'],
+          Symbol: selectedData.WarehouseUnit['Symbol'],
+        });
+      }
     } else {
-      detail.get('ProductName').setValue('');
+      detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
     }
     return false;
@@ -443,15 +380,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   toMoney(formItem: FormGroup, detail: FormGroup) {
-    // console.log('calculate to money: ' + (detail.get('Quantity').value * detail.get('Price').value));
-    // let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    // let tax = detail.get('Tax').value;
-    // if (tax) {
-    //   if (typeof tax === 'string') {
-    //     tax = this.taxList.filter(t => t.Code === tax)[0];
-    //   }
-    //   toMoney += toMoney * tax.Tax / 100;
-    // }
     detail.get('ToMoney').setValue(this.calculatToMoney(detail));
 
     // Call culate total
@@ -464,15 +392,14 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     return false;
   }
 
-
   preview(formItem: FormGroup) {
-    const data: SalesVoucherModel = formItem.value;
+    const data: SalesPriceTableModel = formItem.value;
     data.Details.forEach(detail => {
       if (typeof detail['Tax'] === 'string') {
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    this.dialogService.open(SalesVoucherPrintComponent, {
+    this.dialogService.open(PriceTablePrintComponent, {
       context: {
         title: 'Xem trước',
         data: data,

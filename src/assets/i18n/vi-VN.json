@@ -28,6 +28,9 @@
         "title": "{{action}} sales voucher"
       }
     },
+    "PriceTable": {
+      "title": "{{action}}{{definition}} bảng giá bán"
+    },
     "addProduct": "thêm hàng hoá/dịch vụ",
     "directReceiver": "người trực tiếp nhận hàng",
     "deliveryAddress": "địa chỉ nhận hàng",
@@ -164,7 +167,8 @@
     },
     "Sales": {
       "salesVoucher": "phiếu bán hàng",
-      "dateOfDelivery": "ngày giao hàng"
+      "dateOfDelivery": "ngày giao hàng",
+      "priceTable": "bảng giá"
     }
   }
 }

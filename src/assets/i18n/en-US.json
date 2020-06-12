@@ -28,6 +28,9 @@
         "title": "{{action}} sales voucher"
       }
     },
+    "PriceTable": {
+      "title": "{{action}} sales price table {{definition}}"
+    },
     "addProduct": "add product/dịch vụ",
     "directReceiver": "direct receiver",
     "deliveryAddress": "delivery address",
@@ -164,7 +167,8 @@
     },
     "Sales": {
       "salesVoucher": "sales voucher",
-      "dateOfDelivery": "date of delivery"
+      "dateOfDelivery": "date of delivery",
+      "priceTable": "price table"
     }
   }
 }

@@ -73,50 +73,6 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return total;
   }
 
-  // print() {
-  //   if (this.onSaveAndPrint) {
-  //     this.onSaveAndPrint(this.data.Code);
-  //   }
-  //   const printFrame = document.createElement('iframe');
-  //   printFrame.name = 'printFrame';
-  //   printFrame.style.position = 'absolute';
-  //   printFrame.style.top = '-1000000px';
-  //   // tslint:disable-next-line: comment-format
-  //   //printFrame.style.top = "1px";
-  //   printFrame.style.width = '21cm';
-  //   printFrame.style.height = '29.7cm';
-  //   document.body.appendChild(printFrame);
-  //   const frameDoc = printFrame.contentWindow ? printFrame.contentWindow : printFrame.contentDocument['document'] ? printFrame.contentDocument['document'] : printFrame.contentDocument;
-  //   frameDoc.document.open();
-  //   // const currrentHtmlHeeader = $('head style');
-  //   // let currrentHtmlHeeaderContent = '';
-  //   // for (let i = 0; i < currrentHtmlHeeader.length; i++) {
-  //   //   currrentHtmlHeeaderContent += currrentHtmlHeeader[i].outerHTML + '\n';
-  //   // }
-  //   frameDoc.document.write(`
-  //   <html>
-  //     <head>
-  //       <base href="http://localhost:4200/mini-erp/">
-  //       <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-  //       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  //       <link href="assets/style/print.css" rel="stylesheet" type="text/css" />
-  //     </head>
-  //     <body>
-  //       ${this.printContent.element.nativeElement.innerHTML}
-  //     </body>
-  //   </html>`);
-  //   document.title = `Probox_PhieuBaoGia_${this.data.Code}${this.data.Reported ? ('_' + this.data.Reported) : ''}`;
-  //   frameDoc.document.close();
-  //   setTimeout(function () {
-  //     window.frames['printFrame'].focus();
-  //     window.frames['printFrame'].print();
-  //     document.body.removeChild(printFrame);
-  //     // if (typeof onSuccess == 'function') {
-  //     //   onSuccess();
-  //     // }
-  //   }, 500);
-  // }
-
   saveAndClose() {
     if (this.onSaveAndClose) {
       this.onSaveAndClose(this.data.Code);
