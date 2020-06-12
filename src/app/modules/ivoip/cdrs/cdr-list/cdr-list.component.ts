@@ -51,17 +51,17 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
     },
     columns: {
       No: {
-        title: 'Stt',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.noNumber'), 'head-title'),
         type: 'html',
         width: '5%',
       },
       Direction: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.choose'), 'head-title'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.direction'), 'head-title'),
         type: 'html',
         filter: {
           type: 'list',
           config: {
-            selectText: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.direction'), 'head-title'),
+            selectText: this.commonService.textTransform(this.commonService.translate.instant('Common.all'), 'head-title') + '...',
             list: [
               { value: 'local', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.local'), 'head-title') },
               { value: 'inbound', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.inbound'), 'head-title') },
@@ -75,7 +75,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         },
       },
       Extension: {
-        title: 'Số nội bộ',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.extension'), 'head-title'),
         type: 'html',
         width: '5%',
       },
@@ -97,7 +97,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
       //   width: '10%',
       // },
       CallerNumber: {
-        title: 'Số người gọi',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.callerNumber'), 'head-title'),
         type: 'html',
         width: '20%',
         valuePrepareFunction: (cell: string) => {
@@ -105,7 +105,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         },
       },
       CallerDestination: {
-        title: 'Số nhận cuộc gọi',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.receivedNumber'), 'head-title'),
         type: 'html',
         width: '15%',
         valuePrepareFunction: (cell: string) => {
@@ -113,7 +113,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         },
       },
       DestinationNumber: {
-        title: 'Chuyển đến',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.forwardTo'), 'head-title'),
         type: 'html',
         width: '15%',
         valuePrepareFunction: (cell: string) => {
@@ -124,7 +124,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         // title: 'TG Bắt đầu',
         // type: 'html',
         // width: '10%',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.startTime'), 'head-title'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.startedTime'), 'head-title'),
         type: 'custom',
         width: '10%',
         filter: {
@@ -137,12 +137,12 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         },
       },
       Tta: {
-        title: 'TG đỗ chuông',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.ringingTime'), 'head-title'),
         type: 'html',
         width: '5%',
       },
       Duration: {
-        title: 'Thời lượng',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.duration'), 'head-title'),
         type: 'html',
         width: '5%',
       },
@@ -156,7 +156,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         filter: {
           type: 'list',
           config: {
-            selectText: this.commonService.textTransform(this.commonService.translate.instant('Common.choose'), 'head-title'),
+            selectText: this.commonService.textTransform(this.commonService.translate.instant('Common.all'), 'head-title') + '...',
             list: [
               { value: 'ORIGINATOR_CANCEL', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.ORIGINATOR_CANCEL'), 'head-title') },
               { value: 'NORMAL_CLEARING', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.NORMAL_CLEARING'), 'head-title') },
@@ -167,7 +167,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         },
       },
       RecordingFile: {
-        title: 'Ghi âm',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.soundRecord'), 'head-title'),
         type: 'custom',
         width: '5%',
         // filter: {
@@ -294,7 +294,13 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
   }
 
   exportCdrs() {
-    window.open(`${this.apiService.buildApiUrl('/ivoip/cdrs', { domainId: this.ivoipService.getPbxActiveDomainUuid(), export: true })}`, '_blank');
+    const filters = this.source.getFilter().filters;
+    const params: { [key: string]: any } = { domainId: this.ivoipService.getPbxActiveDomainUuid(), export: true };
+    for (let i = 0; i < filters.length; i++) {
+      params['filter_' + filters[i].field] = filters[i].search;
+    }
+
+    window.open(`${this.apiService.buildApiUrl('/ivoip/cdrs', params)}`, '_blank');
     return false;
   }
 

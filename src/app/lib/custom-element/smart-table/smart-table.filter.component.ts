@@ -41,7 +41,9 @@ export class SmartTableDateTimeRangeFilterComponent extends DefaultFilter implem
   ngOnChanges(changes: SimpleChanges) {
     if (changes.query) {
       this.query = changes.query.currentValue;
-      this.inputControl.setValue(this.query);
+      let range: any[] = changes.query.currentValue.split('/');
+      range = range.map(item => new Date(item));
+      this.inputControl.setValue(range);
     }
   }
 }

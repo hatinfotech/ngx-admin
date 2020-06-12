@@ -75,7 +75,9 @@
     "selectTimezone": "Select timezone",
     "choose": "choose",
     "clearFilter": "clear filter",
-    "reset": "reset"
+    "reset": "reset",
+    "state": "state",
+    "all": "all"
   },
   "Contact":{
     "name": "contact name",
@@ -130,6 +132,18 @@
     "inbound": "inbound",
     "outbound": "outbound",
     "direction": "direction",
-    "startTime": "start time"
+    "extension": "extension",
+    "callerNumber": "caller number",
+    "callerName": "caller name",
+    "calleeNumber": "callee number",
+    "calleeName": "callee name",
+    "forwardTo": "forward to",
+    "destination": "destination",
+    "startedTime": "started time",
+    "ringingTime": "ringing time",
+    "duration": "duration",
+    "soundRecord": "sound record",
+    "callState": "call state",
+    "receivedNumber": "received number"
   }
 }

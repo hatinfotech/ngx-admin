@@ -75,7 +75,9 @@
     "selectTimezone": "Chọn muối giờ",
     "choose": "chọn",
     "clearFilter": "đặt lại bộ lọc",
-    "reset": "đặt lại"
+    "reset": "đặt lại",
+    "state": "trạng thái",
+    "all": "tất cả"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -130,6 +132,18 @@
     "inbound": "gọi vào",
     "outbound": "gọi ra",
     "direction": "hướng gọi",
-    "startTime": "TG bắt đầu"
+    "extension": "số nội bộ",
+    "callerNumber": "số người gọi",
+    "callerName": "tên người gọi",
+    "calleeNumber": "số gọi đến",
+    "calleeName": "tên gọi đên",
+    "forwardTo": "chuyển đến",
+    "destination": "số đích",
+    "startedTime": "TG bắt đầu",
+    "ringingTime": "TG đỗ chuông",
+    "duration": "thời lượng",
+    "soundRecord": "ghi âm",
+    "callState": "trạng thái cuộc gọi",
+    "receivedNumber": "số nhận cuộc gọi"
   }
 }
