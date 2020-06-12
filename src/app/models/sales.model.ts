@@ -34,6 +34,22 @@ export class SalesVoucherModel {
   InventoryDeliveryVoucher?: string;
   Invoice?: string;
   Creator?: string;
+
+  Details: SalesVoucherDetailModel[];
+}
+
+export class SalesVoucherDetailModel {
+  Id?: string & number;
+  Voucher?: string;
+  PriceTableDetail?: string;
+  Product?: string & ProductModel;
+  ProductName?: string;
+  Quantity?: string & number;
+  Price?: string & number;
+  Tax?: string & TaxModel;
+  CurrencyType?: string;
+  Unit?: string & UnitModel;
+
 }
 
 export class SalesPriceReportModel {

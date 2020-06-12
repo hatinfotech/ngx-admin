@@ -19,12 +19,15 @@ import { SalesPriceReportPrintComponent } from './price-report/sales-price-repor
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartTableDateTimeComponent } from '../../lib/custom-element/smart-table/smart-table.component';
+import { SalesVoucherListComponent } from './sales-voucher/sales-voucher-list/sales-voucher-list.component';
+import { SalesVoucherFormComponent } from './sales-voucher/sales-voucher-form/sales-voucher-form.component';
+import { SalesVoucherPrintComponent } from './sales-voucher/sales-voucher-print/sales-voucher-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 
 @NgModule({
-  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent],
+  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent, SalesVoucherListComponent, SalesVoucherFormComponent, SalesVoucherPrintComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -66,6 +69,9 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     SalesPriceReportFormComponent,
     SalesPriceReportPrintComponent,
     SmartTableDateTimeComponent,
+    SalesPriceReportPrintComponent,
+    SalesVoucherFormComponent,
+    SalesVoucherPrintComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },

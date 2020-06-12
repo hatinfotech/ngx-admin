@@ -12,6 +12,8 @@ import { MySocket } from '../lib/nam-socket/my-socket';
 import { environment } from '../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { LocaleConfigModel } from '../models/system.model';
+import localeVi from '@angular/common/locales/vi';
+import localeEn from '@angular/common/locales/en';
 
 @Injectable({
   providedIn: 'root',
@@ -395,6 +397,17 @@ export class CommonService {
         return text.replace(/^./, text.charAt(0).toUpperCase());
       default: return text;
     }
+  }
+
+  getCurrentLoaleDataset() {
+    const currentLocaleCode = this.translate.currentLang;
+    if (currentLocaleCode) {
+      switch (currentLocaleCode) {
+        case 'vi-VN': return localeVi;
+        case 'en-US': return localeEn;
+      }
+    }
+    return null;
   }
 
 }

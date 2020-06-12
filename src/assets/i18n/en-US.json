@@ -13,10 +13,19 @@
     "PriceReport": {
       "title": "{{action}} price report voucher {{definition}}",
       "List": {
-        "title": "danh sách phiếu báo giá"
+        "title": "price report list"
       },
       "Form": {
         "title": "{{action}} price report voucher"
+      }
+    },
+    "SalesVoucher": {
+      "title": "{{action}} sales voucher {{definition}}",
+      "List": {
+        "title": "sales voucher list"
+      },
+      "Form": {
+        "title": "{{action}} sales voucher"
       }
     },
     "addProduct": "add product/dịch vụ",
@@ -48,6 +57,7 @@
     "title": "title",
     "recipient": "recipient",
     "taxCode": "tax code",
+    "tax": "tax",
     "note": "note",
     "description": "description",
     "type": "type",
@@ -151,6 +161,10 @@
       "parameters": "parameters",
       "configBoard": "config board",
       "userConfigBoard": "user config board"
+    },
+    "Sales": {
+      "salesVoucher": "sales voucher",
+      "dateOfDelivery": "date of delivery"
     }
   }
 }
