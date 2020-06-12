@@ -50,13 +50,12 @@
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PriceReportVoucher'), 'warning')">
-                  <label class="label"><span
-                      class="valid">{{'Sales.priceReport' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.priceReport')} | headtitlecase }}
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.phone' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.phone')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="PriceReportVoucher"
-                    placeholder="{{'Sales.priceReport' | translate | headtitlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="ObjectPhone"
+                    placeholder="{{'Common.phone' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-9">
@@ -66,15 +65,6 @@
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="ObjectAddress"
                     placeholder="{{'Common.address' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.phone' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.phone')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectPhone"
-                    placeholder="{{'Common.phone' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-3">
@@ -116,14 +106,14 @@
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group"
-                  [attr.state]="formControlValidate(formItem.get('DirectReceiverName'), 'warning')">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DateOfDelivery'), 'warning')">
                   <label class="label"><span
-                      class="valid">{{'Sales.directReceiver' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.directReceiver')} | headtitlecase }}
+                      class="valid">{{'Sales.dateOfDelivery' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.dateOfDelivery')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="DirectReceiverName"
-                    placeholder="{{'Sales.directReceiver' | translate | headtitlecase}}">
+                  <input type="text" [owlDateTime]="DateOfDelivery" [owlDateTimeTrigger]="DateOfDelivery" nbInput fullWidth
+                    formControlName="DateOfDelivery" placeholder="{{'Sales.dateOfDelivery' | translate | headtitlecase}}">
+                  <owl-date-time #DateOfDelivery></owl-date-time>
                 </div>
               </div>
               <div class="col-sm-6">
@@ -137,6 +127,17 @@
                 </div>
               </div>
               <div class="col-sm-3">
+                <div class="form-group"
+                  [attr.state]="formControlValidate(formItem.get('DirectReceiverName'), 'warning')">
+                  <label class="label"><span
+                      class="valid">{{'Sales.directReceiver' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.directReceiver')} | headtitlecase }}
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="DirectReceiverName"
+                    placeholder="{{'Sales.directReceiver' | translate | headtitlecase}}">
+                </div>
+              </div>
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Tax'), 'warning')">
                   <label class="label"><span
                       class="valid">{{'Common.tax' | translate | headtitlecase}}</span><span
@@ -146,7 +147,7 @@
                     placeholder="{{'Common.tax' | translate | headtitlecase}}">
                 </div>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.title' | translate | headtitlecase}}</span><span
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.title')} | headtitlecase }}
@@ -156,14 +157,22 @@
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DateOfDelivery'), 'warning')">
-                  <label class="label"><span
-                      class="valid">{{'Sales.dateOfDelivery' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.dateOfDelivery')} | headtitlecase }}
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PriceTable'), 'warning')">
+                  <label class="label"><span class="valid">{{'Sales.priceTable' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.priceTable')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" [owlDateTime]="DateOfDelivery" [owlDateTimeTrigger]="DateOfDelivery" nbInput fullWidth
-                    formControlName="DateOfDelivery" placeholder="{{'Sales.dateOfDelivery' | translate | headtitlecase}}">
-                  <owl-date-time #DateOfDelivery></owl-date-time>
+                  <input type="text" nbInput fullWidth formControlName="PriceTable"
+                    placeholder="{{'Sales.priceTable' | translate | headtitlecase}}">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PriceReportVoucher'), 'warning')">
+                  <label class="label"><span
+                      class="valid">{{'Sales.priceReport' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.priceReport')} | headtitlecase }}
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="PriceReportVoucher"
+                    placeholder="{{'Sales.priceReport' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-12">

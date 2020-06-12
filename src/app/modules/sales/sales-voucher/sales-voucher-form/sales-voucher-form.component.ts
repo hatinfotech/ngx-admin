@@ -260,7 +260,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
-      PriceReportVoucher: [''],
       ObjectTaxCode: [''],
       DirectReceiverName: [''],
       ObjectBankName: [''],
@@ -270,6 +269,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       Title: [''],
       Note: [''],
       DateOfDelivery: [''],
+      PriceReportVoucher: [''],
+      PriceTable: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
