@@ -43,13 +43,20 @@ export class AppComponent implements OnInit {
   ) {
 
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
-    this.commonService.getMenuTree(menuTree => this.menu = menuTree);
+    this.commonService.configReady$.subscribe(ready => {
+      if (ready) {
+        this.commonService.getMenuTree(menuTree => {
+          this.menu = this.translateMenu(menuTree);
+        });
+      }
+    });
+
 
     // translate.use('vi');
 
     this.authService.onAuthenticationChange().subscribe(state => {
       if (state) {
-        this.commonService.getMenuTree(menuTree => this.menu = menuTree);
+        this.commonService.getMenuTree(menuTree => this.menu = this.translateMenu(menuTree));
         // this.commonService.langCode$.subscribe(langCode => {
         //   if (langCode) {
         //     this.locale = langCode;
@@ -66,6 +73,18 @@ export class AppComponent implements OnInit {
       }
     });
 
+  }
+
+  translateMenu(menuTree: NbMenuItem[]) {
+    for (let i = 0; i < menuTree.length; i++) {
+      if (/\./.test(menuTree[i].title)) {
+        menuTree[i].title = this.commonService.textTransform(this.translate.instant(menuTree[i].title), 'head-title');
+      }
+      if (menuTree[i].children) {
+        this.translateMenu(menuTree[i].children);
+      }
+    }
+    return menuTree;
   }
 
   ngOnInit(): void {

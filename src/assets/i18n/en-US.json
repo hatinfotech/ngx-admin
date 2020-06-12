@@ -45,7 +45,7 @@
     "print": "print",
     "save": "save",
     "saveAndClose": "save & close",
-    "title":"title",
+    "title": "title",
     "recipient": "recipient",
     "taxCode": "tax code",
     "note": "note",
@@ -79,7 +79,7 @@
     "state": "state",
     "all": "all"
   },
-  "Contact":{
+  "Contact": {
     "name": "contact name",
     "address": "address",
     "email": "email",
@@ -145,5 +145,12 @@
     "soundRecord": "sound record",
     "callState": "call state",
     "receivedNumber": "received number"
+  },
+  "Menu": {
+    "System": {
+      "parameters": "parameters",
+      "configBoard": "config board",
+      "userConfigBoard": "user config board"
+    }
   }
 }

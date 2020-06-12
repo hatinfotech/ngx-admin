@@ -19,6 +19,7 @@ import { CustomElementModule } from '../../lib/custom-element/custom-element.mod
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { TreeModule } from 'angular-tree-component';
 import { UserChangePasswordFormComponent } from './profile/user-change-password-form/user-change-password-form.component';
+import { SystemModule } from '../system/system.module';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { UserChangePasswordFormComponent } from './profile/user-change-password-
     NbRadioModule,
     NbDatepickerModule,
     TreeModule,
+    SystemModule,
   ],
   exports: [UserListComponent],
 })

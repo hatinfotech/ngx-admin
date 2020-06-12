@@ -31,6 +31,7 @@ export class CommonService {
 
   public locale$: BehaviorSubject<{ locale: string, skipUpdate?: boolean }> = new BehaviorSubject<{ locale: string, skipUpdate?: boolean }>(null);
   public timezone$: BehaviorSubject<{ timezone: string, skipUpdate?: boolean }> = new BehaviorSubject<{ timezone: string, skipUpdate?: boolean }>(null);
+  public configReady$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   // private loginInfo: LoginInfoModel;
   // loginInfoSubject: BehaviorSubject<LoginInfoModel> = new BehaviorSubject<LoginInfoModel>(null);

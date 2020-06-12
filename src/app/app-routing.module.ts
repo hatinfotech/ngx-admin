@@ -10,11 +10,12 @@ import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { NotificationComponent } from './modules/notification/notification.component';
 import { MobileAppComponent } from './modules/mobile-app/mobile-app.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CommonService } from './services/common.service';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
 
-  constructor(public translate: TranslateService) { }
+  constructor(public translate: TranslateService, public commonService: CommonService) { }
 
   resolve(route: ActivatedRouteSnapshot): Promise<any> {
     const $this = this;
@@ -29,6 +30,9 @@ export class RoutingResolve implements Resolve<any> {
           // $this.locale$.next({locale: locale, skipUpdate: true});
           $this.translate.use(locale).subscribe(res => {
             resolve(locale);
+            if (!$this.commonService.configReady$.value) {
+              $this.commonService.configReady$.next(true);
+            }
           });
 
         } else {

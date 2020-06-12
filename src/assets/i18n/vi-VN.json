@@ -145,5 +145,12 @@
     "soundRecord": "ghi âm",
     "callState": "trạng thái cuộc gọi",
     "receivedNumber": "số nhận cuộc gọi"
+  },
+  "Menu": {
+    "System": {
+      "parameters": "Tham số",
+      "configBoard": "bảng cấu hình",
+      "userConfigBoard": "bảng cấu hình người dùng"
+    }
   }
 }

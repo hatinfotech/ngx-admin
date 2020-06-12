@@ -65,6 +65,9 @@ import { UserLocaleConfigComponent } from './configuration/user-config-board/use
     NgxMaskModule.forRoot(options),
     TranslateModule,
   ],
+  exports: [
+    UserLocaleConfigComponent,
+  ],
   entryComponents: [
     SystemParameterFormComponent,
     SmartTableCheckboxComponent,
