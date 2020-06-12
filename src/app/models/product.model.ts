@@ -12,6 +12,7 @@ export class ProductModel {
 
   // References
   Categories: ProductCategoryModel[];
+  Groups: ProductGroupModel[];
   Pictures?: ProductPictureModel[];
 
   constructor() { }
@@ -35,5 +36,12 @@ export class ProductPictureModel {
   Id?: number;
   Product?: string;
   Image?: string;
+  Description?: string;
+}
+
+export class ProductGroupModel {
+  Id?: string & number;
+  Code?: string;
+  Name?: string;
   Description?: string;
 }

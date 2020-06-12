@@ -108,6 +108,35 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     },
   };
 
+  select2OptionForGroups = {
+    placeholder: 'Chọn nhóm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    multiple: true,
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/admin-product/groups', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            // item['id'] = item['ProductCategory'];
+            // item['text'] = item['ProductCategoryName'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -124,6 +153,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     // params['includeActions'] = true;
     // params['forNgPickDateTime'] = true;
     params['includeCategories'] = true;
+    params['includeGroups'] = true;
     params['includePictures'] = true;
     super.executeGet(params, success, error);
   }
@@ -171,6 +201,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Description: [''],
       Technical: [''],
       Categories: [''],
+      Groups: [''],
       Pictures: this.formBuilder.array([]),
     });
     if (data) {

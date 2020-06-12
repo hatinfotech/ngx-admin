@@ -21,11 +21,16 @@ import { ProductUnitListComponent } from './unit/product-unit-list/product-unit-
 import { ProductUnitFormComponent } from './unit/product-unit-form/product-unit-form.component';
 import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
+import { ProductGroupListComponent } from './product-group/product-group-list/product-group-list.component';
+import { ProductGroupFormComponent } from './product-group/product-group-form/product-group-form.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
     ProductCategoryListComponent, ProductCategoryFormComponent, ProductUnitListComponent,
-    ProductUnitFormComponent],
+    ProductUnitFormComponent,
+    ProductGroupListComponent,
+    ProductGroupFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -57,6 +62,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     OwlNativeDateTimeModule,
     CKEditorModule,
     NgxUploaderModule,
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,
@@ -67,6 +73,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     ProductCategoryFormComponent,
     ProductUnitFormComponent,
     SmartTableThumbnailComponent,
+    ProductGroupFormComponent,
   ],
   providers: [
     // use french locale

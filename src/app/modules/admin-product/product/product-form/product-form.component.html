@@ -80,11 +80,19 @@
                 </div>
               </div> -->
 
-              <div class="col-sm-9">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
                   <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
                       (*)</span></label>
                   <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
+                  <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups">
                   </ngx-select2>
                 </div>
               </div>
