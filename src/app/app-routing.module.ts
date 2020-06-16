@@ -145,6 +145,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/human-resource/human-resource.module')
       .then(m => m.HumanResourceModule),
   },
+  // Sales
   {
     path: 'sales',
     resolve: {
@@ -153,6 +154,16 @@ const routes: Routes = [
     // canActivate: [AuthGuardService],
     loadChildren: () => import('./modules/sales/sales.module')
       .then(m => m.SalesModule),
+  },
+  // Purchase
+  {
+    path: 'purchase',
+    resolve: {
+      configuration: RoutingResolve,
+    },
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/purchase/purchase.module')
+      .then(m => m.PurchaseModule),
   },
   {
     path: 'ivoip',
