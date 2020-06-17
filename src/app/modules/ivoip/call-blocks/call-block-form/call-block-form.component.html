@@ -47,7 +47,13 @@
                     </ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('is_call_out'), 'warning')">
+                  <label class="label"><span class="valid">Gọi ra</span><span class="invalid"></span></label>
+                  <nb-checkbox formControlName="is_call_out">Gọi ra</nb-checkbox>
+                </div>
+              </div>
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('call_block_enabled'), 'warning')">
                   <label class="label"><span class="valid">Kích hoạt</span><span class="invalid"></span></label>
                   <nb-checkbox formControlName="call_block_enabled" >Kích hoạt</nb-checkbox>

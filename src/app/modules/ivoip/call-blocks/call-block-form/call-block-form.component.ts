@@ -84,8 +84,9 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
       call_block_uuid: [''],
       call_block_name: [''],
       call_block_number: ['', Validators.required],
-      call_block_action: [''],
-      call_block_enabled: [''],
+      call_block_action: ['', Validators.required],
+      call_block_enabled: [true],
+      is_call_out: [''],
     });
     if (data) {
       newForm.patchValue(data);

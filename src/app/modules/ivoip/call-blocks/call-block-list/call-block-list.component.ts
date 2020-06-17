@@ -34,7 +34,7 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
   editing = {};
   rows = [];
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
@@ -62,7 +62,7 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
       call_block_number: {
         title: 'Number',
         type: 'string',
-        width: '10%',
+        width: '30%',
       },
       call_block_name: {
         title: 'Name',
@@ -74,28 +74,45 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
         type: 'string',
         width: '10%',
       },
-      accountcode: {
-        title: 'Số Public',
-        type: 'string',
-        width: '20%',
-      },
+      // accountcode: {
+      //   title: 'Số Public',
+      //   type: 'string',
+      //   width: '20%',
+      // },
       call_block_action: {
         title: 'Hành động',
         type: 'string',
         width: '20%',
       },
-      date_added: {
-        title: 'Ngày khai báo',
-        type: 'string',
+      // date_added: {
+      //   title: 'Ngày khai báo',
+      //   type: 'string',
+      //   width: '10%',
+      // },
+      is_call_out: {
+        title: 'Gọi ra',
+        type: 'boolean',
         width: '10%',
+        editable: true,
+        onChange: (value, rowData: PbxCallBlockModel) => {
+          this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', {domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid}, [{ call_block_uuid: rowData.call_block_uuid, is_call_out: value }]).then(rs => {
+            console.info(rs);
+          });
+        },
       },
       call_block_enabled: {
         title: 'Đã chặn',
-        type: 'string',
+        type: 'boolean',
         width: '10%',
+        editable: true,
+        onChange: (value, rowData: PbxCallBlockModel) => {
+          this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', {domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid}, [{ call_block_uuid: rowData.call_block_uuid, call_block_enabled: value }]).then(rs => {
+            console.info(rs);
+          });
+        },
       },
     },
-  };
+  });
 
   ngOnInit() {
     this.restrict();
