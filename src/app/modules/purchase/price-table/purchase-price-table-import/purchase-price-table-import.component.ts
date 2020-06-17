@@ -6,9 +6,9 @@ import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,15 +16,21 @@ import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PurchasePriceTablePrintComponent } from '../purchase-price-table-print/purchase-price-table-print.component';
 import * as XLSX from 'xlsx';
+import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
+import { SmsReceipientModel } from '../../../../models/sms.model';
+import { EmailAddressListDetailModel } from '../../../../models/email.model';
+import { CurrencyPipe } from '@angular/common';
+import { param } from 'jquery';
+import { isNumber } from 'util';
 
 @Component({
-  selector: 'ngx-purchase-price-table-form',
-  templateUrl: './purchase-price-table-form.component.html',
-  styleUrls: ['./purchase-price-table-form.component.scss'],
+  selector: 'ngx-purchase-price-table-import',
+  templateUrl: './purchase-price-table-import.component.html',
+  styleUrls: ['./purchase-price-table-import.component.scss'],
 })
-export class PurchasePriceTableFormComponent extends DataManagerFormComponent<PurchasePriceTableModel> implements OnInit {
+export class PurchasePriceTableImportComponent extends DataManagerFormComponent<PurchasePriceTableModel> implements OnInit {
 
-  componentName: string = 'PurchasePriceTableFormComponent';
+  componentName: string = 'PurchasePriceTableImportComponent';
   idKey = 'Code';
   apiPath = '/purchase/price-tables';
   baseFormUrl = '/purchase/price-table/form';
@@ -81,10 +87,221 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<PurchasePriceTableFormComponent>,
+    public ref: NbDialogRef<PurchasePriceTableImportComponent>,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** AG-Grid */
+    this.columnDefs = [
+      {
+        headerName: '#',
+        width: 52,
+        valueGetter: 'node.data.No',
+        cellRenderer: 'loadingCellRenderer',
+        sortable: false,
+        pinned: 'left',
+      },
+      {
+        headerName: 'Sku',
+        field: 'Sku',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+        autoHeight: true,
+      },
+      {
+        headerName: 'Code',
+        field: 'Product',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+        autoHeight: true,
+      },
+      {
+        headerName: 'Tên sản phẩm',
+        field: 'Name',
+        width: 400,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+      },
+      {
+        headerName: 'Description (Mô tả)',
+        field: 'Description',
+        width: 1024,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+      },
+      {
+        headerName: 'Price (Giá)',
+        field: 'Price',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        pinned: 'right',
+        type: 'rightAligned',
+        valueFormatter: (params: { value: number }) => {
+          return isNumber(params.value) ? this.currencyPipe.transform(params.value, 'VND') : 0;
+        },
+      },
+    ];
+
+    this.pagination = false;
+    this.maxBlocksInCache = 5;
+    this.paginationPageSize = this.cacheBlockSize = 1000;
+    /** End AG-Grid */
+
   }
+
+  /** AG-Grid */
+  public gridApi: GridApi;
+  public gridColumnApi: ColumnApi;
+  public modules: Module[] = AllCommunityModules;
+  public dataSource: IDatasource;
+  public columnDefs: any;
+  public rowSelection = 'multiple';
+  // public rowModelType = 'infinite';
+  public rowModelType = null;
+  public paginationPageSize: number;
+  public cacheOverflowSize = 2;
+  public maxConcurrentDatasourceRequests = 2;
+  public infiniteInitialRowCount = 1;
+  public maxBlocksInCache: number;
+  public cacheBlockSize: number;
+  public rowData: PurchasePriceTableDetailModel[];
+  public gridParams;
+  public multiSortKey = 'ctrl';
+  public rowDragManaged = false;
+  public getRowHeight;
+  public rowHeight: number;
+  public hadRowsSelected = false;
+  public pagination: boolean;
+  public emailAddressListDetails: EmailAddressListDetailModel[] = [];
+
+  public defaultColDef = {
+    sortable: true,
+    resizable: true,
+    // suppressSizeToFit: true,
+  };
+  public getRowNodeId = (item: { id: string }) => {
+    return item.id;
+  }
+  public components = {
+    loadingCellRenderer: (params) => {
+      if (params.value) {
+        return params.value;
+      } else {
+        return '<img src="assets/images/loading.gif">';
+      }
+    },
+  };
+  onGridReady(params) {
+    this.gridParams = params;
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+
+    this.loadList();
+
+  }
+  onColumnResized() {
+    this.gridApi.resetRowHeights();
+  }
+  onRowSelected() {
+    this.updateActionState();
+  }
+  updateActionState() {
+    this.hadRowsSelected = this.getSelectedRows().length > 0;
+  }
+  getSelectedRows() {
+    return this.gridApi.getSelectedRows();
+  }
+  loadList(callback?: (list: SmsReceipientModel[]) => void) {
+
+    if (this.gridApi) {
+      this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
+    }
+
+  }
+
+  initDataSource() {
+    this.dataSource = {
+      rowCount: null,
+      getRows: (getRowParams: IGetRowsParams) => {
+        console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
+
+        const query = { limit: this.paginationPageSize, offset: getRowParams.startRow };
+        getRowParams.sortModel.forEach(sortItem => {
+          query['sort_' + sortItem['colId']] = sortItem['sort'];
+        });
+        Object.keys(getRowParams.filterModel).forEach(key => {
+          const condition: { filter: string, filterType: string, type: string } = getRowParams.filterModel[key];
+          query['filter_' + key] = condition.filter;
+        });
+
+        query['noCount'] = true;
+        query['filter_AddressList'] = this.id[0] ? this.id[0] : 'X';
+
+        // const contact = this.array.controls[0].get('Contact');
+        // const contactGroups = this.array.controls[0].get('ContactGroups');
+
+        // if (contact.value) {
+        //   query['id'] = contact.value.id;
+        // } else if (contactGroups.value && contactGroups.value.length > 0) {
+        //   query['byGroups'] = contactGroups.value.map(i => i.id);
+        // } else {
+        //   query['byGroups'] = ['unknow'];
+        // }
+
+        new Promise<(EmailAddressListDetailModel & { Message?: string })[]>((resolve2, reject2) => {
+          // if (this.updateMode === 'live' || this.smsSendList.length === 0) {
+          this.apiService.getPromise<EmailAddressListDetailModel[]>('/email-marketing/address-list-details', query).then(emailAddressListDetails => {
+            emailAddressListDetails.forEach((item, index) => {
+              item['No'] = (getRowParams.startRow + index + 1);
+              item['id'] = item[this.idKey];
+            });
+
+            this.emailAddressListDetails = emailAddressListDetails;
+            resolve2(emailAddressListDetails);
+
+          }).catch(e => reject2(e));
+          // } else {
+          //   resolve2(this.smsSendList);
+          // }
+        }).then(emailAddressListDetails => {
+          // smsSendList.forEach(item => {
+          //   const message = this.generatePreviewByContact(item, this.array.controls[0]);
+          //   item.Message = '[' + message.length + '/160] ' + message;
+          // });
+          let lastRow = -1;
+          if (emailAddressListDetails.length < this.paginationPageSize) {
+            lastRow = getRowParams.startRow + emailAddressListDetails.length;
+          }
+          getRowParams.successCallback(emailAddressListDetails, lastRow);
+          this.gridApi.resetRowHeights();
+        });
+
+
+
+        // this.executeGet(query, contactList => {
+        //   contactList.forEach((item, index) => {
+        //     item['No'] = (getRowParams.startRow + index + 1);
+        //     item['id'] = item[this.idKey];
+        //   });
+
+        //   let lastRow = -1;
+        //   if (contactList.length < this.paginationPageSize) {
+        //     lastRow = getRowParams.startRow + contactList.length;
+        //   }
+        //   getRowParams.successCallback(contactList, lastRow);
+        //   this.gridApi.resetRowHeights();
+        // });
+        // this.getList(contactList => {
+
+        // });
+
+      },
+    };
+  }
+  /** End AG-Grid */
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
@@ -221,12 +438,16 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
 
       // Details form load
       if (itemFormData.Details) {
-        itemFormData.Details.forEach(condition => {
-          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
-          const details = this.getDetails(newForm);
-          details.push(newDetailFormGroup);
-          // const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+        // itemFormData.Details.forEach(condition => {
+        //   // const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
+        //   // const details = this.getDetails(newForm);
+        //   // details.push(newDetailFormGroup);
+        //   // // const comIndex = details.length - 1;
+        //   // this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+
+        // });
+        this.gridApi.updateRowData({
+          add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, id: item['Sku'], No: index2 + 1 })),
         });
       }
 
@@ -429,28 +650,46 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
         initial[name] = XLSX.utils.sheet_to_json(sheet);
         return initial;
       }, {});
-      const priceTableSheet = jsonData[' HDCVI CAMERA'];
-      // new Promise(resolve => {
-        for (let i = 0; i < priceTableSheet.length; i++) {
-          const row = priceTableSheet[i];
-          if (row['Thông số kỹ thuật'] && row['Giá Sỉ\n ( VND)']) {
-            const newDetail = this.makeNewDetailFormGroup(formItem, {
-              Description: row['Thông số kỹ thuật'],
-              Price: row['Giá Sỉ\n ( VND)'],
-            });
-            const details = this.getDetails(formItem);
-            details.push(newDetail);
-            await new Promise(resolve => setTimeout(() => resolve(), 50));
+      const objectCode = formItem.get('Supplier').value.id;
+      if (!objectCode) {
+        this.toastrService.show('Bạn cần chọn nhà cung cấp trước để xác định chính xác SKU', 'Chưa đủ thông tin', {
+          status: 'warning',
+          hasIcon: true,
+          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          duration: 0,
+        });
+        return false;
+      }
+      const priceTableSheet: any[] = jsonData['PurchasePriceTable'];
+      let productSkus = [];
+      for (let i = 0; i < priceTableSheet.length; i++) {
+        priceTableSheet[i]['Sku'] = priceTableSheet[i]['Sku'].replace(/^[ |\n]+/, '').replace(/[ |\n]+$/, '').replace(/\n.*/, '');
+        productSkus.push(priceTableSheet[i]['Sku']);
+        if (productSkus.length > 50 || i === priceTableSheet.length - 1) {
+          const products = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { filterBySku: productSkus.join(','), object: objectCode });
+          for (let j = 0; j < products.length; j++) {
+            const row = priceTableSheet.filter(item => item.Sku === products[j]['Sku'])[0];
+            row['Product'] = products[j].Code;
+            row['Name'] = products[j].Name;
           }
+          productSkus = [];
         }
-      //   resolve();
-      // });
+        priceTableSheet[i]['id'] = priceTableSheet[i]['Sku'];
+        priceTableSheet[i]['No'] = i + 1;
 
-
-
-      // const dataString = JSON.stringify(jsonData);
-      // document.getElementById('output').innerHTML = dataString.slice(0, 300).concat('...');
-      // this.setDownload(dataString);
+      }
+      if (priceTableSheet[0] && priceTableSheet[0]['Description'] && priceTableSheet[0]['Sku'] && typeof priceTableSheet[0]['Price'] !== 'undefined') {
+        this.gridApi.updateRowData({
+          add: priceTableSheet,
+        });
+      } else {
+        this.toastrService.show('Bảng giá phải chứa các cột: Sku, Description và Price', 'Định dạng bảng giá không khớp', {
+          status: 'warning',
+          hasIcon: true,
+          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          duration: 0,
+        });
+      }
     };
     reader.readAsBinaryString(file);
   }
@@ -462,6 +701,16 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
       el.setAttribute('href', `data:text/json;charset=utf-8,${encodeURIComponent(data)}`);
       el.setAttribute('download', 'xlsxtojson.json');
     }, 1000);
+  }
+
+  getRawFormData() {
+    const data = super.getRawFormData();
+    data.array[0]['Details'] = [];
+    this.gridApi.forEachNode(node => {
+      data.array[0]['Details'].push({ ...node.data, Name: node.data['Name'] ? node.data['Name'] : node.data['Sku'] });
+    });
+    // data['Details'] = this.rowData.map(item => ({...item, Name: item['Name'] ? item['Name'] : item['Sku']}));
+    return data;
   }
 
 }

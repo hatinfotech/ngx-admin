@@ -90,7 +90,8 @@
     "clearFilter": "đặt lại bộ lọc",
     "reset": "đặt lại",
     "state": "trạng thái",
-    "all": "tất cả"
+    "all": "tất cả",
+    "import": "nhập khẩu"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -158,6 +159,11 @@
     "soundRecord": "ghi âm",
     "callState": "trạng thái cuộc gọi",
     "receivedNumber": "số nhận cuộc gọi"
+  },
+  "Purchase": {
+    "PriceTable": {
+      "title": "{{definition}}{{action}} bảng giá mua vào"
+    }
   },
   "Menu": {
     "System": {

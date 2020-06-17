@@ -104,8 +104,6 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
     },
   };
 
-
-
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;

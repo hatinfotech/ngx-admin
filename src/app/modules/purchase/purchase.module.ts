@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { PurchasePriceTableListComponent } from './price-table/purchase-price-table-list/purchase-price-table-list.component';
 import { PurchasePriceTableFormComponent } from './price-table/purchase-price-table-form/purchase-price-table-form.component';
 import { PurchasePriceTablePrintComponent } from './price-table/purchase-price-table-print/purchase-price-table-print.component';
@@ -19,6 +19,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { options } from '../sales/sales.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { PurchaseComponent } from './purchase.component';
+import { PurchasePriceTableImportComponent } from './price-table/purchase-price-table-import/purchase-price-table-import.component';
 
 
 
@@ -28,6 +29,7 @@ import { PurchaseComponent } from './purchase.component';
     PurchasePriceTableFormComponent,
     PurchasePriceTablePrintComponent,
     PurchaseComponent,
+    PurchasePriceTableImportComponent,
   ],
   imports: [
     CommonModule,
@@ -69,6 +71,10 @@ import { PurchaseComponent } from './purchase.component';
   entryComponents: [
     PurchasePriceTableFormComponent,
     PurchasePriceTablePrintComponent,
+    PurchasePriceTableImportComponent,
+  ],
+  providers: [
+    CurrencyPipe,
   ],
 })
 export class PurchaseModule { }

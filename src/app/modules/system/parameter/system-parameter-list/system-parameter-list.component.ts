@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/searver-data-manger-list.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { SystemParameterFormComponent } from '../system-parameter-form/system-parameter-form.component';
 
 @Component({

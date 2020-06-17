@@ -493,6 +493,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     });
   }
 
+  getRawFormData() {
+    return this.form.getRawValue();
+  }
+
   /** Form submit event */
   async save(): Promise<M[]> {
     return new Promise<M[]>((resolve, reject) => {
@@ -500,7 +504,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       // this.submitted = true;
       // this.submiting = true;
       this.onProcessing();
-      const data: { array: any } = this.form.getRawValue();
+      // const data: { array: any } = this.form.getRawValue();
+      const data: { array: any } = this.getRawFormData();
 
       // console.info(data);
 

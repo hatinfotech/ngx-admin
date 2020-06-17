@@ -90,7 +90,8 @@
     "clearFilter": "clear filter",
     "reset": "reset",
     "state": "state",
-    "all": "all"
+    "all": "all",
+    "import": "import"
   },
   "Contact": {
     "name": "contact name",
@@ -158,6 +159,11 @@
     "soundRecord": "sound record",
     "callState": "call state",
     "receivedNumber": "received number"
+  },
+  "Purchase": {
+    "PriceTable": {
+      "title": "{{definition}} purchase price table {{action}}"
+    }
   },
   "Menu": {
     "System": {

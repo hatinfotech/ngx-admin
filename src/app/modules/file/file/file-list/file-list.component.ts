@@ -6,7 +6,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FileFormComponent } from '../file-form/file-form.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/searver-data-manger-list.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { SmartTableThumbnailComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 

@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { PurchasePriceTableFormComponent } from '../purchase-price-table-form/purchase-price-table-form.component';
+import { PurchasePriceTableImportComponent } from '../purchase-price-table-import/purchase-price-table-import.component';
 
 @Component({
   selector: 'ngx-purchase-price-table-list',
@@ -167,6 +168,24 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
   gotoForm(id?: string): false {
     this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
     return false;
+  }
+
+  openImportForm() {
+    this.dialogService.open(PurchasePriceTableImportComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: [],
+        onDialogSave: (newData: PurchasePriceTableModel[]) => {
+          // if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          // if (onDialogClose) onDialogClose();
+          this.refresh();
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
+    });
   }
 
 }
