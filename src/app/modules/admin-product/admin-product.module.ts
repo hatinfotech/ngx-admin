@@ -21,6 +21,7 @@ import { ProductUnitListComponent } from './unit/product-unit-list/product-unit-
 import { ProductUnitFormComponent } from './unit/product-unit-form/product-unit-form.component';
 import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
@@ -57,6 +58,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     OwlNativeDateTimeModule,
     CKEditorModule,
     NgxUploaderModule,
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

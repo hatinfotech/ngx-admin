@@ -9,7 +9,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  version: '1.0.3.26.dev',
+  version: '1.0.3.28.dev',
   production: false,
   hmr: true,
   basePath: 'mini-erp',
@@ -20,7 +20,7 @@ export const environment = {
   },
   api: {
     // baseUrl: '/v1', // prod
-    baseUrl: 'https://local.namsoftware.com/v1',
+    baseUrl: 'https://develop.namsoftware.com/v1',
   },
   number: {
     // replace by system locale

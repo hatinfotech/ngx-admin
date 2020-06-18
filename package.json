@@ -13,7 +13,7 @@
     "ng": "ng",
     "conventional-changelog": "conventional-changelog",
     "start": "ng serve --base-href /mini-erp/",
-    "hmr": "node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng serve  --base-href /mini-erp/ --configuration hmr",
+    "hmr": "node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng serve  --base-href /mini-erp/ --configuration hmr --host 0.0.0.0",
     "build": "ng build",
     "build:prod": "node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng build --prod",
     "test": "ng test",

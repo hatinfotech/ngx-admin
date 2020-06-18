@@ -11,6 +11,7 @@ import '../../../../lib/ckeditor.loader';
 import 'ckeditor';
 import { FileModel } from '../../../../models/file.model';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
+import { UnitModel } from '../../../../models/unit.model';
 
 @Component({
   selector: 'ngx-product-form',
@@ -48,7 +49,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   getRequestId(callback: (id?: string[]) => void) {
-    callback(this.inputId);
+    if (this.mode === 'page') {
+      super.getRequestId(callback);
+    } else {
+      callback(this.inputId);
+    }
   }
 
   // select2OptionForProduct = {
@@ -90,6 +95,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       text: 'text',
     },
     multiple: true,
+    tags: true,
     ajax: {
       url: params => {
         return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
@@ -99,12 +105,25 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         console.info(data, params);
         return {
           results: data.map(item => {
-            // item['id'] = item['ProductCategory'];
-            // item['text'] = item['ProductCategoryName'];
+            // item['id'] = item['Code'];
+            // item['text'] = item['Name'];
+            delete item['Id'];
             return item;
           }),
         };
       },
+    },
+  };
+
+  select2OptionForUnit = {
+    placeholder: 'Chọn đơn vị tính...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
     },
   };
 
@@ -114,7 +133,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   async init() {
-    this.unitList = await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units');
+    this.unitList = await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { select: 'id=>Code,text=>Name' });
     return super.init();
   }
 
@@ -189,7 +208,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   goback(): false {
     super.goback();
     if (this.mode === 'page') {
-      this.router.navigate(['/promotion/promotion/list']);
+      this.router.navigate(['/admin-product/product/list']);
     } else {
       this.ref.close();
       // this.dismiss();

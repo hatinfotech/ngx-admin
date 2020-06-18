@@ -31,3 +31,11 @@ nb-card.is-drop-over nb-card-header {
   background-image: linear-gradient(to right, #ff708d, #ff3d71) !important;
   color: #ffffff !important;
 }
+
+
+@media (min-width: 768px) {
+  body nb-dialog-container nb-card {
+    min-width: initial !important;
+    width: 100% !important;
+  }
+}

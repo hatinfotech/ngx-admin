@@ -129,7 +129,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     // Set DataSource: prepareData
     source.prepareData = (data: ProductModel[]) => {
       data.map((product: any) => {
-        product['WarehouseUnit'] = product['WarehouseUnit']['Name'];
+        if (product['WarehouseUnit']) {
+          product['WarehouseUnit'] = product['WarehouseUnit']['Name'];
+        }
         if (product['Categories']) {
           product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
         }
@@ -148,6 +150,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       params['includeCategories'] = true;
       params['includeUnit'] = true;
       params['includeFeaturePicture'] = true;
+      params['sort_Id'] = 'desc';
       return params;
     };
 

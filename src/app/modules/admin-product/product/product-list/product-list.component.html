@@ -1,9 +1,12 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
     <nav>
-      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách sản phẩm
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> DS sản phẩm
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+      </button>
+      <button type="button" nbButton status="primary" hero size="tiny" (click)="gotoForm()" style="float: right;">
+        <nb-icon pack="eva" icon="plus"></nb-icon>
       </button>
     </nav>
   </nb-card-header>

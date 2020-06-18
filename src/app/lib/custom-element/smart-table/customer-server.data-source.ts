@@ -23,7 +23,14 @@ export class CustomeServerDataSource<M> extends LocalDataSource {
     if (this.prepareParams) {
       params = this.prepareParams(params);
     }
-    if (this.sortConf) {
+    if (this.sortConf.length > 0) {
+      // Clear init sort params
+      // tslint:disable-next-line: prefer-const
+      for (let p in params) {
+        if (/^sort_.*/.test(p)) {
+          delete params[p];
+        }
+      }
       this.sortConf.forEach((fieldConf) => {
         params[`sort_${fieldConf.field}`] = fieldConf.direction.toLowerCase();
       });
