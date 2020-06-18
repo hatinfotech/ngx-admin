@@ -22,6 +22,7 @@ import { EmailAddressListDetailModel } from '../../../../models/email.model';
 import { CurrencyPipe } from '@angular/common';
 import { param } from 'jquery';
 import { isNumber } from 'util';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'ngx-purchase-price-table-import',
@@ -194,12 +195,15 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
       }
     },
   };
+
+  gridReady$ = new BehaviorSubject<boolean>(false);
   onGridReady(params) {
     this.gridParams = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 
     this.loadList();
+    this.gridReady$.next(true);
 
   }
   onColumnResized() {
@@ -216,9 +220,9 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
   }
   loadList(callback?: (list: SmsReceipientModel[]) => void) {
 
-    if (this.gridApi) {
-      this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
-    }
+    // if (this.gridApi) {
+    //   this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
+    // }
 
   }
 
@@ -446,8 +450,12 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         //   // this.onAddDetailFormGroup(newForm, newDetailFormGroup);
 
         // });
-        this.gridApi.updateRowData({
-          add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, id: item['Sku'], No: index2 + 1 })),
+        this.gridReady$.subscribe(ready => {
+          if (ready) {
+            this.gridApi.updateRowData({
+              add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, id: item['Sku'], No: index2 + 1, Product: item['Product'] && item['Product']['id'] ? item['Product']['id'] : item['Product'] })),
+            });
+          }
         });
       }
 
@@ -467,17 +475,17 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
       SupplierEmail: [''],
       SupplierPhone: [''],
       SupplierAddress: [''],
-      Recipient: [''],
-      SupplierTaxCode: [''],
-      DirectReceiverName: [''],
-      SupplierBankName: [''],
-      SupplierBankCode: [''],
-      PaymentStep: [''],
-      DeliveryAddress: [''],
-      Title: [''],
+      // Recipient: [''],
+      // SupplierTaxCode: [''],
+      // DirectReceiverName: [''],
+      // SupplierBankName: [''],
+      // SupplierBankCode: [''],
+      // PaymentStep: [''],
+      // DeliveryAddress: [''],
+      // Title: [''],
       Description: [''],
       DateOfApprove: [''],
-      _total: [''],
+      // _total: [''],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -560,9 +568,9 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
           formGroup.get('SupplierPhone').setValue(selectedData.Phone);
           formGroup.get('SupplierEmail').setValue(selectedData.Email);
           formGroup.get('SupplierAddress').setValue(selectedData.Address);
-          formGroup.get('SupplierTaxCode').setValue(selectedData.TaxCode);
-          formGroup.get('SupplierBankName').setValue(selectedData.BankName);
-          formGroup.get('SupplierBankCode').setValue(selectedData.BankAcc);
+          // formGroup.get('SupplierTaxCode').setValue(selectedData.TaxCode);
+          // formGroup.get('SupplierBankName').setValue(selectedData.BankName);
+          // formGroup.get('SupplierBankCode').setValue(selectedData.BankAcc);
         }
       }
     }
@@ -663,14 +671,18 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
       const priceTableSheet: any[] = jsonData['PurchasePriceTable'];
       let productSkus = [];
       for (let i = 0; i < priceTableSheet.length; i++) {
-        priceTableSheet[i]['Sku'] = priceTableSheet[i]['Sku'].replace(/^[ |\n]+/, '').replace(/[ |\n]+$/, '').replace(/\n.*/, '');
+        if (typeof priceTableSheet[i]['Sku'] !== 'undefined') {
+          priceTableSheet[i]['Sku'] = priceTableSheet[i]['Sku'].replace(/^[ |\n]+/, '').replace(/[ |\n]+$/, '').replace(/\n.*/, '');
+        }
         productSkus.push(priceTableSheet[i]['Sku']);
         if (productSkus.length > 50 || i === priceTableSheet.length - 1) {
-          const products = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { filterBySku: productSkus.join(','), object: objectCode });
+          const products = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { filterBySku: productSkus.join(',') });
           for (let j = 0; j < products.length; j++) {
             const row = priceTableSheet.filter(item => item.Sku === products[j]['Sku'])[0];
             row['Product'] = products[j].Code;
-            row['Name'] = products[j].Name;
+            if (products[j].Name) {
+              row['Name'] = products[j].Name;
+            }
           }
           productSkus = [];
         }
@@ -707,7 +719,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
     const data = super.getRawFormData();
     data.array[0]['Details'] = [];
     this.gridApi.forEachNode(node => {
-      data.array[0]['Details'].push({ ...node.data, Name: node.data['Name'] ? node.data['Name'] : node.data['Sku'] });
+      data.array[0]['Details'].push(node.data);
     });
     // data['Details'] = this.rowData.map(item => ({...item, Name: item['Name'] ? item['Name'] : item['Sku']}));
     return data;

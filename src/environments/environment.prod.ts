@@ -4,6 +4,9 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 export const environment = {
+  version: '1.0.3.26',
+  // 1.0.3.26: Demo import purchase price table
+  // 1.0 : First release
   production: true,
   hmr: false,
   basePath: 'mini-erp',

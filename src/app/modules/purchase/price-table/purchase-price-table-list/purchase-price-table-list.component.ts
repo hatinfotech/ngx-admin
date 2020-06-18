@@ -147,7 +147,7 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: PurchasePriceTableModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(PurchasePriceTableFormComponent, {
+    this.dialogService.open(PurchasePriceTableImportComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

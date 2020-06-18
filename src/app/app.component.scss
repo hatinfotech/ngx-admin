@@ -35,6 +35,10 @@ body nb-layout[authState="logout"] nb-layout-header.fixed ~ .layout-container {
   margin-top: -10vh;
 }
 
+body .logo-container {
+  width: calc(18rem - 1.25rem);
+}
+
 .full-width {
   width: 100%;
 }
