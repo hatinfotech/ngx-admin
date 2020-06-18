@@ -322,7 +322,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   filesIndex: { [key: string]: UploadFile } = {};
   pictureFormIndex: { [key: string]: FormGroup } = {};
 
-  onUploadOutput(output: UploadOutput): void {
+  onUploadOutput(output: UploadOutput, formItemIndex: number): void {
     // console.log(output);
     // console.log(this.files);
     switch (output.type) {
@@ -346,7 +346,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
           this.pictureFormIndex[output.file.id] = newPictureFormGroup;
           newPictureFormGroup['file'] = output.file;
           newPictureFormGroup.get('ProgressId').setValue(output.file.id);
-          this.getPictures(0).push(newPictureFormGroup);
+          this.getPictures(formItemIndex).push(newPictureFormGroup);
         }
         break;
       case 'uploading':

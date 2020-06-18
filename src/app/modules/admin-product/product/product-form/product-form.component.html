@@ -2,13 +2,16 @@
   (keydown.enter)="onControlEnter($event)" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event)"
+      <nb-card class="small-header popup" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event, i)"
         [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
         <nb-card-header>
           <nav>
             Cập nhật sản phẩm
-            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
-              <nb-icon pack="eva" icon="close-circle"></nb-icon>
+            <button nbButton status="warning" hero size="tiny" (click)="goback()" style="float: right;" title="Đóng">
+              <nb-icon pack="eva" icon="close"></nb-icon>
+            </button>
+            <button *ngIf="array.controls.length > 1" nbButton status="danger" hero size="tiny" (click)="removeFormGroup(i)" style="float: right;" title="Xoá">
+              <nb-icon pack="eva" icon="minus-circle"></nb-icon>
             </button>
             <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
               title="Tải lại">
@@ -86,13 +89,13 @@
             </div>
             <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
             <div class="row">
-              <div class="col-sm-12" style="min-height: 10rem">
+              <div class="col-sm-12">
                 <button type="button" nbButton status="primary" hero size="tiny" [disabled]="isProcessing"
                   style="margin-bottom: 1rem;"
                   title="{{'Common.choosePcturesToUpload' | translate | headtitlecase}}" (click)="uploadBtn.click()">
                   <nb-icon pack="eva" icon="image"></nb-icon>{{'Common.upload' | translate | headtitlecase}}
                 </button>
-                <input type="file" #uploadBtn ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)"
+                <input type="file" #uploadBtn ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event, i)"
                   [uploadInput]="uploadInput" multiple style="display: none;">
 
                 <div formArrayName="Pictures" class="form-details">
@@ -112,7 +115,7 @@
                         <div class="buttons-row controls">
                           <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
                           <button nbButton status="primary" hero size="tiny" (click)="setAsFeaturePicture(i, picture)"
-                            title="Đặt làm hình chính">Chính</button>
+                            title="Đặt làm hình chính" [disabled]="formItem.get('FeaturePicture').value == picture.get('Image').value">Chính</button>
                           <button nbButton status="success" hero size="tiny"
                             (click)="previewPicture(picture)">Xem</button>
                           <button nbButton status="danger" hero size="tiny"
@@ -137,7 +140,8 @@
                   <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span></label>
                   <!-- <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="10"></textarea> -->
-                  <ckeditor formControlName="Description" [config]="{ extraPlugins: 'divarea', height: '200' }">
+                  <textarea *ngIf="array.controls.length > 1" formControlName="Description" nbInput fullWidth placeholder="Mô tả"></textarea>
+                  <ckeditor *ngIf="array.controls.length === 1" formControlName="Description" [config]="{ extraPlugins: 'divarea', height: '200' }">
                   </ckeditor>
                 </div>
               </div>
@@ -146,7 +150,8 @@
                   <label class="label"><span class="valid">Thông tin kỹ thuật (*)</span><span class="invalid">Thông tin
                       kỹ thuật là bắt buộc
                       (*)</span></label>
-                  <ckeditor formControlName="Technical" [config]="{ extraPlugins: 'divarea', height: '200' }">
+                      <textarea *ngIf="array.controls.length > 1" formControlName="Technical" nbInput fullWidth placeholder="Mô tả"></textarea>
+                      <ckeditor *ngIf="array.controls.length === 1" formControlName="Technical" [config]="{ extraPlugins: 'divarea', height: '200' }">
                   </ckeditor>
                 </div>
               </div>
@@ -341,7 +346,7 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm cái nữa</button>
             <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
               (click)="saveAndClose()">Lưu & Đóng</button>
             <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
