@@ -715,6 +715,11 @@ body ng2-smart-table .no {
   border-color: #191b36 !important;
   color: #fff !important;
 }
+@media (max-width: 50rem) {
+  nb-card.small-header {
+    margin-top: 3rem;
+  }
+}
 
 nb-card.small-header nb-card-header {
   padding: 0.5rem 1rem !important;
@@ -908,7 +913,6 @@ body .form-group[state="warning"] textarea:focus {
   top: -14px;
 }
 
-
 .dialog-wrap {
   // max-width: 90%;
   margin: auto;
@@ -920,6 +924,13 @@ body .form-group[state="warning"] textarea:focus {
 // .cdk-overlay-pane:has(ngx-showcase-dialog) {
 //   width: 100%;
 // }
+
+.copy-btn {
+  position: absolute;
+  z-index: 1;
+  right: -14px;
+  top: -14px;
+}
 
 /* End form */
 
@@ -1136,7 +1147,7 @@ body nb-layout .layout .layout-container .content .columns nb-layout-column {
 // }
 
 body nb-sidebar nb-menu {
-  padding-bottom: 2rem;
+  padding-bottom: 5rem;
 }
 
 /* End Layout */
