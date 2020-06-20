@@ -14,6 +14,7 @@ import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SyncFormComponent } from './sync-form/sync-form.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [WordpressComponent, WpSiteListComponent, WpSiteFormComponent, SyncFormComponent],
@@ -52,6 +53,7 @@ import { SyncFormComponent } from './sync-form/sync-form.component';
   entryComponents: [
     WpSiteFormComponent,
     SyncFormComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class WordpressModule { }

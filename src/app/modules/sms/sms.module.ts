@@ -25,6 +25,7 @@ import { SmsPhoneNumberListComponent } from './phone-number/sms-phone-number-lis
 import { SmsPhoneNumberFormComponent } from './phone-number/sms-phone-number-form/sms-phone-number-form.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { SmsSentStatsListComponent } from './sms-sent-stats-list/sms-sent-stats-list.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [SmsComponent, SmsTemplateListComponent,
@@ -76,6 +77,7 @@ import { SmsSentStatsListComponent } from './sms-sent-stats-list/sms-sent-stats-
     SmsPhoneNumberFormComponent,
     SmsAdvertisementFormComponent,
     SmsSentStatsListComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class SmsModule { }

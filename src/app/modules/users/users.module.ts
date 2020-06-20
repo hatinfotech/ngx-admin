@@ -20,6 +20,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { TreeModule } from 'angular-tree-component';
 import { UserChangePasswordFormComponent } from './profile/user-change-password-form/user-change-password-form.component';
 import { SystemModule } from '../system/system.module';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [
@@ -54,5 +55,8 @@ import { SystemModule } from '../system/system.module';
     SystemModule,
   ],
   exports: [UserListComponent],
+  entryComponents: [
+    SmartTableFilterComponent,
+  ],
 })
 export class UsersModule { }

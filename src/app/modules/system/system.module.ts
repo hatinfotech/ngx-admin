@@ -23,6 +23,7 @@ import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-tabl
 import { SystemLocaleConfigComponent } from './configuration/system-configuration-board/system-locale-config/system-locale-config.component';
 import { UserConfigBoardComponent } from './configuration/user-config-board/user-config-board.component';
 import { UserLocaleConfigComponent } from './configuration/user-config-board/user-locale-config/user-locale-config.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 
 
@@ -71,6 +72,7 @@ import { UserLocaleConfigComponent } from './configuration/user-config-board/use
   entryComponents: [
     SystemParameterFormComponent,
     SmartTableCheckboxComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class SystemModule { }

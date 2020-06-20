@@ -849,6 +849,20 @@ ng2-smart-table {
   }
 }
 
+@media (max-width: 40rem) {
+  .ng2-smart-table-wrap table {
+    min-width: 40rem;
+  }
+}
+
+.ng2-smart-filter input[nbinput],
+.ng2-smart-filter select[nbinput] {
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  line-height: 1.5rem !important;
+  padding: 0.4375rem 1.125rem !important;
+}
+
 /* End Smart Table */
 
 /* Form */
@@ -1149,7 +1163,9 @@ body nb-layout .layout .layout-container .content .columns nb-layout-column {
 body nb-sidebar nb-menu {
   padding-bottom: 5rem;
 }
-
+.cdk-global-scrollblock {
+  overflow-y: hidden !important;
+}
 /* End Layout */
 
 /* Fotter */

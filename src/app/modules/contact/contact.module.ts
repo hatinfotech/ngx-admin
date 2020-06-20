@@ -14,6 +14,7 @@ import { DialogModule } from '../dialog/dialog.module';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { AgGridModule } from '@ag-grid-community/angular';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
   entryComponents: [
     SmartTableCheckboxComponent,
     ContactFormComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class ContactModule { }

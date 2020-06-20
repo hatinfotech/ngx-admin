@@ -25,6 +25,7 @@ import { SalesVoucherPrintComponent } from './sales-voucher/sales-voucher-print/
 import { PriceTableListComponent } from './price-table/price-table-list/price-table-list.component';
 import { PriceTableFormComponent } from './price-table/price-table-form/price-table-form.component';
 import { PriceTablePrintComponent } from './price-table/price-table-print/price-table-print.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -77,6 +78,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     SalesVoucherPrintComponent,
     PriceTableFormComponent,
     PriceTablePrintComponent,
+    SmartTableFilterComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },

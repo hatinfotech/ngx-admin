@@ -8,6 +8,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @Component({
   selector: 'ngx-product-list',
@@ -62,11 +63,55 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         title: 'Tên',
         type: 'string',
         width: '40%',
+        // filter: {
+        //   type: 'custom',
+        //   component: SmartTableFilterComponent,
+        //   config: {
+        //     delay: 3000,
+        //   },
+        // },
       },
       Categories: {
         title: 'Danh mục',
         type: 'string',
         width: '25%',
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 1000,
+            select2Option: {
+              placeholder: 'Chọn danh mục...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              ajax: {
+                url: (params: any) => {
+                  return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
+                },
+                delay: 300,
+                processResults: (data: any, params: any) => {
+                  console.info(data, params);
+                  return {
+                    results: data.map(item => {
+                      // item['id'] = item['Code'];
+                      // item['text'] = item['Name'];
+                      delete item['Id'];
+                      return item;
+                    }),
+                  };
+                },
+              },
+            }
+
+          }
+        },
       },
       WarehouseUnit: {
         title: 'ĐVT',

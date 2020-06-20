@@ -9,7 +9,7 @@ import { ActionControlListComponent } from './action-control-list/action-control
 import { AgListComponent } from './ag-list/ag-list.component';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { HeadTitlePipe } from '../pipes/head-title.pipe';
-import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent } from './smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableFilterComponent, SmartTableSelect2FilterComponent } from './smart-table/smart-table.filter.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -26,6 +26,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SmartTableDateTimeComponent,
     SmartTableDateTimeRangeFilterComponent,
     SmartTableClearingFilterComponent,
+    SmartTableFilterComponent,
+    SmartTableSelect2FilterComponent,
   ],
   imports: [
     CommonModule,
@@ -53,6 +55,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SmartTableDateTimeComponent,
     SmartTableDateTimeRangeFilterComponent,
     SmartTableClearingFilterComponent,
+    SmartTableFilterComponent,
+    SmartTableSelect2FilterComponent,
   ],
 })
 export class CustomElementModule { }

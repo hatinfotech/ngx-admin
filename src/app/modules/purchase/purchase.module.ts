@@ -20,6 +20,7 @@ import { options } from '../sales/sales.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { PurchaseComponent } from './purchase.component';
 import { PurchasePriceTableImportComponent } from './price-table/purchase-price-table-import/purchase-price-table-import.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 
 
@@ -72,6 +73,7 @@ import { PurchasePriceTableImportComponent } from './price-table/purchase-price-
     PurchasePriceTableFormComponent,
     PurchasePriceTablePrintComponent,
     PurchasePriceTableImportComponent,
+    SmartTableFilterComponent,
   ],
   providers: [
     CurrencyPipe,

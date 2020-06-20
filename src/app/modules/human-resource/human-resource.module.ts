@@ -5,6 +5,7 @@ import { NbTabsetModule, NbRouteTabsetModule, NbStepperModule, NbCardModule,
   NbButtonModule, NbListModule, NbAccordionModule, NbUserModule } from '@nebular/theme';
 import { ThemeModule } from '../../@theme/theme.module';
 import { HumanResouceRoutingModule } from './human-resource-routing.module';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,9 @@ import { HumanResouceRoutingModule } from './human-resource-routing.module';
     NbUserModule,
     NbRouteTabsetModule,
     HumanResouceRoutingModule,
+  ],
+  entryComponents: [
+    SmartTableFilterComponent,
   ],
 })
 export class HumanResourceModule { }

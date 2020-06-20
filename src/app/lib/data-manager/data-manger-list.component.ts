@@ -10,6 +10,8 @@ import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
+import { count } from 'console';
+import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 
 export class SmartTableSetting {
   mode?: string;
@@ -396,6 +398,13 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           // instance.click.subscribe((row: any) => {
 
           // });
+        };
+      }
+
+      if (typeof column['filter'] === 'undefined') {
+        column['filter'] = {
+          type: 'custom',
+          component: SmartTableFilterComponent,
         };
       }
 

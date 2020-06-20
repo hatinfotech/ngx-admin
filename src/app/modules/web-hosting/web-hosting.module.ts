@@ -21,6 +21,7 @@ import { DatabaseUserListComponent } from './database-users/database-user-list/d
 import { DatabaseUserFormComponent } from './database-users/database-user-form/database-user-form.component';
 import { FtpListComponent } from './ftps/ftp-list/ftp-list.component';
 import { FtpFormComponent } from './ftps/ftp-form/ftp-form.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,9 @@ import { FtpFormComponent } from './ftps/ftp-form/ftp-form.component';
     SortablejsModule.forRoot({
       animation: 200,
     }),
+  ],
+  entryComponents: [
+    SmartTableFilterComponent,
   ],
 })
 export class WebHostingModule { }

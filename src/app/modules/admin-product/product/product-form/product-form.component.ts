@@ -12,6 +12,7 @@ import 'ckeditor';
 import { FileModel } from '../../../../models/file.model';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { UnitModel } from '../../../../models/unit.model';
+import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-product-form',
@@ -84,7 +85,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   //   },
   // };
 
-  select2OptionForCategories = {
+  select2OptionForCategories: Select2Option = {
     placeholder: 'Chọn danh mục...',
     allowClear: true,
     width: '100%',

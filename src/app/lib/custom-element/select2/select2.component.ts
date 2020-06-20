@@ -1,6 +1,26 @@
 import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
+export interface Select2Option {
+  [key: string]: any;
+  placeholder: string;
+  allowClear: boolean;
+  width: string;
+  dropdownAutoWidth: boolean;
+  minimumInputLength: number;
+  keyMap: {
+    id: string,
+    text: string,
+  };
+  multiple?: boolean;
+  tags?: boolean;
+  ajax?: {
+    url: (params: { term: string }) => string;
+    delay: number,
+    processResults: (data: any, params: any) => { results: [] },
+  };
+}
+
 @Component({
   selector: 'ngx-select2',
   templateUrl: './select2.component.html',

@@ -27,6 +27,7 @@ import { EmailAddressFormComponent } from './address/email-address-form/email-ad
 import { DialogFormComponent } from '../dialog/dialog-form/dialog-form.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { EmailSentStatsListComponent } from './email-sent-stats-list/email-sent-stats-list.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [EmailMarketingComponent,
@@ -78,6 +79,7 @@ import { EmailSentStatsListComponent } from './email-sent-stats-list/email-sent-
     DialogFormComponent,
     EmailAdvertisementFormComponent,
     EmailSentStatsListComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class EmailMarketingModule { }

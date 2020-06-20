@@ -20,6 +20,7 @@ import { FileStoreFormComponent } from './store/file-store-form/file-store-form.
 import { FileUploadComponent } from './file/file-upload/file-upload.component';
 import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [FileComponent, FileListComponent, FileFormComponent, FileStoreListComponent, FileStoreFormComponent, FileUploadComponent],
@@ -64,6 +65,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
     FileFormComponent,
     FileUploadComponent,
     SmartTableThumbnailComponent,
+    SmartTableFilterComponent,
   ],
   providers: [
     // use french locale

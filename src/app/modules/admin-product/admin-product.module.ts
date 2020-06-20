@@ -22,6 +22,7 @@ import { ProductUnitFormComponent } from './unit/product-unit-form/product-unit-
 import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { TranslateModule } from '@ngx-translate/core';
+import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
@@ -69,6 +70,8 @@ import { TranslateModule } from '@ngx-translate/core';
     ProductCategoryFormComponent,
     ProductUnitFormComponent,
     SmartTableThumbnailComponent,
+    SmartTableFilterComponent,
+    SmartTableSelect2FilterComponent,
   ],
   providers: [
     // use french locale

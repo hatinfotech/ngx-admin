@@ -15,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [AdsComponent, AdsContentListComponent, AdsContentFormComponent, AdsCodeListComponent, AdsCodeFormComponent],
@@ -53,6 +54,7 @@ import { SortablejsModule } from 'ngx-sortablejs';
   entryComponents: [
     AdsContentFormComponent,
     AdsCodeFormComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class AdsModule { }

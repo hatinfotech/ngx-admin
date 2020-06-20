@@ -15,6 +15,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { CKEditorModule } from 'ng2-ckeditor';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 
 @NgModule({
@@ -56,6 +57,7 @@ import { CKEditorModule } from 'ng2-ckeditor';
   ],
   entryComponents: [
     PromotionFormComponent,
+    SmartTableFilterComponent,
   ],
   providers: [
     // use french locale

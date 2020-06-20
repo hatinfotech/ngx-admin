@@ -6,6 +6,7 @@ import { NbIconModule, NbCardModule, NbButtonModule } from '@nebular/theme';
 import { MediaPlayerComponent } from './media-player/media-player.component';
 import { TimingPipe } from './pipe/timing.pipe';
 import { FormsModule } from '@angular/forms';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [MobileAppComponent, DialpadComponent, MediaPlayerComponent, TimingPipe],
@@ -23,6 +24,9 @@ import { FormsModule } from '@angular/forms';
   exports: [
     // MobileAppComponent,
     MobileAppComponent,
+  ],
+  entryComponents: [
+    SmartTableFilterComponent,
   ],
 })
 export class MobileAppModule { }

@@ -26,6 +26,7 @@ import { StatsAreaChartComponent } from './profit-card/back-side/stats-area-char
 import { StatsBarAnimationChartComponent } from './profit-card/front-side/stats-bar-animation-chart.component';
 import { ActionControlListComponent } from '../../lib/custom-element/action-control-list/action-control-list.component';
 import { QuickTicketFormComponent } from './dashboard/quick-ticket-form/quick-ticket-form.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { QuickTicketFormComponent } from './dashboard/quick-ticket-form/quick-ti
     SmartTableCheckboxComponent,
     ActionControlListComponent,
     QuickTicketFormComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class HelpdeskModule { }

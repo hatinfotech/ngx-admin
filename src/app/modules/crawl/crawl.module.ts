@@ -16,6 +16,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { CrawlPlanListComponent } from './plan/crawl-plan-list/crawl-plan-list.component';
 import { CrawlPlanFormComponent } from './plan/crawl-plan-form/crawl-plan-form.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [CrawlComponent, CrawlDashboardComponent, CrawlServerListComponent, CrawlServerFormComponent, CrawlPlanListComponent, CrawlPlanFormComponent],
@@ -54,6 +55,7 @@ import { CrawlPlanFormComponent } from './plan/crawl-plan-form/crawl-plan-form.c
   entryComponents: [
     CrawlServerFormComponent,
     CrawlPlanFormComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class CrawlModule { }

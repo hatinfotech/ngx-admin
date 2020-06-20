@@ -14,6 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableIconComponent } from '../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableIconC
     SmartTableButtonComponent,
     SmartTableCheckboxComponent,
     SmartTableIconComponent,
+    SmartTableFilterComponent,
   ],
 })
 export class MinierpModule { }
