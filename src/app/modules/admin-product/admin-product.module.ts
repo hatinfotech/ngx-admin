@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdminProductComponent } from './admin-product.component';
 import { ProductListComponent } from './product/product-list/product-list.component';
 import { ProductFormComponent } from './product/product-form/product-form.component';
-import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
+import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule, NbDialogRef } from '@nebular/theme';
 import { AdminProductRoutingModule } from './admin-product-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
@@ -23,11 +23,13 @@ import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-tab
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { ProductFormDialogComponent } from './product/product-form-dialog/product-form-dialog.component';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
     ProductCategoryListComponent, ProductCategoryFormComponent, ProductUnitListComponent,
-    ProductUnitFormComponent],
+    ProductUnitFormComponent,
+    ProductFormDialogComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -69,13 +71,14 @@ import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../
     ProductFormComponent,
     ProductCategoryFormComponent,
     ProductUnitFormComponent,
+    ProductFormDialogComponent,
     SmartTableThumbnailComponent,
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
   ],
   providers: [
     // use french locale
-    {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
+    // { provide: OWL_DATE_TIME_LOCALE, useValue: 'vi' },
   ],
 })
 export class AdminProductModule { }

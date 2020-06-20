@@ -22,6 +22,7 @@ import {
   NbWindowModule,
   NbCardModule,
   NbLayoutModule,
+  NbDialogRef,
 } from '@nebular/theme';
 import { NbAuthModule, NbPasswordAuthStrategy, NbAuthOAuth2JWTToken } from '@nebular/auth';
 import { AuthModule } from './modules/auth/auth.module';
@@ -46,9 +47,6 @@ import { registerLocaleData } from '@angular/common';
 import localeVi from '@angular/common/locales/vi';
 import localeViExtra from '@angular/common/locales/extra/vi';
 import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
-import { PurchasePriceTableListComponent } from './modules/purchase/price-table/purchase-price-table-list/purchase-price-table-list.component';
-import { PurchasePriceTableFormComponent } from './modules/purchase/price-table/purchase-price-table-form/purchase-price-table-form.component';
-import { PurchasePriceTablePrintComponent } from './modules/purchase/price-table/purchase-price-table-print/purchase-price-table-print.component';
 registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -198,6 +196,7 @@ export class DynamicLocaleId extends String {
       useClass: DynamicLocaleId,
       deps: [TranslateService],
     },
+    { provide: NbDialogRef },
     RoutingResolve,
   ],
 })

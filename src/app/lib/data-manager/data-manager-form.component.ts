@@ -168,11 +168,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   ngAfterViewInit(): void {
     // const nativeEle = this;
+    // Fix dialog scroll
     if (this['ref']) {
       const dialog: NbDialogRef<DataManagerFormComponent<M>> = this['ref'];
-      const nativeEle = dialog.componentRef.location.nativeElement;
-      // tslint:disable-next-line: ban
-      $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+      if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
+        const nativeEle = dialog.componentRef.location.nativeElement;
+        // tslint:disable-next-line: ban
+        $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+      }
     }
   }
 

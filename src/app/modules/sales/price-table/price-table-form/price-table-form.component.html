@@ -29,7 +29,7 @@
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code">
-              <div class="col-sm-3">
+              <!-- <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
                   <label class="label"><span
                       class="valid">{{'Voucher.organizationOrPersornal' | translate | headtitlecase}}</span><span
@@ -38,8 +38,8 @@
                   <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption"
                     (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                 </div>
-              </div>
-              <div class="col-sm-6">
+              </div> -->
+              <!-- <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectName'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
@@ -144,8 +144,8 @@
                   <input type="text" nbInput fullWidth formControlName="PaymentStep"
                     placeholder="{{'Sales.paymentStep' | translate | headtitlecase}}">
                 </div>
-              </div>
-              <div class="col-sm-9">
+              </div> -->
+              <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.title' | translate | headtitlecase}}</span><span
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.title')} | headtitlecase }}
@@ -154,7 +154,7 @@
                     placeholder="{{'Common.title' | translate | headtitlecase}}">
                 </div>
               </div>
-              <div class="col-sm-3">
+              <!-- <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('DateOfApprove'), 'warning')">
                   <label class="label"><span
                       class="valid">{{'Sales.dateOfApprove' | translate | headtitlecase}}</span><span
@@ -164,7 +164,7 @@
                     formControlName="DateOfApprove" placeholder="{{'Common.dateTime' | translate | headtitlecase}}">
                   <owl-date-time #DateOfApprove></owl-date-time>
                 </div>
-              </div>
+              </div> -->
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}}</span><span
@@ -333,9 +333,11 @@
                     <div class="col-md-2 col-sm-4 col-xs-4"></div>
                     <div class="col-md-2 col-sm-4 col-xs-4"></div>
                     <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">
-                      {{'Voucher.total' | translate | headtitlecase}}</div>
+                      <!-- {{'Voucher.total' | translate | headtitlecase}} -->
+                    </div>
                     <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">
-                      <label>{{formItem.get('_total').value | currency:'VND'}}</label></div>
+                      <!-- <label>{{formItem.get('_total').value | currency:'VND'}}</label> -->
+                    </div>
                   </div>
                 </div>
               </div>

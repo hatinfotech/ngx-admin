@@ -36,7 +36,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     protected toastrService: NbToastrService,
     protected dialogService: NbDialogService,
     protected commonService: CommonService,
-    protected ref: NbDialogRef<ProductFormComponent>,
+    protected ref?: NbDialogRef<ProductFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -212,6 +212,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       this.router.navigate(['/admin-product/product/list']);
     } else {
       this.ref.close();
+      // this.onDialogClose();
       // this.dismiss();
     }
     return false;

@@ -962,7 +962,7 @@ nb-card-footer [nbButton]:first-child {
   float: left;
 }
 @media (min-width: 768px) {
-  form.popup {
+  .cdk-overlay-container .popup {
     // margin-top: 20px;
     // margin-bottom: 20px;
     max-width: 90%;
