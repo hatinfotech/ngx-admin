@@ -2,7 +2,7 @@ import { UnitModel } from './unit.model';
 
 export class ProductModel {
 
-  Code: string;
+  Code?: string;
   Sku?: string;
   Name: string;
   WarehouseUnit?: string & UnitModel;

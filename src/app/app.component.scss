@@ -963,14 +963,12 @@ nb-card-footer [nbButton]:first-child {
 }
 @media (min-width: 768px) {
   .cdk-overlay-container .popup {
-    // margin-top: 20px;
-    // margin-bottom: 20px;
     max-width: 90%;
     margin: auto;
   }
-  // body nb-dialog-container nb-card {
-  //   min-width: 40rem !important;
-  // }
+  .cdk-global-overlay-wrapper.dialog .cdk-overlay-pane {
+    width: 100%;
+  }
 }
 
 /* .cdk-overlay-pane, .cdk-overlay-pane nb-dialog-container {
@@ -1017,9 +1015,33 @@ nb-card.ag-grid-card nb-card-body .ag-grid-wrap {
 nb-card.ag-grid-card {
   // overflow: hidden;
 }
-s nb-card.ag-grid-card nb-card-body {
+nb-card.ag-grid-card nb-card-body {
   padding: 0;
 }
+.ag-grid-wrap {
+  border: #ccc 1px solid; border-radius: 3px; overflow: hidden;
+}
+ag-grid-angular {
+  .image-thumb-wrap {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+  }
+  .image-thumb {
+    background-position: center;
+    background-size: cover;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+  }
+  // .ag-row .ag-cell {
+  //   display: flex;
+  //   // justify-content: center; /* align horizontal */
+  //   align-items: stretch;
+  // }
+}
+
 /*End AG-Grid*/
 
 /* Layout */

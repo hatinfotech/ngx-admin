@@ -2,9 +2,9 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { OnInit } from '@angular/core';
+import { OnInit, Input, AfterViewInit } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -54,7 +54,7 @@ export class SmartTableSetting {
   };
 }
 
-export abstract class DataManagerListComponent<M> extends BaseComponent implements OnInit, ReuseComponent {
+export abstract class DataManagerListComponent<M> extends BaseComponent implements OnInit, AfterViewInit, ReuseComponent {
 
   editing = {};
   rows = [];
@@ -63,6 +63,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Seleted ids */
   selectedIds: string[] = [];
+  selectedItems: M[] = [];
 
   /** Local dat source */
   source: LocalDataSource = new LocalDataSource();
@@ -76,6 +77,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   abstract idKey: string;
 
   protected refreshPendding = false;
+  @Input() inputMode: 'dialog' | 'page' | 'inline';
+  @Input() onDialogChoose: (chooseItems: M[]) => void;
+  @Input() onDialogClose: () => void;
 
   constructor(
     protected apiService: ApiService,
@@ -96,6 +100,19 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       }
     }));
     this.loadList();
+  }
+
+  ngAfterViewInit(): void {
+    // const nativeEle = this;
+    // Fix dialog scroll
+    if (this['ref']) {
+      const dialog: NbDialogRef<DataManagerListComponent<M>> = this['ref'];
+      if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
+        const nativeEle = dialog.componentRef.location.nativeElement;
+        // tslint:disable-next-line: ban
+        $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+      }
+    }
   }
 
   getList(callback: (list: M[]) => void) {
@@ -151,6 +168,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** User select event */
   onUserRowSelect(event: any) {
+    this.selectedItems = event.selected;
     this.selectedIds = event.selected.map((item: M) => {
       return item[this.idKey];
     });
@@ -413,8 +431,21 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return settings;
   }
 
+  choose() {
+    if (this.onDialogChoose) {
+      this.onDialogChoose(this.selectedItems);
+      this.close();
+    }
+  }
+
   reset() {
     this.source.reset();
     return false;
+  }
+
+  close() {
+    if (this['ref']) {
+      this['ref'].close();
+    }
   }
 }

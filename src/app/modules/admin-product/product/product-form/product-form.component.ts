@@ -320,11 +320,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   files: UploadFile[];
   uploadInput: EventEmitter<UploadInput>;
   humanizeBytes: Function;
-  dragOver: boolean;
+  dragOver: { [key: string]: boolean } = {};
   filesIndex: { [key: string]: UploadFile } = {};
   pictureFormIndex: { [key: string]: FormGroup } = {};
 
-  onUploadOutput(output: UploadOutput, formItemIndex: number): void {
+  onUploadOutput(output: UploadOutput, formItem: FormGroup, formItemIndex: number): void {
     // console.log(output);
     // console.log(this.files);
     switch (output.type) {
@@ -364,11 +364,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         this.files = this.files.filter((file: UploadFile) => file !== output.file);
         break;
       case 'dragOver':
-        this.dragOver = true;
+        this.dragOver[formItemIndex] = true;
         break;
       case 'dragOut':
       case 'drop':
-        this.dragOver = false;
+        this.dragOver[formItemIndex] = false;
         break;
       case 'done':
         // The file is downloaded
@@ -378,10 +378,16 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         // newPictureFormGroup.get('Thumbnail').setValue(fileResponse.Thumbnail);
         // newPictureFormGroup['file'] = output.file;
         // this.getPictures(0).push(newPictureFormGroup);
-        const pictureFormGropu = this.pictureFormIndex[output.file.id];
-        pictureFormGropu.get('Image').setValue(fileResponse.Store + '/' + fileResponse.Id + '.' + fileResponse.Extension);
-        pictureFormGropu.get('Thumbnail').setValue(fileResponse.Thumbnail + '?token=' + this.apiService.getAccessToken());
+        // const beforeCount = this.getPictures(formItemIndex).controls.length;
+        const pictureFormGroup = this.pictureFormIndex[output.file.id];
+        pictureFormGroup.get('Image').setValue(fileResponse.Store + '/' + fileResponse.Id + '.' + fileResponse.Extension);
+        pictureFormGroup.get('Thumbnail').setValue(fileResponse.Thumbnail + '?token=' + this.apiService.getAccessToken());
         this.files.splice(this.files.findIndex(f => f.id === output.file.id), 1);
+
+        if (!formItem.get('FeaturePicture').value) {
+          this.setAsFeaturePicture(formItemIndex, pictureFormGroup);
+        }
+
         break;
     }
   }

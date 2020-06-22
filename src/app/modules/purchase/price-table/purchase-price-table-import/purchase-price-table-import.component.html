@@ -200,23 +200,37 @@
                 <div class="ag-grid-wrap"
                   style="height: 500px; border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
                   <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham"
-                    [modules]="modules" [columnDefs]="columnDefs" [floatingFilter]="false" [debug]="true"
-                    [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowDeselection]="true"
-                    [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize"
+                    [modules]="modules"
+                    [columnDefs]="columnDefs"
+                    [floatingFilter]="false"
+                    [debug]="true"
+                    [defaultColDef]="defaultColDef"
+                    [rowSelection]="rowSelection"
+                    [rowDeselection]="true"
                     [cacheOverflowSize]="cacheOverflowSize"
                     [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
-                    [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache"
-                    [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components"
-                    [rowData]="rowData" (gridReady)="onGridReady($event)" [multiSortKey]="multiSortKey"
-                    [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight"
-                    (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
+                    [infiniteInitialRowCount]="infiniteInitialRowCount"
+                    [maxBlocksInCache]="maxBlocksInCache"
+                    [cacheBlockSize]="cacheBlockSize"
+                    [getRowNodeId]="getRowNodeId"
+                    [components]="components"
+                    [rowData]="rowData"
+                    [multiSortKey]="multiSortKey"
+                    [rowDragManaged]="rowDragManaged"
+                    [getRowHeight]="getRowHeight"
+                    [rowHeight]="rowHeight"
+                    [rowModelType]="rowModelType"
+                    [paginationPageSize]="paginationPageSize"
+                    [pagination]="pagination"
+                    [enterMovesDownAfterEdit]="true"
+                    (gridReady)="onGridReady($event)"
+                    (columnResized)="onColumnResized()"
+                    (rowSelected)="onRowSelected()"
+                    >
                   </ag-grid-angular>
                 </div>
               </div>
             </div>
-
-
-
 
             <div class="row">
               <div class="col-sm-12" style="text-align: right;">

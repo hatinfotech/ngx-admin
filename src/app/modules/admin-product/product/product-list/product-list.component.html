@@ -2,11 +2,17 @@
   <nb-card-header>
     <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> DS sản phẩm
+      <button nbButton status="warning" hero size="tiny" (click)="close()" style="float: right;" title="Đóng">
+        <nb-icon pack="eva" icon="close"></nb-icon>
+      </button>
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
       <button type="button" nbButton status="primary" hero size="tiny" (click)="gotoForm()" style="float: right;">
         <nb-icon pack="eva" icon="plus"></nb-icon>
+      </button>
+      <button type="button" nbButton status="primary" hero size="tiny" (click)="choose()" style="float: right;">
+        <nb-icon pack="eva" icon="checkmark-square"></nb-icon>
       </button>
     </nav>
   </nb-card-header>

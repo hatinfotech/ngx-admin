@@ -3,7 +3,7 @@ import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -30,6 +30,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     protected dialogService: NbDialogService,
     protected toastService: NbToastrService,
     protected _http: HttpClient,
+    protected ref?: NbDialogRef<ProductListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }
@@ -63,7 +64,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       Name: {
         title: 'Tên',
         type: 'string',
-        width: '40%',
+        width: '25%',
         // filter: {
         //   type: 'custom',
         //   component: SmartTableFilterComponent,
@@ -123,6 +124,11 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         title: 'Code',
         type: 'string',
         width: '10%',
+      },
+      Sku: {
+        title: 'Sku',
+        type: 'string',
+        width: '15%',
       },
       //   Copy: {
       //     title: 'Copy',

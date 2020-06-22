@@ -67,6 +67,9 @@ import { ProductFormDialogComponent } from './product/product-form-dialog/produc
       animation: 200,
     }),
   ],
+  exports: [
+    ProductListComponent,
+  ],
   entryComponents: [
     ProductFormComponent,
     ProductCategoryFormComponent,

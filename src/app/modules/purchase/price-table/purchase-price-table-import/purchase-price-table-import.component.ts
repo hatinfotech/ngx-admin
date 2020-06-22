@@ -94,6 +94,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
     /** AG-Grid */
+    const $this = this;
     this.columnDefs = [
       {
         headerName: '#',
@@ -104,12 +105,25 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         pinned: 'left',
       },
       {
+        headerName: 'Hình',
+        field: 'PictureThumbnail',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        pinned: 'left',
+        autoHeight: true,
+        cellRenderer: (params: { color: string, value: any }) => {
+          // return '<img src="' + params.value + '?token=' + this.apiService.getAccessToken() + '">'
+          return '<div class="image-thumb-wrap"><div class="image-thumb" style="background-image: url(\'' + params.value + '?token=' + this.apiService.getAccessToken() + '\')"></div></div>';
+        },
+      },
+      {
         headerName: 'Sku',
         field: 'Sku',
         width: 150,
         filter: 'agTextColumnFilter',
         // pinned: 'left',
         autoHeight: true,
+        editable: true,
       },
       {
         headerName: 'Code',
@@ -125,6 +139,8 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         width: 400,
         filter: 'agTextColumnFilter',
         // pinned: 'left',
+        editable: true,
+        cellStyle: { whiteSpace: 'normal' },
       },
       {
         headerName: 'Description (Mô tả)',
@@ -132,6 +148,8 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         width: 1024,
         filter: 'agTextColumnFilter',
         // pinned: 'left',
+        editable: true,
+        cellStyle: { whiteSpace: 'normal' },
       },
       {
         headerName: 'Price (Giá)',
@@ -140,8 +158,11 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         filter: 'agTextColumnFilter',
         pinned: 'right',
         type: 'rightAligned',
-        valueFormatter: (params: { value: number }) => {
-          return isNumber(params.value) ? this.currencyPipe.transform(params.value, 'VND') : 0;
+        editable: true,
+        valueFormatter: (params: { value: number & string }) => {
+          // console.log(params);
+          const value = parseFloat(params.value);
+          return isNumber(value) ? this.currencyPipe.transform(value, 'VND') : 0;
         },
       },
     ];
@@ -172,7 +193,9 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
   public gridParams;
   public multiSortKey = 'ctrl';
   public rowDragManaged = false;
-  public getRowHeight;
+  public getRowHeight(params) {
+    return 80;
+  }
   public rowHeight: number;
   public hadRowsSelected = false;
   public pagination: boolean;
@@ -452,6 +475,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         // });
         this.gridReady$.subscribe(ready => {
           if (ready) {
+            this.gridApi.setRowData([]);
             this.gridApi.updateRowData({
               add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, id: item['Sku'], No: index2 + 1, Product: item['Product'] && item['Product']['id'] ? item['Product']['id'] : item['Product'] })),
             });

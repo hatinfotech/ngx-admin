@@ -1,5 +1,5 @@
 <div class="dialog-wrap" #dialogWrap>
-  <nb-card style="max-height: initial; margin: 0 auto;" class="small-header">
+  <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
     <nb-card-header>
       <nav>
         {{'Sales.PriceTable.title' | translate:{action:commonService.translate.instant('Common.preview'), definition:''} | headtitlecase}}
@@ -15,24 +15,21 @@
     </nb-card-header>
     <nb-card-body #printContent>
       <div id="print-area">
-        <div style="display: flex; flex-wrap: wrap">
+        <!-- <div style="display: flex; flex-wrap: wrap">
           <div style="flex: 0 0 60%;">
             <pre>{{'Infomation.Voucher.register' | translate }}</pre>
           </div>
           <div style="text-align: right; flex: 0 0 40%;">
             <img [src]="env.register.logo.voucher" style="height: 50px;">
           </div>
-        </div>
-        <div>
+        </div> -->
+        <!-- <div>
           <div class="print-title">{{ 'Sales.PriceTable.title' | translate:{action: '', definition: ''} | uppercase }}
           </div>
           <div class="under-title">{{ data.Code }} - {{ data.DateOfApprove | date:'short' }}</div>
-        </div>
+        </div> -->
         <div>
-          <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
-            {{renderValue(data.ObjectName)}}
-          </div>
-          <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}
+          <div class="under-line">{{renderValue(data.Title)}}
           </div>
         </div>
         <div>
@@ -40,42 +37,40 @@
             <table style="width: 100%;" class="print-voucher-detail-table">
               <colgroup>
                 <!--STT-->
-                <col span="1" style="width: 1cm;">
+                <col span="1" style="width: 2cm;">
                 <!--Dien giai-->
-                <col span="1" style="width: 5.5cm;">
+                <col span="1" style="width: 15cm;">
                 <!--DVT-->
-                <col span="1" style="width: 1cm;">
+                <col span="1" style="width: 2cm;">
                 <!--So luong-->
                 <!-- <col span="1" style="width: 2cm; text-align: right;"> -->
                 <!--Don gia-->
-                <col span="1" style="width: 2.8cm; text-align: right;">
+                <!-- <col span="1" style="width: 2.8cm; text-align: right;"> -->
                 <!--Thue-->
                 <col span="1" style="width: 2cm;">
                 <!--Thanh tien-->
                 <!-- <col span="1" style="width: 2.7cm; text-align: right;"> -->
               </colgroup>
               <tr class="print-voucher-detail-header">
-                <th>{{'Common.noNumber' | translate | headtitlecase}}</th>
+                <th>{{'Common.picture' | translate | headtitlecase}}</th>
                 <th>{{'Sales.technicalDescription' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
+                <th class="text-align-left">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                 <!-- <th class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</th> -->
                 <th class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</th>
+                <!-- <th class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</th> -->
                 <!-- <th class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</th> -->
               </tr>
               <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
-                <td>{{i + 1}}</td>
-                <td>{{renderValue(detail.Note)}} <br>
-                  <span style="font-size: 10px; font-style: italic;">
-                    {{'Common.note' | translate}} : {{detail.Product?.Code}},
-                    {{'Common.code' | translate}} : {{detail.Product?.Code}},
-                    {{'Common.sort' | translate | headtitlecase}}: {{detail.No}}
-                  </span>
+                <!-- <td><div class="image-thumbnail" style="background-size: cover; background-repeat: no-repeat; width: 100%; height: 5cm; border-radius: 3px;" [ngStyle]="{'backgroundImage': 'url(\''+detail.PictureThumbnail + '?token='+apiService.getAccessToken()+'\')'}"></div></td> -->
+                <td><img style="width: 100%; border-radius: 5px;" src="{{detail.PictureThumbnail + '?token='+apiService.getAccessToken()}}"></td>
+                <td>
+                  <div style="font-weight: bold;">{{detail.Name}}</div>
+                  <div [innerHTML]="renderValue(detail.Note)"></div>
                 </td>
-                <td class="text-align-right">{{detail.Unit?.Name}}</td>
+                <td class="text-align-left">{{detail.Unit}}</td>
                 <!-- <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td> -->
                 <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
-                <td class="text-align-right">{{detail.Tax?.Label2}}</td>
+                <!-- <td class="text-align-right">{{detail.Tax?.Label2}}</td> -->
                 <!-- <td class="text-align-right">{{toMoney(detail) | currency:'VND'}}</td> -->
               </tr>
               <!-- <tr>
@@ -92,7 +87,7 @@
           <!-- <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:
             {{renderValue(data.DirectReceiverName)}}</div> -->
         </div>
-        <div style="display: flex; flex-wrap: wrap">
+        <!-- <div style="display: flex; flex-wrap: wrap">
           <div style="text-align: center; flex: 0 0 50%;">
             <br>
             {{'Common.employee' | translate | headtitlecase}}
@@ -103,7 +98,7 @@
             {{'Common.customer' | translate | headtitlecase}}
             <br><br><br>
           </div>
-        </div>
+        </div> -->
       </div>
     </nb-card-body>
     <nb-card-footer>

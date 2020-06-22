@@ -113,6 +113,7 @@ export class SalesPriceReportDetailModel {
 export class SalesPriceTableModel {
   Id?: string & number;
   Code?: string;
+  Title?: string;
   Branch?: string;
   CustomerGroup?: string;
   AppliedStartDate?: string;
@@ -139,6 +140,7 @@ export class SalesPriceTableDetailModel {
   Id?: string;
   PriceTable?: string;
   Product?: string & ProductModel;
+  Name?: string;
   PriceDefinition?: string;
   Price?: string;
   DateOfUpdate?: string;
@@ -149,4 +151,5 @@ export class SalesPriceTableDetailModel {
   No?: string;
   Type?: string;
   Sku?: string;
+  PictureThumbnail?: string;
 }

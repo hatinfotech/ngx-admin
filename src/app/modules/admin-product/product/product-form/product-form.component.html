@@ -2,8 +2,8 @@
   (keydown.enter)="onControlEnter($event)" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event, i)"
-        [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
+      <nb-card class="small-header popup" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event, formItem, i)"
+        [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver[i] }">
         <nb-card-header>
           <nav>
             Cập nhật sản phẩm
@@ -105,12 +105,12 @@
                   <nb-icon pack="eva" icon="image"></nb-icon>{{'Common.upload' | translate | headtitlecase}}
                 </button>
                 <input type="file" #uploadBtn ngFileSelect [options]="options"
-                  (uploadOutput)="onUploadOutput($event, i)" [uploadInput]="uploadInput" multiple
+                  (uploadOutput)="onUploadOutput($event, formItem, i)" [uploadInput]="uploadInput" multiple
                   style="display: none;">
 
                 <div formArrayName="Pictures" class="form-details">
                   <div class="row">
-                    <div class="form-detail-item col-sm-2" *ngFor="let picture of getPictures(i).controls; let ic=index"
+                    <div class="form-detail-item col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-6" *ngFor="let picture of getPictures(i).controls; let ic=index"
                       [formGroup]="picture">
                       <input type="hidden" formControlName="Id">
                       <div class="imageFormControl"

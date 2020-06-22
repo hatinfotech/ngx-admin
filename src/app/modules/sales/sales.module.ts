@@ -1,5 +1,5 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { SalesComponent } from './sales.component';
 import { SalesPriceReportListComponent } from './price-report/sales-price-report-list/sales-price-report-list.component';
 import { SalesPriceReportFormComponent } from './price-report/sales-price-report-form/sales-price-report-form.component';
@@ -25,6 +25,8 @@ import { SalesVoucherPrintComponent } from './sales-voucher/sales-voucher-print/
 import { PriceTableListComponent } from './price-table/price-table-list/price-table-list.component';
 import { PriceTableFormComponent } from './price-table/price-table-form/price-table-form.component';
 import { PriceTablePrintComponent } from './price-table/price-table-print/price-table-print.component';
+import { ProductListComponent } from '../admin-product/product/product-list/product-list.component';
+import { AdminProductModule } from '../admin-product/admin-product.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -67,6 +69,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     }),
     NgxMaskModule.forRoot(options),
     TranslateModule,
+    AdminProductModule,
   ],
   entryComponents: [
     SalesPriceReportFormComponent,
@@ -77,10 +80,12 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     SalesVoucherPrintComponent,
     PriceTableFormComponent,
     PriceTablePrintComponent,
+    ProductListComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },
     // {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
+    CurrencyPipe,
   ],
 })
 export class SalesModule { }

@@ -67,4 +67,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     this.destroy$.complete();
   }
 
+  close(){
+
+  }
+
 }
