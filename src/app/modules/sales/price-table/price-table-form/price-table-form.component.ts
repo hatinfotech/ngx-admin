@@ -22,6 +22,8 @@ import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatas
 import { isNumber } from 'util';
 import { CurrencyPipe } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+
 
 @Component({
   selector: 'ngx-price-table-form',
@@ -100,8 +102,9 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         width: 52,
         valueGetter: 'node.data.No',
         cellRenderer: 'loadingCellRenderer',
-        sortable: false,
+        // sortable: false,
         pinned: 'left',
+        rowDrag: true,
       },
       {
         headerName: 'Hình',
@@ -120,29 +123,12 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         },
       },
       {
-        headerName: 'Sku',
-        field: 'Sku',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-        editable: true,
-      },
-      {
-        headerName: 'Code',
-        field: 'Product',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-      },
-      {
         headerName: 'Tên sản phẩm',
         field: 'Name',
         width: 400,
         filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        editable: true,
+        pinned: 'left',
+        // editable: true,
         cellStyle: { whiteSpace: 'normal' },
       },
       {
@@ -151,7 +137,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         width: 1024,
         filter: 'agTextColumnFilter',
         // pinned: 'left',
-        editable: true,
+        // editable: true,
         cellStyle: { whiteSpace: 'normal' },
       },
       {
@@ -160,6 +146,23 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         width: 100,
         filter: 'agTextColumnFilter',
         // pinned: 'left',
+      },
+      {
+        headerName: 'Sku',
+        field: 'Sku',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+        autoHeight: true,
+        // editable: true,
+      },
+      {
+        headerName: 'Code',
+        field: 'Product',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+        autoHeight: true,
       },
       {
         headerName: 'Price (Giá)',
@@ -177,6 +180,23 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
       },
     ];
 
+    // this.columnDefs = [
+    //   {
+    //     field: 'Code',
+    //     rowDrag: true,
+    //   },
+    //   { field: 'Name' },
+    //   {
+    //     field: 'Note',
+    //     width: 100,
+    //   },
+    //   { field: 'date' },
+    //   { field: 'sport' },
+    //   { field: 'gold' },
+    //   { field: 'silver' },
+    //   { field: 'bronze' },
+    // ];
+
     this.pagination = false;
     this.maxBlocksInCache = 5;
     this.paginationPageSize = this.cacheBlockSize = 1000;
@@ -190,8 +210,8 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   public dataSource: IDatasource;
   public columnDefs: any;
   public rowSelection = 'multiple';
-  // public rowModelType = 'infinite';
-  public rowModelType = null;
+  public rowModelType = 'clientSide';
+  // public rowModelType = null;
   public paginationPageSize: number;
   public cacheOverflowSize = 2;
   public maxConcurrentDatasourceRequests = 2;
@@ -211,9 +231,9 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   // public emailAddressListDetails: EmailAddressListDetailModel[] = [];
 
   public defaultColDef = {
+    width: 170,
     sortable: true,
-    resizable: true,
-    // suppressSizeToFit: true,
+    filter: true,
   };
   public getRowNodeId = (item: { Product: string }) => {
     return item.Product;
@@ -226,6 +246,10 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         return '<img src="assets/images/loading.gif">';
       }
     },
+  };
+
+  public gridOptions = {
+    enableMultiRowDragging: true,
   };
 
   gridReady$ = new BehaviorSubject<boolean>(false);
@@ -533,7 +557,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   goback(): false {
     super.goback();
     if (this.mode === 'page') {
-      this.router.navigate(['/promotion/promotion/list']);
+      this.router.navigate(['/sales/price-table/list']);
     } else {
       this.ref.close();
     }

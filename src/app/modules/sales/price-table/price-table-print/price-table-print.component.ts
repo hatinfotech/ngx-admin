@@ -37,6 +37,7 @@ export class PriceTablePrintComponent extends DataManagerPrintComponent<SalesPri
 
   async init() {
     const result = await super.init();
+    this.calculateDetailRows();
     this.title = `PhieuBaoGia_${this.identifier}` + (this.data.DateOfApprove ? ('_' + this.datePipe.transform(this.data.DateOfApprove, 'short')) : '');
     return result;
   }
@@ -85,6 +86,20 @@ export class PriceTablePrintComponent extends DataManagerPrintComponent<SalesPri
 
   get identifier() {
     return this.data.Code;
+  }
+
+  public detailRows = [];
+  calculateDetailRows() {
+    this.detailRows = [];
+    const numOfColumns = 4;
+    let currentRow = null;
+    for (let i = 0; i < this.data.Details.length; i++) {
+      if (i % 4 === 0) {
+        currentRow = [];
+        this.detailRows.push(currentRow);
+      }
+      currentRow.push(this.data.Details[i]);
+    }
   }
 
 }

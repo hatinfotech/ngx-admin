@@ -33,19 +33,23 @@
           </div>
         </div>
         <div>
-          <div class="row">
-            <div class="col-sm-3" *ngFor="let detail of data.Details; let i = index">
-              <div class="grid-item">
-                <div class="image" style="background-position: center; background-repeat: no-repeat;"
-                  [ngStyle]="{backgroundImage: 'url(\''+detail.PictureThumbnail + '?token='+apiService.getAccessToken()+'\')'}"></div>
-                <div class="name">{{detail.Name}}</div>
-                <div class="price">{{detail.Price | currency:'VND'}}</div>
+          <div class="row details page-break-after" *ngFor="let row of detailRows">
+            <ng-container *ngFor="let detail of row; let i = index">
+              <div class="col-sm-3">
+                <div class="grid-item">
+                  <div class="image" style="background-position: center; background-repeat: no-repeat;"
+                    [ngStyle]="{backgroundImage: 'url(\''+detail.PictureThumbnail + '?token='+apiService.getAccessToken()+'\')'}">
+                  </div>
+                  <div class="price">{{detail.Price | currency:'VND'}}</div>
+                  <div class="name">{{detail.Name}}</div>
+                </div>
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
         <div>
-          <div class="under-line">{{'Common.note' | translate | headtitlecase}}: {{renderValue(data.Description)}}</div>
+          <div class="under-line" *ngIf="data.Description">{{'Common.note' | translate | headtitlecase}}:
+            {{renderValue(data.Description)}}</div>
           <!-- <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
             {{renderValue(data.DeliveryAddress)}}</div> -->
           <!-- <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:
