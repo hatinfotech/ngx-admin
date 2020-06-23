@@ -92,7 +92,9 @@
     "state": "trạng thái",
     "all": "tất cả",
     "import": "nhập khẩu",
-    "upload": "tải lên"
+    "upload": "tải lên",
+    "copy": "sao chép",
+    "clear": "clear"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -165,6 +167,9 @@
     "PriceTable": {
       "title": "{{definition}}{{action}} bảng giá mua vào"
     }
+  },
+  "AdminProduct": {
+    "chooseProducts": "chọn sản phẩm"
   },
   "Menu": {
     "System": {

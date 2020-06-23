@@ -92,7 +92,9 @@
     "state": "state",
     "all": "all",
     "import": "import",
-    "upload": "upload"
+    "upload": "upload",
+    "copy": "copy",
+    "clear": "clear"
   },
   "Contact": {
     "name": "contact name",
@@ -165,6 +167,9 @@
     "PriceTable": {
       "title": "{{definition}} purchase price table {{action}}"
     }
+  },
+  "AdminProduct": {
+    "chooseProducts": "choose product"
   },
   "Menu": {
     "System": {

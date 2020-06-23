@@ -152,8 +152,22 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         cellStyle: { whiteSpace: 'normal' },
       },
       {
-        headerName: 'Price (Giá)',
+        headerName: 'Giá mua (Price)',
         field: 'Price',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        pinned: 'right',
+        type: 'rightAligned',
+        editable: true,
+        valueFormatter: (params: { value: number & string }) => {
+          // console.log(params);
+          const value = parseFloat(params.value);
+          return isNumber(value) ? this.currencyPipe.transform(value, 'VND') : 0;
+        },
+      },
+      {
+        headerName: 'Giá bán đề xuất (SalesPrice)',
+        field: 'SalesPrice',
         width: 150,
         filter: 'agTextColumnFilter',
         pinned: 'right',

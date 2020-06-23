@@ -2,8 +2,9 @@
   (keydown.enter)="onControlEnter($event)" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event, formItem, i)"
-        [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver[i] }">
+      <nb-card class="small-header popup" ngFileDrop [options]="options"
+        (uploadOutput)="onUploadOutput($event, formItem, i)" [uploadInput]="uploadInput"
+        [ngClass]="{ 'is-drop-over': dragOver[i] }">
         <nb-card-header>
           <nav>
             Cập nhật sản phẩm
@@ -29,6 +30,29 @@
             <div class="row">
               <input type="hidden" formControlName="Code_old">
               <input type="hidden" formControlName="FeaturePicture">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Name')" pack="eva"
+                      icon="copy-outline">
+                    </nb-icon>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
+                  <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt
+                      buộc
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Sku')" pack="eva"
+                      icon="copy-outline">
+                    </nb-icon>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Sku" placeholder="Sku">
+                </div>
+              </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
                   <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt
@@ -39,30 +63,13 @@
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
-                  <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt
-                      buộc
-                      (*)</span><nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Sku')"
-                      pack="eva" icon="copy-outline">
-                    </nb-icon></label>
-                  <input type="text" nbInput fullWidth formControlName="Sku" placeholder="Sku">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
-                      (*)</span><nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Name')"
-                      pack="eva" icon="copy-outline">
-                    </nb-icon></label>
-                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
-                </div>
-              </div>
-              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')">
                   <label class="label"><span class="valid">Đơn vị tính (*)</span><span class="invalid">ĐVT là bắt buộc
-                      (*)</span><nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'WarehouseUnit')"
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'WarehouseUnit')"
                       pack="eva" icon="copy-outline">
-                    </nb-icon></label>
+                    </nb-icon>
+                  </label>
                   <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList">
                   </ngx-select2>
                 </div>
@@ -88,9 +95,11 @@
               <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
                   <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
-                      (*)</span><nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Categories')"
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Categories')"
                       pack="eva" icon="copy-outline">
-                    </nb-icon></label>
+                    </nb-icon>
+                  </label>
                   <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories">
                   </ngx-select2>
                 </div>
@@ -99,19 +108,26 @@
             <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
             <div class="row">
               <div class="col-sm-12">
-                <button type="button" nbButton status="primary" hero size="tiny" [disabled]="isProcessing"
-                  style="margin-bottom: 1rem;" title="{{'Common.choosePcturesToUpload' | translate | headtitlecase}}"
-                  (click)="uploadBtn.click()">
-                  <nb-icon pack="eva" icon="image"></nb-icon>{{'Common.upload' | translate | headtitlecase}}
-                </button>
+                <div class="buttons-row" style="margin-bottom: 0.5rem !important;">
+                  <button type="button" nbButton status="primary" hero size="tiny" [disabled]="isProcessing"
+                    title="{{'Common.choosePcturesToUpload' | translate | headtitlecase}}"
+                    (click)="uploadBtn.click()">
+                    <nb-icon pack="eva" icon="image"></nb-icon>{{'Common.upload' | translate | headtitlecase}}
+                  </button>
+                  <button type="button" nbButton status="success" hero size="tiny" [disabled]="isProcessing"
+                    title="{{'Common.copy' | translate | headtitlecase}}"
+                    (click)="copyFormControlValueToOthers(array, i, 'Pictures')">
+                    <nb-icon pack="eva" icon="copy-outline"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+                  </button>
+                </div>
                 <input type="file" #uploadBtn ngFileSelect [options]="options"
                   (uploadOutput)="onUploadOutput($event, formItem, i)" [uploadInput]="uploadInput" multiple
                   style="display: none;">
 
                 <div formArrayName="Pictures" class="form-details">
                   <div class="row">
-                    <div class="form-detail-item col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-6" *ngFor="let picture of getPictures(i).controls; let ic=index"
-                      [formGroup]="picture">
+                    <div class="form-detail-item col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-6"
+                      *ngFor="let picture of getPictures(i).controls; let ic=index" [formGroup]="picture">
                       <input type="hidden" formControlName="Id">
                       <div class="imageFormControl"
                         [ngStyle]="{'background-image': 'url(' + picture.get('Thumbnail').value + ')'}">
