@@ -53,7 +53,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     frameDoc.document.write(`
     <html>
       <head>
-        <base href="http://localhost:4200/mini-erp/">
+        <base href="/mini-erp/">
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
         <link href="assets/style/print.css" rel="stylesheet" type="text/css" />
@@ -68,7 +68,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     printFrame.onload = () => {
       window.frames['printFrame'].focus();
       window.frames['printFrame'].print();
-      document.body.removeChild(printFrame);
+      // document.body.removeChild(printFrame);
       document.title = currentTitle;
     };
 

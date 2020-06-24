@@ -240,6 +240,8 @@
                 [modules]="modules" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowDragManaged]="true"
                 [getRowHeight]="getRowHeight" [animateRows]="true" [rowData]="rowData"
                 rowSelection="multiple" [rowDeselection]="true" [infiniteInitialRowCount]="infiniteInitialRowCount"
+                (columnResized)="onColumnResized()" [getRowNodeId]="getRowNodeId"
+                [enterMovesDownAfterEdit]="true"
                 (gridReady)="onGridReady($event)"></ag-grid-angular>
             </div>
 
