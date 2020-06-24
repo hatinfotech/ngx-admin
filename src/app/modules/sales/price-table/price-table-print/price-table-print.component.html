@@ -40,7 +40,7 @@
                   <div class="image" style="background-position: center; background-repeat: no-repeat;"
                     [ngStyle]="{backgroundImage: 'url(\''+detail.PictureThumbnail + '?token='+apiService.getAccessToken()+'\')'}">
                   </div>
-                  <div class="price">{{detail.Price | currency:'VND'}}</div>
+                  <div class="price">{{detail.Price | currency:'VND'}}<span class="unit">1 {{detail.Unit}}</span></div>
                   <div class="name">{{detail.Name}}</div>
                 </div>
               </div>

@@ -68,7 +68,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     printFrame.onload = () => {
       window.frames['printFrame'].focus();
       window.frames['printFrame'].print();
-      // document.body.removeChild(printFrame);
+      document.body.removeChild(printFrame);
       document.title = currentTitle;
     };
 

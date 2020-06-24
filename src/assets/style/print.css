@@ -181,6 +181,11 @@
   font-size: 14px !important;
   line-height: 18px;
 }
+.grid-item .unit {
+  float: right;
+  color: #000;
+  text-transform: lowercase;
+}
 
 .page-break-after {
   page-break-inside: avoid;
