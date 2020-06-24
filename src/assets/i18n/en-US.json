@@ -36,7 +36,8 @@
     "deliveryAddress": "delivery address",
     "paymentStep": "payment step",
     "technicalDescription": "technical description",
-    "dateOfReported": "date of reported"
+    "dateOfReported": "date of reported",
+    "declareSaledProducts": "declare saled products"
   },
   "Common": {
     "create": "create",

@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
+import { SimpleSalesVoucherFormComponent } from '../simple-sales-voucher-form/simple-sales-voucher-form.component';
 
 @Component({
   selector: 'ngx-sales-voucher-list',
@@ -140,8 +141,27 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesVoucherModel[]) => void, onDialogClose?: () => void) {
+  openFormDialog(ids?: string[], onDialogSave?: (newData: SalesVoucherModel[]) => void, onDialogClose?: () => void) {
     this.dialogService.open(SalesVoucherFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: SalesVoucherModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+          this.refresh();
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
+    });
+  }
+
+  /** Implement required */
+  openSimpleFormDialog(ids?: string[], onDialogSave?: (newData: SalesVoucherModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(SimpleSalesVoucherFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
@@ -160,7 +180,7 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
 
   /** Go to form */
   gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+    this.openSimpleFormDialog(id ? decodeURIComponent(id).split('&') : null);
     return false;
   }
 

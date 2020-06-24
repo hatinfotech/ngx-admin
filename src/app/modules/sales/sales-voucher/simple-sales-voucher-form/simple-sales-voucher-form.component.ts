@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
 import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { TaxModel } from '../../../../models/tax.model';
@@ -14,19 +15,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PromotionActionModel } from '../../../../models/promotion.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
-import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
-// import localeVi from '@angular/common/locales/vi';
-// import localeViExtra from '@angular/common/locales/extra/vi';
 
 @Component({
-  selector: 'ngx-sales-voucher-form',
-  templateUrl: './sales-voucher-form.component.html',
-  styleUrls: ['./sales-voucher-form.component.scss'],
+  selector: 'ngx-simple-sales-voucher-form',
+  templateUrl: './simple-sales-voucher-form.component.html',
+  styleUrls: ['./simple-sales-voucher-form.component.scss'],
 })
-export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVoucherModel> implements OnInit {
+export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<SalesVoucherModel> implements OnInit {
 
-  componentName: string = 'SalesVoucherFormComponent';
+  componentName: string = 'SimpleSalesVoucherFormComponent';
   idKey = 'Code';
   apiPath = '/sales/sales-vouchers';
   baseFormUrl = '/sales/sales-voucher/form';
@@ -84,7 +82,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<SalesVoucherFormComponent>,
+    public ref: NbDialogRef<SimpleSalesVoucherFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -256,19 +254,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       Code: [''],
       Object: ['', Validators.required],
       ObjectName: [''],
-      ObjectEmail: [''],
-      ObjectPhone: [''],
-      ObjectAddress: [''],
-      ObjectTaxCode: [''],
-      DirectReceiverName: [''],
-      ObjectBankName: [''],
-      ObjectBankCode: [''],
-      Tax: [''],
-      DeliveryAddress: [''],
+      // Tax: [''],
       Title: [''],
+      DateOfSale: [new Date()],
       Note: [''],
-      DateOfDelivery: [''],
-      PriceReportVoucher: [''],
       PriceTable: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
@@ -306,17 +295,17 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesVoucherDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
-      No: [''],
-      Type: [''],
+      // No: [''],
+      // Type: [''],
       Product: [''],
-      ProductName: ['', Validators.required],
+      // ProductName: ['', Validators.required],
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: [''],
+      // Tax: [''],
       ToMoney: [0],
       Image: [''],
-      Reason: [''],
+      // Reason: [''],
     });
 
     if (data) {
@@ -400,12 +389,12 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
           formGroup.get('ObjectName').setValue(selectedData.Name);
-          formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-          formGroup.get('ObjectEmail').setValue(selectedData.Email);
-          formGroup.get('ObjectAddress').setValue(selectedData.Address);
-          formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-          formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-          formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+          // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
         }
       }
     }
@@ -431,14 +420,14 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   calculatToMoney(detail: FormGroup) {
-    let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
-    }
+    const toMoney = detail.get('Quantity').value * detail.get('Price').value;
+    // let tax = detail.get('Tax').value;
+    // if (tax) {
+    //   if (typeof tax === 'string') {
+    //     tax = this.taxList.filter(t => t.Code === tax)[0];
+    //   }
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
     return toMoney;
   }
 

@@ -12,7 +12,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
-import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SalesPriceReportPrintComponent } from './price-report/sales-price-report-print/sales-price-report-print.component';
@@ -28,12 +28,16 @@ import { PriceTablePrintComponent } from './price-table/price-table-print/price-
 import { ProductListComponent } from '../admin-product/product/product-list/product-list.component';
 import { AdminProductModule } from '../admin-product/admin-product.module';
 import { PriceTablePrintAsListComponent } from './price-table/price-table-print-as-list/price-table-print-as-list.component';
+import { SimpleSalesVoucherFormComponent } from './sales-voucher/simple-sales-voucher-form/simple-sales-voucher-form.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 
 @NgModule({
-  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent, SalesVoucherListComponent, SalesVoucherFormComponent, SalesVoucherPrintComponent, PriceTableListComponent, PriceTableFormComponent, PriceTablePrintComponent, PriceTablePrintAsListComponent],
+  declarations: [SalesComponent, SalesPriceReportListComponent,
+    SalesPriceReportFormComponent, SalesPriceReportPrintComponent, SalesVoucherListComponent,
+    SalesVoucherFormComponent, SalesVoucherPrintComponent, PriceTableListComponent,
+    PriceTableFormComponent, PriceTablePrintComponent, PriceTablePrintAsListComponent, SimpleSalesVoucherFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -83,6 +87,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     PriceTablePrintComponent,
     ProductListComponent,
     PriceTablePrintAsListComponent,
+    SimpleSalesVoucherFormComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },

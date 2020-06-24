@@ -36,7 +36,8 @@
     "deliveryAddress": "địa chỉ nhận hàng",
     "paymentStep": "bước thanh toán",
     "technicalDescription": "Diễn giải thông số kỹ thuật",
-    "dateOfReported": "ngày báo giá"
+    "dateOfReported": "ngày báo giá",
+    "declareSaledProducts": "khai báo hàng đã bán"
   },
   "Common": {
     "create": "tạo",

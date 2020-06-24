@@ -2,8 +2,11 @@
   <nb-card-header>
     <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> {{ 'Sales.SalesVoucher.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase }}
-      <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
+      <button type="button" nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>{{'Common.refresh' | translate | titlecase}}
+      </button>
+      <button type="button" nbButton status="primary" hero size="tiny" (click)="openSimpleFormDialog()" style="float: right;">
+        <nb-icon pack="eva" icon="plus"></nb-icon>{{'Sales.declareSaledProducts' | translate | titlecase}}
       </button>
     </nav>
   </nb-card-header>
