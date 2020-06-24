@@ -103,7 +103,7 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/sales/products', { includeUnit: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

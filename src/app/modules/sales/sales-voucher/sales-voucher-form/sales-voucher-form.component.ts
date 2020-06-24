@@ -131,22 +131,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       id: 'Code',
       text: 'Name',
     },
-    // ajax: {
-    //   url: params => {
-    //     return this.apiService.buildApiUrl('/admin-product/units', { 'filter_Name': params['term'] });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     // console.info(data, params);
-    //     return {
-    //       results: data.map(item => {
-    //         item['id'] = item['Code'];
-    //         item['text'] = item['Name'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
   };
 
   select2OptionForTax = {

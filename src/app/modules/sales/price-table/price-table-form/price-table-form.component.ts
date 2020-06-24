@@ -97,6 +97,19 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     },
   ];
 
+  priceTableList: (SalesPriceTableModel & { id?: string, text?: string })[] = [];
+  select2OptionForParent = {
+    placeholder: 'Chọn bảng giá cha...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -487,6 +500,10 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     } else {
       this.taxList = SalesPriceReportFormComponent._taxList;
     }
+
+    /** Load and cache sales price table list */
+    this.priceTableList = (await this.apiService.getPromise<SalesPriceTableModel[]>('/sales/price-tables', { sort_Name: 'desc' })).map(item => ({ ...item, id: item.Code, text: '[' + item.Code + '] ' + item.Title }));
+
     return super.init();
   }
 
@@ -549,6 +566,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
       // ObjectBankCode: [''],
       // PaymentStep: [''],
       // DeliveryAddress: [''],
+      Parent: [''],
       Title: [''],
       Description: [''],
       DateOfApprove: [''],

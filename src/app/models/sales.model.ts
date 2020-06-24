@@ -113,6 +113,7 @@ export class SalesPriceReportDetailModel {
 export class SalesPriceTableModel {
   Id?: string & number;
   Code?: string;
+  Parent?: string & SalesPriceTableModel;
   Title?: string;
   Branch?: string;
   CustomerGroup?: string;

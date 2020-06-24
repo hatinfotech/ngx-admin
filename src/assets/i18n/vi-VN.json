@@ -95,7 +95,8 @@
     "import": "nhập khẩu",
     "upload": "tải lên",
     "copy": "sao chép",
-    "clear": "clear"
+    "clear": "clear",
+    "parent": "cha"
   },
   "Contact": {
     "name": "tên liên hệ",

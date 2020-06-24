@@ -95,7 +95,8 @@
     "import": "import",
     "upload": "upload",
     "copy": "copy",
-    "clear": "clear"
+    "clear": "clear",
+    "parent": "parent"
   },
   "Contact": {
     "name": "contact name",

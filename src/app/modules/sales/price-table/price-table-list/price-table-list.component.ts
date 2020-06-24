@@ -36,6 +36,7 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
   /** Api get funciton */
   executeGet(params: any, success: (resources: SalesPriceTableModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: SalesPriceTableModel[] | HttpErrorResponse) => void) {
     params['useBaseTimezone'] = true;
+    params['includeParent'] = true;
     super.executeGet(params, success, error, complete);
   }
 
@@ -61,7 +62,7 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
       Description: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
         type: 'string',
-        width: '30%',
+        width: '20%',
       },
       Title: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -82,10 +83,15 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
         type: 'string',
         width: '20%',
       },
+      Parent: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.parent'), 'head-title'),
+        type: 'string',
+        width: '15%',
+      },
       IsApprove: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
       //   Copy: {
       //     title: 'Copy',
