@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { ProductModel, ProductUnitModel, ProductPictureModel } from '../../../../models/product.model';
+import { ProductModel, ProductUnitModel, ProductPictureModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
@@ -145,6 +145,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     // params['forNgPickDateTime'] = true;
     params['includeCategories'] = true;
     params['includePictures'] = true;
+    params['includeUnitConversions'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -159,6 +160,16 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
           this.getPictures(index).push(newPictureFormGroup);
           const comIndex = this.getPictures(index).length - 1;
           this.onAddPictureFormGroup(index, comIndex, newPictureFormGroup);
+        });
+      }
+
+      if (itemFormData.UnitConversions) {
+        itemFormData.UnitConversions.forEach(unitConversion => {
+          // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+          const newUnitConversionFormGroup = this.makeNewUnitConversionFormGroup(unitConversion);
+          this.getUnitConversions(newForm).push(newUnitConversionFormGroup);
+          const comIndex = this.getUnitConversions(newForm).length - 1;
+          this.onAddUnitConversionFormGroup(newForm, comIndex, newUnitConversionFormGroup);
         });
       }
 
@@ -192,6 +203,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Technical: [''],
       Categories: [''],
       Pictures: this.formBuilder.array([]),
+      UnitConversions: this.formBuilder.array([]),
     });
     if (data) {
       data['Code_old'] = data['Code'];
@@ -271,6 +283,47 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   setAsFeaturePicture(formIndex: number, pictureFormGroup: FormGroup) {
     this.array.controls[formIndex].get('FeaturePicture').setValue(pictureFormGroup.get('Image').value);
     return false;
+  }
+  /** End Picture Form */
+
+  /** Picture Form */
+  makeNewUnitConversionFormGroup(data?: ProductUnitConversoinModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      // Id_old: [''],
+      Id: [''],
+      Unit: [''],
+      ConversionRatio: [''],
+      IsDefaultSales: [false],
+      IsDefaultPurchase: [false],
+    });
+
+    if (data) {
+      // data['Id_old'] = data['Id'];
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+  getUnitConversions(formItem: FormGroup) {
+    return formItem.get('UnitConversions') as FormArray;
+  }
+  addUnitConversionFormGroup(formItem: FormGroup) {
+    // this.componentList[formGroupIndex].push([]);
+    const newFormGroup = this.makeNewUnitConversionFormGroup();
+    this.getUnitConversions(formItem).push(newFormGroup);
+    this.onAddUnitConversionFormGroup(formItem, this.getUnitConversions(formItem).length - 1, newFormGroup);
+    return false;
+  }
+  removeUnitConversionGroup(parentForm: FormGroup, formItem: FormGroup, index: number) {
+    this.getUnitConversions(parentForm).removeAt(index);
+    // this.componentList[formGroupIndex].splice(index, 1);
+    this.onRemoveUnitConversionFormGroup(formItem, index);
+    return false;
+  }
+  onAddUnitConversionFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
+    // this.componentList[mainIndex].push([]);
+  }
+  onRemoveUnitConversionFormGroup(formItem: FormGroup, index: number) {
+    // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Picture Form */
 

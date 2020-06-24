@@ -13,6 +13,7 @@ export class ProductModel {
   // References
   Categories: ProductCategoryModel[];
   Pictures?: ProductPictureModel[];
+  UnitConversions?: ProductUnitConversoinModel[];
 
   constructor() { }
 
@@ -36,4 +37,13 @@ export class ProductPictureModel {
   Product?: string;
   Image?: string;
   Description?: string;
+}
+
+export class ProductUnitConversoinModel {
+  Id?: number & string;
+  Product?: string & ProductModel;
+  Unit?: string & UnitModel;
+  ConversionRatio?: string & number;
+  IsDefaultSales?: boolean;
+  IsDefaultPrchase?: boolean;
 }

@@ -170,7 +170,11 @@
     }
   },
   "AdminProduct": {
-    "chooseProducts": "choose product"
+    "chooseProducts": "choose product",
+    "conversionRatio": "conversion ratio",
+    "defaultSales": "default sales",
+    "defaultPurchase": "default purchase",
+    "addUnitConversion": "add unit conversion"
   },
   "Print": {
     "listTemplate": "list template",

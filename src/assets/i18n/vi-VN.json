@@ -170,7 +170,11 @@
     }
   },
   "AdminProduct": {
-    "chooseProducts": "chọn sản phẩm"
+    "chooseProducts": "chọn sản phẩm",
+    "conversionRatio": "tỷ lệ chuyển đổi",
+    "defaultSales": "mặc định bán",
+    "defaultPurchase": "mặc định mua",
+    "addUnitConversion": "thêm đơn vị chuyển đổi"
   },
   "Print": {
     "listTemplate": "mẫu danh sách",
