@@ -160,7 +160,7 @@
 }
 .grid-item .image {
   height: 125px;
-  border-radius: 13px;
+  border-radius: 5px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type, TemplateRef } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SalesPriceTableModel, SalesPriceTableDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
@@ -23,6 +23,9 @@ import { isNumber } from 'util';
 import { CurrencyPipe } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { PriceTablePrintAsListComponent } from '../price-table-print-as-list/price-table-print-as-list.component';
+import { BaseComponent } from '../../../../lib/base-component';
+import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 
 
 @Component({
@@ -80,6 +83,19 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
       },
     },
   };
+
+  printTemplateList: { id: string, text: string, name: Type<DataManagerPrintComponent<SalesPriceTableModel>> }[] = [
+    {
+      id: 'PriceTablePrintAsListComponent',
+      text: this.commonService.textTransform(this.commonService.translate.instant('Print.listTemplate'), 'head-title'),
+      name: PriceTablePrintAsListComponent,
+    },
+    {
+      id: 'PriceTablePrintComponent',
+      text: this.commonService.textTransform(this.commonService.translate.instant('Print.gridTemplate'), 'head-title'),
+      name: PriceTablePrintComponent,
+    },
+  ];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -536,6 +552,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
       Title: [''],
       Description: [''],
       DateOfApprove: [''],
+      PrintTemplate: ['PriceTablePrintAsListComponent'],
       // _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -684,18 +701,24 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
     //   }
     // });
-    this.dialogService.open(PriceTablePrintComponent, {
-      context: {
-        title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
-          this.saveAndClose();
+    const printTemplate = this.printTemplateList.find((item: { id: string }) => item.id === formItem.get('PrintTemplate').value);
+    if (printTemplate) {
+      this.dialogService.open(printTemplate.name, {
+        context: {
+          title: 'Xem trước',
+          data: data,
+          onSaveAndClose: (priceReportCode: string) => {
+            this.saveAndClose();
+          },
+          onSaveAndPrint: (priceReportCode: string) => {
+            this.save();
+          },
         },
-        onSaveAndPrint: (priceReportCode: string) => {
-          this.save();
-        },
-      },
-    });
+      });
+    } else {
+      throw Error('Print.Error.noTemplateChoosed');
+    }
+
     return false;
   }
 

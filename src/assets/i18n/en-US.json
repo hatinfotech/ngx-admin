@@ -171,6 +171,12 @@
   "AdminProduct": {
     "chooseProducts": "choose product"
   },
+  "Print": {
+    "listTemplate": "list template",
+    "gridTemplate": "grid template",
+    "chooseTemplate": "choose template",
+    "template": "print template"
+  },
   "Menu": {
     "System": {
       "parameters": "parameters",

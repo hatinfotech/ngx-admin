@@ -171,6 +171,12 @@
   "AdminProduct": {
     "chooseProducts": "chọn sản phẩm"
   },
+  "Print": {
+    "listTemplate": "mẫu danh sách",
+    "gridTemplate": "mẫu lưới",
+    "chooseTemplate": "chọn mẫu in",
+    "template": "mẫu in"
+  },
   "Menu": {
     "System": {
       "parameters": "Tham số",

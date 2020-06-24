@@ -132,6 +132,7 @@ export class SalesPriceTableModel {
   ObjectAddress?: string;
   Tax?: string & TaxModel;
   Description?: string;
+  PrintTemplate?: string;
 
   Details?: SalesPriceTableDetailModel[];
 }

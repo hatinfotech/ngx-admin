@@ -27,12 +27,13 @@ import { PriceTableFormComponent } from './price-table/price-table-form/price-ta
 import { PriceTablePrintComponent } from './price-table/price-table-print/price-table-print.component';
 import { ProductListComponent } from '../admin-product/product/product-list/product-list.component';
 import { AdminProductModule } from '../admin-product/admin-product.module';
+import { PriceTablePrintAsListComponent } from './price-table/price-table-print-as-list/price-table-print-as-list.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 
 @NgModule({
-  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent, SalesVoucherListComponent, SalesVoucherFormComponent, SalesVoucherPrintComponent, PriceTableListComponent, PriceTableFormComponent, PriceTablePrintComponent],
+  declarations: [SalesComponent, SalesPriceReportListComponent, SalesPriceReportFormComponent, SalesPriceReportPrintComponent, SalesVoucherListComponent, SalesVoucherFormComponent, SalesVoucherPrintComponent, PriceTableListComponent, PriceTableFormComponent, PriceTablePrintComponent, PriceTablePrintAsListComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -81,6 +82,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     PriceTableFormComponent,
     PriceTablePrintComponent,
     ProductListComponent,
+    PriceTablePrintAsListComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },

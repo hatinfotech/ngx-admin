@@ -6,19 +6,19 @@
         <nb-card-header>
           <nav>
             {{ 'Sales.PriceTable.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
-            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
+            <button type="button" nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
               title="{{'Common.close' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
             </button>
-            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+            <button type="button" nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
               [disabled]="isProcessing" title="{{'Common.reload' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | headtitlecase}}
             </button>
-            <button nbButton status="primary" hero size="tiny" (click)="preview(formItem)" style="float: right;"
+            <button type="button" nbButton status="primary" hero size="tiny" (click)="preview(formItem)" style="float: right;"
               [disabled]="isProcessing" title="{{'Common.print' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
             </button>
-            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()"
+            <button type="button" nbButton status="warning" hero size="tiny" (click)="onFormUndo()"
               [disabled]="!canUndo || isProcessing" style="float: right;"
               title="{{'Common.undo' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
@@ -145,13 +145,25 @@
                     placeholder="{{'Sales.paymentStep' | translate | headtitlecase}}">
                 </div>
               </div> -->
-              <div class="col-sm-12">
+              <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.title' | translate | headtitlecase}}</span><span
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.title')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Title"
                     placeholder="{{'Common.title' | translate | headtitlecase}}">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PrintTemplate'), 'warning')">
+                  <label class="label"><span
+                      class="valid">{{'Print.template' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.printTemplate' | translate:{field: commonService.translate.instant('Common.title')} | headtitlecase }}
+                      (*)</span></label>
+                  <nb-select fullWidth formControlName="PrintTemplate" placeholder="{{'Print.chooseTemplate' | translate | headtitlecase}}">
+                    <nb-option *ngFor="let printTemplate of printTemplateList" [value]="printTemplate.id">
+                      {{printTemplate.text}}</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <!-- <div class="col-sm-3">
@@ -224,9 +236,11 @@
                 [rowDragManaged]="true" [animateRows]="true">
               </ag-grid-angular> -->
               <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham"
+                [gridOptions]="gridOptions"
                 [modules]="modules" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowDragManaged]="true"
-                [getRowHeight]="getRowHeight"
-                [animateRows]="true" [rowData]="rowData" (gridReady)="onGridReady($event)"></ag-grid-angular>
+                [getRowHeight]="getRowHeight" [animateRows]="true" [rowData]="rowData"
+                rowSelection="multiple" [rowDeselection]="true" [infiniteInitialRowCount]="infiniteInitialRowCount"
+                (gridReady)="onGridReady($event)"></ag-grid-angular>
             </div>
 
             <div class="row">
