@@ -26,6 +26,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { PriceTablePrintAsListComponent } from '../price-table-print-as-list/price-table-print-as-list.component';
 import { BaseComponent } from '../../../../lib/base-component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
+import { AgSelectEditorComponent } from '../../../../lib/custom-element/ag-grid/ag-grid-select-editor.component';
 
 
 @Component({
@@ -175,6 +176,11 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         width: 100,
         filter: 'agTextColumnFilter',
         // pinned: 'left',
+        editable: true,
+        cellEditor: AgSelectEditorComponent,
+        cellEditorParams: {
+          values: ['Porsche', 'Toyota', 'Ford', 'AAA', 'BBB', 'CCC'],
+        },
       },
       {
         headerName: 'Sku',
@@ -498,7 +504,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         return tax;
       });
     } else {
-      this.taxList = SalesPriceReportFormComponent._taxList;
+      this.unitList = SalesPriceReportFormComponent._unitList;
     }
 
     /** Load and cache sales price table list */
