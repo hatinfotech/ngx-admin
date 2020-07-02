@@ -21,13 +21,13 @@ export class AgSelectEditorComponent implements ICellEditorComp {
     return false;
   }
   focusIn?(): void {
-
+    this.eInput.focus();
   }
   focusOut?(): void {
-
+    this.eInput.blur();
   }
   getFrameworkComponentInstance?() {
-
+    return this;
   }
   getGui(): HTMLElement {
     return this.eInput;
