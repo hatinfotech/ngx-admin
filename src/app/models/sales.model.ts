@@ -2,6 +2,7 @@ import { TaxModel } from './tax.model';
 import { UnitModel } from './unit.model';
 import { ProductModel } from './product.model';
 import { ContactModel } from './contact.model';
+import { UserModel } from './user.model';
 
 export class SalesVoucherModel {
   Id?: string & number;
@@ -156,4 +157,39 @@ export class SalesPriceTableDetailModel {
   PictureThumbnail?: string;
   PictureMedium?: string;
   PictureLarge?: string;
+}
+
+
+export class SalesMasterPriceTableModel {
+  Id?: string & number;
+  Code?: string;
+  Type?: string;
+  Title?: string;
+  Description?: string;
+  Object?: String & ContactModel;
+  ObjectName?: string;
+  ObjectPhone?: string;
+  ObjectAddress?: string;
+  ObjectEmailAddress?: string;
+  Approved?: string;
+  DateOfApproved?: String & Date;
+  DateOfCreated?: String & Date;
+  Creator?: String & UserModel;
+  Tax?: String & TaxModel;
+  Discount?: string;
+
+  Details?: SalesMasterPriceTableDetailModel[];
+}
+
+export class SalesMasterPriceTableDetailModel {
+  Id?: string & number;
+  No?: string & number;
+  MasterPriceTable?: String & SalesMasterPriceTableModel;
+  Product?: String & ProductModel;
+  Unit?: String & UnitModel;
+  Description?: string;
+  Tax?: String & TaxModel;
+  Price?: string;
+  Currency?: string;
+  Discount?: string & number;
 }

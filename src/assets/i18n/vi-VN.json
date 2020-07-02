@@ -31,6 +31,9 @@
     "PriceTable": {
       "title": "{{action}}{{definition}} bảng giá bán"
     },
+    "MasterPriceTable": {
+      "title": "{{action}}{{definition}} bảng giá bán"
+    },
     "addProduct": "thêm hàng hoá/dịch vụ",
     "directReceiver": "người trực tiếp nhận hàng",
     "deliveryAddress": "địa chỉ nhận hàng",
@@ -192,7 +195,8 @@
     "Sales": {
       "salesVoucher": "phiếu bán hàng",
       "dateOfDelivery": "ngày giao hàng",
-      "priceTable": "bảng giá"
+      "priceTable": "bảng giá",
+      "masterPriceTable": "bảng giá chính"
     }
   }
 }

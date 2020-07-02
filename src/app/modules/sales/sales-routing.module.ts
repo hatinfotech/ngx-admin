@@ -8,6 +8,8 @@ import { SalesVoucherListComponent } from './sales-voucher/sales-voucher-list/sa
 import { SalesVoucherFormComponent } from './sales-voucher/sales-voucher-form/sales-voucher-form.component';
 import { PriceTableListComponent } from './price-table/price-table-list/price-table-list.component';
 import { PriceTableFormComponent } from './price-table/price-table-form/price-table-form.component';
+import { MasterPriceTableListComponent } from './master-price-table/master-price-table-list/master-price-table-list.component';
+import { MasterPriceTableFormComponent } from './master-price-table/master-price-table-form/master-price-table-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -69,6 +71,25 @@ const routes: Routes = [{
       path: 'price-table/form/:id',
       canActivate: [AuthGuardService],
       component: PriceTableFormComponent,
+    },
+    // Master Sales price table
+    {
+      path: 'master-price-table/list',
+      canActivate: [AuthGuardService],
+      component: MasterPriceTableListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'master-price-table/form',
+      canActivate: [AuthGuardService],
+      component: MasterPriceTableFormComponent,
+    },
+    {
+      path: 'master-price-table/form/:id',
+      canActivate: [AuthGuardService],
+      component: MasterPriceTableFormComponent,
     },
   ],
 }];

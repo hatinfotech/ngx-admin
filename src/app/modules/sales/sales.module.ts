@@ -29,6 +29,9 @@ import { ProductListComponent } from '../admin-product/product/product-list/prod
 import { AdminProductModule } from '../admin-product/admin-product.module';
 import { PriceTablePrintAsListComponent } from './price-table/price-table-print-as-list/price-table-print-as-list.component';
 import { SimpleSalesVoucherFormComponent } from './sales-voucher/simple-sales-voucher-form/simple-sales-voucher-form.component';
+import { MasterPriceTableListComponent } from './master-price-table/master-price-table-list/master-price-table-list.component';
+import { MasterPriceTableFormComponent } from './master-price-table/master-price-table-form/master-price-table-form.component';
+import { MasterPriceTablePrintComponent } from './master-price-table/master-price-table-print/master-price-table-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -37,7 +40,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
   declarations: [SalesComponent, SalesPriceReportListComponent,
     SalesPriceReportFormComponent, SalesPriceReportPrintComponent, SalesVoucherListComponent,
     SalesVoucherFormComponent, SalesVoucherPrintComponent, PriceTableListComponent,
-    PriceTableFormComponent, PriceTablePrintComponent, PriceTablePrintAsListComponent, SimpleSalesVoucherFormComponent],
+    PriceTableFormComponent, PriceTablePrintComponent, PriceTablePrintAsListComponent, SimpleSalesVoucherFormComponent, MasterPriceTableListComponent, MasterPriceTableFormComponent, MasterPriceTablePrintComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -88,6 +91,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     ProductListComponent,
     PriceTablePrintAsListComponent,
     SimpleSalesVoucherFormComponent,
+    MasterPriceTableFormComponent,
+    MasterPriceTablePrintComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },
