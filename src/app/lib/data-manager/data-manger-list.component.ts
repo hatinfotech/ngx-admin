@@ -195,37 +195,6 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   onSerialAction(event: any) {
     if (this.selectedIds.length > 0) {
       this.editChoosedItems();
-      // this.dialogService.open(ShowcaseDialogComponent, {
-      //   context: {
-      //     title: 'Xác nhận',
-      //     content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
-      //     actions: [
-      //       {
-      //         label: 'Xoá',
-      //         icon: 'delete',
-      //         status: 'danger',
-      //         action: () => {
-      //           this.deleteConfirm(this.selectedIds, () => this.loadList());
-      //         },
-      //       },
-      //       {
-      //         label: 'Trở về',
-      //         icon: 'back',
-      //         status: 'success',
-      //         action: () => { },
-      //       },
-      //       {
-      //         label: 'Chỉnh',
-      //         icon: 'edit',
-      //         status: 'warning',
-      //         action: () => {
-      //           // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
-      //           this.gotoForm(this.selectedIds.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')));
-      //         },
-      //       },
-      //     ],
-      //   },
-      // });
     } else {
       // this.router.navigate(['modules/manager/form']);
       this.gotoForm();

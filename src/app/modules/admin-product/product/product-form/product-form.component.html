@@ -120,6 +120,7 @@
                   <div class="form-detail-item"
                     *ngFor="let unitConversion of getUnitConversions(formItem).controls; let ic=index"
                     [formGroup]="unitConversion">
+                    <input type="hidden" formControlName="Id">
 
                     <div class="row">
                       <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">

@@ -22,7 +22,6 @@ import { MasterPriceTablePrintComponent } from '../master-price-table-print/mast
 import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { LocalDataSource } from 'ng2-smart-table';
 import { CustomeServerDataSource } from '../../../../lib/custom-element/smart-table/customer-server.data-source';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
@@ -325,9 +324,9 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       Type: ['', Validators.required],
       Description: [''],
       // DateOfApproved: [''],
-      PrintTemplate: ['PriceTablePrintAsListComponent'],
+      PrintTemplate: ['MasterPriceTablePrintComponent'],
       // _total: [''],
-      Details: this.formBuilder.array([]),
+      // Details: this.formBuilder.array([]),
     });
     if (data) {
       // data['Code_old'] = data['Code'];
@@ -676,33 +675,34 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         delay: 3000,
         onChange: (value: number, row: ProductModel) => {
           const masterPriceTable = this.array.controls[0].get('Code').value;
-          if (!masterPriceTable) {
-            this.dialogService.open(ShowcaseDialogComponent, {
-              context: {
-                title: 'Xác nhận',
-                content: 'Bảng giá cần được lưu trước khi nhập giá cho sản phẩm, bạn có muốn lưu không ?',
-                actions: [
-                  {
-                    label: 'Trở về',
-                    icon: 'back',
-                    status: 'info',
-                    action: () => { },
-                  },
-                  {
-                    label: 'Lưu',
-                    icon: 'save',
-                    status: 'success',
-                    action: () => {
-                      // this.apiService.delete(this.apiPath, ids, result => {
-                      //   if (callback) callback();
-                      // });
-                      this.save();
-                    },
-                  },
-                ],
-              },
-            });
-          } else {
+          // if (!masterPriceTable) {
+          //   this.dialogService.open(ShowcaseDialogComponent, {
+          //     context: {
+          //       title: 'Xác nhận',
+          //       content: 'Bảng giá cần được lưu trước khi nhập giá cho sản phẩm, bạn có muốn lưu không ?',
+          //       actions: [
+          //         {
+          //           label: 'Trở về',
+          //           icon: 'back',
+          //           status: 'info',
+          //           action: () => { },
+          //         },
+          //         {
+          //           label: 'Lưu',
+          //           icon: 'save',
+          //           status: 'success',
+          //           action: () => {
+          //             // this.apiService.delete(this.apiPath, ids, result => {
+          //             //   if (callback) callback();
+          //             // });
+          //             this.save();
+          //           },
+          //         },
+          //       ],
+          //     },
+          //   });
+          // } else {
+          if (value) {
             if (row.WarehouseUnit.Code) {
               this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {}, [{
                 MasterPriceTable: masterPriceTable,
@@ -712,7 +712,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
               }]).then(rs => {
                 console.log(rs);
               });
-            } else if (value) {
+            } else {
               this.dialogService.open(ShowcaseDialogComponent, {
                 context: {
                   title: 'Cảnh báo',
@@ -729,6 +729,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
               });
             }
           }
+          // }
         },
       },
     },
@@ -932,6 +933,51 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       closeOnEsc: false,
       closeOnBackdropClick: false,
     });
+  }
+
+  /** Create and multi edit/delete action */
+  onSerialAction(event: any) {
+    if (this.selectedIds.length > 0) {
+      this.editChoosedItems();
+    } else {
+      // this.router.navigate(['modules/manager/form']);
+      this.openProductForm();
+    }
+  }
+
+  editChoosedItems(): false {
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: 'Xác nhận',
+        content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
+        actions: [
+          // {
+          //   label: 'Xoá',
+          //   icon: 'delete',
+          //   status: 'danger',
+          //   action: () => {
+          //     this.deleteConfirm(this.selectedIds, () => this.loadList());
+          //   },
+          // },
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'success',
+            action: () => { },
+          },
+          {
+            label: 'Chỉnh',
+            icon: 'edit',
+            status: 'warning',
+            action: () => {
+              // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
+              this.openProductForm(this.selectedIds);
+            },
+          },
+        ],
+      },
+    });
+    return false;
   }
 
   /** End Common function for ng2-smart-table */
