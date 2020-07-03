@@ -32,7 +32,8 @@
       "title": "{{action}} sales price table {{definition}}"
     },
     "MasterPriceTable": {
-      "title": "{{action}} sales master price table {{definition}}"
+      "title": "{{action}} sales master price table {{definition}}",
+      "type": "price table type"
     },
     "addProduct": "add product/dịch vụ",
     "directReceiver": "direct receiver",
@@ -40,7 +41,10 @@
     "paymentStep": "payment step",
     "technicalDescription": "technical description",
     "dateOfReported": "date of reported",
-    "declareSaledProducts": "declare saled products"
+    "declareSaledProducts": "declare saled products",
+    "chooseMasterPriceTableType": "choose type",
+    "retail": "retail",
+    "wholesale": "wholesale"
   },
   "Common": {
     "create": "create",

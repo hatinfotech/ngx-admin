@@ -1,7 +1,11 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit } from '@angular/core';
 
 import { ViewCell } from 'ng2-smart-table';
 import { BehaviorSubject } from 'rxjs';
+import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
+import { CommonService } from '../../../services/common.service';
+import { FormControl } from '@angular/forms';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 @Component({
   template: `
@@ -156,5 +160,63 @@ export class SmartTableDateTimeComponent implements ViewCell, OnInit {
 
 }
 
+@Component({
+  template: `
+    <!-- <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox> -->
+    <input #inputText type="text" [name]="name" nbInput fullWidth
+        [placeholder]="placeholder" class="align-right" [formControl]="inputControl"
+        currencyMask [options]="curencyFormat">
+  `,
+})
+export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, AfterViewInit {
 
+  inputControl = new FormControl;
+  locale = this.commonService.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
+
+  renderValue: boolean;
+  disable: boolean = false;
+  placeholder: string = '';
+  delay: number = 1000;
+  name: string = '';
+
+  @Input() value: string | number;
+  @Input() rowData: any;
+
+  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild('inputText', { static: false }) input;
+
+  constructor(public commonService: CommonService) {
+    this.inputControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(this.delay),
+      )
+      .subscribe((value: number) => {
+        this.onChange(value);
+      });
+
+  }
+
+  ngAfterViewInit() {
+    // console.log(this.input.nativeElement);
+    const thisInput = $(this.input.nativeElement);
+    thisInput.keyup(e => {
+      if (e.keyCode === 13) {
+        thisInput.closest('tr').next().find('input[name="' + this.name + '"]').focus();
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.renderValue = this.value ? true : false;
+    this.inputControl.patchValue(this.value);
+  }
+
+  onChange(value: any) {
+    this.valueChange.emit(value);
+  }
+
+}
 

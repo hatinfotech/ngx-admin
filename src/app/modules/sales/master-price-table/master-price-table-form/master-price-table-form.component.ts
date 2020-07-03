@@ -1,25 +1,17 @@
 import { Component, OnInit, Type } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { SalesMasterPriceTableModel, SalesPriceTableDetailModel } from '../../../../models/sales.model';
+import { SalesMasterPriceTableModel, SalesPriceTableDetailModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
 import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { PriceTablePrintAsListComponent } from '../../price-table/price-table-print-as-list/price-table-print-as-list.component';
-import { PriceTablePrintComponent } from '../../price-table/price-table-print/price-table-print.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { PriceTableFormComponent } from '../../price-table/price-table-form/price-table-form.component';
 import { CurrencyPipe } from '@angular/common';
-import { AgSelectEditorComponent } from '../../../../lib/custom-element/ag-grid/ag-grid-select-editor.component';
-import { isNumber } from 'util';
-import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
-import { PurchasePriceTableDetailModel } from '../../../../models/purchase.model';
-import { BehaviorSubject } from 'rxjs';
 import { SalesPriceReportFormComponent } from '../../price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntil } from 'rxjs/operators';
@@ -27,6 +19,13 @@ import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
+import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { LocalDataSource } from 'ng2-smart-table';
+import { CustomeServerDataSource } from '../../../../lib/custom-element/smart-table/customer-server.data-source';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 
 @Component({
   selector: 'ngx-master-price-table-form',
@@ -97,6 +96,17 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     },
   ];
 
+  typeList: { id: string, text: string }[] = [
+    {
+      id: 'RETAIL',
+      text: this.commonService.textTransform(this.commonService.translate.instant('Sales.retail'), 'head-title'),
+    },
+    {
+      id: 'WHOLESALE',
+      text: this.commonService.textTransform(this.commonService.translate.instant('Sales.wholesale'), 'head-title'),
+    },
+  ];
+
   priceTableList: (SalesMasterPriceTableModel & { id?: string, text?: string })[] = [];
   select2OptionForParent = {
     placeholder: 'Chọn bảng giá cha...',
@@ -122,271 +132,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     public currencyPipe: CurrencyPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-
-    /** AG-Grid */
-    const $this = this;
-    this.columnDefs = [
-      {
-        headerName: '#',
-        width: 52,
-        valueGetter: 'node.data.No',
-        cellRenderer: 'loadingCellRenderer',
-        // sortable: false,
-        pinned: 'left',
-        rowDrag: true,
-      },
-      {
-        headerName: 'Hình',
-        field: 'PictureThumbnail',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        pinned: 'left',
-        autoHeight: true,
-        cellRenderer: (params: { color: string, value: any }) => {
-          // return '<img src="' + params.value + '?token=' + this.apiService.getAccessToken() + '">'
-          // let pictureUrl = params.value;
-          // if (!/\?token/.test(pictureUrl)) {
-          // const pictureUrl = params.value + '?token=' + this.apiService.getAccessToken();
-          // }
-          return '<div class="image-thumb-wrap"><div class="image-thumb" style="background-image: url(\'' + params.value + '?token=' + this.apiService.getAccessToken() + '\')"></div></div>';
-        },
-      },
-      {
-        headerName: 'Tên sản phẩm',
-        field: 'Name',
-        width: 400,
-        filter: 'agTextColumnFilter',
-        pinned: 'left',
-        // editable: true,
-        cellStyle: { whiteSpace: 'normal' },
-      },
-      {
-        headerName: 'Note (Ghi chú)',
-        field: 'Note',
-        width: 1024,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        // editable: true,
-        cellStyle: { whiteSpace: 'normal' },
-      },
-      {
-        headerName: 'ĐVT',
-        field: 'Unit',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        editable: true,
-        cellEditor: AgSelectEditorComponent,
-        cellEditorParams: {
-          values: ['Porsche', 'Toyota', 'Ford', 'AAA', 'BBB', 'CCC'],
-        },
-      },
-      {
-        headerName: 'Sku',
-        field: 'Sku',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-        // editable: true,
-      },
-      {
-        headerName: 'Code',
-        field: 'Product',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-      },
-      {
-        headerName: 'Price (Giá)',
-        field: 'Price',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        pinned: 'right',
-        // type: 'rightAligned',
-        editable: true,
-        valueFormatter: (params: { value: number & string }) => {
-          // console.log(params);
-          const value = parseFloat(params.value);
-          return isNumber(value) ? this.currencyPipe.transform(value, 'VND') : 0;
-        },
-      },
-    ];
-
-    // this.columnDefs = [
-    //   {
-    //     field: 'Code',
-    //     rowDrag: true,
-    //   },
-    //   { field: 'Name' },
-    //   {
-    //     field: 'Note',
-    //     width: 100,
-    //   },
-    //   { field: 'date' },
-    //   { field: 'sport' },
-    //   { field: 'gold' },
-    //   { field: 'silver' },
-    //   { field: 'bronze' },
-    // ];
-
-    this.pagination = false;
-    this.maxBlocksInCache = 5;
-    this.paginationPageSize = this.cacheBlockSize = 1000;
-    /** End AG-Grid */
   }
-
-  /** AG-Grid */
-  public gridApi: GridApi;
-  public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
-  public dataSource: IDatasource;
-  public columnDefs: any;
-  public rowSelection = 'multiple';
-  public rowModelType = 'clientSide';
-  // public rowModelType = null;
-  public paginationPageSize: number;
-  public cacheOverflowSize = 2;
-  public maxConcurrentDatasourceRequests = 2;
-  public infiniteInitialRowCount = 1;
-  public maxBlocksInCache: number;
-  public cacheBlockSize: number;
-  public rowData: PurchasePriceTableDetailModel[] = [];
-  public gridParams;
-  public multiSortKey = 'ctrl';
-  public rowDragManaged = false;
-  public getRowHeight(params) {
-    return 80;
-  }
-  public rowHeight: number;
-  public hadRowsSelected = false;
-  public pagination: boolean;
-  // public emailAddressListDetails: EmailAddressListDetailModel[] = [];
-
-  public defaultColDef = {
-    width: 170,
-    sortable: true,
-    filter: true,
-  };
-  public getRowNodeId = (item: { Product: string }) => {
-    return item.Product;
-  }
-  public components = {
-    loadingCellRenderer: (params) => {
-      if (params.value) {
-        return params.value;
-      } else {
-        return '<img src="assets/images/loading.gif">';
-      }
-    },
-  };
-
-  public gridOptions = {
-    enableMultiRowDragging: true,
-  };
-
-  gridReady$ = new BehaviorSubject<boolean>(false);
-  onGridReady(params) {
-    this.gridParams = params;
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-
-    this.loadList();
-    this.gridReady$.next(true);
-
-  }
-  onColumnResized() {
-    this.gridApi.resetRowHeights();
-  }
-  onRowSelected() {
-    this.updateActionState();
-  }
-  updateActionState() {
-    this.hadRowsSelected = this.getSelectedRows().length > 0;
-  }
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  loadList(callback?: (list: PurchasePriceTableDetailModel[]) => void) {
-
-    // if (this.gridApi) {
-    //   this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
-    // }
-
-  }
-
-  initDataSource() {
-    this.dataSource = {
-      rowCount: null,
-      getRows: (getRowParams: IGetRowsParams) => {
-        // console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
-
-        // const query = { limit: this.paginationPageSize, offset: getRowParams.startRow };
-        // getRowParams.sortModel.forEach(sortItem => {
-        //   query['sort_' + sortItem['colId']] = sortItem['sort'];
-        // });
-        // Object.keys(getRowParams.filterModel).forEach(key => {
-        //   const condition: { filter: string, filterType: string, type: string } = getRowParams.filterModel[key];
-        //   query['filter_' + key] = condition.filter;
-        // });
-
-        // query['noCount'] = true;
-        // query['filter_AddressList'] = this.id[0] ? this.id[0] : 'X';
-
-        // const contact = this.array.controls[0].get('Contact');
-        // const contactGroups = this.array.controls[0].get('ContactGroups');
-
-        // if (contact.value) {
-        //   query['id'] = contact.value.id;
-        // } else if (contactGroups.value && contactGroups.value.length > 0) {
-        //   query['byGroups'] = contactGroups.value.map(i => i.id);
-        // } else {
-        //   query['byGroups'] = ['unknow'];
-        // }
-
-        new Promise<(PurchasePriceTableDetailModel & { Message?: string })[]>((resolve2, reject2) => {
-          // if (this.updateMode === 'live' || this.smsSendList.length === 0) {
-          // } else {
-          //   resolve2(this.smsSendList);
-          // }
-          resolve2();
-        }).then(emailAddressListDetails => {
-          // smsSendList.forEach(item => {
-          //   const message = this.generatePreviewByContact(item, this.array.controls[0]);
-          //   item.Message = '[' + message.length + '/160] ' + message;
-          // });
-          let lastRow = -1;
-          if (emailAddressListDetails.length < this.paginationPageSize) {
-            lastRow = getRowParams.startRow + emailAddressListDetails.length;
-          }
-          getRowParams.successCallback(emailAddressListDetails, lastRow);
-          this.gridApi.resetRowHeights();
-        });
-
-
-
-        // this.executeGet(query, contactList => {
-        //   contactList.forEach((item, index) => {
-        //     item['No'] = (getRowParams.startRow + index + 1);
-        //     item['id'] = item[this.idKey];
-        //   });
-
-        //   let lastRow = -1;
-        //   if (contactList.length < this.paginationPageSize) {
-        //     lastRow = getRowParams.startRow + contactList.length;
-        //   }
-        //   getRowParams.successCallback(contactList, lastRow);
-        //   this.gridApi.resetRowHeights();
-        // });
-        // this.getList(contactList => {
-
-        // });
-
-      },
-    };
-  }
-  /** End AG-Grid */
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
@@ -507,7 +253,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     }
 
     /** Load and cache sales price table list */
-    this.priceTableList = (await this.apiService.getPromise<SalesMasterPriceTableModel[]>('/sales/price-tables', { sort_Name: 'desc' })).map(item => ({ ...item, id: item.Code, text: '[' + item.Code + '] ' + item.Title }));
+    // this.priceTableList = (await this.apiService.getPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { sort_Name: 'desc' })).map(item => ({ ...item, id: item.Code, text: '[' + item.Code + '] ' + item.Title }));
 
     return super.init();
   }
@@ -537,16 +283,19 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       //   });
       // }
 
-      if (itemFormData.Details) {
-        this.gridReady$.pipe(takeUntil(this.destroy$)).subscribe(ready => {
-          if (ready) {
-            this.gridApi.setRowData([]);
-            this.gridApi.updateRowData({
-              add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, Product: item['Product'] && item['Product']['id'] ? item['Product']['id'] : item['Product'] })),
-            });
-          }
-        });
-      }
+      // if (itemFormData.Details) {
+      //   this.gridReady$.pipe(takeUntil(this.destroy$)).subscribe(ready => {
+      //     if (ready) {
+      //       this.gridApi.setRowData([]);
+      //       this.gridApi.updateRowData({
+      //         add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, Product: item['Product'] && item['Product']['id'] ? item['Product']['id'] : item['Product'] })),
+      //       });
+      //     }
+      //   });
+      // }
+
+      // Load details
+      this.loadList();
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -571,10 +320,11 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       // ObjectBankCode: [''],
       // PaymentStep: [''],
       // DeliveryAddress: [''],
-      Parent: [''],
+      // Parent: [''],
       Title: [''],
+      Type: ['', Validators.required],
       Description: [''],
-      DateOfApprove: [''],
+      // DateOfApproved: [''],
       PrintTemplate: ['PriceTablePrintAsListComponent'],
       // _total: [''],
       Details: this.formBuilder.array([]),
@@ -716,9 +466,9 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   preview(formItem: FormGroup) {
     const data: SalesMasterPriceTableModel = formItem.value;
     data.Details = [];
-    this.gridApi.forEachNode(node => {
-      data.Details.push(node.data);
-    });
+    // this.gridApi.forEachNode(node => {
+    //   data.Details.push(node.data);
+    // });
     // data.Details.forEach(detail => {
     //   if (typeof detail['Tax'] === 'string') {
     //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
@@ -764,60 +514,425 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     });
   }
 
-  chooseProducts(formItem: FormGroup) {
-    this.openProductListDialplog({}, choosedProducts => {
-      console.log(choosedProducts);
-      this.gridReady$.pipe(takeUntil(this.destroy$)).subscribe(isReady => {
-        if (isReady) {
-          // choosedProducts.forEach(product => {
-          // const detail = this.makeNewDetailFormGroup(formItem, {
-          //   Product: product as any,
-          //   Note: product.Name,
-          //   Unit: product.WarehouseUnit,
-          // });
-          // this.getDetails(formItem).controls.push(detail);
+  // chooseProducts(formItem: FormGroup) {
+  //   this.openProductListDialplog({}, choosedProducts => {
+  //     console.log(choosedProducts);
+  //     this.gridReady$.pipe(takeUntil(this.destroy$)).subscribe(isReady => {
+  //       if (isReady) {
+  //         // choosedProducts.forEach(product => {
+  //         // const detail = this.makeNewDetailFormGroup(formItem, {
+  //         //   Product: product as any,
+  //         //   Note: product.Name,
+  //         //   Unit: product.WarehouseUnit,
+  //         // });
+  //         // this.getDetails(formItem).controls.push(detail);
 
-          this.gridApi.forEachNode(node => {
-            choosedProducts = choosedProducts.filter(product => product.Code !== node.data['Product']);
-          });
-          if (choosedProducts.length > 0) {
-            const total = this.gridApi.getDisplayedRowCount();
-            this.gridApi.updateRowData({
-              add: choosedProducts.map((product, index) => ({
-                No: total + index + 1,
-                Id: product.Code,
-                PictureThumbnail: (product['FeaturePictureThumbnail'] ? (product['FeaturePictureThumbnail'].replace(/\?token=[^\&]*/, '')) : ''),
-                Product: product.Code,
-                Name: product.Name,
-                Note: product.Description,
-                Unit: product.WarehouseUnit,
-              })),
-            });
-          }
-          // });
-        }
-      });
-    });
-  }
+  //         this.gridApi.forEachNode(node => {
+  //           choosedProducts = choosedProducts.filter(product => product.Code !== node.data['Product']);
+  //         });
+  //         if (choosedProducts.length > 0) {
+  //           const total = this.gridApi.getDisplayedRowCount();
+  //           this.gridApi.updateRowData({
+  //             add: choosedProducts.map((product, index) => ({
+  //               No: total + index + 1,
+  //               Id: product.Code,
+  //               PictureThumbnail: (product['FeaturePictureThumbnail'] ? (product['FeaturePictureThumbnail'].replace(/\?token=[^\&]*/, '')) : ''),
+  //               Product: product.Code,
+  //               Name: product.Name,
+  //               Note: product.Description,
+  //               Unit: product.WarehouseUnit,
+  //             })),
+  //           });
+  //         }
+  //         // });
+  //       }
+  //     });
+  //   });
+  // }
 
   /** Override for case : use Ag-Grid as details */
   getRawFormData() {
     const data = super.getRawFormData();
     data.array[0]['Details'] = [];
-    this.gridApi.forEachNode(node => {
-      data.array[0]['Details'].push(node.data);
-    });
+    // this.gridApi.forEachNode(node => {
+    //   data.array[0]['Details'].push(node.data);
+    // });
     // data['Details'] = this.rowData.map(item => ({...item, Name: item['Name'] ? item['Name'] : item['Sku']}));
     return data;
   }
 
-  clearDetails(formItem: FormGroup) {
-    this.gridApi.setRowData([]);
+  // clearDetails(formItem: FormGroup) {
+  //   this.gridApi.setRowData([]);
+  // }
+
+  // removeDetails(formItem: FormGroup) {
+  //   this.gridApi.updateRowData({
+  //     remove: this.getSelectedRows(),
+  //   });
+  // }
+
+  /** Common function for ng2-smart-table */
+
+  editing = {};
+  rows = [];
+
+  settings = this.configSetting({
+    mode: 'external',
+    selectMode: 'multi',
+    actions: {
+      position: 'right',
+    },
+    add: this.configAddButton(),
+    edit: this.configEditButton(),
+    delete: this.configDeleteButton(),
+    pager: this.configPaging(),
+    columns: {
+      FeaturePictureThumbnail: {
+        title: 'Hình',
+        type: 'custom',
+        width: '5%',
+        renderComponent: SmartTableThumbnailComponent,
+        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.subscribe(async (row: ProductModel) => {
+          });
+        },
+      },
+      Name: {
+        title: 'Tên',
+        type: 'string',
+        width: '20%',
+        // filter: {
+        //   type: 'custom',
+        //   component: SmartTableFilterComponent,
+        //   config: {
+        //     delay: 3000,
+        //   },
+        // },
+      },
+      Categories: {
+        title: 'Danh mục',
+        type: 'string',
+        width: '20%',
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 1000,
+            select2Option: {
+              placeholder: 'Chọn danh mục...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              ajax: {
+                url: (params: any) => {
+                  return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
+                },
+                delay: 300,
+                processResults: (data: any, params: any) => {
+                  console.info(data, params);
+                  return {
+                    results: data.map(item => {
+                      // item['id'] = item['Code'];
+                      // item['text'] = item['Name'];
+                      delete item['Id'];
+                      return item;
+                    }),
+                  };
+                },
+              },
+            }
+
+          }
+        },
+      },
+      UnitLabel: {
+        title: 'ĐVT',
+        type: 'string',
+        width: '10%',
+      },
+      Code: {
+        title: 'Code',
+        type: 'string',
+        width: '10%',
+      },
+      Sku: {
+        title: 'Sku',
+        type: 'string',
+        width: '10%',
+      },
+      Price: {
+        title: 'Price',
+        width: '15%',
+        type: 'currency-editable',
+        editable: true,
+        delay: 3000,
+        onChange: (value: number, row: ProductModel) => {
+          const masterPriceTable = this.array.controls[0].get('Code').value;
+          if (!masterPriceTable) {
+            this.dialogService.open(ShowcaseDialogComponent, {
+              context: {
+                title: 'Xác nhận',
+                content: 'Bảng giá cần được lưu trước khi nhập giá cho sản phẩm, bạn có muốn lưu không ?',
+                actions: [
+                  {
+                    label: 'Trở về',
+                    icon: 'back',
+                    status: 'info',
+                    action: () => { },
+                  },
+                  {
+                    label: 'Lưu',
+                    icon: 'save',
+                    status: 'success',
+                    action: () => {
+                      // this.apiService.delete(this.apiPath, ids, result => {
+                      //   if (callback) callback();
+                      // });
+                      this.save();
+                    },
+                  },
+                ],
+              },
+            });
+          } else {
+            if (row.WarehouseUnit.Code) {
+              this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {}, [{
+                MasterPriceTable: masterPriceTable,
+                Product: row.Code,
+                Unit: row.WarehouseUnit.Code,
+                Price: value,
+              }]).then(rs => {
+                console.log(rs);
+              });
+            } else if (value) {
+              this.dialogService.open(ShowcaseDialogComponent, {
+                context: {
+                  title: 'Cảnh báo',
+                  content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+                  actions: [
+                    {
+                      label: 'Trở về',
+                      icon: 'back',
+                      status: 'info',
+                      action: () => { },
+                    },
+                  ],
+                },
+              });
+            }
+          }
+        },
+      },
+    },
+  });
+
+  /** Seleted ids */
+  selectedIds: string[] = [];
+  selectedItems: SalesMasterPriceTableDetailModel[] = [];
+
+  /** Config for stmart table setttings */
+  protected configSetting(settings: SmartTableSetting) {
+
+    // Set default filter function
+    Object.keys(settings.columns).forEach(key => {
+      const column = settings.columns[key];
+      if (!settings.columns[key]['filterFunction']) {
+        settings.columns[key]['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
+      }
+
+      if (column.type === 'boolean') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableCheckboxComponent;
+        column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
+          instance.disable = !column.editable;
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            // console.info(value);
+            if (column.onChange) {
+              column.onChange(value, instance.rowData);
+            }
+          });
+        };
+      }
+
+      if (column.type === 'currency-editable') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableCurrencyEditableComponent;
+        column.onComponentInitFunction = (instance: SmartTableCurrencyEditableComponent) => {
+          instance.disable = !column.editable;
+          instance.placeholder = column.title;
+          instance.name = key;
+          if (column.delay) {
+            instance.delay = column.delay;
+          }
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            if (column.onChange) {
+              column.onChange(value, instance.rowData);
+            }
+          });
+        };
+      }
+
+      if (typeof column['filter'] === 'undefined') {
+        column['filter'] = {
+          type: 'custom',
+          component: SmartTableFilterComponent,
+        };
+      }
+
+    });
+
+    return settings;
   }
 
-  removeDetails(formItem: FormGroup) {
-    this.gridApi.updateRowData({
-      remove: this.getSelectedRows(),
+  /** Config for add button */
+  protected configAddButton() {
+    return {
+      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for add button */
+  protected configFilterButton() {
+    return {
+      addButtonContent: '<i class="nb-search"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for edit button */
+  protected configEditButton() {
+    return {
+      editButtonContent: '<i class="nb-edit"></i>',
+      saveButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for delete button */
+  protected configDeleteButton() {
+    return {
+      deleteButtonContent: '<i class="nb-trash"></i>',
+      confirmDelete: true,
+    };
+  }
+
+  /** Config for paging */
+  protected configPaging() {
+    return {
+      display: true,
+      perPage: 100,
+    };
+  }
+
+  /** User select event */
+  onUserRowSelect(event: any) {
+    this.selectedItems = event.selected;
+    this.selectedIds = event.selected.map((item: SalesMasterPriceTableDetailModel) => {
+      return item[this.idKey];
+    });
+    // console.info(event);
+    if (this.selectedIds.length > 0) {
+      this.hasSelect = 'selected';
+    } else {
+      this.hasSelect = 'none';
+    }
+  }
+
+  /** Row select event */
+  onRowSelect(event) {
+    // console.info(event);
+  }
+
+  hasSelect = 'none';
+
+  /** Local dat source */
+  source: CustomeServerDataSource<ProductModel>;
+
+  // initDataSource() {
+  //   return this.source = new CustomeServerDataSource<SalesMasterPriceTableDetailModel>(this.apiService, '/sales/master-price-table-details');
+  // }
+
+  initDataSource() {
+    this.source = new CustomeServerDataSource<ProductModel>(this.apiService, '/sales/master-price-table-details');
+
+    // Set DataSource: prepareData
+    this.source.prepareData = (data: ProductModel[]) => {
+      data.map((product: any) => {
+        if (product['WarehouseUnit']) {
+          product['UnitLabel'] = product['WarehouseUnit']['Name'];
+        }
+        if (product['Categories']) {
+          product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
+        }
+        if (product['FeaturePictureThumbnail']) {
+          product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
+        } else {
+          delete product['FeaturePictureThumbnail'];
+        }
+        return product;
+      });
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    this.source.prepareParams = (params: any) => {
+      params['masterPriceTable'] = this.array.controls[0].get('Code').value;
+      params['includeCategories'] = true;
+      params['includeUnit'] = true;
+      params['includeFeaturePicture'] = true;
+      params['sort_Id'] = 'desc';
+      return params;
+    };
+
+    return this.source;
+  }
+
+  /** Get data from api and push to list */
+  loadList(callback?: (list: ProductModel[]) => void) {
+    this.selectedIds = [];
+    this.hasSelect = 'none';
+    if (!this.source) {
+      this.initDataSource();
+    } else {
+      this.source.refresh();
+    }
+  }
+
+  /** Edit event */
+  onEditAction(event: { data: ProductModel }) {
+    // this.router.navigate(['modules/manager/form', event.data[this.idKey]]);
+    this.openProductForm([event.data['Code']]);
+  }
+
+  /** Implement required */
+  openProductForm(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(ProductFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: ProductModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+          this.loadList();
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
     });
   }
+
+  /** End Common function for ng2-smart-table */
 }

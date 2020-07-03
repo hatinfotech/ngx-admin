@@ -396,26 +396,23 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
           instance.disable = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
-            // console.info(value);
             if (column.onChange) {
               column.onChange(value, instance.rowData);
             }
           });
-          // instance.iconPack = 'eva';
-          // instance.icon = 'play-circle-outline';
-          // instance.label = 'Play';
-          // instance.display = true;
-          // instance.status = 'warning';
-          // instance.valueChange.subscribe(value => {
-          //   if (value) {
-          //     instance.disabled = false;
-          //   } else {
-          //     instance.disabled = true;
-          //   }
-          // });
-          // instance.click.subscribe((row: any) => {
+        };
+      }
 
-          // });
+      if (column.type === 'currency-editable') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableCheckboxComponent;
+        column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
+          instance.disable = !column.editable;
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            if (column.onChange) {
+              column.onChange(value, instance.rowData);
+            }
+          });
         };
       }
 

@@ -182,14 +182,14 @@ export class SalesMasterPriceTableModel {
 }
 
 export class SalesMasterPriceTableDetailModel {
-  Id?: string & number;
-  No?: string & number;
+  Id?: string | number;
+  No?: string | number;
   MasterPriceTable?: String & SalesMasterPriceTableModel;
-  Product?: String & ProductModel;
-  Unit?: String & UnitModel;
+  Product?: String | ProductModel;
+  Unit?: String | UnitModel;
   Description?: string;
-  Tax?: String & TaxModel;
-  Price?: string;
+  Tax?: String | TaxModel;
+  Price?: string | number;
   Currency?: string;
-  Discount?: string & number;
+  Discount?: string | number;
 }

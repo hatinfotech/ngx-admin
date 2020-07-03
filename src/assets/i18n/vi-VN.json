@@ -32,7 +32,8 @@
       "title": "{{action}}{{definition}} bảng giá bán"
     },
     "MasterPriceTable": {
-      "title": "{{action}}{{definition}} bảng giá bán"
+      "title": "{{action}}{{definition}} bảng giá bán",
+      "type": "loại bảng giá"
     },
     "addProduct": "thêm hàng hoá/dịch vụ",
     "directReceiver": "người trực tiếp nhận hàng",
@@ -40,7 +41,10 @@
     "paymentStep": "bước thanh toán",
     "technicalDescription": "Diễn giải thông số kỹ thuật",
     "dateOfReported": "ngày báo giá",
-    "declareSaledProducts": "khai báo hàng đã bán"
+    "declareSaledProducts": "khai báo hàng đã bán",
+    "chooseMasterPriceTableType": "chọn loại",
+    "retail": "bán lẻ",
+    "wholesale": "bán sỉ"
   },
   "Common": {
     "create": "tạo",

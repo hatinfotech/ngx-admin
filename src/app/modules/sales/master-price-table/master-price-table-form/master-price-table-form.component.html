@@ -29,125 +29,9 @@
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code">
-              <!-- <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
-                  <label class="label"><span
-                      class="valid">{{'Voucher.organizationOrPersornal' | translate | headtitlecase}}</span><span
-                      class="invalid">
-                      {{'Voucher.organizationOrPersornal' | translate | headtitlecase}} (*)</span></label>
-                  <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption"
-                    (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
-                </div>
-              </div> -->
-              <!-- <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectName'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectName"
-                    placeholder="{{'Common.name' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Recipient'), 'warning')">
-                  <label class="label"><span
-                      class="valid">{{'Common.recipient' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.recipient')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Recipient"
-                    placeholder="{{'Common.recipient' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-9">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectAddress'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.address' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.address')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectAddress"
-                    placeholder="{{'Common.address' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.phone' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.phone')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectPhone"
-                    placeholder="{{'Common.phone' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectEmail'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.email' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.email')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectEmail"
-                    placeholder="{{'Common.email' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectTaxCode'), 'warning')">
-                  <label class="label"><span class="valid">{{'Contact.taxCode' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Contact.taxCode')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectTaxCode"
-                    placeholder="{{'Contact.taxCode' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectBankName'), 'warning')">
-                  <label class="label"><span class="valid">{{'Bank.name' | translate | headtitlecase}}</span><span
-                      class="invalid">Tên ngân hàng
-                      là{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Bank.name')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectBankName"
-                    placeholder="{{'Bank.name' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectBankCode'), 'warning')">
-                  <label class="label"><span class="valid">{{'Bank.code' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Bank.code')} | headtitlecase }}
-                      buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectBankCode"
-                    placeholder="{{'Bank.code' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group"
-                  [attr.state]="formControlValidate(formItem.get('DirectReceiverName'), 'warning')">
-                  <label class="label"><span
-                      class="valid">{{'Sales.directReceiver' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.directReceiver')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="DirectReceiverName"
-                    placeholder="{{'Sales.directReceiver' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DeliveryAddress'), 'warning')">
-                  <label class="label"><span
-                      class="valid">{{'Sales.deliveryAddress' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.deliveryAddress')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="DeliveryAddress"
-                    placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PaymentStep'), 'warning')">
-                  <label class="label"><span
-                      class="valid">{{'Sales.paymentStep' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.paymentStep')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="PaymentStep"
-                    placeholder="{{'Sales.paymentStep' | translate | headtitlecase}}">
-                </div>
-              </div> -->
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.title' | translate | headtitlecase}}</span><span
+                  <label class="label"><span class="valid">{{'Common.title' | translate | headtitlecase}} (*)</span><span
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.title')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Title"
@@ -155,16 +39,20 @@
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Parent'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.parent' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.parent')} | headtitlecase }}
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Type'), 'warning')">
+                  <label class="label"><span class="valid">{{'Sales.MasterPriceTable.type' | translate | headtitlecase}} (*)</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.MasterPriceTable.type')} | headtitlecase }}
                       (*)</span></label>
-                  <ngx-select2 formControlName="Parent" [select2Option]="select2OptionForParent" [data]="priceTableList"></ngx-select2>
+                  <nb-select fullWidth formControlName="Type"
+                    placeholder="{{'Sales.chooseMasterPriceTableType' | translate | headtitlecase}}">
+                    <nb-option *ngFor="let type of typeList" [value]="type.id">
+                      {{type.text}}</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('PrintTemplate'), 'warning')">
-                  <label class="label"><span class="valid">{{'Print.template' | translate | headtitlecase}}</span><span
+                  <label class="label"><span class="valid">{{'Print.template' | translate | headtitlecase}} (*)</span><span
                       class="invalid">{{ 'Form.printTemplate' | translate:{field: commonService.translate.instant('Common.title')} | headtitlecase }}
                       (*)</span></label>
                   <nb-select fullWidth formControlName="PrintTemplate"
@@ -174,17 +62,6 @@
                   </nb-select>
                 </div>
               </div>
-              <!-- <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DateOfApprove'), 'warning')">
-                  <label class="label"><span
-                      class="valid">{{'Sales.dateOfApprove' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.dateOfApprove')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" [owlDateTime]="DateOfApprove" [owlDateTimeTrigger]="DateOfApprove" nbInput fullWidth
-                    formControlName="DateOfApprove" placeholder="{{'Common.dateTime' | translate | headtitlecase}}">
-                  <owl-date-time #DateOfApprove></owl-date-time>
-                </div>
-              </div> -->
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span
@@ -202,54 +79,17 @@
             <!-- <label class="label">{{'Voucher.productOrservice' | translate | headtitlecase}}</label> -->
 
             <div class="row title">
-              <div class="col-md-4">
+              <div class="col-md-12">
                 <label class="label"><span class="valid">Chi tiết bảng giá bán ra</span></label>
               </div>
-              <div class="col-md-8">
-                <div class="buttons-row">
-                  <button type="button" nbButton status="danger" hero size="tiny" (click)="clearDetails(formItem)"
-                    [disabled]="isProcessing" title="{{'Common.choose' | translate | headtitlecase}}"
-                    style="float: right; margin-bottom: 1rem;">
-                    <nb-icon pack="eva" icon="code-download"></nb-icon>
-                    {{'Common.clear' | translate | headtitlecase}}
-                  </button>
-                  <button type="button" nbButton status="warning" hero size="tiny" (click)="removeDetails(formItem)"
-                    [disabled]="isProcessing" title="{{'Common.remove' | translate | headtitlecase}}"
-                    style="float: right; margin-bottom: 1rem;">
-                    <nb-icon pack="eva" icon="minus-circle"></nb-icon>
-                    {{'Common.remove' | translate | headtitlecase}}
-                  </button>
-                  <button type="button" nbButton status="primary" hero size="tiny" (click)="chooseProducts(formItem)"
-                    [disabled]="isProcessing" title="{{'Common.choose' | translate | headtitlecase}}"
-                    style="float: right; margin-bottom: 1rem;">
-                    <nb-icon pack="eva" icon="code-download"></nb-icon>
-                    {{'AdminProduct.chooseProducts' | translate | headtitlecase}}
-                  </button>
-                </div>
-              </div>
             </div>
-            <div class="ag-grid-wrap" style="height: 500px;">
-              <!-- <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham"
-                [gridOptions]="gridOptions"
-                [modules]="modules" [columnDefs]="columnDefs" [floatingFilter]="false" [debug]="true"
-                [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowDeselection]="true"
-                [cacheOverflowSize]="cacheOverflowSize"
-                [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
-                [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache"
-                [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components"
-                [rowData]="rowData" [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged"
-                [getRowHeight]="getRowHeight" [rowHeight]="rowHeight" [rowModelType]="rowModelType"
-                [paginationPageSize]="paginationPageSize" [pagination]="pagination" [enterMovesDownAfterEdit]="true"
-                (gridReady)="onGridReady($event)" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()"
-                [rowDragManaged]="true" [animateRows]="true">
-              </ag-grid-angular> -->
-              <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham"
-                [gridOptions]="gridOptions" [modules]="modules" [columnDefs]="columnDefs"
-                [defaultColDef]="defaultColDef" [rowDragManaged]="true" [getRowHeight]="getRowHeight"
-                [animateRows]="true" [rowData]="rowData" rowSelection="multiple" [rowDeselection]="true"
-                [infiniteInitialRowCount]="infiniteInitialRowCount" (columnResized)="onColumnResized()"
-                [getRowNodeId]="getRowNodeId" [enterMovesDownAfterEdit]="true" (gridReady)="onGridReady($event)">
-              </ag-grid-angular>
+            <div class="ng2-smart-table-wrap" style="border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
+              <div class="ng2-smart-table-wrap">
+                <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
+                  (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)"
+                  (edit)="onEditAction($event)">
+                </ng2-smart-table>
+              </div>
             </div>
 
             <div class="row">

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
 import { Select2Module } from 'ng2-select2';
-import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent } from './smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
@@ -12,6 +12,7 @@ import { HeadTitlePipe } from '../pipes/head-title.pipe';
 import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableFilterComponent, SmartTableSelect2FilterComponent } from './smart-table/smart-table.filter.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { TranslateModule } from '@ngx-translate/core';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SmartTableClearingFilterComponent,
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
+    SmartTableCurrencyEditableComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +44,7 @@ import { TranslateModule } from '@ngx-translate/core';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     TranslateModule,
+    CurrencyMaskModule,
   ],
   exports: [
     Select2Component,
@@ -57,6 +60,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SmartTableClearingFilterComponent,
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
+    SmartTableCurrencyEditableComponent,
   ],
 })
 export class CustomElementModule { }

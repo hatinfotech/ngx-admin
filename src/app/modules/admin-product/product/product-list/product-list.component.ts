@@ -7,9 +7,11 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableThumbnailComponent, SmartTableCheckboxComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ProductFormDialogComponent } from '../product-form-dialog/product-form-dialog.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-product-list',
