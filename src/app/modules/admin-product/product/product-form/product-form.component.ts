@@ -471,19 +471,22 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
     if (formControlName === 'Pictures') {
-      const currentValue = array.controls[i].get(formControlName).value;
+      const currentFormItem = array.controls[i];
+      const currentValue = currentFormItem.get(formControlName).value;
+      const featurePicture = currentFormItem.get('FeaturePicture').value;
       array.controls.forEach((formItem, index) => {
         if (index !== i) {
-        const picturesFormArray = (formItem.get('Pictures') as FormArray);
-        picturesFormArray.controls = [];
-        currentValue.forEach(pic => {
-          const newPictireForm = this.makeNewPictureFormGroup(pic);
-          picturesFormArray.controls.push(newPictireForm);
-        });
-      }
-    });
-  } else {
-  super.copyFormControlValueToOthers(array, i, formControlName);
-}
+          const picturesFormArray = (formItem.get('Pictures') as FormArray);
+          picturesFormArray.controls = [];
+          currentValue.forEach(pic => {
+            const newPictireForm = this.makeNewPictureFormGroup(pic);
+            picturesFormArray.controls.push(newPictireForm);
+          });
+          formItem.get('FeaturePicture').patchValue(featurePicture);
+        }
+      });
+    } else {
+      super.copyFormControlValueToOthers(array, i, formControlName);
+    }
   }
 }

@@ -1,0 +1,36 @@
+<form class="popup">
+  <div formArrayName="array">
+    <div>
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <nav>
+            {{'AdminProduct.assignCategories' | translate | headtitlecase}}
+            <button nbButton status="warning" hero size="tiny" style="float: right;" title="Đóng">
+              <nb-icon pack="eva" icon="close"></nb-icon>
+            </button>
+          </nav>
+        </nb-card-header>
+        <nb-card-body>
+          <div class="row">
+            <div class="col-sm-9">
+              <div class="form-group">
+                <label class="label"><span class="valid">Danh mục</span>
+                </label>
+                <ngx-select2 formControl="categoriesFormControl" [select2Option]="select2OptionForCategories">
+                </ngx-select2>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <!-- <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button> -->
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

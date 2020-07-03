@@ -12,6 +12,7 @@ import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../
 import { ProductFormDialogComponent } from '../product-form-dialog/product-form-dialog.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { takeUntil } from 'rxjs/operators';
+import { AssignCategoriesFormComponent } from '../assign-categories-form/assign-categories-form.component';
 
 @Component({
   selector: 'ngx-product-list',
@@ -253,6 +254,27 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   gotoForm(id?: string): false {
     this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
     return false;
+  }
+
+  /** Implement required */
+  openAssignCategoiesDialplog() {
+    if (this.selectedIds.length > 0) {
+      this.dialogService.open(AssignCategoriesFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          inputProducts: this.selectedItems,
+          onDialogSave: (newData: ProductModel[]) => {
+
+          },
+          onDialogClose: () => {
+
+            this.refresh();
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
   }
 
 }

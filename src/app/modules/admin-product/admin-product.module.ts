@@ -24,12 +24,14 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ProductFormDialogComponent } from './product/product-form-dialog/product-form-dialog.component';
+import { AssignCategoriesFormComponent } from './product/assign-categories-form/assign-categories-form.component';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
     ProductCategoryListComponent, ProductCategoryFormComponent, ProductUnitListComponent,
     ProductUnitFormComponent,
-    ProductFormDialogComponent],
+    ProductFormDialogComponent,
+    AssignCategoriesFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -78,6 +80,7 @@ import { ProductFormDialogComponent } from './product/product-form-dialog/produc
     SmartTableThumbnailComponent,
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
+    AssignCategoriesFormComponent,
   ],
   providers: [
     // use french locale
