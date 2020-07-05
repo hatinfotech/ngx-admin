@@ -13,7 +13,7 @@
           "options": {
             "preserveSymlinks": true,
             "rebaseRootRelativeCssUrls": true,
-            "outputPath": "/Users/hoangtriet/Data/Development/NaM/Source/NaM-EP/mini-erp",
+            "outputPath": "../NaM-EP/mini-erp",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
