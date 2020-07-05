@@ -48,6 +48,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   mobileScreen = 'phone';
 
   chatServiceInfo: {
+    protocol?: string,
     domain: string,
     port: number,
     url?: string,
@@ -258,7 +259,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
         // this.ready$ = new Observable<boolean>((obs) => {
         this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
           this.chatServiceInfo = rs;
-          this.chatServiceInfo.url = `https://${this.chatServiceInfo.domain}:${this.chatServiceInfo.port}`;
+          this.chatServiceInfo.url = `${this.chatServiceInfo.protocol || 'https'}://${this.chatServiceInfo.domain}:${this.chatServiceInfo.port}`;
           this.localChatClient = new ChatManager(this.chatServiceInfo.url, this.user);
           this.localChatClient.onConnect().then(() => {
             this.readySubject.next(true);

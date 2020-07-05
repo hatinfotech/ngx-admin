@@ -57,7 +57,7 @@ export class CommonService {
 
   loginInfo$ = new BehaviorSubject<LoginInfoModel>(null);
   private mainSocket: MySocket;
-  mainSocketInfo: { domain: string; port: number; url?: string };
+  mainSocketInfo: { protocol?: string, domain: string; port: number; url?: string };
 
   // localStorageAvailable$: BehaviorSubject<WindowLocalStorage> = new BehaviorSubject<WindowLocalStorage>(null);
 
@@ -153,7 +153,7 @@ export class CommonService {
     // Init main socket
     this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
       this.mainSocketInfo = rs;
-      this.mainSocketInfo.url = `https://${this.mainSocketInfo.domain}:${this.mainSocketInfo.port}`;
+      this.mainSocketInfo.url = `${this.mainSocketInfo.protocol || 'https' }://${this.mainSocketInfo.domain}:${this.mainSocketInfo.port}`;
       this.mainSocket = new MySocket(this.mainSocketInfo.url);
       console.info('Conntect to local chat server success');
     }).catch(e => console.error(e));
