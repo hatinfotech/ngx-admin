@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 
 import { ViewCell } from 'ng2-smart-table';
 import { BehaviorSubject } from 'rxjs';
@@ -6,6 +6,7 @@ import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { CommonService } from '../../../services/common.service';
 import { FormControl } from '@angular/forms';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { stat } from 'fs';
 
 @Component({
   template: `
@@ -171,6 +172,7 @@ export class SmartTableDateTimeComponent implements ViewCell, OnInit {
 export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
+
   locale = this.commonService.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
 
@@ -179,13 +181,14 @@ export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, Af
   placeholder: string = '';
   delay: number = 1000;
   name: string = '';
+  isPatchingValue = false;
 
   @Input() value: string | number;
   @Input() rowData: any;
-
   @Output() valueChange: EventEmitter<any> = new EventEmitter();
+  @ViewChild('inputText', { static: false }) input: ElementRef;
 
-  @ViewChild('inputText', { static: false }) input;
+  jqueryInput: JQuery;
 
   constructor(public commonService: CommonService) {
     this.inputControl.valueChanges
@@ -199,9 +202,22 @@ export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, Af
 
   }
 
+  set status(status: string) {
+    if (this.jqueryInput) {
+      this.jqueryInput.removeClass('status-primary');
+        this.jqueryInput.removeClass('status-info');
+        this.jqueryInput.removeClass('status-warning');
+        this.jqueryInput.removeClass('status-danger');
+        this.jqueryInput.removeClass('status-success');
+      if (status) {
+        this.jqueryInput.addClass('status-' + status);
+      }
+    }
+  }
+
   ngAfterViewInit() {
     // console.log(this.input.nativeElement);
-    const thisInput = $(this.input.nativeElement);
+    const thisInput = this.jqueryInput = $(this.input.nativeElement);
     thisInput.keyup(e => {
       if (e.keyCode === 13) {
         thisInput.closest('tr').next().find('input[name="' + this.name + '"]').focus();
@@ -211,11 +227,16 @@ export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, Af
 
   ngOnInit() {
     this.renderValue = this.value ? true : false;
+    this.isPatchingValue = true;
     this.inputControl.patchValue(this.value);
+    this.isPatchingValue = false;
   }
 
   onChange(value: any) {
-    this.valueChange.emit(value);
+    if (this.value !== value && !this.isPatchingValue) {
+      this.valueChange.emit(value);
+      this.value = value;
+    }
   }
 
 }

@@ -77,7 +77,7 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
   }
 
   assignCategories() {
-    const choosedCategories: ProductCategoryModel[] = this.categoriesFormControl.value;
+    const choosedCategories: (ProductCategoryModel & {id?: string, text?: string})[] = this.categoriesFormControl.value;
 
     if (choosedCategories && choosedCategories.length > 0) {
       this.processing = true;
@@ -88,7 +88,7 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
         for (let c = 0; c < choosedCategories.length; c++) {
           const choosed = choosedCategories[c];
           if (!product.Categories.some(cate => choosed['id'] == cate['id'])) {
-            product.Categories.push({ id: choosed.Code, text: choosed.Name, Category: choosed.Code, Product: product.Code } as any);
+            product.Categories.push({ id: choosed.id, text: choosed.text, Category: choosed.Code, Product: product.Code } as any);
           }
         }
       }

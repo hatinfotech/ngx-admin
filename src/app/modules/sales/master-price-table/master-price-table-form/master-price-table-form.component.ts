@@ -673,46 +673,30 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         type: 'currency-editable',
         editable: true,
         delay: 3000,
-        onChange: (value: number, row: ProductModel) => {
+        onChange: (value: number, row: ProductModel, instance: SmartTableCurrencyEditableComponent) => {
           const masterPriceTable = this.array.controls[0].get('Code').value;
-          // if (!masterPriceTable) {
-          //   this.dialogService.open(ShowcaseDialogComponent, {
-          //     context: {
-          //       title: 'Xác nhận',
-          //       content: 'Bảng giá cần được lưu trước khi nhập giá cho sản phẩm, bạn có muốn lưu không ?',
-          //       actions: [
-          //         {
-          //           label: 'Trở về',
-          //           icon: 'back',
-          //           status: 'info',
-          //           action: () => { },
-          //         },
-          //         {
-          //           label: 'Lưu',
-          //           icon: 'save',
-          //           status: 'success',
-          //           action: () => {
-          //             // this.apiService.delete(this.apiPath, ids, result => {
-          //             //   if (callback) callback();
-          //             // });
-          //             this.save();
-          //           },
-          //         },
-          //       ],
-          //     },
-          //   });
-          // } else {
           if (value) {
             if (row.WarehouseUnit.Code) {
-              this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {}, [{
-                MasterPriceTable: masterPriceTable,
-                Product: row.Code,
-                Unit: row.WarehouseUnit.Code,
-                Price: value,
-              }]).then(rs => {
-                console.log(rs);
-              });
+              // if (!instance.isPatchingValue) {
+                instance.status = 'primary';
+                console.log(instance.rowData.Code);
+                this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {}, [{
+                  MasterPriceTable: masterPriceTable,
+                  Product: row.Code,
+                  Unit: row.WarehouseUnit.Code,
+                  Price: value,
+                }]).then(rs => {
+                  // console.log(rs);
+                  console.log(instance.rowData.Code);
+                  instance.status = 'success';
+                  // setTimeout(() => {
+                  //   console.log(instance.rowData.Code);
+                  //   instance.status = '';
+                  // }, 15000);
+                });
+              // }
             } else {
+              instance.status = 'danger';
               this.dialogService.open(ShowcaseDialogComponent, {
                 context: {
                   title: 'Cảnh báo',
@@ -757,7 +741,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             // console.info(value);
             if (column.onChange) {
-              column.onChange(value, instance.rowData);
+              column.onChange(value, instance.rowData, instance);
             }
           });
         };
@@ -775,7 +759,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
           }
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             if (column.onChange) {
-              column.onChange(value, instance.rowData);
+              column.onChange(value, instance.rowData, instance);
             }
           });
         };

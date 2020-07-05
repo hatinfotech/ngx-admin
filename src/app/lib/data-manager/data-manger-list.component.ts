@@ -1,4 +1,4 @@
-import { LocalDataSource } from 'ng2-smart-table';
+import { LocalDataSource, ViewCell } from 'ng2-smart-table';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
@@ -49,7 +49,7 @@ export class SmartTableSetting {
       valuePrepareFunction?: (cell: string, row?: any) => string,
       renderComponent?: any,
       onComponentInitFunction?: (instance: any) => void,
-      onChange?: (value: any, rowData: any) => void,
+      onChange?: (value: any, rowData: any, instance?: ViewCell) => void,
     },
   };
 }
@@ -366,7 +366,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           instance.disable = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             if (column.onChange) {
-              column.onChange(value, instance.rowData);
+              column.onChange(value, instance.rowData, instance);
             }
           });
         };
@@ -379,7 +379,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           instance.disable = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             if (column.onChange) {
-              column.onChange(value, instance.rowData);
+              column.onChange(value, instance.rowData, instance);
             }
           });
         };
