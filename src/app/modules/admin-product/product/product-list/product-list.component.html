@@ -11,7 +11,7 @@
       <button type="button" nbButton status="primary" hero size="tiny" (click)="gotoForm()" style="float: right;">
         <nb-icon pack="eva" icon="plus"></nb-icon>
       </button>
-      <button type="button" nbButton status="info" hero size="tiny" (click)="choose()" style="float: right;">
+      <button type="button" [disabled]="this.selectedIds.length===0" nbButton status="info" hero size="tiny" (click)="openAssignCategoiesDialplog()" style="float: right;">
         <nb-icon pack="eva" icon="pricetags"></nb-icon>
       </button>
       <button type="button" nbButton status="primary" hero size="tiny" (click)="choose()" style="float: right;">

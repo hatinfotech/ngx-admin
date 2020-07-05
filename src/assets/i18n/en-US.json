@@ -103,7 +103,9 @@
     "upload": "upload",
     "copy": "copy",
     "clear": "clear",
-    "parent": "parent"
+    "parent": "parent",
+    "assign": "assign",
+    "revoke": "revoke"
   },
   "Contact": {
     "name": "contact name",
@@ -182,7 +184,9 @@
     "conversionRatio": "conversion ratio",
     "defaultSales": "default sales",
     "defaultPurchase": "default purchase",
-    "addUnitConversion": "add unit conversion"
+    "addUnitConversion": "add unit conversion",
+    "categories": "product categories",
+    "assignCategories": "assign product categories"
   },
   "Print": {
     "listTemplate": "list template",

@@ -7,11 +7,8 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { SmartTableThumbnailComponent, SmartTableCheckboxComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { ProductFormDialogComponent } from '../product-form-dialog/product-form-dialog.component';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { takeUntil } from 'rxjs/operators';
+import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AssignCategoriesFormComponent } from '../assign-categories-form/assign-categories-form.component';
 
 @Component({
@@ -56,6 +53,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         title: 'Hình',
         type: 'custom',
         width: '5%',
+        valuePrepareFunction: (value: string, product: ProductModel) => {
+          return product['FeaturePictureThumbnail'] ? product['FeaturePictureThumbnail'] + '?token=' + this.apiService.getAccessToken() : '';
+        },
         renderComponent: SmartTableThumbnailComponent,
         onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
           instance.valueChange.subscribe(value => {
@@ -80,6 +80,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         title: 'Danh mục',
         type: 'string',
         width: '25%',
+        valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
+        },
         filter: {
           type: 'custom',
           component: SmartTableSelect2FilterComponent,
@@ -122,6 +125,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         title: 'ĐVT',
         type: 'string',
         width: '10%',
+        valuePrepareFunction: (value: string, product: ProductModel) => {
+          return product['WarehouseUnit'] ? product['WarehouseUnit']['Name'] : '';
+        },
       },
       Code: {
         title: 'Code',
@@ -184,17 +190,17 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     // Set DataSource: prepareData
     source.prepareData = (data: ProductModel[]) => {
       data.map((product: any) => {
-        if (product['WarehouseUnit']) {
-          product['WarehouseUnit'] = product['WarehouseUnit']['Name'];
-        }
-        if (product['Categories']) {
-          product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
-        }
-        if (product['FeaturePictureThumbnail']) {
-          product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
-        } else {
-          delete product['FeaturePictureThumbnail'];
-        }
+        // if (product['WarehouseUnit']) {
+        //   product['WarehouseUnit'] = product['WarehouseUnit']['Name'];
+        // }
+        // if (product['Categories']) {
+        //   product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
+        // }
+        // if (product['FeaturePictureThumbnail']) {
+        //   product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
+        // } else {
+        //   delete product['FeaturePictureThumbnail'];
+        // }
         return product;
       });
       return data;
@@ -220,13 +226,13 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
 
   getList(callback: (list: ProductModel[]) => void) {
     super.getList((rs) => {
-      rs.map((product: any) => {
-        product['Unit'] = product['Unit']['Name'];
-        if (product['Categories']) {
-          product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
-        }
-        return product;
-      });
+      // rs.map((product: any) => {
+      //   product['Unit'] = product['Unit']['Name'];
+      //   if (product['Categories']) {
+      //     product['CategoriesRendered'] = product['Categories'].map(cate => cate['text']).join(', ');
+      //   }
+      //   return product;
+      // });
       if (callback) callback(rs);
     });
   }
@@ -264,11 +270,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           inputMode: 'dialog',
           inputProducts: this.selectedItems,
           onDialogSave: (newData: ProductModel[]) => {
-
+              this.refresh();
           },
           onDialogClose: () => {
-
-            this.refresh();
           },
         },
         closeOnEsc: false,

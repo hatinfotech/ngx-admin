@@ -103,7 +103,9 @@
     "upload": "tải lên",
     "copy": "sao chép",
     "clear": "clear",
-    "parent": "cha"
+    "parent": "cha",
+    "assign": "gán",
+    "revoke": "gở"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -182,7 +184,9 @@
     "conversionRatio": "tỷ lệ chuyển đổi",
     "defaultSales": "mặc định bán",
     "defaultPurchase": "mặc định mua",
-    "addUnitConversion": "thêm đơn vị chuyển đổi"
+    "addUnitConversion": "thêm đơn vị chuyển đổi",
+    "categories": "danh mục sản phẩm",
+    "assignCategories": "gán danh mục sản phẩm"
   },
   "Print": {
     "listTemplate": "mẫu danh sách",

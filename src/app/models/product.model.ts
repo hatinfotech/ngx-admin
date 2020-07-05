@@ -11,7 +11,7 @@ export class ProductModel {
   FeaturePicture?: string;
 
   // References
-  Categories: ProductCategoryModel[];
+  Categories?: ProductCategoryModel[];
   Pictures?: ProductPictureModel[];
   UnitConversions?: ProductUnitConversoinModel[];
 
@@ -20,9 +20,15 @@ export class ProductModel {
 }
 
 export class ProductCategoryModel {
-  Code?: string;
+  Code?: string | number;
   Name?: string;
   Description?: string;
+}
+
+export class ProductInCategoryModel {
+  Id?: string | number;
+  Product?: string | ProductModel;
+  Category?: string | ProductCategoryModel;
 }
 
 export class ProductUnitModel {
