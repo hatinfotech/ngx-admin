@@ -42,7 +42,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     return result;
   }
 
-  dismiss() {
+  close() {
     this.ref.close();
   }
 
@@ -75,12 +75,12 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     if (this.onSaveAndClose) {
       this.onSaveAndClose(this.data.Code);
     }
-    this.dismiss();
+    this.close();
     return false;
   }
 
   exportExcel(type: string) {
-    this.dismiss();
+    this.close();
     return false;
   }
 

@@ -33,7 +33,9 @@
     },
     "MasterPriceTable": {
       "title": "{{action}}{{definition}} bảng giá bán",
-      "type": "loại bảng giá"
+      "type": "loại bảng giá",
+      "approve":"duyệt bảng giá",
+      "approvedComfirmMessage": "bạn có chắc là muốn duyệt '{{title}}'?"
     },
     "addProduct": "thêm hàng hoá/dịch vụ",
     "directReceiver": "người trực tiếp nhận hàng",
@@ -105,7 +107,9 @@
     "clear": "clear",
     "parent": "cha",
     "assign": "gán",
-    "revoke": "gở"
+    "revoke": "gở",
+    "approve": "duyệt",
+    "dateOfApproved": "ngày duyệt"
   },
   "Contact": {
     "name": "tên liên hệ",

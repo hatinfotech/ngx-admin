@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { SalesMasterPriceTableModel } from '../../../../models/sales.model';
+import { SalesMasterPriceTableModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { PriceTableFormComponent } from '../../price-table/price-table-form/price-table-form.component';
 import { MasterPriceTableFormComponent } from '../master-price-table-form/master-price-table-form.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
+import { UnitModel } from '../../../../models/unit.model';
+import { ProductModel } from '../../../../models/product.model';
 
 @Component({
   selector: 'ngx-master-price-table-list',
@@ -62,12 +66,12 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
       Title: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
-        width: '20%',
+        width: '25%',
       },
       Description: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
         type: 'string',
-        width: '20%',
+        width: '25%',
       },
       DateOfCreated: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
@@ -87,58 +91,39 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
           // instance.format$.next('medium');
         },
       },
-      ObjectName: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.customer'), 'head-title'),
-        type: 'string',
-        width: '20%',
-      },
       // Parent: {
       //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.parent'), 'head-title'),
       //   type: 'string',
       //   width: '15%',
       // },
       Approved: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
-        type: 'string',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.approve'), 'head-title'),
+        type: 'boolean',
         width: '5%',
       },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: SalesMasterPriceTableModel) => {
-
-      //         this.dialogService.open(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: SalesMasterPriceTableModel[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
-
-      //       });
-      //     },
-      //   },
+      PreviewCommand: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
+        type: 'custom',
+        width: '5%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'external-link';
+          instance.label = this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title');
+          instance.display = true;
+          instance.status = 'primary';
+          instance.valueChange.subscribe(value => {
+            // if (value) {
+            //   instance.disabled = false;
+            // } else {
+            //   instance.disabled = true;
+            // }
+          });
+          instance.click.subscribe(async (row: SalesMasterPriceTableModel) => {
+            this.preview(row);
+          });
+        },
+      },
     },
   });
 
@@ -183,6 +168,32 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   gotoForm(id?: string): false {
     this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
     return false;
+  }
+
+  async preview(data: SalesMasterPriceTableModel) {
+
+    data.Details = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[]>(
+      '/sales/master-price-table-details',
+      {
+        excludeNoPrice: true,
+        masterPriceTable: data.Code,
+        includeUnit: true,
+        includeFeaturePicture: true,
+      }));
+
+    this.dialogService.open(MasterPriceTablePrintComponent, {
+      context: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
+        data: data,
+        onSaveAndClose: (priceReportCode: string) => {
+          this.refresh();
+        },
+        onSaveAndPrint: (priceReportCode: string) => {
+          this.refresh();
+        },
+      },
+    });
+
   }
 
 }

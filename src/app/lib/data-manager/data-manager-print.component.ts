@@ -1,4 +1,6 @@
 import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewChild, ViewContainerRef } from '@angular/core'; import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../models/sales.model'; import { CommonService } from '../../services/common.service'; import { Router } from '@angular/router'; import { ApiService } from '../../services/api.service';
+import { NbDialogRef } from '@nebular/theme';
+import { DataManagerFormComponent } from './data-manager-form.component';
 
 declare var $: JQueryStatic;
 
@@ -23,12 +25,25 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     super.ngOnInit();
   }
 
+  ngAfterViewInit(): void {
+    // const nativeEle = this;
+    // Fix dialog scroll
+    if (this['ref']) {
+      const dialog: NbDialogRef<DataManagerFormComponent<M>> = this['ref'];
+      if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
+        const nativeEle = dialog.componentRef.location.nativeElement;
+        // tslint:disable-next-line: ban
+        $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+      }
+    }
+  }
+
   async init() {
 
     return super.init();
   }
 
-  abstract dismiss(): void;
+  abstract close(): void;
 
   renderValue(value: any) {
     if (value && value['text']) {
@@ -84,12 +99,12 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     if (this.onSaveAndClose) {
       this.onSaveAndClose(this.identifier);
     }
-    this.dismiss();
+    this.close();
     return false;
   }
 
   exportExcel(type: string) {
-    this.dismiss();
+    this.close();
     return false;
   }
 

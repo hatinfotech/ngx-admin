@@ -18,7 +18,7 @@ import { SortablejsModule } from 'ngx-sortablejs';
 import { SalesPriceReportPrintComponent } from './price-report/sales-price-report-print/sales-price-report-print.component';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { TranslateModule } from '@ngx-translate/core';
-import { SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent } from '../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, SmartTableButtonComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { SalesVoucherListComponent } from './sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { SalesVoucherFormComponent } from './sales-voucher/sales-voucher-form/sales-voucher-form.component';
 import { SalesVoucherPrintComponent } from './sales-voucher/sales-voucher-print/sales-voucher-print.component';
@@ -96,6 +96,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     MasterPriceTablePrintComponent,
     SmartTableCurrencyEditableComponent,
     ProductFormComponent,
+    SmartTableButtonComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },

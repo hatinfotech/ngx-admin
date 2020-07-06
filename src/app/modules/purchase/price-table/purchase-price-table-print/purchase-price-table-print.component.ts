@@ -41,7 +41,7 @@ export class PurchasePriceTablePrintComponent extends DataManagerPrintComponent<
     return result;
   }
 
-  dismiss() {
+  close() {
     this.ref.close();
   }
 
@@ -74,12 +74,12 @@ export class PurchasePriceTablePrintComponent extends DataManagerPrintComponent<
     if (this.onSaveAndClose) {
       this.onSaveAndClose(this.data.Code);
     }
-    this.dismiss();
+    this.close();
     return false;
   }
 
   exportExcel(type: string) {
-    this.dismiss();
+    this.close();
     return false;
   }
 

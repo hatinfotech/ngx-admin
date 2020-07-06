@@ -171,14 +171,14 @@ export class SalesMasterPriceTableModel {
   ObjectPhone?: string;
   ObjectAddress?: string;
   ObjectEmailAddress?: string;
-  Approved?: string;
+  Approved?: string | boolean;
   DateOfApproved?: String & Date;
   DateOfCreated?: String & Date;
   Creator?: String & UserModel;
   Tax?: String & TaxModel;
   Discount?: string;
 
-  Details?: SalesMasterPriceTableDetailModel[];
+  Details?: (SalesMasterPriceTableDetailModel & ProductModel & {Price?: string | number})[];
 }
 
 export class SalesMasterPriceTableDetailModel {

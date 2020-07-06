@@ -44,7 +44,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return result;
   }
 
-  dismiss() {
+  close() {
     this.ref.close();
   }
 
@@ -77,12 +77,12 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     if (this.onSaveAndClose) {
       this.onSaveAndClose(this.data.Code);
     }
-    this.dismiss();
+    this.close();
     return false;
   }
 
   exportExcel(type: string) {
-    this.dismiss();
+    this.close();
     return false;
   }
 

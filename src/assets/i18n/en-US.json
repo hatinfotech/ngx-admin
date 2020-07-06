@@ -33,7 +33,9 @@
     },
     "MasterPriceTable": {
       "title": "{{action}} sales master price table {{definition}}",
-      "type": "price table type"
+      "type": "price table type",
+      "approve":"price table approving",
+      "approvedComfirmMessage": "are you sure approve sales price table '{{title}}'?"
     },
     "addProduct": "add product/dịch vụ",
     "directReceiver": "direct receiver",
@@ -105,7 +107,9 @@
     "clear": "clear",
     "parent": "parent",
     "assign": "assign",
-    "revoke": "revoke"
+    "revoke": "revoke",
+    "approve": "approve",
+    "dateOfApproved": "approved date"
   },
   "Contact": {
     "name": "contact name",

@@ -462,19 +462,19 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     return false;
   }
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: SalesMasterPriceTableModel = formItem.value;
-    data.Details = [];
-    // this.gridApi.forEachNode(node => {
-    //   data.Details.push(node.data);
-    // });
-    // data.Details.forEach(detail => {
-    //   if (typeof detail['Tax'] === 'string') {
-    //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-    //   }
-    // });
+   
     const printTemplate = this.printTemplateList.find((item: { id: string }) => item.id === formItem.get('PrintTemplate').value);
     if (printTemplate) {
+      data.Details = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & {string, Price?: string | number })[]>(
+        '/sales/master-price-table-details',
+        {
+          excludeNoPrice: true,
+          masterPriceTable: data.Code,
+          includeUnit: true,
+          includeFeaturePicture: true,
+        }));
       this.dialogService.open(printTemplate.name, {
         context: {
           title: 'Xem trước',

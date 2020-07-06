@@ -5,9 +5,10 @@ import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import { NbDialogRef } from '@nebular/theme';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { PriceTablePrintComponent } from '../../price-table/price-table-print/price-table-print.component';
 import { DatePipe } from '@angular/common';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-master-price-table-print',
@@ -25,8 +26,9 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<PriceTablePrintComponent>,
-    private datePipe: DatePipe,
+    public ref: NbDialogRef<MasterPriceTablePrintComponent>,
+    public datePipe: DatePipe,
+    public dialogService: NbDialogService,
   ) {
     super(commonService, router, apiService);
   }
@@ -43,7 +45,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
     return result;
   }
 
-  dismiss() {
+  close() {
     this.ref.close();
   }
 
@@ -76,12 +78,12 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
     if (this.onSaveAndClose) {
       this.onSaveAndClose(this.data.Code);
     }
-    this.dismiss();
+    this.close();
     return false;
   }
 
   exportExcel(type: string) {
-    this.dismiss();
+    this.close();
     return false;
   }
 
@@ -103,4 +105,32 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
     }
   }
 
+  approve(priceReport: SalesMasterPriceTableModel) {
+    this.dialogService.open(ShowcaseDialogComponent, {
+      context: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Sales.MasterPriceTable.approve'), 'head-title'),
+        content: this.commonService.textTransform(this.commonService.translate.instant('Sales.MasterPriceTable.approvedComfirmMessage', { title: priceReport.Title }), 'head-title'),
+        actions: [
+          {
+            label: this.commonService.textTransform(this.commonService.translate.instant('Common.goback'), 'head-title'),
+            icon: 'back',
+            status: 'info',
+            action: () => { },
+          },
+          {
+            label: this.commonService.textTransform(this.commonService.translate.instant('Common.approve'), 'head-title'),
+            icon: 'checkmark-square',
+            status: 'danger',
+            action: () => {
+              this.apiService.putPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { id: [priceReport.Code] }, [{ Code: priceReport.Code, Approved: true }]).then(rs => {
+                this.close();
+                this.onSaveAndClose(rs);
+              });
+            },
+          },
+        ],
+      },
+    });
+  }
+  
 }
