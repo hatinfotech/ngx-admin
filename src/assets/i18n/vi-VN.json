@@ -29,7 +29,8 @@
       }
     },
     "PriceTable": {
-      "title": "{{action}}{{definition}} bảng giá bán"
+      "title": "{{action}}{{definition}} bảng giá bán",
+      "printTableTitle": "bảng in giá bán ra"
     },
     "MasterPriceTable": {
       "title": "{{action}}{{definition}} bảng giá bán",
@@ -209,7 +210,7 @@
       "dateOfDelivery": "ngày giao hàng",
       "priceTable": "bảng giá",
       "masterPriceTable": "bảng giá chính",
-      "priceTablePrint": "in bảng giá"
+      "priceTablePrint": "bảng in giá"
     }
   }
 }

@@ -61,7 +61,7 @@
             </tr>
             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
               <!-- <td><div class="image-thumbnail" style="background-size: cover; background-repeat: no-repeat; width: 100%; height: 5cm; border-radius: 3px;" [ngStyle]="{'backgroundImage': 'url(\''+detail.PictureThumbnail + '?token='+apiService.getAccessToken()+'\')'}"></div></td> -->
-              <td><img style="width: 100%; border-radius: 5px;" src="{{detail.PictureLarge + '?token='+apiService.getAccessToken()}}"></td>
+              <td><img style="width: 100%; border-radius: 5px;" src="{{detail.FeaturePictureLarge + '?token='+apiService.getAccessToken()}}"></td>
               <td>
                 <div style="font-weight: bold;">{{detail.Name}}</div>
                 <div [innerHTML]="renderValue(detail.Note)"></div>

@@ -147,7 +147,7 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
       )
       .subscribe((value: [] & any) => {
         if (this.select2Option.multiple) {
-          this.query = value.length === 0 ? '' : '[' + value.map((item: any) => item.id).join(',') + ']';
+          this.query = value.length === 0 ? '' : '{' + value.map((item: any) => item.id).join(',') + '}';
           this.setFilter();
         } else {
           this.query = value;

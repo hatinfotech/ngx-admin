@@ -154,9 +154,9 @@ export class SalesPriceTableDetailModel {
   No?: string;
   Type?: string;
   Sku?: string;
-  PictureThumbnail?: string;
-  PictureMedium?: string;
-  PictureLarge?: string;
+  FeaturePictureThumbnail?: string;
+  FeaturePictureMedium?: string;
+  FeaturePictureLarge?: string;
 }
 
 

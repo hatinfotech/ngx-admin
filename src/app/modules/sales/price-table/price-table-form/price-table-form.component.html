@@ -5,7 +5,7 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <nav>
-            {{ 'Sales.PriceTable.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
+            {{ 'Sales.PriceTable.printTableTitle' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
             <button type="button" nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
               title="{{'Common.close' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
@@ -155,11 +155,11 @@
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Parent'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.parent' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.parent')} | headtitlecase }}
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('MasterSalesPriceTable'), 'warning')">
+                  <label class="label"><span class="valid">{{'Sales.MasterPriceTable.title' | translate:{action:'', definition: ''} | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.MasterPriceTable.title')} | headtitlecase }}
                       (*)</span></label>
-                  <ngx-select2 formControlName="Parent" [select2Option]="select2OptionForParent" [data]="priceTableList"></ngx-select2>
+                  <ngx-select2 formControlName="MasterSalesPriceTable" [select2Option]="select2OptionForParent" [data]="priceTableList"></ngx-select2>
                 </div>
               </div>
               <div class="col-sm-3">

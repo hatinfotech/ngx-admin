@@ -153,7 +153,7 @@ export class CommonService {
     // Init main socket
     this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
       this.mainSocketInfo = rs;
-      this.mainSocketInfo.url = `${this.mainSocketInfo.protocol || 'https' }://${this.mainSocketInfo.domain}:${this.mainSocketInfo.port}`;
+      this.mainSocketInfo.url = `${this.mainSocketInfo.protocol || 'https'}://${this.mainSocketInfo.domain}:${this.mainSocketInfo.port}`;
       this.mainSocket = new MySocket(this.mainSocketInfo.url);
       console.info('Conntect to local chat server success');
     }).catch(e => console.error(e));
@@ -408,6 +408,14 @@ export class CommonService {
       }
     }
     return null;
+  }
+
+  getObjectId(obj: any, idName?: string) {
+    return obj && typeof obj[idName || 'id'] !== 'undefined' ? obj[idName || 'id'] : obj;
+  }
+
+  getObjectText(obj: any, textName?: string) {
+    return obj && typeof obj[textName || 'text'] !== 'undefined' ? obj[textName || 'text'] : obj;
   }
 
 }

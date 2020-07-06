@@ -29,7 +29,8 @@
       }
     },
     "PriceTable": {
-      "title": "{{action}} sales price table {{definition}}"
+      "title": "{{action}} sales price table {{definition}}",
+      "printTableTitle": "print table of sales price"
     },
     "MasterPriceTable": {
       "title": "{{action}} sales master price table {{definition}}",

@@ -1,6 +1,6 @@
 import { Component, OnInit, Type, TemplateRef } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { SalesPriceTableModel, SalesPriceTableDetailModel } from '../../../../models/sales.model';
+import { SalesPriceTableModel, SalesPriceTableDetailModel, SalesMasterPriceTableModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
 import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { TaxModel } from '../../../../models/tax.model';
@@ -21,7 +21,7 @@ import { BehaviorSubject } from 'rxjs';
 import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
 import { isNumber } from 'util';
 import { CurrencyPipe } from '@angular/common';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, first } from 'rxjs/operators';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { PriceTablePrintAsListComponent } from '../price-table-print-as-list/price-table-print-as-list.component';
 import { BaseComponent } from '../../../../lib/base-component';
@@ -98,7 +98,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     },
   ];
 
-  priceTableList: (SalesPriceTableModel & { id?: string, text?: string })[] = [];
+  priceTableList: (SalesMasterPriceTableModel & { id?: string, text?: string })[] = [];
   select2OptionForParent = {
     placeholder: 'Chọn bảng giá cha...',
     allowClear: true,
@@ -138,7 +138,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
       },
       {
         headerName: 'Hình',
-        field: 'PictureThumbnail',
+        field: 'FeaturePictureThumbnail',
         width: 100,
         filter: 'agTextColumnFilter',
         pinned: 'left',
@@ -171,18 +171,6 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         cellStyle: { whiteSpace: 'normal' },
       },
       {
-        headerName: 'ĐVT',
-        field: 'Unit',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        editable: true,
-        cellEditor: AgSelectEditorComponent,
-        cellEditorParams: {
-          values: ['Porsche', 'Toyota', 'Ford', 'AAA', 'BBB', 'CCC'],
-        },
-      },
-      {
         headerName: 'Sku',
         field: 'Sku',
         width: 150,
@@ -200,13 +188,26 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         autoHeight: true,
       },
       {
+        headerName: 'ĐVT',
+        field: 'Unit',
+        pinned: 'right',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+        editable: true,
+        cellEditor: AgSelectEditorComponent,
+        cellEditorParams: {
+          values: ['Porsche', 'Toyota', 'Ford', 'AAA', 'BBB', 'CCC'],
+        },
+      },
+      {
         headerName: 'Price (Giá)',
         field: 'Price',
         width: 150,
         filter: 'agTextColumnFilter',
         pinned: 'right',
         // type: 'rightAligned',
-        editable: true,
+        editable: false,
         valueFormatter: (params: { value: number & string }) => {
           // console.log(params);
           const value = parseFloat(params.value);
@@ -508,7 +509,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     }
 
     /** Load and cache sales price table list */
-    this.priceTableList = (await this.apiService.getPromise<SalesPriceTableModel[]>('/sales/price-tables', { sort_Name: 'desc' })).map(item => ({ ...item, id: item.Code, text: '[' + item.Code + '] ' + item.Title }));
+    this.priceTableList = (await this.apiService.getPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { sort_Name: 'desc', filter_Approved: true })).map(item => ({ ...item, id: item.Code, text: '[' + item.Code + '] ' + item.Title }));
 
     return super.init();
   }
@@ -572,7 +573,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
       // ObjectBankCode: [''],
       // PaymentStep: [''],
       // DeliveryAddress: [''],
-      Parent: [''],
+      MasterSalesPriceTable: [''],
       Title: [''],
       Description: [''],
       DateOfApprove: [''],
@@ -768,7 +769,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   chooseProducts(formItem: FormGroup) {
     this.openProductListDialplog({}, choosedProducts => {
       console.log(choosedProducts);
-      this.gridReady$.pipe(takeUntil(this.destroy$)).subscribe(isReady => {
+      this.gridReady$.pipe(first(), takeUntil(this.destroy$)).subscribe(async isReady => {
         if (isReady) {
           // choosedProducts.forEach(product => {
           // const detail = this.makeNewDetailFormGroup(formItem, {
@@ -781,18 +782,32 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
           this.gridApi.forEachNode(node => {
             choosedProducts = choosedProducts.filter(product => product.Code !== node.data['Product']);
           });
+
+          const masterPriceTableDetails = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel)[]>('/sales/master-price-table-details', { id: choosedProducts.map(p => p.Code), masterPriceTable: formItem.get('MasterSalesPriceTable').value }));
+          const masterPriceTableDetailsIndex: { [key: string]: (SalesMasterPriceTableDetailModel & ProductModel) } = {};
+          masterPriceTableDetails.forEach(detail => {
+            masterPriceTableDetailsIndex[`${detail.Code}-${this.commonService.getObjectId(detail.WarehouseUnit, 'Code')}`] = detail;
+          });
+
           if (choosedProducts.length > 0) {
             const total = this.gridApi.getDisplayedRowCount();
-            this.gridApi.updateRowData({
-              add: choosedProducts.map((product, index) => ({
+            const prepareData = choosedProducts.map((product, index) => {
+              const priceSet = masterPriceTableDetailsIndex[`${product.Code}-${this.commonService.getObjectId(product.WarehouseUnit, 'Code')}`];
+              return {
                 No: total + index + 1,
                 Id: product.Code,
-                PictureThumbnail: (product['FeaturePictureThumbnail'] ? (product['FeaturePictureThumbnail'].replace(/\?token=[^\&]*/, '')) : ''),
+                FeaturePictureThumbnail: (product['FeaturePictureThumbnail'] ? (product['FeaturePictureThumbnail'].replace(/\?token=[^\&]*/, '')) : ''),
+                FeaturePictureMedium: (product['FeaturePictureMedium'] ? (product['FeaturePictureMedium'].replace(/\?token=[^\&]*/, '')) : ''),
+                FeaturePictureLarge: (product['FeaturePictureLarge'] ? (product['FeaturePictureLarge'].replace(/\?token=[^\&]*/, '')) : ''),
                 Product: product.Code,
                 Name: product.Name,
                 Note: product.Description,
-                Unit: product.WarehouseUnit,
-              })),
+                Unit: priceSet ? this.commonService.getObjectText(priceSet.WarehouseUnit, 'Name') : null,
+                Price: priceSet ? priceSet.Price : null
+              }
+            });
+            this.gridApi.updateRowData({
+              add: prepareData,
             });
           }
           // });
