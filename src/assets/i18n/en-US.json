@@ -208,7 +208,8 @@
       "salesVoucher": "sales voucher",
       "dateOfDelivery": "date of delivery",
       "priceTable": "price table",
-      "masterPriceTable": "master price table"
+      "masterPriceTable": "master price table",
+      "priceTablePrint": "print price table"
     }
   }
 }

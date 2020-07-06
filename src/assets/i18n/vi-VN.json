@@ -208,7 +208,8 @@
       "salesVoucher": "phiếu bán hàng",
       "dateOfDelivery": "ngày giao hàng",
       "priceTable": "bảng giá",
-      "masterPriceTable": "bảng giá chính"
+      "masterPriceTable": "bảng giá chính",
+      "priceTablePrint": "in bảng giá"
     }
   }
 }
