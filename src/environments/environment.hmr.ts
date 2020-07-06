@@ -9,7 +9,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  version: '1.0.3.43.dev',
+  version: '1.0.3.44.dev',
   production: false,
   hmr: true,
   basePath: 'mini-erp',
