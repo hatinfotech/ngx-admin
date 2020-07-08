@@ -1,9 +1,10 @@
+import { resolve } from 'url';
 import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { DefaultFilter } from 'ng2-smart-table';
 import { FormControl } from '@angular/forms';
 import { distinctUntilChanged, debounceTime, map, switchMap } from 'rxjs/operators';
 import { Select2Option } from '../select2/select2.component';
-import value from '*.json';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'ngx-smart-table-filter',
@@ -132,34 +133,41 @@ export class SmartTableClearingFilterComponent extends SmartTableFilterComponent
 })
 export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent implements OnInit, OnChanges {
   inputControl = new FormControl();
-  select2Option: Select2Option;
-  // formControl: FormControl;
-
-  // patchingQuery = false;
+  select2Option: Select2Option & { data?: () => any[] };
 
   constructor() {
     super();
-    // this.filter.subscribe(query => {
-    //   console.log(query);
-    // });
   }
 
   ngOnInit() {
     this.select2Option = this.column.getFilterConfig().select2Option;
-    this.inputControl.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        debounceTime(this.delay),
-      )
-      .subscribe((value: [] & any) => {
-        if (this.select2Option.multiple) {
-          this.query = value.length === 0 ? '' : '{' + value.map((item: any) => item.id).join(',') + '}';
-          this.setFilter();
-        } else {
-          this.query = value;
-          this.setFilter();
-        }
-      });
+
+    if (this.delay > 0) {
+      this.inputControl.valueChanges
+        .pipe(
+          distinctUntilChanged(),
+          debounceTime(this.delay),
+        )
+        .subscribe((value: [] & any) => {
+          if (this.select2Option.multiple) {
+            this.query = value.length === 0 ? '' : '{' + value.map((item: any) => item.id).join(',') + '}';
+            this.setFilter();
+          } else {
+            this.query = value;
+            this.setFilter();
+          }
+        });
+    } else {
+      const value = this.inputControl.value;
+      if (this.select2Option.multiple) {
+        this.query = value.length === 0 ? '' : '{' + value.map((item: any) => item.id).join(',') + '}';
+        this.setFilter();
+      } else {
+        this.query = value;
+        this.setFilter();
+      }
+    }
+
   }
 
   ngOnChanges(changes: SimpleChanges) {

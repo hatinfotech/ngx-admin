@@ -1,5 +1,6 @@
+import { BehaviorSubject } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
-import { ProductModel } from '../../../../models/product.model';
+import { ProductModel, ProductCategoryModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -24,12 +25,18 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   idKey = 'Code';
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<ProductListComponent>; 
+  static _dialog: NbDialogRef<ProductListComponent>;
 
   // Smart table
   static filterConfig: any;
   static sortConf: any;
-  static pagingConf = {page: 1, perPage: 40};
+  static pagingConf = { page: 1, perPage: 40 };
+
+  // Category list for filter
+  categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+
+  // categoryListSubject = new BehaviorSubject<any[]>([]);
+  // categoryListObservable$ = this.categoryListSubject.asObservable();
 
   constructor(
     public apiService: ApiService,
@@ -41,6 +48,17 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     public ref: NbDialogRef<ProductListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
+  }
+
+  async loadCache() {
+    // iniit category
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    // this.categoryListSubject.next(this.categoryList);
+  }
+
+  async init() {
+    await this.loadCache();
+    return super.init();
   }
 
   editing = {};
@@ -95,7 +113,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           type: 'custom',
           component: SmartTableSelect2FilterComponent,
           config: {
-            delay: 1000,
+            delay: 0,
             select2Option: {
               placeholder: 'Chọn danh mục...',
               allowClear: true,
@@ -107,26 +125,20 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                 text: 'text',
               },
               multiple: true,
+              // code template: smart-table fiter with data update
               ajax: {
                 url: (params: any) => {
-                  return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
+                  return 'data:text/plan,[]';
                 },
-                delay: 300,
+                delay: 0,
                 processResults: (data: any, params: any) => {
-                  console.info(data, params);
                   return {
-                    results: data.map(item => {
-                      // item['id'] = item['Code'];
-                      // item['text'] = item['Name'];
-                      delete item['Id'];
-                      return item;
-                    }),
+                    results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
                   };
                 },
               },
-            }
-
-          }
+            },
+          },
         },
       },
       WarehouseUnit: {

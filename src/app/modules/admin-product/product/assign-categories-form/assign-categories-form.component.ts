@@ -68,7 +68,6 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
 
   ngOnInit() {
     super.ngOnInit();
-    console.log(this.inputProducts);
   }
 
   async init() {
@@ -77,7 +76,7 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
   }
 
   assignCategories() {
-    const choosedCategories: (ProductCategoryModel & {id?: string, text?: string})[] = this.categoriesFormControl.value;
+    const choosedCategories: (ProductCategoryModel & { id?: string, text?: string })[] = this.categoriesFormControl.value;
 
     if (choosedCategories && choosedCategories.length > 0) {
       this.processing = true;
