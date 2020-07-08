@@ -22,7 +22,7 @@ import { MasterPriceTablePrintComponent } from '../master-price-table-print/mast
 import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { CustomeServerDataSource } from '../../../../lib/custom-element/smart-table/customer-server.data-source';
+import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 
@@ -842,14 +842,14 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   hasSelect = 'none';
 
   /** Local dat source */
-  source: CustomeServerDataSource<ProductModel>;
+  source: CustomServerDataSource<ProductModel>;
 
   // initDataSource() {
   //   return this.source = new CustomeServerDataSource<SalesMasterPriceTableDetailModel>(this.apiService, '/sales/master-price-table-details');
   // }
 
   initDataSource() {
-    this.source = new CustomeServerDataSource<ProductModel>(this.apiService, '/sales/master-price-table-details');
+    this.source = new CustomServerDataSource<ProductModel>(this.apiService, '/sales/master-price-table-details');
 
     // Set DataSource: prepareData
     this.source.prepareData = (data: ProductModel[]) => {

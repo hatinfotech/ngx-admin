@@ -1,9 +1,10 @@
-import { OnInit, OnDestroy } from '@angular/core';
+import { OnInit, OnDestroy, Input, Type, TemplateRef } from '@angular/core';
 import { CommonService } from '../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { ReuseComponent } from './reuse-component';
 import { Subscription, Subject } from 'rxjs';
+import { NbDialogRef, NbDialogConfig } from '@nebular/theme';
 
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent {
 
@@ -12,6 +13,11 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
 
   protected subcriptions: Subscription[] = [];
   protected destroy$: Subject<void> = new Subject<void>();
+  public reuseDialog = false;
+
+  @Input() inputMode: 'dialog' | 'page' | 'inline';
+  @Input() onDialogClose?: () => void;
+  @Input() onDialogHide?: () => void;
 
   constructor(
     protected commonService: CommonService,
@@ -67,8 +73,70 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     this.destroy$.complete();
   }
 
-  close(){
+  ngAfterViewInit(): void {
+    // const nativeEle = this;
+    // Fix dialog scroll
+    if (this['ref']) {
+      const dialog: NbDialogRef<BaseComponent> = this['ref'];
+      if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
+        const nativeEle = dialog.componentRef.location.nativeElement;
+        // tslint:disable-next-line: ban
+        const compoentNativeEle = $(nativeEle);
+        const overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
+        const overlayBackdrop = overlayWraper.prev();
 
+        // Hide dialog
+        this['ref'].hide = () => {
+          overlayWraper.fadeOut(100);
+          overlayBackdrop.fadeOut(100);
+          if (this.onDialogHide) this.onDialogHide();
+        };
+
+        // Show dialog
+        this['ref'].show = (config?: {events?: {[key: string]: any}}) => {
+          if(config && config.events) {
+            Object.keys(config.events).forEach((eventName: string) => {
+              this[eventName] = config.events[eventName];
+            });
+          }
+          const lastBackdrop = $('.cdk-global-overlay-wrapper:last');
+          lastBackdrop.after(overlayBackdrop);
+          overlayBackdrop.after(overlayWraper);
+          overlayWraper.fadeIn(100);
+          overlayBackdrop.fadeIn(100);
+          if (this.onDialogHide) this.onDialogHide();
+        };
+
+        compoentNativeEle.closest('.cdk-global-overlay-wrapper').addClass('dialog');
+        console.log(compoentNativeEle);
+      }
+    }
+  }
+
+  close() {
+    if (this['ref']) {
+      if (this.reuseDialog && this['ref'].hide) {
+        this['ref'].hide();
+      } else {
+        this['ref'].close();
+      }
+    }
+  }
+
+  hide() {
+    if (this['ref'] && this['ref'].hide) {
+      this['ref'].hide();
+    }
+  }
+
+  show() {
+    if (this['ref']) {
+      // if (this.reuseDialog && this['ref'].hide) {
+      //   this['ref'].show();
+      // } else {
+      this['ref'].close();
+      // }
+    }
   }
 
 }

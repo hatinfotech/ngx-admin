@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Type } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
-import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService, NbSidebarComponent } from '@nebular/theme';
+import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService, NbSidebarComponent, NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
 import { LoginInfoModel } from '../models/login-info.model';
@@ -14,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LocaleConfigModel } from '../models/system.model';
 import localeVi from '@angular/common/locales/vi';
 import localeEn from '@angular/common/locales/en';
+import { BaseComponent } from '../lib/base-component';
 
 @Injectable({
   providedIn: 'root',
@@ -269,6 +270,7 @@ export class CommonService {
     this.permissionsCache = null;
   }
 
+  /** Dialog */
   showDiaplog(title: string, content: string, buttons: { label: string, icon?: string, status?: string, action?: () => void }[]) {
     this.dialogService.open(ShowcaseDialogComponent, {
       context: {
@@ -278,6 +280,14 @@ export class CommonService {
       },
     });
   }
+
+  resumeDialog(dialogRef: NbDialogRef<BaseComponent> | any, config?: { events: { onDialogClose?: () => void, onDialogChoose?: (selectItems: any[]) => void } }): boolean {
+    if (dialogRef.show) {
+      dialogRef.show(config);
+    }
+    return true;
+  }
+  /** End dialog */
 
   convertUnicodeToNormal(text: string) {
     return text.replace(/[^\u0000-\u007E]/g, (a) => {

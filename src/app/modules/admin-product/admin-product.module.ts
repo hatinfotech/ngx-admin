@@ -31,7 +31,8 @@ import { AssignCategoriesFormComponent } from './product/assign-categories-form/
     ProductCategoryListComponent, ProductCategoryFormComponent, ProductUnitListComponent,
     ProductUnitFormComponent,
     ProductFormDialogComponent,
-    AssignCategoriesFormComponent],
+    AssignCategoriesFormComponent,
+  ],
   imports: [
     CommonModule,
     NbTabsetModule,

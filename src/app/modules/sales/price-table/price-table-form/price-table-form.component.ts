@@ -1,4 +1,4 @@
-import { Component, OnInit, Type, TemplateRef } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SalesPriceTableModel, SalesPriceTableDetailModel, SalesMasterPriceTableModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
@@ -22,9 +22,7 @@ import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatas
 import { isNumber } from 'util';
 import { CurrencyPipe } from '@angular/common';
 import { takeUntil, first } from 'rxjs/operators';
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { PriceTablePrintAsListComponent } from '../price-table-print-as-list/price-table-print-as-list.component';
-import { BaseComponent } from '../../../../lib/base-component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { AgSelectEditorComponent } from '../../../../lib/custom-element/ag-grid/ag-grid-select-editor.component';
 
@@ -747,23 +745,37 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     return false;
   }
 
+  static productListDialog: NbDialogRef<ProductListComponent>;
+
   /** Implement required */
   openProductListDialplog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductListComponent, {
-      context: {
-        inputMode: 'dialog',
-        // inputId: ids,
-        onDialogChoose: (chooseItems: ProductModel[]) => {
-          if (onDialogChoose) onDialogChoose(chooseItems);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          // this.refresh();
-        },
+
+    const events = {
+      inputMode: 'dialog',
+      // inputId: ids,
+      onDialogChoose: (chooseItems: ProductModel[]) => {
+        if (onDialogChoose) onDialogChoose(chooseItems);
       },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
+      onDialogClose: () => {
+        if (onDialogClose) onDialogClose();
+        // this.refresh();
+      },
+    };
+
+    try {
+      if (ProductListComponent._dialog.componentRef.location.nativeElement) {
+        this.commonService.resumeDialog(ProductListComponent._dialog, { events: events });
+      } else {
+        throw Error;
+      }
+    } catch (error) {
+      ProductListComponent._dialog = this.dialogService.open(ProductListComponent, {
+        context: events as any,
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+
   }
 
   chooseProducts(formItem: FormGroup) {

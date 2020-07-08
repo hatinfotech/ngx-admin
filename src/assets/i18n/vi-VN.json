@@ -110,7 +110,8 @@
     "assign": "gán",
     "revoke": "gở",
     "approve": "duyệt",
-    "dateOfApproved": "ngày duyệt"
+    "dateOfApproved": "ngày duyệt",
+    "tag": "gắn thẻ"
   },
   "Contact": {
     "name": "tên liên hệ",

@@ -1,8 +1,9 @@
 import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { DefaultFilter } from 'ng2-smart-table';
 import { FormControl } from '@angular/forms';
-import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, map, switchMap } from 'rxjs/operators';
 import { Select2Option } from '../select2/select2.component';
+import value from '*.json';
 
 @Component({
   selector: 'ngx-smart-table-filter',
@@ -40,7 +41,7 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.query) {
-      this.inputControl.setValue(this.query);
+      this.inputControl.setValue(changes.query.currentValue);
     }
   }
 }
@@ -134,8 +135,13 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
   select2Option: Select2Option;
   // formControl: FormControl;
 
+  // patchingQuery = false;
+
   constructor() {
     super();
+    // this.filter.subscribe(query => {
+    //   console.log(query);
+    // });
   }
 
   ngOnInit() {

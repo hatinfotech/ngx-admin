@@ -24,8 +24,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() inputId: string[];
-  @Input() onDialogSave: (newData: M[]) => void;
-  @Input() onDialogClose: () => void;
+  @Input() onDialogSave?: (newData: M[]) => void;
 
   /** Form unique id = current time as milisecond */
   formUniqueId: string;
@@ -166,18 +165,18 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   }
 
-  ngAfterViewInit(): void {
-    // const nativeEle = this;
-    // Fix dialog scroll
-    if (this['ref']) {
-      const dialog: NbDialogRef<DataManagerFormComponent<M>> = this['ref'];
-      if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
-        const nativeEle = dialog.componentRef.location.nativeElement;
-        // tslint:disable-next-line: ban
-        $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
-      }
-    }
-  }
+  // ngAfterViewInit(): void {
+  //   // const nativeEle = this;
+  //   // Fix dialog scroll
+  //   if (this['ref']) {
+  //     const dialog: NbDialogRef<DataManagerFormComponent<M>> = this['ref'];
+  //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
+  //       const nativeEle = dialog.componentRef.location.nativeElement;
+  //       // tslint:disable-next-line: ban
+  //       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+  //     }
+  //   }
+  // }
 
   /** Make new form group sctructure */
   abstract makeNewFormGroup(data?: M): FormGroup;

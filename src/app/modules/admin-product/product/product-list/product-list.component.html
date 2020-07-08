@@ -1,8 +1,8 @@
-<nb-card class="small-header smart-table">
+<nb-card class="small-header smart-table dialog-list">
   <nb-card-header>
     <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> DS sản phẩm
-      <button nbButton status="warning" hero size="tiny" (click)="close()" style="float: right;" title="Đóng">
+      <button nbButton status="warning" hero size="tiny" (click)="close()" style="float: right;" title="Đóng" *ngIf="this.ref">
         <nb-icon pack="eva" icon="close"></nb-icon>
       </button>
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
@@ -12,10 +12,10 @@
         <nb-icon pack="eva" icon="plus"></nb-icon>
       </button>
       <button type="button" [disabled]="this.selectedIds.length===0" nbButton status="info" hero size="tiny" (click)="openAssignCategoiesDialplog()" style="float: right;">
-        <nb-icon pack="eva" icon="pricetags"></nb-icon>
+        <nb-icon pack="eva" icon="pricetags"></nb-icon> {{'Common.tag' | translate | headtitlecase}}
       </button>
-      <button type="button" nbButton status="primary" hero size="tiny" (click)="choose()" style="float: right;">
-        <nb-icon pack="eva" icon="checkmark-square"></nb-icon>
+      <button type="button" nbButton status="primary" hero size="tiny" (click)="choose()" style="float: right;" *ngIf="this.ref">
+        <nb-icon pack="eva" icon="checkmark-square"></nb-icon> {{'Common.choose' | translate | headtitlecase}}
       </button>
     </nav>
   </nb-card-header>

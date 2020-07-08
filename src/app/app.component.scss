@@ -966,6 +966,10 @@ nb-card-footer [nbButton]:first-child {
     max-width: 90%;
     margin: auto;
   }
+  .cdk-overlay-container .dialog-list {
+    max-width: 95%;
+    margin: auto;
+  }
   .cdk-global-overlay-wrapper.dialog .cdk-overlay-pane {
     width: 100%;
   }

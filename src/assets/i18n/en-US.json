@@ -110,7 +110,8 @@
     "assign": "assign",
     "revoke": "revoke",
     "approve": "approve",
-    "dateOfApproved": "approved date"
+    "dateOfApproved": "approved date",
+    "tag": "tag"
   },
   "Contact": {
     "name": "contact name",

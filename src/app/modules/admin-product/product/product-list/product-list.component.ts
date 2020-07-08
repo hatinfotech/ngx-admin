@@ -23,14 +23,22 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   apiPath = '/admin-product/products';
   idKey = 'Code';
 
+  reuseDialog = true;
+  static _dialog: NbDialogRef<ProductListComponent>; 
+
+  // Smart table
+  static filterConfig: any;
+  static sortConf: any;
+  static pagingConf = {page: 1, perPage: 40};
+
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
-    protected _http: HttpClient,
-    protected ref?: NbDialogRef<ProductListComponent>,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public _http: HttpClient,
+    public ref: NbDialogRef<ProductListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }
@@ -81,7 +89,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         type: 'string',
         width: '25%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
+          return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
         },
         filter: {
           type: 'custom',
@@ -270,7 +278,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           inputMode: 'dialog',
           inputProducts: this.selectedItems,
           onDialogSave: (newData: ProductModel[]) => {
-              this.refresh();
+            this.refresh();
           },
           onDialogClose: () => {
           },

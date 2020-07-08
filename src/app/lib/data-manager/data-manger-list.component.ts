@@ -77,9 +77,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   abstract idKey: string;
 
   protected refreshPendding = false;
-  @Input() inputMode: 'dialog' | 'page' | 'inline';
-  @Input() onDialogChoose: (chooseItems: M[]) => void;
-  @Input() onDialogClose: () => void;
+  @Input() onDialogChoose?: (chooseItems: M[]) => void;
 
   constructor(
     protected apiService: ApiService,
@@ -102,18 +100,29 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     this.loadList();
   }
 
-  ngAfterViewInit(): void {
-    // const nativeEle = this;
-    // Fix dialog scroll
-    if (this['ref']) {
-      const dialog: NbDialogRef<DataManagerListComponent<M>> = this['ref'];
-      if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
-        const nativeEle = dialog.componentRef.location.nativeElement;
-        // tslint:disable-next-line: ban
-        $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
-      }
-    }
-  }
+  // ngAfterViewInit(): void {
+  //   // const nativeEle = this;
+  //   // Fix dialog scroll
+  //   if (this['ref']) {
+  //     const dialog: NbDialogRef<DataManagerListComponent<M>> = this['ref'];
+  //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
+  //       const nativeEle = dialog.componentRef.location.nativeElement;
+  //       // tslint:disable-next-line: ban
+  //       const compoentNativeEle = $(nativeEle);
+  //       const overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
+  //       const overlayBackdrop = overlayWraper.prev();
+
+  //       this['ref'].hide = () => {
+  //         overlayWraper.fadeOut(100);
+  //         overlayBackdrop.fadeOut(100);
+  //         this.onDialogHide();
+  //       };
+
+  //       compoentNativeEle.closest('.cdk-global-overlay-wrapper').addClass('dialog');
+  //       console.log(compoentNativeEle);
+  //     }
+  //   }
+  // }
 
   getList(callback: (list: M[]) => void) {
     this.commonService.takeUntil(this.componentName, 300, () => {
@@ -400,6 +409,15 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   choose() {
     if (this.onDialogChoose) {
       this.onDialogChoose(this.selectedItems);
+      this.onChoose(this.selectedItems);
+      // this.close();
+    }
+  }
+
+  onChoose(selectedItems: M[]) {
+    if (this.reuseDialog) {
+      this.hide();
+    } else {
       this.close();
     }
   }
@@ -407,11 +425,5 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   reset() {
     this.source.reset();
     return false;
-  }
-
-  close() {
-    if (this['ref']) {
-      this['ref'].close();
-    }
   }
 }

@@ -1,11 +1,11 @@
 import { OnInit } from '@angular/core';
 import { ReuseComponent } from '../reuse-component';
-import { CustomeServerDataSource } from '../custom-element/smart-table/customer-server.data-source';
 import { DataManagerListComponent } from './data-manger-list.component';
 import { CommonService } from '../../services/common.service';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { CustomServerDataSource } from '../custom-element/smart-table/custom-server.data-source';
 
 export abstract class ServerDataManagerListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
@@ -38,7 +38,7 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   }
 
   initDataSource() {
-    return this.source = new CustomeServerDataSource<M>(this.apiService, this.getApiPath());
+    return this.source = new CustomServerDataSource<M>(this.apiService, this.getApiPath());
   }
 
   /** Get data from api and push to list */
