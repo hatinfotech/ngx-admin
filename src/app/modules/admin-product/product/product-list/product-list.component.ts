@@ -265,6 +265,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         inputId: ids,
         onDialogSave: (newData: ProductModel[]) => {
           if (onDialogSave) onDialogSave(newData);
+          this.loadCache();
         },
         onDialogClose: () => {
           if (onDialogClose) onDialogClose();
