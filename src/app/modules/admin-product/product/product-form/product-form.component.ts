@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { ProductModel, ProductUnitModel, ProductPictureModel, ProductUnitConversoinModel } from '../../../../models/product.model';
+import { ProductModel, ProductUnitModel, ProductPictureModel, ProductUnitConversoinModel, ProductCategoryModel } from '../../../../models/product.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
@@ -28,6 +28,9 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   unitList: ProductUnitModel[] = [];
 
+  // Category list for filter
+  categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+
   constructor(
     protected activeRoute: ActivatedRoute,
     protected router: Router,
@@ -47,6 +50,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     this.humanizeBytes = humanizeBytes;
     /** End ngx-uploader */
 
+  }
+
+  async loadCache() {
+    // iniit category
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -97,23 +105,23 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     },
     multiple: true,
     tags: true,
-    ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
-        return {
-          results: data.map(item => {
-            // item['id'] = item['Code'];
-            // item['text'] = item['Name'];
-            delete item['Id'];
-            return item;
-          }),
-        };
-      },
-    },
+    // ajax: {
+    //   url: params => {
+    //     return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     console.info(data, params);
+    //     return {
+    //       results: data.map(item => {
+    //         // item['id'] = item['Code'];
+    //         // item['text'] = item['Name'];
+    //         delete item['Id'];
+    //         return item;
+    //       }),
+    //     };
+    //   },
+    // },
   };
 
   select2OptionForUnit = {
@@ -134,6 +142,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   async init() {
+    await this.loadCache();
     this.unitList = await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { select: 'id=>Code,text=>Name' });
     return super.init();
   }
