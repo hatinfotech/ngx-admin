@@ -35,9 +35,6 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   // Category list for filter
   categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
 
-  // categoryListSubject = new BehaviorSubject<any[]>([]);
-  // categoryListObservable$ = this.categoryListSubject.asObservable();
-
   constructor(
     public apiService: ApiService,
     public router: Router,
@@ -53,7 +50,6 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   async loadCache() {
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    // this.categoryListSubject.next(this.categoryList);
   }
 
   async init() {

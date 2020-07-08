@@ -16,7 +16,7 @@ import { SalesPriceReportFormComponent } from '../../price-report/sales-price-re
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntil } from 'rxjs/operators';
 import { ContactModel } from '../../../../models/contact.model';
-import { ProductModel } from '../../../../models/product.model';
+import { ProductModel, ProductCategoryModel } from '../../../../models/product.model';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
 import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
@@ -228,7 +228,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   }
 
   async init(): Promise<boolean> {
-
+    await this.loadCache();
     /** Load and cache tax list */
     if (!SalesPriceReportFormComponent._taxList) {
       this.taxList = SalesPriceReportFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
@@ -572,6 +572,14 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   /** Common function for ng2-smart-table */
 
+  // Category list for filter
+  categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+
+  async loadCache() {
+    // iniit category
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+  }
+
   editing = {};
   rows = [];
 
@@ -613,12 +621,15 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       Categories: {
         title: 'Danh mục',
         type: 'string',
-        width: '20%',
+        width: '25%',
+        // valuePrepareFunction: (value: string, product: ProductModel) => {
+        //   return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
+        // },
         filter: {
           type: 'custom',
           component: SmartTableSelect2FilterComponent,
           config: {
-            delay: 1000,
+            delay: 0,
             select2Option: {
               placeholder: 'Chọn danh mục...',
               allowClear: true,
@@ -630,26 +641,20 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
                 text: 'text',
               },
               multiple: true,
+              // code template: smart-table fiter with data update
               ajax: {
                 url: (params: any) => {
-                  return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
+                  return 'data:text/plan,[]';
                 },
-                delay: 300,
+                delay: 0,
                 processResults: (data: any, params: any) => {
-                  console.info(data, params);
                   return {
-                    results: data.map(item => {
-                      // item['id'] = item['Code'];
-                      // item['text'] = item['Name'];
-                      delete item['Id'];
-                      return item;
-                    }),
+                    results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
                   };
                 },
               },
-            }
-
-          }
+            },
+          },
         },
       },
       UnitLabel: {
