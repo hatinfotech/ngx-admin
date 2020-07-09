@@ -25,6 +25,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ProductFormDialogComponent } from './product/product-form-dialog/product-form-dialog.component';
 import { AssignCategoriesFormComponent } from './product/assign-categories-form/assign-categories-form.component';
+import { ProductGroupListComponent } from './product-group/product-group-list/product-group-list.component';
+import { ProductGroupFormComponent } from './product-group/product-group-form/product-group-form.component';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
@@ -32,7 +34,8 @@ import { AssignCategoriesFormComponent } from './product/assign-categories-form/
     ProductUnitFormComponent,
     ProductFormDialogComponent,
     AssignCategoriesFormComponent,
-  ],
+    ProductGroupListComponent,
+    ProductGroupFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -82,6 +85,7 @@ import { AssignCategoriesFormComponent } from './product/assign-categories-form/
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     AssignCategoriesFormComponent,
+    ProductGroupFormComponent,
   ],
   providers: [
     // use french locale

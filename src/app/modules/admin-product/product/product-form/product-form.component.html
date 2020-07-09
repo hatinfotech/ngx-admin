@@ -74,15 +74,19 @@
                   </ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
                   <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
-                      (*)</span>
-                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Categories')"
-                      pack="eva" icon="copy-outline">
-                    </nb-icon>
-                  </label>
+                      (*)</span></label>
                   <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
+                  <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
+                      (*)</span></label>
+                  <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups">
                   </ngx-select2>
                 </div>
               </div>
@@ -217,8 +221,6 @@
                       <input type="text" nbInput fullWidth formControlName="MaxUse" placeholder="Số lần KM">
                 </div>
               </div> -->
-
-
             </div>
             <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
             <div class="row">
