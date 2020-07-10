@@ -4,7 +4,9 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 export const environment = {
-  version: '1.0.3.47',
+  version: '1.0.3.49',
+  // 1.0.3.49: Fix product form: copy categories error
+  // 1.0.3.48: Develop dialog component resuable
   // 1.0.3.43: Develop assign/revoke product categories: fix auto add new catgories
   // 1.0.3.42: Develop assign/revoke product categories
   // 1.0.3.26: Demo import purchase price table

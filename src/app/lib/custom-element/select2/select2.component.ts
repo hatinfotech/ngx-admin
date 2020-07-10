@@ -134,6 +134,14 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
 
         if (!this.data || this.data.length === 0) {
           this.data = value;
+        } else {
+          const data = [...this.data];
+          value.forEach(v => {
+            if (!data.some(d => d.id === v.id)) {
+              data.push({ id: v.id, text: v.text });
+            }
+          });
+          this.data = data;
         }
         this.value = value.map(i => i['id'] ? i['id'] : i);
       } else {

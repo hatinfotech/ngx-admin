@@ -55,7 +55,8 @@
               </div>
               <div class="col-sm-2">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')">
-                  <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt buộc
+                  <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt
+                      buộc
                       (*)</span>
                     <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'WarehouseUnit')"
                       pack="eva" icon="copy-outline">
@@ -77,15 +78,24 @@
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
                   <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
-                      (*)</span></label>
-                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList">
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Categories')"
+                      pack="eva" icon="copy-outline">
+                    </nb-icon>
+                  </label>
+                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories"
+                    [data]="categoryList">
                   </ngx-select2>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
                   <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
-                      (*)</span></label>
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Groups')"
+                      pack="eva" icon="copy-outline">
+                    </nb-icon>
+                  </label>
                   <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups" [data]="groupList">
                   </ngx-select2>
                 </div>
