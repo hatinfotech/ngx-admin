@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
+import { Select2Options } from '../../../../vendor/ng2-select2/lib/ng2-select2.interface';
 
 @Component({
   selector: 'ngx-ag-list',

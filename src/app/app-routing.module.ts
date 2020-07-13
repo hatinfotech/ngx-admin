@@ -336,14 +336,14 @@ const routes: Routes = [
     loadChildren: () => import('./modules/system/system.module')
       .then(m => m.SystemModule),
   },
-  // {
-  //   path: 'virtual-phone',
-  //   // canActivate: [AuthGuardService],
-  //   loadChildren: () => import('./modules/virtual-phone/virtual-phone.module')
-  //     .then(m => m.VirtualPhoneModule),
-  // },
-  // { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
-  // { path: '**', redirectTo: 'mini-erp' },
+  {
+    path: 'virtual-phone',
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/virtual-phone/virtual-phone.module')
+      .then(m => m.VirtualPhoneModule),
+  },
+  { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
+  { path: '**', redirectTo: 'mini-erp' },
 ];
 // .map(route => {
 //   route['resolve'] = {

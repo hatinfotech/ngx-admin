@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import {
+  HttpClient, HttpResponse, HttpErrorResponse,
+  HttpInterceptor, HttpRequest, HttpHandler, HttpEvent
+} from '@angular/common/http';
 import { NbAuthService, NbAuthToken } from '@nebular/auth';
-import { environment } from '../../environments/environment';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { map, retry, catchError, switchMap, take, filter } from 'rxjs/operators';
-import { EmployeeModel } from '../models/employee.model';
 import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
+import { environment } from '../../environments/environment.hmr';
+import { EmployeeModel } from '../models/employee.model';
 
 export class ApiToken {
   access_token: string;
@@ -23,7 +26,8 @@ export class ApiService {
   public token: ApiToken;
   public nbToken: NbAuthToken;
 
-  private unauthoriziedSubject: BehaviorSubject<{ previousUrl: string }> = new BehaviorSubject<{ previousUrl: string }>(null);
+  private unauthoriziedSubject: BehaviorSubject<{ previousUrl: string }>
+    = new BehaviorSubject<{ previousUrl: string }>(null);
   public unauthorizied$: Observable<{ previousUrl: string }> = this.unauthoriziedSubject.asObservable();
 
   constructor(
@@ -532,7 +536,7 @@ export class ApiInterceptor implements HttpInterceptor {
         return this.refreshToken(req, next);
       } else {
 
-        return next.handle(req).catch(error => {
+        return next.handle(req).pipe(catchError(error => {
           if (req.url.includes('v1/user/login')) {
             this.apiService.onUnauthorizied();
             return next.handle(error);
@@ -540,10 +544,8 @@ export class ApiInterceptor implements HttpInterceptor {
           if (error.status !== 401) {
             return next.handle(error);
           }
-
           return this.refreshToken(req, next);
-
-        });
+        }));
 
       }
     }));
@@ -573,11 +575,11 @@ export class ApiInterceptor implements HttpInterceptor {
       this.apiService.onUnauthorizied();
       return throwError('AutRefresh token fail');
 
-    })).catch(error2 => {
+    }), catchError((error2: HttpErrorResponse) => {
       this.refreshTokenInProgress = false;
       console.log(error2);
       return throwError('AutRefresh token fail');
-    });
+    }));
   }
 
   continueRequest(req: HttpRequest<any>, next: HttpHandler, accessToken: string) {

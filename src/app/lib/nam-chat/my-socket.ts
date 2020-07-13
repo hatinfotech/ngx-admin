@@ -251,4 +251,8 @@ export class MySocket {
     this.socket.emit('callback', { seq, type: 'success', data });
   }
 
+  async reset() {
+
+  }
+
 }

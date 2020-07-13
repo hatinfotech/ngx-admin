@@ -47,7 +47,7 @@ import { registerLocaleData } from '@angular/common';
 import localeVi from '@angular/common/locales/vi';
 import localeViExtra from '@angular/common/locales/extra/vi';
 import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
-import { SimpleSalesVoucherFormComponent } from './modules/sales/sales-voucher/simple-sales-voucher-form/simple-sales-voucher-form.component';
+import { catchError } from 'rxjs/operators';
 registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -197,7 +197,7 @@ export class DynamicLocaleId extends String {
       useClass: DynamicLocaleId,
       deps: [TranslateService],
     },
-    { provide: NbDialogRef },
+    { provide: NbDialogRef, useValue: { }},
     RoutingResolve,
   ],
 })

@@ -8,7 +8,7 @@ describe('SystemParameterListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SystemParameterListComponent ],
+      declarations: [ SystemParameterListComponent ]
     })
     .compileComponents();
   }));

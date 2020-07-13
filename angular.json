@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "mini-erp": {
+    "probox-core-gui": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -11,9 +11,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "preserveSymlinks": true,
             "rebaseRootRelativeCssUrls": true,
-            "outputPath": "../NaM-EP/mini-erp",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -21,7 +22,7 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              "src/.htaccess",
+              "src/favicon.png",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",
@@ -36,15 +37,10 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "node_modules/socicon/css/socicon.css",
               "node_modules/nebular-icons/scss/nebular-icons.scss",
-              "node_modules/angular-tree-component/dist/angular-tree-component.css",
               "node_modules/pace-js/templates/pace-theme-flash.tmpl.css",
               "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/@swimlane/ngx-datatable/index.css",
-              "node_modules/@swimlane/ngx-datatable/themes/material.css",
-              "node_modules/@swimlane/ngx-datatable/assets/icons.css",
-              "node_modules/select2/dist/css/select2.min.css",
-              "node_modules/ng-pick-datetime/assets/style/picker.min.css",
               "src/app/@theme/styles/styles.scss",
+              "node_modules/select2/dist/css/select2.min.css",
               "src/app/app.component.scss"
             ],
             "scripts": [
@@ -56,13 +52,19 @@
               "node_modules/tinymce/plugins/table/plugin.min.js",
               "node_modules/echarts/dist/echarts.min.js",
               "node_modules/echarts/dist/extension/bmap.min.js",
-              "node_modules/chart.js/dist/Chart.min.js",
               "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/chart.js/dist/Chart.min.js",
               "node_modules/select2/dist/js/select2.full.js"
             ]
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -92,22 +94,22 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "mini-erp:build"
+            "browserTarget": "probox-core-gui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "mini-erp:build:production"
+              "browserTarget": "probox-core-gui:build:production"
             },
             "hmr": {
               "hmr": true,
-              "browserTarget": "mini-erp:build:hmr"
+              "browserTarget": "probox-core-gui:build:hmr"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "mini-erp:build"
+            "browserTarget": "probox-core-gui:build"
           }
         },
         "test": {
@@ -137,16 +139,12 @@
               "node_modules/socicon/css/socicon.css",
               "node_modules/nebular-icons/scss/nebular-icons.scss",
               "node_modules/pace-js/templates/pace-theme-flash.tmpl.css",
-              "node_modules/@swimlane/ngx-datatable/index.css",
-              "node_modules/@swimlane/ngx-datatable/themes/material.css",
-              "node_modules/@swimlane/ngx-datatable/assets/icons.css",
-              "node_modules/bootstrap/dist/css/bootstrap.css",
               "src/app/@theme/styles/styles.scss"
             ],
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              "src/.htaccess",
+              "src/favicon.png",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",
@@ -168,7 +166,7 @@
         }
       }
     },
-    "mini-erp-e2e": {
+    "probox-core-gui-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -177,7 +175,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "mini-erp:serve"
+            "devServerTarget": "probox-core-gui:serve"
           }
         },
         "lint": {
@@ -192,14 +190,17 @@
       }
     }
   },
-  "defaultProject": "mini-erp",
+  "defaultProject": "probox-core-gui",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "ngx",
-      "styleext": "scss"
+      "style": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "ngx"
     }
+  },
+  "cli": {
+    "analytics": "fefce791-fcc2-4a3a-8c99-31be405c7d46"
   }
 }

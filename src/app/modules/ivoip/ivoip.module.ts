@@ -50,7 +50,7 @@ import { CustomerFormComponent } from './customers/customer-form/customer-form.c
 import { UserListComponent } from './users/user-list/user-list.component';
 import { UserFormComponent } from './users/user-form/user-form.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { RoutingResolve } from '../../app-routing.module';
+// import { RoutingResolve } from '../../app-routing.module';
 import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({

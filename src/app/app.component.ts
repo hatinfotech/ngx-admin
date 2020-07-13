@@ -5,25 +5,22 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
-import { NbIconLibraries, NbMenuItem } from '@nebular/theme';
+import { SeoService } from './@core/utils/seo.service';
+import { NbMenuItem, NbIconLibraries } from '@nebular/theme';
 import { CommonService } from './services/common.service';
 import { NbAuthService } from '@nebular/auth';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-app',
-  // template: '<router-outlet></router-outlet>',
   template: `
-    <ngx-one-column-layout>
-        <nb-menu [items]="menu"></nb-menu>
-        <router-outlet></router-outlet>
-    </ngx-one-column-layout>
-    <img style="display: none" id="distributeCookieRequest" [src]="commonService.distributeFileStoreCookieRequest$ | async">
+  <ngx-one-column-layout>
+      <nb-menu [items]="menu"></nb-menu>
+      <router-outlet></router-outlet>
+  </ngx-one-column-layout>
   `,
 })
 export class AppComponent implements OnInit {
-
-  // menu = MENU_ITEMS;
   menu: NbMenuItem[] = [
     {
       title: 'Loading',
@@ -31,17 +28,15 @@ export class AppComponent implements OnInit {
       link: '/loading',
     },
   ];
-  // menu: NgxMenuItemModel[];
-  // distributeFileStoreCookieRequest: string;
 
   constructor(
-    public analytics: AnalyticsService,
+    private analytics: AnalyticsService,
+    private seoService: SeoService,
     public iconsLibrary: NbIconLibraries,
     public commonService: CommonService,
     public authService: NbAuthService,
     public translate: TranslateService,
   ) {
-
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.commonService.configReady$.subscribe(ready => {
       if (ready) {
@@ -72,7 +67,6 @@ export class AppComponent implements OnInit {
         ];
       }
     });
-
   }
 
   translateMenu(menuTree: NbMenuItem[]) {
@@ -89,6 +83,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.analytics.trackPageViews();
-    // this.commonService.;
+    this.seoService.trackCanonicalChanges();
   }
 }

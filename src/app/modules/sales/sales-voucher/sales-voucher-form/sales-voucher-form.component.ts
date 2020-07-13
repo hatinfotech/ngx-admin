@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { environment } from '../../../../../environments/environment';
-import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,6 +15,7 @@ import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
 // import localeVi from '@angular/common/locales/vi';
 // import localeViExtra from '@angular/common/locales/extra/vi';
 

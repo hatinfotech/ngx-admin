@@ -8,7 +8,8 @@ import { CommonService } from '../../../services/common.service';
   selector: 'ngx-one-column-layout',
   styleUrls: ['./one-column.layout.scss'],
   template: `
-    <nb-layout [attr.authState]="authState" windowMode>
+    <!-- <nb-layout [attr.authState]="authState" windowMode> -->
+    <nb-layout windowMode>
       <nb-layout-header fixed>
         <ngx-header></ngx-header>
       </nb-layout-header>

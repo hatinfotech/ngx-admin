@@ -2,11 +2,11 @@ import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewIni
 
 import { ViewCell } from 'ng2-smart-table';
 import { BehaviorSubject } from 'rxjs';
-import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { CommonService } from '../../../services/common.service';
 import { FormControl } from '@angular/forms';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { stat } from 'fs';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
 
 @Component({
   template: `

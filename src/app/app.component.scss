@@ -185,6 +185,11 @@ body .logo-container {
     font-family: Open Sans, sans-serif !important;
   }
 
+  .select2-selection--single .select2-selection__arrow {
+    top: 7px;
+    right: 10px;
+  }
+
   .select2-container--open .select2-dropdown--below {
     border-color: #edf1f7 !important;
     border-style: solid !important;
@@ -294,26 +299,40 @@ body .logo-container {
     outline: 0;
 
     .select2-selection__choice {
-      line-height: 1.7rem !important;
+      // line-height: 1.7rem !important;
+      line-height: 1.66rem !important;
       padding: 0.4375rem 1.125rem;
+
       font-weight: 600 !important;
       background-color: #edf0f5 !important;
       border: 1px solid #ced4de !important;
+    }
+    li.select2-selection__choice {
+      padding: 0 0.325rem;
     }
     .select2-selection__placeholder {
       line-height: 1.5rem !important;
       padding: 0;
       font-weight: normal;
+      color: #99a4ba;
     }
     .select2-selection__rendered {
       line-height: 1.5rem !important;
       padding: 0.4375rem 1.125rem;
     }
+    ul.select2-selection__rendered {
+      padding: 0rem 0.225rem;
+    }
     .select2-selection__clear {
       position: absolute;
-      right: 0;
+      right: 5px;
     }
 
+    .select2-selection--single .select2-selection__arrow {
+      top: 7px;
+      right: 8px;
+    }
+ß
     .select2-selection__arrow {
       height: 2.3rem !important;
     }
@@ -322,7 +341,8 @@ body .logo-container {
     .select2-search__field {
       margin-top: 0 !important;
       padding: 0.4375rem 1.125rem;
-      min-height: 34px !important;
+      // min-height: 34px !important;
+      min-height: 2.07rem !important;
       padding-left: 0.5rem !important;
     }
   }
@@ -732,9 +752,9 @@ nb-card.small-header nb-card-header nav {
 nb-card.small-header nb-card-header nav button,
 nb-card.small-header nb-card-header nav ngx-select2 {
   /* float: right; */
-  margin: 0;
-  margin-left: 0.5rem !important;
-  display: inline-block;
+  // margin: 0;
+  // margin-left: 0.5rem !important;
+  // display: inline-block;
 }
 
 // div.action-list button {
@@ -746,12 +766,12 @@ nb-card.small-header nb-card-header nav ngx-select2 {
 
 [size="tiny"],
 nb-card.small-header div.action-list button {
-  height: 2.45rem;
-  /* float: right; */
-  margin-top: 1px;
+  // height: 2.45rem;
+  // /* float: right; */
+  // margin-top: 1px;
 }
 nb-card.small-header nb-card-header button {
-  line-height: 1.25rem !important;
+  // line-height: 1.25rem !important;
 }
 
 nb-card.small-header div.action-list {
@@ -882,6 +902,15 @@ ng2-smart-table {
 
 .buttons-row button[nbButton] {
   margin: 0.5rem !important;
+}
+.buttons-row button[nbButton].size-tiny {
+  margin: 0.1rem !important;
+}
+.buttons-row button[nbButton].size-small {
+  margin: 0.2rem !important;
+}
+.buttons-row button[nbButton].size-medium {
+  margin: 0.3rem !important;
 }
 
 .buttons-row .actions-card {
@@ -1023,7 +1052,9 @@ nb-card.ag-grid-card nb-card-body {
   padding: 0;
 }
 .ag-grid-wrap {
-  border: #ccc 1px solid; border-radius: 3px; overflow: hidden;
+  border: #ccc 1px solid;
+  border-radius: 3px;
+  overflow: hidden;
 }
 ag-grid-angular {
   .image-thumb-wrap {

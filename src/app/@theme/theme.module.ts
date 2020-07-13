@@ -12,7 +12,6 @@ import {
   NbSelectModule,
   NbIconModule,
   NbThemeModule,
-  NbChatModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -41,10 +40,7 @@ import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
 import { CustomElementModule } from '../lib/custom-element/custom-element.module';
 import { VirtualPhoneModule } from '../modules/virtual-phone/virtual-phone.module';
-import { DialpadComponent } from '../modules/virtual-phone/dialpad/dialpad.component';
-import { ActionControlListComponent } from '../lib/custom-element/action-control-list/action-control-list.component';
 import { MobileAppModule } from '../modules/mobile-app/mobile-app.module';
-import { MobileAppComponent } from '../modules/mobile-app/mobile-app.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 const NB_MODULES = [
@@ -60,8 +56,6 @@ const NB_MODULES = [
   NbSelectModule,
   NbIconModule,
   NbEvaIconsModule,
-  NbChatModule,
-  NbIconModule,
   CustomElementModule,
   VirtualPhoneModule,
   MobileAppModule,
@@ -88,15 +82,10 @@ const PIPES = [
   imports: [CommonModule, ...NB_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
   declarations: [...COMPONENTS, ...PIPES],
-  entryComponents: [
-    DialpadComponent,
-    ActionControlListComponent,
-    MobileAppComponent,
-  ],
 })
 export class ThemeModule {
-  static forRoot(): ModuleWithProviders {
-    return <ModuleWithProviders>{
+  static forRoot(): ModuleWithProviders<ThemeModule> {
+    return {
       ngModule: ThemeModule,
       providers: [
         ...NbThemeModule.forRoot(

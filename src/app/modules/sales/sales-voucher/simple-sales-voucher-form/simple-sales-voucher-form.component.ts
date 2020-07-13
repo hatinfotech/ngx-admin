@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
-import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,6 +15,7 @@ import { PromotionActionModel } from '../../../../models/promotion.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
 
 @Component({
   selector: 'ngx-simple-sales-voucher-form',

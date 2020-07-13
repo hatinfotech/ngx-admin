@@ -14,7 +14,8 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
 import { environment } from '../../../../../environments/environment';
-import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
+
 
 @Component({
   selector: 'ngx-sales-price-report-form',

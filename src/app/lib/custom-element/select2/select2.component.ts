@@ -1,5 +1,6 @@
 import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
+import { Select2Options } from '../../../../vendor/ng2-select2/lib/ng2-select2.interface';
 
 export interface Select2Option {
   [key: string]: any;
@@ -134,14 +135,6 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
 
         if (!this.data || this.data.length === 0) {
           this.data = value;
-        } else {
-          const data = [...this.data];
-          value.forEach(v => {
-            if (!data.some(d => d.id === v.id)) {
-              data.push({ id: v.id, text: v.text });
-            }
-          });
-          this.data = data;
         }
         this.value = value.map(i => i['id'] ? i['id'] : i);
       } else {

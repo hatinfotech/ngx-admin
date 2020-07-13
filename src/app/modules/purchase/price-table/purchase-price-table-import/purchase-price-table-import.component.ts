@@ -2,11 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { PurchasePriceTableModel, PurchasePriceTableDetailModel } from '../../../../models/purchase.model';
 import { environment } from '../../../../../environments/environment';
-import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
-import { TaxModel } from '../../../../models/tax.model';
-import { UnitModel } from '../../../../models/unit.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -23,6 +18,11 @@ import { CurrencyPipe } from '@angular/common';
 import { param } from 'jquery';
 import { isNumber } from 'util';
 import { BehaviorSubject } from 'rxjs';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { TaxModel } from '../../../../models/tax.model';
+import { UnitModel } from '../../../../models/unit.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
 @Component({
   selector: 'ngx-purchase-price-table-import',

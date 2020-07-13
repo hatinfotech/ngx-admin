@@ -8,13 +8,24 @@ import { ProductCategoryListComponent } from './category/product-category-list/p
 import { ProductCategoryFormComponent } from './category/product-category-form/product-category-form.component';
 import { ProductUnitListComponent } from './unit/product-unit-list/product-unit-list.component';
 import { ProductUnitFormComponent } from './unit/product-unit-form/product-unit-form.component';
-import { ProductGroupListComponent } from './product-group/product-group-list/product-group-list.component';
-import { ProductGroupFormComponent } from './product-group/product-group-form/product-group-form.component';
 
 const routes: Routes = [{
   path: '',
   component: AdminProductComponent,
   children: [
+    // {
+    //   path: '',
+    //   redirectTo: 'dashboard',
+    //   pathMatch: 'full',
+    // },
+    // {
+    //   path: 'dashboard',
+    //   canActivate: [AuthGuardService],
+    //   component: IvoipDashboardComponent,
+    //   data: {
+    //     reuse: true,
+    //   },
+    // },
     {
       path: 'product/list',
       canActivate: [AuthGuardService],
@@ -68,26 +79,6 @@ const routes: Routes = [{
       path: 'unit/form/:id',
       canActivate: [AuthGuardService],
       component: ProductUnitFormComponent,
-    },
-    // Product group
-
-    {
-      path: 'group/list',
-      canActivate: [AuthGuardService],
-      component: ProductGroupListComponent,
-      data: {
-        reuse: true,
-      },
-    },
-    {
-      path: 'group/form',
-      canActivate: [AuthGuardService],
-      component: ProductGroupFormComponent,
-    },
-    {
-      path: 'group/form/:id',
-      canActivate: [AuthGuardService],
-      component: ProductGroupFormComponent,
     },
   ],
 }];

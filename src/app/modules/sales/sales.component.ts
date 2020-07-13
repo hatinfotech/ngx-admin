@@ -10,6 +10,7 @@ export class SalesComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log(123);
   }
 
 }

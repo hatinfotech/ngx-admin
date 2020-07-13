@@ -2,7 +2,6 @@ import { Component, OnInit, Type } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SalesMasterPriceTableModel, SalesPriceTableDetailModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
-import { CurrencyMaskConfig } from 'ng2-currency-mask/src/currency-mask.config';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
@@ -25,6 +24,7 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
 
 @Component({
   selector: 'ngx-master-price-table-form',
@@ -464,7 +464,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   async preview(formItem: FormGroup) {
     const data: SalesMasterPriceTableModel = formItem.value;
-   
+
     const printTemplate = this.printTemplateList.find((item: { id: string }) => item.id === formItem.get('PrintTemplate').value);
     if (printTemplate) {
       data.Details = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & {string, Price?: string | number })[]>(

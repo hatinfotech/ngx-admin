@@ -3,18 +3,19 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
-import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService, NbSidebarComponent, NbDialogRef } from '@nebular/theme';
+import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService, 
+  NbSidebarComponent, NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location } from '@angular/common';
-import { LoginInfoModel } from '../models/login-info.model';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
-import { MySocket } from '../lib/nam-socket/my-socket';
-import { environment } from '../../environments/environment';
-import { TranslateService } from '@ngx-translate/core';
-import { LocaleConfigModel } from '../models/system.model';
 import localeVi from '@angular/common/locales/vi';
 import localeEn from '@angular/common/locales/en';
 import { BaseComponent } from '../lib/base-component';
+import { LoginInfoModel } from '../models/login-info.model';
+import { TranslateService } from '@ngx-translate/core';
+import { LocaleConfigModel } from '../models/system.model';
+import { environment } from '../../environments/environment.hmr';
+import { MySocket } from '../lib/nam-socket/my-socket';
 
 @Injectable({
   providedIn: 'root',

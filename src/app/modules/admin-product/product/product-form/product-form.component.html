@@ -7,22 +7,24 @@
         [ngClass]="{ 'is-drop-over': dragOver[i] }">
         <nb-card-header>
           <nav>
-            Cập nhật sản phẩm
-            <button nbButton status="warning" hero size="tiny" (click)="goback()" style="float: right;" title="Đóng">
-              <nb-icon pack="eva" icon="close"></nb-icon>
-            </button>
-            <button *ngIf="array.controls.length > 1" nbButton status="danger" hero size="tiny"
-              (click)="removeFormGroup(i)" style="float: right;" title="Xoá">
-              <nb-icon pack="eva" icon="minus-circle"></nb-icon>
-            </button>
-            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
-              title="Tải lại">
-              <nb-icon pack="eva" icon="refresh"></nb-icon>
-            </button>
-            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
-              style="float: right;" title="Hoàn tác">
-              <nb-icon pack="eva" icon="undo-outline"></nb-icon>
-            </button>
+            <label>Cập nhật sản phẩm</label>
+            <div class="buttons-row" style="float: right;">
+              <button nbButton status="warning" hero size="small" (click)="goback()" style="float: right;" title="Đóng">
+                <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
+              </button>
+              <button *ngIf="array.controls.length > 1" nbButton status="danger" hero size="small"
+                (click)="removeFormGroup(i)" style="float: right;" title="Xoá">
+                <nb-icon pack="eva" icon="minus-circle"></nb-icon>{{'Common.delete' | translate | headtitlecase}}
+              </button>
+              <button nbButton status="success" hero size="small" (click)="onFormReload()" style="float: right;"
+                title="Tải lại">
+                <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.refresh' | translate | headtitlecase}}
+              </button>
+              <button nbButton status="warning" hero size="small" (click)="onFormUndo()" [disabled]="!canUndo"
+                style="float: right;" title="Hoàn tác">
+                <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
+              </button>
+            </div>
           </nav>
         </nb-card-header>
         <nb-card-body>
@@ -38,12 +40,10 @@
                       icon="copy-outline">
                     </nb-icon>
                   </label>
-                  <!-- <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm"> -->
-                  <ngx-select2 formControlName="Name" [select2Option]="select2OptionForName">
-                  </ngx-select2>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
                 </div>
               </div>
-              <div class="col-sm-2">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
                   <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt
                       buộc
@@ -55,7 +55,16 @@
                   <input type="text" nbInput fullWidth formControlName="Sku" placeholder="Sku">
                 </div>
               </div>
-              <div class="col-sm-2">
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
+                  <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt
+                      buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Code" maxlength="30"
+                    placeholder="Tự động tạo mã">
+                </div>
+              </div>
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')">
                   <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt
                       buộc
@@ -68,16 +77,7 @@
                   </ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-2">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                  <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt
-                      buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Code" maxlength="30"
-                    placeholder="Tự động tạo mã">
-                </div>
-              </div>
-              <div class="col-sm-6">
+              <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
                   <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
                       (*)</span>
@@ -87,18 +87,6 @@
                   </label>
                   <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories"
                     [data]="categoryList">
-                  </ngx-select2>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
-                  <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
-                      (*)</span>
-                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Groups')"
-                      pack="eva" icon="copy-outline">
-                    </nb-icon>
-                  </label>
-                  <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups" [data]="groupList">
                   </ngx-select2>
                 </div>
               </div>
@@ -216,6 +204,25 @@
                 <!-- End Detail form -->
               </div>
 
+              <!-- <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('State'), 'warning')">
+                  <label class="label"><span class="valid">Trạng thái (*)</span><span class="invalid">Trạng thái là bắt buộc
+                      (*)</span></label>
+                      <nb-select size="medium" formControlName="State" fullWidth selected="OPEN">
+                        <nb-option value="OPEN">Mở</nb-option>
+                        <nb-option value="CLOSED">Đóng</nb-option>
+                      </nb-select>
+                </div>
+              </div> -->
+              <!-- <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('MaxUse'), 'warning')">
+                  <label class="label"><span class="valid">Số lần khuyến mãi</span><span class="invalid">Số lần KM là bắt buộc
+                      (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="MaxUse" placeholder="Số lần KM">
+                </div>
+              </div> -->
+
+
             </div>
             <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
             <div class="row">
@@ -266,11 +273,18 @@
                   </div>
 
                 </div>
+                <!-- <nb-progress-bar style="margin: 1rem;" *ngFor="let file of files"
+                      [value]="file.progress.status == 1 ? file.progress.data.percentage*90/100 : file.progress.data.percentage"
+                      [status]="file.progress.status == 1 ? 'danger' : 'success'" size="medium">
+                      {{file.progress.data.percentage > 40 ? file.name : ''}} upload
+                      {{file.progress.data.percentage < 100 ? (file.progress.data.percentage + '%') : 'complete'}}
+                    </nb-progress-bar> -->
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span></label>
+                  <!-- <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="10"></textarea> -->
                   <textarea *ngIf="array.controls.length > 1" formControlName="Description" nbInput fullWidth
                     placeholder="Mô tả"></textarea>
                   <ckeditor *ngIf="array.controls.length === 1" formControlName="Description"
@@ -291,6 +305,191 @@
                 </div>
               </div>
             </div>
+
+            <!-- Confition form -->
+            <!-- <hr>
+            <label class="label">Các điều kiện để khuyến mãi có hiệu lực</label>
+            <div class="row">
+              <div class="col-sm-1 label">Stt</div>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-4 label">Điều kiện</div>
+                  <div class="col-sm-3 label">So sánh</div>
+                  <div class="col-sm-2 label">Kiểu DL</div>
+                  <div class="col-sm-2 label">Giá trị</div>
+                  <div class="col-sm-1 label">Break</div>
+                </div>
+              </div>
+              <div class="col-sm-1" style="text-align: center;">
+                <button nbButton status="success" (click)="addConditionFormGroup(i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+
+            <div formArrayName="Conditions" class="form-details" [sortablejs]="getConditions(i)"
+            [sortablejsOptions]="{ handle: '.sorting-handle' }">
+              <div class="form-detail-item" *ngFor="let condition of getConditions(i).controls; let ic=index"
+                [formGroup]="condition">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth class="sorting-handle" disabled="true" value="{{ ic + 1 }}" style="text-align: center; cursor: grab;">
+                      <input type="hidden" formControlName="Id">
+                    </div>
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <label class="label">Điều kiện</label>
+                          <nb-select size="medium" formControlName="Cond" fullWidth>
+                            <nb-option value="">Điều kiện...</nb-option>
+                            <nb-option value="QUANTITY">Số lượng</nb-option>
+                            <nb-option value="TOTALPAYMENT">Tổng giá trị đơn hàng</nb-option>
+                            <nb-option value="ORDERDATE">Ngày đặt hàng</nb-option>
+                            <nb-option value="PRODUCTGROUP">Danh mục sản phẩm</nb-option>
+                          </nb-select>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="label">So sánh</label>
+                          <nb-select size="medium" formControlName="Operator" fullWidth>
+                            <nb-option value="">So sánh...</nb-option>
+                            <nb-option value="LT">Nhỏ hơn</nb-option>
+                            <nb-option value="LE">Nhỏ hơn hoặc bằng</nb-option>
+                            <nb-option value="EQ">Bằng</nb-option>
+                            <nb-option value="GE">Lớn hơn hoặc bằng</nb-option>
+                            <nb-option value="GT">Lớn hơn</nb-option>
+                            <nb-option value="NE">Khác</nb-option>
+                          </nb-select>
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group">
+                          <label class="label">Kiểu DL</label>
+                          <nb-select size="medium" formControlName="Type" fullWidth>
+                            <nb-option value="">Kiểu DL...</nb-option>
+                            <nb-option value="INTEGER">Số nguyên</nb-option>
+                            <nb-option value="DOUBLE">Số thực</nb-option>
+                            <nb-option value="DATETIME">Ngày giờ</nb-option>
+                            <nb-option value="PRODUCTGROUP">Danh mục sản phẩm</nb-option>
+                          </nb-select>
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group">
+                          <label class="label">Giá trị</label>
+                          <ngx-select2 *ngIf="condition.get('Type').value == 'PRODUCTGROUP'"formControlName="TextValue"
+                            [select2Option]="select2OptionForProductGroup">
+                          </ngx-select2>
+                          <input type="text" *ngIf="condition.get('Type').value == 'INTEGER'" nbInput fullWidth formControlName="IntegerValue" placeholder="Số nguyên">
+                          <input type="text" *ngIf="condition.get('Type').value == 'DOUBLE'" nbInput fullWidth formControlName="DoubleValue" placeholder="Sớ thực">
+                          <input type="text" *ngIf="condition.get('Type').value == 'DATETIME'" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" nbInput fullWidth formControlName="DateValue" placeholder="Ngày giờ">
+                          <owl-date-time #dt1></owl-date-time>
+                        </div>
+                      </div>
+                      <div class="col-sm-1">
+                        <div class="form-group">
+                          <label class="label">Break</label>
+                          <nb-checkbox formControlName="BreakOnFalse" title="Dừng khi điều kiện này sai"></nb-checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="tiny" (click)="removeConditionGroup(i, ic)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div> -->
+            <!-- End Confition form -->
+
+            <!-- Action form -->
+            <!-- <hr>
+            <label class="label">Các ưu đãi được áp dụng</label>
+            <div class="row">
+              <div class="col-sm-1 label">Stt</div>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-5 label">Loại</div>
+                  <div class="col-sm-5 label">Sản phẩm tặng kèm</div>
+                  <div class="col-sm-2 label">Giá trị</div>
+                </div>
+              </div>
+              <div class="col-sm-1" style="text-align: center;">
+                <button nbButton status="success" (click)="addActionFormGroup(i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+
+            <div formArrayName="Actions" class="form-details">
+              <div class="form-detail-item" *ngFor="let action of getActions(i).controls; let id=index"
+                [formGroup]="action">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth disabled="true" value="{{ id + 1 }}" style="text-align: center;">
+                      <input type="hidden" formControlName="Id">
+                    </div>
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="row">
+                      <div class="col-sm-5">
+                        <div class="form-group">
+                          <label class="label">Loại</label>
+                          <nb-select size="medium" formControlName="Type" fullWidth>
+                            <nb-option value="">Loại hành động...</nb-option>
+                            <nb-option value="PRODUCT">Tặng kèm sản phẩm</nb-option>
+                            <nb-option value="DISCOUNTPERCENT">Giảm giá theo % giá trịđơn hàng</nb-option>
+                            <nb-option value="DISCOUNTAMOUNT">Tặng phiếu mua hàng</nb-option>
+                          </nb-select>
+                        </div>
+                      </div>
+                      <div class="col-sm-5">
+                        <div class="form-group">
+                          <label class="label">Sản phẩm tặng kèm</label>
+                          <ngx-select2 formControlName="Product"
+                            [select2Option]="select2OptionForProduct">
+                          </ngx-select2>
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group">
+                          <label class="label">Giá trị</label>
+                          <input type="text" nbInput fullWidth formControlName="Amount" placeholder="SL/% giảm giá">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="tiny" (click)="removeActionGroup(i, id)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div> -->
+            <!-- End Action form -->
+
 
           </div>
         </nb-card-body>
