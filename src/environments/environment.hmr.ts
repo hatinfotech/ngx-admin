@@ -9,10 +9,10 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  version: '1.0.3.47.dev',
+  version: '2.0.0.dev',
   production: false,
   hmr: true,
-  basePath: 'mini-erp',
+  basePath: 'probox-core',
   register: {
     logo: {
       voucher: 'assets/images/logo/probox-voucher-logo.png',

@@ -14,7 +14,7 @@
             "aot": true,
             "preserveSymlinks": true,
             "rebaseRootRelativeCssUrls": true,
-            "outputPath": "dist",
+            "outputPath": "../NaM-EP/probox-core",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -23,6 +23,7 @@
               "src/assets",
               "src/favicon.ico",
               "src/favicon.png",
+              "src/.htaccess",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",
@@ -145,6 +146,7 @@
               "src/assets",
               "src/favicon.ico",
               "src/favicon.png",
+              "src/.htaccess",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",

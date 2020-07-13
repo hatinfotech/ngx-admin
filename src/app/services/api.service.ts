@@ -9,7 +9,7 @@ import { map, retry, catchError, switchMap, take, filter } from 'rxjs/operators'
 import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { environment } from '../../environments/environment.hmr';
+import { environment } from '../../environments/environment';
 import { EmployeeModel } from '../models/employee.model';
 
 export class ApiToken {
