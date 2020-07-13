@@ -12,6 +12,7 @@ export class ProductModel {
 
   // References
   Categories?: ProductCategoryModel[];
+  Groups: ProductGroupModel[];
   Pictures?: ProductPictureModel[];
   UnitConversions?: ProductUnitConversoinModel[];
 
@@ -52,4 +53,10 @@ export class ProductUnitConversoinModel {
   ConversionRatio?: string & number;
   IsDefaultSales?: boolean;
   IsDefaultPrchase?: boolean;
+}
+export class ProductGroupModel {
+  Id?: string & number;
+  Code?: string;
+  Name?: string;
+  Description?: string;
 }

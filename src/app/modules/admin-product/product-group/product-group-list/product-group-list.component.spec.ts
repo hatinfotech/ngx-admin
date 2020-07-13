@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProductUnitFormComponent } from './product-unit-form.component';
+import { ProductGroupListComponent } from './product-group-list.component';
 
-describe('ProductUnitFormComponent', () => {
-  let component: ProductUnitFormComponent;
-  let fixture: ComponentFixture<ProductUnitFormComponent>;
+describe('ProductGroupListComponent', () => {
+  let component: ProductGroupListComponent;
+  let fixture: ComponentFixture<ProductGroupListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductUnitFormComponent ],
+      declarations: [ ProductGroupListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProductUnitFormComponent);
+    fixture = TestBed.createComponent(ProductGroupListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

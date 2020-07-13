@@ -1,3 +1,4 @@
+import { ProductGroupModel } from './../../../../models/product.model';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ProductModel, ProductUnitModel, ProductPictureModel, ProductUnitConversoinModel, ProductCategoryModel } from '../../../../models/product.model';
@@ -11,7 +12,6 @@ import '../../../../lib/ckeditor.loader';
 import 'ckeditor';
 import { FileModel } from '../../../../models/file.model';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
-import { UnitModel } from '../../../../models/unit.model';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
@@ -28,8 +28,10 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   unitList: ProductUnitModel[] = [];
 
-  // Category list for filter
+  // Category list for select2
   categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+  // Group list for select2
+  groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
 
   constructor(
     protected activeRoute: ActivatedRoute,
@@ -55,6 +57,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   async loadCache() {
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -64,34 +67,6 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       callback(this.inputId);
     }
   }
-
-  // select2OptionForProduct = {
-  //   placeholder: 'Chọn sản phẩm...',
-  //   allowClear: true,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   keyMap: {
-  //     id: 'Code',
-  //     text: 'Name',
-  //   },
-  //   ajax: {
-  //     url: params => {
-  //       return this.apiService.buildApiUrl('/admin-product/products', { 'filter_Name': params['term'] });
-  //     },
-  //     delay: 300,
-  //     processResults: (data: any, params: any) => {
-  //       console.info(data, params);
-  //       return {
-  //         results: data.map(item => {
-  //           item['id'] = item['Code'];
-  //           item['text'] = item['Name'];
-  //           return item;
-  //         }),
-  //       };
-  //     },
-  //   },
-  // };
 
   select2OptionForCategories: Select2Option = {
     placeholder: 'Chọn danh mục...',
@@ -105,23 +80,6 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     },
     multiple: true,
     tags: true,
-    // ajax: {
-    //   url: params => {
-    //     return this.apiService.buildApiUrl('/admin-product/categories', { 'filter_Name': params['term'] ? params['term'] : '', select: 'id=>Code,text=>Name' });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     console.info(data, params);
-    //     return {
-    //       results: data.map(item => {
-    //         // item['id'] = item['Code'];
-    //         // item['text'] = item['Name'];
-    //         delete item['Id'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
   };
 
   select2OptionForUnit = {
@@ -134,6 +92,19 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       id: 'id',
       text: 'text',
     },
+  };
+
+  select2OptionForGroups = {
+    placeholder: 'Chọn nhóm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    multiple: true,
   };
 
   ngOnInit() {
@@ -153,6 +124,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     // params['includeActions'] = true;
     // params['forNgPickDateTime'] = true;
     params['includeCategories'] = true;
+    params['includeGroups'] = true;
     params['includePictures'] = true;
     params['includeUnitConversions'] = true;
     super.executeGet(params, success, error);
@@ -211,6 +183,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Description: [''],
       Technical: [''],
       Categories: [''],
+      Groups: [''],
       Pictures: this.formBuilder.array([]),
       UnitConversions: this.formBuilder.array([]),
     });
@@ -335,46 +308,6 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Picture Form */
-
-  /** Action Form */
-  // makeNewActionFormGroup(data?: PromotionActionModel): FormGroup {
-  //   const newForm = this.formBuilder.group({
-  //     Id: [''],
-  //     Type: ['', Validators.required],
-  //     Product: [''],
-  //     Amount: [''],
-  //     // Discount: [''],
-  //   });
-
-  //   if (data) {
-  //     // data['Id_old'] = data['Id'];
-  //     newForm.patchValue(data);
-  //   }
-  //   return newForm;
-  // }
-  // getActions(formGroupIndex: number) {
-  //   return this.array.controls[formGroupIndex].get('Actions') as FormArray;
-  // }
-  // addActionFormGroup(formGroupIndex: number) {
-  //   // this.componentList[formGroupIndex].push([]);
-  //   const newFormGroup = this.makeNewActionFormGroup();
-  //   this.getActions(formGroupIndex).push(newFormGroup);
-  //   this.onAddActionFormGroup(formGroupIndex, this.getActions(formGroupIndex).length - 1, newFormGroup);
-  //   return false;
-  // }
-  // removeActionGroup(formGroupIndex: number, index: number) {
-  //   this.getActions(formGroupIndex).removeAt(index);
-  //   // this.componentList[formGroupIndex].splice(index, 1);
-  //   this.onRemoveActionFormGroup(formGroupIndex, index);
-  //   return false;
-  // }
-  // onAddActionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
-  //   // this.componentList[mainIndex].push([]);
-  // }
-  // onRemoveActionFormGroup(mainIndex: number, index: number) {
-  //   // this.componentList[mainIndex].splice(index, 1);
-  // }
-  /** End Action Form */
 
   /** ngx-uploader */
   options: UploaderOptions;
