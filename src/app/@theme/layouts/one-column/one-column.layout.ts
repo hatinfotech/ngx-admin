@@ -9,7 +9,7 @@ import { CommonService } from '../../../services/common.service';
   styleUrls: ['./one-column.layout.scss'],
   template: `
     <!-- <nb-layout [attr.authState]="authState" windowMode> -->
-    <nb-layout windowMode>
+    <nb-layout [attr.authState]="authState" windowMode>
       <nb-layout-header fixed>
         <ngx-header></ngx-header>
       </nb-layout-header>

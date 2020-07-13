@@ -1,3 +1,6 @@
+import { CustomElementModule } from './../../lib/custom-element/custom-element.module';
+import { AppModule } from './../../app.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthComponent } from './auth.component';
@@ -10,12 +13,14 @@ import { RouterModule } from '@angular/router';
 
 import { NbAuthModule } from '@nebular/auth';
 import { LoginComponent } from './login/login.component';
+import { LoginDialogComponent } from './login/login-dialog.component';
 
 @NgModule({
   declarations: [
     AuthComponent,
     LogoutComponent,
     LoginComponent,
+    LoginDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -30,6 +35,11 @@ import { LoginComponent } from './login/login.component';
     NbAuthModule,
     NbIconModule,
     NbCardModule,
+    TranslateModule,
+    CustomElementModule,
+  ],
+  entryComponents: [
+    LoginDialogComponent,
   ],
 })
 export class AuthModule { }

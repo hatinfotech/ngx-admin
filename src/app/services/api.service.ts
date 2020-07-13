@@ -11,10 +11,10 @@ import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { environment } from '../../environments/environment';
 import { EmployeeModel } from '../models/employee.model';
-
+import { LoginDialogComponent } from '../modules/auth/login/login-dialog.component';
 export class ApiToken {
-  access_token: string;
-  refresh_token: string;
+  access_token?: string;
+  refresh_token?: string;
 }
 
 @Injectable({
@@ -23,7 +23,14 @@ export class ApiToken {
 export class ApiService {
   public baseApiUrl = environment.api.baseUrl;
   protected session = '';
-  public token: ApiToken;
+  public get token(): ApiToken {
+    const tokenString = localStorage.getItem('auth_app_token');
+    if (tokenString) {
+      const tokenParse: { createdAt: string, name: string, ownerStrategyName: string, value: string } = JSON.parse(tokenString);
+      return JSON.parse(tokenParse.value);
+    }
+    return null;
+  }
   public nbToken: NbAuthToken;
 
   private unauthoriziedSubject: BehaviorSubject<{ previousUrl: string }>
@@ -60,7 +67,7 @@ export class ApiService {
   setToken(token: NbAuthToken) {
     if (token) {
       this.nbToken = token;
-      this.token = JSON.parse(token.toString());
+      // this.token = JSON.parse(token.toString());
       if (this.token) {
         this.setAccessToken(this.token['access_token']);
         this.setRefreshToken(this.token['refresh_token']);
@@ -436,7 +443,10 @@ export class ApiService {
           this.unauthoriziedSubject.next({
             previousUrl: this.router.url,
           });
-          this.router.navigate(['/auth/login']);
+          // this.router.navigate(['/auth/login']);
+          if (LoginDialogComponent.instances.length === 0) {
+            this.dialogService.open(LoginDialogComponent);
+          }
         }
       });
     });

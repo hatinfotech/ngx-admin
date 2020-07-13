@@ -1,0 +1,115 @@
+
+<nb-card>
+  <!-- <nb-card-header *ngIf="allowBack">
+    <nav class="navigation">
+      <span href="#" (click)="close()" class="link back-link" aria-label="Back">
+        <nb-icon icon="arrow-back"></nb-icon> Trở về
+      </span>
+    </nav>
+  </nb-card-header> -->
+  <nb-card-header>
+    <div style="text-align: center;">
+      <img class="logo" src="assets/images/logo/logo_text_subtile_full.png" style="width: 100%;">
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-auth-block>
+      
+      <!-- <h1 id="title" class="title">Login</h1> -->
+<!-- <p class="sub-title">Phần mềm quản lý tích hợp đa giải pháp</p> -->
+
+<nb-alert *ngIf="showMessages.error && errors?.length && !submitted" outline="danger" role="alert">
+  <p class="alert-title"><b>Oh no!</b></p>
+  <ul class="alert-message-list">
+    <li *ngFor="let error of errors" class="alert-message">{{ error }}</li>
+  </ul>
+</nb-alert>
+
+<nb-alert *ngIf="showMessages.success && messages?.length && !submitted" outline="success" role="alert">
+  <p class="alert-title"><b>Thành công!</b></p>
+  <ul class="alert-message-list">
+    <li *ngFor="let message of messages" class="alert-message">{{ message }}</li>
+  </ul>
+</nb-alert>
+
+  <form (ngSubmit)="login()" #form="ngForm" aria-labelledby="title">
+
+    <div class="form-control-group">
+      <label class="label" for="input-email">Tên đăng nhập:</label>
+      <input nbInput fullWidth [(ngModel)]="user.email" #email="ngModel" name="email" id="input-email"
+        pattern="[\d\w\@\.]{4,}" placeholder="Email or phone number" fieldSize="large" autofocus
+        [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
+        [required]="getConfigValue('forms.validation.email.required')"
+        [attr.aria-invalid]="email.invalid && email.touched ? true : null">
+      <ng-container *ngIf="email.invalid && email.touched">
+        <p class="caption status-danger" *ngIf="email.errors?.required">
+          Tên đăng nhập là bắt buộc!
+        </p>
+        <p class="caption status-danger" *ngIf="email.errors?.pattern">
+          Email không có thực!
+        </p>
+      </ng-container>
+    </div>
+
+    <div class="form-control-group">
+      <label class="label" for="input-password">Mật khẩu:</label>
+      <input nbInput fullWidth [(ngModel)]="user.password" #password="ngModel" name="password" type="password"
+        id="input-password" placeholder="Password" fieldSize="large"
+        [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : ''"
+        [required]="getConfigValue('forms.validation.password.required')"
+        [minlength]="getConfigValue('forms.validation.password.minLength')"
+        [maxlength]="getConfigValue('forms.validation.password.maxLength')"
+        [attr.aria-invalid]="password.invalid && password.touched ? true : null">
+        <span class="label-with-link">
+          <a class="forgot-password caption-2" routerLink="../request-password">Quên mật khẩu?</a>
+        </span>
+      <ng-container *ngIf="password.invalid && password.touched ">
+        <p class="caption status-danger" *ngIf="password.errors?.required">
+          Bạn phải nhập mật khẩu!
+        </p>
+        <p class="caption status-danger" *ngIf="password.errors?.minlength || password.errors?.maxlength">
+          Mật khẩu phải chứa
+          từ {{ getConfigValue('forms.validation.password.minLength') }}
+          đến {{ getConfigValue('forms.validation.password.maxLength') }}
+          ký tự
+        </p>
+      </ng-container>
+    </div>
+
+    <div class="form-control-group accept-group">
+      <nb-checkbox name="rememberMe" [(ngModel)]="user.rememberMe" *ngIf="rememberMe">Giữ đăng nhập trong 7 ngày</nb-checkbox>
+    </div>
+
+    <button nbButton fullWidth status="primary" size="large" [disabled]="submitted || !form.valid"
+      [class.btn-pulse]="submitted">
+      Đăng nhập
+    </button>
+  </form>
+
+  <section *ngIf="socialLinks && socialLinks.length > 0" class="links" aria-label="Social sign in">
+    or enter with:
+    <div class="socials">
+      <ng-container *ngFor="let socialLink of socialLinks">
+        <a *ngIf="socialLink.link" [routerLink]="socialLink.link" [attr.target]="socialLink.target"
+          [attr.class]="socialLink.icon" [class.with-icon]="socialLink.icon">
+          <nb-icon *ngIf="socialLink.icon; else title" [icon]="socialLink.icon"></nb-icon>
+          <ng-template #title>{{ socialLink.title }}</ng-template>
+        </a>
+        <a *ngIf="socialLink.url" [attr.href]="socialLink.url" [attr.target]="socialLink.target"
+          [attr.class]="socialLink.icon" [class.with-icon]="socialLink.icon">
+          <nb-icon *ngIf="socialLink.icon; else title" [icon]="socialLink.icon"></nb-icon>
+          <ng-template #title>{{ socialLink.title }}</ng-template>
+        </a>
+      </ng-container>
+    </div>
+  </section>
+
+  <section class="another-action" aria-label="Register">
+    Nếu bạn không có tài khoản? <a class="text-link" target="_blank" href="https://giaiphap.probox.vn">Liên hệ</a>
+  </section>
+
+    </nb-auth-block>
+  </nb-card-body>
+</nb-card>
+
+

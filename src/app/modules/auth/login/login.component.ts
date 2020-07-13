@@ -1,52 +1,53 @@
-import { Component, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
-import { NbLoginComponent, NbAuthService, NB_AUTH_OPTIONS, NbAuthResult } from '@nebular/auth';
-import { Router } from '@angular/router';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../services/common.service';
+import { Router } from '@angular/router';
+import { LoginDialogComponent } from './login-dialog.component';
 
 @Component({
   selector: 'ngx-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent extends NbLoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
+
+  showBackground = true;
 
   constructor(
-    service: NbAuthService,
-    @Inject(NB_AUTH_OPTIONS) protected options = {},
-    cd: ChangeDetectorRef,
-    router: Router,
-    private commonService: CommonService,
-  ) {
-    super(service, options, cd, router);
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public router: Router,
+  ) { }
+
+  ngAfterViewInit(): void {
+    if (window['particlesAction']) window['particlesAction']();
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (LoginDialogComponent.instances.length === 0) {
+      this.dialogService.open(LoginDialogComponent, {
+        context: {
+          onSuccess: (redirect: string) => {
+            this.showBackground = false;
+            this.goback(redirect);
+          },
+          allowBack: false,
+        },
+        hasBackdrop: false,
+      });
+    }
+  }
 
-  login() {
-    this.errors = [];
-    this.messages = [];
-    this.submitted = true;
-
-    this.service.authenticate(this.strategy, this.user).subscribe((result: NbAuthResult) => {
-      this.submitted = false;
-
-      if (result.isSuccess()) {
-        this.messages = result.getMessages();
-      } else {
-        this.errors = result.getErrors();
-      }
-
-      const redirect = result.getRedirect();
-      if (redirect) {
-        setTimeout(() => {
-          return this.router.navigateByUrl(redirect);
-        }, this.redirectDelay);
-      } else {
-        setTimeout(() => {
-          this.commonService.goToPrevious();
-        }, this.redirectDelay);
-      }
-      this.cd.detectChanges();
-    });
+  goback(redirect?: string) {
+    // const redirect = result.getRedirect();
+    if (redirect) {
+      setTimeout(() => {
+        return this.router.navigateByUrl(redirect);
+      }, 500);
+    } else {
+      setTimeout(() => {
+        this.commonService.goToPrevious();
+      }, 500);
+    }
   }
 }
