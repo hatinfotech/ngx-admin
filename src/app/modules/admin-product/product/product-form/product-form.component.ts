@@ -1,3 +1,4 @@
+import { param } from 'jquery';
 import { ProductGroupModel } from './../../../../models/product.model';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -67,6 +68,29 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       callback(this.inputId);
     }
   }
+
+  select2OptionForName: Select2Option = {
+    placeholder: 'Khai báo tên sản phẩm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    multiple: false,
+    tags: true,
+    ajax: {
+      url: (params: { term: string }) => {
+        return this.apiService.buildApiUrl('/admin-product/products', { filter_Name: params.term, limit: 20, offset: 0 });
+      },
+      delay: 100,
+      processResults: (data: any, params: any) => {
+        return {results: data.map(item => ({id: item.Name, text: item.Name}))};
+      },
+    },
+  };
 
   select2OptionForCategories: Select2Option = {
     placeholder: 'Chọn danh mục...',

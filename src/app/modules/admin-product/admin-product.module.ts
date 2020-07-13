@@ -27,6 +27,7 @@ import { ProductFormDialogComponent } from './product/product-form-dialog/produc
 import { AssignCategoriesFormComponent } from './product/assign-categories-form/assign-categories-form.component';
 import { ProductGroupListComponent } from './product-group/product-group-list/product-group-list.component';
 import { ProductGroupFormComponent } from './product-group/product-group-form/product-group-form.component';
+import { Ng2CompleterModule } from 'ng2-completer';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
@@ -68,6 +69,7 @@ import { ProductGroupFormComponent } from './product-group/product-group-form/pr
     CKEditorModule,
     NgxUploaderModule,
     TranslateModule,
+    Ng2CompleterModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

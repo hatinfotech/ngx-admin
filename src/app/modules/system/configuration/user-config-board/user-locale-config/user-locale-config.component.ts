@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
 import { LocaleConfigModel } from '../../../../../models/system.model';
-import { env } from 'process';
 import { environment } from '../../../../../../environments/environment';
 import { TaxModel } from '../../../../../models/tax.model';
 import { UnitModel } from '../../../../../models/unit.model';
-import { constructor } from 'wpapi';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../../services/api.service';

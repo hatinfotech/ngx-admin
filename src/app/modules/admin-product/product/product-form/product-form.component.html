@@ -38,7 +38,9 @@
                       icon="copy-outline">
                     </nb-icon>
                   </label>
-                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
+                  <!-- <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm"> -->
+                  <ngx-select2 formControlName="Name" [select2Option]="select2OptionForName">
+                  </ngx-select2>
                 </div>
               </div>
               <div class="col-sm-2">

@@ -8,7 +8,7 @@ describe('UserLocaleConfigComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserLocaleConfigComponent ]
+      declarations: [ UserLocaleConfigComponent ],
     })
     .compileComponents();
   }));
