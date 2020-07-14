@@ -12,6 +12,8 @@ import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart
 import { takeUntil } from 'rxjs/operators';
 import { count } from 'console';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
+import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
+import { Icon } from '../custom-element/card-header/card-header.component';
 
 export class SmartTableSetting {
   mode?: string;
@@ -78,6 +80,122 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   protected refreshPendding = false;
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
+
+  favicon: Icon = {pack: 'eva', name: 'list', size: 'medium', status: 'primary'};
+  @Input() title?: string;
+  @Input() size?: string = 'medium';
+  actionButtonList: ActionControl[] = [
+    {
+      name: 'choose',
+      status: 'success',
+      // label: 'Refresh',
+      icon: 'checkmark-square',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.selectedIds.length === 0,
+      hidden: () => !this['ref'] || Object.keys(this['ref']).length === 0 ? true : false,
+      click: () => {
+        this.choose();
+        return false;
+      },
+    },
+    {
+      name: 'add',
+      status: 'success',
+      label: 'Tạo',
+      icon: 'plus',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.gotoForm();
+        return false;
+      },
+    },
+    {
+      name: 'delete',
+      status: 'danger',
+      label: 'Xoá',
+      icon: 'trash-2',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.delete'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.selectedIds.length === 0,
+      click: () => {
+        this.deleteConfirm(this.selectedIds, () => this.loadList());
+      },
+    },
+    {
+      name: 'edit',
+      status: 'warning',
+      label: 'Chỉnh',
+      icon: 'edit-2',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.edit'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.selectedIds.length === 0,
+      click: () => {
+        this.gotoForm(this.selectedIds.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')));
+      },
+    },
+    {
+      name: 'preview',
+      status: 'primary',
+      label: 'Xem',
+      icon: 'external-link',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.selectedIds.length === 0,
+      click: () => {
+
+        return false;
+      },
+    },
+    // {
+    //   name: 'reset',
+    //   status: 'info',
+    //   // label: 'Reset',
+    //   icon: 'refresh',
+    //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.reset'), 'head-title'),
+    //   size: 'small',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     this.reset();
+    //     return false;
+    //   },
+    // },
+    {
+      name: 'refresh',
+      status: 'success',
+      // label: 'Refresh',
+      icon: 'sync',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.refresh();
+        return false;
+      },
+    },
+    {
+      name: 'close',
+      status: 'danger',
+      // label: 'Refresh',
+      icon: 'close',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      size: 'medium',
+      disabled: () => false,
+      hidden: () => !this['ref'] || Object.keys(this['ref']).length === 0 ? true : false,
+      click: () => {
+        this.close();
+        return false;
+      },
+    },
+  ];
 
   constructor(
     protected apiService: ApiService,
@@ -182,11 +300,11 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       return item[this.idKey];
     });
     // console.info(event);
-    if (this.selectedIds.length > 0) {
-      this.hasSelect = 'selected';
-    } else {
-      this.hasSelect = 'none';
-    }
+    // if (this.selectedIds.length > 0) {
+    //   this.hasSelect = 'selected';
+    // } else {
+    //   this.hasSelect = 'none';
+    // }
   }
 
   /** Row select event */
@@ -202,12 +320,13 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Create and multi edit/delete action */
   onSerialAction(event: any) {
-    if (this.selectedIds.length > 0) {
-      this.editChoosedItems();
-    } else {
-      // this.router.navigate(['modules/manager/form']);
-      this.gotoForm();
-    }
+    // if (this.selectedIds.length > 0) {
+    //   this.editChoosedItems();
+    // } else {
+    //   // this.router.navigate(['modules/manager/form']);
+    //   this.gotoForm();
+    // }
+    this.reset();
   }
 
   editChoosedItems(): false {
@@ -318,7 +437,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   /** Config for add button */
   protected configAddButton() {
     return {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      addButtonContent: '<i class="nb-loop"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
     };

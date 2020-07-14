@@ -1,6 +1,7 @@
 <nb-card class="small-header smart-table dialog-list">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.productList' | translate | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> DS sản phẩm
       <button nbButton status="warning" hero size="tiny" (click)="close()" style="float: right;" title="Đóng" *ngIf="this.ref">
         <nb-icon pack="eva" icon="close"></nb-icon>
@@ -17,13 +18,14 @@
       <button type="button" nbButton status="primary" hero size="tiny" (click)="choose()" style="float: right;" *ngIf="this.ref">
         <nb-icon pack="eva" icon="checkmark-square"></nb-icon> {{'Common.choose' | translate | headtitlecase}}
       </button>
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>
     <div class="ng2-smart-table-wrap">
-      <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
-        (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+      <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
+        (delete)="delete($event)" (edit)="onEditAction($event)" (create)="onSerialAction($event)"
+        (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
       </ng2-smart-table>
     </div>
   </nb-card-body>

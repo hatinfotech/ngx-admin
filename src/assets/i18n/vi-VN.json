@@ -192,7 +192,8 @@
     "defaultPurchase": "mặc định mua",
     "addUnitConversion": "thêm đơn vị chuyển đổi",
     "categories": "danh mục sản phẩm",
-    "assignCategories": "gán danh mục sản phẩm"
+    "assignCategories": "gán danh mục sản phẩm",
+    "productList": "danh sách sản phẩm"
   },
   "Print": {
     "listTemplate": "mẫu danh sách",

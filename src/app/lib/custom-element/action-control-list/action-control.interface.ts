@@ -9,7 +9,7 @@ export interface ActionControl {
   value?: () => string;
   disabled?: (option?: any) => boolean;
   hidden?: (option?: any) => boolean;
-  click: (event?: any, option?: any) => boolean;
-  change?: (event?: any, option?: any) => false;
-  typing?: (event?: any, option?: any) => false;
+  click: (event?: any, option?: any) => void;
+  change?: (event?: any, option?: any) => void;
+  typing?: (event?: any, option?: any) => void;
 }

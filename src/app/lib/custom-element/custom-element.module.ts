@@ -13,6 +13,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { Select2Module } from '../../../vendor/ng2-select2/lib/ng2-select2';
+import { CardHeaderComponent } from './card-header/card-header.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { Select2Module } from '../../../vendor/ng2-select2/lib/ng2-select2';
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
+    CardHeaderComponent,
   ],
   imports: [
     CommonModule,
@@ -61,6 +63,7 @@ import { Select2Module } from '../../../vendor/ng2-select2/lib/ng2-select2';
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
+    CardHeaderComponent,
   ],
 })
 export class CustomElementModule { }

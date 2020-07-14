@@ -1,4 +1,3 @@
-import { BehaviorSubject } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { ProductModel, ProductCategoryModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
@@ -11,6 +10,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AssignCategoriesFormComponent } from '../assign-categories-form/assign-categories-form.component';
+import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 
 @Component({
   selector: 'ngx-product-list',

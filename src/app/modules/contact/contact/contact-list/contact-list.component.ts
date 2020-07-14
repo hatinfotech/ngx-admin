@@ -528,6 +528,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnDestroy() {
     this.alive = false;
+    this.commonService.updateHeaderActionControlList([]);
   }
 
   refresh() {

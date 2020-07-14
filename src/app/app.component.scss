@@ -706,7 +706,7 @@ body ng2-smart-table table tr td {
 }
 
 body ng2-smart-table th.ng2-smart-actions-title-add a {
-  padding: 0.25rem 0.5rem !important;
+  padding: 0.38rem 0.5rem !important;
 }
 
 body ng2-smart-table .no {
@@ -775,7 +775,7 @@ nb-card.small-header nb-card-header button {
 }
 
 nb-card.small-header div.action-list {
-  float: right;
+  // float: right;
 }
 nb-card.small-header {
   // overflow: hidden;
@@ -896,12 +896,12 @@ ng2-smart-table {
   /* background-color: #ebebeb; */
 }
 
-.buttons-row {
+nb-card-footer .buttons-row {
   margin: -0.5rem !important;
 }
 
 .buttons-row button[nbButton] {
-  margin: 0.5rem !important;
+  // margin: 0.5rem !important;
 }
 .buttons-row button[nbButton].size-tiny {
   margin: 0.1rem !important;
@@ -1271,10 +1271,10 @@ body nb-layout .layout .layout-container .content nb-layout-footer nav {
 }
 
 .action-list .action-list-item {
-  margin: 0;
-  margin-left: 0.5rem !important;
-  display: inline-block;
-  line-height: 1.25rem !important;
+  // margin: 0;
+  // margin-left: 0.5rem !important;
+  // display: inline-block;
+  // line-height: 1.25rem !important;
 }
 
 .action-list input[type="text"].action-list-item {
@@ -1321,13 +1321,25 @@ nb-card.is-drop-over nb-card-header {
 /** End ngx-uploader */
 
 /** Icon, Button,... */
-.icon-start:not(.icon-end) nb-icon {
-  margin-right: 0.35rem !important;
-}
+// .icon-start:not(.icon-end) nb-icon {
+//   margin-right: 0.35rem !important;
+// }
 .icon-end:not(.icon-start) nb-icon {
   margin-left: 0.35rem !important;
 }
-body [nbButton].size-medium {
-  line-height: 1.3rem !important;
+// body [nbButton].size-medium {
+//   line-height: 1.3rem !important;
+// }
+body [nbButton].size-small {
+  line-height: 0.9rem !important;
+}
+body [nbButton].size-small {
+  padding: 0.5rem 0.6375rem !important;
+}
+body [nbButton].size-small.icon-start:not(.icon-end) nb-icon {
+  margin-right: 0.25rem;
+}
+body [nbButton].size-small nb-icon {
+  height: 1.2rem !important;
 }
 /** End Icon, Button */

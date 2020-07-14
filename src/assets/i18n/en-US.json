@@ -192,7 +192,8 @@
     "defaultPurchase": "default purchase",
     "addUnitConversion": "add unit conversion",
     "categories": "product categories",
-    "assignCategories": "assign product categories"
+    "assignCategories": "assign product categories",
+    "productList": "product list"
   },
   "Print": {
     "listTemplate": "list template",
