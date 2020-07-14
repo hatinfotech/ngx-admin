@@ -57,6 +57,7 @@ import { IvoipDashboardComponent } from './ivoip-dashboard.component';
 import { CustomElementModule } from '../../../lib/custom-element/custom-element.module';
 import { ReuseComponent } from '../../../lib/reuse-component';
 import { CdrStatisticsChartsPanelComponent } from './charts-panel/cdr-statistics-charts-panel.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -74,6 +75,7 @@ import { CdrStatisticsChartsPanelComponent } from './charts-panel/cdr-statistics
     NgxChartsModule,
     LeafletModule,
     CustomElementModule,
+    TranslateModule,
   ],
   declarations: [
     IvoipDashboardComponent,

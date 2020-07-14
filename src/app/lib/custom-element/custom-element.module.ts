@@ -2,18 +2,19 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
 import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent } from './smart-table/smart-table.component';
-import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule } from '@nebular/theme';
+import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
 import { AgListComponent } from './ag-list/ag-list.component';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { HeadTitlePipe } from '../pipes/head-title.pipe';
-import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableFilterComponent, SmartTableSelect2FilterComponent } from './smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableFilterComponent, SmartTableSelect2FilterComponent, SmartTableSelectFilterComponent } from './smart-table/smart-table.filter.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { Select2Module } from '../../../vendor/ng2-select2/lib/ng2-select2';
 import { CardHeaderComponent } from './card-header/card-header.component';
+import { CardHeaderCustomComponent } from './card-header/card-header-custom.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { CardHeaderComponent } from './card-header/card-header.component';
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
-    CardHeaderComponent,
+    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +43,7 @@ import { CardHeaderComponent } from './card-header/card-header.component';
     FormsModule,
     NbInputModule,
     AgGridModule,
+    NbSelectModule,
     ReactiveFormsModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
@@ -63,7 +65,7 @@ import { CardHeaderComponent } from './card-header/card-header.component';
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
-    CardHeaderComponent,
+    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent,
   ],
 })
 export class CustomElementModule { }

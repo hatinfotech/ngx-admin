@@ -56,7 +56,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   hadRowsSelected = false;
   hadMultiRowSelected = false;
-  actionControlList: ActionControl[] = [
+  actionButtonList: ActionControl[] = [
     {
       type: 'text',
       name: 'search',
@@ -64,7 +64,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       label: 'Search',
       icon: 'message-square',
       title: 'Tìm kiếm',
-      size: 'tiny',
+      size: 'medium',
       value: () => {
         return this.keyword;
       },
@@ -111,7 +111,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       label: 'Gọi',
       icon: 'phone-call',
       title: 'Gọi cho người được hỗ trợ',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -129,7 +129,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       label: 'Tạo',
       icon: 'file-add',
       title: 'Tạo TICKET mới',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -161,7 +161,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       label: 'Xem',
       icon: 'external-link',
       title: 'Xem thông tin TICKET',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return !this.hadRowsSelected || this.hadMultiRowSelected;
       },
@@ -177,7 +177,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       label: 'Huỷ',
       icon: 'close-circle',
       title: 'Huỷ yêu cầu',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return !this.hadRowsSelected;
       },
@@ -193,7 +193,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       label: 'Refresh',
       icon: 'sync',
       title: 'Làm mới',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -225,18 +225,18 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   private callStateSubscription: Subscription;
 
   constructor(
-    protected commonService: CommonService,
-    protected router: Router,
-    protected apiService: ApiService,
-    private themeService: NbThemeService,
-    private userActivityService: UserActivityData,
-    private ordersProfitChartService: OrdersProfitChartData,
-    private layoutScrollService: NbLayoutScrollService,
-    iconsLibrary: NbIconLibraries,
-    private renderer: Renderer2,
-    protected dialogService: NbDialogService,
-    private mobileAppService: MobileAppService,
-    private mmobileAppService: MobileAppService,
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
+    public themeService: NbThemeService,
+    public userActivityService: UserActivityData,
+    public ordersProfitChartService: OrdersProfitChartData,
+    public layoutScrollService: NbLayoutScrollService,
+    public iconsLibrary: NbIconLibraries,
+    public renderer: Renderer2,
+    public dialogService: NbDialogService,
+    public mobileAppService: MobileAppService,
+    public mmobileAppService: MobileAppService,
   ) {
     super(commonService, router, apiService);
 
@@ -344,7 +344,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       if (!checkpoint && helpdeskHeaderOffset.top < 50) {
         checkpoint = helpdeskDashboardOffset.top;
 
-        this.commonService.updateHeaderActionControlList(this.actionControlList);
+        this.commonService.updateHeaderActionControlList(this.actionButtonList);
 
         //   helpdeskHeaderEle.css({ position: 'fixed', zIndex: 1, width: fixedWidth, top: fixedOffset.top, left: helpdeskHeaderOffset.left });
         //   helpdeskDashboard.css({paddingTop: helpdeskHeaderEle.height() + 17});

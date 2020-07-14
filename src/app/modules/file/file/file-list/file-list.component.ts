@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { FileModel } from '../../../../models/file.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -22,15 +22,34 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
   apiPath = '/file/files';
   idKey = 'Id';
 
+  @ViewChild('uploadButton') uploadButton: ElementRef;
+
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
-    protected _http: HttpClient,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public _http: HttpClient,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
+
+    // Update card header: action control list
+    this.actionButtonList = this.actionButtonList.filter(btn => !['add', 'edit'].some(test => test === btn.name));
+    this.actionButtonList.unshift({
+      name: 'upload',
+      status: 'danger',
+      // label: 'Refresh',
+      icon: 'cloud-upload',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      size: 'medium',
+      disabled: () => false,
+      hidden: () => false,
+      click: () => {
+        this.uploadButton.nativeElement.click();
+        return false;
+      },
+    });
 
     /** ngx-uploader */
     this.options = { concurrency: 3, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };

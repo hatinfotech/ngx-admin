@@ -111,7 +111,8 @@
     "revoke": "gở",
     "approve": "duyệt",
     "dateOfApproved": "ngày duyệt",
-    "tag": "gắn thẻ"
+    "tag": "gắn thẻ",
+    "export": "xuất"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -162,6 +163,21 @@
       "CALL_REJECTED": "Bị chặn",
       "INCOMPATIBLE_DESTINATION": "Không xác định"
     },
+    "CallBlock": {
+      "title": "{{definition}}{{action}} chặn số"
+    },
+    "CallCenter": {
+      "title": "{{definition}}{{action}} trung tâm cuộc gọi"
+    },
+    "CallRoute": {
+      "title": "{{definition}}{{action}} đều hướng cuộc gọi"
+    },
+    "Dialplan": {
+      "title": "{{definition}}{{action}} định tuyến cuộc gọi"
+    },
+    "Device": {
+      "title": "{{definition}}{{action}} điện thoại IP"
+    },
     "local": "nội bộ",
     "inbound": "gọi vào",
     "outbound": "gọi ra",
@@ -193,7 +209,61 @@
     "addUnitConversion": "thêm đơn vị chuyển đổi",
     "categories": "danh mục sản phẩm",
     "assignCategories": "gán danh mục sản phẩm",
-    "productList": "danh sách sản phẩm"
+    "productList": "danh sách sản phẩm",
+    "Category": {
+      "title": "{{definition}}{{action}} danh mục sản phẩm"
+    },
+    "Group": {
+      "title": "{{definition}}{{action}} nhóm sản phẩm"
+    },
+    "Unit": {
+      "title": "{{definition}}{{action}} đơn vị tính"
+    },
+    "Menu": {
+      "product": "danh sách sản phẩm",
+      "category": "danh mục sản phẩm",
+      "group": "nhóm sản phẩm",
+      "unit": "đơn vị tính"
+    }
+  },
+  "Ads": {
+    "Code": {
+      "title": "{{definition}}{{action}} định danh quảng cáo"
+    },
+    "Content": {
+      "title": "{{definition}}{{action}} nội dung quảng cáo"
+    }
+  },
+  "Crawl": {
+    "Plan": {
+      "title": "{{definition}}{{action}} kế hoạch thu thập dữ liệu"
+    },
+    "Server": {
+      "title": "{{definition}}{{action}} máy chủ thu thập dữ liệu"
+    }
+  },
+  "EmailMarketing": {
+    "Address": {
+      "title": "{{definition}} gửi mail {{action}}"
+    },
+    "Advertisement": {
+      "title": "{{definition}}{{action}} email quảng cáo"
+    },
+    "Template": {
+      "title": "{{definition}}{{action}} emai mẫu"
+    },
+    "Gateway": {
+      "title": "{{definition}}{{action}} mail gateway"
+    }
+  },
+  "File": {
+    "File": {
+      "title": "{{definition}}{{action}} file"
+    },
+    "Store": {
+      "title": "{{definition}}{{action}} file store"
+    },
+    "dragAndDropToUpload": "kéo & thả file vào để upload"
   },
   "Print": {
     "listTemplate": "mẫu danh sách",

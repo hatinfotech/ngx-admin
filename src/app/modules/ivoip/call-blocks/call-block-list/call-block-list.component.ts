@@ -7,6 +7,8 @@ import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { IvoipService } from '../../ivoip-service';
 import { CallBlockFormComponent } from '../call-block-form/call-block-form.component';
+import { Template } from '@angular/compiler/src/render3/r3_ast';
+import { options } from '../../../sales/sales.module';
 
 @Component({
   selector: 'ngx-call-block-list',
@@ -21,11 +23,11 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
   idKey = 'call_block_uuid';
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);
@@ -40,24 +42,24 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
     actions: {
       position: 'right',
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
+    // add: {
+    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+    //   createButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // edit: {
+    //   editButtonContent: '<i class="nb-edit"></i>',
+    //   saveButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // delete: {
+    //   deleteButtonContent: '<i class="nb-trash"></i>',
+    //   confirmDelete: true,
+    // },
+    // pager: {
+    //   display: true,
+    //   perPage: 99999,
+    // },
     columns: {
       call_block_number: {
         title: 'Number',
@@ -95,7 +97,7 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
         width: '10%',
         editable: true,
         onChange: (value, rowData: PbxCallBlockModel) => {
-          this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', {domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid}, [{ call_block_uuid: rowData.call_block_uuid, is_call_out: value }]).then(rs => {
+          this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', { domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid }, [{ call_block_uuid: rowData.call_block_uuid, is_call_out: value }]).then(rs => {
             console.info(rs);
           });
         },
@@ -106,7 +108,7 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
         width: '10%',
         editable: true,
         onChange: (value, rowData: PbxCallBlockModel) => {
-          this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', {domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid}, [{ call_block_uuid: rowData.call_block_uuid, call_block_enabled: value }]).then(rs => {
+          this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', { domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid }, [{ call_block_uuid: rowData.call_block_uuid, call_block_enabled: value }]).then(rs => {
             console.info(rs);
           });
         },

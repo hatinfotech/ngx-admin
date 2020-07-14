@@ -3,16 +3,17 @@
 <nb-card class="small-header smart-table" ngFileDrop [options]="options"
 (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('File.File.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase) + '(' + 'File.dragAndDropToUpload' | translate) + ')'" [controls]="actionButtonList"></ngx-card-header>
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách file (kéo & thả file vào để upload)
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
       <button nbButton size="tiny" status="danger" (click)="uploadButton.click()" style="float: right;">
-        <nb-icon pack="eva" icon="cloud-upload-outline"></nb-icon>Chọn file tải lên</button>
+        <nb-icon pack="eva" icon="cloud-upload-outline"></nb-icon>Chọn file tải lên</button> -->
       <input #uploadButton style="display: none;" type="file" ngFileSelect [options]="options"
           (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple>
-    </nav>
+    <!-- </nav> -->
   </nb-card-header>
 
   <nb-card-body>

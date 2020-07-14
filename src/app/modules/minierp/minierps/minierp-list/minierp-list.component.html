@@ -1,19 +1,16 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('MiniErp.MeniErp.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách Mini ERP
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
       <button nbButton status="warning" hero size="tiny" (click)="setUpdateUpdate()" style="float: right;">
-        <!-- <nb-icon pack="eva" icon="refresh-outline"></nb-icon> -->
         Tự động update
       </button>
-      <!-- <button nbButton status="danger" hero size="tiny" (click)="loadList()" style="float: right;">
-        <nb-icon pack="eva" icon="arrow-circle-up"></nb-icon> Cập nhật tất cả
-      </button> -->
-
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

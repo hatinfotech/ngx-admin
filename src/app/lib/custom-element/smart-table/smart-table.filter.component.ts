@@ -49,7 +49,7 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
 
 @Component({
   template: `
-    <input
+    <input nbInput size="medium" style="height: 2.5rem;"
       [owlDateTime]="datetimepicker" [owlDateTimeTrigger]="datetimepicker" [selectMode]="'range'"
       #number
       [ngClass]="inputClass"
@@ -174,6 +174,61 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
     if (changes.query) {
       this.query = changes.query.currentValue;
       // this.inputControl.setValue(this.query);
+    }
+  }
+}
+
+@Component({
+  selector: 'ngx-smart-table-select-filter',
+  template: `
+      <nb-select [formControl]="inputControl" size="medium" placeholder="{{column.title}}">
+        <nb-option value="">{{selectText}}</nb-option>
+        <nb-option *ngFor="let item of list" [value]="item.value">{{item.title}}</nb-option>
+      </nb-select>
+  `,
+})
+export class SmartTableSelectFilterComponent extends SmartTableFilterComponent implements OnInit, OnChanges {
+
+  inputControl = new FormControl();
+  list: { value: string, title: string }[];
+  selectText: string;
+
+  constructor() {
+    super();
+    this.delay = 1000;
+  }
+
+  ngOnInit() {
+    const config = this.column.getFilterConfig();
+    if (config && config.delay) {
+      this.delay = config.delay;
+    }
+
+    const filterConfig = this.column.getFilterConfig();
+    if (filterConfig.list) {
+      this.list = filterConfig.list;
+    }
+    if (filterConfig.selectText) {
+      this.selectText = filterConfig.selectText;
+    }
+
+    if (this.query) {
+      this.inputControl.setValue(this.query);
+    }
+    this.inputControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(this.delay),
+      )
+      .subscribe((value: string) => {
+        this.query = this.inputControl.value;
+        this.setFilter();
+      });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.query) {
+      this.inputControl.setValue(changes.query.currentValue);
     }
   }
 }

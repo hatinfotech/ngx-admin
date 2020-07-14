@@ -19,11 +19,11 @@ export class UserListComponent extends DataManagerListComponent<UserModel> imple
   idKey: string = 'Code';
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected common: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public apiService: ApiService,
+    public router: Router,
+    public common: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
     super(apiService, router, common, dialogService, toastService);
   }

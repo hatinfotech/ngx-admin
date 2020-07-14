@@ -54,7 +54,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
 
   hadRowsSelected = false;
   hadMultiRowSelected = false;
-  actionControlList: ActionControl[] = [
+  actionButtonList: ActionControl[] = [
     {
       type: 'text',
       name: 'search',
@@ -62,7 +62,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
       label: 'Search',
       icon: 'message-square',
       title: 'Tìm kiếm',
-      size: 'tiny',
+      size: 'medium',
       value: () => {
         return this.keyword;
       },
@@ -191,7 +191,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
       label: 'Refresh',
       icon: 'sync',
       title: 'Làm mới',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -218,14 +218,14 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
   quickFormOnInit$ = this.quickFormOnInitSubject.asObservable();
 
   constructor(
-    protected commonService: CommonService,
-    protected router: Router,
-    protected apiService: ApiService,
-    private themeService: NbThemeService,
-    private layoutScrollService: NbLayoutScrollService,
-    iconsLibrary: NbIconLibraries,
-    private renderer: Renderer2,
-    protected dialogService: NbDialogService,
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
+    public themeService: NbThemeService,
+    public layoutScrollService: NbLayoutScrollService,
+    public iconsLibrary: NbIconLibraries,
+    public renderer: Renderer2,
+    public dialogService: NbDialogService,
     // private mobileAppService: MobileAppService,
   ) {
     super(commonService, router, apiService);
@@ -303,7 +303,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
       if (!checkpoint && helpdeskHeaderOffset.top < 50) {
         checkpoint = helpdeskDashboardOffset.top;
 
-        this.commonService.updateHeaderActionControlList(this.actionControlList);
+        this.commonService.updateHeaderActionControlList(this.actionButtonList);
 
       }
 

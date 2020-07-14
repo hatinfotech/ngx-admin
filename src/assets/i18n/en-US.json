@@ -63,7 +63,7 @@
     "confirm": "confirm",
     "enable": "enable",
     "disable": "disable",
-    "list": "danh sách",
+    "list": "list",
     "preview": "preview",
     "print": "print",
     "save": "save",
@@ -111,7 +111,8 @@
     "revoke": "revoke",
     "approve": "approve",
     "dateOfApproved": "approved date",
-    "tag": "tag"
+    "tag": "tag",
+    "export": "export"
   },
   "Contact": {
     "name": "contact name",
@@ -162,6 +163,18 @@
       "CALL_REJECTED": "call rejected",
       "INCOMPATIBLE_DESTINATION": "incompatible destination"
     },
+    "CallBlock": {
+      "title": "{{action}} call block {{definition}}"
+    },
+    "CallRoute": {
+      "title": "{{action}} call route {{definition}}"
+    },
+    "Dialplan": {
+      "title": "{{action}} dialplan {{definition}}"
+    },
+    "Device": {
+      "title": "{{action}} IP Phone {{definition}}"
+    },
     "local": "local",
     "inbound": "inbound",
     "outbound": "outbound",
@@ -182,7 +195,7 @@
   },
   "Purchase": {
     "PriceTable": {
-      "title": "{{definition}} purchase price table {{action}}"
+      "title": "{{action}} purchase price table {{definition}}"
     }
   },
   "AdminProduct": {
@@ -193,7 +206,61 @@
     "addUnitConversion": "add unit conversion",
     "categories": "product categories",
     "assignCategories": "assign product categories",
-    "productList": "product list"
+    "productList": "product list",
+    "Category": {
+      "title": "{{action}} product category {{definition}}"
+    },
+    "Group": {
+      "title": "{{action}} product group {{definition}}"
+    },
+    "Unit": {
+      "title": "{{action}} unit {{definition}}"
+    },
+    "Menu": {
+      "product": "product list",
+      "category": "product category",
+      "group": "product group",
+      "unit": "unit"
+    }
+  },
+  "Ads": {
+    "Code": {
+      "title": "{{action}} ads code {{definition}}"
+    },
+    "Content": {
+      "title": "{{action}} ads content {{definition}}"
+    }
+  },
+  "Crawl": {
+    "Plan": {
+      "title": "{{action}} crawl plan {{definition}}"
+    },
+    "Server": {
+      "title": "{{action}} crawl server {{definition}}"
+    }
+  },
+  "EmailMarketing": {
+    "Address": {
+      "title": "{{action}}} sent mail {{definition}"
+    },
+    "Advertisement": {
+      "title": "{{action}} advertisement email {{definition}}"
+    },
+    "Template": {
+      "title": "{{action}} emai template {{definition}}"
+    },
+    "Gatewya": {
+      "title": "{{action}}mail gateway {{definition}} "
+    }
+  },
+  "File": {
+    "File": {
+      "title": "{{action}} file {{definition}}"
+    },
+    "Store": {
+      "title": "{{action}} file store {{definition}}"
+    },
+    "dragAndDropToUpload": "kéo & thả file vào để upload"
   },
   "Print": {
     "listTemplate": "list template",

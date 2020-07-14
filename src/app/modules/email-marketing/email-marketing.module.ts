@@ -28,6 +28,7 @@ import { DialogFormComponent } from '../dialog/dialog-form/dialog-form.component
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { EmailSentStatsListComponent } from './email-sent-stats-list/email-sent-stats-list.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [EmailMarketingComponent,
@@ -66,6 +67,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     AgGridModule,
     CKEditorModule,
     NgxUploaderModule,
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

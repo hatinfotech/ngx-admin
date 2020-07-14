@@ -26,6 +26,7 @@ import { SmsPhoneNumberFormComponent } from './phone-number/sms-phone-number-for
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { SmsSentStatsListComponent } from './sms-sent-stats-list/sms-sent-stats-list.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SmsComponent, SmsTemplateListComponent,
@@ -65,6 +66,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     NbProgressBarModule,
     AgGridModule,
     NgxUploaderModule,
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

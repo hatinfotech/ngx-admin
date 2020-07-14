@@ -137,11 +137,11 @@ export class MinierpListComponent extends MinierpBaseListComponent<MiniErpModel>
   });
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
     public minierpService: MinierpService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, minierpService);

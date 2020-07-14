@@ -15,6 +15,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SyncFormComponent } from './sync-form/sync-form.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [WordpressComponent, WpSiteListComponent, WpSiteFormComponent, SyncFormComponent],
@@ -45,6 +46,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     DialogModule,
     NbProgressBarModule,
     AgGridModule,
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

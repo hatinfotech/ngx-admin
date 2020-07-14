@@ -40,7 +40,7 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
         title: 'Menu cha',
         type: 'string',
         width: '20%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Code: {
         title: 'Mã',
@@ -51,7 +51,7 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
         title: 'Tiêu đề',
         type: 'string',
         width: '25%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Link: {
         title: 'Link',
@@ -72,13 +72,13 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
   });
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected common: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
-    super(apiService, router, common, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService);
     // this.apiPath = '/menu/menu-items';
     // this.idKey = 'Code';
   }

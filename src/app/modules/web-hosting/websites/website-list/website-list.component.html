@@ -1,6 +1,8 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('WebHosting.Website.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách website
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
@@ -9,7 +11,7 @@
         [select2Option]="webHostingService.hostingListConfig" (selectChange)="onChangeHosting($event)"
         style="float: right; min-width: 250px;">
       </ngx-select2>
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

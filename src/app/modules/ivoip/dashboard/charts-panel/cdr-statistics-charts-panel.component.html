@@ -1,17 +1,20 @@
 <nb-card class="small-header smart-table" size="large">
+
     <nb-card-header>
-        <nav>
-          <nb-icon pack="eva" icon="list-outline"></nb-icon> Lưu lượng cuộc gọi
+      <ngx-card-header [size]="'medium'" [icon]="{pack: 'eva', name: 'list'}" [title]="('Ivoip.Dashboard.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+        <!-- <nav> -->
+          <!-- <nb-icon pack="eva" icon="list-outline"></nb-icon> Lưu lượng cuộc gọi
           <button nbButton status="success" hero size="tiny" (click)="refresh()" style="float: right;">
             <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
           </button>
           <ngx-select2 [data]="domainList" [value]="ivoipService.activeDomainUuid" [select2Option]="select2OptionForDoaminList"
             (selectChange)="onChangeDomain($event)" style="float: right; min-width: 250px;">
-          </ngx-select2>
+          </ngx-select2> -->
           <!-- <button nbButton status="warning" hero size="tiny" (click)="onSettingClick()">
               <nb-icon pack="eva" icon="settings-2-outline"></nb-icon>
             </button> -->
-        </nav>
+        <!-- </nav> -->
       </nb-card-header>
   <!-- <nb-tabset fullWidth (changeTab)="changeTab($event)">
     <nb-tab tabTitle="Orders"> -->

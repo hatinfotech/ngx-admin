@@ -25,11 +25,11 @@ export class DialplanListComponent extends IvoipBaseListComponent<PbxDialplanMod
   outboundSource: LocalDataSource = new LocalDataSource();
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);
@@ -38,30 +38,30 @@ export class DialplanListComponent extends IvoipBaseListComponent<PbxDialplanMod
   editing = {};
   rows = [];
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
       position: 'right',
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
+    // add: {
+    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+    //   createButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // edit: {
+    //   editButtonContent: '<i class="nb-edit"></i>',
+    //   saveButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // delete: {
+    //   deleteButtonContent: '<i class="nb-trash"></i>',
+    //   confirmDelete: true,
+    // },
+    // pager: {
+    //   display: true,
+    //   perPage: 99999,
+    // },
     columns: {
       // app_name: {
       //   title: 'Ứng dụng',
@@ -94,7 +94,7 @@ export class DialplanListComponent extends IvoipBaseListComponent<PbxDialplanMod
         width: '10%',
       },
     },
-  };
+  });
 
   ngOnInit() {
     this.restrict();

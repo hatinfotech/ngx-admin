@@ -37,30 +37,30 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   editing = {};
   rows = [];
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
       position: 'right',
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 100,
-    },
+    // add: {
+    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+    //   createButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // edit: {
+    //   editButtonContent: '<i class="nb-edit"></i>',
+    //   saveButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // delete: {
+    //   deleteButtonContent: '<i class="nb-trash"></i>',
+    //   confirmDelete: true,
+    // },
+    // pager: {
+    //   display: true,
+    //   perPage: 100,
+    // },
     columns: {
       device_mac_address: {
         title: 'Mã mac',
@@ -79,7 +79,7 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
     },
-  };
+  });
 
   ngOnInit() {
     this.restrict();

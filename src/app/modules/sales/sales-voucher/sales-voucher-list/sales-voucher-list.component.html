@@ -1,6 +1,8 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.Voucher.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> {{ 'Sales.SalesVoucher.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase }}
       <button type="button" nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>{{'Common.refresh' | translate | titlecase}}
@@ -8,7 +10,7 @@
       <button type="button" nbButton status="primary" hero size="tiny" (click)="openSimpleFormDialog()" style="float: right;">
         <nb-icon pack="eva" icon="plus"></nb-icon>{{'Sales.declareSaledProducts' | translate | titlecase}}
       </button>
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

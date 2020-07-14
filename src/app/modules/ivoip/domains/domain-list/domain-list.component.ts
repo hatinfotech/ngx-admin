@@ -35,42 +35,42 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
   };
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected common: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, common, dialogService, toastService, ivoipService);
+    super(apiService, router, commonService, dialogService, toastService, ivoipService);
     // this.apiPath = '/user/groups';
     // this.idKey = 'Code';
   }
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
       position: 'right',
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 9999999,
-    },
+    // add: {
+    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+    //   createButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // edit: {
+    //   editButtonContent: '<i class="nb-edit"></i>',
+    //   saveButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // delete: {
+    //   deleteButtonContent: '<i class="nb-trash"></i>',
+    //   confirmDelete: true,
+    // },
+    // pager: {
+    //   display: true,
+    //   perPage: 9999999,
+    // },
     columns: {
       No: {
         title: 'Stt',
@@ -93,10 +93,10 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
         title: 'Mô tả',
         type: 'string',
         width: '40%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
     },
-  };
+  });
 
   ngOnInit() {
     this.restrict();
@@ -107,6 +107,33 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
       super.ngOnInit();
 
     });
+  }
+
+  async init() {
+    const rs = await super.init();
+    // Extend action control list
+    this.actionButtonList.splice(0, 1, {
+      type: 'select2',
+      name: 'pbx',
+      status: 'success',
+      label: 'Tạo',
+      icon: 'plus',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.selectPbx'), 'head-title'),
+      size: 'medium',
+      select2: { data: this.pbxList, option: this.pbxListConfig },
+      value: () => this.activePbx,
+      change: (value: any, option: any) => {
+        this.onChangePbx(value);
+      },
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.gotoForm();
+        return false;
+      },
+    });
+    return rs;
   }
 
   getList(callback: (list: PbxDomainModel[]) => void) {

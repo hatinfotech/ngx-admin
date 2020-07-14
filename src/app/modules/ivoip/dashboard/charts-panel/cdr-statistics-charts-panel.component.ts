@@ -13,6 +13,7 @@ import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
+import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 
 @Component({
   selector: 'ngx-cdr-statistics-charts-panel',
@@ -39,13 +40,31 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
   activePbxDoamin: string;
 
+  actionButtonList: ActionControl[] = [
+    {
+      name: 'refresh',
+      status: 'success',
+      // label: 'Refresh',
+      icon: 'sync',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.refresh();
+        return false;
+      },
+    },
+  ];
+
   constructor(
-    protected ordersProfitChartService: OrdersProfitChartData,
-    protected dialogService: NbDialogService,
-    protected apiService: ApiService,
+    public ordersProfitChartService: OrdersProfitChartData,
+    public dialogService: NbDialogService,
+    public apiService: ApiService,
     public ivoipService: IvoipService,
-    protected commonService: CommonService,
-    protected router: Router,
+    public commonService: CommonService,
+    public router: Router,
   ) {
     this.ordersProfitChartService.getOrderProfitChartSummary()
       .pipe(takeWhile(() => this.alive))

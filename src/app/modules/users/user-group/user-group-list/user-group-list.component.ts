@@ -20,11 +20,11 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
   idKey: string = 'Code';
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected common: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public apiService: ApiService,
+    public router: Router,
+    public common: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
     super(apiService, router, common, dialogService, toastService);
     // this.apiPath = '/user/groups';

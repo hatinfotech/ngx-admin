@@ -55,7 +55,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
 
   hadRowsSelected = false;
   hadMultiRowSelected = false;
-  actionControlList: ActionControl[] = [
+  actionButtonList: ActionControl[] = [
     // {
     //   type: 'text',
     //   name: 'search',
@@ -128,7 +128,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       label: 'Tạo liên hệ',
       icon: 'file-add',
       title: 'Tạo liên hệ mới',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -144,7 +144,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       label: 'Tìm kiếm nâng cao',
       icon: 'funnel',
       title: 'Tìm kiếm nâng cao',
-      size: 'tiny',
+      size: 'medium',
       hidden: () => {
         return this.isAdvanceFilter;
       },
@@ -161,7 +161,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       label: 'Đặt lại',
       icon: 'refresh',
       title: 'Đặt lại tìm kiếm và sắp xếp',
-      size: 'tiny',
+      size: 'medium',
       hidden: () => {
         return !this.isAdvanceFilter;
       },
@@ -226,7 +226,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       label: 'Refresh',
       icon: 'sync',
       title: 'Làm mới',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -367,16 +367,16 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
   };
 
   constructor(
-    protected commonService: CommonService,
-    protected router: Router,
-    protected apiService: ApiService,
-    private themeService: NbThemeService,
-    private userActivityService: UserActivityData,
-    private ordersProfitChartService: OrdersProfitChartData,
-    private layoutScrollService: NbLayoutScrollService,
-    iconsLibrary: NbIconLibraries,
-    private renderer: Renderer2,
-    protected dialogService: NbDialogService,
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
+    public themeService: NbThemeService,
+    public userActivityService: UserActivityData,
+    public ordersProfitChartService: OrdersProfitChartData,
+    public layoutScrollService: NbLayoutScrollService,
+    public iconsLibrary: NbIconLibraries,
+    public renderer: Renderer2,
+    public dialogService: NbDialogService,
     // private mobileAppService: MobileAppService,
     // private mmobileAppService: MobileAppService,
   ) {
@@ -483,7 +483,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       if (!checkpoint && helpdeskHeaderOffset.top < 50) {
         checkpoint = helpdeskDashboardOffset.top;
 
-        this.commonService.updateHeaderActionControlList(this.actionControlList);
+        this.commonService.updateHeaderActionControlList(this.actionButtonList);
 
         //   helpdeskHeaderEle.css({ position: 'fixed', zIndex: 1, width: fixedWidth, top: fixedOffset.top, left: helpdeskHeaderOffset.left });
         //   helpdeskDashboard.css({paddingTop: helpdeskHeaderEle.height() + 17});

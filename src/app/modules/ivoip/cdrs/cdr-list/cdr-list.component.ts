@@ -10,7 +10,7 @@ import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
 import { TranslateService } from '@ngx-translate/core';
-import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableSelectFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @Component({
   selector: 'ngx-cdr-list',
@@ -35,20 +35,20 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
       display: true,
       perPage: 40,
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="fas fa-play-circle"></i>',
-      confirmDelete: true,
-    },
+    // add: {
+    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+    //   createButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // edit: {
+    //   editButtonContent: '<i class="nb-edit"></i>',
+    //   saveButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // delete: {
+    //   deleteButtonContent: '<i class="fas fa-play-circle"></i>',
+    //   confirmDelete: true,
+    // },
     columns: {
       No: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.noNumber'), 'head-title'),
@@ -59,7 +59,8 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.direction'), 'head-title'),
         type: 'html',
         filter: {
-          type: 'list',
+          type: 'custom',
+          component: SmartTableSelectFilterComponent,
           config: {
             selectText: this.commonService.textTransform(this.commonService.translate.instant('Common.all'), 'head-title') + '...',
             list: [
@@ -150,11 +151,11 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         // title: 'Trạng thái',
         // type: 'string',
         width: '10%',
-
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.state'), 'head-title'),
         type: 'text',
         filter: {
-          type: 'list',
+          type: 'custom',
+          component: SmartTableSelectFilterComponent,
           config: {
             selectText: this.commonService.textTransform(this.commonService.translate.instant('Common.all'), 'head-title') + '...',
             list: [
@@ -230,6 +231,46 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
     // private mobileAppService: MobileAppService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);
+
+    this.actionButtonList = this.actionButtonList.filter(btn => !['delete', 'add', 'edit', 'preview'].some(name => name === btn.name));
+
+  }
+
+  async init() {
+    const rs = await super.init();
+    this.actionButtonList.splice(this.actionButtonList.length - 2, 0, {
+      name: 'export',
+      status: 'danger',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.export'), 'head-title'),
+      icon: 'external-link',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.export'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.exportCdrs();
+        return false;
+      },
+    });
+    this.actionButtonList.splice(this.actionButtonList.length - 2, 0,
+      {
+        name: 'reset',
+        status: 'info',
+        // label: 'Reset',
+        icon: 'refresh',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.reset'), 'head-title'),
+        size: 'medium',
+        disabled: () => {
+          return false;
+        },
+        click: () => {
+          this.reset();
+          return false;
+        },
+      },
+    );
+    return rs;
   }
 
   ngOnInit() {

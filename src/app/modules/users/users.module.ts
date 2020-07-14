@@ -17,10 +17,11 @@ import { PermissionGrantComponent } from './permission-grant/permission-grant.co
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
-import { TreeModule } from 'angular-tree-component';
+import { TreeModule, TreeDraggedElement } from 'angular-tree-component';
 import { UserChangePasswordFormComponent } from './profile/user-change-password-form/user-change-password-form.component';
 import { SystemModule } from '../system/system.module';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     NbDatepickerModule,
     TreeModule,
     SystemModule,
+    TranslateModule,
   ],
   exports: [UserListComponent],
   entryComponents: [

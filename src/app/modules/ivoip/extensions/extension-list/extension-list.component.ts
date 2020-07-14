@@ -61,7 +61,7 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
   editing = {};
   rows = [];
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
@@ -74,24 +74,24 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
       //   },
       // ],
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
+    // add: {
+    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+    //   createButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // edit: {
+    //   editButtonContent: '<i class="nb-edit"></i>',
+    //   saveButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // delete: {
+    //   deleteButtonContent: '<i class="nb-trash"></i>',
+    //   confirmDelete: true,
+    // },
+    // pager: {
+    //   display: true,
+    //   perPage: 99999,
+    // },
     columns: {
       extension: {
         title: 'Extension',
@@ -146,7 +146,7 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
         },
       },
     },
-  };
+  });
 
   ngOnInit() {
     this.restrict();

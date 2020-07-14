@@ -5,6 +5,8 @@ import { ApiService } from '../services/api.service';
 import { ReuseComponent } from './reuse-component';
 import { Subscription, Subject } from 'rxjs';
 import { NbDialogRef, NbDialogConfig } from '@nebular/theme';
+import { Icon } from './custom-element/card-header/card-header.component';
+import { ActionControl } from './custom-element/action-control-list/action-control.interface';
 
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent {
 
@@ -18,6 +20,41 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() onDialogClose?: () => void;
   @Input() onDialogHide?: () => void;
+
+  favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
+  @Input() title?: string;
+  @Input() size?: string = 'medium';
+  actionButtonList: ActionControl[] = [
+    {
+      name: 'refresh',
+      status: 'success',
+      // label: 'Refresh',
+      icon: 'sync',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.refresh();
+        return false;
+      },
+    },
+    {
+      name: 'close',
+      status: 'danger',
+      // label: 'Refresh',
+      icon: 'close',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      size: 'medium',
+      disabled: () => false,
+      hidden: () => !this['ref'] || Object.keys(this['ref']).length === 0 ? true : false,
+      click: () => {
+        this.close();
+        return false;
+      },
+    },
+  ];
 
   constructor(
     protected commonService: CommonService,
@@ -93,8 +130,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         };
 
         // Show dialog
-        this['ref'].show = (config?: {events?: {[key: string]: any}}) => {
-          if(config && config.events) {
+        this['ref'].show = (config?: { events?: { [key: string]: any } }) => {
+          if (config && config.events) {
             Object.keys(config.events).forEach((eventName: string) => {
               this[eventName] = config.events[eventName];
             });
@@ -111,6 +148,10 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         console.log(compoentNativeEle);
       }
     }
+  }
+
+  refresh() {
+
   }
 
   close() {

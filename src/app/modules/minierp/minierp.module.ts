@@ -15,6 +15,7 @@ import { DialogModule } from '../dialog/dialog.module';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableIconComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     ReactiveFormsModule,
     DialogModule,
     NbProgressBarModule,
+    TranslateModule,
     SortablejsModule.forRoot({
       animation: 200,
     }),

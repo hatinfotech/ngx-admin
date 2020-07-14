@@ -17,3 +17,16 @@
   margin-left: 0.3rem !important;
   margin-bottom: 0.3rem !important;
 }
+
+.action-list-item.select2 {
+  margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
+  appearance: none;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+}

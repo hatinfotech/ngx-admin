@@ -189,6 +189,11 @@ body .logo-container {
     top: 7px;
     right: 10px;
   }
+  .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    height: 2.5rem !important;
+  }
 
   .select2-container--open .select2-dropdown--below {
     border-color: #edf1f7 !important;
@@ -332,8 +337,7 @@ body .logo-container {
       top: 7px;
       right: 8px;
     }
-ß
-    .select2-selection__arrow {
+    ß .select2-selection__arrow {
       height: 2.3rem !important;
     }
   }

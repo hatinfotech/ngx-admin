@@ -12,6 +12,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { ResourceListComponent } from './resources/resource-list/resource-list.component';
 import { ResourceFormComponent } from './resources/resource-form/resource-form.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ModulesComponent, ModuleFormComponent, ModuleListComponent, ResourceListComponent, ResourceFormComponent],
@@ -38,6 +39,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     NbCheckboxModule,
     NbRadioModule,
     NbDatepickerModule,
+    TranslateModule,
   ],
   entryComponents: [
     SmartTableFilterComponent,

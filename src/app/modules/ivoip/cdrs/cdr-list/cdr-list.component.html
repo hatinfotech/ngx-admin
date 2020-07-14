@@ -1,6 +1,7 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Ivoip.Cdrs.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> {{'Ivoip.List.title' | translate | headtitlecase}}
       <button nbButton status="success" hero size="tiny" (click)="onReloadBtnClick()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
@@ -14,7 +15,7 @@
       <ngx-select2 [data]="domainList" [value]="ivoipService.activeDomainUuid" [select2Option]="select2OptionForDoaminList"
         (selectChange)="onChangeDomain($event)" style="float: right; min-width: 250px;">
       </ngx-select2>
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

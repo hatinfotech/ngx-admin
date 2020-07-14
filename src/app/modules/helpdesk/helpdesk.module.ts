@@ -27,6 +27,7 @@ import { StatsBarAnimationChartComponent } from './profit-card/front-side/stats-
 import { ActionControlListComponent } from '../../lib/custom-element/action-control-list/action-control-list.component';
 import { QuickTicketFormComponent } from './dashboard/quick-ticket-form/quick-ticket-form.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     NgxChartsModule,
     LeafletModule,
 
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

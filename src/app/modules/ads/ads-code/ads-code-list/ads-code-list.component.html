@@ -1,11 +1,12 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Ads.Code.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách định danh quảng cáo
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

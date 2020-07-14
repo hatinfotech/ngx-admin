@@ -17,6 +17,7 @@ import { SortablejsModule } from 'ngx-sortablejs';
 import { CrawlPlanListComponent } from './plan/crawl-plan-list/crawl-plan-list.component';
 import { CrawlPlanFormComponent } from './plan/crawl-plan-form/crawl-plan-form.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [CrawlComponent, CrawlDashboardComponent, CrawlServerListComponent, CrawlServerFormComponent, CrawlPlanListComponent, CrawlPlanFormComponent],
@@ -47,6 +48,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     DialogModule,
     NbProgressBarModule,
     AgGridModule,
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

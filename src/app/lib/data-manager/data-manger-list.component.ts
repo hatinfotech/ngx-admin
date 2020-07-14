@@ -81,7 +81,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   protected refreshPendding = false;
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
 
-  favicon: Icon = {pack: 'eva', name: 'list', size: 'medium', status: 'primary'};
+  favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   @Input() title?: string;
   @Input() size?: string = 'medium';
   actionButtonList: ActionControl[] = [
@@ -479,6 +479,16 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Config for stmart table setttings */
   protected configSetting(settings: SmartTableSetting) {
+
+    if (!settings.add) {
+      settings.add = this.configAddButton();
+    }
+    if (!settings.edit) {
+      settings.edit = this.configEditButton();
+    }
+    if (!settings.delete) {
+      settings.delete = this.configDeleteButton();
+    }
 
     // Set default filter function
     Object.keys(settings.columns).forEach(key => {

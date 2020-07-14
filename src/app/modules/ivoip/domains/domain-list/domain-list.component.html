@@ -1,17 +1,15 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Ivoip.Dialplan.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách domain
       <button nbButton status="success" hero size="tiny" (click)="onReloadBtnClick()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
-      <!-- <button nbButton status="primary" hero size="tiny" (click)="onDeclareNewDomainForPbx()" style="float: right;">
-        <nb-icon pack="eva" icon="cube-outline"></nb-icon> Khởi tạo domain
-      </button> -->
       <ngx-select2 [data]="pbxList" [value]="activePbx" [select2Option]="pbxListConfig"
         (selectChange)="onChangePbx($event)" style="float: right; min-width: 250px;">
       </ngx-select2>
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

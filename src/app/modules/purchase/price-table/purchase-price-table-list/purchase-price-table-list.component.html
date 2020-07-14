@@ -1,6 +1,8 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Purchase.PriceTable.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> {{ 'Purchase.PriceTable.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase }}
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.refresh' | translate | titlecase}}
@@ -8,7 +10,7 @@
       <button nbButton status="danger" hero size="tiny" (click)="openImportForm()" style="float: right;">
         <nb-icon pack="eva" icon="code-download"></nb-icon>{{'Common.import' | translate | titlecase}}
       </button>
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

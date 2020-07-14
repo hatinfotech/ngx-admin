@@ -16,6 +16,7 @@ import { MenuListComponent } from './manager-menu/menu-list/menu-list.component'
 import { MenuFormComponent } from './manager-menu/menu-form/menu-form.component';
 import { DialogModule } from '../dialog/dialog.module';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [MenuComponent, MenuListComponent, MenuFormComponent],
@@ -44,6 +45,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     DialogModule,
     CommonModule,
     MenuRoutingModule,
+    TranslateModule,
   ],
   entryComponents: [
     SmartTableFilterComponent,

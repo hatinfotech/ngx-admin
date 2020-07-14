@@ -20,11 +20,11 @@ export class EmailTemplateListComponent extends DataManagerListComponent<EmailTe
   idKey = 'Code';
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }

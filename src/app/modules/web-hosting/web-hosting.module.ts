@@ -22,6 +22,7 @@ import { DatabaseUserFormComponent } from './database-users/database-user-form/d
 import { FtpListComponent } from './ftps/ftp-list/ftp-list.component';
 import { FtpFormComponent } from './ftps/ftp-form/ftp-form.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     DialogModule,
     NbProgressBarModule,
     NbCardModule,
+    TranslateModule,
     SortablejsModule.forRoot({
       animation: 200,
     }),

@@ -1,29 +1,22 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Ivoip.CallRoute.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Định tuyến cuộc gọi
       <button nbButton status="success" hero size="tiny" (click)="onReloadBtnClick()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
       <button nbButton status="primary" hero size="tiny" (click)="router.navigate(['/ivoip/dialplans/list'])" style="float: right;">
-        <!-- <nb-icon pack="eva" icon="cube-outline"></nb-icon> -->
         In/Out
       </button>
       <button nbButton status="primary" hero size="tiny" (click)="router.navigate(['/ivoip/time-conditions/list'])" style="float: right;">
-        <!-- <nb-icon pack="eva" icon="cube-outline"></nb-icon> -->
         Giờ làm việc
       </button>
       <ngx-select2 [data]="domainList" [value]="ivoipService.activeDomainUuid" [select2Option]="select2OptionForDoaminList"
         (selectChange)="onChangeDomain($event)" style="float: right; min-width: 250px;">
       </ngx-select2>
-      <!-- <nb-select size="small" [selected]="'select_domain'" (selectedChange)="onChangeDomain($event)" status="primary" style="float: right; min-width: 250px;">
-        <nb-option value="select_domain">Chọn domain...</nb-option>
-        <nb-option *ngFor="let domain of domainList" [value]="domain.DomainId"> {{ domain.DomainName }}</nb-option>
-      </nb-select> -->
-      <!-- <button nbButton status="info" hero size="tiny" (click)="onGenerateQRCodeBtnClick()" style="float: right;">
-        <nb-icon pack="fa" icon="qrcode"></nb-icon>
-      </button> -->
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

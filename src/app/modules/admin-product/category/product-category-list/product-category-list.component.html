@@ -1,11 +1,12 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.Category.title' | translate:{definition: commonService.translate.instant('Common.list'), action: ''} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách danh mục sản phẩm
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
         <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
       </button>
-    </nav>
+    </nav> -->
   </nb-card-header>
 
   <nb-card-body>

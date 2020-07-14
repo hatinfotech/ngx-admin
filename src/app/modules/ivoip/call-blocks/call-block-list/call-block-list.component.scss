@@ -1,0 +1,18 @@
+.card-header-container {
+  display: flex;
+
+  .title {
+    line-height: 2rem;
+    flex-grow: 5;
+    color: #6c757d;
+  }
+  &.size-medium .title {
+    line-height: 2.6rem;
+  }
+  &.size-small .title {
+    line-height: 2rem;
+  }
+  .controls {
+    flex-grow: 5;
+  }
+}

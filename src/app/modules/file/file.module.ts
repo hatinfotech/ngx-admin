@@ -21,6 +21,7 @@ import { FileUploadComponent } from './file/file-upload/file-upload.component';
 import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [FileComponent, FileListComponent, FileFormComponent, FileStoreListComponent, FileStoreFormComponent, FileUploadComponent],
@@ -55,6 +56,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     OwlNativeDateTimeModule,
     CKEditorModule,
     NgxUploaderModule,
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

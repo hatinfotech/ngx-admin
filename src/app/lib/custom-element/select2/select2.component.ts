@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 import { Select2Options } from '../../../../vendor/ng2-select2/lib/ng2-select2.interface';
 
@@ -6,7 +6,7 @@ export interface Select2Option {
   [key: string]: any;
   placeholder: string;
   allowClear: boolean;
-  width: string;
+  width?: string;
   dropdownAutoWidth: boolean;
   minimumInputLength: number;
   keyMap: {
@@ -39,8 +39,7 @@ export interface Select2Option {
     },
   ],
 })
-export class Select2Component implements ControlValueAccessor, Validator, OnChanges {
-
+export class Select2Component implements ControlValueAccessor, Validator, OnChanges, AfterViewInit {
 
   private provinceData: { id: number, name: string, type: 'central' | 'province' };
   onChange: (item: any) => void;
@@ -51,6 +50,8 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   // @Input('disabled') disabled: string | string[];
   @Input('select2Option') select2Option: Select2Options;
   @Output() selectChange = new EventEmitter<Object>();
+  @Input() status?: string;
+  @ViewChild('controls') controls: ElementRef;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data && changes.data.previousValue !== changes.data.currentValue) {
@@ -59,6 +60,10 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
       //   text: this.select2Option.placeholder,
       // });
     }
+  }
+
+  ngAfterViewInit() {
+    // $(this.controls.nativeElement).prop('status', this.status);
   }
 
   select2Value = '';

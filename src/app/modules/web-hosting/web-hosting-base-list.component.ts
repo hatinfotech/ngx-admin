@@ -51,6 +51,33 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
     }));
   }
 
+  async init() {
+    const rs = await super.init();
+    // Extend action control list
+    this.actionButtonList.unshift({
+      type: 'select2',
+      name: 'pbxdomain',
+      status: 'success',
+      label: 'Tạo',
+      icon: 'plus',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      size: 'medium',
+      select2: { data: this.webHostingService.hostingList, option: this.webHostingService.hostingListConfig },
+      value: () => this.webHostingService.activeHosting,
+      change: (value: any, option: any) => {
+        this.onChangeHosting(value);
+      },
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.gotoForm();
+        return false;
+      },
+    });
+    return rs;
+  }
+
   executeGet(params: any, success: (resources: M[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: M[] | HttpErrorResponse) => void) {
     params['hosting'] = this.webHostingService.activeHosting;
     super.executeGet(params, success, error, complete);

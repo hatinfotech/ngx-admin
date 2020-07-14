@@ -33,6 +33,33 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
     });
   }
 
+  async init() {
+    const rs = await super.init();
+    // Extend action control list
+    this.actionButtonList.unshift({
+      type: 'select2',
+      name: 'pbxdomain',
+      status: 'success',
+      label: 'Tạo',
+      icon: 'plus',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      size: 'medium',
+      select2: { data: this.domainList, option: this.select2OptionForDoaminList },
+      value: () => this.ivoipService.activeDomainUuid,
+      change: (value: any, option: any) => {
+        this.onChangeDomain(value);
+      },
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.gotoForm();
+        return false;
+      },
+    });
+    return rs;
+  }
+
   /** User for reuse component */
   onResume() {
     super.onResume();

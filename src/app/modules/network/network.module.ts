@@ -15,6 +15,7 @@ import { ProxyListComponent } from './proxy/proxy-list/proxy-list.component';
 import { ProxyFormComponent } from './proxy/proxy-form/proxy-form.component';
 import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [NetworkComponent, ProxyListComponent, ProxyFormComponent],
@@ -45,6 +46,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     DialogModule,
     NbProgressBarModule,
     AgGridModule,
+    TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

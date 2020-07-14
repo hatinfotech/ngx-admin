@@ -19,41 +19,41 @@ export class PbxListComponent extends DataManagerListComponent<PbxModel> impleme
   idKey: string = 'Code';
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected common: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
-    super(apiService, router, common, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService);
     // this.apiPath = '/user/groups';
     // this.idKey = 'Code';
   }
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
       position: 'right',
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 9999999,
-    },
+    // add: {
+    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+    //   createButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // edit: {
+    //   editButtonContent: '<i class="nb-edit"></i>',
+    //   saveButtonContent: '<i class="nb-checkmark"></i>',
+    //   cancelButtonContent: '<i class="nb-close"></i>',
+    // },
+    // delete: {
+    //   deleteButtonContent: '<i class="nb-trash"></i>',
+    //   confirmDelete: true,
+    // },
+    // pager: {
+    //   display: true,
+    //   perPage: 9999999,
+    // },
     columns: {
       No: {
         title: 'Stt',
@@ -71,13 +71,13 @@ export class PbxListComponent extends DataManagerListComponent<PbxModel> impleme
         title: 'Tên',
         type: 'string',
         width: '30%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Description: {
         title: 'Mô tả',
         type: 'string',
         width: '50%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       ApiVersion: {
         title: 'Version',
@@ -85,7 +85,7 @@ export class PbxListComponent extends DataManagerListComponent<PbxModel> impleme
         width: '10%',
       },
     },
-  };
+  });
 
   ngOnInit() {
     this.restrict();
