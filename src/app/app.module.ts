@@ -100,7 +100,6 @@ export class DynamicLocaleId extends String {
     IvoipModule,
     HttpClientModule,
     AuthModule,
-    
     TreeModule.forRoot(),
     ThemeModule.forRoot(),
     NbSidebarModule.forRoot(),

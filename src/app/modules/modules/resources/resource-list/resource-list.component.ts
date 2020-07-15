@@ -55,7 +55,7 @@ export class ResourceListComponent extends DataManagerListComponent<ResourceMode
         title: 'Name',
         type: 'string',
         width: '45%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Description: {
         title: 'Diễn giải',
@@ -66,13 +66,13 @@ export class ResourceListComponent extends DataManagerListComponent<ResourceMode
   };
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected common: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
-    super(apiService, router, common, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService);
     // this.apiPath = '/module/modules';
     // this.idKey = 'Name';
   }

@@ -54,11 +54,11 @@ export class WebsiteListComponent extends WebHostingBaseListComponent<WhWebsiteM
   });
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
     public webHostingService: WebHostingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, webHostingService);

@@ -22,11 +22,11 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public common: CommonService,
+    public commonService: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, common, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService);
     // this.apiPath = '/user/groups';
     // this.idKey = 'Code';
   }
@@ -77,13 +77,13 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
         title: 'Name',
         type: 'string',
         width: '20%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Description: {
         title: 'Description',
         type: 'string',
         width: '30%',
-        filterFunction: (value: string, query: string) => this.common.smartFilter(value, query),
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
     },
   };
