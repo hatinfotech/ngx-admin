@@ -1,7 +1,9 @@
 <div class="dialog-wrap" #dialogWrap>
   <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
     <nb-card-header>
-      <nav>
+      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.PriceTableOfPrinting.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+      <!-- <nav>
         {{'Sales.PriceTable.title' | translate:{action:commonService.translate.instant('Common.preview'), definition:''} | headtitlecase}}
         <button nbButton status="danger" hero size="tiny" (click)="close()" style="float: right;"
           title="{{'Common.goback' | translate | headtitlecase}}">
@@ -11,7 +13,7 @@
           title="{{'Common.print' | translate | headtitlecase}}">
           <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
         </button>
-      </nav>
+      </nav> -->
     </nb-card-header>
     <nb-card-body #printContent>
       <div id="print-area">

@@ -1,16 +1,23 @@
-import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewChild, ViewContainerRef } from '@angular/core'; import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../models/sales.model'; import { CommonService } from '../../services/common.service'; import { Router } from '@angular/router'; import { ApiService } from '../../services/api.service';
+import { environment } from './../../../environments/environment';
+import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core'; import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../models/sales.model'; import { CommonService } from '../../services/common.service'; import { Router } from '@angular/router'; import { ApiService } from '../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DataManagerFormComponent } from './data-manager-form.component';
+import { Icon } from '../custom-element/card-header/card-header.component';
+import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 
 declare var $: JQueryStatic;
 
-export abstract class DataManagerPrintComponent<M> extends BaseComponent implements OnInit {
+export abstract class DataManagerPrintComponent<M> extends BaseComponent implements OnInit, AfterViewInit {
 
-  title: string = 'Xem trước';
+  // title: string = 'Xem trước';
   @Input() data: M;
   @ViewChild('printContent', { read: ViewContainerRef, static: true }) printContent: ViewContainerRef;
   @Input() onSaveAndClose?: (id: any) => void;
   @Input() onSaveAndPrint?: (id: any) => void;
+
+  favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
+  @Input() title?: string;
+  @Input() size?: string = 'medium';
 
   constructor(
     protected commonService: CommonService,
@@ -18,6 +25,19 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     protected apiService: ApiService,
   ) {
     super(commonService, router, apiService);
+    this.actionButtonList.unshift({
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => false,
+      hidden: () => false,
+      click: () => {
+        this.print();
+      },
+    });
   }
 
   ngOnInit() {
@@ -39,7 +59,6 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   }
 
   async init() {
-
     return super.init();
   }
 
@@ -68,7 +87,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     frameDoc.document.write(`
     <html>
       <head>
-        <base href="/mini-erp/">
+        <base href="/${environment.basePath}/">
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
         <link href="assets/style/print.css" rel="stylesheet" type="text/css" />

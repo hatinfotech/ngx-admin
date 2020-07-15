@@ -15,6 +15,7 @@ import { UnitModel } from '../../../../models/unit.model';
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
 import { environment } from '../../../../../environments/environment';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 
 
 @Component({
@@ -84,6 +85,21 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     public ref: NbDialogRef<SalesPriceReportFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** Append print button to head card */
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
   }
 
   getRequestId(callback: (id?: string[]) => void) {

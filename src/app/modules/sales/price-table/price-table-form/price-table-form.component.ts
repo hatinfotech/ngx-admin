@@ -1,3 +1,4 @@
+import { ActionControlListOption } from './../../../../lib/custom-element/action-control-list/action-control.interface';
 import { Component, OnInit, Type } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SalesPriceTableModel, SalesPriceTableDetailModel, SalesMasterPriceTableModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
@@ -121,6 +122,21 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     public currencyPipe: CurrencyPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** Append print button to head card */
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
 
     /** AG-Grid */
     const $this = this;

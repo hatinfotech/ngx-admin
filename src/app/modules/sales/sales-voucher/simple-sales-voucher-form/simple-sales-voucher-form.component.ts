@@ -16,6 +16,7 @@ import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 
 @Component({
   selector: 'ngx-simple-sales-voucher-form',
@@ -85,6 +86,19 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
     public ref: NbDialogRef<SimpleSalesVoucherFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
   }
 
   getRequestId(callback: (id?: string[]) => void) {

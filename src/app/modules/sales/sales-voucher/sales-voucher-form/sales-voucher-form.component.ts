@@ -18,6 +18,7 @@ import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 // import localeVi from '@angular/common/locales/vi';
 // import localeViExtra from '@angular/common/locales/extra/vi';
+import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 
 @Component({
   selector: 'ngx-sales-voucher-form',
@@ -87,6 +88,19 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     public ref: NbDialogRef<SalesVoucherFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
   }
 
   getRequestId(callback: (id?: string[]) => void) {

@@ -675,10 +675,10 @@ body ng2-smart-table table tr:nth-child(even) td:first-child:hover {
   background-image: linear-gradient(to right, #d9dce0, #edf1f7);
 }
 
-body ng2-smart-table table tr.ng2-smart-titles th:first-child input {
-  /* width: 20px;
-  height: 16px; */
-}
+// body ng2-smart-table table tr.ng2-smart-titles th:first-child input {
+//   /* width: 20px;
+//   height: 16px; */
+// }
 
 .ng2-smart-actions input.form-control {
   width: initial !important;
@@ -758,13 +758,13 @@ nb-card.small-header nb-card-header nav {
   height: 2.45rem !important;
   line-height: 2.45rem !important;
 }
-nb-card.small-header nb-card-header nav button,
-nb-card.small-header nb-card-header nav ngx-select2 {
-  /* float: right; */
-  // margin: 0;
-  // margin-left: 0.5rem !important;
-  // display: inline-block;
-}
+// nb-card.small-header nb-card-header nav button,
+// nb-card.small-header nb-card-header nav ngx-select2 {
+//   /* float: right; */
+//   // margin: 0;
+//   // margin-left: 0.5rem !important;
+//   // display: inline-block;
+// }
 
 // div.action-list button {
 //   margin: 0;
@@ -773,22 +773,22 @@ nb-card.small-header nb-card-header nav ngx-select2 {
 //   line-height: 1.25rem !important;
 // }
 
-[size="tiny"],
-nb-card.small-header div.action-list button {
-  // height: 2.45rem;
-  // /* float: right; */
-  // margin-top: 1px;
-}
-nb-card.small-header nb-card-header button {
-  // line-height: 1.25rem !important;
-}
+// [size="tiny"],
+// nb-card.small-header div.action-list button {
+//   // height: 2.45rem;
+//   // /* float: right; */
+//   // margin-top: 1px;
+// }
+// nb-card.small-header nb-card-header button {
+//   // line-height: 1.25rem !important;
+// }
 
-nb-card.small-header div.action-list {
-  // float: right;
-}
-nb-card.small-header {
-  // overflow: hidden;
-}
+// nb-card.small-header div.action-list {
+//   // float: right;
+// }
+// nb-card.small-header {
+//   // overflow: hidden;
+// }
 nb-card.smart-table nb-card-body {
   padding: 0;
 }
@@ -898,20 +898,20 @@ ng2-smart-table {
 .form-details .form-group > label {
   display: none !important;
 }
-.form-details .form-detail-item {
-  /* padding: 3px; */
-}
-.form-details .form-detail-item:nth-of-type(even) {
-  /* background-color: #ebebeb; */
-}
+// .form-details .form-detail-item {
+//   /* padding: 3px; */
+// }
+// .form-details .form-detail-item:nth-of-type(even) {
+//   /* background-color: #ebebeb; */
+// }
 
 nb-card-footer .buttons-row {
   margin: -0.5rem !important;
 }
 
-.buttons-row button[nbButton] {
-  // margin: 0.5rem !important;
-}
+// .buttons-row button[nbButton] {
+//   // margin: 0.5rem !important;
+// }
 .buttons-row button[nbButton].size-tiny {
   margin: 0.1rem !important;
 }
@@ -987,9 +987,9 @@ body .form-group[state="warning"] textarea:focus {
 /* End form */
 
 /* Button */
-body [nbButton] {
-  /* margin: 0.3rem; */
-}
+// body [nbButton] {
+//   /* margin: 0.3rem; */
+// }
 /* End Button */
 
 /* Dialog */
@@ -1054,9 +1054,9 @@ nb-card.ag-grid-card nb-card-body .ag-grid-wrap {
   /* margin: -1rem -1.25rem; */
   height: 100%;
 }
-nb-card.ag-grid-card {
-  // overflow: hidden;
-}
+// nb-card.ag-grid-card {
+//   // overflow: hidden;
+// }
 nb-card.ag-grid-card nb-card-body {
   padding: 0;
 }
@@ -1253,21 +1253,21 @@ body nb-layout .layout .layout-container .content nb-layout-footer nav {
 /* End Fotter */
 
 /* My List style */
-.m-list {
-}
-.m-list-item,
-.m-list-filter {
-  border-bottom: 1px solid #69696921;
-  color: #192038;
-  font-family: Open Sans, sans-serif;
-  font-size: 0.9375rem;
-  font-weight: 400;
-  line-height: 1.25rem;
-  // width: 100%;
-}
-.m-list-item-property {
-  // padding: 1.5rem;
-}
+// .m-list {
+// }
+// .m-list-item,
+// .m-list-filter {
+//   border-bottom: 1px solid #69696921;
+//   color: #192038;
+//   font-family: Open Sans, sans-serif;
+//   font-size: 0.9375rem;
+//   font-weight: 400;
+//   line-height: 1.25rem;
+//   // width: 100%;
+// }
+// .m-list-item-property {
+//   // padding: 1.5rem;
+// }
 
 /* End My List style */
 
@@ -1279,12 +1279,12 @@ body nb-layout .layout .layout-container .content nb-layout-footer nav {
   align-items: flex-start;
 }
 
-.action-list .action-list-item {
-  // margin: 0;
-  // margin-left: 0.5rem !important;
-  // display: inline-block;
-  // line-height: 1.25rem !important;
-}
+// .action-list .action-list-item {
+//   // margin: 0;
+//   // margin-left: 0.5rem !important;
+//   // display: inline-block;
+//   // line-height: 1.25rem !important;
+// }
 
 .action-list input[type="text"].action-list-item {
   margin-top: 1px;
