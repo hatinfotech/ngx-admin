@@ -11,12 +11,12 @@ import { MinierpService } from './minierp-service.service';
 export abstract class MinierpBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
-    protected miniErpService: MinierpService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public miniErpService: MinierpService,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }

@@ -24,9 +24,9 @@ export class FileUploadComponent extends BaseComponent implements OnInit {
   @Input('fileListComponent') fileListComponent: FileListComponent;
 
   constructor(
-    protected commonService: CommonService,
-    protected router: Router,
-    protected apiService: ApiService,
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
   ) {
     super(commonService, router, apiService);
     this.options = { concurrency: 3, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };

@@ -15,7 +15,6 @@ import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsP
 import { SmsReceipientModel } from '../../../../models/sms.model';
 import { EmailAddressListDetailModel } from '../../../../models/email.model';
 import { CurrencyPipe } from '@angular/common';
-import { param } from 'jquery';
 import { isNumber } from 'util';
 import { BehaviorSubject } from 'rxjs';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
@@ -23,6 +22,7 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 
 @Component({
   selector: 'ngx-purchase-price-table-import',
@@ -92,6 +92,21 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
     public currencyPipe: CurrencyPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** Append print button to head card */
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
 
     /** AG-Grid */
     const $this = this;

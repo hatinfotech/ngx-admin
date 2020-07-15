@@ -39,13 +39,13 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   };
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public commonService: CommonService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastService, dialogService, commonService);
   }

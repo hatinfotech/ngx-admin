@@ -9,6 +9,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { PurchasePriceTableFormComponent } from '../purchase-price-table-form/purchase-price-table-form.component';
 import { PurchasePriceTableImportComponent } from '../purchase-price-table-import/purchase-price-table-import.component';
+import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 
 @Component({
   selector: 'ngx-purchase-price-table-list',
@@ -31,6 +32,21 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
     public _http: HttpClient,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
+
+    /** Append print button to head card */
+    this.actionButtonList.unshift({
+      name: 'print',
+      status: 'danger',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.import'), 'head-title'),
+      icon: 'code-download',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.import'), 'head-title'),
+      size: 'medium',
+      disabled: () => false,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.openImportForm();
+      },
+    });
   }
 
   /** Api get funciton */
@@ -177,10 +193,11 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
         inputId: [],
         onDialogSave: (newData: PurchasePriceTableModel[]) => {
           // if (onDialogSave) onDialogSave(newData);
+          this.refresh();
         },
         onDialogClose: () => {
           // if (onDialogClose) onDialogClose();
-          this.refresh();
+          // this.refresh();
         },
       },
       closeOnEsc: false,

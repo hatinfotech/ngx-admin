@@ -5,7 +5,9 @@
       <nb-card class="small-header popup" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event)"
         [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
         <nb-card-header>
-          <nav>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('EmailMarketing.Address.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+          <!-- <nav>
             Danh sách gửi email (kéo thả file csv để import)
             <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;" title="Trở về">
               <nb-icon pack="eva" icon="close-circle"></nb-icon>
@@ -23,7 +25,7 @@
             </button>
             <input #uploadButton style="display: none;" type="file" ngFileSelect [options]="options"
               (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple>
-          </nav>
+          </nav> -->
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">

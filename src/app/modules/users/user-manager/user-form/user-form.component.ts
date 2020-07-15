@@ -4,7 +4,7 @@ import { DataManagerFormComponent } from '../../../../lib/data-manager/data-mana
 import { UserModel } from '../../../../models/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -36,13 +36,14 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
   };
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref: NbDialogRef<UserFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -98,11 +99,23 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void { }
+  // goback(): false {
+  //   this.router.navigate(['/users/user-manager/list']);
+  //   return false;
+  // }
   goback(): false {
-    this.router.navigate(['/users/user-manager/list']);
+    super.goback();
+    if (this.mode === 'page') {
+      this.router.navigate(['/users/user-manager/list']);
+    } else {
+      this.ref.close();
+      // this.onDialogClose();
+      // this.dismiss();
+    }
     return false;
   }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
+
 
 }

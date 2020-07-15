@@ -183,13 +183,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   ];
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
   ) {
     super(commonService, router, apiService);
     // this.formLoading = true;
@@ -276,9 +276,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   getRequestId(callback: (id?: string[]) => void) {
-    this.activeRoute.params.subscribe(params => {
-      if (params['id']) callback(decodeURIComponent(params['id']).split('&')); else callback();
-    });
+    if (this.mode === 'page') {
+      this.activeRoute.params.subscribe(params => {
+        if (params['id']) callback(decodeURIComponent(params['id']).split('&')); else callback();
+      });
+    } else {
+      callback(this.inputId);
+    }
   }
 
   /** Get form data by id from api */

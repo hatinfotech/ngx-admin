@@ -94,7 +94,7 @@ export class SmartTableDateTimeRangeFilterComponent extends SmartTableFilterComp
 
 @Component({
   template: `
-    <button nbButton status="danger" hero size="tiny" (click)="clearFilter()" style="float: right;"
+    <button nbButton status="danger" hero size="small" (click)="clearFilter()" style="float: right;"
               title="{{'Common.clearFilter' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="funnel"></nb-icon>
             </button>

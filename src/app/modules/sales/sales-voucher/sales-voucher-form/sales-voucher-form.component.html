@@ -8,19 +8,19 @@
 
           <!-- <nav>
             {{ 'Sales.SalesVoucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
-            <button type="button" nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
+            <button type="button" nbButton status="danger" hero size="small" (click)="goback()" style="float: right;"
               title="{{'Common.close' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
             </button>
-            <button type="button" nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+            <button type="button" nbButton status="success" hero size="small" (click)="onFormReload()" style="float: right;"
               [disabled]="isProcessing" title="{{'Common.reload' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | headtitlecase}}
             </button>
-            <button type="button" nbButton status="primary" hero size="tiny" (click)="preview(formItem)" style="float: right;"
+            <button type="button" nbButton status="primary" hero size="small" (click)="preview(formItem)" style="float: right;"
               [disabled]="isProcessing" title="{{'Common.print' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
             </button>
-            <button type="button" nbButton status="warning" hero size="tiny" (click)="onFormUndo()"
+            <button type="button" nbButton status="warning" hero size="small" (click)="onFormUndo()"
               [disabled]="!canUndo || isProcessing" style="float: right;"
               title="{{'Common.undo' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
@@ -223,7 +223,7 @@
                         </div>
                         <div class="form-group">
                           <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
-                          <button nbButton status="danger" hero size="tiny"
+                          <button nbButton status="danger" hero size="small"
                             (click)="removeDetailGroup(formItem, detail, ic)"
                             style="width: 100%; margin-bottom: 3px; padding: 0">
                             <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
@@ -331,7 +331,7 @@
               <hr>
               <div class="row">
                 <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                  <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="tiny" hero
+                  <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="small" hero
                         [disabled]="isProcessing">
                         <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                         {{'Sales.addProduct' | translate | headtitlecase}}

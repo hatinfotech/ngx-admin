@@ -21,7 +21,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
 
   constructor(
     service: NbAuthService,
-    @Inject(NB_AUTH_OPTIONS) protected options = {},
+    @Inject(NB_AUTH_OPTIONS) public options = {},
     cd: ChangeDetectorRef,
     public router: Router,
     public ref: NbDialogRef<LoginDialogComponent>,

@@ -1353,5 +1353,12 @@ body [nbButton].size-small nb-icon {
 }
 body [nbButton].appearance-hero.size-medium {
   padding: 0.75rem 0.78rem !important;
+  min-width: 2.7rem !important;
 }
 /** End Icon, Button */
+
+/** NB Input */
+.nb-theme-default [nbInput].size-medium {
+  min-width: 2.7rem;
+}
+/** End NB Input */

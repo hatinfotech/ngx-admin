@@ -14,7 +14,7 @@ export class ProductFormDialogComponent<M> implements OnInit, AfterViewInit {
   @Input() onDialogClose: () => void;
 
   constructor(
-    protected ref?: NbDialogRef<ProductFormDialogComponent<M>>,
+    public ref?: NbDialogRef<ProductFormDialogComponent<M>>,
   ) { }
 
   ngOnInit() {

@@ -10,11 +10,11 @@ import { CustomServerDataSource } from '../custom-element/smart-table/custom-ser
 export abstract class ServerDataManagerListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
     this.source = null;

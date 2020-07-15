@@ -13,7 +13,7 @@ export class ShowcaseDialogComponent implements AfterViewInit {
   @Input() actions: { label: string, icon?: string, status?: string, action?: () => void }[];
   @ViewChild('dialogWrap', { static: true }) dialogWrap: ElementRef;
 
-  constructor(protected ref: NbDialogRef<ShowcaseDialogComponent>) {
+  constructor(public ref: NbDialogRef<ShowcaseDialogComponent>) {
     if (this.actions) {
       this.actions.forEach(element => {
         if (!element.action) {

@@ -20,11 +20,11 @@ export class ExtensionsComponent extends DataManagerListComponent<PbxExtensionMo
   idKey = 'Id';
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }

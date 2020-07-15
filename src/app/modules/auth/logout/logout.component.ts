@@ -18,12 +18,12 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
   // ) { }
 
   constructor(
-    protected service: NbAuthService,
-    @Inject(NB_AUTH_OPTIONS) protected options = {},
-    protected router: Router,
-    protected tokenService: NbTokenService,
-    protected apiService: ApiService,
-    protected commonService: CommonService,
+    public service: NbAuthService,
+    @Inject(NB_AUTH_OPTIONS) public options = {},
+    public router: Router,
+    public tokenService: NbTokenService,
+    public apiService: ApiService,
+    public commonService: CommonService,
   ) {
     super(service, options, router);
   }

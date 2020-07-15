@@ -98,15 +98,15 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
   crawlAlgorithmList: { id: string, text: string }[] = [];
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
-    protected ref: NbDialogRef<CrawlPlanFormComponent>,
-    protected service: CrawlService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref: NbDialogRef<CrawlPlanFormComponent>,
+    public service: CrawlService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }

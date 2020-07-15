@@ -6,6 +6,7 @@ import { CommonService } from '../../../../services/common.service';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { UserGroupFormComponent } from '../user-group-form/user-group-form.component';
 
 @Component({
   selector: 'ngx-user-group-list',
@@ -101,6 +102,32 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
       item['No'] = index + 1;
       return item;
     })));
+  }
+
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: UserGroupModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(UserGroupFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: UserGroupModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+          this.refresh();
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+          // this.refresh();
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
+    });
+  }
+
+  /** Go to form */
+  gotoForm(id?: string): false {
+    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+    return false;
   }
 
 }

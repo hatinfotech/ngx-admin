@@ -11,13 +11,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 export abstract class WebHostingBaseFormComponent<M> extends DataManagerFormComponent<M> implements OnInit {
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
     public webHostingService: WebHostingService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);

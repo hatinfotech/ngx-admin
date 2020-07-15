@@ -20,9 +20,9 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   @Input() size?: string = 'medium';
 
   constructor(
-    protected commonService: CommonService,
-    protected router: Router,
-    protected apiService: ApiService,
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
   ) {
     super(commonService, router, apiService);
     this.actionButtonList.unshift({

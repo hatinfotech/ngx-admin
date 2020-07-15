@@ -32,7 +32,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   /** Resource id key */
   abstract idKey: string;
 
-  protected refreshPendding = false;
+  public refreshPendding = false;
 
   actionButtonList: ActionControl[] = [
     {
@@ -169,11 +169,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   public rowData: M[];
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
     super(commonService, router, apiService);
   }
@@ -493,7 +493,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
   }
 
-  protected configSetting(settings: any[]) {
+  public configSetting(settings: any[]) {
     return settings;
   }
 

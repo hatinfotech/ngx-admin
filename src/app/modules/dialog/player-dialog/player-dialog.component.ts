@@ -31,7 +31,7 @@ export class PlayerDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     // private playerService: PlayerService,
-    protected ref: NbDialogRef<PlayerDialogComponent>) {
+    public ref: NbDialogRef<PlayerDialogComponent>) {
     // this.track = this.playerService.random();
 
     // this.createPlayer();

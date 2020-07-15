@@ -5,6 +5,7 @@ import { CommonService } from '../../../../services/common.service';
 import { UserModel } from '../../../../models/user.model';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { UserFormComponent } from '../user-form/user-form.component';
 
 @Component({
   selector: 'ngx-user-list',
@@ -17,6 +18,7 @@ export class UserListComponent extends DataManagerListComponent<UserModel> imple
   formPath: string = 'users/user-manager/form';
   apiPath: string = '/user/users';
   idKey: string = 'Code';
+  formDialog = UserFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -110,6 +112,32 @@ export class UserListComponent extends DataManagerListComponent<UserModel> imple
   //   } else {
   //     event.confirm.reject();
   //   }
+  // }
+
+  // /** Implement required */
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: UserModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(UserFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: UserModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //         this.refresh();
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         // this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
+
+  /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialog(UserFormComponent, id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
   // }
 
 }

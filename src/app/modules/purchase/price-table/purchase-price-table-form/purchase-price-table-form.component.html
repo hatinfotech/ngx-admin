@@ -214,7 +214,7 @@
                         </div>
                         <div class="form-group">
                           <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
-                          <button nbButton status="danger" hero size="tiny"
+                          <button nbButton status="danger" hero size="medium"
                             (click)="removeDetailGroup(formItem, detail, ic)"
                             style="width: 100%; margin-bottom: 3px; padding: 0">
                             <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
@@ -322,7 +322,7 @@
               <hr>
               <div class="row">
                 <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                  <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="tiny" hero
+                  <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero
                         [disabled]="isProcessing">
                         <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                         {{'Sales.addProduct' | translate | headtitlecase}}

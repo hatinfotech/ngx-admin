@@ -249,15 +249,15 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
   isSendSms = false;
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
     public elRef: ElementRef,
-    protected ref: NbDialogRef<SmsAdvertisementFormComponent>,
+    public ref: NbDialogRef<SmsAdvertisementFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
     this.silent = true;

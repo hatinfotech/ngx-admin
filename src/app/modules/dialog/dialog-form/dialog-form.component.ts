@@ -23,7 +23,7 @@ export class DialogFormComponent implements OnInit {
 
   formGroup: FormGroup;
 
-  constructor(protected ref: NbDialogRef<ShowcaseDialogComponent>) {
+  constructor(public ref: NbDialogRef<ShowcaseDialogComponent>) {
 
     this.formGroup = new FormGroup({});
 

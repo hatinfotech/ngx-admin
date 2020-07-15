@@ -2,7 +2,7 @@
   <div class="buttons-row">
     <ng-content select="ngx-action-control-begin"></ng-content>
     <ng-template ngFor let-control [ngForOf]="list" let-i="index">
-      <button class="action-list-item"
+      <button type="button" class="action-list-item"
         *ngIf="(!control.type || control.type == 'button') && (!control.hidden || !control.hidden(option))" nbButton
         [status]="control.status" hero [size]="control.size" [disabled]="control.disabled && control.disabled(option)"
         [title]="control.title" (click)="control.click($event, option)">

@@ -21,14 +21,14 @@ export class AdsContentFormComponent extends DataManagerFormComponent<AdsContent
   baseFormUrl = '/ads/content/form';
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
-    protected ref: NbDialogRef<AdsContentFormComponent>,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref: NbDialogRef<AdsContentFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }

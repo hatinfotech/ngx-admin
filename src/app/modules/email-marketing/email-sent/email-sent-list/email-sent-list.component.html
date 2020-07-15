@@ -5,10 +5,11 @@
 
 <nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
   <nb-card-header id="helpdeskHeader">
-    <nav>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('EmailMarketing.Sent.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <!-- <nav>
       <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Lịch sử gửi email
       <ngx-action-control-list style="float: right;" [list]="actionControlList"></ngx-action-control-list>
-    </nav>
+    </nav> -->
   </nb-card-header>
   <nb-card-body>
     <div class="m-list" nbInfiniteList listenWindowScroll [threshold]="500"

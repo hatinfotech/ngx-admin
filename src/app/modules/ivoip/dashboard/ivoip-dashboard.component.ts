@@ -12,9 +12,9 @@ export class IvoipDashboardComponent extends BaseComponent implements OnInit {
   componentName: string = 'IvoipDashboardComponent';
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
   ) {
     super(commonService, router, apiService);
   }

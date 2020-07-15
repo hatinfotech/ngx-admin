@@ -1,12 +1,14 @@
 <form class="popup">
   <nb-card class="small-header popup">
     <nb-card-header>
-      <nav>
+      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.Category.title' | translate:{definition: '', action: commonService.translate.instant('Common.assign')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+      <!-- <nav>
         {{'AdminProduct.assignCategories' | translate | headtitlecase}}
         <button nbButton status="warning" hero size="tiny" style="float: right;" title="Đóng" (click)="close()">
           <nb-icon pack="eva" icon="close"></nb-icon>
         </button>
-      </nav>
+      </nav> -->
     </nb-card-header>
     <nb-card-body>
       <div class="row">

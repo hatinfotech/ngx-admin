@@ -57,9 +57,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   ];
 
   constructor(
-    protected commonService: CommonService,
-    protected router: Router,
-    protected apiService: ApiService,
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
   ) { }
 
   // init() {

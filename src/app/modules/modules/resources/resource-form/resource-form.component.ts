@@ -69,13 +69,13 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
   };
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
     // this.idKey = 'Name';

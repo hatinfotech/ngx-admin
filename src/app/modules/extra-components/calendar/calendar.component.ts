@@ -15,7 +15,7 @@ export class CalendarComponent {
   range: NbCalendarRange<Date>;
   dayCellComponent = DayCellComponent;
 
-  constructor(protected dateService: NbDateService<Date>) {
+  constructor(public dateService: NbDateService<Date>) {
     this.range = {
       start: this.dateService.addDay(this.monthStart, 3),
       end: this.dateService.addDay(this.monthEnd, -3),

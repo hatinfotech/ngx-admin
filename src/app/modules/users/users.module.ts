@@ -59,6 +59,8 @@ import { TranslateModule } from '@ngx-translate/core';
   exports: [UserListComponent],
   entryComponents: [
     SmartTableFilterComponent,
+    UserGroupFormComponent,
+    UserFormComponent,
   ],
 })
 export class UsersModule { }

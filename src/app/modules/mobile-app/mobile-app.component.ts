@@ -226,9 +226,9 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
     public mobileAppService: MobileAppService,
     // private apiService: ApiService,
     // private commonService: CommonService,
-    protected commonService: CommonService,
-    protected router: Router,
-    protected apiService: ApiService,
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
     private authService: NbAuthService,
     public themeService: NbThemeService,
   ) {

@@ -4,7 +4,7 @@ import { UserGroupModel } from '../../../../models/user-group.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { UserModel } from '../../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,16 +22,25 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
   baseFormUrl = '/users/group/form';
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref: NbDialogRef<UserGroupFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
+
+  // getRequestId(callback: (id?: string[]) => void) {
+  //   if (this.mode === 'page') {
+  //     super.getRequestId(callback);
+  //   } else {
+  //     callback(this.inputId);
+  //   }
+  // }
 
   userList: UserModel[];
   select2OptionForUsers = {
@@ -125,7 +134,14 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
 
   }
   goback(): false {
-    this.router.navigate(['users/group/list']);
+    super.goback();
+    if (this.mode === 'page') {
+      this.router.navigate(['/user/group/list']);
+    } else {
+      this.ref.close();
+      // this.onDialogClose();
+      // this.dismiss();
+    }
     return false;
   }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }

@@ -24,12 +24,12 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
   // };
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
-    protected webHostingService: WebHostingService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public webHostingService: WebHostingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }

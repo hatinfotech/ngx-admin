@@ -12,7 +12,7 @@ export class ChatComponent {
 
   messages: any[];
 
-  constructor(protected chatService: ChatService) {
+  constructor(public chatService: ChatService) {
     this.messages = this.chatService.loadMessages();
   }
 

@@ -24,11 +24,11 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   // activePbxDoamin: string;
 
   constructor(
-    protected apiService: ApiService,
+    public apiService: ApiService,
     public router: Router,
     public commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ivoipService);

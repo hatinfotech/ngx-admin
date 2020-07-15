@@ -19,7 +19,7 @@ export class ProxyListComponent extends DataManagerListComponent<NetworkProxyMod
   formPath = '/network/proxy/form';
   apiPath = '/network/proxies';
   idKey = 'Code';
-  // protected _http: HttpClient;
+  // public _http: HttpClient;
 
   constructor(
     public apiService: ApiService,

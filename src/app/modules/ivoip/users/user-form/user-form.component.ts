@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
-import { PbxUserModel } from '../../../../models/pbx-user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
@@ -8,13 +7,14 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { UserModel } from '../../../../models/user.model';
 
 @Component({
   selector: 'ngx-user-form',
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss'],
 })
-export class UserFormComponent extends IvoipBaseFormComponent<PbxUserModel> implements OnInit {
+export class UserFormComponent extends IvoipBaseFormComponent<UserModel> implements OnInit {
 
   componentName: string = 'UserFormComponent';
   idKey = 'user_uuid';
@@ -65,13 +65,13 @@ export class UserFormComponent extends IvoipBaseFormComponent<PbxUserModel> impl
   };
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
     public ivoipService: IvoipService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
@@ -83,12 +83,12 @@ export class UserFormComponent extends IvoipBaseFormComponent<PbxUserModel> impl
   }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: PbxUserModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: UserModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeApiKey'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: PbxUserModel): FormGroup {
+  makeNewFormGroup(data?: UserModel): FormGroup {
     const newForm = this.formBuilder.group({
       user_uuid: [''],
       domain_uuid: [this.ivoipService ? this.ivoipService.getPbxActiveDomainId() : '', Validators.required],
@@ -107,7 +107,7 @@ export class UserFormComponent extends IvoipBaseFormComponent<PbxUserModel> impl
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: PbxUserModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: UserModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {

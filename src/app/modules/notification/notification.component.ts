@@ -19,8 +19,8 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public commonService: CommonService,
   ) { }
 
   ngOnInit() {

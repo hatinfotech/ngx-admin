@@ -16,12 +16,12 @@ export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerL
   activePbxDoamin: string;
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
-    protected ivoipService: IvoipService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public ivoipService: IvoipService,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }

@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
+import { CallCenterFormComponent } from '../call-center-form/call-center-form.component';
 
 @Component({
   selector: 'ngx-call-center-list',
@@ -88,6 +89,32 @@ export class CallCenterListComponent  extends IvoipBaseListComponent<PbxCallCent
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
+  }
+
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallCenterQueueModel[]) => void, onDialogClose?: () => void) {
+    this.dialogService.open(CallCenterFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: PbxCallCenterQueueModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+          this.refresh();
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+          // this.refresh();
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
+    });
+  }
+
+  /** Go to form */
+  gotoForm(id?: string): false {
+    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+    return false;
   }
 
 }

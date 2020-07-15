@@ -2,25 +2,25 @@
   (keydown.enter)="onControlEnter($event)" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup">
+      <nb-card class="medium-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.SimpleSalesVoucher.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
           <!-- <nav>
             {{ 'Sales.SalesVoucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
-            <button type="button" nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
+            <button type="button" nbButton status="danger" hero size="medium" (click)="goback()" style="float: right;"
               title="{{'Common.close' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
             </button>
-            <button type="button" nbButton status="success" hero size="tiny" (click)="onFormReload()"
+            <button type="button" nbButton status="success" hero size="medium" (click)="onFormReload()"
               style="float: right;" [disabled]="isProcessing" title="{{'Common.reload' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | headtitlecase}}
             </button>
-            <button type="button" nbButton status="primary" hero size="tiny" (click)="preview(formItem)"
+            <button type="button" nbButton status="primary" hero size="medium" (click)="preview(formItem)"
               style="float: right;" [disabled]="isProcessing" title="{{'Common.print' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
             </button>
-            <button type="button" nbButton status="warning" hero size="tiny" (click)="onFormUndo()"
+            <button type="button" nbButton status="warning" hero size="medium" (click)="onFormUndo()"
               [disabled]="!canUndo || isProcessing" style="float: right;"
               title="{{'Common.undo' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
@@ -207,7 +207,7 @@
                       <div class="col-md-1 col-sm-1 col-xs-1">
                         <div class="form-group">
                           <label class="label align-right">Remove</label>
-                          <button nbButton status="danger" hero size="tiny"
+                          <button nbButton status="danger" hero size="medium"
                             (click)="removeDetailGroup(formItem, detail, ic)"
                             style="width: 100%; margin-bottom: 3px; padding: 0">
                             <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
@@ -221,7 +221,7 @@
               <hr>
               <div class="row">
                 <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                  <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="tiny" hero
+                  <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero
                     [disabled]="isProcessing">
                     <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                     {{'Sales.addProduct' | translate | headtitlecase}}

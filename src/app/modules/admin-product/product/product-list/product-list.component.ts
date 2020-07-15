@@ -10,7 +10,6 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AssignCategoriesFormComponent } from '../assign-categories-form/assign-categories-form.component';
-import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 
 @Component({
   selector: 'ngx-product-list',
@@ -45,6 +44,22 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     public ref: NbDialogRef<ProductListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
+
+    // Append assign category buton
+    this.actionButtonList.unshift({
+      name: 'assign',
+      status: 'info',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag'), 'head-title'),
+      icon: 'pricetags',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.selectedIds.length === 0,
+      hidden: () => false,
+      click: () => {
+        this.openAssignCategoiesDialplog();
+        return false;
+      },
+    });
   }
 
   async loadCache() {

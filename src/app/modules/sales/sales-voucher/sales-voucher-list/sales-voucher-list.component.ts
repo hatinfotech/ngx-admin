@@ -141,23 +141,23 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
   }
 
   /** Implement required */
-  openFormDialog(ids?: string[], onDialogSave?: (newData: SalesVoucherModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(SalesVoucherFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: SalesVoucherModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // openFormDialog(ids?: string[]) {
+  //   this.dialogService.open(SalesVoucherFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: SalesVoucherModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
   /** Implement required */
   openSimpleFormDialog(ids?: string[], onDialogSave?: (newData: SalesVoucherModel[]) => void, onDialogClose?: () => void) {

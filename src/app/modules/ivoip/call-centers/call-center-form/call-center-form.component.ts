@@ -5,7 +5,7 @@ import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -97,14 +97,15 @@ export class CallCenterFormComponent extends IvoipBaseFormComponent<PbxCallCente
   agentList: { id: string, text: string }[];
 
   constructor(
-    protected activeRoute: ActivatedRoute,
-    protected router: Router,
-    protected formBuilder: FormBuilder,
-    protected apiService: ApiService,
-    protected toastrService: NbToastrService,
-    protected dialogService: NbDialogService,
-    protected commonService: CommonService,
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref: NbDialogRef<CallCenterFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }

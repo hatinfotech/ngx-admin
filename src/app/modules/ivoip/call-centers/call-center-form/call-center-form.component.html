@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()">
-  <div formArrayName="array">
+  <div formArrayName="array" class="popup">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header">
+      <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Ivoip.CallCenter.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
@@ -164,10 +164,10 @@
                     </div>
                   </div>
                   <div class="col-sm-1">
-                    <div class="form-group">
+                    <div class="form-group" style="text-align: right;">
                       <label class="label">CM</label>
-                      <button nbButton status="danger" hero size="tiny" (click)="removeCallCenterAgentGroup(i, ic)"
-                        style="width: 100%; margin-bottom: 3px;">
+                      <button nbButton status="danger" hero size="medium" (click)="removeCallCenterAgentGroup(i, ic)"
+                        style="margin-bottom: 3px;">
                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                       </button>
                     </div>
@@ -180,9 +180,9 @@
                 <div class="col-sm-11">
                   <i>Để thêm vị trí trực điện thoại bạn truy cập Tổng đài điện thoại > Trung tâm cuộc gọi > Vị trí trực máy.</i>
                 </div>
-                <div class="col-sm-1">
-                  <button nbButton status="success" (click)="addCallCenterAgentGroup(i)" size="tiny"
-                    style="width: 100%; margin-bottom: 3px;" hero>
+                <div class="col-sm-1" style="text-align: right">
+                  <button nbButton status="success" (click)="addCallCenterAgentGroup(i)" size="medium"
+                    style="margin-bottom: 3px;" hero>
                     <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                   </button>
                 </div>

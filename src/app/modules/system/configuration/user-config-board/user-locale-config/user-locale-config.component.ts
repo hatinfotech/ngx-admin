@@ -62,6 +62,10 @@ export class UserLocaleConfigComponent extends DataManagerFormComponent<LocaleCo
     public translate: TranslateService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** Remove close button */
+    this.actionButtonList = this.actionButtonList.filter(btn => btn.name !== 'close');
+
     this.tz = (timezones as any).default.map((timezon: Timezone) => {
       return {
         id: timezon.value,

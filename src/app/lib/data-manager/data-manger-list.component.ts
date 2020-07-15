@@ -4,16 +4,16 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { OnInit, Input, AfterViewInit } from '@angular/core';
+import { OnInit, Input, AfterViewInit, Type } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
-import { count } from 'console';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
+import { DataManagerFormComponent } from './data-manager-form.component';
 
 export class SmartTableSetting {
   mode?: string;
@@ -62,6 +62,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   rows = [];
   hasSelect = 'none';
   settings: SmartTableSetting;
+  formDialog: Type<DataManagerFormComponent<M>>;
 
   /** Seleted ids */
   selectedIds: string[] = [];
@@ -110,7 +111,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         return false;
       },
       click: () => {
-        this.gotoForm();
+        this.openForm();
         return false;
       },
     },
@@ -135,7 +136,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       size: 'medium',
       disabled: () => this.selectedIds.length === 0,
       click: () => {
-        this.gotoForm(this.selectedIds.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')));
+        this.openForm(this.selectedIds);
       },
     },
     {
@@ -198,11 +199,11 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   ];
 
   constructor(
-    protected apiService: ApiService,
-    protected router: Router,
-    protected commonService: CommonService,
-    protected dialogService: NbDialogService,
-    protected toastService: NbToastrService,
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
   ) {
     super(commonService, router, apiService);
   }
@@ -293,6 +294,14 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return false;
   }
 
+  openForm(ids?: string[]) {
+    if (this.formDialog) {
+      this.openFormDialog(ids);
+    } else {
+      this.gotoForm(ids && ids.length > 0 ? ids.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')) : null);
+    }
+  }
+
   /** User select event */
   onUserRowSelect(event: any) {
     this.selectedItems = event.selected;
@@ -315,7 +324,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   /** Edit event */
   onEditAction(event: { data: M }) {
     // this.router.navigate(['modules/manager/form', event.data[this.idKey]]);
-    this.gotoForm(event.data[this.idKey]);
+    this.openForm([event.data[this.idKey]]);
   }
 
   /** Create and multi edit/delete action */
@@ -355,7 +364,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
             status: 'warning',
             action: () => {
               // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
-              this.gotoForm(this.selectedIds.map(item => encodeURIComponent(item)).join(encodeURIComponent('&')));
+              this.openForm(this.selectedIds);
             },
           },
         ],
@@ -533,6 +542,28 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     });
 
     return settings;
+  }
+
+  /** Implement required */
+  async openFormDialog(ids?: string[], formDialog?: Type<DataManagerFormComponent<M>>) {
+    return new Promise<{ event: string, data?: M[] }>(resolve => {
+      this.dialogService.open<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
+        context: {
+          inputMode: 'dialog',
+          inputId: ids,
+          onDialogSave: (newData: M[]) => {
+            resolve({ event: 'save', data: newData });
+            this.refresh();
+          },
+          onDialogClose: () => {
+            resolve({ event: 'close' });
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    });
+
   }
 
   choose() {
