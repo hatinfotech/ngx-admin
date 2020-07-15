@@ -6,24 +6,25 @@
         (uploadOutput)="onUploadOutput($event, formItem, i)" [uploadInput]="uploadInput"
         [ngClass]="{ 'is-drop-over': dragOver[i] }">
         <nb-card-header>
-          <nav>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.Product.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <!-- <nav>
             Cập nhật sản phẩm
-            <button nbButton status="warning" hero size="tiny" (click)="goback()" style="float: right;" title="Đóng">
+            <button nbButton status="warning" hero size="small" (click)="goback()" style="float: right;" title="Đóng">
               <nb-icon pack="eva" icon="close"></nb-icon>
             </button>
-            <button *ngIf="array.controls.length > 1" nbButton status="danger" hero size="tiny"
+            <button *ngIf="array.controls.length > 1" nbButton status="danger" hero size="small"
               (click)="removeFormGroup(i)" style="float: right;" title="Xoá">
               <nb-icon pack="eva" icon="minus-circle"></nb-icon>
             </button>
-            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
+            <button nbButton status="success" hero size="small" (click)="onFormReload()" style="float: right;"
               title="Tải lại">
               <nb-icon pack="eva" icon="refresh"></nb-icon>
             </button>
-            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()" [disabled]="!canUndo"
+            <button nbButton status="warning" hero size="small" (click)="onFormUndo()" [disabled]="!canUndo"
               style="float: right;" title="Hoàn tác">
               <nb-icon pack="eva" icon="undo-outline"></nb-icon>
             </button>
-          </nav>
+          </nav> -->
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
@@ -55,7 +56,8 @@
               </div>
               <div class="col-sm-2">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')">
-                  <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt buộc
+                  <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt
+                      buộc
                       (*)</span>
                     <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'WarehouseUnit')"
                       pack="eva" icon="copy-outline">
@@ -78,7 +80,8 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
                   <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
                       (*)</span></label>
-                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList">
+                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories"
+                    [data]="categoryList">
                   </ngx-select2>
                 </div>
               </div>
@@ -108,7 +111,7 @@
                       <div class="col-sm-4 label">{{'AdminProduct.defaultSales' | translate | headtitlecase}}</div>
                       <div class="col-sm-4 label">{{'AdminProduct.defaultPurchase' | translate | headtitlecase}}</div>
                       <div class="col-sm-1 label align-right">
-                        <button nbButton status="success" (click)="addUnitConversionFormGroup(formItem)" size="tiny"
+                        <button nbButton status="success" (click)="addUnitConversionFormGroup(formItem)" size="small"
                           hero style="margin-bottom: 0.5rem;" [disabled]="isProcessing">
                           <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                         </button>
@@ -184,7 +187,7 @@
                           <div class="col-md-1 col-sm-1 col-xs-1">
                             <div class="form-group">
                               <label class="label align-right">Remove</label>
-                              <button nbButton status="danger" hero size="tiny"
+                              <button nbButton status="danger" hero size="small"
                                 (click)="removeUnitConversionGroup(formItem, unitConversion, ic)">
                                 <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                               </button>
@@ -209,11 +212,11 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="buttons-row" style="margin-bottom: 0.5rem !important;">
-                  <button type="button" nbButton status="primary" hero size="tiny" [disabled]="isProcessing"
+                  <button type="button" nbButton status="primary" hero size="small" [disabled]="isProcessing"
                     title="{{'Common.choosePcturesToUpload' | translate | headtitlecase}}" (click)="uploadBtn.click()">
                     <nb-icon pack="eva" icon="image"></nb-icon>{{'Common.upload' | translate | headtitlecase}}
                   </button>
-                  <button type="button" nbButton status="success" hero size="tiny" [disabled]="isProcessing"
+                  <button type="button" nbButton status="success" hero size="small" [disabled]="isProcessing"
                     title="{{'Common.copy' | translate | headtitlecase}}"
                     (click)="copyFormControlValueToOthers(array, i, 'Pictures')">
                     <nb-icon pack="eva" icon="copy-outline"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
@@ -239,12 +242,12 @@
 
                         <div class="buttons-row controls">
                           <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
-                          <button nbButton status="primary" hero size="tiny" (click)="setAsFeaturePicture(i, picture)"
+                          <button nbButton status="primary" hero size="small" (click)="setAsFeaturePicture(i, picture)"
                             title="Đặt làm hình chính"
                             [disabled]="formItem.get('FeaturePicture').value == picture.get('Image').value">Chính</button>
-                          <button nbButton status="success" hero size="tiny"
+                          <button nbButton status="success" hero size="small"
                             (click)="previewPicture(picture)">Xem</button>
-                          <button nbButton status="danger" hero size="tiny"
+                          <button nbButton status="danger" hero size="small"
                             (click)="removePictureGroup(i, ic)">Xoá</button>
                         </div>
 

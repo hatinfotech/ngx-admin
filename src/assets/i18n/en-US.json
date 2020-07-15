@@ -207,6 +207,9 @@
     "categories": "product categories",
     "assignCategories": "assign product categories",
     "productList": "product list",
+    "Product": {
+      "title": "{{action}} product {{definition}}"
+    },
     "Category": {
       "title": "{{action}} product category {{definition}}"
     },

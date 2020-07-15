@@ -9,7 +9,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CommonService } from '../../services/common.service';
 import { BaseComponent } from '../base-component';
-import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
+import { ActionControl, ActionControlListOption } from '../custom-element/action-control-list/action-control.interface';
+import { Icon } from '../custom-element/card-header/card-header.component';
 
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -25,6 +26,51 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() inputId: string[];
   @Input() onDialogSave?: (newData: M[]) => void;
+
+  favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
+  @Input() title?: string;
+  @Input() size?: string = 'medium';
+  actionButtonList: ActionControl[] = [
+    {
+      name: 'reload',
+      status: 'success',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.reload'), 'head-title'),
+      icon: 'refresh',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.reload'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: () => {
+        this.onFormReload();
+      },
+    },
+    {
+      name: 'remove',
+      status: 'warning',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
+      icon: 'minus-circle',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
+      size: 'medium',
+      hidden: () => this.array.controls.length < 2,
+      disabled: () => this.isProcessing,
+      click: (option: ActionControlListOption) => {
+        this.removeFormGroup(option.formIndex);
+        return false;
+      },
+    },
+    {
+      name: 'close',
+      status: 'danger',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      icon: 'close',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      click: () => {
+        this.goback();
+      },
+    },
+  ];
 
   /** Form unique id = current time as milisecond */
   formUniqueId: string;
@@ -597,6 +643,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     super.ngOnDestroy();
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  get isEditMode() {
+    return this.id && this.id.length > 0;
   }
 
   refresh() {

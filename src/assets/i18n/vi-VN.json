@@ -210,6 +210,9 @@
     "categories": "danh mục sản phẩm",
     "assignCategories": "gán danh mục sản phẩm",
     "productList": "danh sách sản phẩm",
+    "Product": {
+      "title": "{{definition}}{{action}} sản phẩm"
+    },
     "Category": {
       "title": "{{definition}}{{action}} danh mục sản phẩm"
     },

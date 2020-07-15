@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActionControl } from '../action-control-list/action-control.interface';
+import { ActionControl, ActionControlListOption } from '../action-control-list/action-control.interface';
 
 @Component({
   selector: 'ngx-card-header',
@@ -12,6 +12,7 @@ export class CardHeaderComponent implements OnInit {
   @Input() icon?: Icon;
   @Input() size?: string;
   @Input() controls?: ActionControl[];
+  @Input() option?: {controlOption: ActionControlListOption};
 
   constructor() {
     console.log('debug');

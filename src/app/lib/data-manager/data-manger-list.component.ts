@@ -116,7 +116,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     },
     {
       name: 'delete',
-      status: 'danger',
+      status: 'warning',
       label: 'Xoá',
       icon: 'trash-2',
       title: this.commonService.textTransform(this.commonService.translate.instant('Common.delete'), 'head-title'),

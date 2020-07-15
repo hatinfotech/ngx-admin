@@ -275,6 +275,11 @@ body .logo-container {
   // line-height: 1.5rem;
   padding: 0;
 
+  .select2-selection__arrow {
+    top: 0.4rem !important;
+    right: 0.6rem !important;
+  }
+
   .select2-selection {
     background-color: #f7f9fc !important;
     border-color: #edf1f7 !important;
@@ -1345,5 +1350,8 @@ body [nbButton].size-small.icon-start:not(.icon-end) nb-icon {
 }
 body [nbButton].size-small nb-icon {
   height: 1.2rem !important;
+}
+body [nbButton].appearance-hero.size-medium {
+  padding: 0.75rem 0.78rem !important;
 }
 /** End Icon, Button */

@@ -4,7 +4,9 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <nav>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.Voucher.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+          <!-- <nav>
             {{ 'Sales.SalesVoucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
             <button type="button" nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
               title="{{'Common.close' | translate | headtitlecase}}">
@@ -23,7 +25,7 @@
               title="{{'Common.undo' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
             </button>
-          </nav>
+          </nav> -->
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
