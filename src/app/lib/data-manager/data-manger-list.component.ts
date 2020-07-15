@@ -94,7 +94,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
       size: 'medium',
       disabled: () => this.selectedIds.length === 0,
-      hidden: () => !this['ref'] || Object.keys(this['ref']).length === 0 ? true : false,
+      hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
       click: () => {
         this.choose();
         return false;
@@ -190,7 +190,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
       size: 'medium',
       disabled: () => false,
-      hidden: () => !this['ref'] || Object.keys(this['ref']).length === 0 ? true : false,
+      hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
       click: () => {
         this.close();
         return false;
@@ -204,8 +204,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     public commonService: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
+    public ref?: NbDialogRef<DataManagerListComponent<M>>,
   ) {
-    super(commonService, router, apiService);
+    super(commonService, router, apiService, ref);
   }
 
   /** List init event */
@@ -222,8 +223,8 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   // ngAfterViewInit(): void {
   //   // const nativeEle = this;
   //   // Fix dialog scroll
-  //   if (this['ref']) {
-  //     const dialog: NbDialogRef<DataManagerListComponent<M>> = this['ref'];
+  //   if (this.ref) {
+  //     const dialog: NbDialogRef<DataManagerListComponent<M>> = this.ref;
   //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
   //       const nativeEle = dialog.componentRef.location.nativeElement;
   //       // tslint:disable-next-line: ban
@@ -231,7 +232,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   //       const overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
   //       const overlayBackdrop = overlayWraper.prev();
 
-  //       this['ref'].hide = () => {
+  //       this.ref.hide = () => {
   //         overlayWraper.fadeOut(100);
   //         overlayBackdrop.fadeOut(100);
   //         this.onDialogHide();

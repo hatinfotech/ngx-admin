@@ -30,8 +30,8 @@ export class ShowcaseDialogComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     // $(this.dialogWrap.nativeElement).closest('.cdk-overlay-pane').css({ width: '100%' });
     // $('.cdk-overlay-pane:has(ngx-showcase-dialog)').css({ width: '100%' });
-    if (this['ref']) {
-      const dialog: NbDialogRef<ShowcaseDialogComponent> = this['ref'];
+    if (this.ref) {
+      const dialog: NbDialogRef<ShowcaseDialogComponent> = this.ref;
       const nativeEle = dialog.componentRef.location.nativeElement;
       // tslint:disable-next-line: ban
       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');

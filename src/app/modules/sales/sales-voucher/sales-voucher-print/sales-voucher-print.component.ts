@@ -25,10 +25,10 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<SalesPriceReportPrintComponent>,
-    private datePipe: DatePipe,
+    public ref: NbDialogRef<SalesVoucherPrintComponent>,
+    public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService);
+    super(commonService, router, apiService, ref);
   }
 
   ngOnInit() {

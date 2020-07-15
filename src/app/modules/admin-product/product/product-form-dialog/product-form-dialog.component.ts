@@ -32,8 +32,8 @@ export class ProductFormDialogComponent<M> implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // const nativeEle = this;
-    if (this['ref']) {
-      const dialog: NbDialogRef<ProductFormDialogComponent<M>> = this['ref'];
+    if (this.ref) {
+      const dialog: NbDialogRef<ProductFormDialogComponent<M>> = this.ref;
       const nativeEle = dialog.componentRef.location.nativeElement;
       // tslint:disable-next-line: ban
       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');

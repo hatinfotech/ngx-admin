@@ -121,7 +121,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     public ref: NbDialogRef<PriceTableFormComponent>,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

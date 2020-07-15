@@ -190,6 +190,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
+    public ref?: NbDialogRef<DataManagerFormComponent<M>>,
   ) {
     super(commonService, router, apiService);
     // this.formLoading = true;
@@ -214,8 +215,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   // ngAfterViewInit(): void {
   //   // const nativeEle = this;
   //   // Fix dialog scroll
-  //   if (this['ref']) {
-  //     const dialog: NbDialogRef<DataManagerFormComponent<M>> = this['ref'];
+  //   if (this.ref) {
+  //     const dialog: NbDialogRef<DataManagerFormComponent<M>> = this.ref;
   //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
   //       const nativeEle = dialog.componentRef.location.nativeElement;
   //       // tslint:disable-next-line: ban

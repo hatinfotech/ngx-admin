@@ -48,7 +48,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
       title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
       size: 'medium',
       disabled: () => false,
-      hidden: () => !this['ref'] || Object.keys(this['ref']).length === 0 ? true : false,
+      hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
       click: () => {
         this.close();
         return false;
@@ -60,6 +60,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
+    public ref?: NbDialogRef<BaseComponent> & {[key: string]: any},
   ) { }
 
   // init() {
@@ -113,8 +114,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   ngAfterViewInit(): void {
     // const nativeEle = this;
     // Fix dialog scroll
-    if (this['ref']) {
-      const dialog: NbDialogRef<BaseComponent> = this['ref'];
+    if (this.ref) {
+      const dialog: NbDialogRef<BaseComponent> = this.ref;
       if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
         const nativeEle = dialog.componentRef.location.nativeElement;
         // tslint:disable-next-line: ban
@@ -123,14 +124,14 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         const overlayBackdrop = overlayWraper.prev();
 
         // Hide dialog
-        this['ref'].hide = () => {
+        this.ref.hide = () => {
           overlayWraper.fadeOut(100);
           overlayBackdrop.fadeOut(100);
           if (this.onDialogHide) this.onDialogHide();
         };
 
         // Show dialog
-        this['ref'].show = (config?: { events?: { [key: string]: any } }) => {
+        this.ref.show = (config?: { events?: { [key: string]: any } }) => {
           if (config && config.events) {
             Object.keys(config.events).forEach((eventName: string) => {
               this[eventName] = config.events[eventName];
@@ -155,27 +156,27 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   close() {
-    if (this['ref']) {
-      if (this.reuseDialog && this['ref'].hide) {
-        this['ref'].hide();
+    if (this.ref) {
+      if (this.reuseDialog && this.ref.hide) {
+        this.ref.hide();
       } else {
-        this['ref'].close();
+        this.ref.close();
       }
     }
   }
 
   hide() {
-    if (this['ref'] && this['ref'].hide) {
-      this['ref'].hide();
+    if (this.ref && this.ref.hide) {
+      this.ref.hide();
     }
   }
 
   show() {
-    if (this['ref']) {
-      // if (this.reuseDialog && this['ref'].hide) {
-      //   this['ref'].show();
+    if (this.ref) {
+      // if (this.reuseDialog && this.ref.hide) {
+      //   this.ref.show();
       // } else {
-      this['ref'].close();
+      this.ref.close();
       // }
     }
   }

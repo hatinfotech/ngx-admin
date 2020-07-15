@@ -43,7 +43,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     public _http: HttpClient,
     public ref: NbDialogRef<ProductListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService, ref);
 
     // Append assign category buton
     this.actionButtonList.unshift({

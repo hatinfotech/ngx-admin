@@ -23,8 +23,9 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
+    public ref?: NbDialogRef<DataManagerPrintComponent<M>>,
   ) {
-    super(commonService, router, apiService);
+    super(commonService, router, apiService, ref);
     this.actionButtonList.unshift({
       name: 'print',
       status: 'primary',
@@ -48,8 +49,8 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   ngAfterViewInit(): void {
     // const nativeEle = this;
     // Fix dialog scroll
-    if (this['ref']) {
-      const dialog: NbDialogRef<DataManagerFormComponent<M>> = this['ref'];
+    if (this.ref) {
+      const dialog: NbDialogRef<DataManagerPrintComponent<M>> = this.ref;
       if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
         const nativeEle = dialog.componentRef.location.nativeElement;
         // tslint:disable-next-line: ban

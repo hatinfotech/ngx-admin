@@ -30,7 +30,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     public ref: NbDialogRef<SalesPriceReportPrintComponent>,
     private datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService);
+    super(commonService, router, apiService, ref);
   }
 
   ngOnInit() {
