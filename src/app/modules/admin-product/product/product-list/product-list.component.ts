@@ -116,10 +116,10 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       },
       Categories: {
         title: 'Danh mục',
-        type: 'string',
+        type: 'html',
         width: '25%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
+          return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
         },
         filter: {
           type: 'custom',
