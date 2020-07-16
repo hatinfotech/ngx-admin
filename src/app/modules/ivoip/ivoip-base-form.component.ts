@@ -2,7 +2,7 @@ import { DataManagerFormComponent } from '../../lib/data-manager/data-manager-fo
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../services/common.service';
 import { IvoipService } from './ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -60,8 +60,9 @@ export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<IvoipBaseFormComponent<M>>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
   }
 
   ngOnInit() {

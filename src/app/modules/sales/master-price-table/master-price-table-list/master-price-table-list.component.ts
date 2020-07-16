@@ -25,6 +25,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   formPath = '/sales/master-price-table/form';
   apiPath = '/sales/master-price-tables';
   idKey = 'Code';
+  formDialog = MasterPriceTableFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -146,29 +147,29 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesMasterPriceTableModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(MasterPriceTableFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: SalesMasterPriceTableModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesMasterPriceTableModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(MasterPriceTableFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: SalesMasterPriceTableModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
   async preview(data: SalesMasterPriceTableModel) {
 

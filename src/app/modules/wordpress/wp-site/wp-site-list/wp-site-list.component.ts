@@ -22,6 +22,7 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
   formPath = '/wordpress/site/form';
   apiPath = '/wordpress/wp-sites';
   idKey = 'Code';
+  formDialog = WpSiteFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -139,26 +140,26 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: WpSiteModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(WpSiteFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: WpSiteModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: WpSiteModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(WpSiteFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: WpSiteModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

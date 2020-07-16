@@ -15,6 +15,7 @@ import { Icon } from '../custom-element/card-header/card-header.component';
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   mode: 'dialog' | 'page' | 'inline' = 'page';
+  listUrl: string;
 
   /** Main form */
   form = this.formBuilder.group({
@@ -385,8 +386,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Goback action, reuire in extended class */
   goback(): false {
-    if (this.mode === 'dialog' && this.onDialogClose) {
-      this.onDialogClose();
+    if (this.mode === 'dialog') {
+      if (this.onDialogClose) this.onDialogClose();
+      this.close();
+    } else if (this.listUrl) {
+      this.router.navigate([this.listUrl]);
+    } else {
+      this.commonService.goback();
     }
     return false;
   }

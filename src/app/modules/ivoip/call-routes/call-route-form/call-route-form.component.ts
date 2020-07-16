@@ -5,7 +5,7 @@ import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -63,6 +63,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<CallRouteFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
 
@@ -184,10 +185,10 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
 
   }
 
-  goback(): false {
-    this.router.navigate(['/ivoip/call-routes/list']);
-    return false;
-  }
+  // goback(): false {
+  //   this.router.navigate(['/ivoip/call-routes/list']);
+  //   return false;
+  // }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 

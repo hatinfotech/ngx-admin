@@ -19,6 +19,7 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
   formPath = '/admin-product/unit/form';
   apiPath = '/admin-product/units';
   idKey = 'Code';
+  formDialog = ProductUnitFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -125,27 +126,27 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
     });
   }
 
-  /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductUnitModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductUnitFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: ProductUnitModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // /** Implement required */
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductUnitModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(ProductUnitFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: ProductUnitModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

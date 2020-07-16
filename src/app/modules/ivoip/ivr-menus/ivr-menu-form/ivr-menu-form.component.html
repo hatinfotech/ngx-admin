@@ -1,7 +1,7 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header">
+      <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Ivoip.IvrMenu.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
@@ -160,7 +160,7 @@
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
-                <button nbButton status="success" (click)="addIvrMenuOptionGroup(i)" size="small"
+                <button nbButton status="success" (click)="addIvrMenuOptionGroup(i)" size="medium"
                   style="width: 100%; margin-bottom: 3px;" hero>
                   <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                 </button>
@@ -216,7 +216,7 @@
                   <div class="col-sm-1">
                     <div class="form-group">
                       <label class="label">CM</label>
-                      <button nbButton status="danger" hero size="small" (click)="removeIvrMenuOptionGroup(i, ic)"
+                      <button nbButton status="danger" hero size="medium" (click)="removeIvrMenuOptionGroup(i, ic)"
                         style="width: 100%; margin-bottom: 3px;">
                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                       </button>

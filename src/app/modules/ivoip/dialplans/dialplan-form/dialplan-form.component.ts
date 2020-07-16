@@ -4,7 +4,7 @@ import { PbxDialplanModel } from '../../../../models/pbx-dialplan.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonService } from '../../../../services/common.service';
@@ -52,8 +52,9 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<DialplanFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
   }
 
   // blockActions: { id: string, text: string, Code: string, Name: string }[];
@@ -148,10 +149,10 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
   onRemoveFormGroup(index: number): void {
 
   }
-  goback(): false {
-    this.router.navigate(['/ivoip/dialplans/list']);
-    return false;
-  }
+  // goback(): false {
+  //   this.router.navigate(['/ivoip/dialplans/list']);
+  //   return false;
+  // }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 

@@ -1,7 +1,7 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header">
+      <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Ivoip.CallRoute.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
           <!-- <nav>

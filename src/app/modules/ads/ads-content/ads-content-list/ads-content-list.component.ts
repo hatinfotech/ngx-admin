@@ -7,6 +7,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { AdsContentFormComponent } from '../ads-content-form/ads-content-form.component';
+import { AdsCodeFormComponent } from '../../ads-code/ads-code-form/ads-code-form.component';
 
 @Component({
   selector: 'ngx-ads-content-list',
@@ -19,6 +20,7 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
   formPath = '/ads/content/form';
   apiPath = '/ads/contents';
   idKey = 'Code';
+  formDialog = AdsContentFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -133,27 +135,27 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
     });
   }
 
-  /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: AdsContentModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(AdsContentFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: AdsContentModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // /** Implement required */
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: AdsContentModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(AdsContentFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: AdsContentModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

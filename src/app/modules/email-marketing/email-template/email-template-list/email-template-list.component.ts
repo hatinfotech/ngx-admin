@@ -18,6 +18,7 @@ export class EmailTemplateListComponent extends DataManagerListComponent<EmailTe
   formPath = '/email-marketing/template/form';
   apiPath = '/email-marketing/templates';
   idKey = 'Code';
+  formDialog = EmailTemplateFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -91,27 +92,27 @@ export class EmailTemplateListComponent extends DataManagerListComponent<EmailTe
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailTemplateModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(EmailTemplateFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: EmailTemplateModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailTemplateModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(EmailTemplateFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: EmailTemplateModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

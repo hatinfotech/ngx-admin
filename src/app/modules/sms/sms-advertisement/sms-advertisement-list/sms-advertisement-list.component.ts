@@ -22,6 +22,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
   formPath = '/sms/ads-sms/form';
   apiPath = '/sms/ads-sms';
   idKey = 'Id';
+  formDialog = SmsAdvertisementFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -225,27 +226,27 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(SmsAdvertisementFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: SmsModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(SmsAdvertisementFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: SmsModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
   /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
   openSentStateList(sms: SmsModel) {
     this.dialogService.open(SmsSentStatsListComponent, {

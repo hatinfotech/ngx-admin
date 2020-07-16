@@ -4,7 +4,7 @@ import { PbxRecordingModel } from '../../../../models/pbx-recording.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -30,8 +30,9 @@ export class RecordingFormComponent extends IvoipBaseFormComponent<PbxRecordingM
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<RecordingFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
   }
 
   ngOnInit() {
@@ -63,10 +64,10 @@ export class RecordingFormComponent extends IvoipBaseFormComponent<PbxRecordingM
   onRemoveFormGroup(index: number): void {
 
   }
-  goback(): false {
-    this.router.navigate(['/ivoip/recordings/list']);
-    return false;
-  }
+  // goback(): false {
+  //   this.router.navigate(['/ivoip/recordings/list']);
+  //   return false;
+  // }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 

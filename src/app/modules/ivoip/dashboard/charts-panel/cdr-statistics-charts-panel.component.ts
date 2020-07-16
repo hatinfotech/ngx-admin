@@ -40,23 +40,44 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();
   activePbxDoamin: string;
 
-  actionButtonList: ActionControl[] = [
-    {
-      name: 'refresh',
-      status: 'success',
-      // label: 'Refresh',
-      icon: 'sync',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.refresh();
-        return false;
-      },
-    },
-  ];
+  actionButtonList: ActionControl[];
+  // actionButtonList: ActionControl[] = [
+  //   {
+  //     type: 'select2',
+  //     name: 'pbxdomain',
+  //     status: 'success',
+  //     label: 'Tạo',
+  //     icon: 'plus',
+  //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+  //     size: 'medium',
+  //     select2: { data: this.domainList, option: this.select2OptionForDoaminList },
+  //     value: () => this.ivoipService.activeDomainUuid,
+  //     change: (value: any, option: any) => {
+  //       this.onChangeDomain(value);
+  //     },
+  //     disabled: () => {
+  //       return false;
+  //     },
+  //     click: () => {
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     name: 'refresh',
+  //     status: 'success',
+  //     // label: 'Refresh',
+  //     icon: 'sync',
+  //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+  //     size: 'medium',
+  //     disabled: () => {
+  //       return false;
+  //     },
+  //     click: () => {
+  //       this.refresh();
+  //       return false;
+  //     },
+  //   },
+  // ];
 
   constructor(
     public ordersProfitChartService: OrdersProfitChartData,
@@ -80,8 +101,47 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
     this.ivoipService.loadDomainList(domains => {
       this.domainList = domains;
       this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
+
+      this.actionButtonList = [
+        {
+          type: 'select2',
+          name: 'pbxdomain',
+          status: 'success',
+          label: 'Tạo',
+          icon: 'plus',
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          size: 'medium',
+          select2: { data: this.domainList, option: this.select2OptionForDoaminList },
+          value: () => this.ivoipService.activeDomainUuid,
+          change: (value: any, option: any) => {
+            this.onChangeDomain(value);
+          },
+          disabled: () => {
+            return false;
+          },
+          click: () => {
+            return false;
+          },
+        },
+        {
+          name: 'refresh',
+          status: 'success',
+          // label: 'Refresh',
+          icon: 'sync',
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+          size: 'medium',
+          disabled: () => {
+            return false;
+          },
+          click: () => {
+            this.refresh();
+            return false;
+          },
+        },
+      ];
     });
   }
+
 
   setPeriodAndGetChartData(value: string): void {
     if (this.period !== value) {

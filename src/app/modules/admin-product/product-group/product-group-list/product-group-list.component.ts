@@ -19,6 +19,7 @@ export class ProductGroupListComponent extends DataManagerListComponent<ProductG
   formPath = '/admin-product/group/form';
   apiPath = '/admin-product/groups';
   idKey = 'Code';
+  formDialog = ProductGroupFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -80,29 +81,29 @@ export class ProductGroupListComponent extends DataManagerListComponent<ProductG
     });
   }
 
-  /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductGroupModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductGroupFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: ProductGroupModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // /** Implement required */
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductGroupModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(ProductGroupFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: ProductGroupModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

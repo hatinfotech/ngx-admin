@@ -3,7 +3,7 @@ import { PbxDeviceModel } from '../../../../models/pbx-device.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
@@ -72,6 +72,7 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<DeviceFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }
@@ -134,10 +135,10 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
   onRemoveFormGroup(index: number): void {
 
   }
-  goback(): false {
-    this.router.navigate(['/ivoip/devices/list']);
-    return false;
-  }
+  // goback(): false {
+  //   this.router.navigate(['/ivoip/devices/list']);
+  //   return false;
+  // }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 

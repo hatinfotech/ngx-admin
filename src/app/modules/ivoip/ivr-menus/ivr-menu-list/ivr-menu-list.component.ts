@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
+import { IvrMenuFormComponent } from '../ivr-menu-form/ivr-menu-form.component';
 
 @Component({
   selector: 'ngx-ivr-menu-list',
@@ -19,6 +20,7 @@ export class IvrMenuListComponent extends IvoipBaseListComponent<PbxIvrMenuModel
   formPath = '/ivoip/ivr-menus/form';
   apiPath = '/ivoip/ivr-menus';
   idKey = 'ivr_menu_uuid';
+  formDialog = IvrMenuFormComponent;
 
   inboundSource: LocalDataSource = new LocalDataSource();
   outboundSource: LocalDataSource = new LocalDataSource();

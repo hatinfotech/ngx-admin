@@ -4,7 +4,7 @@ import { PbxCustomerModel } from '../../../../models/pbx-customer.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbGlobalPhysicalPosition, NbToastRef, NbComponentStatus } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbGlobalPhysicalPosition, NbToastRef, NbComponentStatus, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -62,6 +62,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<CustomerFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
   }
@@ -193,10 +194,10 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
   onRemoveFormGroup(index: number): void {
 
   }
-  goback(): false {
-    this.router.navigate(['/ivoip/customers/list']);
-    return false;
-  }
+  // goback(): false {
+  //   this.router.navigate(['/ivoip/customers/list']);
+  //   return false;
+  // }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 

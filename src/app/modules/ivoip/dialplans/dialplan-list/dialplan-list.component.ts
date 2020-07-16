@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { LocalDataSource } from 'ng2-smart-table';
 import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
+import { DialplanFormComponent } from '../dialplan-form/dialplan-form.component';
 
 @Component({
   selector: 'ngx-dialplan-list',
@@ -20,6 +21,8 @@ export class DialplanListComponent extends IvoipBaseListComponent<PbxDialplanMod
   formPath = '/ivoip/dialplans/form';
   apiPath = '/ivoip/dialplans';
   idKey = 'dialplan_uuid';
+
+  formDialog = DialplanFormComponent;
 
   inboundSource: LocalDataSource = new LocalDataSource();
   outboundSource: LocalDataSource = new LocalDataSource();

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { PbxModel } from '../../../../models/pbx.model';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
@@ -31,8 +31,9 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<PbxFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
   }
 
   ngOnInit() {
@@ -130,10 +131,10 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
   onRemoveFormGroup(index: number): void {
 
   }
-  goback(): false {
-    this.router.navigate(['/ivoip/pbxs/list']);
-    return false;
-  }
+  // goback(): false {
+  //   this.router.navigate(['/ivoip/pbxs/list']);
+  //   return false;
+  // }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void {
 
   }

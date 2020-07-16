@@ -138,6 +138,7 @@ import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterCompone
     SmartTableCheckboxComponent,
     SmartTableFilterComponent,
     CallCenterFormComponent,
+    CallRouteFormComponent,
   ],
 })
 export class IvoipModule { }

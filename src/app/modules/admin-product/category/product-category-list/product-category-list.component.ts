@@ -19,6 +19,7 @@ export class ProductCategoryListComponent extends DataManagerListComponent<Produ
   formPath = '/admin-product/category/form';
   apiPath = '/admin-product/categories';
   idKey = 'Code';
+  formDialog = ProductCategoryFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -120,28 +121,28 @@ export class ProductCategoryListComponent extends DataManagerListComponent<Produ
     });
   }
 
-  /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductCategoryModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductCategoryFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: ProductCategoryModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // /** Implement required */
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductCategoryModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(ProductCategoryFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: ProductCategoryModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }
 

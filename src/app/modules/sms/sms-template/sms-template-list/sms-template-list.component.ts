@@ -18,6 +18,7 @@ export class SmsTemplateListComponent extends DataManagerListComponent<SmsTempla
   formPath = '/sms/template/form';
   apiPath = '/sms/templates';
   idKey = 'Code';
+  formDialog = SmsTemplateFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -81,27 +82,27 @@ export class SmsTemplateListComponent extends DataManagerListComponent<SmsTempla
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsTemplateModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(SmsTemplateFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: SmsTemplateModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsTemplateModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(SmsTemplateFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: SmsTemplateModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

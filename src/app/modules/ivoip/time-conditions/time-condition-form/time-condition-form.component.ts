@@ -5,7 +5,7 @@ import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -94,8 +94,9 @@ export class TimeConditionFormComponent extends IvoipBaseFormComponent<PbxDialpl
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<TimeConditionFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
   }
 
   // blockActions: { id: string, text: string, Code: string, Name: string }[];

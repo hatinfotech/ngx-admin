@@ -6,6 +6,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { PbxPstnNumberModel } from '../../../../models/pbx-pstn-number.model';
+import { PstnNumberFormComponent } from '../pstn-number-form/pstn-number-form.component';
 
 @Component({
   selector: 'ngx-pstn-number-list',
@@ -18,6 +19,7 @@ export class PstnNumberListComponent extends IvoipBaseListComponent<PbxPstnNumbe
   formPath = '/ivoip/pstn-numbers/form';
   apiPath = '/ivoip/pstn-numbers';
   idKey = 'destination_uuid';
+  formDialog = PstnNumberFormComponent;
 
   domainList: { id?: string, text: string, children: any[] }[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();

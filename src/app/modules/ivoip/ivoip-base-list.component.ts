@@ -53,7 +53,6 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
         return false;
       },
       click: () => {
-        this.gotoForm();
         return false;
       },
     });

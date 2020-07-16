@@ -6,6 +6,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService, PbxDomainSelection } from '../../ivoip-service';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
+import { DeviceFormComponent } from '../device-form/device-form.component';
 
 @Component({
   selector: 'ngx-device-list',
@@ -18,6 +19,7 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   formPath = '/ivoip/devices/form';
   apiPath = '/ivoip/devices';
   idKey = 'device_uuid';
+  formDialog = DeviceFormComponent;
 
   domainList: PbxDomainSelection[] = [];
   select2OptionForDoaminList = this.ivoipService.getDomainListOption();

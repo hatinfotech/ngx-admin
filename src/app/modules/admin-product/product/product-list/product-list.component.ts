@@ -22,6 +22,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   formPath = '/admin-product/product/form';
   apiPath = '/admin-product/products';
   idKey = 'Code';
+  formDialog = ProductFormComponent;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<ProductListComponent>;
@@ -269,30 +270,30 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: ProductModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-          this.loadCache();
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(ProductFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: ProductModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //         this.loadCache();
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
   /** Implement required */
   openAssignCategoiesDialplog() {

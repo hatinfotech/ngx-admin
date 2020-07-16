@@ -29,6 +29,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
   formPath = '/email-marketing/ads-email/form';
   apiPath = '/email-marketing/ads-emails';
   idKey = 'Id';
+  formDialog = EmailAdvertisementFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -231,28 +232,28 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
     });
   }
 
-  /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(EmailAdvertisementFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: EmailModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // /** Implement required */
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(EmailAdvertisementFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: EmailModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
   openSentStateList(email: EmailModel) {
     this.dialogService.open(EmailSentStatsListComponent, {

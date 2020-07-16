@@ -19,6 +19,7 @@ export class ShortLinkListComponent extends DataManagerListComponent<ShortLinkMo
   formPath = '/short-link/short-link/form';
   apiPath = '/short-link/short-links';
   idKey = 'Hash';
+  formDialog = ShortLinkFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -122,26 +123,26 @@ export class ShortLinkListComponent extends DataManagerListComponent<ShortLinkMo
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ShortLinkModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ShortLinkFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: ShortLinkModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: ShortLinkModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(ShortLinkFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: ShortLinkModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

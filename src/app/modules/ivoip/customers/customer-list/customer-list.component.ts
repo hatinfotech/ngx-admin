@@ -10,6 +10,7 @@ import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { MiniErpDeploymentModel } from '../../../../models/minierp-deployment.model';
 import { MiniErpModel } from '../../../../models/minierp.model';
+import { CustomerFormComponent } from '../customer-form/customer-form.component';
 
 @Component({
   selector: 'ngx-customer-list',
@@ -22,6 +23,7 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
   formPath = '/ivoip/customers/form';
   apiPath = '/ivoip/customers';
   idKey = 'Code';
+  formDialog = CustomerFormComponent;
 
   constructor(
     public apiService: ApiService,

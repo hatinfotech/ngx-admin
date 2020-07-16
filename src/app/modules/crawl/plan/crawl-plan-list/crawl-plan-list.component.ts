@@ -19,6 +19,7 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
   formPath = '/crawl/plan/form';
   apiPath = '/crawl/plans';
   idKey = 'Code';
+  formDialog = CrawlPlanFormComponent;
   // protected _http: HttpClient;
 
   constructor(
@@ -135,31 +136,31 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
     });
   }
 
-  /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: CrawlPlanModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(CrawlPlanFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: CrawlPlanModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-      hasScroll: true,
-      closeOnEsc: false,
-      // closeOnBackdropClick: false,
-    });
-  }
+  // /** Implement required */
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: CrawlPlanModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(CrawlPlanFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: CrawlPlanModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //     hasScroll: true,
+  //     closeOnEsc: false,
+  //     // closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

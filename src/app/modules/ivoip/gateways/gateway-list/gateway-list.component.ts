@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
+import { GatewayFormComponent } from '../gateway-form/gateway-form.component';
 
 @Component({
   selector: 'ngx-gateway-list',
@@ -18,6 +19,7 @@ export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel
   formPath = '/ivoip/gateways/form';
   apiPath = '/ivoip/gateways';
   idKey = 'gateway_uuid';
+  formDialog = GatewayFormComponent;
 
   constructor(
     public apiService: ApiService,

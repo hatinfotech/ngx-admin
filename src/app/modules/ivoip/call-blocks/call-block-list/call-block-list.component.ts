@@ -21,6 +21,7 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
   formPath = '/ivoip/call-blocks/form';
   apiPath = '/ivoip/call-blocks';
   idKey = 'call_block_uuid';
+  formDialog = CallBlockFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -122,28 +123,28 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallBlockModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(CallBlockFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: PbxCallBlockModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallBlockModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(CallBlockFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: PbxCallBlockModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

@@ -19,6 +19,7 @@ export class PromotionListComponent extends DataManagerListComponent<PromotionMo
   formPath = '/promotion/promotion/form';
   apiPath = '/promotion/promotions';
   idKey = 'Code';
+  formDialog = PromotionFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -127,28 +128,28 @@ export class PromotionListComponent extends DataManagerListComponent<PromotionMo
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: PromotionModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(PromotionFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: PromotionModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: PromotionModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(PromotionFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: PromotionModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

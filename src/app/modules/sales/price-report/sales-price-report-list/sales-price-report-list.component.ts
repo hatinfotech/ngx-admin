@@ -22,6 +22,7 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
   formPath = '/sales/price-report/form';
   apiPath = '/sales/price-reports';
   idKey = 'Code';
+  formDialog = SalesPriceReportFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -147,28 +148,28 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesPriceReportModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(SalesPriceReportFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: SalesPriceReportModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesPriceReportModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(SalesPriceReportFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: SalesPriceReportModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

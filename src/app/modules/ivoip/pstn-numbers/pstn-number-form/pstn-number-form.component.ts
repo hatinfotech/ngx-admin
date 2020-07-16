@@ -4,7 +4,7 @@ import { PbxPstnNumberModel } from '../../../../models/pbx-pstn-number.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
@@ -79,8 +79,9 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ivoipService: IvoipService,
+    public ref?: NbDialogRef<PstnNumberFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
   }
 
   ngOnInit() {
@@ -152,10 +153,10 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
   onRemoveFormGroup(index: number): void {
 
   }
-  goback(): false {
-    this.router.navigate(['/ivoip/pstn-numbers/list']);
-    return false;
-  }
+  // goback(): false {
+  //   this.router.navigate(['/ivoip/pstn-numbers/list']);
+  //   return false;
+  // }
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 

@@ -117,8 +117,8 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
   /** For popup */
-  getRequestId(callback: (id?: string[]) => void) {
-    callback(this.inputId);
-  }
+  // getRequestId(callback: (id?: string[]) => void) {
+  //   callback(this.inputId);
+  // }
 
 }

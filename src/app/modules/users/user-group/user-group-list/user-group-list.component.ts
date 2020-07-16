@@ -19,6 +19,7 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
   formPath: string = '/users/group/form';
   apiPath: string = '/user/groups';
   idKey: string = 'Code';
+  formDialog = UserGroupFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -105,29 +106,29 @@ export class UserGroupListComponent extends DataManagerListComponent<UserGroupMo
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: UserGroupModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(UserGroupFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: UserGroupModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-          this.refresh();
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          // this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: UserGroupModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(UserGroupFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: UserGroupModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //         this.refresh();
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         // this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

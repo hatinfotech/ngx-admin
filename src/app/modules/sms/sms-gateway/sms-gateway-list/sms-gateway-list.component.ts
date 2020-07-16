@@ -18,6 +18,7 @@ export class SmsGatewayListComponent extends DataManagerListComponent<SmsGateway
   formPath = '/sms/gateway/form';
   apiPath = '/sms/gateway';
   idKey = 'Code';
+  formDialog = SmsGatewayFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -103,27 +104,27 @@ export class SmsGatewayListComponent extends DataManagerListComponent<SmsGateway
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsGatewayModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(SmsGatewayFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: SmsGatewayModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsGatewayModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(SmsGatewayFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: SmsGatewayModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
-    this.openFormDialplog(id ? id.split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
+  //   this.openFormDialplog(id ? id.split('&') : null);
+  //   return false;
+  // }
 
 }

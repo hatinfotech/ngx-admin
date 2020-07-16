@@ -19,6 +19,7 @@ export class ProxyListComponent extends DataManagerListComponent<NetworkProxyMod
   formPath = '/network/proxy/form';
   apiPath = '/network/proxies';
   idKey = 'Code';
+  formDialog = ProxyFormComponent;
   // public _http: HttpClient;
 
   constructor(
@@ -144,28 +145,28 @@ export class ProxyListComponent extends DataManagerListComponent<NetworkProxyMod
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: NetworkProxyModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProxyFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: NetworkProxyModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: NetworkProxyModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(ProxyFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: NetworkProxyModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   // this.router.navigate(id ? [this.formPath, id] : [this.formPath], { queryParams: { list: this.componentName } });
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
   /** Api get funciton */
   // executeGet(params: any, success: (resources: NetworkProxyModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: NetworkProxyModel[] | HttpErrorResponse) => void) {

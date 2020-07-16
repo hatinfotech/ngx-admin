@@ -7,6 +7,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { IvoipService } from '../../ivoip-service';
 import { PbxModel } from '../../../../models/pbx.model';
+import { DomainFormComponent } from '../domain-form/domain-form.component';
 
 @Component({
   selector: 'ngx-domain-list',
@@ -19,6 +20,7 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
   formPath: string = '/ivoip/domains/form';
   apiPath: string = '/ivoip/domains';
   idKey: string = 'Id';
+  formDialog = DomainFormComponent;
 
   activePbx: string;
   pbxList: { id: string, text: string }[] = [];

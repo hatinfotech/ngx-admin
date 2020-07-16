@@ -8,6 +8,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { ViewCell } from 'ng2-smart-table';
 import { IvoipService } from '../../ivoip-service';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
+import { ExtensionFormComponent } from '../extension-form/extension-form.component';
 
 @Component({
   selector: 'ngx-custom-view',
@@ -46,6 +47,7 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
   formPath = '/ivoip/extensions/form';
   apiPath = '/ivoip/extensions';
   idKey = 'extension_uuid';
+  formDialog = ExtensionFormComponent;
 
   constructor(
     public apiService: ApiService,

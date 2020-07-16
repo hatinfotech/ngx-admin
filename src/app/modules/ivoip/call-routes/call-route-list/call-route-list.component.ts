@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
+import { CallRouteFormComponent } from '../call-route-form/call-route-form.component';
 
 @Component({
   selector: 'ngx-call-route-list',
@@ -18,6 +19,7 @@ export class CallRouteListComponent extends IvoipBaseListComponent<PbxExtensionM
   formPath = '/ivoip/call-routes/form';
   apiPath = '/ivoip/call-routes';
   idKey = 'extension_uuid';
+  formDialog = CallRouteFormComponent;
 
   constructor(
     public apiService: ApiService,

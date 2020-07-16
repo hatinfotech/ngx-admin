@@ -19,6 +19,7 @@ export class AdsCodeListComponent extends DataManagerListComponent<AdsCodeModel>
   formPath = '/ads/code/form';
   apiPath = '/ads/codes';
   idKey = 'Code';
+  formDialog = AdsCodeFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -130,27 +131,27 @@ export class AdsCodeListComponent extends DataManagerListComponent<AdsCodeModel>
     });
   }
 
-  /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: AdsCodeModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(AdsCodeFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: AdsCodeModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
-  }
+  // /** Implement required */
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: AdsCodeModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(AdsCodeFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: AdsCodeModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

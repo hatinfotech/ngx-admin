@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
+import { RecordingFormComponent } from '../recording-form/recording-form.component';
 
 @Component({
   selector: 'ngx-recording-list',
@@ -20,6 +21,7 @@ export class RecordingListComponent extends IvoipBaseListComponent<PbxRecordingM
   formPath = '/ivoip/recordings/form';
   apiPath = '/ivoip/recordings';
   idKey = 'recording_uuid';
+  formDialog = RecordingFormComponent;
 
   constructor(
     public apiService: ApiService,

@@ -20,6 +20,7 @@ export class CallCenterListComponent  extends IvoipBaseListComponent<PbxCallCent
   formPath = '/ivoip/call-centers/form';
   apiPath = '/ivoip/call-centers';
   idKey = 'call_center_queue_uuid';
+  formDialog = CallCenterFormComponent;
 
   inboundSource: LocalDataSource = new LocalDataSource();
   outboundSource: LocalDataSource = new LocalDataSource();
@@ -92,29 +93,29 @@ export class CallCenterListComponent  extends IvoipBaseListComponent<PbxCallCent
   }
 
   /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallCenterQueueModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(CallCenterFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: PbxCallCenterQueueModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-          this.refresh();
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-          // this.refresh();
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
-  }
+  // openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallCenterQueueModel[]) => void, onDialogClose?: () => void) {
+  //   this.dialogService.open(CallCenterFormComponent, {
+  //     context: {
+  //       inputMode: 'dialog',
+  //       inputId: ids,
+  //       onDialogSave: (newData: PbxCallCenterQueueModel[]) => {
+  //         if (onDialogSave) onDialogSave(newData);
+  //         this.refresh();
+  //       },
+  //       onDialogClose: () => {
+  //         if (onDialogClose) onDialogClose();
+  //         // this.refresh();
+  //       },
+  //     },
+  //     closeOnEsc: false,
+  //     closeOnBackdropClick: false,
+  //   });
+  // }
 
-  /** Go to form */
-  gotoForm(id?: string): false {
-    this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // /** Go to form */
+  // gotoForm(id?: string): false {
+  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

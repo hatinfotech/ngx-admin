@@ -5,6 +5,7 @@ import { CommonService } from '../../../../services/common.service';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { PbxModel } from '../../../../models/pbx.model';
+import { PbxFormComponent } from '../pbx-form/pbx-form.component';
 
 @Component({
   selector: 'ngx-pbx-list',
@@ -17,6 +18,7 @@ export class PbxListComponent extends DataManagerListComponent<PbxModel> impleme
   formPath: string = '/ivoip/pbxs/form';
   apiPath: string = '/ivoip/pbxs';
   idKey: string = 'Code';
+  formDialog = PbxFormComponent;
 
   constructor(
     public apiService: ApiService,
