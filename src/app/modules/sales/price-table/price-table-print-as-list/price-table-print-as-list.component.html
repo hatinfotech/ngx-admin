@@ -68,7 +68,7 @@
                 <div style="font-weight: bold;">{{detail.Name}}</div>
                 <div [innerHTML]="renderValue(detail.Note)"></div>
               </td>
-              <td class="text-align-left">{{detail.Unit}}</td>
+              <td class="text-align-left">{{commonService.getObjectText(detail.Unit)}}</td>
               <!-- <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td> -->
               <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
               <!-- <td class="text-align-right">{{detail.Tax?.Label2}}</td> -->

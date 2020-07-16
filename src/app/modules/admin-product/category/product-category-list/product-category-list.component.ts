@@ -59,7 +59,12 @@ export class ProductCategoryListComponent extends DataManagerListComponent<Produ
       ParentName: {
         title: 'Danh mục cha',
         type: 'string',
-        width: '40%',
+        width: '30%',
+      },
+      FindOrder: {
+        title: 'Thứ tự tìm kiếm',
+        type: 'string',
+        width: '10%',
       },
       //   Copy: {
       //     title: 'Copy',

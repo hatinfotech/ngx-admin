@@ -97,6 +97,7 @@ export class ProductCategoryFormComponent extends DataManagerFormComponent<Produ
       Code: [''],
       Parent: [''],
       Name: ['', Validators.required],
+      FindOrder: [''],
     });
     if (data) {
       data['Code_old'] = data['Code'];

@@ -28,23 +28,42 @@
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
                   <label class="label"><span class="valid">Mã</span><span class="invalid">Mã là bắt buộc
-                      (*)</span></label>
+                      (*)</span>
+                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Code')"
+                        pack="eva" icon="copy-outline">
+                      </nb-icon></label>
                       <input type="text" nbInput fullWidth formControlName="Code" placeholder="Tự động tạo">
                 </div>
               </div>
               <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Parent'), 'warning')">
                   <label class="label"><span class="valid">Danh mục cha</span><span class="invalid">Danh mục cha là bắt buộc
-                      (*)</span></label>
+                      (*)</span>
+                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Parent')"
+                        pack="eva" icon="copy-outline">
+                      </nb-icon></label>
                       <ngx-select2 formControlName="Parent"
                             [select2Option]="select2OptionForParent">
                           </ngx-select2>
                 </div>
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('FindOrder'), 'warning')">
+                  <label class="label"><span class="valid">Thứ tự tìm kiếm</span><span class="invalid">Thứ tự tìm kiếm là bắt buộc
+                      (*)</span>
+                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'FindOrder')"
+                        pack="eva" icon="copy-outline">
+                      </nb-icon></label>
+                      <input type="text" nbInput fullWidth formControlName="FindOrder" placeholder="Thứ tự tìm kiếm">
+                </div>
+              </div>
+              <div class="col-sm-9">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên danh mục</span><span class="invalid">Tên danh mục là bắt buộc
-                      (*)</span></label>
+                      (*)</span>
+                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Name')"
+                        pack="eva" icon="copy-outline">
+                      </nb-icon></label>
                       <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên danh mục">
                 </div>
               </div>
