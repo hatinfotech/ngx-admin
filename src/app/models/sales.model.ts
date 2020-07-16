@@ -141,17 +141,17 @@ export class SalesPriceTableModel {
 
 export class SalesPriceTableDetailModel {
   Id?: string;
+  No?: string | number;
   PriceTable?: string;
-  Product?: string & ProductModel;
+  Product?: string | ProductModel;
   Name?: string;
   PriceDefinition?: string;
-  Price?: string;
+  Price?: string | number;
   DateOfUpdate?: string;
   Tax?: string & TaxModel;
   Note?: string;
   TempPrice?: string;
-  Unit?: string & UnitModel;
-  No?: string;
+  Unit?: string | UnitModel | { id?: string, text?: string };
   Type?: string;
   Sku?: string;
   FeaturePictureThumbnail?: string;
@@ -178,7 +178,7 @@ export class SalesMasterPriceTableModel {
   Tax?: String & TaxModel;
   Discount?: string;
 
-  Details?: (SalesMasterPriceTableDetailModel & ProductModel & {Price?: string | number})[];
+  Details?: (SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[];
 }
 
 export class SalesMasterPriceTableDetailModel {

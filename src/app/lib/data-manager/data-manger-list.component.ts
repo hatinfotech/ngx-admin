@@ -89,9 +89,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     {
       name: 'choose',
       status: 'success',
-      // label: 'Refresh',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.choose'), 'head-title'),
       icon: 'checkmark-square',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.choose'), 'head-title'),
       size: 'medium',
       disabled: () => this.selectedIds.length === 0,
       hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,

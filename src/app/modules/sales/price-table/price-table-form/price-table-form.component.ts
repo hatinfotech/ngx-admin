@@ -213,6 +213,9 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         cellEditorParams: {
           values: ['Porsche', 'Toyota', 'Ford', 'AAA', 'BBB', 'CCC'],
         },
+        valueFormatter: (params: { value: number & string }) => {
+          return this.commonService.getObjectText(params.value);
+        },
       },
       {
         headerName: 'Price (Giá)',
@@ -764,7 +767,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   static productListDialog: NbDialogRef<ProductListComponent>;
 
   /** Implement required */
-  openProductListDialplog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
+  openProductListDialog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
 
     const events = {
       inputMode: 'dialog',
@@ -795,7 +798,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   }
 
   chooseProducts(formItem: FormGroup) {
-    this.openProductListDialplog({}, choosedProducts => {
+    this.openProductListDialog({}, choosedProducts => {
       console.log(choosedProducts);
       this.gridReady$.pipe(first(), takeUntil(this.destroy$)).subscribe(async isReady => {
         if (isReady) {
@@ -811,7 +814,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
             choosedProducts = choosedProducts.filter(product => product.Code !== node.data['Product']);
           });
 
-          const masterPriceTableDetails = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel)[]>('/sales/master-price-table-details', { id: choosedProducts.map(p => p.Code), masterPriceTable: formItem.get('MasterSalesPriceTable').value }));
+          const masterPriceTableDetails = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel)[]>('/sales/master-price-table-details', { id: choosedProducts.map(p => p.Code), masterPriceTable: this.commonService.getObjectId(formItem.get('MasterSalesPriceTable').value) }));
           const masterPriceTableDetailsIndex: { [key: string]: (SalesMasterPriceTableDetailModel & ProductModel) } = {};
           masterPriceTableDetails.forEach(detail => {
             masterPriceTableDetailsIndex[`${detail.Code}-${this.commonService.getObjectId(detail.WarehouseUnit, 'Code')}`] = detail;
@@ -819,21 +822,27 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
 
           if (choosedProducts.length > 0) {
             const total = this.gridApi.getDisplayedRowCount();
-            const prepareData = choosedProducts.map((product, index) => {
-              const priceSet = masterPriceTableDetailsIndex[`${product.Code}-${this.commonService.getObjectId(product.WarehouseUnit, 'Code')}`];
-              return {
-                No: total + index + 1,
-                Id: product.Code,
-                FeaturePictureThumbnail: (product['FeaturePictureThumbnail'] ? (product['FeaturePictureThumbnail'].replace(/\?token=[^\&]*/, '')) : ''),
-                FeaturePictureMedium: (product['FeaturePictureMedium'] ? (product['FeaturePictureMedium'].replace(/\?token=[^\&]*/, '')) : ''),
-                FeaturePictureLarge: (product['FeaturePictureLarge'] ? (product['FeaturePictureLarge'].replace(/\?token=[^\&]*/, '')) : ''),
-                Product: product.Code,
-                Name: product.Name,
-                Note: product.Description,
-                Unit: priceSet ? this.commonService.getObjectText(priceSet.WarehouseUnit, 'Name') : null,
-                Price: priceSet ? priceSet.Price : null
+            const prepareData: SalesPriceTableDetailModel[] = [];
+            for (let p = 0; p < choosedProducts.length; p++) {
+              const product = choosedProducts[p];
+              for (let cv = 0; cv < product.UnitConversions.length; cv++) {
+                const unitConversion = product.UnitConversions[cv];
+
+                const priceSet = masterPriceTableDetailsIndex[`${product.Code}-${unitConversion.Unit}`];
+                prepareData.push({
+                  No: total + prepareData.length + 1,
+                  Id: product.Code,
+                  FeaturePictureThumbnail: (product['FeaturePictureThumbnail'] ? (product['FeaturePictureThumbnail'].replace(/\?token=[^\&]*/, '')) : ''),
+                  FeaturePictureMedium: (product['FeaturePictureMedium'] ? (product['FeaturePictureMedium'].replace(/\?token=[^\&]*/, '')) : ''),
+                  FeaturePictureLarge: (product['FeaturePictureLarge'] ? (product['FeaturePictureLarge'].replace(/\?token=[^\&]*/, '')) : ''),
+                  Product: product.Code,
+                  Name: product.Name,
+                  Note: product.Description,
+                  Unit: {id: unitConversion.Unit, text: unitConversion.Name},
+                  Price: priceSet ? parseFloat(priceSet.Price as string) : null,
+                });
               }
-            });
+            }
             this.gridApi.updateRowData({
               add: prepareData,
             });

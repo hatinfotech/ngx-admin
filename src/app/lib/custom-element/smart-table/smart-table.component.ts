@@ -172,9 +172,7 @@ export class SmartTableDateTimeComponent implements ViewCell, OnInit {
 export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
-
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
+  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
 
   renderValue: boolean;
   disable: boolean = false;

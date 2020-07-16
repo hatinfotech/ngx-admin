@@ -48,6 +48,7 @@ import localeVi from '@angular/common/locales/vi';
 import localeViExtra from '@angular/common/locales/extra/vi';
 import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { catchError } from 'rxjs/operators';
+import { CurrencyMaskConfig, CURRENCY_MASK_CONFIG } from 'ng2-currency-mask';
 registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -80,6 +81,16 @@ export class DynamicLocaleId extends String {
     return this.translate.currentLang;
   }
 }
+
+// export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
+//   align: 'right',
+//   allowNegative: true,
+//   decimal: '.',
+//   precision: 0,
+//   prefix: '',
+//   suffix: ' ' + this.,
+//   thousands: ',',
+// };
 
 @NgModule({
   declarations: [
@@ -197,7 +208,7 @@ export class DynamicLocaleId extends String {
       useClass: DynamicLocaleId,
       deps: [TranslateService],
     },
-    { provide: NbDialogRef, useValue: { }},
+    { provide: NbDialogRef, useValue: {} },
     RoutingResolve,
   ],
 })

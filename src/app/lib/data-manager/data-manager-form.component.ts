@@ -203,13 +203,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     //   ]),
     // });
 
-    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(formData => {
-      if (!this.isProcessing) {
-        this.commonService.takeUntil(this.formUniqueId, 1000, () => {
-          this.pushPastFormData(formData.array);
-        });
-      }
-    });
+    // this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(formData => {
+    //   if (!this.isProcessing) {
+    //     this.commonService.takeUntil(this.formUniqueId, 1000, () => {
+    //       this.pushPastFormData(formData.array);
+    //     });
+    //   }
+    // });
 
   }
 
@@ -327,7 +327,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         // const aPastFormData = {formData: this.form.value.array, meta: null};
         // this.onUpdatePastFormData(aPastFormData);
         // this.pastFormData.push(aPastFormData);
-        this.pushPastFormData(this.form.value.array);
+        // this.pushPastFormData(this.form.value.array);
         this.onProcessed();
       }, 1000);
 
@@ -474,26 +474,26 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   pushPastFormData(formData: any) {
-    const aPastFormData = { formData: formData, meta: null };
-    this.onUpdatePastFormData(aPastFormData);
-    this.pastFormData.push(aPastFormData);
-    if (this.pastFormData.length > 10) {
-      this.pastFormData.shift();
-    }
+    // const aPastFormData = { formData: formData, meta: null };
+    // this.onUpdatePastFormData(aPastFormData);
+    // this.pastFormData.push(aPastFormData);
+    // if (this.pastFormData.length > 10) {
+    //   this.pastFormData.shift();
+    // }
   }
 
   abstract onUpdatePastFormData(aPastFormData: { formData: any, meta: any }): void;
   abstract onUndoPastFormData(aPastFormData: { formData: any, meta: any }): void;
 
   onFormUndo() {
-    this.pastFormData.pop();
-    const aPastFormData = this.pastFormData.pop();
-    this.onUndoPastFormData(aPastFormData);
-    // console.info(aPastFormData);
-    if (aPastFormData) {
-      this.formLoad(aPastFormData.formData);
-    }
-    return false;
+    // this.pastFormData.pop();
+    // const aPastFormData = this.pastFormData.pop();
+    // this.onUndoPastFormData(aPastFormData);
+    // // console.info(aPastFormData);
+    // if (aPastFormData) {
+    //   this.formLoad(aPastFormData.formData);
+    // }
+    // return false;
   }
 
   get canUndo(): boolean {

@@ -42,7 +42,7 @@
                   <div class="image" style="background-position: center; background-repeat: no-repeat;"
                     [ngStyle]="{backgroundImage: 'url(\''+detail.FeaturePictureLarge + '?token='+apiService.getAccessToken()+'\')'}">
                   </div>
-                  <div class="price">{{detail.Price | currency:'VND'}}<span class="unit">1 {{detail.Unit}}</span></div>
+                  <div class="price">{{detail.Price | currency:'VND'}}<span class="unit">1 {{commonService.getObjectText(detail.Unit)}}</span></div>
                   <div class="name">{{detail.Name}}</div>
                 </div>
               </div>
@@ -50,8 +50,7 @@
           </div>
         </div>
         <div>
-          <div class="under-line" *ngIf="data.Description">{{'Common.note' | translate | headtitlecase}}:
-            {{renderValue(data.Description)}}</div>
+          <div class="under-line" *ngIf="data.Description">{{'Common.note' | translate | headtitlecase}}: {{renderValue(data.Description)}}</div>
           <!-- <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
             {{renderValue(data.DeliveryAddress)}}</div> -->
           <!-- <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:

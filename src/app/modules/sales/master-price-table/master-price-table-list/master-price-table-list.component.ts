@@ -180,6 +180,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
         masterPriceTable: data.Code,
         includeUnit: true,
         includeFeaturePicture: true,
+        sort_Id: 'desc',
       }));
 
     this.dialogService.open(MasterPriceTablePrintComponent, {

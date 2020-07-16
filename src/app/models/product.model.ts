@@ -14,7 +14,7 @@ export class ProductModel {
   Categories?: ProductCategoryModel[];
   Groups: ProductGroupModel[];
   Pictures?: ProductPictureModel[];
-  UnitConversions?: ProductUnitConversoinModel[];
+  UnitConversions?: (ProductUnitConversoinModel & { Name?: string, Symbol?: string })[];
 
   constructor() { }
 

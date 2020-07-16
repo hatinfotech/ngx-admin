@@ -8,7 +8,7 @@ import { SalesRoutingModule } from './sales-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { CurrencyMaskModule, CurrencyMaskConfig, CURRENCY_MASK_CONFIG } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
@@ -35,7 +35,6 @@ import { MasterPriceTablePrintComponent } from './master-price-table/master-pric
 import { ProductFormComponent } from '../admin-product/product/product-form/product-form.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
-
 
 @NgModule({
   declarations: [SalesComponent, SalesPriceReportListComponent,

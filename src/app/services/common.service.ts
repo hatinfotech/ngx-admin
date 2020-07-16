@@ -3,10 +3,10 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
-import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService, 
+import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
   NbSidebarComponent, NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Location } from '@angular/common';
+import { Location, getCurrencySymbol, getLocaleNumberFormat, NumberFormatStyle } from '@angular/common';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
 import localeVi from '@angular/common/locales/vi';
 import localeEn from '@angular/common/locales/en';
@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LocaleConfigModel } from '../models/system.model';
 import { environment } from '../../environments/environment.hmr';
 import { MySocket } from '../lib/nam-socket/my-socket';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
 
 @Injectable({
   providedIn: 'root',
@@ -419,6 +420,15 @@ export class CommonService {
       }
     }
     return null;
+  }
+
+  getCurrentCurrencySymbol() {
+    return getCurrencySymbol('VND', 'narrow', this.translate.currentLang);
+  }
+
+  getCurrencyMaskConfig(): CurrencyMaskConfig {
+    const locale = this.getCurrentLoaleDataset();
+    return { prefix: '', suffix: ' ' + getCurrencySymbol('VND', 'narrow', this.translate.currentLang), thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
   }
 
   getObjectId(obj: any, idName?: string) {

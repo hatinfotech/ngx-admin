@@ -243,6 +243,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       params['includeCategories'] = true;
       params['includeUnit'] = true;
       params['includeFeaturePicture'] = true;
+      params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
       return params;
     };
