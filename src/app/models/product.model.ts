@@ -4,7 +4,7 @@ export class ProductModel {
 
   Code?: string;
   Sku?: string;
-  Name: string;
+  Name?: string;
   WarehouseUnit?: string & UnitModel;
   Description?: string;
   Technical?: string;
@@ -12,7 +12,7 @@ export class ProductModel {
 
   // References
   Categories?: ProductCategoryModel[];
-  Groups: ProductGroupModel[];
+  Groups?: ProductGroupModel[];
   Pictures?: ProductPictureModel[];
   UnitConversions?: (ProductUnitConversoinModel & { Name?: string, Symbol?: string })[];
 

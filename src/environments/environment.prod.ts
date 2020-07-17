@@ -4,7 +4,10 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 export const environment = {
-  version: '2.0.1',
+  // Version structure s.m.f.b : Upgrade system . Add module . Add feature . Build of upgrade/update
+  version: '2.0.0.2',
+  // 2.0.0.2: admin-product: fix assign categoies feature: lose Unit error
+  // 2.0.0.1: Fix after update, update sales, admin-product
   // 2.0: Upgrade angular 9 and nebular 5
   // 1.0.3.43: Develop assign/revoke product categories: fix auto add new catgories
   // 1.0.3.42: Develop assign/revoke product categories

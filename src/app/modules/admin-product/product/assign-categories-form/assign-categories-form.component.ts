@@ -81,17 +81,19 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
     if (choosedCategories && choosedCategories.length > 0) {
       this.processing = true;
       const ids = [];
+      const updateList: ProductModel[] = [];
       for (let p = 0; p < this.inputProducts.length; p++) {
-        const product = this.inputProducts[p];
+        const product: ProductModel = { Code: this.inputProducts[p].Code, Categories: this.inputProducts[p].Categories };
         ids.push(product.Code);
         for (let c = 0; c < choosedCategories.length; c++) {
           const choosed = choosedCategories[c];
-          if (!product.Categories.some(cate => choosed['id'] == cate['id'])) {
+          if (!product.Categories.some(cate => choosed['id'] === cate['id'])) {
             product.Categories.push({ id: choosed.id, text: choosed.text, Category: choosed.Code, Product: product.Code } as any);
           }
         }
+        updateList.push(product);
       }
-      this.apiService.putPromise<ProductModel[]>('/admin-product/products', { id: ids }, this.inputProducts).then(rs => {
+      this.apiService.putPromise<ProductModel[]>('/admin-product/products', { id: ids }, updateList).then(rs => {
         this.onDialogSave(rs);
         this.processing = false;
         this.close();
@@ -104,12 +106,15 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
     if (choosedCategories && choosedCategories.length > 0) {
       this.processing = true;
       const ids = [];
+      const updateList: ProductModel[] = [];
       for (let p = 0; p < this.inputProducts.length; p++) {
-        const product = this.inputProducts[p];
+        const product: ProductModel = { Code: this.inputProducts[p].Code, Categories: this.inputProducts[p].Categories };
         ids.push(product.Code);
-        product.Categories = product.Categories.filter(cate => !choosedCategories.some(choosed => choosed.id == cate['id']));
+        product.Categories = product.Categories.filter(cate => !choosedCategories.some(choosed => choosed.id === cate['id']));
+
+        updateList.push(product);
       }
-      this.apiService.putPromise<ProductModel[]>('/admin-product/products', { id: ids }, this.inputProducts).then(rs => {
+      this.apiService.putPromise<ProductModel[]>('/admin-product/products', { id: ids }, updateList).then(rs => {
         this.onDialogSave(rs);
         this.processing = false;
         this.close();

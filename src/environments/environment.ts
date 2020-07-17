@@ -9,7 +9,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  version: '2.0.1.dev',
+  version: '2.0.0.2.dev',
   production: false,
   hmr: false,
   basePath: 'probox-core',
