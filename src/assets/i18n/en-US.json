@@ -112,7 +112,8 @@
     "approve": "approve",
     "dateOfApproved": "approved date",
     "tag": "tag",
-    "export": "export"
+    "export": "export",
+    "table": "table"
   },
   "Contact": {
     "name": "contact name",

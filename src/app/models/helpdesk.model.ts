@@ -49,3 +49,26 @@ export class HelpdeskTicketModel {
   constructor() { }
 
 }
+
+export class HelpdeskUserModel {
+  id?: string;
+  text?: string;
+  Code?: string;
+  Name?: string;
+  Extensions?: HelpdeskUserExtensionModel[];
+}
+
+export class HelpdeskUserExtensionModel {
+  id?: string;
+  text?: string;
+  User?: string | HelpdeskUserModel;
+  Id?: string;
+  Type?: string;
+  Extension?: string;
+  Host?: string;
+  Port?: string;
+  Domain?: string;
+  Password?: string;
+  Transport?: string;
+  DisplayName?: string;
+}

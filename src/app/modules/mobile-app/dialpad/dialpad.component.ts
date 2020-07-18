@@ -5,7 +5,7 @@ import { CallingSession } from '../phone-manager/calling-session';
 import { User } from '../phone-manager/user';
 import { ApiService } from '../../../services/api.service';
 import { ContactModel } from '../../../models/contact.model';
-import { HelpdeskTicketModel } from '../../../models/helpdesk-ticket.model';
+import { HelpdeskTicketModel } from '../../../models/helpdesk.model';
 import { CommonService } from '../../../services/common.service';
 
 @Component({

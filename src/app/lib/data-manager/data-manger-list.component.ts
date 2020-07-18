@@ -499,6 +499,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     if (!settings.delete) {
       settings.delete = this.configDeleteButton();
     }
+    if (!settings.pager) {
+      settings.pager = this.configPaging();
+    }
 
     // Set default filter function
     Object.keys(settings.columns).forEach(key => {

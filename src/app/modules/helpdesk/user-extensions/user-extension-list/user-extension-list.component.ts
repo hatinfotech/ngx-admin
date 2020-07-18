@@ -1,25 +1,27 @@
 import { Component, OnInit } from '@angular/core';
+import { HelpdeskUserModel } from '../../../../models/helpdesk.model';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { ProductCategoryModel } from '../../../../models/product.model';
+import { ProductCategoryFormComponent } from '../../../admin-product/category/product-category-form/product-category-form.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ProductCategoryFormComponent } from '../product-category-form/product-category-form.component';
+import { ProductCategoryModel } from '../../../../models/product.model';
+import { UserExtensionFormComponent } from '../user-extension-form/user-extension-form.component';
 
 @Component({
-  selector: 'ngx-product-category-list',
-  templateUrl: './product-category-list.component.html',
-  styleUrls: ['./product-category-list.component.scss'],
+  selector: 'ngx-user-extension-list',
+  templateUrl: './user-extension-list.component.html',
+  styleUrls: ['./user-extension-list.component.scss'],
 })
-export class ProductCategoryListComponent extends DataManagerListComponent<ProductCategoryModel> implements OnInit {
+export class UserExtensionListComponent extends DataManagerListComponent<HelpdeskUserModel> implements OnInit {
 
   componentName: string = 'ProductCategoryListComponent';
   formPath = '/admin-product/category/form';
   apiPath = '/admin-product/categories';
   idKey = 'Code';
-  formDialog = ProductCategoryFormComponent;
+  formDialog = UserExtensionFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -41,10 +43,10 @@ export class ProductCategoryListComponent extends DataManagerListComponent<Produ
     actions: {
       position: 'right',
     },
-    // add: this.configAddButton(),
-    // edit: this.configEditButton(),
-    // delete: this.configDeleteButton(),
-    // pager: this.configPaging(),
+    add: this.configAddButton(),
+    edit: this.configEditButton(),
+    delete: this.configDeleteButton(),
+    pager: this.configPaging(),
     columns: {
       Code: {
         title: 'Code',
@@ -112,12 +114,12 @@ export class ProductCategoryListComponent extends DataManagerListComponent<Produ
   }
 
   /** Api get funciton */
-  executeGet(params: any, success: (resources: ProductCategoryModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductCategoryModel[] | HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: HelpdeskUserModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: HelpdeskUserModel[] | HttpErrorResponse) => void) {
     params['includeParent'] = true;
     super.executeGet(params, success, error, complete);
   }
 
-  getList(callback: (list: ProductCategoryModel[]) => void) {
+  getList(callback: (list: HelpdeskUserModel[]) => void) {
     super.getList((rs) => {
       // rs.forEach(item => {
       //   item.Content = item.Content.substring(0, 256) + '...';
@@ -125,29 +127,6 @@ export class ProductCategoryListComponent extends DataManagerListComponent<Produ
       if (callback) callback(rs);
     });
   }
-
-  // /** Implement required */
-  // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductCategoryModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(ProductCategoryFormComponent, {
-  //     context: {
-  //       inputMode: 'dialog',
-  //       inputId: ids,
-  //       onDialogSave: (newData: ProductCategoryModel[]) => {
-  //         if (onDialogSave) onDialogSave(newData);
-  //       },
-  //       onDialogClose: () => {
-  //         if (onDialogClose) onDialogClose();
-  //         this.refresh();
-  //       },
-  //     },
-  //   });
-  // }
-
-  // /** Go to form */
-  // gotoForm(id?: string): false {
-  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-  //   return false;
-  // }
 
 }
 

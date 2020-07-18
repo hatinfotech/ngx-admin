@@ -19,44 +19,44 @@
               <input type="hidden" formControlName="Code">
               <input type="hidden" formControlName="CallSessionId">
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SupportedPerson'), 'warning')">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
                   <label class="label"><span class="valid">Liên hệ</span><span class="invalid">Liên hệ là bắt buộc
                       (*)</span></label>
-                  <ngx-select2 formControlName="SupportedPerson" [select2Option]="select2Option"
+                  <ngx-select2 formControlName="Object" [select2Option]="select2Option"
                     (selectChange)="onObjectChange($event, i)"></ngx-select2>
                 </div>
               </div>
               <div class="col-sm-9">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SupportedPersonName'), 'warning')">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectName'), 'warning')">
                   <label class="label"><span class="valid">Tên</span><span class="invalid">Tên liên hệ
                       là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="SupportedPersonName" placeholder="Tên liên hệ">
+                  <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="Tên liên hệ">
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SupportedPersonPhone'), 'warning')">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
                   <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại là
                       bắt buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="SupportedPersonPhone" placeholder="Số điện thoại">
+                  <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="Số điện thoại">
                 </div>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SupportedPersonEmail'), 'warning')">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectEmail'), 'warning')">
                   <label class="label"><span class="valid">Email</span><span class="invalid">Email là
                       bắt
                       buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="SupportedPersonEmail" placeholder="Email">
+                  <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="Email">
                 </div>
               </div>
               <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('SupportedPersonAddress'), 'warning')">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectAddress'), 'warning')">
                   <label class="label"><span class="valid">Địa chỉ</span><span class="invalid">Địa chỉ
                       là bắt
                       buộc
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="SupportedPersonAddress" placeholder="Địa chỉ">
+                  <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="Địa chỉ">
                 </div>
               </div>
               <div class="col-sm-12">

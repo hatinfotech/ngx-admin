@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
-import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
+import { HelpdeskTicketModel } from '../../../../models/helpdesk.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';

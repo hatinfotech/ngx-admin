@@ -3,22 +3,30 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { UserModel } from '../../../../models/user.model';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { UserFormComponent } from '../user-form/user-form.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
-export class UserListComponent extends DataManagerListComponent<UserModel> implements OnInit {
+export class UserListComponent extends ServerDataManagerListComponent<UserModel> implements OnInit {
 
-  componentName: string = 'UserListComponent';
-  formPath: string = 'users/user-manager/form';
-  apiPath: string = '/user/users';
-  idKey: string = 'Code';
+  componentName: string = 'UserGroupListComponent';
+  formPath = '/user/user/form';
+  apiPath = '/user/users';
+  idKey = 'Code';
   formDialog = UserFormComponent;
+
+  reuseDialog = true;
+
+  // Smart table
+  static filterConfig: any;
+  static sortConf: any;
+  static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
     public apiService: ApiService,
@@ -26,37 +34,35 @@ export class UserListComponent extends DataManagerListComponent<UserModel> imple
     public commonService: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
+    public _http: HttpClient,
+    public ref: NbDialogRef<UserListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService, ref);
+  }
+
+  // async loadCache() {
+  //   // iniit category
+  //   // this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+  // }
+
+  async init() {
+    // await this.loadCache();
+    return super.init();
   }
 
   editing = {};
   rows = [];
 
-  settings = {
+  settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
     actions: {
       position: 'right',
     },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 100,
-    },
+    // add: this.configAddButton(),
+    // edit: this.configEditButton(),
+    // delete: this.configDeleteButton(),
+    // pager: this.configPaging(),
     columns: {
       No: {
         title: 'Stt',
@@ -82,62 +88,45 @@ export class UserListComponent extends DataManagerListComponent<UserModel> imple
         width: '40%',
       },
     },
-  };
-
-  // source: LocalDataSource = new LocalDataSource();
+  });
 
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
-
-    // // Load user list
-    // this.apiService.get<UserModel[]>('/user/users', { limit: 999999999, offset: 0 }, results => this.source.load(results.map((item, index) => {
-    //   item['No'] = index + 1;
-    //   return item;
-    // })));
-
   }
 
-  // onEditAction(event) {
-  //   this.router.navigate(['users/user-manager/form', event.data.Code]);
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    // source.prepareData = (data: UserGroupModel[]) => {
+    //   // const paging = source.getPaging();
+    //   // data.map((product: any, index: number) => {
+    //   //   product['No'] = (paging.page - 1) * paging.perPage + index + 1;
+    //   //   return product;
+    //   // });
+    //   return data;
+    // };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['includeParent'] = true;
+      return params;
+    };
+
+    return source;
+  }
+
+  /** Api get funciton */
+  // executeGet(params: any, success: (resources: UserGroupModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: UserGroupModel[] | HttpErrorResponse) => void) {
+  //   params['includeCategories'] = true;
+  //   super.executeGet(params, success, error, complete);
   // }
 
-  // onCreateAction(event) {
-  //   this.router.navigate(['users/user-manager/form']);
-  // }
-
-  // onDeleteConfirm(event): void {
-  //   if (window.confirm('Are you sure you want to delete?')) {
-  //     event.confirm.resolve();
-  //   } else {
-  //     event.confirm.reject();
-  //   }
-  // }
-
-  // /** Implement required */
-  // openFormDialplog(ids?: string[], onDialogSave?: (newData: UserModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(UserFormComponent, {
-  //     context: {
-  //       inputMode: 'dialog',
-  //       inputId: ids,
-  //       onDialogSave: (newData: UserModel[]) => {
-  //         if (onDialogSave) onDialogSave(newData);
-  //         this.refresh();
-  //       },
-  //       onDialogClose: () => {
-  //         if (onDialogClose) onDialogClose();
-  //         // this.refresh();
-  //       },
-  //     },
-  //     closeOnEsc: false,
-  //     closeOnBackdropClick: false,
-  //   });
-  // }
-
-  /** Go to form */
-  // gotoForm(id?: string): false {
-  //   this.openFormDialog(UserFormComponent, id ? decodeURIComponent(id).split('&') : null);
-  //   return false;
-  // }
+  getList(callback: (list: UserModel[]) => void) {
+    super.getList((rs) => {
+      if (callback) callback(rs);
+    });
+  }
 
 }

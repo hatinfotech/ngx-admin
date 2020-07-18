@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
-import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
+import { HelpdeskTicketModel } from '../../../../models/helpdesk.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
@@ -175,18 +175,18 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
             const contact = contacts[0];
             if (contact) {
               contact['doNotAutoFill'] = true;
-              this.array.controls[0].get('SupportedPerson').setValue(contact);
-              this.array.controls[0].get('SupportedPersonName').setValue(contacts[0]['Name']);
-              this.array.controls[0].get('SupportedPersonEmail').setValue(contacts[0]['Email']);
-              this.array.controls[0].get('SupportedPersonAddress').setValue(contacts[0]['Address']);
+              this.array.controls[0].get('Object').setValue(contact);
+              this.array.controls[0].get('ObjectName').setValue(contacts[0]['Name']);
+              this.array.controls[0].get('ObjectEmail').setValue(contacts[0]['Email']);
+              this.array.controls[0].get('ObjectAddress').setValue(contacts[0]['Address']);
             }
-            this.array.controls[0].get('SupportedPersonPhone').setValue(phoneNumber);
+            this.array.controls[0].get('ObjectPhone').setValue(phoneNumber);
             resolve(true);
           });
         });
       }
       this.array.controls[0].get('CallSessionId').setValue(this.index);
-      this.array.controls[0].get('SupportedPersonPhone').setValue(phoneNumber);
+      this.array.controls[0].get('ObjectPhone').setValue(phoneNumber);
       return true;
     }
     return false;
@@ -202,10 +202,10 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
 
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (item['Code']) {
-          this.array.controls[formIndex].get('SupportedPersonName').setValue(item['Name']);
-          this.array.controls[formIndex].get('SupportedPersonPhone').setValue(item['Phone']);
-          this.array.controls[formIndex].get('SupportedPersonEmail').setValue(item['Email']);
-          this.array.controls[formIndex].get('SupportedPersonAddress').setValue(item['Address']);
+          this.array.controls[formIndex].get('ObjectName').setValue(item['Name']);
+          this.array.controls[formIndex].get('ObjectPhone').setValue(item['Phone']);
+          this.array.controls[formIndex].get('ObjectEmail').setValue(item['Email']);
+          this.array.controls[formIndex].get('ObjectAddress').setValue(item['Address']);
         }
       }
     }
@@ -218,7 +218,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
 
   /** Execute api get */
   executeGet(params: any, success: (resources: HelpdeskTicketModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeUsers'] = true;
+    params['includeObject'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -235,20 +235,20 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       // ObjectAddress: [''],
       CallSessionId: [''],
       // WorkingName: [''],
-      SupportedPerson: [''],
-      SupportedPersonName: [''],
-      SupportedPersonPhone: [''],
-      SupportedPersonEmail: [''],
-      SupportedPersonAddress: [''],
+      Object: [''],
+      ObjectName: [''],
+      ObjectPhone: [''],
+      ObjectEmail: [''],
+      ObjectAddress: [''],
       // State: [''],
       // Service: [''],
     });
     if (data) {
       // let formData: any;
-      // if (typeof data.SupportedPerson === 'string') {
-      //   data['SupportedPerson'] = '1';
+      // if (typeof data.Object === 'string') {
+      //   data['Object'] = '1';
       //   formData = data;
-      //   formData['SupportedPerson'] = { id: data.SupportedPerson, text: data.SupportedPersonName };
+      //   formData['Object'] = { id: data.Object, text: data.ObjectName };
       // } else {
       //   formData = data;
       // }

@@ -8,11 +8,14 @@ import { UserActive, UserActivityData } from '../../../../@core/data/user-activi
 import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
-import { HelpdeskTicketModel } from '../../../../models/helpdesk-ticket.model';
+import { HelpdeskTicketModel } from '../../../../models/helpdesk.model';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
 import { MobileAppService, CallState } from '../../../mobile-app/mobile-app.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { ContactModel } from '../../../../models/contact.model';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { tick } from '@angular/core/testing';
 
 @Component({
   selector: 'ngx-helpdesk-dashboard',
@@ -574,5 +577,26 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   openChatRoom(chatRoomId: string) {
     this.mmobileAppService.request('open-chat-room', chatRoomId);
+  }
+
+  saveContact(ticket: HelpdeskTicketModel) {
+    this.apiService.postPromise<ContactModel[]>('/contact/contacts', {}, [{
+      Name: ticket.ObjectName,
+      Phone: ticket.ObjectPhone,
+      Email: ticket.ObjectEmail,
+      Address: ticket.ObjectAddress,
+    }]).then(rs => {
+      // Update ticket
+      this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: ticket.Code }, [{
+        Code: ticket.Code,
+        Object: rs[0].Code,
+      }]);
+      this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: this.commonService.translate.instant('Notification'),
+          content: this.commonService.translate.instant('Helpldesk.contactSaveSuccess'),
+        },
+      });
+    });
   }
 }

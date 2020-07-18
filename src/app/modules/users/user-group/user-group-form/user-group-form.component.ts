@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { UserModel } from '../../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'ngx-user-group-form',
@@ -147,4 +148,9 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+  /** Execute api get */
+  executeGet(params: any, success: (resources: UserGroupModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+    params['includeUsers'] = true;
+    return super.executeGet(params, success, error);
+  }
 }

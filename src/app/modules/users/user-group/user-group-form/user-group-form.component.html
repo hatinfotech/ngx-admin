@@ -28,14 +28,14 @@
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code_old">
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
                   <label class="label"><span class="valid">Mã nhóm (*)</span><span class="invalid">Mã nhóm là bắt buộc
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Code" placeholder="Mã nhóm">
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Parent'), 'warning')">
                   <label class="label"><span class="valid">Nhóm cha (*)</span></label>
                   <ngx-select2 [data]="parentList" formControlName="Parent" [select2Option]="select2OptionForParent">
@@ -55,7 +55,7 @@
                   <input type="text" nbInput fullWidth formControlName="Description" placeholder="Diễn giải">
                 </div>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-6">
                 <div class="form-group">
                   <label class="label">Người dùng thuộc nhóm</label>
                   <ngx-select2 [data]="userList" formControlName="Users" [select2Option]="select2OptionForUsers">
@@ -67,9 +67,9 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm nhóm người dùng</button>
-            <button nbButton status="info" (click)="onPreview(i)" hero>Xem trước</button>
-            <button nbButton status="success" [disabled]="!form.valid" hero>Lưu nhóm người dùng</button>
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero style="float: left;">Thêm cái nữa</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
           </div>
         </nb-card-footer>
       </nb-card>

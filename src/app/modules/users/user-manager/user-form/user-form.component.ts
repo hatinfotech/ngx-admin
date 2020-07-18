@@ -50,6 +50,11 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
 
   ngOnInit() {
     this.restrict();
+    super.ngOnInit();
+  }
+
+  async init() {
+    const rs = await super.init();
     this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 9999999 },
       list => {
         this.groupList = list.map((item: UserGroupModel) => {
@@ -57,12 +62,11 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
             ...item,
             Group: item.Code,
             id: item.Code,
-            text: item.Name,
+            text: item.Name + ': ' + item.Description,
           };
         });
-        super.ngOnInit();
       });
-
+    return rs;
   }
 
   /** Get form data by id from api */

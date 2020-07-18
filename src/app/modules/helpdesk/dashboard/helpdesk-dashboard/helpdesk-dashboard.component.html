@@ -5,20 +5,18 @@
   [phoneNumber]="quickForm.phoneNumber" [index]="quickForm.index" [ticketCode]="quickForm.ticketCode" [inputMode]="'inline'"
   (onClose)="onQuickFormClose($event)"></ngx-quick-ticket-form>
 
-<div class="row" *ngIf="!showQuickForm">
+<!-- <div class="row" *ngIf="!showQuickForm">
   <div id="trafficeChart" class="col-12 col-md-6">
     <nb-card size="tiny" style="height: 8rem">
       <ngx-stats-card-front></ngx-stats-card-front>
-      <!-- <nb-icon icon="chevron-right-outline" pack="eva" class="flip-icon"></nb-icon> -->
     </nb-card>
   </div>
   <div class="col-12 col-md-6">
     <nb-card size="tiny" style="height: 8rem">
       <ngx-stats-card-back></ngx-stats-card-back>
-      <!-- <nb-icon icon="chevron-right-outline" pack="eva" class="flip-icon"></nb-icon> -->
     </nb-card>
   </div>
-</div>
+</div> -->
 
 <nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
   <nb-card-header id="helpdeskHeader">
@@ -33,7 +31,7 @@
       (bottomThreshold)="loadNext(infiniteLoadModel)">
       <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.tickets"
         [style.color]="item.TicketStateColor" (click)="selectOne($event, item)">
-        <div class="col-md-4 m-list-item-property">
+        <div class="col-md-6 m-list-item-property">
           <div class="caption">Nội dung yêu cầu</div>
           <div class="value">
             <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Description }}
@@ -42,19 +40,21 @@
             <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn {{ item.LastMessage }}
           </div>
         </div>
-        <div class="col-md-3 m-list-item-property">
+        <div class="col-md-4 m-list-item-property">
           <div class="caption">Người yêu cầu</div>
-          <div class="value nowrap" *ngIf="!!item.SupportedPersonPhone">
-            <nb-icon icon="person" pack="ion"></nb-icon> {{ item.SupportedPersonName }}
+          <div class="value nowrap" *ngIf="!!item.ObjectPhone">
+            <nb-icon icon="person" pack="ion"></nb-icon> {{ item.ObjectName }} <ng-template *ngIf="!item.Object">(<a href="#" (click)="saveContact(item)">{{'Helpdesk.saveContact' | translate}}</a>)</ng-template>
+
+
           </div>
-          <div class="value nowrap" *ngIf="!!item.SupportedPersonPhone">
-            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.SupportedPersonPhone }} (<a style="cursor: pointer;" href="#" (click)="phoneCall(item.SupportedPersonPhone, item.SupportedPersonName)">call</a>)
+          <div class="value nowrap" *ngIf="!!item.ObjectPhone">
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.ObjectPhone }} (<a style="cursor: pointer;" href="#" (click)="phoneCall(item.ObjectPhone, item.ObjectName)">call</a>)
           </div>
-          <div class="value nowrap" *ngIf="!!item.SupportedPersonEmail">
-            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.SupportedPersonEmail }}
+          <div class="value nowrap" *ngIf="!!item.ObjectEmail">
+            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.ObjectEmail }}
           </div>
         </div>
-        <div class="col-md-3 m-list-item-property">
+        <!-- <div class="col-md-3 m-list-item-property">
           <div class="caption">Công ty</div>
           <div class="value" *ngIf="!!item.ObjectName">
             <nb-icon icon="podium" pack="ion"></nb-icon> {{ item.ObjectName }}
@@ -68,7 +68,7 @@
           <div class="value" *ngIf="!!item.ObjectAddress">
             <nb-icon icon="map" pack="ion"></nb-icon> {{ item.ObjectAddress }}
           </div>
-        </div>
+        </div> -->
         <div class="col-md-2 m-list-item-property">
           <div class="caption">Trạng thái</div>
           <div class="value nowrap" *ngIf="!!item.State">
@@ -87,7 +87,7 @@
       </div>
 
       <div class="row m-list-item ghost" *ngFor="let _ of infiniteLoadModel.placeholders">
-        <div class="col-md-4 m-list-item-property">
+        <div class="col-md-6 m-list-item-property">
           <div class="caption">Nội dung yêu cầu</div>
           <div class="value">
             <nb-icon icon="document-text" pack="ion"></nb-icon>
@@ -96,7 +96,7 @@
             <nb-icon icon="chatbox-working" pack="ion"></nb-icon>
           </div>
         </div>
-        <div class="col-md-3 m-list-item-property">
+        <div class="col-md-4 m-list-item-property">
           <div class="caption">Người yêu cầu</div>
           <div class="value nowrap">
             <nb-icon icon="person" pack="ion"></nb-icon>
@@ -108,7 +108,7 @@
             <nb-icon icon="email" pack="ion"></nb-icon>
           </div>
         </div>
-        <div class="col-md-3 m-list-item-property">
+        <!-- <div class="col-md-3 m-list-item-property">
           <div class="caption">Công ty</div>
           <div class="value">
             <nb-icon icon="podium" pack="ion"></nb-icon>
@@ -122,7 +122,7 @@
           <div class="value">
             <nb-icon icon="map" pack="ion"></nb-icon>
           </div>
-        </div>
+        </div> -->
         <div class="col-md-2 m-list-item-property">
           <div class="caption">Trạng thái</div>
           <div class="value nowrap">

@@ -28,6 +28,8 @@ import { ActionControlListComponent } from '../../lib/custom-element/action-cont
 import { QuickTicketFormComponent } from './dashboard/quick-ticket-form/quick-ticket-form.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { UserExtensionListComponent } from './user-extensions/user-extension-list/user-extension-list.component';
+import { UserExtensionFormComponent } from './user-extensions/user-extension-form/user-extension-form.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { TranslateModule } from '@ngx-translate/core';
     StatsAreaChartComponent,
     StatsBarAnimationChartComponent,
     QuickTicketFormComponent,
+    UserExtensionListComponent,
+    UserExtensionFormComponent,
   ],
   imports: [
     CommonModule,

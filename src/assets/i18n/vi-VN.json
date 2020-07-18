@@ -112,7 +112,8 @@
     "approve": "duyệt",
     "dateOfApproved": "ngày duyệt",
     "tag": "gắn thẻ",
-    "export": "xuất"
+    "export": "xuất",
+    "table": "bảng"
   },
   "Contact": {
     "name": "tên liên hệ",

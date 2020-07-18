@@ -8,7 +8,7 @@ import { resolve } from 'url';
 export class CustomServerDataSource<M> extends LocalDataSource {
 
   lastRequestCount: number = 0;
-  prepareData: (data: M[] | any) => any[];
+  prepareData: (data: M[] | any) => any[] = (data) => data;
   prepareParams: (params: any, filter?: any, sort?: any, paging?: any) => any;
 
   initFilterConf: any;
@@ -41,7 +41,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
         this.setFilter(this.initFilterConf);
         this.initWithUserConfig = false;
       }, 500);
-      return new Promise<M>(resolve => { resolve([] as any) });
+      return new Promise<M>(resolve2 => { resolve2([] as any); });
     }
     let params = {};
     if (this.prepareParams) {
@@ -74,10 +74,18 @@ export class CustomServerDataSource<M> extends LocalDataSource {
       });
     }
 
-    return this.apiService.getObservable<M>(this.url, params).pipe(
+    return this.apiService.getObservable<M[]>(this.url, params).pipe(
       map((res) => {
         this.lastRequestCount = +res.headers.get('x-total-count');
-        return this.prepareData ? this.prepareData(res.body) : res.body;
+        let data = res.body;
+        // Auto add no
+        data = data.map((item: M, index: number) => {
+          const paging = this.getPaging();
+          item['No'] = (paging.page - 1) * paging.perPage + index + 1;
+          return item;
+        });
+        data = (this.prepareData ? this.prepareData(data) : data);
+        return data;
       }),
     ).toPromise();
 

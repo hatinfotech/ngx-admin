@@ -4,8 +4,9 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 export const environment = {
-  // Version structure s.m.f.b : Upgrade system . Add module . Add feature . Build of upgrade/update
-  version: '2.0.0.2',
+  // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
+  version: '2.0.1.2',
+  // 2.0.1.2: Develop helpdesk, update user and group
   // 2.0.0.2: admin-product: fix assign categoies feature: lose Unit error
   // 2.0.0.1: Fix after update, update sales, admin-product
   // 2.0: Upgrade angular 9 and nebular 5

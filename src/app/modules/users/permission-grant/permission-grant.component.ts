@@ -9,6 +9,7 @@ import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/for
 import { Subject } from 'rxjs';
 import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
 import { NbDialogService } from '@nebular/theme';
+import localeEn from '@angular/common/locales/en';
 
 @Component({
   selector: 'ngx-permission-grant',
@@ -82,15 +83,25 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
     // (this.permissionForm.get('resources.Ivoip_Resource_Pbxs') as FormGroup).addControl('UPDATE', this.formBuilder.control(false));
     // (this.permissionForm.get('resources.Ivoip_Resource_Pbxs') as FormGroup).addControl('DELETE', this.formBuilder.control(false));
 
-    this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 999999, includeUsers: true, selectUsers: 'id=>Code,name=>Name,type=>Type', isTree: true, select: 'id=>Code,name=>Description,children=>Children,type=>Type' },
+    this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 999999, includeUsers: true, selectUsers: 'id=>Code,name=>Name,type=>Type', isTree: true, select: 'id=>Code,name=>Name,description=>Description,children=>Children,type=>Type' },
       list => {
-        this.userGroups = list;
+        this.userGroups = this.prepareUserGroupTree(list);
       });
 
     this.apiService.get<MenuItemModel[]>('/menu/menu-items', { limit: 999999, isTree: true, includeUsers: true, select: 'id=>Code,name=>Title,children=>Children' }, list => {
       this.menuTree = list;
     });
 
+  }
+
+  prepareUserGroupTree(tree: UserGroupModel[]) {
+    for (let i = 0; i < tree.length; i++) {
+      tree[i]['name'] = tree[i]['name'] + ': ' + tree[i]['description'];
+      if (tree[i]['children']) {
+        this.prepareUserGroupTree(tree[i]['children']);
+      }
+    }
+    return tree;
   }
 
   ngOnInit() {

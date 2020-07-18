@@ -79,7 +79,10 @@
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
                   <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
-                      (*)</span></label>
+                      (*)</span>
+                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Categories')" pack="eva"
+                        icon="copy-outline">
+                      </nb-icon></label>
                   <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories"
                     [data]="categoryList">
                   </ngx-select2>
@@ -88,7 +91,9 @@
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
                   <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
-                      (*)</span></label>
+                      (*)</span><nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Groups')" pack="eva"
+                      icon="copy-outline">
+                    </nb-icon></label>
                   <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups" [data]="groupList">
                   </ngx-select2>
                 </div>
