@@ -5,6 +5,8 @@ import { HelpdeskComponent } from './helpdesk.component';
 import { HelpdeskTicketListComponent } from './ticket/helpdesk-ticket-list/helpdesk-ticket-list.component';
 import { HelpdeskTicketFormComponent } from './ticket/helpdesk-ticket-form/helpdesk-ticket-form.component';
 import { HelpdeskDashboardComponent } from './dashboard/helpdesk-dashboard/helpdesk-dashboard.component';
+import { UserExtensionListComponent } from './user-extensions/user-extension-list/user-extension-list.component';
+import { UserExtensionFormComponent } from './user-extensions/user-extension-form/user-extension-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -40,6 +42,25 @@ const routes: Routes = [{
       path: 'ticket/form/:id',
       canActivate: [AuthGuardService],
       component: HelpdeskTicketFormComponent,
+    },
+    // User extension
+    {
+      path: 'user-extension/list',
+      canActivate: [AuthGuardService],
+      component: UserExtensionListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'user-extension/form',
+      canActivate: [AuthGuardService],
+      component: UserExtensionFormComponent,
+    },
+    {
+      path: 'user-extension/form/:id',
+      canActivate: [AuthGuardService],
+      component: UserExtensionFormComponent,
     },
   ],
 }];

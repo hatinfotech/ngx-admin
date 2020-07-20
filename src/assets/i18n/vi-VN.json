@@ -269,6 +269,11 @@
     },
     "dragAndDropToUpload": "kéo & thả file vào để upload"
   },
+  "Helpdesk": {
+    "Ticket": {
+      "title": "{{action}}{{definition}} yêu cầu"
+    }
+  },
   "Print": {
     "listTemplate": "mẫu danh sách",
     "gridTemplate": "mẫu lưới",

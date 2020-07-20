@@ -6,7 +6,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../services/api.service';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { CommonService } from '../../services/common.service';
 import { BaseComponent } from '../base-component';
 import { ActionControl, ActionControlListOption } from '../custom-element/action-control-list/action-control.interface';
@@ -115,73 +114,73 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   protected silent = false;
   protected autosave = false;
 
-  actionControlList: ActionControl[] = [
+  // actionControlList: ActionControl[] = [
 
-    {
-      type: 'button',
-      name: 'goback',
-      status: 'info',
-      label: 'Trở về',
-      icon: 'arrow-back',
-      title: 'Trở về',
-      size: 'tiny',
-      disabled: () => {
-        return !this.isProcessing;
-      },
-      click: () => {
-        this.goback();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'undo',
-      status: 'warning',
-      label: 'Hoàn tác',
-      icon: 'undo',
-      title: 'Hoàn tác',
-      size: 'tiny',
-      disabled: () => {
-        return !this.canUndo || this.isProcessing;
-      },
-      click: () => {
-        this.onFormUndo();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'reload',
-      status: 'success',
-      label: 'Tải lại',
-      icon: 'refresh',
-      title: 'Tải lại',
-      size: 'tiny',
-      disabled: () => {
-        return this.isProcessing;
-      },
-      click: () => {
-        this.formLoad();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'remove',
-      status: 'danger',
-      label: 'Xem',
-      icon: 'close-circle',
-      title: 'Xem thông tin TICKET',
-      size: 'tiny',
-      disabled: () => {
-        return this.isProcessing;
-      },
-      click: (event, option: { formIndex: number }) => {
-        this.removeFormGroup(option['formIndex']);
-        return false;
-      },
-    },
-  ];
+  //   {
+  //     type: 'button',
+  //     name: 'goback',
+  //     status: 'info',
+  //     label: 'Trở về',
+  //     icon: 'arrow-back',
+  //     title: 'Trở về',
+  //     size: 'tiny',
+  //     disabled: () => {
+  //       return !this.isProcessing;
+  //     },
+  //     click: () => {
+  //       this.goback();
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     type: 'button',
+  //     name: 'undo',
+  //     status: 'warning',
+  //     label: 'Hoàn tác',
+  //     icon: 'undo',
+  //     title: 'Hoàn tác',
+  //     size: 'tiny',
+  //     disabled: () => {
+  //       return !this.canUndo || this.isProcessing;
+  //     },
+  //     click: () => {
+  //       this.onFormUndo();
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     type: 'button',
+  //     name: 'reload',
+  //     status: 'success',
+  //     label: 'Tải lại',
+  //     icon: 'refresh',
+  //     title: 'Tải lại',
+  //     size: 'tiny',
+  //     disabled: () => {
+  //       return this.isProcessing;
+  //     },
+  //     click: () => {
+  //       this.formLoad();
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     type: 'button',
+  //     name: 'remove',
+  //     status: 'danger',
+  //     label: 'Xem',
+  //     icon: 'close-circle',
+  //     title: 'Xem thông tin TICKET',
+  //     size: 'tiny',
+  //     disabled: () => {
+  //       return this.isProcessing;
+  //     },
+  //     click: (event, option: { formIndex: number }) => {
+  //       this.removeFormGroup(option['formIndex']);
+  //       return false;
+  //     },
+  //   },
+  // ];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -294,7 +293,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     //   ids['id' + index] = element;
     // });
     // this.apiService.get<M[]>(this.apiPath, { id: this.id, multi: true }, data => callback(data), e => this.onError(e));
-    this.executeGet({ id: this.id }, data => callback(data));
+    if (this.id && this.id.length > 0) {
+      this.executeGet({ id: this.id }, data => callback(data));
+    } else {
+      callback([{} as M]);
+    }
   }
 
   /** Get data from api and patch data for form */

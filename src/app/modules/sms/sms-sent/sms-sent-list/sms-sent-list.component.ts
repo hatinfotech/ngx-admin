@@ -303,12 +303,12 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
       if (!checkpoint && helpdeskHeaderOffset.top < 50) {
         checkpoint = helpdeskDashboardOffset.top;
 
-        this.commonService.updateHeaderActionControlList(this.actionButtonList);
+        this.commonService.pushHeaderActionControlList(this.actionButtonList);
 
       }
 
       if (checkpoint && helpdeskDashboardOffset.top > checkpoint) {
-        this.commonService.updateHeaderActionControlList([]);
+        this.commonService.pushHeaderActionControlList([]);
         checkpoint = null;
       }
 

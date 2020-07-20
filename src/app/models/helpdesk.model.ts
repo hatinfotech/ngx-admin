@@ -66,9 +66,14 @@ export class HelpdeskUserExtensionModel {
   Type?: string;
   Extension?: string;
   Host?: string;
+  Pbx?: string;
   Port?: string;
   Domain?: string;
   Password?: string;
   Transport?: string;
   DisplayName?: string;
+
+  get DoaminUuid() {
+    return this.Domain + '@' + this.Pbx;
+  }
 }

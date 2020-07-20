@@ -1,0 +1,19 @@
+
+
+@media(min-width: 768px) {
+  form.popup {
+    max-width: 90%;
+  }
+}
+
+@media(min-width: 1024px) {
+  form.popup {
+    max-width: 60%;
+  }
+}
+
+@media(min-width: 1600px) {
+  form.popup {
+    max-width: 50%;
+  }
+}

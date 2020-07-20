@@ -5,7 +5,7 @@ import { FormGroup } from '@angular/forms';
 export interface ActionControl {
   type?: 'button' | 'text' | 'select2';
   name?: string;
-  status: string;
+  status?: string;
   label?: string;
   icon?: string;
   title: string;

@@ -1,27 +1,32 @@
 import { Component, OnInit } from '@angular/core';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { HelpdeskUserModel } from '../../../../models/helpdesk.model';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { ProductCategoryFormComponent } from '../../../admin-product/category/product-category-form/product-category-form.component';
+import { UserExtensionFormComponent } from '../user-extension-form/user-extension-form.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ProductCategoryModel } from '../../../../models/product.model';
-import { UserExtensionFormComponent } from '../user-extension-form/user-extension-form.component';
+import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-user-extension-list',
   templateUrl: './user-extension-list.component.html',
   styleUrls: ['./user-extension-list.component.scss'],
 })
-export class UserExtensionListComponent extends DataManagerListComponent<HelpdeskUserModel> implements OnInit {
+export class UserExtensionListComponent extends ServerDataManagerListComponent<HelpdeskUserModel> implements OnInit {
 
-  componentName: string = 'ProductCategoryListComponent';
-  formPath = '/admin-product/category/form';
-  apiPath = '/admin-product/categories';
+  componentName: string = 'UserExtensionListComponent';
+  formPath = '/helpdesk/user-extension/form';
+  apiPath = '/helpdesk/users';
   idKey = 'Code';
   formDialog = UserExtensionFormComponent;
+
+  reuseDialog = true;
+
+  // Smart table
+  static filterConfig: any;
+  static sortConf: any;
+  static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
     public apiService: ApiService,
@@ -30,81 +35,44 @@ export class UserExtensionListComponent extends DataManagerListComponent<Helpdes
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
+    public ref: NbDialogRef<UserExtensionListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService, ref);
+  }
+
+  async init() {
+    // await this.loadCache();
+    return super.init();
   }
 
   editing = {};
   rows = [];
 
   settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
     columns: {
+      No: {
+        title: 'Stt',
+        type: 'number',
+        width: '5%',
+        class: 'no',
+        filter: false,
+      },
       Code: {
-        title: 'Code',
+        title: 'Mã',
         type: 'string',
         width: '10%',
       },
       Name: {
-        title: 'Tên',
+        title: 'Name',
+        type: 'string',
+        width: '45%',
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      },
+      Username: {
+        title: 'Username',
         type: 'string',
         width: '40%',
       },
-      ParentName: {
-        title: 'Danh mục cha',
-        type: 'string',
-        width: '30%',
-      },
-      FindOrder: {
-        title: 'Thứ tự tìm kiếm',
-        type: 'string',
-        width: '10%',
-      },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: ProductCategoryModel) => {
-
-      //         this.dialogService.open(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: ProductCategoryModel[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
-
-      //       });
-      //     },
-      //   },
     },
   });
 
@@ -113,20 +81,38 @@ export class UserExtensionListComponent extends DataManagerListComponent<Helpdes
     super.ngOnInit();
   }
 
-  /** Api get funciton */
-  executeGet(params: any, success: (resources: HelpdeskUserModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: HelpdeskUserModel[] | HttpErrorResponse) => void) {
-    params['includeParent'] = true;
-    super.executeGet(params, success, error, complete);
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    // source.prepareData = (data: UserGroupModel[]) => {
+    //   // const paging = source.getPaging();
+    //   // data.map((product: any, index: number) => {
+    //   //   product['No'] = (paging.page - 1) * paging.perPage + index + 1;
+    //   //   return product;
+    //   // });
+    //   return data;
+    // };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['includeParent'] = true;
+      return params;
+    };
+
+    return source;
   }
 
-  getList(callback: (list: HelpdeskUserModel[]) => void) {
-    super.getList((rs) => {
-      // rs.forEach(item => {
-      //   item.Content = item.Content.substring(0, 256) + '...';
-      // });
-      if (callback) callback(rs);
-    });
-  }
+  /** Api get funciton */
+  // executeGet(params: any, success: (resources: UserGroupModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: UserGroupModel[] | HttpErrorResponse) => void) {
+  //   params['includeCategories'] = true;
+  //   super.executeGet(params, success, error, complete);
+  // }
+
+  // getList(callback: (list: HelpdeskUserModel[]) => void) {
+  //   super.getList((rs) => {
+  //     if (callback) callback(rs);
+  //   });
+  // }
 
 }
-

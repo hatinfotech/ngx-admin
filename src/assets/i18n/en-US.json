@@ -254,7 +254,7 @@
       "title": "{{action}} emai template {{definition}}"
     },
     "Gatewya": {
-      "title": "{{action}}mail gateway {{definition}} "
+      "title": "{{action}} mail gateway {{definition}} "
     }
   },
   "File": {
@@ -265,6 +265,11 @@
       "title": "{{action}} file store {{definition}}"
     },
     "dragAndDropToUpload": "kéo & thả file vào để upload"
+  },
+  "Helpdesk": {
+    "Ticket": {
+      "title": "{{action}} helpdesk ticket {{definition}}"
+    }
   },
   "Print": {
     "listTemplate": "list template",

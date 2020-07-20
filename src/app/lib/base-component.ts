@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy, Input, Type, TemplateRef } from '@angular/core';
+import { OnInit, OnDestroy, Input, Type, TemplateRef, AfterViewInit } from '@angular/core';
 import { CommonService } from '../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
@@ -7,8 +7,9 @@ import { Subscription, Subject } from 'rxjs';
 import { NbDialogRef, NbDialogConfig } from '@nebular/theme';
 import { Icon } from './custom-element/card-header/card-header.component';
 import { ActionControl } from './custom-element/action-control-list/action-control.interface';
+import { ModuleModel } from '../models/module.model';
 
-export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent {
+export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent, AfterViewInit {
 
   abstract componentName: string = '';
   requiredPermissions: string[] = ['ACCESS'];
@@ -60,7 +61,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref?: NbDialogRef<BaseComponent> & {[key: string]: any},
+    public ref?: NbDialogRef<BaseComponent> & { [key: string]: any },
   ) { }
 
   // init() {
@@ -86,7 +87,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   ngOnInit(): void {
-    this.commonService.updateHeaderActionControlList([]);
+    if (!this.ref) {
+      this.commonService.clearHeaderActionControlList();
+    }
     this.restrict();
     this.init();
   }
@@ -96,12 +99,14 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   onResume() {
-    this.commonService.updateHeaderActionControlList([]);
+    this.commonService.clearHeaderActionControlList();
     this.restrict();
   }
 
   ngOnDestroy(): void {
-    this.commonService.updateHeaderActionControlList([]);
+    if (!this.ref) {
+      this.commonService.clearHeaderActionControlList();
+    }
     if (this.subcriptions) {
       this.subcriptions.forEach(subciption => {
         subciption.unsubscribe();
@@ -179,6 +184,10 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
       this.ref.close();
       // }
     }
+  }
+
+  async loadCache(): Promise<any> {
+    return false;
   }
 
 }

@@ -63,6 +63,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     },
   };
   headerActionControlList: ActionControl[] = [];
+  // headerActionControlListStack: ActionControl[][] = [];
 
   constructor(
     private sidebarService: NbSidebarService,
@@ -116,9 +117,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.commonService.headerActionControlList$.subscribe(actionControlList => {
-      this.headerActionControlList = actionControlList;
+    this.commonService.pushHeaderActionControlList$.subscribe(actionControlList => {
+      if (actionControlList && actionControlList.length > 0) {
+        this.headerActionControlList = actionControlList;
+        // this.headerActionControlListStack.push(actionControlList);
+      }
     });
+    this.commonService.popHeaderActionControlList$.subscribe(() => {
+      this.headerActionControlList = [];
+    });
+    this.commonService.clearHeaderActionControlList$.subscribe(() => {
+      this.headerActionControlList = [];
+      // this.headerActionControlListStack = [];
+    });
+
 
     this.virtualPhoneService.callState$.subscribe(callState => {
       if (callState.state === 'incomming' || callState.state === 'incomming-acecept') {
@@ -235,6 +247,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   changeLanguage(localeCode: any) {
-    this.commonService.locale$.next({locale: localeCode});
+    this.commonService.locale$.next({ locale: localeCode });
   }
 }

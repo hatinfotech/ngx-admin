@@ -1,3 +1,4 @@
+import { CommonService } from './services/common.service';
 import {
   RouteReuseStrategy,
   ActivatedRouteSnapshot,
@@ -9,8 +10,8 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   // constructor(private commonService: CommonService) {}
 
   private handlers: { [key: string]: DetachedRouteHandle } = {};
-  private takeUltilCount = 0;
-  private takeUltilPastCount = 0;
+  private takeUltilCount: {[key: string]: number} = {};
+  private takeUltilPastCount: {[key: string]: number} = {};
 
   constructor() {
 
@@ -67,23 +68,53 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     const url = this.getUrl(route);
     const handler = this.handlers[url];
     if (handler) {
-      const component = handler['componentRef']['_component'];
+      const component = handler['componentRef']['instance'];
       if (component && component['onResume']) {
         // if (!this.takeUltilCount) this.takeUltilCount = 0;
-        this.takeUltilCount++;
-        ((takeCount) => {
-          setTimeout(() => {
-            this.takeUltilPastCount = takeCount;
-          }, 300);
-        })(this.takeUltilCount);
-        setTimeout(() => {
-          if (this.takeUltilPastCount === this.takeUltilCount) {
-            component['onResume']();
-          }
-        }, 300);
+        this.takeUntil('on_component_reuse', 100).then(rs => {
+          component['onResume']();
+        });
+        // this.takeUltilCount++;
+        // ((takeCount) => {
+        //   setTimeout(() => {
+        //     this.takeUltilPastCount = takeCount;
+        //   }, 300);
+        // })(this.takeUltilCount);
+        // setTimeout(() => {
+        //   if (this.takeUltilPastCount === this.takeUltilCount) {
+        //     component['onResume']();
+        //   }
+        // }, 300);
       }
     }
     return handler;
+  }
+
+  async takeUntil(context: string, delay: number, callback?: () => void): Promise<boolean> {
+    const result = new Promise<boolean>(resolve => {
+      if (delay === 0) {
+        // if (callback) callback(); else return;
+        resolve(true);
+        return;
+      }
+      if (!this.takeUltilCount[context]) this.takeUltilCount[context] = 0;
+      this.takeUltilCount[context]++;
+      ((takeCount) => {
+        setTimeout(() => {
+          this.takeUltilPastCount[context] = takeCount;
+        }, delay);
+      })(this.takeUltilCount[context]);
+      setTimeout(() => {
+        if (this.takeUltilPastCount[context] === this.takeUltilCount[context]) {
+          // callback();
+          resolve(true);
+        }
+      }, delay);
+    });
+    if (callback) {
+      callback();
+    }
+    return result;
   }
 
   /**

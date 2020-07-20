@@ -1,23 +1,57 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { takeUntil, filter } from 'rxjs/operators';
+import { Component, Input, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActionControl, ActionControlListOption } from './action-control.interface';
 import { CommonService } from '../../../services/common.service';
-import { FormGroupName, FormGroup } from '@angular/forms';
+import { LayoutService } from '../../../@core/utils/layout.service';
+import { NbLayoutScrollService } from '@nebular/theme';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'ngx-action-control-list',
   templateUrl: './action-control-list.component.html',
   styleUrls: ['./action-control-list.component.scss'],
 })
-export class ActionControlListComponent implements OnInit {
+export class ActionControlListComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() list: ActionControl[];
   @Input() hideLabel: boolean = false;
   @Input() hideIcon: boolean = false;
   @Input() option: ActionControlListOption;
 
-  constructor(public commonService: CommonService) {
+  @ViewChild('actionList') actionListEle: ElementRef;
+  protected destroy$: Subject<void> = new Subject<void>();
+
+  constructor(
+    public commonService: CommonService,
+    public layoutScrollService: NbLayoutScrollService,
+  ) {
     console.log('constructor');
   }
 
   ngOnInit(): void { }
 
+  ngAfterViewInit(): void {
+    // tslint:disable-next-line: ban
+    const helpdeskHeaderEle = $(this.actionListEle.nativeElement);
+
+    let checkpoint = null;
+    this.layoutScrollService.onScroll().pipe(takeUntil(this.destroy$), filter(position => this.actionListEle.nativeElement.offsetParent != null)).subscribe(position => {
+      // console.log(helpdeskHeaderEle.is(':visible'));
+      const helpdeskHeaderOffset = helpdeskHeaderEle.offset();
+      if (!checkpoint && helpdeskHeaderOffset.top < 50) {
+        checkpoint = helpdeskHeaderOffset.top;
+        this.commonService.pushHeaderActionControlList(this.list);
+      }
+
+      if (checkpoint && helpdeskHeaderOffset.top > checkpoint) {
+        this.commonService.popHeaderActionControlList();
+        checkpoint = null;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.commonService.pushHeaderActionControlList([]);
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

@@ -483,7 +483,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       if (!checkpoint && helpdeskHeaderOffset.top < 50) {
         checkpoint = helpdeskDashboardOffset.top;
 
-        this.commonService.updateHeaderActionControlList(this.actionButtonList);
+        this.commonService.pushHeaderActionControlList(this.actionButtonList);
 
         //   helpdeskHeaderEle.css({ position: 'fixed', zIndex: 1, width: fixedWidth, top: fixedOffset.top, left: helpdeskHeaderOffset.left });
         //   helpdeskDashboard.css({paddingTop: helpdeskHeaderEle.height() + 17});
@@ -493,7 +493,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
       if (checkpoint && helpdeskDashboardOffset.top > checkpoint) {
         //   helpdeskHeaderEle.css({ position: 'relative', zIndex: 'initial', width: 'initial', top: 'initial', left: 'initial' });
         //   helpdeskDashboard.css({paddingTop: 'initial'});
-        this.commonService.updateHeaderActionControlList([]);
+        this.commonService.pushHeaderActionControlList([]);
         checkpoint = null;
       }
 
@@ -528,7 +528,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnDestroy() {
     this.alive = false;
-    this.commonService.updateHeaderActionControlList([]);
+    this.commonService.pushHeaderActionControlList([]);
   }
 
   refresh() {

@@ -502,6 +502,17 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     if (!settings.pager) {
       settings.pager = this.configPaging();
     }
+    if (!settings.mode) {
+      settings.mode = 'external';
+    }
+    if (!settings.selectMode) {
+      settings.selectMode = 'multi';
+    }
+    if (!settings.actions) {
+      settings.actions = {
+        position: 'right',
+      };
+    }
 
     // Set default filter function
     Object.keys(settings.columns).forEach(key => {
@@ -551,7 +562,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   /** Implement required */
   async openFormDialog(ids?: string[], formDialog?: Type<DataManagerFormComponent<M>>) {
     return new Promise<{ event: string, data?: M[] }>(resolve => {
-      this.dialogService.open<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
+      this.commonService.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
         context: {
           inputMode: 'dialog',
           inputId: ids,

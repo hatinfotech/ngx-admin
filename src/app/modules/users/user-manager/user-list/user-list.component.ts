@@ -40,11 +40,6 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
 
-  // async loadCache() {
-  //   // iniit category
-  //   // this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-  // }
-
   async init() {
     // await this.loadCache();
     return super.init();
@@ -54,15 +49,6 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
   rows = [];
 
   settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: this.configAddButton(),
-    // edit: this.configEditButton(),
-    // delete: this.configDeleteButton(),
-    // pager: this.configPaging(),
     columns: {
       No: {
         title: 'Stt',

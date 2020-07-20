@@ -1,4 +1,4 @@
-<div class="action-list">
+<div class="action-list" #actionList>
   <div class="buttons-row">
     <ng-content select="ngx-action-control-begin"></ng-content>
     <ng-template ngFor let-control [ngForOf]="list" let-i="index">
@@ -10,7 +10,7 @@
         <span *ngIf="!!control.label && !hideLabel">{{control.label}}</span>
       </button>
       <input class="action-list-item" *ngIf="control.type == 'text' && (!control.hidden || !control.hidden(option))"
-        nbInput type="text" [fieldSize]="control.size" [status]="control.status"
+        nbInput type="text" [fieldSize]="control.size" [status]="control?.status"
         [disabled]="control.disabled && control.disabled()" [placeholder]="control.title"
         (change)="control.change($event, option)" (keyup)="control.typing($event, option)"
         (key.enter)="control.change($event, option)" [value]="control.value()">

@@ -155,7 +155,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   }
 
   async loadByCallSessionId(callSessionId?: string): Promise<HelpdeskTicketModel> {
-    if (!this.ticketCode) {
+    if (!this.ticketCode && callSessionId) {
       const ticket = (await this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { getByCallSessionId: callSessionId ? callSessionId : this.index }))[0];
       if (ticket) {
         this.id = [ticket.Code];

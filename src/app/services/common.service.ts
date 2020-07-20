@@ -1,10 +1,12 @@
-import { Injectable, Type } from '@angular/core';
+import { Injectable, Type, TemplateRef } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
-import { NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
-  NbSidebarComponent, NbDialogRef } from '@nebular/theme';
+import {
+  NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
+  NbSidebarComponent, NbDialogRef, NbDialogConfig
+} from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location, getCurrencySymbol, getLocaleNumberFormat, NumberFormatStyle } from '@angular/common';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
@@ -49,8 +51,14 @@ export class CommonService {
   componentChangeSubject: BehaviorSubject<{ componentName: string, state: boolean, data?: any }> = new BehaviorSubject<{ componentName: string, state: boolean, data?: any }>({ componentName: '', state: false });
   componentChange$: Observable<{ componentName: string, state: boolean, data?: any }> = this.componentChangeSubject.asObservable();
 
-  headerActionControlListSubject: BehaviorSubject<ActionControl[]> = new BehaviorSubject<ActionControl[]>([]);
-  headerActionControlList$: Observable<ActionControl[]> = this.headerActionControlListSubject.asObservable();
+  pushHeaderActionControlListSubject: BehaviorSubject<ActionControl[]> = new BehaviorSubject<ActionControl[]>([]);
+  pushHeaderActionControlList$: Observable<ActionControl[]> = this.pushHeaderActionControlListSubject.asObservable();
+  // popHeaderActionControlListSubject: BehaviorSubject<void> = new BehaviorSubject<void>(null);
+  // popHeaderActionControlList$: Observable<void> = this.popHeaderActionControlListSubject.asObservable();
+
+  popHeaderActionControlList$: Subject<void> = new Subject<void>();
+  clearHeaderActionControlList$: Subject<void> = new Subject<void>();
+
 
   authenticatedSubject = new BehaviorSubject<LoginInfoModel>(null);
   authenticated$ = this.authenticatedSubject.asObservable();
@@ -283,6 +291,14 @@ export class CommonService {
     });
   }
 
+  openDialog<T>(content: Type<T> | TemplateRef<T>, userConfig?: Partial<NbDialogConfig<Partial<T> | string>>): NbDialogRef<T> {
+    setTimeout(() => {
+      // tslint:disable-next-line: ban
+      $('html').css({ top: 0 });
+    }, 50);
+    return this.dialogService.open<T>(content, userConfig);
+  }
+
   resumeDialog(dialogRef: NbDialogRef<BaseComponent> | any, config?: { events: { onDialogClose?: () => void, onDialogChoose?: (selectItems: any[]) => void } }): boolean {
     if (dialogRef.show) {
       dialogRef.show(config);
@@ -363,8 +379,14 @@ export class CommonService {
       .map(x => x[Math.floor(Math.random() * x.length)]).join('');
   }
 
-  updateHeaderActionControlList(actionControlList: ActionControl[]) {
-    this.headerActionControlListSubject.next(actionControlList);
+  pushHeaderActionControlList(actionControlList: ActionControl[]) {
+    this.pushHeaderActionControlListSubject.next(actionControlList.map(control => ({ ...control, size: 'small' })));
+  }
+  popHeaderActionControlList() {
+    this.popHeaderActionControlList$.next();
+  }
+  clearHeaderActionControlList() {
+    this.clearHeaderActionControlList$.next();
   }
 
   openMobileSidebar() {
@@ -388,16 +410,16 @@ export class CommonService {
     return `${window.location.origin}/${environment.basePath}`;
   }
 
-  textTitleCase(string) {
-    const sentence = string.toLowerCase().split(' ');
+  textTitleCase(text: string): string {
+    const sentence = text.toLowerCase().split(' ');
     for (let i = 0; i < sentence.length; i++) {
       sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
     }
-    document.write(sentence.join(' '));
-    return sentence;
+    // document.write(sentence.join(' '));
+    return sentence.join(' ');
   }
 
-  textTransform(text: string, transform: 'title' | 'upper' | 'lower' | 'head-title') {
+  textTransform(text: string, transform: 'title' | 'upper' | 'lower' | 'head-title'): string {
     switch (transform) {
       case 'title':
         return this.textTitleCase(text);
@@ -409,6 +431,10 @@ export class CommonService {
         return text.replace(/^./, text.charAt(0).toUpperCase());
       default: return text;
     }
+  }
+
+  translateText(key: string | Array<string>, interpolateParams?: Object, transform?: 'title' | 'upper' | 'lower' | 'head-title') {
+    return this.textTransform(this.translate.instant(key, interpolateParams), transform ? transform : 'head-title');
   }
 
   getCurrentLoaleDataset() {

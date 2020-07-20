@@ -63,7 +63,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     {
       type: 'text',
       name: 'search',
-      status: 'default',
+      status: 'primary',
       label: 'Search',
       icon: 'message-square',
       title: 'Tìm kiếm',
@@ -310,7 +310,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     cardData.loading = true;
     cardData.placeholders = new Array(this.pageSize);
 
-    this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', { search: this.keyword, limit: this.pageSize, offset: (cardData.pageToLoadNext - 1) * this.pageSize }, nextList => {
+    this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', { search: this.keyword, sort_Id: 'desc', limit: this.pageSize, offset: (cardData.pageToLoadNext - 1) * this.pageSize }, nextList => {
       // this.dataList = list.map(item => {
       //   item['selected'] = false;
       //   return item;
@@ -332,38 +332,37 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     //   });
   }
 
-  ngAfterViewInit(): void {
-    // tslint:disable-next-line: ban
-    const helpdeskDashboard = $(document.getElementById('helpdeskDashboard'));
-    // tslint:disable-next-line: ban
-    const helpdeskHeaderEle = $(document.getElementById('helpdeskHeader'));
-    this.subcriptions.push(this.layoutScrollService.getPosition().subscribe(position => {
-      console.info(position);
-    }));
-    let checkpoint = null;
-    this.subcriptions.push(this.layoutScrollService.onScroll().subscribe(position => {
-      const helpdeskHeaderOffset = helpdeskHeaderEle.offset();
-      const helpdeskDashboardOffset = helpdeskDashboard.offset();
-      if (!checkpoint && helpdeskHeaderOffset.top < 50) {
-        checkpoint = helpdeskDashboardOffset.top;
+  // ngAfterViewInit(): void {
+  //   // tslint:disable-next-line: ban
+  //   const helpdeskDashboard = $(document.getElementById('helpdeskDashboard'));
+  //   // tslint:disable-next-line: ban
+  //   const helpdeskHeaderEle = $(document.getElementsByClassName('.card-header-container'));
+  //   // this.subcriptions.push(this.layoutScrollService.getPosition().s  ubscribe(position => {
+  //   //   console.info(position);
+  //   // }));
 
-        this.commonService.updateHeaderActionControlList(this.actionButtonList);
+  //   let checkpoint = null;
+  //   this.layoutScrollService.onScroll().pipe(takeUntil(this.destroy$)).subscribe(position => {
+  //     const helpdeskHeaderOffset = helpdeskHeaderEle.offset();
+  //     const helpdeskDashboardOffset = helpdeskDashboard.offset();
+  //     if (!checkpoint && helpdeskHeaderOffset.top < 50) {
+  //       checkpoint = helpdeskDashboardOffset.top;
 
-        //   helpdeskHeaderEle.css({ position: 'fixed', zIndex: 1, width: fixedWidth, top: fixedOffset.top, left: helpdeskHeaderOffset.left });
-        //   helpdeskDashboard.css({paddingTop: helpdeskHeaderEle.height() + 17});
-      }
+  //       this.commonService.pushHeaderActionControlList(this.actionButtonList);
 
-      // console.info(`${checkpoint} && ${helpdeskDashboardOffset.top} >= ${checkpoint}`);
-      if (checkpoint && helpdeskDashboardOffset.top > checkpoint) {
-        //   helpdeskHeaderEle.css({ position: 'relative', zIndex: 'initial', width: 'initial', top: 'initial', left: 'initial' });
-        //   helpdeskDashboard.css({paddingTop: 'initial'});
-        this.commonService.updateHeaderActionControlList([]);
-        checkpoint = null;
-      }
+  //       //   helpdeskHeaderEle.css({ position: 'fixed', zIndex: 1, width: fixedWidth, top: fixedOffset.top, left: helpdeskHeaderOffset.left });
+  //       //   helpdeskDashboard.css({paddingTop: helpdeskHeaderEle.height() + 17});
+  //     }
 
-
-    }));
-  }
+  //     // console.info(`${checkpoint} && ${helpdeskDashboardOffset.top} >= ${checkpoint}`);
+  //     if (checkpoint && helpdeskDashboardOffset.top > checkpoint) {
+  //       //   helpdeskHeaderEle.css({ position: 'relative', zIndex: 'initial', width: 'initial', top: 'initial', left: 'initial' });
+  //       //   helpdeskDashboard.css({paddingTop: 'initial'});
+  //       this.commonService.popHeaderActionControlList();
+  //       checkpoint = null;
+  //     }
+  //   });
+  // }
 
   loadList() {
     // this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', { limit: 20 }, list => {
@@ -491,7 +490,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
     // Load form by contact phone
     if (await event.loadByCallSessionId()) {
-      // Auto save after init 10s
+      // Auto save after init 10sææ
       setTimeout(() => {
         event.save();
       }, 10000);

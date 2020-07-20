@@ -5,17 +5,36 @@
 }
 
 .buttons-row button {
-  margin: initial !important;
+  margin-top: initial !important;
 }
 .buttons-row [nbButton].appearance-hero.size-medium {
   min-width: 3rem;
   margin-left: 0.5rem !important;
   margin-bottom: 0.5rem !important;
 }
+.buttons-row [nbinput].size-medium  {
+  margin-left: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+  display: inline-flex !important;
+  vertical-align: middle !important;
+}
+
 .buttons-row [nbButton].appearance-hero.size-small {
+  min-width: 3rem;
+  margin-left: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+.buttons-row [nbinput].size-small  {
+  margin-left: 0.3rem;
+  margin-bottom: 0.3rem;
+  display: inline-flex !important;
+  vertical-align: middle !important;
+}
+
+.buttons-row [nbButton].size-small {
   min-width: 2.2rem;
-  margin-left: 0.3rem !important;
-  margin-bottom: 0.3rem !important;
+  margin-left: 0.3rem;
+  margin-bottom: 0.3rem;
 }
 
 .action-list-item.select2 {

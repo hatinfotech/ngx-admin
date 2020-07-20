@@ -11,7 +11,8 @@
   <nb-select size="small" [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
     <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
   </nb-select>
-  <nb-select size="small" [selected]="translate.currentLang" (selectedChange)="changeLanguage($event)" status="primary" style="margin-left: 1rem;">
+  <nb-select size="small" [selected]="translate.currentLang" (selectedChange)="changeLanguage($event)" status="primary"
+    style="margin-left: 1rem;">
     <nb-option *ngFor="let lang of translate.getLangs()" [value]="lang">{{lang}}</nb-option>
   </nb-select>
 
@@ -19,7 +20,9 @@
   <!-- <ngx-select2 [data]="domainList" [value]="activePbxDoamin" [select2Option]="domainListConfig"
         (selectChange)="onChangeDomain($event)">
       </ngx-select2> -->
+</div>
 
+<div class="header-container">
   <ngx-action-control-list style="float: right;" [list]="headerActionControlList" [hideLabel]="true">
   </ngx-action-control-list>
 </div>

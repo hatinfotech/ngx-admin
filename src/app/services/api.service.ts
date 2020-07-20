@@ -1,3 +1,4 @@
+import { error } from 'jquery';
 import { Injectable } from '@angular/core';
 import {
   HttpClient, HttpResponse, HttpErrorResponse,
@@ -12,6 +13,7 @@ import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showc
 import { environment } from '../../environments/environment';
 import { EmployeeModel } from '../models/employee.model';
 import { LoginDialogComponent } from '../modules/auth/login/login-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 export class ApiToken {
   access_token?: string;
   refresh_token?: string;
@@ -39,9 +41,10 @@ export class ApiService {
 
   constructor(
     public _http: HttpClient,
-    protected authService: NbAuthService,
-    private router: Router,
-    private dialogService: NbDialogService,
+    public authService: NbAuthService,
+    public router: Router,
+    public dialogService: NbDialogService,
+    public translate: TranslateService,
     // private commonService: CommonService,
     // private activatedRoute: ActivatedRouteSnapshot,
   ) {
@@ -462,7 +465,7 @@ export class ApiService {
       if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Yêu cầu quyền truy cập',
-          content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
+          content: this.joinLogs(e),
           actions: [
             {
               label: 'Trở về',
@@ -478,7 +481,7 @@ export class ApiService {
       if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Yêu cầu không thể thực thi',
-          content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
+          content: this.joinLogs(e),
           actions: [
             {
               label: 'Trở về',
@@ -494,7 +497,7 @@ export class ApiService {
       if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
           title: 'Yêu cầu không có quyền',
-          content: (e.error['logs'] && e.error['logs'][0]) ? e.error['logs'][0] : e.message,
+          content: this.joinLogs(e),
           actions: [
             {
               label: 'Trở về',
@@ -522,6 +525,42 @@ export class ApiService {
     console.info(errorMessage);
     return throwError(errorMessage);
   }
+
+  joinLogs(e: HttpErrorResponse): string {
+    if (e.error['logs']) {
+      if (e.error['logs'].length > 1) {
+        return '<ul><li>' + e.error['logs'].map((log: string) => this.textTransform(log, 'head-title')).join('</li><li>') + '</li></ul>';
+      }
+      if (e.error['logs'].length === 1) {
+        return e.error['logs'].map((log: string) => this.textTransform(log, 'head-title'))[0];
+      }
+      return e.message;
+    }
+    return '';
+  }
+
+  textTitleCase(text: string) {
+    const sentence = text.toLowerCase().split(' ');
+    for (let i = 0; i < sentence.length; i++) {
+      sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+    }
+    document.write(sentence.join(' '));
+    return sentence.join(' ');
+  }
+
+  textTransform(text: string, transform: 'title' | 'upper' | 'lower' | 'head-title') {
+    switch (transform) {
+      case 'title':
+        return this.textTitleCase(text);
+      case 'upper':
+        return text.toUpperCase();
+      case 'lower':
+        return text.toLowerCase();
+      case 'head-title':
+        return text.replace(/^./, text.charAt(0).toUpperCase());
+      default: return text;
+    }
+  }
 }
 
 @Injectable()
@@ -546,13 +585,14 @@ export class ApiInterceptor implements HttpInterceptor {
         return this.refreshToken(req, next);
       } else {
 
-        return next.handle(req).pipe(catchError(error => {
+        return next.handle(req).pipe(catchError(error2 => {
           if (req.url.includes('v1/user/login')) {
             this.apiService.onUnauthorizied();
-            return next.handle(error);
+            return next.handle(error2);
           }
-          if (error.status !== 401) {
-            return next.handle(error);
+          if (error2.status !== 401) {
+            // return next.handle(error2);
+            return throwError(error2);
           }
           return this.refreshToken(req, next);
         }));

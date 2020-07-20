@@ -81,6 +81,30 @@ body .logo-container {
 .tag nb-icon {
   font-size: 12px;
 }
+
+hr {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+ngx-header ngx-action-control-list {
+  float: initial !important;
+  height: 2rem;
+  margin-left: 0.5rem;
+
+  .buttons-row {
+    [nbInput].size-small {
+      // line-height: 1.35rem !important;
+      margin-bottom: initial !important;
+    }
+    [nbButton].size-small nb-icon {
+      height: 1.25rem !important;
+    }
+    [nbButton].size-small {
+      margin-bottom: initial !important;
+    }
+  }
+}
 /* End Layout */
 
 .disable-select2 {
@@ -934,7 +958,7 @@ body .form-group span.invalid {
   display: none;
 }
 body .form-group[state="warning"] span.invalid {
-  display: block;
+  display: inline;
 }
 body .form-group[state="warning"] span.valid {
   display: none;
@@ -1286,13 +1310,13 @@ body nb-layout .layout .layout-container .content nb-layout-footer nav {
 //   // line-height: 1.25rem !important;
 // }
 
-.action-list input[type="text"].action-list-item {
-  margin-top: 1px;
-  padding: 0.54rem 1.125rem;
-}
-ngx-header .action-list input[type="text"].action-list-item {
-  padding: 0.27rem 1.125rem;
-}
+// .action-list input[type="text"].action-list-item {
+//   margin-top: 1px;
+//   padding: 0.54rem 1.125rem;
+// }
+// ngx-header .action-list input[type="text"].action-list-item {
+//   padding: 0.27rem 1.125rem;
+// }
 
 /* End Action list */
 
@@ -1349,7 +1373,7 @@ body [nbButton].size-small.icon-start:not(.icon-end) nb-icon {
   margin-right: 0.25rem;
 }
 body [nbButton].size-small nb-icon {
-  height: 1.2rem !important;
+  height: 1.12rem !important;
 }
 body [nbButton].appearance-hero.size-medium {
   padding: 0.75rem 0.78rem !important;
@@ -1362,7 +1386,6 @@ body [nbButton].appearance-hero.size-medium {
   min-width: 2.7rem;
 }
 /** End NB Input */
-
 
 /** Common */
 .tag {
