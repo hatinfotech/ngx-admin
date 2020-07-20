@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.1.2',
+  version: '2.0.2.1',
+  // 2.0.2.1: Develop helpdesk, add header action control list feature
   // 2.0.1.2: Develop helpdesk, update user and group
   // 2.0.0.2: admin-product: fix assign categoies feature: lose Unit error
   // 2.0.0.1: Fix after update, update sales, admin-product
