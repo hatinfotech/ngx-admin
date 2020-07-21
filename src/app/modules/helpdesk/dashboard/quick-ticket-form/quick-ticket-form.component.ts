@@ -60,7 +60,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     },
   };
 
-  actionControlList: ActionControl[] = [
+  actionButtonList: ActionControl[] = [
     {
       type: 'button',
       name: 'save',
@@ -68,13 +68,13 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       label: 'Lưu',
       icon: 'save',
       title: 'Lưu yêu cầu',
-      size: 'tiny',
+      size: 'medium',
       disabled: (option) => {
         return !option.form.valid;
         // return false;
       },
       click: () => {
-        return true;
+        return this.save();
       },
     },
     {
@@ -84,7 +84,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       label: 'Tải lại',
       icon: 'refresh',
       title: 'Tải lại',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -98,10 +98,10 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       type: 'button',
       name: 'close',
       status: 'danger',
-      label: 'Đóng',
-      icon: 'close-circle',
+      // label: 'Đóng',
+      icon: 'close',
       title: 'Đóng',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -175,10 +175,10 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
             const contact = contacts[0];
             if (contact) {
               contact['doNotAutoFill'] = true;
-              this.array.controls[0].get('Object').setValue(contact);
-              this.array.controls[0].get('ObjectName').setValue(contacts[0]['Name']);
-              this.array.controls[0].get('ObjectEmail').setValue(contacts[0]['Email']);
-              this.array.controls[0].get('ObjectAddress').setValue(contacts[0]['Address']);
+              this.array.controls[0].get('Object').setValue({ id: contact.Code, text: contact.Name, Code: contact.Code });
+              this.array.controls[0].get('ObjectName').setValue(contact['Name']);
+              this.array.controls[0].get('ObjectEmail').setValue(contact['Email']);
+              this.array.controls[0].get('ObjectAddress').setValue(contact['Address']);
             }
             this.array.controls[0].get('ObjectPhone').setValue(phoneNumber);
             resolve(true);
@@ -270,7 +270,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     //   this.ref.close();
     //   // this.dismiss();
     // }
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.dialogService.open(ShowcaseDialogComponent, {
       context: {
         title: 'Phiếu yêu cầu hỗ trợ',
         content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',

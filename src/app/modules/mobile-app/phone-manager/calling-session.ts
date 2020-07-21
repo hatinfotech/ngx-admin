@@ -41,7 +41,9 @@ export class CallingSession {
   }
 
   accept() {
-    this.receivedSession.accept();
+    this.receivedSession.accept({sessionDescriptionHandlerOptions: {
+      constraints: { audio: true, video: false },
+    }});
   }
 
   hangup() {

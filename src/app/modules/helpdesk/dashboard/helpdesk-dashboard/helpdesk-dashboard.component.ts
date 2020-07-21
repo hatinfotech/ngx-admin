@@ -107,24 +107,24 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     //     return false;
     //   },
     // },
-    {
-      type: 'button',
-      name: 'call',
-      status: 'primary',
-      label: 'Gọi',
-      icon: 'phone-call',
-      title: 'Gọi cho người được hỗ trợ',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.commonService.openMenuSidebar();
-        this.mobileAppService.switchScreen('phone');
-        // this.refresh();
-        return false;
-      },
-    },
+    // {
+    //   type: 'button',
+    //   name: 'call',
+    //   status: 'primary',
+    //   label: 'Gọi',
+    //   icon: 'phone-call',
+    //   title: 'Gọi cho người được hỗ trợ',
+    //   size: 'medium',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     this.commonService.openMenuSidebar();
+    //     this.mobileAppService.switchScreen('phone');
+    //     // this.refresh();
+    //     return false;
+    //   },
+    // },
     {
       type: 'button',
       name: 'create',
@@ -157,43 +157,43 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     //     return false;
     //   },
     // },
-    {
-      type: 'button',
-      name: 'view',
-      status: 'success',
-      label: 'Xem',
-      icon: 'external-link',
-      title: 'Xem thông tin TICKET',
-      size: 'medium',
-      disabled: () => {
-        return !this.hadRowsSelected || this.hadMultiRowSelected;
-      },
-      click: () => {
-        // this.createNewItem();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'remove',
-      status: 'danger',
-      label: 'Huỷ',
-      icon: 'close-circle',
-      title: 'Huỷ yêu cầu',
-      size: 'medium',
-      disabled: () => {
-        return !this.hadRowsSelected;
-      },
-      click: () => {
-        // this.reset();
-        return false;
-      },
-    },
+    // {
+    //   type: 'button',
+    //   name: 'view',
+    //   status: 'success',
+    //   label: 'Xem',
+    //   icon: 'external-link',
+    //   title: 'Xem thông tin TICKET',
+    //   size: 'medium',
+    //   disabled: () => {
+    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
+    //   },
+    //   click: () => {
+    //     // this.createNewItem();
+    //     return false;
+    //   },
+    // },
+    // {
+    //   type: 'button',
+    //   name: 'remove',
+    //   status: 'danger',
+    //   label: 'Huỷ',
+    //   icon: 'close-circle',
+    //   title: 'Huỷ yêu cầu',
+    //   size: 'medium',
+    //   disabled: () => {
+    //     return !this.hadRowsSelected;
+    //   },
+    //   click: () => {
+    //     // this.reset();
+    //     return false;
+    //   },
+    // },
     {
       type: 'button',
       name: 'refresh',
       status: 'success',
-      label: 'Refresh',
+      // label: 'Refresh',
       icon: 'sync',
       title: 'Làm mới',
       size: 'medium',
