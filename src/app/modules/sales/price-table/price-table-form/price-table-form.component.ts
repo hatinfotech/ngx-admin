@@ -20,7 +20,7 @@ import { PurchasePriceTableDetailModel } from '../../../../models/purchase.model
 import { BehaviorSubject } from 'rxjs';
 import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
 import { isNumber } from 'util';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { takeUntil, first } from 'rxjs/operators';
 import { PriceTablePrintAsListComponent } from '../price-table-print-as-list/price-table-print-as-list.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
@@ -119,7 +119,8 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<PriceTableFormComponent>,
-    public currencyPipe: CurrencyPipe,
+    // public currencyPipe: CurrencyPipe,
+    public decimalPipe: DecimalPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
 
@@ -228,7 +229,9 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         valueFormatter: (params: { value: number & string }) => {
           // console.log(params);
           const value = parseFloat(params.value);
-          return isNumber(value) ? this.currencyPipe.transform(value, 'VND') : 0;
+          // return isNumber(value) ? this.currencyPipe.transform(value, 'VND') : 0;
+          return value;
+          // return isNumber(value) ? this.decimalPipe.transform(value) : 0;
         },
       },
     ];

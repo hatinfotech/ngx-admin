@@ -13,7 +13,7 @@ import { CallBlocksComponent } from './call-blocks/call-blocks.component';
 import { IvoipDashboardModule } from './dashboard/ivoip-dashboard.module';
 import { PbxFormComponent } from './pbx/pbx-form/pbx-form.component';
 import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
+// import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { CallBlockListComponent } from './call-blocks/call-block-list/call-block-list.component';
@@ -110,7 +110,7 @@ import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterCompone
     NbActionsModule,
     NbRadioModule,
     NbDatepickerModule,
-    CurrencyMaskModule,
+    // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
     DialogModule,

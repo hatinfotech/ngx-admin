@@ -1,5 +1,5 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { SalesComponent } from './sales.component';
 import { SalesPriceReportListComponent } from './price-report/sales-price-report-list/sales-price-report-list.component';
 import { SalesPriceReportFormComponent } from './price-report/sales-price-report-form/sales-price-report-form.component';
@@ -62,7 +62,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NbActionsModule,
     NbRadioModule,
     NbDatepickerModule,
-    CurrencyMaskModule,
+    // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
     DialogModule,
@@ -100,7 +100,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },
     // {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
-    CurrencyPipe,
+    { provide: CurrencyPipe, useValue: {} },
+    { provide: DecimalPipe, useValue: {} },
   ],
 })
 export class SalesModule { }

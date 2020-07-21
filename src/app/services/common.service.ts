@@ -8,7 +8,7 @@ import {
   NbSidebarComponent, NbDialogRef, NbDialogConfig
 } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Location, getCurrencySymbol, getLocaleNumberFormat, NumberFormatStyle } from '@angular/common';
+import { Location, getCurrencySymbol, getLocaleNumberFormat, NumberFormatStyle, CurrencyPipe } from '@angular/common';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
 import localeVi from '@angular/common/locales/vi';
 import localeEn from '@angular/common/locales/en';
@@ -81,6 +81,7 @@ export class CommonService {
     public _location: Location,
     public sidebarService: NbSidebarService,
     public translate: TranslateService,
+    public currencyPipe: CurrencyPipe,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
@@ -463,6 +464,10 @@ export class CommonService {
 
   getObjectText(obj: any, textName?: string) {
     return obj && typeof obj[textName || 'text'] !== 'undefined' ? obj[textName || 'text'] : obj;
+  }
+
+  currencyTransform(value: any, currencyCode?: string, display?: 'code' | 'symbol' | 'symbol-narrow' | string | boolean, digitsInfo?: string, locale?: string): string | null {
+    return this.currencyPipe.transform(value, currencyCode, display, digitsInfo, locale);
   }
 
 }

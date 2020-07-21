@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { SalesPriceReportFormComponent } from '../../price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntil } from 'rxjs/operators';
@@ -24,7 +24,6 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
-import { CurrencyMaskConfig } from 'ng2-currency-mask';
 
 @Component({
   selector: 'ngx-master-price-table-form',
@@ -128,7 +127,8 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<MasterPriceTableFormComponent>,
-    public currencyPipe: CurrencyPipe,
+    // public currencyPipe: CurrencyPipe,
+    public decimalPipe: DecimalPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -467,7 +467,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
     const printTemplate = this.printTemplateList.find((item: { id: string }) => item.id === formItem.get('PrintTemplate').value);
     if (printTemplate) {
-      data.Details = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & {string, Price?: string | number })[]>(
+      data.Details = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { string, Price?: string | number })[]>(
         '/sales/master-price-table-details',
         {
           excludeNoPrice: true,
@@ -683,22 +683,22 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
           if (value) {
             if (row.WarehouseUnit.Code) {
               // if (!instance.isPatchingValue) {
-                instance.status = 'primary';
+              instance.status = 'primary';
+              console.log(instance.rowData.Code);
+              this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {}, [{
+                MasterPriceTable: masterPriceTable,
+                Product: row.Code,
+                Unit: row.WarehouseUnit.Code,
+                Price: value,
+              }]).then(rs => {
+                // console.log(rs);
                 console.log(instance.rowData.Code);
-                this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {}, [{
-                  MasterPriceTable: masterPriceTable,
-                  Product: row.Code,
-                  Unit: row.WarehouseUnit.Code,
-                  Price: value,
-                }]).then(rs => {
-                  // console.log(rs);
-                  console.log(instance.rowData.Code);
-                  instance.status = 'success';
-                  // setTimeout(() => {
-                  //   console.log(instance.rowData.Code);
-                  //   instance.status = '';
-                  // }, 15000);
-                });
+                instance.status = 'success';
+                // setTimeout(() => {
+                //   console.log(instance.rowData.Code);
+                //   instance.status = '';
+                // }, 15000);
+              });
               // }
             } else {
               instance.status = 'danger';

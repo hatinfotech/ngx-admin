@@ -43,12 +43,11 @@ import { ApiInterceptor } from './services/api.service';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, CurrencyPipe, DecimalPipe } from '@angular/common';
 import localeVi from '@angular/common/locales/vi';
 import localeViExtra from '@angular/common/locales/extra/vi';
 import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
-import { catchError } from 'rxjs/operators';
-import { CurrencyMaskConfig, CURRENCY_MASK_CONFIG } from 'ng2-currency-mask';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -111,6 +110,7 @@ export class DynamicLocaleId extends String {
     IvoipModule,
     HttpClientModule,
     AuthModule,
+    CurrencyMaskModule,
     TreeModule.forRoot(),
     ThemeModule.forRoot(),
     NbSidebarModule.forRoot(),
@@ -209,6 +209,8 @@ export class DynamicLocaleId extends String {
       deps: [TranslateService],
     },
     { provide: NbDialogRef, useValue: {} },
+    { provide: CurrencyPipe, useValue: {} },
+    { provide: DecimalPipe, useValue: {} },
     RoutingResolve,
   ],
 })

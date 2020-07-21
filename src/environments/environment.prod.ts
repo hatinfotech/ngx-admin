@@ -5,7 +5,9 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.2.1',
+  version: '2.0.2.3',
+  // 2.0.2.3: Temporary fix currency pipe
+  // 2.0.2.2: Fix CurrencyMassh no provider error
   // 2.0.2.1: Develop helpdesk, add header action control list feature
   // 2.0.1.2: Develop helpdesk, update user and group
   // 2.0.0.2: admin-product: fix assign categoies feature: lose Unit error

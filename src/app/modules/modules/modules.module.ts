@@ -8,7 +8,7 @@ import { ModulesRoutingModule } from './modules-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
+// import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { ResourceListComponent } from './resources/resource-list/resource-list.component';
 import { ResourceFormComponent } from './resources/resource-form/resource-form.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
@@ -33,7 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NbIconModule,
     NbSelectModule,
     CustomElementModule,
-    CurrencyMaskModule,
+    // CurrencyMaskModule,
     NbInputModule,
     NbActionsModule,
     NbCheckboxModule,

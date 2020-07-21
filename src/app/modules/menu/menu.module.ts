@@ -11,7 +11,7 @@ import { MenuRoutingModule } from './menu-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
+// import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { MenuListComponent } from './manager-menu/menu-list/menu-list.component';
 import { MenuFormComponent } from './manager-menu/menu-form/menu-form.component';
 import { DialogModule } from '../dialog/dialog.module';
@@ -38,7 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NbRadioModule,
     NbDatepickerModule,
     CustomElementModule,
-    CurrencyMaskModule,
+    // CurrencyMaskModule,
     Ng2SmartTableModule,
     FormsModule,
     ReactiveFormsModule,
