@@ -103,7 +103,7 @@ export class CrawlServerListComponent extends DataManagerListComponent<CrawlServ
           });
           instance.click.subscribe(async (row: CrawlServerModel) => {
 
-            this.dialogService.open(SyncFormComponent, {
+            this.commonService.openDialog(SyncFormComponent, {
               context: {
                 inputMode: 'dialog',
                 inputId: [row.Code],
@@ -140,7 +140,7 @@ export class CrawlServerListComponent extends DataManagerListComponent<CrawlServ
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: CrawlServerModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(CrawlServerFormComponent, {
+  //   this.commonService.openDialog(CrawlServerFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

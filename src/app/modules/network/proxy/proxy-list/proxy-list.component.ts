@@ -109,7 +109,7 @@ export class ProxyListComponent extends DataManagerListComponent<NetworkProxyMod
       //     });
       //     instance.click.subscribe(async (row: NetworkProxyModel) => {
 
-      //       this.dialogService.open(SyncFormComponent, {
+      //       this.commonService.openDialog(SyncFormComponent, {
       //         context: {
       //           inputMode: 'dialog',
       //           inputId: [row.Code],
@@ -146,7 +146,7 @@ export class ProxyListComponent extends DataManagerListComponent<NetworkProxyMod
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: NetworkProxyModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(ProxyFormComponent, {
+  //   this.commonService.openDialog(ProxyFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

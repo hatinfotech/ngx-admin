@@ -124,7 +124,7 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
       //       });
       //       instance.click.subscribe(async (row: PurchasePriceTableModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -164,7 +164,7 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: PurchasePriceTableModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(PurchasePriceTableImportComponent, {
+  //   this.commonService.openDialog(PurchasePriceTableImportComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -188,7 +188,7 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
   // }
 
   openImportForm() {
-    this.dialogService.open(PurchasePriceTableImportComponent, {
+    this.commonService.openDialog(PurchasePriceTableImportComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [],

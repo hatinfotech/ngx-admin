@@ -138,7 +138,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
           });
           instance.click.subscribe(async (row: EmailModel) => {
             if (row.State !== 'SENDING') {
-              this.dialogService.open(ShowcaseDialogComponent, {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Xác nhận',
                   content: 'Bạn có muốn bắt đầu tiến trình gửi mail ?',
@@ -169,7 +169,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
                 },
               });
             } else {
-              this.dialogService.open(ShowcaseDialogComponent, {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Xác nhận',
                   content: 'Bạn có muốn dừng trình gửi mail ?',
@@ -234,7 +234,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(EmailAdvertisementFormComponent, {
+  //   this.commonService.openDialog(EmailAdvertisementFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -256,7 +256,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
   // }
 
   openSentStateList(email: EmailModel) {
-    this.dialogService.open(EmailSentStatsListComponent, {
+    this.commonService.openDialog(EmailSentStatsListComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [email.AddressList],

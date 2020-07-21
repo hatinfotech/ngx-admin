@@ -470,7 +470,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    this.dialogService.open(SalesVoucherPrintComponent, {
+    this.commonService.openDialog(SalesVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
         data: data,

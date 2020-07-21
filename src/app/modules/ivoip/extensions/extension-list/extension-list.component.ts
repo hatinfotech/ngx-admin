@@ -158,7 +158,7 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
   showQrCode(extensionUuid: string, extension: string, regenerate?: boolean) {
     this.apiService.get<{ extension: string, extension_uuid: string, qr_code: string }[]>('/ivoip/extensions/' + extensionUuid, { resptype: 'qrcode', regenerate: regenerate ? 1 : 0, domainId: this.ivoipService.getPbxActiveDomainUuid() }, result => {
 
-      this.dialogService.open(ShowcaseDialogComponent, {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'QR Code',
           content: `<img src="${result[0].qr_code}" class="full-width">`,

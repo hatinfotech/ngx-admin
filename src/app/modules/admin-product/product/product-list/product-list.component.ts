@@ -191,7 +191,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       //       });
       //       instance.click.subscribe(async (row: ProductModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -272,7 +272,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(ProductFormComponent, {
+  //   this.commonService.openDialog(ProductFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -299,7 +299,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   /** Implement required */
   openAssignCategoiesDialplog() {
     if (this.selectedIds.length > 0) {
-      this.dialogService.open(AssignCategoriesFormComponent, {
+      this.commonService.openDialog(AssignCategoriesFormComponent, {
         context: {
           inputMode: 'dialog',
           inputProducts: this.selectedItems,

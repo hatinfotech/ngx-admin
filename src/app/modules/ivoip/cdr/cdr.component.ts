@@ -5,6 +5,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { CdrModel } from '../../../models/cdr.model';
 import { NbDialogService } from '@nebular/theme';
 import { PlayerDialogComponent } from '../../dialog/player-dialog/player-dialog.component';
+import { CommonService } from '../../../services/common.service';
 
 @Component({
   selector: 'ngx-cdr',
@@ -14,9 +15,10 @@ import { PlayerDialogComponent } from '../../dialog/player-dialog/player-dialog.
 export class CdrComponent implements OnInit {
 
   constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private dialogService: NbDialogService,
+    public apiService: ApiService,
+    public router: Router,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
   ) { }
 
   editing = {};
@@ -175,7 +177,7 @@ export class CdrComponent implements OnInit {
     //   event.confirm.reject();
     // }
 
-    this.dialogService.open(PlayerDialogComponent, {
+    this.commonService.openDialog(PlayerDialogComponent, {
       context: {
         tracks: [
           {

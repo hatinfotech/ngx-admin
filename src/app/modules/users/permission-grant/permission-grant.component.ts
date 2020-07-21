@@ -277,7 +277,7 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
   }
 
   onPermissionResetButtonClick(): false {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận đặt lại phân quyền',
         content: 'Các phân quyền của nhóm và người dùng trong nhóm cũng sẽ bị đặt lại, bạn có muốn đặt lại không ?',

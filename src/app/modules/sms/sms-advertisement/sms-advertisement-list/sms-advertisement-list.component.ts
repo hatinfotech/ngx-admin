@@ -131,7 +131,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
           });
           instance.click.subscribe(async (row: SmsModel) => {
             if (row.State !== 'SENDING') {
-              this.dialogService.open(ShowcaseDialogComponent, {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Xác nhận',
                   content: 'Bạn có muốn bắt đầu tiến trình gửi mail ?',
@@ -162,7 +162,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
                 },
               });
             } else {
-              this.dialogService.open(ShowcaseDialogComponent, {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Xác nhận',
                   content: 'Bạn có muốn dừng trình gửi mail ?',
@@ -227,7 +227,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(SmsAdvertisementFormComponent, {
+  //   this.commonService.openDialog(SmsAdvertisementFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -249,7 +249,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
   // }
 
   openSentStateList(sms: SmsModel) {
-    this.dialogService.open(SmsSentStatsListComponent, {
+    this.commonService.openDialog(SmsSentStatsListComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [sms.PhoneNumberList],

@@ -400,7 +400,7 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    this.dialogService.open(PurchasePriceTablePrintComponent, {
+    this.commonService.openDialog(PurchasePriceTablePrintComponent, {
       context: {
         title: 'Xem trước',
         data: data,

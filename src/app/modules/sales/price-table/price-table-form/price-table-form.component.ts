@@ -745,7 +745,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     // });
     const printTemplate = this.printTemplateList.find((item: { id: string }) => item.id === formItem.get('PrintTemplate').value);
     if (printTemplate) {
-      this.dialogService.open(printTemplate.name, {
+      this.commonService.openDialog(printTemplate.name, {
         context: {
           title: 'Xem trước',
           data: data,
@@ -788,7 +788,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         throw Error;
       }
     } catch (error) {
-      ProductListComponent._dialog = this.dialogService.open(ProductListComponent, {
+      ProductListComponent._dialog = this.commonService.openDialog(ProductListComponent, {
         context: events as any,
         closeOnEsc: false,
         closeOnBackdropClick: false,

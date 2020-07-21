@@ -109,7 +109,7 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
       //       });
       //       instance.click.subscribe(async (row: SalesPriceReportModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -149,7 +149,7 @@ export class SalesPriceReportListComponent extends DataManagerListComponent<Sale
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesPriceReportModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(SalesPriceReportFormComponent, {
+  //   this.commonService.openDialog(SalesPriceReportFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

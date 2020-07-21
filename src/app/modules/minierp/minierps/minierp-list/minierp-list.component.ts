@@ -153,7 +153,7 @@ export class MinierpListComponent extends MinierpBaseListComponent<MiniErpModel>
   }
 
   setUpdateUpdate() {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Mini-ERP',
         content: 'Đặt chế độ tự động cập nhật cho các site đã chọn',

@@ -207,7 +207,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     super.onAfterCreateSubmit(newFormData);
     this.deployPbxAndMiniErp(newFormData, () => {
       this.onProcessed();
-      // this.dialogService.open(ShowcaseDialogComponent, {
+      // this.commonService.openDialog(ShowcaseDialogComponent, {
       //   context: {
       //     title: 'Triển khai Tổng Đài Điện Toán',
       //     content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
@@ -216,7 +216,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       // });
     }, e => {
       this.onProcessed();
-      this.dialogService.open(ShowcaseDialogComponent, {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
           content: e && e.error && e.error.logs ? e.error.logs.join('\n') : JSON.stringify(e),
@@ -224,7 +224,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
             // {
             //   label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
-            //     this.dialogService.open(ShowcaseDialogComponent, {
+            //     this.commonService.openDialog(ShowcaseDialogComponent, {
             //       context: {
             //         title: 'Lỗi triển khai Tổng Đài Điện Toán',
             //         content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
@@ -245,7 +245,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     super.onAfterUpdateSubmit(newFormData);
     this.deployPbxAndMiniErp(newFormData, () => {
       this.onProcessed();
-      // this.dialogService.open(ShowcaseDialogComponent, {
+      // this.commonService.openDialog(ShowcaseDialogComponent, {
       //   context: {
       //     title: 'Triển khai Tổng Đài Điện Toán',
       //     content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
@@ -254,7 +254,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       // });
     }, e => {
       this.onProcessed();
-      this.dialogService.open(ShowcaseDialogComponent, {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
           content: e && e.error && e.error.logs ? e.error.logs.join('\n') : JSON.stringify(e),
@@ -262,7 +262,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
             // {
             //   label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
-            //     this.dialogService.open(ShowcaseDialogComponent, {
+            //     this.commonService.openDialog(ShowcaseDialogComponent, {
             //       context: {
             //         title: 'Lỗi triển khai Tổng Đài Điện Toán',
             //         content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
@@ -947,7 +947,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         maxTry: 3,
         delayTry: 15000,
         execute: async () => {
-          this.dialogService.open(ShowcaseDialogComponent, {
+          this.commonService.openDialog(ShowcaseDialogComponent, {
             context: {
               title: 'Triển khai Mini ERP',
               content: 'Đã triển khai thành công Mini ERP cho khách ' + formData.Name,

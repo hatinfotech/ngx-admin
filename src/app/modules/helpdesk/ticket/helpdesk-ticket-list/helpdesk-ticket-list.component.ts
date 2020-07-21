@@ -97,7 +97,7 @@ export class HelpdeskTicketListComponent extends AgGridDataManagerListComponent<
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: HelpdeskTicketModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ContactFormComponent, {
+    this.commonService.openDialog(ContactFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

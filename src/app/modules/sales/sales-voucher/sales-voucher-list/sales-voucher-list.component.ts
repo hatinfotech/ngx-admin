@@ -102,7 +102,7 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
       //       });
       //       instance.click.subscribe(async (row: SalesVoucherModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -142,7 +142,7 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
 
   /** Implement required */
   // openFormDialog(ids?: string[]) {
-  //   this.dialogService.open(SalesVoucherFormComponent, {
+  //   this.commonService.openDialog(SalesVoucherFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -161,7 +161,7 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
 
   /** Implement required */
   openSimpleFormDialog(ids?: string[], onDialogSave?: (newData: SalesVoucherModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(SimpleSalesVoucherFormComponent, {
+    this.commonService.openDialog(SimpleSalesVoucherFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

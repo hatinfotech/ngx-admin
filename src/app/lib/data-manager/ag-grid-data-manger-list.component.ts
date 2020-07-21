@@ -271,7 +271,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   showFilter(event) {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Tìm kiếm nâng cao',
         content: 'Filter',
@@ -351,7 +351,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   editChoosedItems(): false {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
@@ -402,7 +402,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   deleteConfirm(ids: string[], callback?: () => void) {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận xoá dữ liệu',
         content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',

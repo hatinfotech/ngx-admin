@@ -83,7 +83,7 @@ export class SmsTemplateListComponent extends DataManagerListComponent<SmsTempla
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsTemplateModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(SmsTemplateFormComponent, {
+  //   this.commonService.openDialog(SmsTemplateFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

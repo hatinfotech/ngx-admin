@@ -271,7 +271,7 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
       case 'allAddedToQueue':
         // uncomment this if you want to auto upload files when added
 
-        this.dialogService.open(DialogFormComponent, {
+        this.commonService.openDialog(DialogFormComponent, {
           context: {
             title: 'Thứ tự cột email và tên',
             controls: [
@@ -457,7 +457,7 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
   resetSentCount() {
 
     if (this.id[0]) {
-      this.dialogService.open(ShowcaseDialogComponent, {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Xác nhận',
           content: 'Bạn có muốn đặt lại trạng thái gửi cho danh sách này không ?',

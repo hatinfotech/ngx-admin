@@ -410,7 +410,7 @@ export class EmailSentFormComponent extends DataManagerFormComponent<EmailModel>
 
   }
   goback(): false {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Phiếu yêu cầu hỗ trợ',
         content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',

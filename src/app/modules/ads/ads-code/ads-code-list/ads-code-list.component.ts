@@ -100,7 +100,7 @@ export class AdsCodeListComponent extends DataManagerListComponent<AdsCodeModel>
     //       });
     //       instance.click.subscribe(async (row: AdsCodeModel) => {
 
-    //         this.dialogService.open(SyncFormComponent, {
+    //         this.commonService.openDialog(SyncFormComponent, {
     //           context: {
     //             inputMode: 'dialog',
     //             inputId: [row.Code],
@@ -133,7 +133,7 @@ export class AdsCodeListComponent extends DataManagerListComponent<AdsCodeModel>
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: AdsCodeModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(AdsCodeFormComponent, {
+  //   this.commonService.openDialog(AdsCodeFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

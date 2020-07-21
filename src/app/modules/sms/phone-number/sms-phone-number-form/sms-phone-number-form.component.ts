@@ -268,7 +268,7 @@ export class SmsPhoneNumberFormComponent extends DataManagerFormComponent<SmsPho
       case 'allAddedToQueue':
         // uncomment this if you want to auto upload files when added
 
-        this.dialogService.open(DialogFormComponent, {
+        this.commonService.openDialog(DialogFormComponent, {
           context: {
             title: 'Thứ tự cột số điện thoại và tên',
             controls: [
@@ -455,7 +455,7 @@ export class SmsPhoneNumberFormComponent extends DataManagerFormComponent<SmsPho
   resetSentCount() {
 
     if (this.id[0]) {
-      this.dialogService.open(ShowcaseDialogComponent, {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Xác nhận',
           content: 'Bạn có muốn đặt lại trạng thái gửi cho danh sách này không ?',

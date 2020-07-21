@@ -114,7 +114,7 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
       //       });
       //       instance.click.subscribe(async (row: SalesPriceTableModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -154,7 +154,7 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesPriceTableModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(PriceTableFormComponent, {
+  //   this.commonService.openDialog(PriceTableFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

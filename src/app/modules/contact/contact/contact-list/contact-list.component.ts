@@ -591,7 +591,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: ContactModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ContactFormComponent, {
+    this.commonService.openDialog(ContactFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

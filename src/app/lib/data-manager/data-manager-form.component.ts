@@ -455,7 +455,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Error event */
   onError(e: HttpErrorResponse) {
     if (e && e.error && e.error.logs) {
-      this.dialogService.open(ShowcaseDialogComponent, {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Thông báo lỗi',
           content: e.error.logs.join('\n'),

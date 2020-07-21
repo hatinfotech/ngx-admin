@@ -35,14 +35,14 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
     // this.authService.logout();
 
     // this.dataService.logout(resp => {
-    //   this.dialogService.open(ShowcaseDialogComponent, {
+    //   this.commonService.openDialog(ShowcaseDialogComponent, {
     //     context: {
     //       title: 'Logout',
     //       content: 'Logout success',
     //     },
     //   });
     // }, error => {
-    //   this.dialogService.open(ShowcaseDialogComponent, {
+    //   this.commonService.openDialog(ShowcaseDialogComponent, {
     //     context: {
     //       title: 'Logout',
     //       content: 'Logout error',

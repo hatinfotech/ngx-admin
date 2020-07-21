@@ -81,7 +81,7 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
       //       });
       //       instance.click.subscribe(async (row: FileStoreModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -123,7 +123,7 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: FileStoreModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(FileStoreFormComponent, {
+  //   this.commonService.openDialog(FileStoreFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

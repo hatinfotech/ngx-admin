@@ -91,7 +91,7 @@ export class ShortLinkListComponent extends DataManagerListComponent<ShortLinkMo
     //       });
     //       instance.click.subscribe(async (row: ShortLinkModel) => {
 
-    //         this.dialogService.open(SyncFormComponent, {
+    //         this.commonService.openDialog(SyncFormComponent, {
     //           context: {
     //             inputMode: 'dialog',
     //             inputId: [row.Code],
@@ -124,7 +124,7 @@ export class ShortLinkListComponent extends DataManagerListComponent<ShortLinkMo
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: ShortLinkModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(ShortLinkFormComponent, {
+  //   this.commonService.openDialog(ShortLinkFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

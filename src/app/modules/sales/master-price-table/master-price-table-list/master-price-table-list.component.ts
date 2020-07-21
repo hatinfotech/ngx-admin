@@ -148,7 +148,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesMasterPriceTableModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(MasterPriceTableFormComponent, {
+  //   this.commonService.openDialog(MasterPriceTableFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -183,7 +183,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
         sort_Id: 'desc',
       }));
 
-    this.dialogService.open(MasterPriceTablePrintComponent, {
+    this.commonService.openDialog(MasterPriceTablePrintComponent, {
       context: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
         data: data,

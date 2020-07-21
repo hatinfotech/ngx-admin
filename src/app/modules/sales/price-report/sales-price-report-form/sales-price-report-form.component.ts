@@ -484,7 +484,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    this.dialogService.open(SalesPriceReportPrintComponent, {
+    this.commonService.openDialog(SalesPriceReportPrintComponent, {
       context: {
         title: 'Xem trước',
         data: data,

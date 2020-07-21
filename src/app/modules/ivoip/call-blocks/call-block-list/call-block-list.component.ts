@@ -124,7 +124,7 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallBlockModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(CallBlockFormComponent, {
+  //   this.commonService.openDialog(CallBlockFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

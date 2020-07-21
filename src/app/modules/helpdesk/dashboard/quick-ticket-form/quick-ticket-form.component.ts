@@ -270,7 +270,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     //   this.ref.close();
     //   // this.dismiss();
     // }
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Phiếu yêu cầu hỗ trợ',
         content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',

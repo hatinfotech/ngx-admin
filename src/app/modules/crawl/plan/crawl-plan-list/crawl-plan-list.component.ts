@@ -101,7 +101,7 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
       //     });
       //     instance.click.subscribe(async (row: CrawlPlanModel) => {
 
-      //       this.dialogService.open(SyncFormComponent, {
+      //       this.commonService.openDialog(SyncFormComponent, {
       //         context: {
       //           inputMode: 'dialog',
       //           inputId: [row.Code],
@@ -138,7 +138,7 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: CrawlPlanModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(CrawlPlanFormComponent, {
+  //   this.commonService.openDialog(CrawlPlanFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

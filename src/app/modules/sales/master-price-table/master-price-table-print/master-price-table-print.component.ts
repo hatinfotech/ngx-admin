@@ -106,7 +106,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   }
 
   approve(priceReport: SalesMasterPriceTableModel) {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Sales.MasterPriceTable.approve'), 'head-title'),
         content: this.commonService.textTransform(this.commonService.translate.instant('Sales.MasterPriceTable.approvedComfirmMessage', { title: priceReport.Title }), 'head-title'),
@@ -132,5 +132,5 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
       },
     });
   }
-  
+
 }

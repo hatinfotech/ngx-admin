@@ -83,7 +83,7 @@ export class ProductGroupListComponent extends DataManagerListComponent<ProductG
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductGroupModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(ProductGroupFormComponent, {
+  //   this.commonService.openDialog(ProductGroupFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

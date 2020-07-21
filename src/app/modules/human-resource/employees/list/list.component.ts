@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'ngx-list',
@@ -15,9 +16,11 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 export class ListComponent implements OnInit {
 
   constructor(
-    private apiService: ApiService,
-    private dialogService: NbDialogService,
-    private router: Router) {
+    public apiService: ApiService,
+    public dialogService: NbDialogService,
+    public router: Router,
+    public commonService: CommonService,
+    ) {
     console.info('construct');
   }
 
@@ -84,7 +87,7 @@ export class ListComponent implements OnInit {
 
     this.apiService.get<EmployeeModel[]>('/hr/employees', { limit: 1000000, ofset: 0 },
       empployees => this.source.load(empployees), e => {
-        this.dialogService.open(ShowcaseDialogComponent, {
+        this.commonService.openDialog(ShowcaseDialogComponent, {
           context: {
             title: 'Error',
             content: e.error.logs[0],
@@ -96,7 +99,7 @@ export class ListComponent implements OnInit {
     //   .subscribe(data => this.source.load(data));
 
     // return this.dataService.getEmployees(data => this.source.load(data), (error) => {
-    //   this.dialogService.open(ShowcaseDialogComponent, {
+    //   this.commonService.openDialog(ShowcaseDialogComponent, {
     //     context: {
     //       title: 'Error',
     //       content: error.logs[0],

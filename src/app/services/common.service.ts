@@ -79,7 +79,7 @@ export class CommonService {
     public toastService: NbToastrService,
     public router: Router,
     public _location: Location,
-    private sidebarService: NbSidebarService,
+    public sidebarService: NbSidebarService,
     public translate: TranslateService,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {

@@ -101,7 +101,7 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
       //       });
       //       instance.click.subscribe(async (row: AdsContentModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -137,7 +137,7 @@ export class AdsContentListComponent extends DataManagerListComponent<AdsContent
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: AdsContentModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(AdsContentFormComponent, {
+  //   this.commonService.openDialog(AdsContentFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

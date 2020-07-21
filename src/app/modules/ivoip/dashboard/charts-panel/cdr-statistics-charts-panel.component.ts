@@ -208,7 +208,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   }
 
   onSettingClick(): false {
-    this.dialogService.open(PbxFormComponent, {
+    this.commonService.openDialog(PbxFormComponent, {
       // context: {
       //   onSave: () => {
 

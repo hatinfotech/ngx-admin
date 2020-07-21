@@ -94,7 +94,7 @@ export class CallCenterListComponent  extends IvoipBaseListComponent<PbxCallCent
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallCenterQueueModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(CallCenterFormComponent, {
+  //   this.commonService.openDialog(CallCenterFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

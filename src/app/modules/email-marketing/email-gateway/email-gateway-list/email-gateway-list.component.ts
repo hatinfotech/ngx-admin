@@ -98,7 +98,7 @@ export class EmailGatewayListComponent extends DataManagerListComponent<EmailGat
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailGatewayModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(EmailGatewayFormComponent, {
+  //   this.commonService.openDialog(EmailGatewayFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

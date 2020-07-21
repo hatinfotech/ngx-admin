@@ -146,7 +146,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
         // return false;
       },
       click: () => {
-        this.dialogService.open(ShowcaseDialogComponent, {
+        this.commonService.openDialog(ShowcaseDialogComponent, {
           context: {
             title: 'Xác nhận',
             content: 'Email sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 mail mỗi giờ',
@@ -429,7 +429,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
   }
 
   // goback(): false {
-  //   // this.dialogService.open(ShowcaseDialogComponent, {
+  //   // this.commonService.openDialog(ShowcaseDialogComponent, {
   //   //   context: {
   //   //     title: 'Phiếu yêu cầu hỗ trợ',
   //   //     content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',
@@ -536,7 +536,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
   }
 
   onSaveAndSendClick() {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'Email sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 mail mỗi giờ',

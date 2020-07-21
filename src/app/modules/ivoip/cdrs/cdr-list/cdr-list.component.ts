@@ -200,7 +200,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
             //   },
             // ]);
 
-            this.dialogService.open(PlayerDialogComponent, {
+            this.commonService.openDialog(PlayerDialogComponent, {
               context: {
                 tracks: [
                   {
@@ -318,7 +318,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
     // }
 
     if (event.data.RecordingFile) {
-      this.dialogService.open(PlayerDialogComponent, {
+      this.commonService.openDialog(PlayerDialogComponent, {
         context: {
           tracks: [
             {

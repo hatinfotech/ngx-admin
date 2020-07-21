@@ -361,7 +361,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
         mainSocket.emit<any>('crawl/test-crawl', { bot: botInfo, plan: crawlPlan }, 300000).then(post => {
           console.log(post);
           const content = typeof post.content === 'object' ? post.content.join('<br>') : post.content;
-          this.dialogService.open(ShowcaseDialogComponent, {
+          this.commonService.openDialog(ShowcaseDialogComponent, {
             context: {
               title: 'Crawl preview',
               content: `Categories : ${post.categories} <br>Hình đại diện: <br><img src="${post.featured_media}" /><p>${post.description}</p><br>${content}`,

@@ -80,7 +80,7 @@ export class EmailAddressListComponent extends DataManagerListComponent<EmailAdd
       //       });
       //       instance.click.subscribe(async (row: EmailAddressListModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -122,7 +122,7 @@ export class EmailAddressListComponent extends DataManagerListComponent<EmailAdd
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailAddressListModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(EmailAddressFormComponent, {
+    this.commonService.openDialog(EmailAddressFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

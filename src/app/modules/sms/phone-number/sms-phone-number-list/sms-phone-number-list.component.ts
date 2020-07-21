@@ -82,7 +82,7 @@ export class SmsPhoneNumberListComponent extends DataManagerListComponent<SmsPho
       //       });
       //       instance.click.subscribe(async (row: SmsPhoneNumberList) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -124,7 +124,7 @@ export class SmsPhoneNumberListComponent extends DataManagerListComponent<SmsPho
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsPhoneNumberListModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(SmsPhoneNumberFormComponent, {
+  //   this.commonService.openDialog(SmsPhoneNumberFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

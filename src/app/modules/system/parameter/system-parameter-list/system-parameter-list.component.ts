@@ -125,7 +125,7 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
       //       });
       //       instance.click.subscribe(async (row: ParameterModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -165,7 +165,7 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SystemParameterModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(SystemParameterFormComponent, {
+  //   this.commonService.openDialog(SystemParameterFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

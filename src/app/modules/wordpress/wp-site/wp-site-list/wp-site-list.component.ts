@@ -108,7 +108,7 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
           });
           instance.click.subscribe(async (row: WpSiteModel) => {
 
-            this.dialogService.open(SyncFormComponent, {
+            this.commonService.openDialog(SyncFormComponent, {
               context: {
                 inputMode: 'dialog',
                 inputId: [row.Code],
@@ -141,7 +141,7 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: WpSiteModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(WpSiteFormComponent, {
+  //   this.commonService.openDialog(WpSiteFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

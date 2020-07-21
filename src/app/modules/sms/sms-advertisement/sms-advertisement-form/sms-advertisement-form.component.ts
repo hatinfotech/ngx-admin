@@ -148,7 +148,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
         // return false;
       },
       click: () => {
-        this.dialogService.open(ShowcaseDialogComponent, {
+        this.commonService.openDialog(ShowcaseDialogComponent, {
           context: {
             title: 'Xác nhận',
             content: 'SMS sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 sms mỗi giờ',
@@ -431,7 +431,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
   }
 
   // goback(): false {
-  //   // this.dialogService.open(ShowcaseDialogComponent, {
+  //   // this.commonService.openDialog(ShowcaseDialogComponent, {
   //   //   context: {
   //   //     title: 'Phiếu yêu cầu hỗ trợ',
   //   //     content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',
@@ -539,7 +539,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
   }
 
   onSaveAndSendClick() {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'SMS sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 sms mỗi giờ',

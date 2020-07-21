@@ -150,7 +150,7 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
               dialogContent += `Mật khẩu Root: ${miniErp.ApiPassword}<br>`;
             }
 
-            this.dialogService.open(ShowcaseDialogComponent, {
+            this.commonService.openDialog(ShowcaseDialogComponent, {
               context: {
                 title: 'Thông tin triển khai',
                 content: dialogContent,

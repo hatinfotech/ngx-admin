@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (LoginDialogComponent.instances.length === 0) {
-      this.dialogService.open(LoginDialogComponent, {
+      this.commonService.openDialog(LoginDialogComponent, {
         context: {
           onSuccess: (redirect: string) => {
             this.showBackground = false;

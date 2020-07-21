@@ -314,7 +314,7 @@ export class EmailSentStatsListComponent extends DataManagerFormComponent<EmailA
   resetSentCount() {
 
     if (this.id[0]) {
-      this.dialogService.open(ShowcaseDialogComponent, {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Xác nhận',
           content: 'Bạn có muốn đặt lại trạng thái gửi cho danh sách này không ?',

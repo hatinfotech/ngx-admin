@@ -522,7 +522,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: HelpdeskTicketModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(QuickTicketFormComponent, {
+    this.commonService.openDialog(QuickTicketFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
@@ -590,7 +590,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         Code: ticket.Code,
         Object: rs[0].Code,
       }]);
-      this.dialogService.open(ShowcaseDialogComponent, {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: this.commonService.translate.instant('Notification'),
           content: this.commonService.translate.instant('Helpldesk.contactSaveSuccess'),

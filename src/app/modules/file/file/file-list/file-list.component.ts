@@ -179,7 +179,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: FileModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(FileFormComponent, {
+    this.commonService.openDialog(FileFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

@@ -105,7 +105,7 @@ export class SmsGatewayListComponent extends DataManagerListComponent<SmsGateway
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsGatewayModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(SmsGatewayFormComponent, {
+  //   this.commonService.openDialog(SmsGatewayFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

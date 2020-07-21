@@ -86,7 +86,7 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
       //       });
       //       instance.click.subscribe(async (row: ProductUnitModel) => {
 
-      //         this.dialogService.open(SyncFormComponent, {
+      //         this.commonService.openDialog(SyncFormComponent, {
       //           context: {
       //             inputMode: 'dialog',
       //             inputId: [row.Code],
@@ -128,7 +128,7 @@ export class ProductUnitListComponent extends DataManagerListComponent<ProductUn
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductUnitModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(ProductUnitFormComponent, {
+  //   this.commonService.openDialog(ProductUnitFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

@@ -475,7 +475,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
           includeUnit: true,
           includeFeaturePicture: true,
         }));
-      this.dialogService.open(printTemplate.name, {
+      this.commonService.openDialog(printTemplate.name, {
         context: {
           title: 'Xem trước',
           data: data,
@@ -496,7 +496,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   /** Implement required */
   openProductListDialplog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductListComponent, {
+    this.commonService.openDialog(ProductListComponent, {
       context: {
         inputMode: 'dialog',
         // inputId: ids,
@@ -702,7 +702,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
               // }
             } else {
               instance.status = 'danger';
-              this.dialogService.open(ShowcaseDialogComponent, {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Cảnh báo',
                   content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
@@ -907,7 +907,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   /** Implement required */
   openProductForm(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-    this.dialogService.open(ProductFormComponent, {
+    this.commonService.openDialog(ProductFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
@@ -935,7 +935,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   }
 
   editChoosedItems(): false {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',

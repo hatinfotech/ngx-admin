@@ -93,7 +93,7 @@ export class EmailTemplateListComponent extends DataManagerListComponent<EmailTe
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailTemplateModel[]) => void, onDialogClose?: () => void) {
-  //   this.dialogService.open(EmailTemplateFormComponent, {
+  //   this.commonService.openDialog(EmailTemplateFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

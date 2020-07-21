@@ -194,7 +194,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
 
   onAutoGenrateExtensionClick(index: number): false {
 
-    this.dialogService.open(DialogFormComponent, {
+    this.commonService.openDialog(DialogFormComponent, {
       context: {
         title: 'Tạo tự động dãy số nội bộ',
         controls: [
