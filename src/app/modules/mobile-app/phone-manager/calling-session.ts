@@ -41,9 +41,11 @@ export class CallingSession {
   }
 
   accept() {
-    this.receivedSession.accept({sessionDescriptionHandlerOptions: {
-      constraints: { audio: true, video: false },
-    }});
+    this.receivedSession.accept({
+      sessionDescriptionHandlerOptions: {
+        constraints: { audio: true, video: false },
+      }
+    });
   }
 
   hangup() {
@@ -77,6 +79,19 @@ export class CallingSession {
 
   sendMessage() {
 
+  }
+
+  sendDtmf(dtmf: string) {
+    // const options = {
+    //   requestOptions: {
+    //     body: {
+    //       contentDisposition: 'render',
+    //       contentType: 'application/dtmf-relay',
+    //       content: 'Signal=' + dtmf + '\r\nDuration=1000',
+    //     },
+    //   },
+    // };
+    this.session.dtmf(dtmf);
   }
 
   onNewMessage() {

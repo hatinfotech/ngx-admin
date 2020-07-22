@@ -70,7 +70,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       title: 'Lưu yêu cầu',
       size: 'medium',
       disabled: (option) => {
-        return !option.form.valid;
+        return option && option.form && !option.form.valid;
         // return false;
       },
       click: () => {

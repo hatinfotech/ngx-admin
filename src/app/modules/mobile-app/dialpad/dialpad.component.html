@@ -87,8 +87,9 @@
           id="btnHold" class="action-call text-center flex-basis p-10 bg-white border-none"> <img class="icon"
             src="assets/phone-app/icon-pause.svg"> <img
             class="icon-on display-none"
-            src="assets/phone-app/icon-pause-red.svg"> </button> <button
-          id="btnKeypadInCall" class="action-call text-center flex-basis p-10 bg-white border-none"> <img
+            src="assets/phone-app/icon-pause-red.svg">
+          </button>
+          <button (click)="toggleDialpadOnCalling($event)" id="btnKeypadInCall" class="action-call text-center flex-basis p-10 bg-white border-none"> <img
             src="assets/phone-app/icon-pad-gray.svg"> </button> <button
           id="btnTransfer" class="action-call text-center flex-basis p-10 bg-white border-none"> <img
             src="assets/phone-app/icon-back.svg"> </button> <button
@@ -96,7 +97,7 @@
             src="assets/phone-app/icon-add-to-call.svg"> </button>
         <!--        <button id="btnMore" class="action-call text-center flex-basis p-10 bg-white border-none position-relative">            <img src="assets/phone-app/icon-more.svg" />            <span class="drop-down-action display-none">                <span class="drop-down-rectangle"></span>                <ul>                    <li>                        <img src="assets/phone-app/icon-assign-call.svg" class="icon" />                        <img src="assets/phone-app/icon-assign-call-purple.svg" class="icon-hover display-none" />                        <span>Assign this call</span>                    </li>                    <li>                        <img src="assets/phone-app/icon-add-tag.svg" class="icon" />                        <img src="assets/phone-app/icon-add-tag-purple.svg" class="icon-hover display-none" />                        <span>Add a tag</span>                    </li>                    <li>                        <img src="assets/phone-app/icon-comment.svg" class="icon" />                        <img src="assets/phone-app/icon-comment-purple.svg" class="icon-hover display-none" />                        <span>Add a comment</span>                    </li>                </ul>            </span>        </button>-->
       </section>
-      <section class="wrap-background bg-gradient-purple height-350 width-100-percent">
+      <section class="wrap-background bg-gradient-purple height-350 width-100-percent" *ngIf="!showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')" >
         <div class="wrap-avatar-round text-center"> <img
             src="assets/phone-app/avatar.png" class="mt-80">
           <div class="callstart-time" style="margin-top: 35px;">
@@ -104,42 +105,42 @@
           </div>
         </div>
       </section>
-      <section class="wrap-diapad-when-calling display-none">
+      <section class="wrap-diapad-when-calling" *ngIf="showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')">
         <div class="wrap-typing-number pl-15 pr-15 mt-10 mb-10 display-flex justify-content-space-between"> <input
             type="text" value="" placeholder="*101#" class="font-size-24 color-black border-none"> <button
             class="btn-close border-none bg-transparent"> <img
               src="assets/phone-app/icon-close.svg"> </button> </div>
         <div class="wrap-diapad mb-20 diapad-size-medium">
-          <div class="diapad-row"> <button (click)="keypress('1')" class="diapad-key" id="diapad-key-dtmf-1"> <span
+          <div class="diapad-row"> <button (click)="sendDtmf('1')" class="diapad-key" id="diapad-key-dtmf-1"> <span
                 class="diapad-key-number"> 1
-              </span> </button> <button (click)="keypress('2')" class="diapad-key" id="diapad-key-dtmf-2"> <span
+              </span> </button> <button (click)="sendDtmf('2')" class="diapad-key" id="diapad-key-dtmf-2"> <span
                 class="diapad-key-number"> 2
-              </span> </button> <button (click)="keypress('3')" class="diapad-key" id="diapad-key-dtmf-3"> <span
+              </span> </button> <button (click)="sendDtmf('3')" class="diapad-key" id="diapad-key-dtmf-3"> <span
                 class="diapad-key-number"> 3
               </span> </button> </div>
-          <div class="diapad-row"> <button (click)="keypress('4')" class="diapad-key" id="diapad-key-dtmf-4"> <span
+          <div class="diapad-row"> <button (click)="sendDtmf('4')" class="diapad-key" id="diapad-key-dtmf-4"> <span
                 class="diapad-key-number"> 4
-              </span> </button> <button (click)="keypress('5')" class="diapad-key" id="diapad-key-dtmf-5"> <span
+              </span> </button> <button (click)="sendDtmf('5')" class="diapad-key" id="diapad-key-dtmf-5"> <span
                 class="diapad-key-number"> 5
-              </span> </button> <button (click)="keypress('6')" class="diapad-key" id="diapad-key-dtmf-6"> <span
+              </span> </button> <button (click)="sendDtmf('6')" class="diapad-key" id="diapad-key-dtmf-6"> <span
                 class="diapad-key-number"> 6
               </span> </button> </div>
-          <div class="diapad-row"> <button (click)="keypress('7')" class="diapad-key" id="diapad-key-dtmf-7"> <span
+          <div class="diapad-row"> <button (click)="sendDtmf('7')" class="diapad-key" id="diapad-key-dtmf-7"> <span
                 class="diapad-key-number"> 7
-              </span> </button> <button (click)="keypress('8')" class="diapad-key" id="diapad-key-dtmf-8"> <span
+              </span> </button> <button (click)="sendDtmf('8')" class="diapad-key" id="diapad-key-dtmf-8"> <span
                 class="diapad-key-number"> 8
-              </span> </button> <button (click)="keypress('9')" class="diapad-key" id="diapad-key-dtmf-9"> <span
+              </span> </button> <button (click)="sendDtmf('9')" class="diapad-key" id="diapad-key-dtmf-9"> <span
                 class="diapad-key-number"> 9
               </span> </button> </div>
           <div class="diapad-row">
             <button class="diapad-key" id="diapad-key-dtmf-star">
               <span class="diapad-key-number"> * </span>
             </button>
-            <button (click)="keypress('*')" class="diapad-key" id="diapad-key-dtmf-0">
+            <button (click)="sendDtmf('*')" class="diapad-key" id="diapad-key-dtmf-0">
               <span class="diapad-key-number"> 0 </span>
             </button>
-            <button (click)="keypress('0')" class="diapad-key" id="diapad-key-dtmf-sharp">
-              <span class="diapad-key-number" (click)="keypress('#')"> # </span>
+            <button (click)="sendDtmf('0')" class="diapad-key" id="diapad-key-dtmf-sharp">
+              <span class="diapad-key-number" (click)="sendDtmf('#')"> # </span>
             </button>
           </div>
         </div>
@@ -163,7 +164,7 @@
                 class="location-text" data-translate="location"> {{partnerNumber}} </span> </div>
           </section>
         </div>
-        <section class="wrap-background bg-gradient-purple height-350 width-100-percent">
+        <section class="wrap-background bg-gradient-purple height-350 width-100-percent" *ngIf="!showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')" >
           <div class="wrap-avatar-round text-center"> <img
               src="assets/phone-app/avatar.png" class="mt-50"> </div>
           <div class="callstart-time">

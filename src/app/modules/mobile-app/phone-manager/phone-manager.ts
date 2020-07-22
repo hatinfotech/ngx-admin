@@ -171,6 +171,13 @@ export class PhoneManager {
     return false;
   }
 
+  sendDtmf(dtmf: string, session?: CallingSession) {
+    if (!session) {
+      session = this.callingSessionList[0];
+    }
+    session.sendDtmf(dtmf);
+  }
+
   reject(session?: CallingSession): boolean {
     if (!session) {
       const incomingSessions = this.callingSessionList.filter(f => f.state === 'incoming');

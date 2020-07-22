@@ -335,6 +335,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
     this.dialpadScreenActivated = true;
     this.contactScreenActivated = false;
     this.activeityScreenActivated = false;
+    this.showDialpadOnCalling = false;
     this.stopRing();
   }
 
@@ -396,5 +397,14 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
       this.ringbackPlayer.pause();
       // delete this.ringer;
     }
+  }
+
+  showDialpadOnCalling = false;
+  toggleDialpadOnCalling(event: any) {
+    this.showDialpadOnCalling = !this.showDialpadOnCalling;
+  }
+
+  sendDtmf(dtmf: string) {
+    this.phoneManager.sendDtmf(dtmf);
   }
 }
