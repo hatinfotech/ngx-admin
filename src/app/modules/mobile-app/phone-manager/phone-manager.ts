@@ -178,6 +178,43 @@ export class PhoneManager {
     session.sendDtmf(dtmf);
   }
 
+  transfer(refer: string, session?: CallingSession) {
+    if (!session) {
+      session = this.callingSessionList[0];
+    }
+    session.transfer(refer);
+  }
+
+  toggleHold(session?: CallingSession) {
+    if (!session) {
+      session = this.callingSessionList[0];
+    }
+    if (!session.holding) {
+      session.hold();
+    } else {
+      session.unhold();
+    }
+  }
+
+  get holding() {
+    return this.callingSessionList[0] && this.callingSessionList[0].holding;
+  }
+
+  toggleMute(session?: CallingSession) {
+    if (!session) {
+      session = this.callingSessionList[0];
+    }
+    if (!session.muting) {
+      session.mute();
+    } else {
+      session.unmute();
+    }
+  }
+
+  get muting() {
+    return this.callingSessionList[0] && this.callingSessionList[0].muting;
+  }
+
   reject(session?: CallingSession): boolean {
     if (!session) {
       const incomingSessions = this.callingSessionList.filter(f => f.state === 'incoming');

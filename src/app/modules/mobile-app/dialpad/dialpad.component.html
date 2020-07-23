@@ -14,47 +14,42 @@
     </section><!--  END TOAST  -->
     <!--  TOP BAR -->
     <section class="wrap-top-bar height-40 position-absolute top-0 width-100-percent">
-      <div class="top-bar-status" [ngClass]="{'color-red': registerFailed, 'color-green': !registerFailed}" data-translate="not_connected">{{sipUsername}}</div>
+      <div class="top-bar-status" [ngClass]="{'color-red': registerFailed, 'color-green': !registerFailed}"
+        data-translate="not_connected">{{sipUsername}}</div>
       <div class="text-center top-bar-title"></div>
       <div class="wrap-action-top-right float-right mr position-absolute right-15 top-10">
         <div class="wrapper-dropdown wrapper-dropdown-call">
           <div id="dropdown-option-call" class="wrapper-dropdown-3" tabindex="1"> <span
-              id="routingTypeLabelActived"><img
-                src="assets/phone-app/icon-browser.png"
-                class="icon-option-active" title="undefined"></span>
+              id="routingTypeLabelActived"><img src="assets/phone-app/icon-browser.png" class="icon-option-active"
+                title="undefined"></span>
             <ul class="dropdown">
-              <li data-value="1"><a href="javascript:void(0)"><img
-                    src="assets/phone-app/icon-browser.png"
+              <li data-value="1"><a href="javascript:void(0)"><img src="assets/phone-app/icon-browser.png"
                     class="icon-option" title="Đổ cuộc gọi đến app và sipphone"><span
                     data-translate="route_to_app_and_sipphone">Đổ cuộc gọi đến app và sipphone</span></a></li>
-              <li data-value="2"><a href="javascript:void(0)"><img
-                    src="assets/phone-app/icon-phone.png"
+              <li data-value="2"><a href="javascript:void(0)"><img src="assets/phone-app/icon-phone.png"
                     class="icon-option" title="Đổ cuộc gọi đến số điện thoại"><span
                     data-translate="route_to_phone_number">Đổ cuộc gọi đến số điện thoại</span></a></li>
-              <li data-value="3"><a href="javascript:void(0)"><img
-                    src="assets/phone-app/icon-app.png"
+              <li data-value="3"><a href="javascript:void(0)"><img src="assets/phone-app/icon-app.png"
                     class="icon-option" title="Đổ cuộc gọi đến app"><span data-translate="route_to_app">Đổ cuộc gọi đến
                     app</span></a></li>
-              <li data-value="4"><a href="javascript:void(0)"><img
-                    src="assets/phone-app/icon-ipphone.png"
+              <li data-value="4"><a href="javascript:void(0)"><img src="assets/phone-app/icon-ipphone.png"
                     class="icon-option" title="Đổ cuộc gọi đến ipphone"><span data-translate="route_to_ipphone">Đổ cuộc
                     gọi đến ipphone</span></a></li>
             </ul>
           </div> ​
-        </div> <button (click)="minimizeScreen()" id="btnMinimize" class="btn-minimize border-none bg-transparent" title="Minimize"> <img
-            src="assets/phone-app/icon-minimize.svg"> </button>
+        </div> <button (click)="minimizeScreen()" id="btnMinimize" class="btn-minimize border-none bg-transparent"
+          title="Minimize"> <img src="assets/phone-app/icon-minimize.svg"> </button>
         <div class="wrapper-dropdown wrapper-dropdown-call auto" style="float:right">
           <div id="dropdown-auto-receive-call" class="wrapper-dropdown-3" tabindex="3"> <span id="settingAgent"> <img
-                src="assets/phone-app/icon-setting-gray.svg"
-                class="icon-option-active" title="personal settings"> </span>
+                src="assets/phone-app/icon-setting-gray.svg" class="icon-option-active" title="personal settings">
+            </span>
             <ul class="dropdown setting-agent">
-              <li data-value="1" class="auto-pick-call"> <label> <img
-                    src="assets/phone-app/icon-setting-gray.svg"
+              <li data-value="1" class="auto-pick-call"> <label> <img src="assets/phone-app/icon-setting-gray.svg"
                     class="icon-option" title="Auto Pick Call"> <span data-translate="auto_pick_call">Tự động nghe
                     máy</span> </label> <input type="checkbox" id="autopickcheckbox"> </li>
               <li data-value="2" class="item-transfer-ipphone"> <label> <img
-                    src="assets/phone-app/icon-setting-gray.svg"
-                    class="icon-option" title="Auto Pick Call"> <span data-translate="transfer_ip_phone">Gọi ra qua IP
+                    src="assets/phone-app/icon-setting-gray.svg" class="icon-option" title="Auto Pick Call"> <span
+                    data-translate="transfer_ip_phone">Gọi ra qua IP
                     Phone</span> </label> <input type="checkbox" id="transfer-ip-phone"> </li>
             </ul>
           </div> ​
@@ -79,68 +74,72 @@
             class="location-text" data-translate="location">Vietnam</span> {{partnerNumber}}</div>
       </section>
       <div class="line-dotted"></div>
-      <section class="wrap-action display-flex justify-content-space-between"> <button id="btnMic"
-          class="action-call text-center flex-basis p-10 bg-white border-none"> <img class="icon"
-            src="assets/phone-app/icon-mic.svg"> <img
-            class="icon-on display-none"
-            src="assets/phone-app/icon-mic-off.svg"> </button> <button
-          id="btnHold" class="action-call text-center flex-basis p-10 bg-white border-none"> <img class="icon"
-            src="assets/phone-app/icon-pause.svg"> <img
-            class="icon-on display-none"
-            src="assets/phone-app/icon-pause-red.svg">
-          </button>
-          <button (click)="toggleDialpadOnCalling($event)" id="btnKeypadInCall" class="action-call text-center flex-basis p-10 bg-white border-none"> <img
-            src="assets/phone-app/icon-pad-gray.svg"> </button> <button
-          id="btnTransfer" class="action-call text-center flex-basis p-10 bg-white border-none"> <img
-            src="assets/phone-app/icon-back.svg"> </button> <button
-          id="btnAddToCall" class="action-call text-center flex-basis p-10 bg-white border-none"> <img
-            src="assets/phone-app/icon-add-to-call.svg"> </button>
+      <section class="wrap-action display-flex justify-content-space-between">
+        <button id="btnMic" (click)="toggleMute()" class="action-call text-center flex-basis p-10 bg-white border-none">
+          <img class="icon" *ngIf="!phoneManager.muting" src="assets/phone-app/icon-mic.svg">
+          <img class="icon-on" *ngIf="phoneManager.muting" src="assets/phone-app/icon-mic-off.svg">
+        </button>
+        <button id="btnHold" (click)="toggleHold()"
+          class="action-call text-center flex-basis p-10 bg-white border-none">
+          <img *ngIf="!phoneManager.holding" class="icon" src="assets/phone-app/icon-pause.svg">
+          <img *ngIf="phoneManager.holding" class="icon-on" src="assets/phone-app/icon-pause-red.svg">
+        </button>
+        <button (click)="toggleDialpadOnCalling($event)" id="btnKeypadInCall"
+          class="action-call text-center flex-basis p-10 bg-white border-none">
+          <img src="assets/phone-app/icon-pad-gray.svg"> </button>
+        <button (click)="transfer()" id="btnTransfer"
+          class="action-call text-center flex-basis p-10 bg-white border-none">
+          <img src="assets/phone-app/icon-back.svg"> </button>
+        <!-- <button id="btnAddToCall" class="action-call text-center flex-basis p-10 bg-white border-none">
+          <img src="assets/phone-app/icon-add-to-call.svg">
+        </button> -->
         <!--        <button id="btnMore" class="action-call text-center flex-basis p-10 bg-white border-none position-relative">            <img src="assets/phone-app/icon-more.svg" />            <span class="drop-down-action display-none">                <span class="drop-down-rectangle"></span>                <ul>                    <li>                        <img src="assets/phone-app/icon-assign-call.svg" class="icon" />                        <img src="assets/phone-app/icon-assign-call-purple.svg" class="icon-hover display-none" />                        <span>Assign this call</span>                    </li>                    <li>                        <img src="assets/phone-app/icon-add-tag.svg" class="icon" />                        <img src="assets/phone-app/icon-add-tag-purple.svg" class="icon-hover display-none" />                        <span>Add a tag</span>                    </li>                    <li>                        <img src="assets/phone-app/icon-comment.svg" class="icon" />                        <img src="assets/phone-app/icon-comment-purple.svg" class="icon-hover display-none" />                        <span>Add a comment</span>                    </li>                </ul>            </span>        </button>-->
       </section>
-      <section class="wrap-background bg-gradient-purple height-350 width-100-percent" *ngIf="!showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')" >
-        <div class="wrap-avatar-round text-center"> <img
-            src="assets/phone-app/avatar.png" class="mt-80">
+      <section class="wrap-background bg-gradient-purple height-350 width-100-percent"
+        *ngIf="!showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')">
+        <div class="wrap-avatar-round text-center"> <img src="assets/phone-app/avatar.png" class="mt-80">
           <div class="callstart-time" style="margin-top: 35px;">
             <div class="location-queue"> </div>
           </div>
         </div>
       </section>
-      <section class="wrap-diapad-when-calling" *ngIf="showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')">
-        <div class="wrap-typing-number pl-15 pr-15 mt-10 mb-10 display-flex justify-content-space-between"> <input
-            type="text" value="" placeholder="*101#" class="font-size-24 color-black border-none"> <button
-            class="btn-close border-none bg-transparent"> <img
+      <section class="wrap-diapad-when-calling"
+        *ngIf="showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')">
+        <div class="wrap-typing-number pl-15 pr-15 mt-10 mb-10 display-flex justify-content-space-between">
+          <input [(ngModel)]="digits" type="text" placeholder="*101#" class="font-size-24 color-black border-none">
+          <button (click)="subDialplanBacksppacePress()" class="btn-close border-none bg-transparent"> <img
               src="assets/phone-app/icon-close.svg"> </button> </div>
         <div class="wrap-diapad mb-20 diapad-size-medium">
-          <div class="diapad-row"> <button (click)="sendDtmf('1')" class="diapad-key" id="diapad-key-dtmf-1"> <span
-                class="diapad-key-number"> 1
-              </span> </button> <button (click)="sendDtmf('2')" class="diapad-key" id="diapad-key-dtmf-2"> <span
-                class="diapad-key-number"> 2
-              </span> </button> <button (click)="sendDtmf('3')" class="diapad-key" id="diapad-key-dtmf-3"> <span
-                class="diapad-key-number"> 3
+          <div class="diapad-row"> <button (click)="subDialplanKeyPress('1')" class="diapad-key" id="diapad-key-dtmf-1">
+              <span class="diapad-key-number"> 1
+              </span> </button> <button (click)="subDialplanKeyPress('2')" class="diapad-key" id="diapad-key-dtmf-2">
+              <span class="diapad-key-number"> 2
+              </span> </button> <button (click)="subDialplanKeyPress('3')" class="diapad-key" id="diapad-key-dtmf-3">
+              <span class="diapad-key-number"> 3
               </span> </button> </div>
-          <div class="diapad-row"> <button (click)="sendDtmf('4')" class="diapad-key" id="diapad-key-dtmf-4"> <span
-                class="diapad-key-number"> 4
-              </span> </button> <button (click)="sendDtmf('5')" class="diapad-key" id="diapad-key-dtmf-5"> <span
-                class="diapad-key-number"> 5
-              </span> </button> <button (click)="sendDtmf('6')" class="diapad-key" id="diapad-key-dtmf-6"> <span
-                class="diapad-key-number"> 6
+          <div class="diapad-row"> <button (click)="subDialplanKeyPress('4')" class="diapad-key" id="diapad-key-dtmf-4">
+              <span class="diapad-key-number"> 4
+              </span> </button> <button (click)="subDialplanKeyPress('5')" class="diapad-key" id="diapad-key-dtmf-5">
+              <span class="diapad-key-number"> 5
+              </span> </button> <button (click)="subDialplanKeyPress('6')" class="diapad-key" id="diapad-key-dtmf-6">
+              <span class="diapad-key-number"> 6
               </span> </button> </div>
-          <div class="diapad-row"> <button (click)="sendDtmf('7')" class="diapad-key" id="diapad-key-dtmf-7"> <span
-                class="diapad-key-number"> 7
-              </span> </button> <button (click)="sendDtmf('8')" class="diapad-key" id="diapad-key-dtmf-8"> <span
-                class="diapad-key-number"> 8
-              </span> </button> <button (click)="sendDtmf('9')" class="diapad-key" id="diapad-key-dtmf-9"> <span
-                class="diapad-key-number"> 9
+          <div class="diapad-row"> <button (click)="subDialplanKeyPress('7')" class="diapad-key" id="diapad-key-dtmf-7">
+              <span class="diapad-key-number"> 7
+              </span> </button> <button (click)="subDialplanKeyPress('8')" class="diapad-key" id="diapad-key-dtmf-8">
+              <span class="diapad-key-number"> 8
+              </span> </button> <button (click)="subDialplanKeyPress('9')" class="diapad-key" id="diapad-key-dtmf-9">
+              <span class="diapad-key-number"> 9
               </span> </button> </div>
           <div class="diapad-row">
-            <button class="diapad-key" id="diapad-key-dtmf-star">
+            <button (click)="subDialplanKeyPress('*')" class="diapad-key" id="diapad-key-dtmf-star">
               <span class="diapad-key-number"> * </span>
             </button>
-            <button (click)="sendDtmf('*')" class="diapad-key" id="diapad-key-dtmf-0">
+            <button (click)="subDialplanKeyPress('0')" class="diapad-key" id="diapad-key-dtmf-0">
               <span class="diapad-key-number"> 0 </span>
             </button>
-            <button (click)="sendDtmf('0')" class="diapad-key" id="diapad-key-dtmf-sharp">
-              <span class="diapad-key-number" (click)="sendDtmf('#')"> # </span>
+            <button (click)="subDialplanKeyPress('#')" class="diapad-key" id="diapad-key-dtmf-sharp">
+              <span class="diapad-key-number" (click)="subDialplanKeyPress('#')"> # </span>
             </button>
           </div>
         </div>
@@ -164,9 +163,9 @@
                 class="location-text" data-translate="location"> {{partnerNumber}} </span> </div>
           </section>
         </div>
-        <section class="wrap-background bg-gradient-purple height-350 width-100-percent" *ngIf="!showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')" >
-          <div class="wrap-avatar-round text-center"> <img
-              src="assets/phone-app/avatar.png" class="mt-50"> </div>
+        <section class="wrap-background bg-gradient-purple height-350 width-100-percent"
+          *ngIf="!showDialpadOnCalling && (state == 'calling' || state == 'incomming-accept')">
+          <div class="wrap-avatar-round text-center"> <img src="assets/phone-app/avatar.png" class="mt-50"> </div>
           <div class="callstart-time">
             <div class="location-queuetime"> </div>
             <div class="location-queue"> </div>
@@ -176,10 +175,8 @@
       <div class="incomming-call-action display-flex justify-content-space-between">
         <button id="btn-incomming-decline" (click)="reject()"
           class="btn-action-incomming btn-round btn-red btn-size-55 display-table-cell border-none"> <img
-            src="assets/phone-app/icon-phone.svg" class="icon"
-            style="transform: rotate(135deg)"> </button> <img
-          src="assets/phone-app/icon-dotted-end.svg"> <img
-          src="assets/phone-app/icon-dotted-call.svg">
+            src="assets/phone-app/icon-phone.svg" class="icon" style="transform: rotate(135deg)"> </button> <img
+          src="assets/phone-app/icon-dotted-end.svg"> <img src="assets/phone-app/icon-dotted-call.svg">
         <button (click)="accept()" id="btn-incomming-accept"
           class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none"> <img
             src="assets/phone-app/icon-phone.svg" class="icon"> </button>
@@ -279,8 +276,7 @@
             class="input-search position-absolute font-size-18 pl-15 right-0 top-0 display-none border-none outline-none">
           <button id="btnSearchContact"
             class="bg-transparent border-none position-absolute btn-finter-search right-15 top-5 p-10 outline-none cursor-pointer"><img
-              class="pointer-events-none"
-              src="assets/phone-app/icon-search.svg"></button> </div>
+              class="pointer-events-none" src="assets/phone-app/icon-search.svg"></button> </div>
       </div>
       <div class="line-dotted"></div>
       <div class="wrap-contact-list">
@@ -290,44 +286,38 @@
             <div class="contact-group-item width-100-percent">
               <div class="contact-item display-flex"> <button
                   class="wrap-contact-item-avatar bg-purple border-radius-12 width-35 height-35 text-center"> <span
-                    class="contact-item-avatar"><img
-                      src="assets/phone-app/icon-user.svg"></span> <span
+                    class="contact-item-avatar"><img src="assets/phone-app/icon-user.svg"></span> <span
                     class="contact-item-status status-offline"></span> </button>
                 <div class="wrap-contact-item-info">
                   <div class="contact-item-name"> Pattrick Penna </div>
                   <div class="contact-item-phone"> Stringee </div>
                   <div class="contact-item-call visibility-hidden"> <button
                       class="btn-round btn-green btn-call-item display-table-cell border-none cursor-pointer"> <img
-                        src="assets/phone-app/icon-phone.svg"
-                        class="icon"> </button> </div>
+                        src="assets/phone-app/icon-phone.svg" class="icon"> </button> </div>
                 </div>
               </div>
               <div class="contact-item display-flex"> <button
                   class="wrap-contact-item-avatar bg-light-green border-radius-12 width-35 height-35 text-center"> <span
-                    class="contact-item-avatar"><img
-                      src="assets/phone-app/icon-user.svg"></span> <span
+                    class="contact-item-avatar"><img src="assets/phone-app/icon-user.svg"></span> <span
                     class="contact-item-status status-online"></span> </button>
                 <div class="wrap-contact-item-info">
                   <div class="contact-item-name"> Pattrick Penna </div>
                   <div class="contact-item-phone"> Stringee </div>
                   <div class="contact-item-call visibility-hidden"> <button
                       class="btn-round btn-green btn-call-item display-table-cell border-none cursor-pointer"> <img
-                        src="assets/phone-app/icon-phone.svg"
-                        class="icon"> </button> </div>
+                        src="assets/phone-app/icon-phone.svg" class="icon"> </button> </div>
                 </div>
               </div>
               <div class="contact-item display-flex"> <button
                   class="wrap-contact-item-avatar bg-light-blue border-radius-12 width-35 height-35 text-center"> <span
-                    class="contact-item-avatar"><img
-                      src="assets/phone-app/icon-user.svg"></span> <span
+                    class="contact-item-avatar"><img src="assets/phone-app/icon-user.svg"></span> <span
                     class="contact-item-status status-offline"></span> </button>
                 <div class="wrap-contact-item-info">
                   <div class="contact-item-name"> Pattrick Penna </div>
                   <div class="contact-item-phone"> Stringee </div>
                   <div class="contact-item-call visibility-hidden"> <button
                       class="btn-round btn-green btn-call-item display-table-cell border-none cursor-pointer"> <img
-                        src="assets/phone-app/icon-phone.svg"
-                        class="icon"> </button> </div>
+                        src="assets/phone-app/icon-phone.svg" class="icon"> </button> </div>
                 </div>
               </div>
             </div>
@@ -337,44 +327,38 @@
             <div class="contact-group-item width-100-percent">
               <div class="contact-item display-flex"> <button
                   class="wrap-contact-item-avatar bg-purple border-radius-12 width-35 height-35 text-center"> <span
-                    class="contact-item-avatar"><img
-                      src="assets/phone-app/icon-user.svg"></span> <span
+                    class="contact-item-avatar"><img src="assets/phone-app/icon-user.svg"></span> <span
                     class="contact-item-status status-offline"></span> </button>
                 <div class="wrap-contact-item-info">
                   <div class="contact-item-name"> Pattrick Penna </div>
                   <div class="contact-item-phone"> Stringee </div>
                   <div class="contact-item-call visibility-hidden"> <button
                       class="btn-round btn-green btn-call-item display-table-cell border-none cursor-pointer"> <img
-                        src="assets/phone-app/icon-phone.svg"
-                        class="icon"> </button> </div>
+                        src="assets/phone-app/icon-phone.svg" class="icon"> </button> </div>
                 </div>
               </div>
               <div class="contact-item display-flex"> <button
                   class="wrap-contact-item-avatar bg-light-green border-radius-12 width-35 height-35 text-center"> <span
-                    class="contact-item-avatar"><img
-                      src="assets/phone-app/icon-user.svg"></span> <span
+                    class="contact-item-avatar"><img src="assets/phone-app/icon-user.svg"></span> <span
                     class="contact-item-status status-online"></span> </button>
                 <div class="wrap-contact-item-info">
                   <div class="contact-item-name"> Pattrick Penna </div>
                   <div class="contact-item-phone"> Stringee </div>
                   <div class="contact-item-call visibility-hidden"> <button
                       class="btn-round btn-green btn-call-item display-table-cell border-none cursor-pointer"> <img
-                        src="assets/phone-app/icon-phone.svg"
-                        class="icon"> </button> </div>
+                        src="assets/phone-app/icon-phone.svg" class="icon"> </button> </div>
                 </div>
               </div>
               <div class="contact-item display-flex"> <button
                   class="wrap-contact-item-avatar bg-light-blue border-radius-12 width-35 height-35 text-center"> <span
-                    class="contact-item-avatar"><img
-                      src="assets/phone-app/icon-user.svg"></span> <span
+                    class="contact-item-avatar"><img src="assets/phone-app/icon-user.svg"></span> <span
                     class="contact-item-status status-offline"></span> </button>
                 <div class="wrap-contact-item-info">
                   <div class="contact-item-name"> Pattrick Penna </div>
                   <div class="contact-item-phone"> Stringee </div>
                   <div class="contact-item-call visibility-hidden"> <button
                       class="btn-round btn-green btn-call-item display-table-cell border-none cursor-pointer"> <img
-                        src="assets/phone-app/icon-phone.svg"
-                        class="icon"> </button> </div>
+                        src="assets/phone-app/icon-phone.svg" class="icon"> </button> </div>
                 </div>
               </div>
             </div>
@@ -384,16 +368,14 @@
             <div class="contact-group-item width-100-percent">
               <div class="contact-item display-flex"> <button
                   class="wrap-contact-item-avatar bg-purple border-radius-12 width-35 height-35 text-center"> <span
-                    class="contact-item-avatar"><img
-                      src="assets/phone-app/icon-user.svg"></span> <span
+                    class="contact-item-avatar"><img src="assets/phone-app/icon-user.svg"></span> <span
                     class="contact-item-status status-offline"></span> </button>
                 <div class="wrap-contact-item-info">
                   <div class="contact-item-name"> Pattrick Penna </div>
                   <div class="contact-item-phone"> Stringee </div>
                   <div class="contact-item-call visibility-hidden"> <button
                       class="btn-round btn-green btn-call-item display-table-cell border-none cursor-pointer"> <img
-                        src="assets/phone-app/icon-phone.svg"
-                        class="icon"> </button> </div>
+                        src="assets/phone-app/icon-phone.svg" class="icon"> </button> </div>
                 </div>
               </div>
             </div>
@@ -425,8 +407,7 @@
           <img src="assets/phone-app/icon-list.svg" class="icon"> -->
         </button>
         <button id="btnToolSetting" class="toolbar-item display-table-cell border-none bg-transparent display-none">
-          <img src="assets/phone-app/icon-setting-gray.svg"
-            class="icon-gray"> <img
+          <img src="assets/phone-app/icon-setting-gray.svg" class="icon-gray"> <img
             src="assets/phone-app/icon-setting.svg" class="icon">
         </button>
         <button id="btnToolCall" (click)="onCallToggle()"
@@ -439,8 +420,8 @@
         <!--		<button id="btnToolEndCall" class="btn-action-incomming btn-round btn-red btn-size-55 display-table-cell border-none mt-15-negative">            <img src="images/icon-phone.svg" class="icon-gray" />            <img src="images/icon-phone.svg" class="icon" />        </button>-->
         <button id="btnToolPad"
           class="btn-action-incomming btn-round btn-green btn-size-55 display-table-cell border-none mt-15-negative display-none">
-          <img src="assets/phone-app/icon-pad.svg" class="icon-gray"> <img
-            src="assets/phone-app/icon-pad.svg" class="icon"> </button>
+          <img src="assets/phone-app/icon-pad.svg" class="icon-gray"> <img src="assets/phone-app/icon-pad.svg"
+            class="icon"> </button>
         <button id="btnToolContact" class="toolbar-item display-table-cell border-none bg-transparent">
           <nb-icon (click)="openRelateChatRoom()" pack="eva" icon="message-circle-outline" style="color: #b3b3b3;">
           </nb-icon>
@@ -455,20 +436,19 @@
         class="btn-close-option-call border-none bg-transparent float-right"> <img
           src="assets/phone-app/icon-close.svg"> </button>
       <div class="mt-150"> <button class="btn-otption-call btn-free-voice-call"> <span class="btn-icon"> <img
-              src="assets/phone-app/icon-phone.svg" class="icon-gray"
-              width="15"> </span> <span data-translate="free_voice_call">Gọi thoại miễn phí</span> </button> <button
+              src="assets/phone-app/icon-phone.svg" class="icon-gray" width="15"> </span> <span
+            data-translate="free_voice_call">Gọi thoại miễn phí</span> </button> <button
           class="btn-otption-call btn-free-video-call"> <span class="btn-icon"> <img
-              src="assets/phone-app/icon-videocall.svg" class="icon-gray"
-              width="15"> </span> <span data-translate="free_video_call">Gọi video miễn phí</span> </button> <button
-          class="btn-otption-call btn-free-callout"> <span class="btn-icon"> <img
-              src="assets/phone-app/icon-phone.svg" class="icon-gray"
-              width="15"> </span> <span data-translate="call_out">Gọi ra</span> </button> </div>
+              src="assets/phone-app/icon-videocall.svg" class="icon-gray" width="15"> </span> <span
+            data-translate="free_video_call">Gọi video miễn phí</span> </button> <button
+          class="btn-otption-call btn-free-callout"> <span class="btn-icon"> <img src="assets/phone-app/icon-phone.svg"
+              class="icon-gray" width="15"> </span> <span data-translate="call_out">Gọi ra</span> </button> </div>
     </section><!-- Select call type -->
   </div>
   <audio preload="auto" id="ringtonePlayer" playsinline="" style="width: 1px"
     src="assets/audio/iphone-tiktok-ring-music.mp3" loop=""></audio>
-  <audio preload="auto" id="ringbackPlayer" playsinline="" style="width: 1px"
-    src="assets/audio/phone-tones-2.mp3" loop=""></audio>
+  <audio preload="auto" id="ringbackPlayer" playsinline="" style="width: 1px" src="assets/audio/phone-tones-2.mp3"
+    loop=""></audio>
   <video id="remoteVideo" playsinline="" autoplay="" style="width: 1px"></video>
   <audio id="remoteVideo" style="width: 1px"></audio>
   <video id="localVideo" muted="muted" style="width: 1px"></video>

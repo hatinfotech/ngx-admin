@@ -7,6 +7,8 @@ import { IncomingResponseMessage } from 'sip.js/lib/core';
 export class CallingSession {
 
   public state = 'normal';
+  public holding = false;
+  public muting = false;
   // private stateChangedSubject = new BehaviorSubject<string>('normal');
   // stateChanged$ = this.stateChangedSubject.asObservable();
   stateChanged$ = new Subject<string>();
@@ -44,7 +46,7 @@ export class CallingSession {
     this.receivedSession.accept({
       sessionDescriptionHandlerOptions: {
         constraints: { audio: true, video: false },
-      }
+      },
     });
   }
 
@@ -73,8 +75,32 @@ export class CallingSession {
     }, 15000);
   }
 
-  transfer() {
+  transfer(target: string) {
+    this.session.refer(target);
+  }
 
+  hold() {
+    this.session.hold();
+    this.holding = true;
+  }
+
+  unhold() {
+    this.session.unhold();
+    this.holding = false;
+  }
+
+  mute() {
+    const pc: RTCPeerConnection = this.session.sessionDescriptionHandler['peerConnection'];
+    pc.getSenders()[0].track.enabled = false;
+    console.log(pc);
+    this.muting = true;
+  }
+
+  unmute() {
+    const pc: RTCPeerConnection = this.session.sessionDescriptionHandler['peerConnection'];
+    pc.getSenders()[0].track.enabled = true;
+    console.log(pc);
+    this.muting = false;
   }
 
   sendMessage() {

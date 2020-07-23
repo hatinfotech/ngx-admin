@@ -7,6 +7,7 @@ import { ApiService } from '../../../services/api.service';
 import { ContactModel } from '../../../models/contact.model';
 import { HelpdeskTicketModel } from '../../../models/helpdesk.model';
 import { CommonService } from '../../../services/common.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'ngx-dialpad',
@@ -19,6 +20,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   // private inviteClientContext: SIP.InviteClientContext;
   // private inviteServerContext: SIP.InviteServerContext;
   phonenumber = '';
+  digits = '';
 
   partnerNumber = '';
   partnerName = '';
@@ -43,7 +45,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   callingSessionList: {}[] = [];
 
 
-  private phoneManager: PhoneManager;
+  public phoneManager: PhoneManager;
   public sipPhoneUser: User;
 
   public hadWaitingIncomingCall = false;
@@ -336,6 +338,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
     this.contactScreenActivated = false;
     this.activeityScreenActivated = false;
     this.showDialpadOnCalling = false;
+    this.digits = '';
     this.stopRing();
   }
 
@@ -404,7 +407,32 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
     this.showDialpadOnCalling = !this.showDialpadOnCalling;
   }
 
+  subDialplanKeyPress(key: string) {
+    (this.digits as string) += key;
+    this.sendDtmf(key);
+  }
+  subDialplanBacksppacePress() {
+    this.digits = this.digits.substr(0, this.digits.length - 1);
+  }
+
   sendDtmf(dtmf: string) {
     this.phoneManager.sendDtmf(dtmf);
+  }
+
+  transfer() {
+    this.showDialpadOnCalling = true;
+    if (this.digits.length < 3) {
+      console.log('digit length < 3');
+    } else {
+      this.phoneManager.transfer(this.digits);
+    }
+  }
+
+  toggleHold() {
+    this.phoneManager.toggleHold();
+  }
+
+  toggleMute() {
+    this.phoneManager.toggleMute();
   }
 }

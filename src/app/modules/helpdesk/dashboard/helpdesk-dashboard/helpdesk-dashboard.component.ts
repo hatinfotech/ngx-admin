@@ -433,8 +433,10 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       this.layoutScrollService.scrollTo(0, 0);
     } else {
       // Scroll to center
-      const offsetTop = existsQuickForm.form.elRef.nativeElement.offsetTop;
-      this.layoutScrollService.scrollTo(0, offsetTop - 55);
+      if (existsQuickForm.form && existsQuickForm.form.elRef && existsQuickForm.form.elRef.nativeElement) {
+        const offsetTop = existsQuickForm.form.elRef.nativeElement.offsetTop;
+        this.layoutScrollService.scrollTo(0, offsetTop - 55);
+      }
       // this.layoutScrollService.onScroll().subscribe(p => console.info(p));
     }
     // Load tiket list by phone

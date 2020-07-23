@@ -5,7 +5,7 @@ import { DialpadComponent } from './dialpad/dialpad.component';
 import { NbIconModule, NbCardModule, NbButtonModule } from '@nebular/theme';
 import { MediaPlayerComponent } from './media-player/media-player.component';
 import { TimingPipe } from './pipe/timing.pipe';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @NgModule({
@@ -16,6 +16,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     NbCardModule,
     NbButtonModule,
     FormsModule,
+    ReactiveFormsModule,
     // ThemeModule,
   ],
   // exports: [
