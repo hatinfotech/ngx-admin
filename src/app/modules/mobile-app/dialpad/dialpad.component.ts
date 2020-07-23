@@ -7,7 +7,7 @@ import { ApiService } from '../../../services/api.service';
 import { ContactModel } from '../../../models/contact.model';
 import { HelpdeskTicketModel } from '../../../models/helpdesk.model';
 import { CommonService } from '../../../services/common.service';
-import { FormControl } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'ngx-dialpad',
@@ -21,6 +21,10 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   // private inviteServerContext: SIP.InviteServerContext;
   phonenumber = '';
   digits = '';
+  startTime = 0;
+  duration$ = new BehaviorSubject<string>('00:00');
+  callStatus = '';
+  clock = null;
 
   partnerNumber = '';
   partnerName = '';
@@ -51,6 +55,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   public hadWaitingIncomingCall = false;
   public minimized = false;
   public registerFailed = false;
+  public activeAccountRegisterd = false;
 
   // @Input('minimized') minimized: boolean;
 
@@ -92,6 +97,32 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
 
     } catch (e) { console.error(e); }
 
+
+    // Phone manager events
+    this.phoneManager.sessionEvent.asObservable().subscribe(data => {
+      switch (data.event) {
+        case 'accepted':
+          this.startTime = Date.now();
+          this.callStatus = 'đang trong cuộc gọi...';
+          this.clock = setInterval(() => {
+            this.duration$.next(this.getActiveCallDuration());
+          }, 1000);
+          break;
+        case 'progress':
+          this.duration$.next('đang gọi...');
+          this.callStatus = 'chờ bắt máy...';
+          break;
+        case 'incoming':
+          this.callStatus = 'cuộc gọi đến...';
+          break;
+        case 'registered':
+          this.activeAccountRegisterd = true;
+          break;
+        case 'unregistered':
+          this.activeAccountRegisterd = false;
+          break;
+      }
+    });
   }
 
   ngOnInit() {
@@ -128,6 +159,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   onWaitingIncomingCall(session: CallingSession): void {
     console.info('On Waiting Incoming Call');
     this.hadWaitingIncomingCall = true;
+    this.callStatus = 'có cuộc gọi đang chờ...';
     // this.state = 'incomming';
     // this.partnerName = session.caller.name;
     // this.partnerNumber = session.caller.phone;
@@ -339,6 +371,11 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
     this.activeityScreenActivated = false;
     this.showDialpadOnCalling = false;
     this.digits = '';
+    this.startTime = 0;
+    this.duration$.next('00:00');
+    if (this.clock) {
+      clearInterval(this.clock);
+    }
     this.stopRing();
   }
 
@@ -389,8 +426,6 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
     }
   }
 
-
-
   ringback() {
     this.ringbackPlayer.play();
   }
@@ -435,4 +470,22 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
   toggleMute() {
     this.phoneManager.toggleMute();
   }
+
+  getActiveCallDuration() {
+    if (this.startTime === 0) {
+      return '00:00';
+    }
+    const duration = Math.ceil((Date.now() - this.startTime) / 1000);
+    return this.toHHMMSS(duration);
+  }
+
+  toHHMMSS(seconds: number) {
+    // var sec_num = parseInt(this, 10); // don't forget the second param
+    const hours: number | string = Math.floor(seconds / 3600);
+    const minutes: number | string = Math.floor((seconds - (hours * 3600)) / 60);
+    seconds = seconds - (hours * 3600) - (minutes * 60);
+
+    return (hours > 0 ? ((hours < 10 ? '0' : '') + hours + ':') : '') + ((minutes < 10 ? '0' : '') + minutes + ':') + ((seconds < 10 ? '0' : '') + seconds);
+  }
+
 }

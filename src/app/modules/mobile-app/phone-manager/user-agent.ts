@@ -56,10 +56,19 @@ export class UserAgent {
       this.stateChanged$.next({ state: 'invited', session: callingSession });
     });
 
+    this.agent.on('registered', async (response) => {
+      this.stateChanged$.next({ state: 'registered' });
+    });
+
+    this.agent.on('unregistered', async (response) => {
+      this.stateChanged$.next({ state: 'unregistered' });
+    });
+
   }
 
   unregister(): boolean {
     this.agent.unregister();
+    this.stateChanged$.next({ state: 'unregister' });
     return true;
   }
 

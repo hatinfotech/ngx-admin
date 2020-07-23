@@ -2,6 +2,7 @@ import { CallingSession } from './calling-session';
 import { UserAgent } from './user-agent';
 import { User } from './user';
 import { Subject } from 'rxjs';
+import { EventEmitter } from '@angular/core';
 
 export interface IPhoneContext {
 
@@ -28,6 +29,8 @@ export class PhoneManager {
   ringer: HTMLAudioElement;
 
   protected destroy$: Subject<void> = new Subject<void>();
+  public sessionEvent = new EventEmitter<{ event: string, session: CallingSession, [key: string]: any }>();
+
   state = 'normal';
 
   constructor(
@@ -59,8 +62,10 @@ export class PhoneManager {
         if (stateInfo.state === 'invited') {
           this.state = 'incoming';
           this.callingSessionList.push(stateInfo.session);
+          this.sessionEvent.emit({event: 'incoming', session: stateInfo.session});
           this.onInvite(stateInfo.session);
           stateInfo.session.onStateUpdate(state => {
+            this.sessionEvent.emit({event: state, session: stateInfo.session});
             if (state === 'terminated') {
               this.state = 'normal';
               this.onTerminate(stateInfo.session);
@@ -81,6 +86,8 @@ export class PhoneManager {
               this.onFailed(stateInfo.session);
             }
           });
+        } else {
+          this.sessionEvent.emit({event: stateInfo.state, session: stateInfo.session});
         }
       });
       return newUA;
@@ -128,6 +135,7 @@ export class PhoneManager {
     this.callingSessionList.push(session);
 
     session.onStateUpdate(state => {
+      this.sessionEvent.emit({event: state, session: session});
       if (state === 'terminated') {
         this.state = 'normal';
         this.onTerminate(session);
