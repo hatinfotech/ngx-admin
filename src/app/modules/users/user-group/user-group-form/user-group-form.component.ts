@@ -81,7 +81,7 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
         });
         this.parentList = list1.map(item => {
           item['id'] = item['Code'];
-          item['text'] = item['Description'];
+          item['text'] = item['Name'] + ': ' + item['Description'];
           return item;
         });
 

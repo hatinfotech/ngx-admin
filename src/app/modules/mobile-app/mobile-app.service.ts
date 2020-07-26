@@ -73,8 +73,8 @@ export class MobileAppService {
     this.mobileApp.switchScreen(screen);
   }
 
-  phoneCall(phone: string, name: string) {
-    this.callScreen.call(phone, name);
+  phoneCall(phone: string, name: string): CallingSession {
+    return this.callScreen.call(phone, name);
   }
 
   playMedia(tracks: Track[]) {

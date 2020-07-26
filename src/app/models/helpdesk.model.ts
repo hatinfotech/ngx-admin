@@ -44,10 +44,20 @@ export class HelpdeskTicketModel {
   Service?: string;
   ObjectBranchBk?: string;
   CallSessionId?: string;
+  CallLog?: string;
 
+  CallingSessions?: HelpdeskTicketCallingSessionModel[];
 
   constructor() { }
 
+}
+
+export class HelpdeskTicketCallingSessionModel {
+  Id?: string;
+  Ticket?: string;
+  CallSession?: string;
+  State?: string;
+  DateOfCalling?: string;
 }
 
 export class HelpdeskUserModel {
@@ -69,6 +79,7 @@ export class HelpdeskUserExtensionModel {
   Pbx?: string;
   Port?: string;
   Domain?: string;
+  DomainUuid?: string;
   Password?: string;
   Transport?: string;
   DisplayName?: string;

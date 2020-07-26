@@ -48,7 +48,7 @@
 
           </div>
           <div class="value nowrap" *ngIf="!!item.ObjectPhone">
-            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.ObjectPhone }} (<a style="cursor: pointer;" href="#" (click)="phoneCall(item.ObjectPhone, item.ObjectName)">call</a>)
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.ObjectPhone }} (<a style="cursor: pointer;" href="#" (click)="phoneCall(item, item.ObjectPhone, item.ObjectName)">call</a>)
           </div>
           <div class="value nowrap" *ngIf="!!item.ObjectEmail">
             <nb-icon icon="email" pack="ion"></nb-icon> {{ item.ObjectEmail }}
@@ -78,10 +78,10 @@
             <nb-icon icon="ios-time" pack="ion"></nb-icon> {{ item.DateOfCreate }}
           </div>
           <div class="value">
-            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#" (click)="openChatRoom(item.ChatRoom)">Chi tiết</a>
+            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> <a href="#" (click)="openChatRoom(item.ChatRoom)">Phòng chat</a>
           </div>
           <div class="value">
-            <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#" (click)="editItem(item.Code)">Cập nhật</a>
+            <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#" (click)="editItem(item.Code)">Chỉnh sửa</a>
           </div>
         </div>
       </div>

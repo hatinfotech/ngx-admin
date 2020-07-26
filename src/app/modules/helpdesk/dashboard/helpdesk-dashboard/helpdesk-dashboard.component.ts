@@ -8,7 +8,7 @@ import { UserActive, UserActivityData } from '../../../../@core/data/user-activi
 import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
-import { HelpdeskTicketModel } from '../../../../models/helpdesk.model';
+import { HelpdeskTicketModel, HelpdeskTicketCallingSessionModel, HelpdeskUserExtensionModel } from '../../../../models/helpdesk.model';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
 import { MobileAppService, CallState } from '../../../mobile-app/mobile-app.service';
@@ -16,6 +16,9 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { ContactModel } from '../../../../models/contact.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { tick } from '@angular/core/testing';
+import { PbxCdrModel } from '../../../../models/pbx-cdr.model';
+import { Content } from '@angular/compiler/src/render3/r3_ast';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-helpdesk-dashboard',
@@ -59,6 +62,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   hadRowsSelected = false;
   hadMultiRowSelected = false;
+  processing = false;
   actionButtonList: ActionControl[] = [
     {
       type: 'text',
@@ -88,43 +92,6 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         return false;
       },
     },
-    // {
-    //   type: 'button',
-    //   name: 'chat',
-    //   status: 'success',
-    //   label: 'Chat',
-    //   icon: 'message-square',
-    //   title: 'Vào phòng chat',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
-    //   },
-    //   click: () => {
-    //     // this.refresh();
-    //     if (this.selectedItems.length > 0) {
-    //       this.openChatRoom(this.selectedItems[0].ChatRoom);
-    //     }
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'call',
-    //   status: 'primary',
-    //   label: 'Gọi',
-    //   icon: 'phone-call',
-    //   title: 'Gọi cho người được hỗ trợ',
-    //   size: 'medium',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     this.commonService.openMenuSidebar();
-    //     this.mobileAppService.switchScreen('phone');
-    //     // this.refresh();
-    //     return false;
-    //   },
-    // },
     {
       type: 'button',
       name: 'create',
@@ -141,54 +108,25 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         return false;
       },
     },
-    // {
-    //   type: 'button',
-    //   name: 'create',
-    //   status: 'info',
-    //   label: 'Cập nhật',
-    //   icon: 'edit',
-    //   title: 'Cập nhật TICKET',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     this.editItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'view',
-    //   status: 'success',
-    //   label: 'Xem',
-    //   icon: 'external-link',
-    //   title: 'Xem thông tin TICKET',
-    //   size: 'medium',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
-    //   },
-    //   click: () => {
-    //     // this.createNewItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'remove',
-    //   status: 'danger',
-    //   label: 'Huỷ',
-    //   icon: 'close-circle',
-    //   title: 'Huỷ yêu cầu',
-    //   size: 'medium',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected;
-    //   },
-    //   click: () => {
-    //     // this.reset();
-    //     return false;
-    //   },
-    // },
+    {
+      type: 'button',
+      name: 'getLostTicket',
+      status: 'primary',
+      label: 'Lấy yêu cầu nhỡ',
+      icon: 'download',
+      title: 'Lấy các yêu cầu từ cuộc gọi nhỡ',
+      size: 'medium',
+      disabled: () => {
+        return this.processing;
+      },
+      click: () => {
+        this.processing = true;
+        this.fetchLostTicketByCallLogs().then(rs => {
+          this.processing = false;
+        });
+        return false;
+      },
+    },
     {
       type: 'button',
       name: 'refresh',
@@ -239,7 +177,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     public renderer: Renderer2,
     public dialogService: NbDialogService,
     public mobileAppService: MobileAppService,
-    public mmobileAppService: MobileAppService,
+    public datePipe: DatePipe,
   ) {
     super(commonService, router, apiService);
 
@@ -259,12 +197,24 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
     this.callStateSubscription = this.mobileAppService.callState$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(callState => {
+      .subscribe(async callState => {
         if (callState.state === 'incomming') {
-          this.createNewItem(callState.partnerNumber, callState.session.id);
+          const formComponent = await this.createNewItem(callState.partnerNumber, callState.session.id) as { form: QuickTicketFormComponent };
+          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+            if (state === 'terminated') {
+              // Check point call logs and map call log id
+              this.monitorAndMapCallLog(callState, formComponent);
+            }
+          });
         }
         if (callState.state === 'waiting-incomming') {
-          this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
+          const formComponent = await this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
+          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+            if (state === 'terminated') {
+              this.monitorAndMapCallLog(callState, formComponent);
+            }
+          });
+
         }
         if (callState.state === 'incomming-cancel') {
           this.updateTemporaryTicketForIncommingCancel(callState);
@@ -279,12 +229,24 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     this.callStateSubscription.unsubscribe();
     this.mobileAppService.callState$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(callState => {
+      .subscribe(async callState => {
         if (callState.state === 'incomming') {
-          this.createNewItem(callState.partnerNumber, callState.session.id);
+          const formComponent = await this.createNewItem(callState.partnerNumber, callState.session.id) as { form: QuickTicketFormComponent };
+          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+            if (state === 'terminated') {
+              // Check point call logs and map call log id
+              this.monitorAndMapCallLog(callState, formComponent);
+            }
+          });
         }
         if (callState.state === 'waiting-incomming') {
-          this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
+          const formComponent = await this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
+          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+            if (state === 'terminated') {
+              this.monitorAndMapCallLog(callState, formComponent);
+            }
+          });
+
         }
         if (callState.state === 'incomming-cancel') {
           this.updateTemporaryTicketForIncommingCancel(callState);
@@ -294,6 +256,25 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   ngOnInit() {
     this.commonService.openMobileSidebar();
+  }
+
+  async monitorAndMapCallLog(callState, formComponent) {
+    // Check point call logs and map call log id
+    const currentDateTime = new Date();
+    const callLogs = (await this.apiService.getPromise<PbxCdrModel[]>('/helpdesk/relativeCallLogs', {
+      filter_Direction: 'inbound',
+      filter_Start: new Date(currentDateTime.getTime() - 30000).toISOString() + '/' + new Date(currentDateTime.getTime() + 180000).toISOString(),
+      filter_CallerNumber: callState.partnerNumber,
+    }));
+    if (callLogs && callLogs.length > 0) {
+      if (formComponent.form.id) {
+        // Update call log for ticket
+        this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [formComponent.form.id[0]] }, [{
+          Code: formComponent.form.id[0],
+          CallLog: callLogs[0].Id,
+        }]);
+      }
+    }
   }
 
   onFilterChange() {
@@ -414,7 +395,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  createNewItem(phoneNumber?: string, tracking?: string) {
+  async createNewItem(phoneNumber?: string, tracking?: string) {
     // this.openFormDialplog();
     const existsQuickForm = this.quickTicketFormList.filter(f => f.index === tracking)[0];
     if (!tracking || !existsQuickForm) {
@@ -422,15 +403,22 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       const quickForm = { index: tracking ? tracking : ('new_' + Date.now()), phoneNumber: phoneNumber };
       this.quickTicketFormList.unshift(quickForm);
 
-      this.quickFormOnInit$.pipe(takeUntil(this.destroy$)).subscribe(trk => {
-        if (tracking === trk) {
-          const depForm = this.quickTicketFormList.filter(f => f.index === trk)[0];
-          if (depForm) {
-            depForm.form.description = 'Yêu cầu mới từ khách hàng có số điện thoại ' + phoneNumber + ' vào ' + (new Date().toString());
+      return new Promise<{ index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }>(resolve => {
+        this.quickFormOnInit$.pipe(takeUntil(this.destroy$)).subscribe(trk => {
+          if (tracking === trk) {
+            const depForm = this.quickTicketFormList.filter(f => f.index === trk)[0];
+            if (depForm) {
+              depForm.form.description = 'Yêu cầu mới từ khách hàng có số điện thoại ' + phoneNumber + ' vào ' + (new Date().toString());
+            }
+            if (phoneNumber) {
+              this.apiService.putPromise('/helpdesk/relativeCallLogs/checkpoint', {}, []);
+            }
+            resolve(depForm);
           }
-        }
+        });
+        this.layoutScrollService.scrollTo(0, 0);
       });
-      this.layoutScrollService.scrollTo(0, 0);
+
     } else {
       // Scroll to center
       if (existsQuickForm.form && existsQuickForm.form.elRef && existsQuickForm.form.elRef.nativeElement) {
@@ -469,20 +457,22 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  createDependingTicketByPhoneNumber(phoneNumber?: string, tracking?: string) {
+  async createDependingTicketByPhoneNumber(phoneNumber?: string, tracking?: string) {
     // this.showQuickForm = true;
     const quickForm = { index: tracking, phoneNumber: phoneNumber };
     this.quickTicketFormList.push(quickForm);
 
-    this.quickFormOnInit$.pipe(takeUntil(this.destroy$)).subscribe(trk => {
-      if (tracking === trk) {
-        const depForm = this.quickTicketFormList.filter(f => f.index === trk)[0];
-        if (depForm) {
-          depForm.form.description = 'Yêu cầu bị nhỡ từ khách hàng có số điện thoại ' + phoneNumber + ' vào ' + (new Date().toString());
+    return new Promise(resolve => {
+      this.quickFormOnInit$.pipe(takeUntil(this.destroy$)).subscribe(trk => {
+        if (tracking === trk) {
+          const depForm = this.quickTicketFormList.filter(f => f.index === trk)[0];
+          if (depForm) {
+            depForm.form.description = 'Yêu cầu bị nhỡ từ khách hàng có số điện thoại ' + phoneNumber + ' vào ' + (new Date().toString());
+          }
+          resolve(depForm);
         }
-      }
+      });
     });
-    return false;
   }
 
 
@@ -571,13 +561,28 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  phoneCall(phone: string, name: string) {
-    this.mobileAppService.phoneCall(phone, name);
+  phoneCall(ticket: HelpdeskTicketModel, phone: string, name: string) {
+    if (ticket && ticket.Code) {
+      const callSession = this.mobileAppService.phoneCall(phone, name);
+      callSession.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(state => {
+        if (state === 'progress') {
+          this.commonService.takeUntil('add_call_sessin_to_ticket', 3000).then(() => {
+            if (callSession && callSession.id) {
+              this.apiService.postPromise<HelpdeskTicketCallingSessionModel[]>('/helpdesk/ticketCallingSessions', {}, [{ Ticket: ticket.Code, CallSession: callSession.id, State: 'CALLOUT' }]).then(rs => {
+                console.log(rs);
+              });
+            }
+          });
+        }
+      });
+    } else {
+      console.error('Ticket was not provided');
+    }
     return false;
   }
 
   openChatRoom(chatRoomId: string) {
-    this.mmobileAppService.request('open-chat-room', chatRoomId);
+    this.mobileAppService.request('open-chat-room', chatRoomId);
   }
 
   saveContact(ticket: HelpdeskTicketModel) {
@@ -599,5 +604,51 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         },
       });
     });
+  }
+
+  async fetchLostTicketByCallLogs() {
+    const hangupcases = ['ORIGINATOR_CANCEL', 'EXCHANGE_ROUTING_ERROR'];
+    for (let h = 0; h < hangupcases.length; h++) {
+      const lostCall = (await this.apiService.getPromise<PbxCdrModel[]>('/helpdesk/relativeCallLogs', {
+        filter_HangupCase: hangupcases[h],
+        filter_Direction: 'inbound',
+      }));
+      if (lostCall && lostCall.length > 0) {
+        const newTickets: HelpdeskTicketModel[] = [];
+        for (let i = 0; i < lostCall.length; i++) {
+          console.log(lostCall[i]);
+          const phonenumber = lostCall[i].CallerNumber.replace(/[^0-9]/g, '');
+          let contactName = phonenumber;
+          let contactAddress = '';
+          let contactEmail = '';
+          let contactCode = null;
+          const contact = (await this.apiService.getPromise<ContactModel[]>('/contact/contacts', { filter_Phone: phonenumber }))[0];
+          if (contact) {
+            contactName = contact.Name;
+            contactEmail = contact.Email;
+            contactAddress = contact.Address;
+            contactCode = contact.Code;
+          }
+          newTickets.push({
+            Object: contactCode,
+            ObjectName: contactName,
+            ObjectPhone: phonenumber,
+            ObjectEmail: contactEmail,
+            ObjectAddress: contactAddress,
+            Description: 'Yêu cầu bị nhỡ từ số ' + phonenumber + (contact ? (' của khách hàng ' + contact.Name) : '') + ' vào lúc ' + (this.datePipe.transform(lostCall[i].Start)),
+            CallLog: lostCall[i].Id,
+          });
+        }
+        try {
+          await this.apiService.postPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { autoCreateChatRoom: true, silient: true }, newTickets);
+        } catch (e) {
+          console.log(e);
+        }
+        this.apiService.putPromise('/helpdesk/relativeCallLogs/checkpoint', {}, []);
+
+      }
+    }
+    this.refresh();
+    return true;
   }
 }

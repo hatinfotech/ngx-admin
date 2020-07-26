@@ -96,7 +96,7 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
 
   prepareUserGroupTree(tree: UserGroupModel[]) {
     for (let i = 0; i < tree.length; i++) {
-      tree[i]['name'] = tree[i]['name'] + ': ' + tree[i]['description'];
+      tree[i]['name'] = tree[i]['name'] + (tree[i]['description'] ? (': ' + tree[i]['description']) : '');
       if (tree[i]['children']) {
         this.prepareUserGroupTree(tree[i]['children']);
       }

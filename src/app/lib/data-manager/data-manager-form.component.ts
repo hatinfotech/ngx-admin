@@ -109,7 +109,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   protected queryParam: any;
 
-  protected formDataCache: any[];
+  protected formDataCache: M[];
 
   protected silent = false;
   protected autosave = false;

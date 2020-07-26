@@ -112,14 +112,16 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
       if (itemFormData.Extensions) {
         for (let i = 0; i < itemFormData.Extensions.length; i++) {
           const phoneExt = itemFormData.Extensions[i];
-          phoneExt.Domain = phoneExt.Domain + '@' + phoneExt.Pbx;
+          if (phoneExt.Pbx) {
+            phoneExt.DomainUuid = phoneExt.DomainUuid + '@' + phoneExt.Pbx;
 
-          // Load extensions of domain
-          const extList = await this.apiService.getPromise<PbxExtensionModel[]>('/ivoip/extensions', { select: 'extension_uuid,extension,description', domainId: phoneExt.Domain });
-          const phoneExtFormGroup = this.makeNewUserPhoneExtensionFormGroup(phoneExt);
-          phoneExtFormGroup['extensionList'] = this.convertOptionList(extList, 'extension', 'description');
-          (newForm.get('Extensions') as FormArray).push(phoneExtFormGroup);
-
+            // Load extensions of domain
+            const extList = await this.apiService.getPromise<PbxExtensionModel[]>('/ivoip/extensions', { select: 'extension_uuid,extension,description', domainId: phoneExt.DomainUuid });
+            const phoneExtFormGroup = this.makeNewUserPhoneExtensionFormGroup(phoneExt);
+            phoneExtFormGroup['extensionList'] = this.convertOptionList(extList, 'extension', 'description');
+            (newForm.get('Extensions') as FormArray).push(phoneExtFormGroup);
+            this.updateInitialFormPropertiesCache(phoneExtFormGroup);
+          }
         }
       }
 
@@ -157,13 +159,13 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
   makeNewUserPhoneExtensionFormGroup(data?: HelpdeskUserExtensionModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
-      Domain: ['', Validators.required],
+      DomainUuid: ['', Validators.required],
       Extension: ['', Validators.required],
-      Host: [{ value: '', disabled: true }],
-      Port: [{ value: '', disabled: true }],
-      Password: [{ value: '', disabled: true }],
-      Transport: [{ value: '', disabled: true }],
-      DisplayName: [{ value: '', disabled: true }],
+      // Host: [{ value: '', disabled: true }],
+      // Port: [{ value: '', disabled: true }],
+      // Password: [{ value: '', disabled: true }],
+      // Transport: [{ value: '', disabled: true }],
+      // DisplayName: [{ value: '', disabled: true }],
     });
 
     if (data) {
@@ -178,7 +180,9 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
   }
 
   addUserPhoneExtensionFormGroup(formGroupIndex: number) {
-    this.getUserPhoneExtensions(formGroupIndex).push(this.makeNewUserPhoneExtensionFormGroup());
+    const newForm = this.makeNewUserPhoneExtensionFormGroup();
+    this.getUserPhoneExtensions(formGroupIndex).push(newForm);
+    this.updateInitialFormPropertiesCache(newForm);
     return false;
   }
 
@@ -215,10 +219,12 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
 
     rawData.array = rawData.array.map((item: HelpdeskUserModel) => {
       item['Extensions'] = item['Extensions'].map(extension => {
-        const doaminExtrancted = extension['Domain']['id'].split('@');
-        extension['Domain'] = doaminExtrancted[0];
+        const doaminExtrancted = this.commonService.getObjectId(extension['DomainUuid']).split('@');
+        // const doaminName = extension['Domain']['text'];
+        // extension['Domain'] = doaminName;
+        extension['DomainUuid'] = doaminExtrancted[0];
         extension['Pbx'] = doaminExtrancted[1];
-        extension['Extension'] = extension.Extension['id'];
+        extension['Extension'] = this.commonService.getObjectId(extension.Extension);
         return extension;
       });
       return item;

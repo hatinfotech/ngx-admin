@@ -109,7 +109,7 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
           }, 1000);
           break;
         case 'progress':
-          this.duration$.next('đang gọi...');
+          this.duration$.next('calling...');
           this.callStatus = 'chờ bắt máy...';
           break;
         case 'incoming':
@@ -120,6 +120,10 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
           break;
         case 'unregistered':
           this.activeAccountRegisterd = false;
+          break;
+        case 'calling':
+          this.duration$.next('init...');
+          this.callStatus = 'đang thiết lập cuộc gọi...';
           break;
       }
     });
@@ -247,11 +251,11 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
             // Create ticket
             const newTicket: HelpdeskTicketModel = {
               CallSessionId: activeSession.id,
-              SupportedPerson: contact.Code,
-              SupportedPersonName: contact.Name,
-              SupportedPersonEmail: contact.Email,
-              SupportedPersonPhone: activeSession.caller.phone,
-              SupportedPersonAddress: contact.Address,
+              Object: contact.Code,
+              ObjectName: contact.Name,
+              ObjectEmail: contact.Email,
+              ObjectPhone: activeSession.caller.phone,
+              ObjectAddress: contact.Address,
               Description: 'Yêu cầu mới từ ' + contact.Name + ' có số điện thoại ' + contact.Phone + ' vào ' + (new Date().toString()),
             };
             this.apiService.postPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', {}, [newTicket]).then(newHelpdeslTickets => {
@@ -264,12 +268,16 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
         });
       });
       if (relativeTicket) {
-        this.mobileAppService.request('open-chat-room', {
-          ChatRoom: relativeTicket.ChatRoom, back: () => {
-            this.mobileAppService.switchScreen('phone');
-          },
-        });
-        this.minimizeScreen();
+        if (relativeTicket.ChatRoom) {
+          this.mobileAppService.request('open-chat-room', {
+            ChatRoom: relativeTicket.ChatRoom, back: () => {
+              this.mobileAppService.switchScreen('phone');
+            },
+          });
+          this.minimizeScreen();
+        } else {
+          throw Error('This ticket was not relative any chat rooms');
+        }
       }
     }
   }
@@ -282,46 +290,30 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
     this.phonenumber = this.phonenumber.substr(0, this.phonenumber.length - 1);
   }
 
-  call(phone?: string, name?: string) {
+  call(phone?: string, name?: string): CallingSession {
 
     const self = this;
-    if (phone) {
-      if (self.state === 'normal') {
-        this.mobileAppService.switchScreen('phone');
-        this.phonenumber = phone;
-        this.partnerNumber = phone;
-        if (name) {
-          this.partnerName = name;
-        } else {
-          this.partnerName = phone;
-        }
+    if (!phone) {
+      phone = this.phonenumber;
+    }
+
+    if (phone && self.state === 'normal') {
+      this.mobileAppService.switchScreen('phone');
+      this.phonenumber = phone;
+      this.partnerNumber = phone;
+      if (name) {
+        this.partnerName = name;
       } else {
-        return false;
+        this.partnerName = phone;
       }
-    }
 
-    if (self.state === 'normal') {
       self.state = 'calling';
+      const callee = new User(phone, phone, phone);
+      return this.phoneManager.call(callee);
 
-      const callee = new User(this.phonenumber, this.phonenumber, this.phonenumber);
-
-      self.partnerName = this.phonenumber;
-      self.partnerNumber = this.phonenumber;
-
-      this.phoneManager.call(callee);
-
+    } else {
+      return null;
     }
-    // else {
-    // if (self.state === 'calling') {
-    //   this.hangup();
-    //   // this.currentSession.terminate();
-    //   // self.state = 'normal';
-    // }
-
-    // if (self.state === 'incomming-accept') {
-    //   this.hangup();
-    // }
-    // }
   }
 
   onCallToggle() {

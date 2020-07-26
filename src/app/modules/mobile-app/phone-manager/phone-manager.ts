@@ -134,6 +134,8 @@ export class PhoneManager {
     const session = new CallingSession(this, userAgent.user, callee, inviteSession);
     this.callingSessionList.push(session);
 
+    this.sessionEvent.emit({event: 'calling', session: session});
+
     session.onStateUpdate(state => {
       this.sessionEvent.emit({event: state, session: session});
       if (state === 'terminated') {

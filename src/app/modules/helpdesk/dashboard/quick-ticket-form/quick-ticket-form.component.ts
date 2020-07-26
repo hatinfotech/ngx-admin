@@ -11,6 +11,8 @@ import { environment } from '../../../../../environments/environment';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ContactModel } from '../../../../models/contact.model';
+import { CallingSession } from '../../../mobile-app/phone-manager/calling-session';
+import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 
 @Component({
   selector: 'ngx-quick-ticket-form',
@@ -61,6 +63,38 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   };
 
   actionButtonList: ActionControl[] = [
+    {
+      type: 'button',
+      name: 'recall',
+      status: 'primary',
+      label: 'Gọi lại',
+      icon: 'phone-call',
+      title: 'Gọi lại cho khách hàng',
+      size: 'medium',
+      disabled: (option) => {
+        return !this.array.controls[0].get('ObjectPhone').value;
+        // return false;
+      },
+      click: () => {
+        return this.recall();
+      },
+    },
+    {
+      type: 'button',
+      name: 'chat',
+      status: 'info',
+      label: 'Chat',
+      icon: 'phone-call',
+      title: 'Mở phòng chat làm việc nhóm',
+      size: 'medium',
+      disabled: (option) => {
+        return false;
+        // return false;
+      },
+      click: () => {
+        return this.openChatRoom();
+      },
+    },
     {
       type: 'button',
       name: 'save',
@@ -137,6 +171,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public elRef: ElementRef,
+    public mobileAppService: MobileAppService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
     this.silent = true;
@@ -151,6 +186,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     // if (this.inputId) {
     //   this.mode = 'dialog';
     // }
+    this.array.controls[0].get('CallSessionId').setValue(this.index);
     this.onInit.emit(this);
   }
 
@@ -220,6 +256,12 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   executeGet(params: any, success: (resources: HelpdeskTicketModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeObject'] = true;
     super.executeGet(params, success, error);
+  }
+
+  /** Execute api post */
+  executePost(params: any, data: HelpdeskTicketModel[], success: (data: HelpdeskTicketModel[]) => void, error: (e: any) => void) {
+    params['autoCreateChatRoom'] = true;
+    super.executePost(params, data, success, error);
   }
 
   makeNewFormGroup(data?: HelpdeskTicketModel): FormGroup {
@@ -327,4 +369,39 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   get description() {
     return this.array.controls[0].get('Description').value;
   }
+
+  getRawFormData() {
+    const data = super.getRawFormData();
+
+    if (!this.id || this.id.length === 0 && data.array[0].CallSessionId) {
+      data.array[0].CallingSessions = [
+        {
+          CallSession: data.array[0].CallSessionId,
+          State: 'INCOMING',
+        },
+      ];
+    }
+
+    return data;
+  }
+
+  recall() {
+    const phoneNumber = this.array.controls[0].get('ObjectPhone').value;
+    const name = this.array.controls[0].get('ObjectName').value;
+    if (phoneNumber) {
+      this.mobileAppService.phoneCall(phoneNumber, name ? name : phoneNumber);
+    }
+  }
+
+  openChatRoom() {
+    if (this.id[0]) {
+      this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [this.id[0]], select: 'ChatRoom=>ChatRoom' }).then(tickets => {
+        if (tickets && tickets.length > 0) {
+          this.mobileAppService.request('open-chat-room', tickets[0]['ChatRoom']);
+        }
+      });
+
+    }
+  }
+
 }
