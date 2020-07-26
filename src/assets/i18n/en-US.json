@@ -35,7 +35,7 @@
     "MasterPriceTable": {
       "title": "{{action}} sales master price table {{definition}}",
       "type": "price table type",
-      "approve":"price table approving",
+      "approve": "price table approving",
       "approvedComfirmMessage": "are you sure approve sales price table '{{title}}'?"
     },
     "addProduct": "add product/dịch vụ",
@@ -113,7 +113,9 @@
     "dateOfApproved": "approved date",
     "tag": "tag",
     "export": "export",
-    "table": "table"
+    "table": "table",
+    "change": "change",
+    "changeState": "change state"
   },
   "Contact": {
     "name": "contact name",
@@ -269,7 +271,14 @@
   "Helpdesk": {
     "Ticket": {
       "title": "{{action}} helpdesk ticket {{definition}}"
-    }
+    },
+    "State": {
+      "complete": "complete ticket",
+      "cancel": "cancel ticket",
+      "approved": "approved ticket"
+    },
+    "saveContact": "save contact",
+    "changeStateConfirm": "change state for `{{description}}`"
   },
   "Print": {
     "listTemplate": "list template",

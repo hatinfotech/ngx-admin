@@ -27,7 +27,7 @@ export class HelpdeskTicketModel {
   SupportedPersonAddress?: string;
   TimeDuration?: string;
   DateOfStart?: string;
-  State?: string;
+  State?: string | HelpdeskTicketStateModel;
   DateOfCreate?: string;
   DateOfUpdate?: string;
   DateOfComplete?: string;
@@ -48,8 +48,20 @@ export class HelpdeskTicketModel {
 
   CallingSessions?: HelpdeskTicketCallingSessionModel[];
 
+  [key: string]: any,
+
   constructor() { }
 
+}
+
+export class HelpdeskTicketStateModel {
+  id?: string; text?: string;
+  Id?: string;
+  Code?: string;
+  Name?: string;
+  Icon?: string;
+  CoordinatorLabel?: string;
+  Color?: string;
 }
 
 export class HelpdeskTicketCallingSessionModel {

@@ -111,7 +111,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     {
       type: 'button',
       name: 'getLostTicket',
-      status: 'primary',
+      status: 'danger',
       label: 'Lấy yêu cầu nhỡ',
       icon: 'download',
       title: 'Lấy các yêu cầu từ cuộc gọi nhỡ',
@@ -151,12 +151,17 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   quickTicketFormList: { index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }[] = [];
 
-  infiniteLoadModel = {
-    tickets: [],
+  infiniteLoadModel: {
+    tickets: HelpdeskTicketModel[],
     placeholders: [],
-    loading: false,
-    pageToLoadNext: 1,
-  };
+    loading: boolean,
+    pageToLoadNext: number,
+  } = {
+      tickets: [],
+      placeholders: [],
+      loading: false,
+      pageToLoadNext: 1,
+    };
   pageSize = 10;
 
   @ViewChild('quickTicketForm', { static: true }) quickTicketForm: QuickTicketFormComponent;
@@ -291,7 +296,14 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     cardData.loading = true;
     cardData.placeholders = new Array(this.pageSize);
 
-    this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', { search: this.keyword, sort_Id: 'desc', limit: this.pageSize, offset: (cardData.pageToLoadNext - 1) * this.pageSize }, nextList => {
+    this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', {
+      search: this.keyword,
+      sort_LastUpdate: 'desc',
+      limit: this.pageSize,
+      offset: (cardData.pageToLoadNext - 1) * this.pageSize,
+      includeState: true,
+      includeLastMessage: true,
+    }, nextList => {
       // this.dataList = list.map(item => {
       //   item['selected'] = false;
       //   return item;
@@ -637,6 +649,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
             ObjectAddress: contactAddress,
             Description: 'Yêu cầu bị nhỡ từ số ' + phonenumber + (contact ? (' của khách hàng ' + contact.Name) : '') + ' vào lúc ' + (this.datePipe.transform(lostCall[i].Start)),
             CallLog: lostCall[i].Id,
+            State: 'MISSED',
           });
         }
         try {
@@ -650,5 +663,44 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     }
     this.refresh();
     return true;
+  }
+
+  previewState(item: HelpdeskTicketModel) {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
+      context: {
+        title: this.commonService.translateText('Helpdesk.Ticket.title', { action: this.commonService.translate.instant('Common.changeState'), definition: '' }),
+        content: this.commonService.translateText('Helpdesk.changeStateConfirm', { description: `<i>${item.Description}</i>` }),
+        actions: [
+          {
+            label: this.commonService.translateText('Helpdesk.State.approved'),
+            status: 'danger',
+            action: () => {
+              this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'APPROVED' }, [{ Code: item.Code }])
+                .then((result) => {
+                  this.refresh();
+                });
+            },
+          },
+          {
+            label: this.commonService.translateText('Helpdesk.State.cancel'),
+            status: 'warning',
+            action: () => {
+              this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'CANCEL' }, [{ Code: item.Code }]).then((result) => {
+                this.refresh();
+              });
+            },
+          },
+          {
+            label: this.commonService.translateText('Helpdesk.State.complete'),
+            status: 'success',
+            action: () => {
+              this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'COMPLETE' }, [{ Code: item.Code }]).then((result) => {
+                this.refresh();
+              });
+            },
+          },
+        ],
+      },
+    });
   }
 }

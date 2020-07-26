@@ -113,7 +113,9 @@
     "dateOfApproved": "ngày duyệt",
     "tag": "gắn thẻ",
     "export": "xuất",
-    "table": "bảng"
+    "table": "bảng",
+    "change": "thay đổi",
+    "changeState": "thay đổi trạng thái"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -272,7 +274,14 @@
   "Helpdesk": {
     "Ticket": {
       "title": "{{action}}{{definition}} yêu cầu"
-    }
+    },
+    "State": {
+      "complete": "hoàn thành y/c",
+      "cancel": "hủy yêu cầu",
+      "approved": "duyệt yêu cầu"
+    },
+    "saveContact": "lưu liên hệ",
+    "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`"
   },
   "Print": {
     "listTemplate": "mẫu danh sách",

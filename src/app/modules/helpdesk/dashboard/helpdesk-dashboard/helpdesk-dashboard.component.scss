@@ -62,8 +62,9 @@
       padding-top: 0;
     }
     .m-list-item {
-      margin-left: -20px;
-      margin-right: -20px;
+      margin-left: -24px;
+      margin-right: -24px;color: var(--gray-dark);
+      border-bottom: 1px solid #eee;
       &nb-icon {
         font-size: 1rem;
       }
@@ -74,6 +75,11 @@
         padding-top: 1rem;
         padding-bottom: 1rem;
         font-weight: 600;
+
+        .value.state {
+          display: flex;
+          align-items: center;
+        }
       }
       .m-list-item-property:first-child {
         padding-left: 18px;
