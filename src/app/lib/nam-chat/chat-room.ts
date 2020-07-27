@@ -181,16 +181,29 @@ export class ChatRoom {
   }
 
   sendMessage(message: Message, user: User): Promise<Message> {
-    return new Promise<Message>((resolve, reject) => {
-      if (this.stateSubject.value === 'ready') {
-        console.info('Send message ' + JSON.stringify(message));
-        message.index = Date.now();
-        resolve(this.roomSocket.emit<Message>('message', message));
-      } else {
-        this.register();
-        console.info('socket was not ready !!!');
-        reject('socket was not ready, retry againt !');
+    return new Promise<Message>(async (resolve, reject) => {
+      // const maxTry = 10;
+      // let tryCount = 0;
+      // while (tryCount++ < maxTry) {
+      // if (this.stateSubject.value === 'ready') {
+      console.info('Send message ' + JSON.stringify(message));
+      message.index = Date.now();
+      try {
+        const result = await this.roomSocket.emit<Message>('message', message);
+        console.log(result);
+        resolve(result);
+      } catch (e) {
+        reject(e);
       }
+      // break;
+      // } else {
+      //   // Check socket connect status: false => reconnect, true => register
+      //   this.connect();
+      //   console.info('socket was not ready => reconnect...');
+      //   await new Promise(resolve2 => setTimeout(() => resolve2(), 1000));
+      // }
+      // }
+      // reject('socket was not ready, retry againt !');
     });
   }
 

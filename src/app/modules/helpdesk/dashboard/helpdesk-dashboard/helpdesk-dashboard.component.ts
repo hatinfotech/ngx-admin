@@ -203,29 +203,55 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     this.callStateSubscription = this.mobileAppService.callState$
       .pipe(takeUntil(this.destroy$))
       .subscribe(async callState => {
-        if (callState.state === 'incomming') {
-          const formComponent = await this.createNewItem(callState.partnerNumber, callState.session.id) as { form: QuickTicketFormComponent };
-          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
-            if (state === 'terminated') {
-              // Check point call logs and map call log id
-              this.monitorAndMapCallLog(callState, formComponent);
-            }
-          });
-        }
-        if (callState.state === 'waiting-incomming') {
-          const formComponent = await this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
-          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
-            if (state === 'terminated') {
-              this.monitorAndMapCallLog(callState, formComponent);
-            }
-          });
+        this.callStateListen(callState);
+        // if (callState.state === 'incomming') {
+        //   const formComponent = await this.createNewItem(callState.partnerNumber, callState.session.id) as { form: QuickTicketFormComponent };
+        //   callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+        //     if (state === 'terminated') {
+        //       // Check point call logs and map call log id
+        //       this.monitorAndMapCallLog(callState, formComponent);
+        //     }
+        //   });
+        // }
+        // if (callState.state === 'waiting-incomming') {
+        //   const formComponent = await this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
+        //   callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+        //     if (state === 'terminated') {
+        //       this.monitorAndMapCallLog(callState, formComponent);
+        //     }
+        //   });
 
+        // }
+        // if (callState.state === 'incomming-cancel') {
+        //   this.updateTemporaryTicketForIncommingCancel(callState);
+        // }
+      });
+
+  }
+
+  async callStateListen(callState: CallState) {
+    if (callState.state === 'incomming') {
+      const formComponent = await this.createNewItem(callState.partnerNumber, callState.session.id) as { form: QuickTicketFormComponent };
+
+      callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+        if (state === 'terminated') {
+          // Check point call logs and map call log id
+          this.monitorAndMapCallLog(callState, formComponent);
         }
-        if (callState.state === 'incomming-cancel') {
-          this.updateTemporaryTicketForIncommingCancel(callState);
+      });
+    }
+    if (callState.state === 'waiting-incomming') {
+      const formComponent = await this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
+      callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+        if (state === 'terminated') {
+          this.monitorAndMapCallLog(callState, formComponent);
         }
       });
 
+    }
+    if (callState.state === 'incomming-cancel') {
+      this.updateTemporaryTicketForIncommingCancel(callState);
+    }
   }
 
   onResume() {
@@ -235,27 +261,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     this.mobileAppService.callState$
       .pipe(takeUntil(this.destroy$))
       .subscribe(async callState => {
-        if (callState.state === 'incomming') {
-          const formComponent = await this.createNewItem(callState.partnerNumber, callState.session.id) as { form: QuickTicketFormComponent };
-          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
-            if (state === 'terminated') {
-              // Check point call logs and map call log id
-              this.monitorAndMapCallLog(callState, formComponent);
-            }
-          });
-        }
-        if (callState.state === 'waiting-incomming') {
-          const formComponent = await this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
-          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
-            if (state === 'terminated') {
-              this.monitorAndMapCallLog(callState, formComponent);
-            }
-          });
-
-        }
-        if (callState.state === 'incomming-cancel') {
-          this.updateTemporaryTicketForIncommingCancel(callState);
-        }
+        this.callStateListen(callState);
       });
   }
 
@@ -463,7 +469,13 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     if (existsQuickForm) {
       this.showQuickForm = true;
       // if (!existsQuickForm.form.description) {
-      existsQuickForm.form.description += '\nYêu cầu bị nhỡ từ khách hàng có số điện thoại ' + callState.session.caller.phone + ' vào ' + (new Date().toString());
+      const message = 'Yêu cầu bị nhỡ từ khách hàng có số điện thoại ' + callState.session.caller.phone + ' vào ' + (new Date().toString())
+      existsQuickForm.form.description += ('\n' + message);
+      try {
+        existsQuickForm.form.f7ChatRoom.sendMessage({ Text: message });
+      } catch (e) {
+        // skip error
+      }
       // }
     }
     return false;
@@ -488,23 +500,33 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
 
-  async onQuickFormInit(event: QuickTicketFormComponent) {
-    console.info(event);
-    this.quickTicketFormList.filter(f => f.index === event.index)[0].form = event;
+  async onQuickFormInit(form: QuickTicketFormComponent) {
+    console.info(form);
+    this.quickTicketFormList.filter(f => f.index === form.index)[0].form = form;
 
     // Load form by contact phone
-    if (await event.loadByCallSessionId()) {
-      // Auto save after init 10sææ
+    if (await form.loadByCallSessionId()) {
+      // Auto save after init 10s
       setTimeout(() => {
-        event.save();
+        form.save();
       }, 10000);
     } else {
-      event.loadByPhoneNumber().then(rs => {
+      form.loadByPhoneNumber().then(rs => {
         if (rs) {
-          this.quickFormOnInitSubject.next(event.index);
+          this.quickFormOnInitSubject.next(form.index);
 
           // Auto save after init 10s
-          event.save();
+          form.save().then(newTickets => {
+            if (newTickets[0] && newTickets[0].ChatRoom) {
+              // Attach F7ChatRoom in to quick form component
+              this.openChatRoom(newTickets[0].ChatRoom, true).then(f7ChatRoom => {
+                form.f7ChatRoom = f7ChatRoom;
+                setTimeout(() => {
+                  f7ChatRoom.sendMessage({ Text: form.description });
+                }, 1000);
+              });
+            }
+          });
         }
       });
     }
@@ -593,8 +615,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  openChatRoom(chatRoomId: string) {
-    this.mobileAppService.request('open-chat-room', chatRoomId);
+  async openChatRoom(chatRoomId: string, silient?: boolean) {
+    return this.mobileAppService.openChatRoom({ ChatRoom: chatRoomId, silient: silient || false });
   }
 
   saveContact(ticket: HelpdeskTicketModel) {

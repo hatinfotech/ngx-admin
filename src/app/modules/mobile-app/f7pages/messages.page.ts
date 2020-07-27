@@ -7,6 +7,7 @@ import { CommonService } from '../../../services/common.service';
 import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
 import { Component } from 'framework7';
 import { MobileAppComponent } from '../mobile-app.component';
+import { EventEmitter } from '@angular/core';
 
 export class MessagesPage implements IChatRoomContext {
 
@@ -14,7 +15,9 @@ export class MessagesPage implements IChatRoomContext {
   chatRoomId: string;
   user: User;
   f7Messages: Messages.Messages;
+  instances: { [key: string]: Component } = {};
   token: JWTToken;
+  onOpenChatRoom$ = new EventEmitter<Component & { sendMessage?: (message: any) => void }>();
 
   private chatRoomCacheList: { [key: string]: ChatRoom } = {};
 
@@ -55,31 +58,35 @@ export class MessagesPage implements IChatRoomContext {
 
   async initChatRoom(chatRoomId: string) {
     // this.commonService.loginInfo;
-    const chatRoom = this.chatRoomCacheList[chatRoomId];
-    if (!chatRoom) {
-      if (chatRoomId) {
-        this.chatRoomId = chatRoomId;
-        this.user = {
-          id: this.commonService.loginInfo.user.Code,
-          name: this.commonService.loginInfo.user.Name,
-          picture: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-        };
-        this.currentChatRoom = await this.parentCompoent.localChatClient.openChatRoom(this, this.chatRoomId, this.user);
-        this.currentChatRoom.state$.subscribe(state => {
-          if (state === 'ready') {
-
-          }
-        });
-        this.chatRoomCacheList[chatRoomId] = this.currentChatRoom;
+    return new Promise<boolean>(async resolve => {
+      const chatRoom = this.chatRoomCacheList[chatRoomId];
+      if (!chatRoom) {
+        if (chatRoomId) {
+          this.chatRoomId = chatRoomId;
+          this.user = {
+            id: this.commonService.loginInfo.user.Code,
+            name: this.commonService.loginInfo.user.Name,
+            picture: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+          };
+          this.currentChatRoom = await this.parentCompoent.localChatClient.openChatRoom(this, this.chatRoomId, this.user);
+          this.currentChatRoom.state$.subscribe(state => {
+            console.log('Chat room socket state : ' + state);
+            if (state === 'ready') {
+              resolve(true);
+            }
+          });
+          this.chatRoomCacheList[chatRoomId] = this.currentChatRoom;
+        } else {
+          console.warn('Chat room id was not provided !!!');
+          resolve(false);
+          return;
+        }
       } else {
-        console.warn('Chat room id was not provided !!!');
-        return;
+        this.currentChatRoom = chatRoom;
+        this.currentChatRoom.connect();
       }
-    } else {
-      this.currentChatRoom = chatRoom;
-      this.currentChatRoom.connect();
-    }
-
+      resolve(true);
+    });
   }
 
   onF7pageRemove(chatRoomId: string) {
@@ -262,9 +269,9 @@ export class MessagesPage implements IChatRoomContext {
               self.messagebar.setPlaceholder('Message');
             }
           },
-          sendMessage: async function () {
+          sendMessage: async function (message: any) {
             const self = this;
-            const text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
+            const text = message && message.Text ? message.Text : self.messagebar.getValue().replace(/\n/g, '<br>').trim();
             const messagesToSend = [];
             self.messagebar.attachments.forEach(function (attachment) {
               const size = attachment.split('placeholder/cats-')[1].split('-')[0].split('x');
@@ -360,9 +367,14 @@ export class MessagesPage implements IChatRoomContext {
               },
             });
 
+            $this.instances[self.$route.params['id']] = self;
             $this.f7Messages = self.messages;
             try {
-              $this.initChatRoom(self.$route.params['id']);
+              $this.initChatRoom(self.$route.params['id']).then(rs => {
+                if (rs) {
+                  $this.onOpenChatRoom$.emit(self);
+                }
+              });
             } catch (e) { }
 
             // Listen new messages

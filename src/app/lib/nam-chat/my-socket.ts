@@ -102,11 +102,11 @@ export class MySocket {
   public async emit<T>(event: string, data: any, timeout?: number): Promise<T> {
     const checkpointSeq = this.seq++;
     console.info(`Emit event : ${event} - seq : ${checkpointSeq} - data : `, data);
-    // if (!this.socket.connected) {
-    //   if (!(await this.retryConnect())) {
-    //     throw Error('Socket ' + this.socket.id + ' was disconnected !!!');
-    //   }
-    // }
+    if (!this.socket.connected) {
+      if (!(await this.retryConnect())) {
+        throw Error('Socket ' + this.socket.id + ' was disconnected !!!');
+      }
+    }
     this.socket.emit(event, { seq: checkpointSeq, type: 'success', data });
     return new Promise<T>((resolve, reject) => {
 
@@ -129,7 +129,7 @@ export class MySocket {
           if (subcription) {
             this.stateSubject.next('emit-timeout');
             subcription.unsubscribe();
-            reject(`Socket emit timeout ${timeout ? timeout : this.emitTimeout  }`);
+            reject(`Socket emit timeout ${timeout ? timeout : this.emitTimeout}`);
           }
         }, timeout ? timeout : this.emitTimeout);
       });

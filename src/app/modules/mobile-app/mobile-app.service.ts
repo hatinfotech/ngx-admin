@@ -4,6 +4,7 @@ import { MobileAppComponent } from './mobile-app.component';
 import { CallingSession } from './phone-manager/calling-session';
 import { DialpadComponent } from './dialpad/dialpad.component';
 import { Track } from '../../@core/utils/player.service';
+import { Component as F7Component } from 'framework7';
 
 export interface CallState {
   state: string;
@@ -58,13 +59,20 @@ export class MobileAppService {
     this.callStateSubject.next(callEndState);
   }
 
-  request<T>(action: string, data: any): Promise<T> {
+  async request<T>(action: string, data: any): Promise<T> {
     if (this.mobileApp) {
       switch (action) {
         case 'open-chat-room':
           this.mobileApp.openChatRoom(data);
           return;
       }
+    }
+    throw Error('Mobile app was not registered !!!');
+  }
+
+  async openChatRoom(params: { ChatRoom: string, [key: string]: any }) {
+    if (this.mobileApp) {
+      return this.mobileApp.openChatRoom(params);
     }
     throw Error('Mobile app was not registered !!!');
   }

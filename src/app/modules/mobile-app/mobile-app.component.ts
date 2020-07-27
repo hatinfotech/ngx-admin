@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { OnInit, AfterViewInit, Component } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { CommonService } from '../../services/common.service';
 import { ChatManager } from './../../lib/nam-chat/chat-manager';
@@ -16,11 +16,12 @@ import { Router } from '@angular/router';
 import { NbAuthService } from '@nebular/auth';
 import { MobileAppService } from './mobile-app.service';
 import { NbThemeService } from '@nebular/theme';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil, map, take } from 'rxjs/operators';
 import { MessagesPage } from './f7pages/messages.page';
 import { AboutPage } from './f7pages/about.page';
 import { PhonePage } from './f7pages/phone.page';
 import { Track } from '../../@core/utils/player.service';
+import { Component as F7Component } from 'framework7';
 
 // Global var
 let f7app = null;
@@ -220,6 +221,8 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   mediaTracks: Track[] = [];
 
+  messagePage: MessagesPage;
+
   // app: Framework7;
   constructor(
     // private chatService: ChatService,
@@ -285,8 +288,9 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
     this.ready$.subscribe(isReady => {
       if (isReady) {
+        this.messagePage = new MessagesPage(this, this.commonService, this.authService);
         const routes: any[] = [
-          new MessagesPage(this, this.commonService, this.authService).f7Component,
+          this.messagePage.f7Component,
           new AboutPage(this, this.commonService, this.authService).f7Component,
           new PhonePage(this, this.commonService, this.authService).f7Component,
         ];
@@ -377,11 +381,28 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   }
 
-  openChatRoom(option: any) {
+  async openChatRoom(option: any) {
     this.commonService.openMobileSidebar();
-    this.switchScreen('f7app');
-    const id = typeof option === 'string' ? option : option['ChatRoom'];
+    if (typeof option === 'string') {
+      option = {
+        ChatRoom: option,
+      };
+    }
+    if (typeof option['silient'] === 'undefined') {
+      option['silient'] = false;
+    }
+    if (option['silient'] === false) {
+      this.switchScreen('f7app');
+    }
+    const id = option['ChatRoom'];
     this.mainView.router.navigate(`/chat-room/${id}`);
+    return new Promise<F7Component & {sendMessage?: (message: any) => void}>(resolve => {
+      this.messagePage.onOpenChatRoom$.asObservable().subscribe(f7MessageComponent => {
+        if (f7MessageComponent.$route.params['id'] === option.ChatRoom) {
+          resolve(f7MessageComponent);
+        }
+      });
+    });
   }
 
   sendMessage(event: any) {

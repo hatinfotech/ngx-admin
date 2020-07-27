@@ -13,6 +13,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { ContactModel } from '../../../../models/contact.model';
 import { CallingSession } from '../../../mobile-app/phone-manager/calling-session';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
+import { Component as F7Component } from 'framework7';
 
 @Component({
   selector: 'ngx-quick-ticket-form',
@@ -162,6 +163,9 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     // },
   ];
 
+  chatRoom: string;
+  f7ChatRoom: F7Component & {sendMessage?: (message: any) => void};
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -261,7 +265,10 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   /** Execute api post */
   executePost(params: any, data: HelpdeskTicketModel[], success: (data: HelpdeskTicketModel[]) => void, error: (e: any) => void) {
     params['autoCreateChatRoom'] = true;
-    super.executePost(params, data, success, error);
+    super.executePost(params, data, (rs) => {
+      this.chatRoom = rs[0].ChatRoom;
+      if (success) success(rs);
+    }, error);
   }
 
   makeNewFormGroup(data?: HelpdeskTicketModel): FormGroup {
