@@ -85,7 +85,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/ivoip/dashboard',
+    redirectTo: '/dashboard',
     pathMatch: 'full',
     resolve: {
       configuration: RoutingResolve,

@@ -277,6 +277,9 @@
       "cancel": "cancel ticket",
       "approved": "approved ticket"
     },
+    "Menu": {
+      "userExtensions": "Extensions numbers"
+    },
     "saveContact": "save contact",
     "changeStateConfirm": "change state for `{{description}}`"
   },

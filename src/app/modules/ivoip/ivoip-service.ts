@@ -50,7 +50,7 @@ export class IvoipService {
 
   getPbxList(callback: (pbxList: PbxModel[]) => void, clearCache?: boolean) {
     if (clearCache || !this.pbxList || this.pbxList.length === 0) {
-      this.apiService.get<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true }, list => {
+      this.apiService.getPromise<PbxModel[]>('/ivoip/pbxs', { limit: 999999, includeDomains: true, silent: true }).then(list => {
         this.pbxList = list;
         callback(this.pbxList);
         this.setFirstDomainAsActivated();

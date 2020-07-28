@@ -523,7 +523,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
                 form.f7ChatRoom = f7ChatRoom;
                 setTimeout(() => {
                   f7ChatRoom.sendMessage({ Text: form.description });
-                }, 1000);
+                }, 5000);
               });
             }
           });

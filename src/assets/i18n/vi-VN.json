@@ -280,6 +280,9 @@
       "cancel": "hủy yêu cầu",
       "approved": "duyệt yêu cầu"
     },
+    "Menu": {
+      "userExtensions": "Số nội bộ (sip)"
+    },
     "saveContact": "lưu liên hệ",
     "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`"
   },

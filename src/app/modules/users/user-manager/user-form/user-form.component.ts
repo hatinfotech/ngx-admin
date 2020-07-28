@@ -54,7 +54,6 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
   }
 
   async init() {
-    const rs = await super.init();
     this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 9999999 },
       list => {
         this.groupList = list.map((item: UserGroupModel) => {
@@ -66,7 +65,7 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
           };
         });
       });
-    return rs;
+    return await super.init();
   }
 
   /** Get form data by id from api */
