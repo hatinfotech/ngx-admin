@@ -35,7 +35,7 @@
     "MasterPriceTable": {
       "title": "{{action}}{{definition}} bảng giá bán",
       "type": "loại bảng giá",
-      "approve":"duyệt bảng giá",
+      "approve": "duyệt bảng giá",
       "approvedComfirmMessage": "bạn có chắc là muốn duyệt '{{title}}'?"
     },
     "addProduct": "thêm hàng hoá/dịch vụ",
@@ -164,7 +164,20 @@
       "ORIGINATOR_CANCEL": "Cuộc gọi nhỡ",
       "NORMAL_CLEARING": "Hoàn tất cuộc gọi",
       "CALL_REJECTED": "Bị chặn",
-      "INCOMPATIBLE_DESTINATION": "Không xác định"
+      "INCOMPATIBLE_DESTINATION": "Không xác định",
+      "EXCHANGE_ROUTING_ERROR": "lỗi định tuyến"
+    },
+    "CallResult": {
+      "answered": "trả lời",
+      "missed": "nhỡ",
+      "voicemail": "hộp thư thoại",
+      "cancelled": "hủy",
+      "failed": "lỗi"
+    },
+    "Direction": {
+      "local": "nội bộ",
+      "inbound": "gọi vào",
+      "outbound": "gọi ra"
     },
     "CallBlock": {
       "title": "{{definition}}{{action}} chặn số"
@@ -180,6 +193,9 @@
     },
     "Device": {
       "title": "{{definition}}{{action}} điện thoại IP"
+    },
+    "Cdrs": {
+      "title": "lịch sử cuộc gọi"
     },
     "local": "nội bộ",
     "inbound": "gọi vào",
@@ -197,7 +213,8 @@
     "duration": "thời lượng",
     "soundRecord": "ghi âm",
     "callState": "trạng thái cuộc gọi",
-    "receivedNumber": "số nhận cuộc gọi"
+    "receivedNumber": "số nhận cuộc gọi",
+    "hangupCase": "gác máy"
   },
   "Purchase": {
     "PriceTable": {

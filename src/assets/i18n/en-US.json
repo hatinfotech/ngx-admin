@@ -164,7 +164,20 @@
       "ORIGINATOR_CANCEL": "originator cancel",
       "NORMAL_CLEARING": "normal clearing",
       "CALL_REJECTED": "call rejected",
-      "INCOMPATIBLE_DESTINATION": "incompatible destination"
+      "INCOMPATIBLE_DESTINATION": "incompatible destination",
+      "EXCHANGE_ROUTING_ERROR": "Exchange routing error"
+    },
+    "CallResult": {
+      "answered": "answered",
+      "missed": "missed",
+      "voicemail": "voicemail",
+      "cancelled": "cancelled",
+      "failed": "failed"
+    },
+    "Direction": {
+      "local": "local",
+      "inbound": "inbound",
+      "outbound": "outbound"
     },
     "CallBlock": {
       "title": "{{action}} call block {{definition}}"
@@ -177,6 +190,9 @@
     },
     "Device": {
       "title": "{{action}} IP Phone {{definition}}"
+    },
+    "Cdrs": {
+      "title": "call detail records"
     },
     "local": "local",
     "inbound": "inbound",
@@ -194,7 +210,8 @@
     "duration": "duration",
     "soundRecord": "sound record",
     "callState": "call state",
-    "receivedNumber": "received number"
+    "receivedNumber": "received number",
+    "hangupCase": "hangup case"
   },
   "Purchase": {
     "PriceTable": {

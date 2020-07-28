@@ -103,6 +103,13 @@ ngx-header ngx-action-control-list {
     [nbButton].size-small {
       margin-bottom: initial !important;
     }
+    .select2-container .select2-selection .select2-selection__rendered {
+      line-height: 1.5rem !important;
+      padding: 0.2rem 1.125rem !important;
+    }
+    .action-list-item.select2 {
+      margin-bottom: 0rem !important;
+    }
   }
 }
 .nb-theme-default a {

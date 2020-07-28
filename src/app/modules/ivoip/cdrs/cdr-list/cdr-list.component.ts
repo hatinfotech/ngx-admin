@@ -64,15 +64,37 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
           config: {
             selectText: this.commonService.textTransform(this.commonService.translate.instant('Common.all'), 'head-title') + '...',
             list: [
-              { value: 'local', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.local'), 'head-title') },
-              { value: 'inbound', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.inbound'), 'head-title') },
-              { value: 'outbound', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.outbound'), 'head-title') },
+              { value: 'local', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.Direction.local'), 'head-title') },
+              { value: 'inbound', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.Direction.inbound'), 'head-title') },
+              { value: 'outbound', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.Direction.outbound'), 'head-title') },
             ],
           },
         },
         width: '10%',
         valuePrepareFunction: (cell: string) => {
-          return `<span class="nowrap">${cell ? cell : ''}</span>`;
+          return `<span class="nowrap">${cell ? this.commonService.translateText('Ivoip.Direction.' + cell) : ''}</span>`;
+        },
+      },
+      CallResult: {
+        title: this.commonService.translateText('Common.state'),
+        type: 'html',
+        width: '5%',
+        filter: {
+          type: 'custom',
+          component: SmartTableSelectFilterComponent,
+          config: {
+            selectText: this.commonService.textTransform(this.commonService.translate.instant('Common.all'), 'head-title') + '...',
+            list: [
+              { value: 'answered', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.answered'), 'head-title') },
+              { value: 'missed', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.missed'), 'head-title') },
+              { value: 'voicemail', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.voicemail'), 'head-title') },
+              { value: 'cancelled', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.cancelled'), 'head-title') },
+              { value: 'failed', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.failed'), 'head-title') },
+            ],
+          },
+        },
+        valuePrepareFunction: (cell: string) => {
+          return this.commonService.translateText('Ivoip.CallResult.' + cell);
         },
       },
       Extension: {
@@ -151,7 +173,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
         // title: 'Trạng thái',
         // type: 'string',
         width: '10%',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.state'), 'head-title'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.hangupCase'), 'head-title'),
         type: 'text',
         filter: {
           type: 'custom',
@@ -165,6 +187,9 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
               { value: 'INCOMPATIBLE_DESTINATION', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.INCOMPATIBLE_DESTINATION'), 'head-title') },
             ],
           },
+        },
+        valuePrepareFunction: (cell: string) => {
+          return this.commonService.translateText('Ivoip.CallState.' + cell);
         },
       },
       RecordingFile: {

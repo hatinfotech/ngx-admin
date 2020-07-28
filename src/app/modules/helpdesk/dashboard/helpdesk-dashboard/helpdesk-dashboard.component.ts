@@ -521,9 +521,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
               // Attach F7ChatRoom in to quick form component
               this.openChatRoom(newTickets[0].ChatRoom, true).then(f7ChatRoom => {
                 form.f7ChatRoom = f7ChatRoom;
-                setTimeout(() => {
-                  f7ChatRoom.sendMessage({ Text: form.description });
-                }, 5000);
+                // setTimeout(() => {
+                //   f7ChatRoom.sendMessage({ Text: form.description });
+                // }, 5000);
               });
             }
           });
@@ -641,10 +641,10 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   async fetchLostTicketByCallLogs() {
-    const hangupcases = ['ORIGINATOR_CANCEL', 'EXCHANGE_ROUTING_ERROR'];
-    for (let h = 0; h < hangupcases.length; h++) {
+    const callresult = ['missed', 'voicemail', 'cancelled', 'failed'];
+    for (let h = 0; h < callresult.length; h++) {
       const lostCall = (await this.apiService.getPromise<PbxCdrModel[]>('/helpdesk/relativeCallLogs', {
-        filter_HangupCase: hangupcases[h],
+        filter_CallResult: callresult[h],
         filter_Direction: 'inbound',
       }));
       if (lostCall && lostCall.length > 0) {
