@@ -62,7 +62,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<BaseComponent> & { [key: string]: any },
-  ) { }
+  ) {
+    commonService.iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
+  }
 
   // init() {
   //   this.restrict();

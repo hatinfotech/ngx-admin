@@ -6,7 +6,7 @@
         *ngIf="(!control.type || control.type == 'button') && (!control.hidden || !control.hidden(option))" nbButton
         [status]="control.status" hero [size]="control.size" [disabled]="control.disabled && control.disabled(option)"
         [title]="control.title" (click)="control.click($event, option)">
-        <nb-icon *ngIf="!hideIcon" pack="eva" [icon]="control.icon"></nb-icon>
+        <nb-icon *ngIf="!hideIcon" [pack]="control.iconPack || 'eva'" [icon]="control.icon"></nb-icon>
         <span *ngIf="!!control.label && !hideLabel">{{control.label}}</span>
       </button>
       <input class="action-list-item" *ngIf="control.type == 'text' && (!control.hidden || !control.hidden(option))"

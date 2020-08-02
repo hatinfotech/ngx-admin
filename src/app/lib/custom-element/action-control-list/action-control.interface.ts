@@ -7,6 +7,7 @@ export interface ActionControl {
   name?: string;
   status?: string;
   label?: string;
+  iconPack?: string;
   icon?: string;
   title: string;
   size: string;

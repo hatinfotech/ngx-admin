@@ -103,7 +103,11 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
           },
         },
         valuePrepareFunction: (cell: string) => {
-          return this.commonService.translateText('Ivoip.CallResult.' + (['cancelled', 'answered'].some(cr => cr === cell)  ? cell : 'missed'));
+          let real = '';
+          if (cell === 'voicemail') real = this.commonService.translateText('Ivoip.CallResult.cancelled');
+          if (cell === 'failed') real = this.commonService.translateText('Ivoip.CallResult.cancelled');
+
+          return this.commonService.translateText('Ivoip.CallResult.' + cell + (real ? (' (' + real + ')') : ''));
         },
       },
       Extension: {

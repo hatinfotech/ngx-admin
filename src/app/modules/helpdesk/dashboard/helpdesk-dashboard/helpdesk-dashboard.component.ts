@@ -542,7 +542,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     if (this.quickTicketFormList.length === 0) {
       this.showQuickForm = false;
       this.keyword = '';
-      this.refresh();
+      setTimeout(() => {
+        this.refresh();
+      }, 1000);
     }
   }
 
@@ -648,7 +650,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         filter_Direction: 'inbound',
       }));
       if (lostCall && lostCall.length > 0) {
-        const newTickets: HelpdeskTicketModel[] = [];
+        let isCheckPoint = false;
         for (let i = 0; i < lostCall.length; i++) {
           console.log(lostCall[i]);
           const phonenumber = lostCall[i].CallerNumber.replace(/[^0-9]/g, '');
@@ -663,7 +665,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
             contactAddress = contact.Address;
             contactCode = contact.Code;
           }
-          newTickets.push({
+          const newTicket: HelpdeskTicketModel = {
             Object: contactCode,
             ObjectName: contactName,
             ObjectPhone: phonenumber,
@@ -672,15 +674,17 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
             Description: 'Yêu cầu bị nhỡ từ số ' + phonenumber + (contact ? (' của khách hàng ' + contact.Name) : '') + ' vào lúc ' + (this.datePipe.transform(lostCall[i].Start)),
             CallLog: lostCall[i].Id,
             State: 'MISSED',
-          });
+          };
+          try {
+            await this.apiService.postPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { autoCreateChatRoom: true, silient: true }, [newTicket]);
+            if (!isCheckPoint) {
+              this.apiService.putPromise('/helpdesk/relativeCallLogs/checkpoint', { date: new Date(lostCall[i].Start).toISOString() }, []);
+              isCheckPoint = true;
+            }
+          } catch (e) {
+            console.log(e);
+          }
         }
-        try {
-          await this.apiService.postPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { autoCreateChatRoom: true, silient: true }, newTickets);
-        } catch (e) {
-          console.log(e);
-        }
-        this.apiService.putPromise('/helpdesk/relativeCallLogs/checkpoint', {}, []);
-
       }
     }
     this.refresh();

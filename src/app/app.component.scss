@@ -1405,3 +1405,14 @@ body [nbButton].appearance-hero.size-medium {
   color: #353535;
 }
 /** End Common */
+
+/** Button */
+.nb-theme-default,
+.nb-theme-dark,
+.nb-theme-cosmic,
+.nb-theme-corporate {
+  [nbButton].size-medium nb-icon {
+    font-size: 1.275rem;
+  }
+}
+/** End button */

@@ -5,7 +5,7 @@ import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
 import {
   NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
-  NbSidebarComponent, NbDialogRef, NbDialogConfig
+  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries
 } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location, getCurrencySymbol, getLocaleNumberFormat, NumberFormatStyle, CurrencyPipe } from '@angular/common';
@@ -82,6 +82,7 @@ export class CommonService {
     public sidebarService: NbSidebarService,
     public translate: TranslateService,
     public currencyPipe: CurrencyPipe,
+    public iconsLibrary: NbIconLibraries,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {

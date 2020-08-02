@@ -11,7 +11,6 @@ import { environment } from '../../../../../environments/environment';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ContactModel } from '../../../../models/contact.model';
-import { CallingSession } from '../../../mobile-app/phone-manager/calling-session';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { Component as F7Component } from 'framework7';
 
@@ -85,7 +84,8 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       name: 'chat',
       status: 'info',
       label: 'Chat',
-      icon: 'phone-call',
+      iconPack: 'ion',
+      icon: 'chatbubbles',
       title: 'Mở phòng chat làm việc nhóm',
       size: 'medium',
       disabled: (option) => {
@@ -110,6 +110,22 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       },
       click: () => {
         return this.save();
+      },
+    },
+    {
+      type: 'button',
+      name: 'saveAndClose',
+      status: 'primary',
+      label: this.commonService.translateText('Common.saveAndClose'),
+      icon: 'save',
+      title: 'Lưu yêu cầu',
+      size: 'medium',
+      disabled: (option) => {
+        return option && option.form && !option.form.valid;
+        // return false;
+      },
+      click: () => {
+        return this.saveAndClose();
       },
     },
     {
@@ -409,6 +425,11 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       });
 
     }
+  }
+
+  saveAndClose() {
+    this.save().then(rs => this.onClose.emit(this.index));
+    return false;
   }
 
 }
