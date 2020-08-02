@@ -50,6 +50,11 @@
     "wholesale": "bán sỉ"
   },
   "Common": {
+    "Pms": {
+      "view": "xem",
+      "edit": "chỉnh sửa",
+      "manage": "quản lý"
+    },
     "create": "tạo",
     "update": "cập nhật",
     "delete": "xoá",
@@ -115,14 +120,19 @@
     "export": "xuất",
     "table": "bảng",
     "change": "thay đổi",
-    "changeState": "thay đổi trạng thái"
+    "changeState": "thay đổi trạng thái",
+    "share": "chia sẻ",
+    "user": "người dùng",
+    "userGroup": "nhóm người dùng",
+    "permission": "quyền"
   },
   "Contact": {
     "name": "tên liên hệ",
     "address": "địa chỉ",
     "email": "email",
     "phone": "điện thoại",
-    "taxCode": "mã số thuế"
+    "taxCode": "mã số thuế",
+    "choosePms": "chọn quyền"
   },
   "Bank": {
     "name": "tên ngân hàng",
@@ -165,13 +175,14 @@
       "NORMAL_CLEARING": "Hoàn tất cuộc gọi",
       "CALL_REJECTED": "Bị chặn",
       "INCOMPATIBLE_DESTINATION": "Không xác định",
-      "EXCHANGE_ROUTING_ERROR": "lỗi định tuyến"
+      "EXCHANGE_ROUTING_ERROR": "lỗi định tuyến",
+      "NORMAL_TEMPORARY_FAILURE": "không xác định"
     },
     "CallResult": {
-      "answered": "trả lời",
+      "answered": "OK",
       "missed": "nhỡ",
       "voicemail": "hộp thư thoại",
-      "cancelled": "hủy",
+      "cancelled": "không bắt máy",
       "failed": "lỗi"
     },
     "Direction": {

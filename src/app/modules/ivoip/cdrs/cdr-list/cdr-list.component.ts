@@ -70,9 +70,18 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
             ],
           },
         },
-        width: '10%',
-        valuePrepareFunction: (cell: string) => {
-          return `<span class="nowrap">${cell ? this.commonService.translateText('Ivoip.Direction.' + cell) : ''}</span>`;
+        width: '5%',
+        valuePrepareFunction: (cell: string, row: PbxCdrModel) => {
+          if (cell) {
+            let icon = 'assets/icon/fusionpbx/icon_cdr_' + cell + '_' + row['CallResult'];
+            if (row['leg'] === 'b') {
+              icon += '_b';
+            }
+            icon += '.png';
+            return '<img src="' + icon + '"> ' + this.commonService.translateText('Ivoip.Direction.' + cell);
+          }
+          return '';
+          // return `<span class="nowrap">${cell ? this.commonService.translateText('Ivoip.Direction.' + cell) : ''}</span>`;
         },
       },
       CallResult: {
@@ -94,7 +103,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
           },
         },
         valuePrepareFunction: (cell: string) => {
-          return this.commonService.translateText('Ivoip.CallResult.' + cell);
+          return this.commonService.translateText('Ivoip.CallResult.' + (['cancelled', 'answered'].some(cr => cr === cell)  ? cell : 'missed'));
         },
       },
       Extension: {

@@ -50,6 +50,11 @@
     "wholesale": "wholesale"
   },
   "Common": {
+    "Pms": {
+      "view": "view",
+      "edit": "edit",
+      "manage": "manage"
+    },
     "create": "create",
     "update": "update",
     "delete": "delete",
@@ -115,7 +120,12 @@
     "export": "export",
     "table": "table",
     "change": "change",
-    "changeState": "change state"
+    "changeState": "change state",
+    "share": "share",
+    "choosePms": "choose pms",
+    "user": "user",
+    "userGroup": "user group",
+    "permission": "permission"
   },
   "Contact": {
     "name": "contact name",
@@ -165,10 +175,11 @@
       "NORMAL_CLEARING": "normal clearing",
       "CALL_REJECTED": "call rejected",
       "INCOMPATIBLE_DESTINATION": "incompatible destination",
-      "EXCHANGE_ROUTING_ERROR": "Exchange routing error"
+      "EXCHANGE_ROUTING_ERROR": "Exchange routing error",
+      "NORMAL_TEMPORARY_FAILURE": "temporary failed"
     },
     "CallResult": {
-      "answered": "answered",
+      "answered": "OK",
       "missed": "missed",
       "voicemail": "voicemail",
       "cancelled": "cancelled",

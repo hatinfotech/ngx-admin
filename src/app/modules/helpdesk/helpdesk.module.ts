@@ -30,6 +30,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
 import { TranslateModule } from '@ngx-translate/core';
 import { UserExtensionListComponent } from './user-extensions/user-extension-list/user-extension-list.component';
 import { UserExtensionFormComponent } from './user-extensions/user-extension-form/user-extension-form.component';
+import { TicketPmsFormComponent } from './dashboard/ticket-pms-form/ticket-pms-form.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { UserExtensionFormComponent } from './user-extensions/user-extension-for
     QuickTicketFormComponent,
     UserExtensionListComponent,
     UserExtensionFormComponent,
+    TicketPmsFormComponent,
   ],
   imports: [
     CommonModule,
@@ -97,6 +99,7 @@ import { UserExtensionFormComponent } from './user-extensions/user-extension-for
     ActionControlListComponent,
     QuickTicketFormComponent,
     SmartTableFilterComponent,
+    TicketPmsFormComponent,
   ],
 })
 export class HelpdeskModule { }

@@ -91,6 +91,10 @@
           <div class="value state">
             <nb-icon icon="android-create" pack="ion"></nb-icon> <a href="#" (click)="editItem(item.Code)">Chỉnh sửa</a>
           </div>
+          <div class="value nowrap">
+            <nb-icon icon="share" pack="ion"></nb-icon>
+            <a href="#" (click)="openAssignCategoiesDialog(item)">{{ 'Common.share' | translate | headtitlecase }}</a>
+          </div>
         </div>
       </div>
 

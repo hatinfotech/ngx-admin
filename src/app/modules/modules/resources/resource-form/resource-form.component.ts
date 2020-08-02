@@ -43,12 +43,24 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
       Description: 'In',
     },
     {
-      Code: 'SAHRE',
+      Code: 'SHARE',
       Description: 'Chia sẻ',
     },
     {
       Code: 'LIST',
       Description: 'Xem danh sách',
+    },
+    {
+      Code: 'MANAGER',
+      Description: 'Quản lý',
+    },
+    {
+      Code: 'RESTRICT',
+      Description: 'Giới hạn',
+    },
+    {
+      Code: 'ALLRECORD',
+      Description: 'Tất cả dữ liệu',
     },
   ].map((item) => {
     item['id'] = item['Code'];

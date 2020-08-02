@@ -8,17 +8,16 @@ import { UserActive, UserActivityData } from '../../../../@core/data/user-activi
 import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
-import { HelpdeskTicketModel, HelpdeskTicketCallingSessionModel, HelpdeskUserExtensionModel } from '../../../../models/helpdesk.model';
+import { HelpdeskTicketModel, HelpdeskTicketCallingSessionModel } from '../../../../models/helpdesk.model';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
 import { MobileAppService, CallState } from '../../../mobile-app/mobile-app.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ContactModel } from '../../../../models/contact.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { tick } from '@angular/core/testing';
 import { PbxCdrModel } from '../../../../models/pbx-cdr.model';
-import { Content } from '@angular/compiler/src/render3/r3_ast';
 import { DatePipe } from '@angular/common';
+import { TicketPmsFormComponent } from '../ticket-pms-form/ticket-pms-form.component';
 
 @Component({
   selector: 'ngx-helpdesk-dashboard',
@@ -305,6 +304,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', {
       search: this.keyword,
       sort_LastUpdate: 'desc',
+      // sort_Id: 'desc',
       limit: this.pageSize,
       offset: (cardData.pageToLoadNext - 1) * this.pageSize,
       includeState: true,
@@ -724,5 +724,24 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         ],
       },
     });
+  }
+
+  /** Open assign categories dialog */
+  openAssignCategoiesDialog(ticket: HelpdeskTicketModel) {
+    if (ticket) {
+      this.commonService.openDialog(TicketPmsFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          inputResource: ticket,
+          onDialogSave: (newData: HelpdeskTicketModel[]) => {
+            this.refresh();
+          },
+          onDialogClose: () => {
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
   }
 }
