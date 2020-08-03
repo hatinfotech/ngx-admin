@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.2.12',
+  version: '2.0.2.13',
+  // 2.0.2.13: Contact detail
   // 2.0.2.9: Permission for each data row (share permission)
   // 2.0.2.7: Update Ivoip Cdrs status icon
   // 2.0.2.5: Fix Helpdesk permission
