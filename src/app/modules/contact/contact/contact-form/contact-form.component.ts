@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ContactModel } from '../../../../models/contact.model';
+import { ContactModel, ContactDetailTypeModel, ContactDetailModel } from '../../../../models/contact.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { ProductUnitConversoinModel } from '../../../../models/product.model';
 
 @Component({
   selector: 'ngx-contact-form',
@@ -79,6 +80,20 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     },
   };
 
+  typeList: ContactDetailTypeModel[];
+  select2OptionForType = {
+    placeholder: this.commonService.translateText('Common.type') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -101,14 +116,40 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     // }
   }
 
-  getRequestId(callback: (id?: string[]) => void) {
-    callback(this.inputId);
+  async init() {
+    this.typeList = (await this.apiService.getPromise<ContactDetailTypeModel[]>('/contact/detailTypes')).map(type => ({ ...type, id: type.Code, text: type.Name }));
+    return super.init();
   }
+
+  formLoad(formData: ContactModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ContactModel) => void) {
+    super.formLoad(formData, (index, newForm, itemFormData) => {
+
+      if (itemFormData.Details) {
+        itemFormData.Details.forEach(detail => {
+          const newUnitConversionFormGroup = this.makeNewDetailFormGroup(detail);
+          this.getDetails(newForm).push(newUnitConversionFormGroup);
+          const comIndex = this.getDetails(newForm).length - 1;
+          this.onAddDetailFormGroup(newForm, comIndex, newUnitConversionFormGroup);
+        });
+      }
+
+      // Direct callback
+      if (formItemLoadCallback) {
+        formItemLoadCallback(index, newForm, itemFormData);
+      }
+    });
+
+  }
+
+  // getRequestId(callback: (id?: string[]) => void) {
+  //   callback(this.inputId);
+  // }
 
   /** Execute api get */
   executeGet(params: any, success: (resources: ContactModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeOrganizations'] = true;
     params['includeGroups'] = true;
+    params['includeDetails'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -117,18 +158,17 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
       Code: [''],
       Name: ['', Validators.required],
       Phone: [''],
-      Phone2: [''],
-      Phone3: [''],
+      // Phone2: [''],
+      // Phone3: [''],
       Email: [''],
       Address: [''],
-      Address2: [''],
-      Address3: [''],
       Title: [''],
       ShortName: [''],
       // Sex: [''],
       Note: [''],
       Organizations: [''],
       Groups: [''],
+      Details: this.formBuilder.array([]),
     });
     if (data) {
       newForm.patchValue(data);
@@ -166,4 +206,37 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   dismiss() {
     this.ref.close();
   }
+
+  /** Details Form */
+  makeNewDetailFormGroup(data?: ContactDetailModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      Id: [''],
+      Type: [''],
+      Detail: [''],
+    });
+
+    if (data) {
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+  getDetails(formItem: FormGroup) {
+    return formItem.get('Details') as FormArray;
+  }
+  addDetailFormGroup(formItem: FormGroup) {
+    const newFormGroup = this.makeNewDetailFormGroup();
+    this.getDetails(formItem).push(newFormGroup);
+    this.onAddDetailFormGroup(formItem, this.getDetails(formItem).length - 1, newFormGroup);
+    return false;
+  }
+  removeDetailGroup(parentForm: FormGroup, formItem: FormGroup, index: number) {
+    this.getDetails(parentForm).removeAt(index);
+    this.onRemoveDetailFormGroup(formItem, index);
+    return false;
+  }
+  onAddDetailFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
+  }
+  onRemoveDetailFormGroup(formItem: FormGroup, index: number) {
+  }
+  /** End Details Form */
 }

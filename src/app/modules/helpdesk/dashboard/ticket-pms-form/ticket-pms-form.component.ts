@@ -185,7 +185,7 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
 
-  /** Picture Form */
+  /** Permissions Form */
   makeNewPermissionFormGroup(data?: ProductUnitConversoinModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
@@ -222,7 +222,7 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
   onRemovePermissionFormGroup(formItem: FormGroup, index: number) {
     // this.componentList[mainIndex].splice(index, 1);
   }
-  /** End Picture Form */
+  /** End Permissions Form */
 
   // copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
   //   if (formControlName === 'Pictures') {

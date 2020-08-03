@@ -45,55 +45,6 @@
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="Name">
                 </div>
               </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Email'), 'warning')">
-                  <label class="label"><span class="valid">Email</span><span class="invalid">Email là bắt buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Email" placeholder="Email">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Phone'), 'warning')">
-                  <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại
-                      là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Phone">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Phone2'), 'warning')">
-                  <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại 2
-                      là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Phone">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Phone3'), 'warning')">
-                  <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại 3
-                      là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Phone">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address'), 'warning')">
-                  <label class="label"><span class="valid">Địa chỉ</span><span class="invalid">Địa chỉ là bắt buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Address" placeholder="Địa chỉ">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address2'), 'warning')">
-                  <label class="label"><span class="valid">Địa chỉ 2</span><span class="invalid">Địa chỉ 2 là bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Address2" placeholder="Địa chỉ 2">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address3'), 'warning')">
-                  <label class="label"><span class="valid">Địa chỉ 3</span><span class="invalid">Địa chỉ 3 là bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Address3" placeholder="Địa chỉ 3">
-                </div>
-              </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Organizations'), 'warning')">
                   <label class="label"><span class="valid">Tổ chức</span><span class="invalid">Tổ chức là bắt buộc
@@ -106,6 +57,27 @@
                   <label class="label"><span class="valid">Nhóm (tự động tạo nhóm)</span><span class="invalid">Nhóm là bắt buộc
                       (*)</span></label>
                       <ngx-select2 [select2Option]="select2GroupsOption" formControlName="Groups"></ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Email'), 'warning')">
+                  <label class="label"><span class="valid">Email</span><span class="invalid">Email là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Email" placeholder="Email">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Phone'), 'warning')">
+                  <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại
+                      là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Phone">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address'), 'warning')">
+                  <label class="label"><span class="valid">Địa chỉ</span><span class="invalid">Địa chỉ là bắt buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Address" placeholder="Địa chỉ">
                 </div>
               </div>
               <div class="col-sm-12">
@@ -121,6 +93,55 @@
                   <nb-checkbox formControlName="Enabled" >Kích hoạt</nb-checkbox>
                 </div>
               </div> -->
+              <div class="col-sm-12">
+
+                <!-- Detail form -->
+                <!-- <hr> -->
+                <div class="row" style="align-items: flex-end;">
+                  <div class="col-sm-3 label">{{'Common.type' | translate | headtitlecase}}</div>
+                  <div class="col-sm-8 label">{{'Common.detail' | translate | headtitlecase}}</div>
+                  <div class="col-sm-1" style="text-align: right;">
+                    <nb-icon pack="eva" icon="plus-circle-outline" (click)="addDetailFormGroup(formItem)" status="success"
+                      style="margin-right: 0.8rem;"></nb-icon>
+                  </div>
+                </div>
+
+                <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)"
+                  [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                  <!-- <div formArrayName="Details" class="form-details"> -->
+                  <hr>
+                  <div class="form-detail-item"
+                    *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail">
+                    <input type="hidden" formControlName="Id">
+
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="label">{{'Common.user' | translate | headtitlecase}}</label>
+                          <ngx-select2 formControlName="Type" [select2Option]="select2OptionForType" [data]="typeList">
+                          </ngx-select2>
+                        </div>
+                      </div>
+                      <div class="col-sm-8">
+                        <div class="form-group">
+                          <label class="label">{{'Common.detail' | translate | headtitlecase}}</label>
+                          <input nbInput fullWidth formControlName="Detail" placeholder="{{'Common.detail' | translate | headtitlecase}}">
+                        </div>
+                      </div>
+                      <div class="col-sm-1">
+                        <div class="form-group">
+                          <label class="label">CM</label>
+                          <button nbButton status="danger" hero size="medium"
+                            (click)="removeDetailGroup(formItem, detail, ic)" style="margin-bottom: 3px; float: right;">
+                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Detail form -->
+              </div>
             </div>
           </div>
         </nb-card-body>

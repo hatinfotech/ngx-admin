@@ -88,7 +88,25 @@ export class ContactModel {
   // References
   Organizations?: ContactModel[];
   Groups?: ContactGroupModel[];
+  Details?: ContactDetailModel[];
 
   constructor() { }
 
+}
+
+export class ContactDetailModel {
+  Id?: string;
+  Contact?: string;
+  Type?: string | ContactDetailTypeModel;
+  Detail?: string;
+  DateOfInsert?: string;
+  DateOfValidConfirm?: string;
+  DateOfInvalidConfirm?: string;
+}
+
+export class ContactDetailTypeModel {
+  Id?: string;
+  Code?: string;
+  Name?: string;
+  Description?: string;
 }
