@@ -124,7 +124,9 @@
     "share": "chia sẻ",
     "user": "người dùng",
     "userGroup": "nhóm người dùng",
-    "permission": "quyền"
+    "permission": "quyền",
+    "next": "tiếp",
+    "previous": "trước"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -225,7 +227,8 @@
     "soundRecord": "ghi âm",
     "callState": "trạng thái cuộc gọi",
     "receivedNumber": "số nhận cuộc gọi",
-    "hangupCase": "gác máy"
+    "hangupCase": "gác máy",
+    "sipInfo": "thông tin sip"
   },
   "Purchase": {
     "PriceTable": {

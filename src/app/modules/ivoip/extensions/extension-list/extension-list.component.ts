@@ -9,6 +9,11 @@ import { ViewCell } from 'ng2-smart-table';
 import { IvoipService } from '../../ivoip-service';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { ExtensionFormComponent } from '../extension-form/extension-form.component';
+import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { param } from 'jquery';
+import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
+import { IconViewComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 
 @Component({
   selector: 'ngx-custom-view',
@@ -41,7 +46,7 @@ export class ButtonViewComponent implements ViewCell, OnInit {
   templateUrl: './extension-list.component.html',
   styleUrls: ['./extension-list.component.scss'],
 })
-export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionModel> implements OnInit {
+export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExtensionModel> implements OnInit {
 
   componentName = 'ExtensionListComponent';
   formPath = '/ivoip/extensions/form';
@@ -127,7 +132,7 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
       status: {
         title: 'Trạng thái',
         type: 'string',
-        width: '20%',
+        width: '10%',
       },
       enabled: {
         title: 'Kích hoạt',
@@ -144,6 +149,35 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
           instance.renderValue = 'fa fa-qrcode';
           instance.click.subscribe((row: PbxExtensionModel) => {
             this.showQrCode(row.extension_uuid, row.extension);
+          });
+        },
+      },
+      sip_info: {
+        class: this.commonService.translateText('Ivoip.sipInfo'),
+        title: 'Sip Info',
+        type: 'custom',
+        width: '10%',
+        renderComponent: IconViewComponent,
+        onComponentInitFunction: (instance: IconViewComponent) => {
+          instance.renderValue = 'settings';
+          instance.type = 'nb';
+          instance.pack = 'eva';
+          instance.status = 'danger';
+          instance.click.subscribe((row: PbxExtensionModel) => {
+            this.commonService.openDialog(ShowcaseDialogComponent, {
+              context: {
+                title: this.commonService.translateText('Ivoip.sipInfo'),
+                content: '<div style="border-radius: 1rem; border: 1px solid #eee">' + row['sip_info'].replace(/\n/g, '<br>') + '</div>',
+                // actions: [
+                //   {
+                //     label: this.commonService.translateText('Common.close'),
+                //     status: 'danger',
+                //     action: () => {},
+                //   },
+                // ],
+              },
+              closeOnBackdropClick: true,
+            });
           });
         },
       },
@@ -196,6 +230,29 @@ export class ExtensionListComponent extends IvoipBaseListComponent<PbxExtensionM
 
   onGenerateQRCodeBtnClick(): false {
     return false;
+  }
+
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    source.prepareData = (data: PbxExtensionModel[]) => {
+      const paging = this.source.getPaging();
+      data.forEach((item, index) => {
+        item['No'] = (paging.page - 1) * paging.perPage + index + 1;
+        // item.Start = item.Start.replace(' ', '<br>');
+      });
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['domainId'] = this.ivoipService.getPbxActiveDomainUuid();
+      params['includeSipInfo'] = true;
+      return params;
+    };
+
+    return source;
   }
 
 }

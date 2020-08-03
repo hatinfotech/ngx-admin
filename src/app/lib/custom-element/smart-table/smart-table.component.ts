@@ -239,3 +239,34 @@ export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, Af
 
 }
 
+@Component({
+  selector: 'ngx-stmart-table-icon-view',
+  template: `
+    <div style="text-align: center">
+      <i *ngIf="type==='font'" style="font-size: 1.5rem; cursor: pointer; color: #42aaff;" (click)="onClick()" [class]="renderValue"></i>
+      <nb-icon style="width: 1.5rem; height: 1.5rem; cursor: pointer" *ngIf="type==='nb'" [pack]="pack" [icon]="renderValue" [status]="status" (click)="onClick()"></nb-icon>
+    </div>
+  `,
+})
+export class IconViewComponent implements ViewCell, OnInit {
+  renderValue: string;
+  type: 'nb' | 'font';
+  pack?: string | 'eva';
+  status?: string | 'info' | 'primary' | 'success' | 'danger' | 'warning' = 'primary';
+
+  @Input() value: string | number;
+  @Input() rowData: any;
+
+  @Output() save: EventEmitter<any> = new EventEmitter();
+  @Output() click: EventEmitter<any> = new EventEmitter();
+
+  ngOnInit() {
+    // this.renderValue = this.value.toString().toUpperCase();
+  }
+
+  onClick() {
+    this.click.emit(this.rowData);
+  }
+}
+
+

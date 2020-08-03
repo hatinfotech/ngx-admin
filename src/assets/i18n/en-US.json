@@ -125,7 +125,9 @@
     "choosePms": "choose pms",
     "user": "user",
     "userGroup": "user group",
-    "permission": "permission"
+    "permission": "permission",
+    "next": "next",
+    "previous": "previous"
   },
   "Contact": {
     "name": "contact name",
@@ -222,7 +224,8 @@
     "soundRecord": "sound record",
     "callState": "call state",
     "receivedNumber": "received number",
-    "hangupCase": "hangup case"
+    "hangupCase": "hangup case",
+    "sipInfo": "sip info"
   },
   "Purchase": {
     "PriceTable": {
