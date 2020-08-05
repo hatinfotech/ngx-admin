@@ -1,96 +1,73 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()"
-(keydown.shift.enter)="onControlEnter($event)"
-(keydown.enter)="onControlEnter($event)"
-class="popup">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
+  (keydown.enter)="onControlEnter($event)" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Promotion.Promotion.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
+            [title]="title ? title : ('Helpdesk.Route.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+            [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <input type="hidden" formControlName="Code_old">
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
                   <label class="label"><span class="valid">Mã</span><span class="invalid">Mã bắt buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Code" maxlength="30" placeholder="Mã quảng cáo">
+                  <input type="text" nbInput fullWidth formControlName="Code" maxlength="30"
+                    placeholder="{{'Common.autoGenerate'}}">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên quảng cáo">
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Type'), 'warning')">
                   <label class="label"><span class="valid">Loại (*)</span><span class="invalid">Loại là bắt buộc
                       (*)</span></label>
-                      <nb-select size="medium" formControlName="Type" fullWidth selected="PROGRAM">
-                        <nb-option value="PROGRAM">Chương trình khuyến mãi</nb-option>
-                        <nb-option value="COUPON">Mã khuyến mãi</nb-option>
-                      </nb-select>
+                  <nb-select size="medium" formControlName="Type" fullWidth selected="PROGRAM">
+                    <nb-option value="PROGRAM">__</nb-option>
+                    <nb-option value="COUPON">__</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('State'), 'warning')">
-                  <label class="label"><span class="valid">Trạng thái (*)</span><span class="invalid">Trạng thái là bắt buộc
+                  <label class="label"><span class="valid">Trạng thái (*)</span><span class="invalid">Trạng thái là bắt
+                      buộc
                       (*)</span></label>
-                      <nb-select size="medium" formControlName="State" fullWidth selected="OPEN">
-                        <nb-option value="OPEN">Mở</nb-option>
-                        <nb-option value="CLOSED">Đóng</nb-option>
-                      </nb-select>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('MaxUse'), 'warning')">
-                  <label class="label"><span class="valid">Số lần khuyến mãi</span><span class="invalid">Số lần KM là bắt buộc
-                      (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="MaxUse" placeholder="Số lần KM">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ProductGroups'), 'warning')">
-                  <label class="label"><span class="valid">Nhóm sản phẩm</span><span class="invalid">Nhóm sản phẩm là bắt buộc
-                      (*)</span></label>
-                      <ngx-select2 formControlName="ProductGroups"
-                            [select2Option]="select2OptionForProductGroup">
-                          </ngx-select2>
+                  <nb-select size="medium" formControlName="State" fullWidth selected="OPEN">
+                    <nb-option value="OPEN">Mở</nb-option>
+                    <nb-option value="CLOSED">Đóng</nb-option>
+                  </nb-select>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span></label>
-                      <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="3"></textarea>
-                </div>
-              </div>
-              <div class="col-sm-12">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Content'), 'warning')">
-                  <label class="label"><span class="valid">Nội dung (*)</span><span class="invalid">Nội dung là bắt buộc
-                      (*)</span></label>
-                      <ckeditor formControlName="Content" [config]="{ extraPlugins: 'divarea', height: '320' }">
-                      </ckeditor>
+                  <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="3"></textarea>
                 </div>
               </div>
             </div>
 
             <!-- Confition form -->
             <hr>
-            <label class="label">Các điều kiện để khuyến mãi có hiệu lực</label>
+            <label class="label">Các điều kiện áp dụng</label>
             <div class="row">
               <div class="col-sm-1 label">Stt</div>
               <div class="col-sm-10">
                 <div class="row">
-                  <div class="col-sm-4 label">Điều kiện</div>
-                  <div class="col-sm-3 label">So sánh</div>
-                  <div class="col-sm-2 label">Kiểu DL</div>
-                  <div class="col-sm-2 label">Giá trị</div>
-                  <div class="col-sm-1 label">Dừng nếu sai</div>
+                  <div class="col-sm-4 label">{{'Common.parameter' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label">{{'Common.condition' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label">{{'Common.type' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label">{{'Common.data' | translate | headtitlecase}}</div>
+                  <div class="col-sm-1 label">{{'Common.stopOnFailed' | translate | headtitlecase}}</div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -102,34 +79,31 @@ class="popup">
             </div>
 
             <div formArrayName="Conditions" class="form-details" [sortablejs]="getConditions(i)"
-            [sortablejsOptions]="{ handle: '.sorting-handle' }">
+              [sortablejsOptions]="{ handle: '.sorting-handle' }">
               <div class="form-detail-item" *ngFor="let condition of getConditions(i).controls; let ic=index"
                 [formGroup]="condition">
                 <div class="row">
                   <div class="col-sm-1">
                     <div class="form-group">
                       <label class="label">Stt</label>
-                      <input nbInput fullWidth class="sorting-handle" disabled="true" value="{{ ic + 1 }}" style="text-align: center; cursor: grab;">
+                      <input nbInput fullWidth class="sorting-handle" disabled="true" value="{{ ic + 1 }}"
+                        style="text-align: center; cursor: grab;">
                       <input type="hidden" formControlName="Id">
                     </div>
                   </div>
                   <div class="col-sm-10">
                     <div class="row">
-                      <div class="col-sm-4">
+                      <div class="col-sm-5">
                         <div class="form-group">
-                          <label class="label">Điều kiện</label>
-                          <nb-select size="medium" formControlName="Cond" fullWidth>
-                            <nb-option value="">Điều kiện...</nb-option>
-                            <nb-option value="QUANTITY">Số lượng</nb-option>
-                            <nb-option value="TOTALPAYMENT">Tổng giá trị đơn hàng</nb-option>
-                            <nb-option value="ORDERDATE">Ngày đặt hàng</nb-option>
-                            <nb-option value="PRODUCTGROUP">Danh mục sản phẩm</nb-option>
-                          </nb-select>
+                          <label class="label">{{'Common.parameter' | translate | headtitlecase}}</label>
+                          <ngx-select2 formControlName="Cond" [data]="paramList"
+                            [select2Option]="select2OptionForParam">
+                          </ngx-select2>
                         </div>
                       </div>
-                      <div class="col-sm-3">
+                      <!-- <div class="col-sm-3">
                         <div class="form-group">
-                          <label class="label">So sánh</label>
+                          <label class="label">{{'Common.condition' | translate | headtitlecase}}</label>
                           <nb-select size="medium" formControlName="Operator" fullWidth>
                             <nb-option value="">So sánh...</nb-option>
                             <nb-option value="LT">Nhỏ hơn</nb-option>
@@ -143,7 +117,7 @@ class="popup">
                       </div>
                       <div class="col-sm-2">
                         <div class="form-group">
-                          <label class="label">Kiểu DL</label>
+                          <label class="label">{{'Common.type' | translate | headtitlecase}}</label>
                           <nb-select size="medium" formControlName="Type" fullWidth>
                             <nb-option value="">Kiểu DL...</nb-option>
                             <nb-option value="INTEGER">Số nguyên</nb-option>
@@ -152,22 +126,28 @@ class="popup">
                             <nb-option value="PRODUCTGROUP">Danh mục sản phẩm</nb-option>
                           </nb-select>
                         </div>
-                      </div>
-                      <div class="col-sm-2">
+                      </div> -->
+                      <div class="col-sm-6">
                         <div class="form-group">
-                          <label class="label">Giá trị</label>
-                          <ngx-select2 *ngIf="condition.get('Type').value == 'PRODUCTGROUP'"formControlName="TextValue"
-                            [select2Option]="select2OptionForProductGroup">
+                          <label class="label">{{'Common.data' | translate | headtitlecase}}</label>
+                          <ngx-select2 *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'OBJECT' || condition.get('Cond')?.value?.DefaultDataType == 'OBJECTS'" formControlName="Data"
+                            [select2Option]="getSlect2ForConditionData(condition.get('Cond')?.value)" [data]="getSelect2DataListForConditionData(condition.get('Cond')?.value)">
                           </ngx-select2>
-                          <input type="text" *ngIf="condition.get('Type').value == 'INTEGER'" nbInput fullWidth formControlName="IntegerValue" placeholder="Số nguyên">
-                          <input type="text" *ngIf="condition.get('Type').value == 'DOUBLE'" nbInput fullWidth formControlName="DoubleValue" placeholder="Sớ thực">
-                          <input type="text" *ngIf="condition.get('Type').value == 'DATETIME'" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" nbInput fullWidth formControlName="DateValue" placeholder="Ngày giờ">
+                          <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'INTEGER'" nbInput
+                            fullWidth formControlName="Data" placeholder="Số nguyên">
+                          <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DOUBLE'" nbInput
+                            fullWidth formControlName="Data" placeholder="Sớ thực">
+                          <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DATE_TIME'"
+                            [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" nbInput fullWidth formControlName="Data"
+                            placeholder="Ngày giờ">
+                          <input type="text" *ngIf="!condition.get('Cond')?.value?.DefaultDataType" nbInput
+                            fullWidth formControlName="Data" placeholder="Số nguyên">
                           <owl-date-time #dt1></owl-date-time>
                         </div>
                       </div>
                       <div class="col-sm-1">
                         <div class="form-group">
-                          <label class="label">Break</label>
+                          <label class="label">{{'Common.break' | translate | headtitlecase}}</label>
                           <nb-checkbox formControlName="BreakOnFalse" title="Dừng khi điều kiện này sai"></nb-checkbox>
                         </div>
                       </div>
@@ -190,14 +170,13 @@ class="popup">
 
             <!-- Action form -->
             <hr>
-            <label class="label">Các ưu đãi được áp dụng</label>
+            <label class="label">Các hành động</label>
             <div class="row">
               <div class="col-sm-1 label">Stt</div>
               <div class="col-sm-10">
                 <div class="row">
-                  <div class="col-sm-5 label">Loại</div>
-                  <div class="col-sm-5 label">Sản phẩm tặng kèm</div>
-                  <div class="col-sm-2 label">Giá trị</div>
+                  <div class="col-sm-6 label">Hành động</div>
+                  <div class="col-sm-6 label">Tham số</div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -221,30 +200,21 @@ class="popup">
                   </div>
                   <div class="col-sm-10">
                     <div class="row">
-                      <div class="col-sm-5">
+                      <div class="col-sm-6">
                         <div class="form-group">
                           <label class="label">Loại</label>
-                          <nb-select size="medium" formControlName="Type" fullWidth>
-                            <nb-option value="">Loại hành động...</nb-option>
-                            <nb-option value="BONUSPRODUCT">Tặng kèm sản phẩm</nb-option>
-                            <nb-option value="BONUSVOUCHER">Tặng phiếu mua hàng</nb-option>
-                            <nb-option value="DISCOUNTPERCENT">Giảm giá theo % giá trị đơn hàng</nb-option>
-                            <nb-option value="DISCOUNTAMOUNT">Giảm tiền</nb-option>
+                          <nb-select size="medium" formControlName="Action" fullWidth>
+                            <nb-option value="">Hành động...</nb-option>
+                            <nb-option value="CREATE_TICKET">Tạo yêu cầu</nb-option>
+                            <nb-option value="TRANSFER_TICKET_TO_GROUP">Chuyển yêu cầu đến</nb-option>
+                            <nb-option value="ARCHIVE">Lưu trữ</nb-option>
                           </nb-select>
                         </div>
                       </div>
-                      <div class="col-sm-5">
+                      <div class="col-sm-6">
                         <div class="form-group">
-                          <label class="label">Sản phẩm tặng kèm</label>
-                          <ngx-select2 formControlName="Product"
-                            [select2Option]="select2OptionForProduct">
-                          </ngx-select2>
-                        </div>
-                      </div>
-                      <div class="col-sm-2">
-                        <div class="form-group">
-                          <label class="label">Giá trị</label>
-                          <input type="text" nbInput fullWidth formControlName="Amount" placeholder="SL/% giảm giá">
+                          <label class="label">Tham số</label>
+                          <input type="text" nbInput fullWidth formControlName="Parameters" placeholder="Tham số">
                         </div>
                       </div>
                     </div>
@@ -270,7 +240,8 @@ class="popup">
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
             <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
-            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">Lưu & Đóng</button>
             <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
           </div>
         </nb-card-footer>

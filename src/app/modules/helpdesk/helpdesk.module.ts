@@ -31,6 +31,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UserExtensionListComponent } from './user-extensions/user-extension-list/user-extension-list.component';
 import { UserExtensionFormComponent } from './user-extensions/user-extension-form/user-extension-form.component';
 import { TicketPmsFormComponent } from './dashboard/ticket-pms-form/ticket-pms-form.component';
+import { HelpdeskRouteListComponent } from './route/helpdesk-route-list/helpdesk-route-list.component';
+import { HelpdeskRouteFormComponent } from './route/helpdesk-route-form/helpdesk-route-form.component';
+import { CKEditorModule } from 'ng2-ckeditor';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { HelpdeskParamListComponent } from './param/helpdesk-param-list/helpdesk-param-list.component';
+import { HelpdeskParamFormComponent } from './param/helpdesk-param-form/helpdesk-param-form.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +54,10 @@ import { TicketPmsFormComponent } from './dashboard/ticket-pms-form/ticket-pms-f
     UserExtensionListComponent,
     UserExtensionFormComponent,
     TicketPmsFormComponent,
+    HelpdeskRouteListComponent,
+    HelpdeskRouteFormComponent,
+    HelpdeskParamListComponent,
+    HelpdeskParamFormComponent,
   ],
   imports: [
     CommonModule,
@@ -87,6 +97,9 @@ import { TicketPmsFormComponent } from './dashboard/ticket-pms-form/ticket-pms-f
     NgxEchartsModule,
     NgxChartsModule,
     LeafletModule,
+    CKEditorModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
 
     TranslateModule,
     NbDialogModule.forChild(),
@@ -100,6 +113,8 @@ import { TicketPmsFormComponent } from './dashboard/ticket-pms-form/ticket-pms-f
     QuickTicketFormComponent,
     SmartTableFilterComponent,
     TicketPmsFormComponent,
+    HelpdeskRouteFormComponent,
+    HelpdeskParamFormComponent,
   ],
 })
 export class HelpdeskModule { }

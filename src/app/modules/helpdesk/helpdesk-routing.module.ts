@@ -7,6 +7,10 @@ import { HelpdeskTicketFormComponent } from './ticket/helpdesk-ticket-form/helpd
 import { HelpdeskDashboardComponent } from './dashboard/helpdesk-dashboard/helpdesk-dashboard.component';
 import { UserExtensionListComponent } from './user-extensions/user-extension-list/user-extension-list.component';
 import { UserExtensionFormComponent } from './user-extensions/user-extension-form/user-extension-form.component';
+import { HelpdeskRouteListComponent } from './route/helpdesk-route-list/helpdesk-route-list.component';
+import { HelpdeskRouteFormComponent } from './route/helpdesk-route-form/helpdesk-route-form.component';
+import { HelpdeskParamListComponent } from './param/helpdesk-param-list/helpdesk-param-list.component';
+import { HelpdeskParamFormComponent } from './param/helpdesk-param-form/helpdesk-param-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -61,6 +65,44 @@ const routes: Routes = [{
       path: 'user-extension/form/:id',
       canActivate: [AuthGuardService],
       component: UserExtensionFormComponent,
+    },
+    // Routes
+    {
+      path: 'route/list',
+      canActivate: [AuthGuardService],
+      component: HelpdeskRouteListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'route/form',
+      canActivate: [AuthGuardService],
+      component: HelpdeskRouteFormComponent,
+    },
+    {
+      path: 'route/form/:id',
+      canActivate: [AuthGuardService],
+      component: HelpdeskRouteFormComponent,
+    },
+    // Params
+    {
+      path: 'param/list',
+      canActivate: [AuthGuardService],
+      component: HelpdeskParamListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'param/form',
+      canActivate: [AuthGuardService],
+      component: HelpdeskParamFormComponent,
+    },
+    {
+      path: 'param/form/:id',
+      canActivate: [AuthGuardService],
+      component: HelpdeskParamFormComponent,
     },
   ],
 }];

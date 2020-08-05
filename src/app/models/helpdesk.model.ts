@@ -100,3 +100,52 @@ export class HelpdeskUserExtensionModel {
     return this.Domain + '@' + this.Pbx;
   }
 }
+
+export class HelpdeskRouteModel {
+  Id?: string;
+  Code?: string;
+  Name?: string;
+  Description?: string;
+
+  Conditions?: HelpdeskRouteConditionModel[];
+  Actions?: HelpdeskRouteActionModel[];
+}
+
+export class HelpdeskRouteConditionModel {
+  Id?: string;
+  Route?: string;
+  No?: string;
+  Type?: string;
+  Cond?: string;
+  Operator?: string;
+  Data?: string;
+  BreakOnFalse?: string;
+}
+
+export class HelpdeskRouteActionModel {
+  Id?: string;
+  Route?: string;
+  No?: string;
+  Type?: string;
+  Action?: string;
+  Parameters?: string;
+}
+
+export class HelpdeskParamModel {
+  id?: string; text?: string;
+  Id?: string;
+  Name?: string;
+  Description?: string;
+  DefaultDataType?: string;
+  DefaultOperator?: string;
+  RemoteDataSource?: string;
+
+  Options?: HelpdeskParamOptionModel[];
+}
+
+export class HelpdeskParamOptionModel {
+  Id?: string;
+  Param?: string;
+  Data?: string;
+  Label?: string;
+}

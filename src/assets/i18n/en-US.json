@@ -55,6 +55,25 @@
       "edit": "edit",
       "manage": "manage"
     },
+    "Compare": {
+      "lt": "less than",
+      "le": "less than or equal",
+      "eq": "equal",
+      "gt": "greater than",
+      "ge": "greater than or equal",
+      "ne": "not equal",
+      "bw": "between",
+      "in": "in"
+    },
+    "DataType": {
+      "int": "integer",
+      "double": "double",
+      "date": "date",
+      "time": "time",
+      "datetime": "date time",
+      "object": "object",
+      "objects": "objects"
+    },
     "create": "create",
     "update": "update",
     "delete": "delete",
@@ -127,7 +146,13 @@
     "userGroup": "user group",
     "permission": "permission",
     "next": "next",
-    "previous": "previous"
+    "previous": "previous",
+    "parameter": "parameter",
+    "condition": "condition",
+    "data": "data",
+    "stopOnFailed": "stop on failed",
+    "label": "label",
+    "remoteDataSource": "remote data source"
   },
   "Contact": {
     "name": "contact name",
@@ -310,6 +335,9 @@
     },
     "Menu": {
       "userExtensions": "Extensions numbers"
+    },
+    "Param": {
+      "options": "param options"
     },
     "saveContact": "save contact",
     "changeStateConfirm": "change state for `{{description}}`"

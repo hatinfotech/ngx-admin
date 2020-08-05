@@ -55,6 +55,25 @@
       "edit": "chỉnh sửa",
       "manage": "quản lý"
     },
+    "Compare": {
+      "lt": "nhỏ hơn",
+      "le": "nhỏ hơn hoặc bằng",
+      "eq": "bằng",
+      "gt": "lớn hơn",
+      "ge": "lớn hơn hoặc bằng",
+      "ne": "khác",
+      "bw": "trong khoản",
+      "in": "thuộc"
+    },
+    "DataType": {
+      "int": "số nguyên",
+      "double": "số thực",
+      "date": "ngày tháng",
+      "time": "giờ",
+      "datetime": "ngày giờ",
+      "object": "đới tượng",
+      "objects": "nhiều đối tượng"
+    },
     "create": "tạo",
     "update": "cập nhật",
     "delete": "xoá",
@@ -126,7 +145,13 @@
     "userGroup": "nhóm người dùng",
     "permission": "quyền",
     "next": "tiếp",
-    "previous": "trước"
+    "previous": "trước",
+    "parameter": "tham số",
+    "condition": "điều kiện",
+    "data": "dữ liệu",
+    "stopOnFailed": "dừng khi sai",
+    "label": "nhãn",
+    "remoteDataSource": "nguồn dữ liệu"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -313,6 +338,11 @@
     },
     "Menu": {
       "userExtensions": "Số nội bộ (sip)"
+    },
+    "Param": {
+      "options": "các tùy chọn tham số",
+      "defaultOperator": "điều kiện mặc định",
+      "defaultDataType": "kểu dữ liệu mặc định"
     },
     "saveContact": "lưu liên hệ",
     "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`"
