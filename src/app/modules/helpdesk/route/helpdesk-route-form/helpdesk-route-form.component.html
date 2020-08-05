@@ -10,15 +10,8 @@
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
+            <input type="hidden" nbInput fullWidth formControlName="Code" placeholder="{{'Common.autoGenerate'}}">
             <div class="row">
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                  <label class="label"><span class="valid">Mã</span><span class="invalid">Mã bắt buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Code" maxlength="30"
-                    placeholder="{{'Common.autoGenerate'}}">
-                </div>
-              </div>
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
@@ -47,9 +40,18 @@
                   </nb-select>
                 </div>
               </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Priority'), 'warning')">
+                  <label class="label">
+                    <span class="valid">{{'Helpdesk.Route.priority' | translate | headtitlecase}}</span>
+                    <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Helpdesk.Route.priority')} | headtitlecase }}
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Priority" placeholder="{{'Helpdesk.Route.priority' | translate | headtitlecase}}">
+                </div>
+              </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
-                  <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
+                  <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}} (*)</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }}
                       (*)</span></label>
                   <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="3"></textarea>
                 </div>
@@ -58,16 +60,13 @@
 
             <!-- Confition form -->
             <hr>
-            <label class="label">Các điều kiện áp dụng</label>
+            <label class="label">{{'Helpdesk.Route.conditions' | translate | headtitlecase}}</label>
             <div class="row">
               <div class="col-sm-1 label">Stt</div>
               <div class="col-sm-10">
                 <div class="row">
-                  <div class="col-sm-4 label">{{'Common.parameter' | translate | headtitlecase}}</div>
-                  <div class="col-sm-3 label">{{'Common.condition' | translate | headtitlecase}}</div>
-                  <div class="col-sm-2 label">{{'Common.type' | translate | headtitlecase}}</div>
-                  <div class="col-sm-2 label">{{'Common.data' | translate | headtitlecase}}</div>
-                  <div class="col-sm-1 label">{{'Common.stopOnFailed' | translate | headtitlecase}}</div>
+                  <div class="col-sm-5 label">{{'Common.parameter' | translate | headtitlecase}}</div>
+                  <div class="col-sm-7 label">{{'Common.data' | translate | headtitlecase}}</div>
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
@@ -127,30 +126,30 @@
                           </nb-select>
                         </div>
                       </div> -->
-                      <div class="col-sm-6">
+                      <div class="col-sm-7">
                         <div class="form-group">
                           <label class="label">{{'Common.data' | translate | headtitlecase}}</label>
                           <ngx-select2 *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'OBJECT' || condition.get('Cond')?.value?.DefaultDataType == 'OBJECTS'" formControlName="Data"
                             [select2Option]="getSlect2ForConditionData(condition.get('Cond')?.value)" [data]="getSelect2DataListForConditionData(condition.get('Cond')?.value)">
                           </ngx-select2>
                           <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'INTEGER'" nbInput
-                            fullWidth formControlName="Data" placeholder="Số nguyên">
+                            fullWidth formControlName="Data" placeholder="{{'Common.DataType.integer' | translate | headtitlecase}}">
                           <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DOUBLE'" nbInput
                             fullWidth formControlName="Data" placeholder="Sớ thực">
                           <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DATE_TIME'"
                             [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" nbInput fullWidth formControlName="Data"
-                            placeholder="Ngày giờ">
+                            placeholder="{{'Common.DataType.datetimee' | translate | headtitlecase}}">
                           <input type="text" *ngIf="!condition.get('Cond')?.value?.DefaultDataType" nbInput
-                            fullWidth formControlName="Data" placeholder="Số nguyên">
+                            fullWidth formControlName="Data" placeholder="{{'Common.DataType.string' | translate | headtitlecase}}">
                           <owl-date-time #dt1></owl-date-time>
                         </div>
                       </div>
-                      <div class="col-sm-1">
+                      <!-- <div class="col-sm-1">
                         <div class="form-group">
                           <label class="label">{{'Common.break' | translate | headtitlecase}}</label>
                           <nb-checkbox formControlName="BreakOnFalse" title="Dừng khi điều kiện này sai"></nb-checkbox>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                   <div class="col-sm-1">
@@ -170,7 +169,7 @@
 
             <!-- Action form -->
             <hr>
-            <label class="label">Các hành động</label>
+            <label class="label">{{'Helpdesk.Route.actions' | translate | headtitlecase}}</label>
             <div class="row">
               <div class="col-sm-1 label">Stt</div>
               <div class="col-sm-10">

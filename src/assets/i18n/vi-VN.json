@@ -66,6 +66,7 @@
       "in": "thuộc"
     },
     "DataType": {
+      "string": "chuỗi",
       "int": "số nguyên",
       "double": "số thực",
       "date": "ngày tháng",
@@ -343,6 +344,9 @@
       "options": "các tùy chọn tham số",
       "defaultOperator": "điều kiện mặc định",
       "defaultDataType": "kểu dữ liệu mặc định"
+    },
+    "Route": {
+      "priority": "ưu tiên"
     },
     "saveContact": "lưu liên hệ",
     "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`"

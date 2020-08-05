@@ -12,7 +12,7 @@
           <div [formGroup]="formItem">
             <input formControlName="Name_old" type="hidden">
             <div class="row">
-              <div class="col-sm-3">
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}} (*)</span><span
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
@@ -44,6 +44,7 @@
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Helpdesk.Param.defaultDataType')} | headtitlecase }}
                       (*)</span></label>
                       <nb-select size="medium" formControlName="DefaultDataType" fullWidth placeholder="{{'Common.dataType' | translate | headtitlecase}}">
+                        <nb-option value="STRING">{{'Common.DataType.string' | translate | headtitlecase}}</nb-option>
                         <nb-option value="INTEGER">{{'Common.DataType.int' | translate | headtitlecase}}</nb-option>
                         <nb-option value="DOUBLE">{{'Common.DataType.float' | translate | headtitlecase}}</nb-option>
                         <nb-option value="DATE">{{'Common.DataType.date' | translate | headtitlecase}}</nb-option>
@@ -53,13 +54,23 @@
                         <nb-option value="OBJECTS">{{'Common.DataType.objects' | translate | headtitlecase}}</nb-option>
                       </nb-select>
                 </div>
-              </div><div class="col-sm-3">
+              </div>
+              <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('RemoteDataSource'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.remoteDataSource' | translate | headtitlecase}}</span><span
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.remoteDataSource')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="RemoteDataSource"
                     placeholder="{{'Common.remoteDataSource'}}">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('RemoteDataResource'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.remoteDataResource' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.remoteDataResource')} | headtitlecase }}
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="RemoteDataResource"
+                    placeholder="{{'Common.remoteDataResource'}}">
                 </div>
               </div>
               <div class="col-sm-12">

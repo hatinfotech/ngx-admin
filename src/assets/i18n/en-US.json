@@ -66,6 +66,7 @@
       "in": "in"
     },
     "DataType": {
+      "string": "string",
       "int": "integer",
       "double": "double",
       "date": "date",
@@ -338,6 +339,9 @@
     },
     "Param": {
       "options": "param options"
+    },
+    "Route": {
+      "priority": "priority"
     },
     "saveContact": "save contact",
     "changeStateConfirm": "change state for `{{description}}`"

@@ -76,6 +76,7 @@ export class HelpdeskParamFormComponent extends DataManagerFormComponent<Helpdes
       DefaultOperator: ['', Validators.required],
       DefaultDataType: ['', Validators.required],
       RemoteDataSource: [''],
+      RemoteDataResource: [''],
       Description: ['', Validators.required],
       Options: this.formBuilder.array([]),
     });

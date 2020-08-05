@@ -142,7 +142,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
   }
 
   async init() {
-    this.paramList = (await this.apiService.getPromise<HelpdeskParamModel[]>('/helpdesk/params', { includeOptions: true })).map(item => ({ ...item, id: item.Name, text: item.Name }));
+    this.paramList = (await this.apiService.getPromise<HelpdeskParamModel[]>('/helpdesk/params', { includeOptions: true })).map(item => ({ ...item, id: item.Name, text: item.Description }));
     return super.init();
   }
 
@@ -198,6 +198,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
       State: [{ disabled: true, value: '' }],
       Name: ['', Validators.required],
       Description: ['', Validators.required],
+      Priority: ['999'],
       Conditions: this.formBuilder.array([]),
       Actions: this.formBuilder.array([]),
     });
@@ -235,7 +236,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
       Cond: ['', Validators.required],
       Operator: ['EQ', Validators.required],
       Data: [''],
-      BreakOnFalse: [''],
+      // BreakOnFalse: [''],
     });
 
     if (data) {

@@ -139,6 +139,7 @@ export class HelpdeskParamModel {
   DefaultDataType?: string;
   DefaultOperator?: string;
   RemoteDataSource?: string;
+  RemoteDataResource?: string;
 
   Options?: HelpdeskParamOptionModel[];
 }
