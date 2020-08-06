@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { HelpdeskRouteModel, HelpdeskRouteConditionModel, HelpdeskRouteActionModel, HelpdeskParamModel } from '../../../../models/helpdesk.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -160,6 +160,16 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
     super.executeGet(params, success, error);
   }
 
+  /** Execute api put */
+  // executePut(params: any, data: HelpdeskRouteModel[], success: (data: HelpdeskRouteModel[]) => void, error: (e: any) => void) {
+  //   super.executePut(params, data, success, error);
+  // }
+
+  // /** Execute api post */
+  // executePost(params: any, data: HelpdeskRouteModel[], success: (data: HelpdeskRouteModel[]) => void, error: (e: any) => void) {
+  //   super.executePost(params, data, success, error);
+  // }
+
   formLoad(formData: HelpdeskRouteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskRouteModel) => void) {
     super.formLoad(formData, (index, newForm, itemFormData) => {
 
@@ -306,5 +316,16 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
     // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Action Form */
+
+
+  getRawFormData() {
+    const data = super.getRawFormData();
+    console.log(data);
+    return data;
+  }
+
+  onDateTimeChange(event: { value: Date[] }, field: FormControl) {
+    field.setValue(event.value.map(dt => dt.toISOString()).join(' ~ '));
+  }
 
 }

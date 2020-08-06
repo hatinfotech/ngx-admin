@@ -44,14 +44,18 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Priority'), 'warning')">
                   <label class="label">
                     <span class="valid">{{'Helpdesk.Route.priority' | translate | headtitlecase}}</span>
-                    <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Helpdesk.Route.priority')} | headtitlecase }}
+                    <span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Helpdesk.Route.priority')} | headtitlecase }}
                       (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Priority" placeholder="{{'Helpdesk.Route.priority' | translate | headtitlecase}}">
+                  <input type="text" nbInput fullWidth formControlName="Priority"
+                    placeholder="{{'Helpdesk.Route.priority' | translate | headtitlecase}}">
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}} (*)</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }}
+                  <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}}
+                      (*)</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }}
                       (*)</span></label>
                   <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="3"></textarea>
                 </div>
@@ -129,19 +133,34 @@
                       <div class="col-sm-7">
                         <div class="form-group">
                           <label class="label">{{'Common.data' | translate | headtitlecase}}</label>
-                          <ngx-select2 *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'OBJECT' || condition.get('Cond')?.value?.DefaultDataType == 'OBJECTS'" formControlName="Data"
-                            [select2Option]="getSlect2ForConditionData(condition.get('Cond')?.value)" [data]="getSelect2DataListForConditionData(condition.get('Cond')?.value)">
+                          <ngx-select2
+                            *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'OBJECT' || condition.get('Cond')?.value?.DefaultDataType == 'OBJECTS'"
+                            formControlName="Data"
+                            [select2Option]="getSlect2ForConditionData(condition.get('Cond')?.value)"
+                            [data]="getSelect2DataListForConditionData(condition.get('Cond')?.value)">
                           </ngx-select2>
+
                           <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'INTEGER'" nbInput
-                            fullWidth formControlName="Data" placeholder="{{'Common.DataType.integer' | translate | headtitlecase}}">
+                            fullWidth formControlName="Data"
+                            placeholder="{{'Common.DataType.integer' | translate | headtitlecase}}">
+
                           <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DOUBLE'" nbInput
                             fullWidth formControlName="Data" placeholder="Sớ thực">
-                          <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DATE_TIME'"
-                            [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" nbInput fullWidth formControlName="Data"
-                            placeholder="{{'Common.DataType.datetimee' | translate | headtitlecase}}">
-                          <input type="text" *ngIf="!condition.get('Cond')?.value?.DefaultDataType" nbInput
-                            fullWidth formControlName="Data" placeholder="{{'Common.DataType.string' | translate | headtitlecase}}">
-                          <owl-date-time #dt1></owl-date-time>
+
+                          <!-- <input (dateTimeChange)="onDateTimeChange($event, condition.get('Data'))" type="text"
+                            *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DATE_TIME'"
+                            [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [selectMode]="'range'" nbInput fullWidth formControlName="Data"
+                            placeholder="{{'Common.DataType.datetime' | translate | headtitlecase}}">
+                          <owl-date-time #dt1></owl-date-time> -->
+                          <ngx-datetime-picker *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DATE_TIME'"
+                            formControlName="Data" [selectMode]="'range'"
+                            placeholder="{{'Common.DataType.datetime' | translate | headtitlecase}}">
+                          </ngx-datetime-picker>
+
+
+                          <input type="text" *ngIf="!condition.get('Cond')?.value?.DefaultDataType" nbInput fullWidth
+                            formControlName="Data"
+                            placeholder="{{'Common.DataType.string' | translate | headtitlecase}}">
                         </div>
                       </div>
                       <!-- <div class="col-sm-1">

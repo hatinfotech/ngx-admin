@@ -15,6 +15,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { Select2Module } from '../../../vendor/ng2-select2/lib/ng2-select2';
 import { CardHeaderComponent } from './card-header/card-header.component';
 import { CardHeaderCustomComponent } from './card-header/card-header-custom.component';
+import { DatetimPickerComponent } from './datetime-picker/datetime-picker.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { CardHeaderCustomComponent } from './card-header/card-header-custom.comp
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
-    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent,
+    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent, DatetimPickerComponent,
   ],
   imports: [
     CommonModule,
@@ -65,7 +66,7 @@ import { CardHeaderCustomComponent } from './card-header/card-header-custom.comp
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
-    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent,
+    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent, DatetimPickerComponent,
   ],
 })
 export class CustomElementModule { }

@@ -57,39 +57,12 @@ export function HttpLoaderFactory(http: HttpClient) {
 export class DynamicLocaleId extends String {
   constructor(public translate: TranslateService) {
     super();
-
-    // (function checkLocalStorageOnline() {
-    //   if (localStorage && translate) {
-    //     let locale = localStorage.getItem('configuration.locale');
-    //     if (!locale) {
-    //       const browserLangCode = translate.getBrowserLang();
-    //       locale = browserLangCode.match(/en|vi/) ? browserLangCode : 'en-US';
-    //     }
-    //     // $this.locale$.next({locale: locale, skipUpdate: true});
-    //     translate.use(locale);
-    //   } else {
-    //     setTimeout(() => {
-    //       checkLocalStorageOnline();
-    //     }, 100);
-    //   }
-    // })();
-
   }
 
   toString() {
     return this.translate.currentLang;
   }
 }
-
-// export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
-//   align: 'right',
-//   allowNegative: true,
-//   decimal: '.',
-//   precision: 0,
-//   prefix: '',
-//   suffix: ' ' + this.,
-//   thousands: ',',
-// };
 
 @NgModule({
   declarations: [
