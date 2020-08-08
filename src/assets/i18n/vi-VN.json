@@ -63,7 +63,8 @@
       "ge": "lớn hơn hoặc bằng",
       "ne": "khác",
       "bw": "trong khoản",
-      "in": "thuộc"
+      "in": "thuộc",
+      "regex": "so khớp"
     },
     "DataType": {
       "string": "chuỗi",
@@ -73,7 +74,8 @@
       "time": "giờ",
       "datetime": "ngày giờ",
       "object": "đới tượng",
-      "objects": "nhiều đối tượng"
+      "objects": "nhiều đối tượng",
+      "boolean": "đúng/sai"
     },
     "create": "tạo",
     "update": "cập nhật",
@@ -152,7 +154,10 @@
     "data": "dữ liệu",
     "stopOnFailed": "dừng khi sai",
     "label": "nhãn",
-    "remoteDataSource": "nguồn dữ liệu"
+    "remoteDataSource": "nguồn dữ liệu",
+    "remoteDataResource": "remote data resource",
+    "breakOnFail": "dừng khi gặp lỗi",
+    "dataType": "kiểu dữ liệu"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -346,7 +351,14 @@
       "defaultDataType": "kểu dữ liệu mặc định"
     },
     "Route": {
-      "priority": "ưu tiên"
+      "Action": {
+        "parameter": "tham số cho hành động",
+        "value": "giá trị cho tham số"
+      },
+      "priority": "ưu tiên",
+      "conditions": "các điều kiện so sánh",
+      "actions": "các hành động được thự thi",
+      "action": "hành động"
     },
     "saveContact": "lưu liên hệ",
     "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`"

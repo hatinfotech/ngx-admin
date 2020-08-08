@@ -11,6 +11,8 @@ import { HelpdeskRouteListComponent } from './route/helpdesk-route-list/helpdesk
 import { HelpdeskRouteFormComponent } from './route/helpdesk-route-form/helpdesk-route-form.component';
 import { HelpdeskParamListComponent } from './param/helpdesk-param-list/helpdesk-param-list.component';
 import { HelpdeskParamFormComponent } from './param/helpdesk-param-form/helpdesk-param-form.component';
+import { HelpdeskActionListComponent } from './action/helpdesk-action-list/helpdesk-action-list.component';
+import { HelpdeskActionFormComponent } from './action/helpdesk-action-form/helpdesk-action-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -103,6 +105,25 @@ const routes: Routes = [{
       path: 'param/form/:id',
       canActivate: [AuthGuardService],
       component: HelpdeskParamFormComponent,
+    },
+    // Action
+    {
+      path: 'action/list',
+      canActivate: [AuthGuardService],
+      component: HelpdeskActionListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'action/form',
+      canActivate: [AuthGuardService],
+      component: HelpdeskActionFormComponent,
+    },
+    {
+      path: 'action/form/:id',
+      canActivate: [AuthGuardService],
+      component: HelpdeskActionFormComponent,
     },
   ],
 }];

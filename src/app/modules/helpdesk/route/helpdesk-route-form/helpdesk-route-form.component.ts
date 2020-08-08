@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-helpdesk-route-form',
@@ -185,11 +186,22 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
 
       // Actions form load
       if (itemFormData.Actions) {
-        itemFormData.Actions.forEach(action => {
+        itemFormData.Actions.forEach((action, actionIndex) => {
+          // action['Parameters'] = [{}];
           const newActionFormGroup = this.makeNewActionFormGroup(action);
           this.getActions(index).push(newActionFormGroup);
           const comIndex = this.getActions(index).length - 1;
           this.onAddActionFormGroup(index, comIndex, newActionFormGroup);
+
+
+          if (action.Parameters) {
+            action.Parameters.forEach((parameter, parameterIndex) => {
+              const newActionParameterFormGroup = this.makeNewActionParameterFormGroup(parameter);
+              this.getActionParameters(newActionFormGroup, actionIndex).push(newActionParameterFormGroup);
+              const comIndex2 = this.getActionParameters(newActionFormGroup, actionIndex).length - 1;
+              this.onAddActionParameterFormGroup(index, comIndex2, newActionParameterFormGroup);
+            });
+          }
         });
       }
 
@@ -284,7 +296,9 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
       Id: [''],
       Type: [''],
       Action: [''],
-      Parameters: [''],
+      // Parameters: [''],
+      BreakOnFail: [true],
+      Parameters: this.formBuilder.array([]),
     });
 
     if (data) {
@@ -317,6 +331,81 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
   }
   /** End Action Form */
 
+
+  /** Action Parameter Form */
+  makeNewActionParameterFormGroup(data?: HelpdeskRouteActionModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      Id: [''],
+      Parameter: [''],
+      Data: [''],
+    });
+
+    if (data) {
+      // data['Id_old'] = data['Id'];
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+  getActionParameters(parentFormGroup: FormGroup, formGroupIndex: number) {
+    return parentFormGroup.get('Parameters') as FormArray;
+  }
+  addActionParameterFormGroup(parentFormGroup: FormGroup, formGroupIndex: number) {
+    // this.componentList[formGroupIndex].push([]);
+    const newFormGroup = this.makeNewActionParameterFormGroup();
+    this.getActionParameters(parentFormGroup, formGroupIndex).push(newFormGroup);
+    this.onAddActionParameterFormGroup(formGroupIndex, this.getActions(formGroupIndex).length - 1, newFormGroup);
+    return false;
+  }
+  removeActionParameterGroup(parentFormGroup: FormGroup, formGroupIndex: number, index: number) {
+    this.getActionParameters(parentFormGroup, formGroupIndex).removeAt(index);
+    // this.componentList[formGroupIndex].splice(index, 1);
+    this.onRemoveActionParameterFormGroup(formGroupIndex, index);
+    return false;
+  }
+  onAddActionParameterFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+    // this.componentList[mainIndex].push([]);
+  }
+  onRemoveActionParameterFormGroup(mainIndex: number, index: number) {
+    // this.componentList[mainIndex].splice(index, 1);
+  }
+
+  getSlect2ForActionParameterData(param: HelpdeskParamModel) {
+    const option = {
+      placeholder: this.commonService.translateText('Common.param'),
+      allowClear: true,
+      width: '100%',
+      dropdownAutoWidth: true,
+      minimumInputLength: 0,
+      tags: true,
+      multiple: param.DefaultDataType === 'OBJECTS',
+      keyMap: {
+        id: 'id',
+        text: 'text',
+      },
+    };
+
+    if (param.RemoteDataSource) {
+      option['ajax'] = {
+        url: params => {
+          return this.apiService.buildApiUrl(param.RemoteDataSource, { 'search': params['term'], includeIdText: true });
+        },
+        delay: 300,
+        processResults: (data: any, params: any) => {
+          // console.info(data, params);
+          return { results: data };
+        },
+      };
+    }
+    return option;
+  }
+
+  getSelect2DataListForActionParamaterData(param: HelpdeskParamModel) {
+    if (!param.RemoteDataSource && param.Options) {
+      return param.Options.map(item => ({ ...item, id: item.Data, text: item.Label }));
+    }
+    return null;
+  }
+  /** End Action Parameter Form */
 
   getRawFormData() {
     const data = super.getRawFormData();

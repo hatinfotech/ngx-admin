@@ -104,32 +104,6 @@
                           </ngx-select2>
                         </div>
                       </div>
-                      <!-- <div class="col-sm-3">
-                        <div class="form-group">
-                          <label class="label">{{'Common.condition' | translate | headtitlecase}}</label>
-                          <nb-select size="medium" formControlName="Operator" fullWidth>
-                            <nb-option value="">So sánh...</nb-option>
-                            <nb-option value="LT">Nhỏ hơn</nb-option>
-                            <nb-option value="LE">Nhỏ hơn hoặc bằng</nb-option>
-                            <nb-option value="EQ">Bằng</nb-option>
-                            <nb-option value="GE">Lớn hơn hoặc bằng</nb-option>
-                            <nb-option value="GT">Lớn hơn</nb-option>
-                            <nb-option value="NE">Khác</nb-option>
-                          </nb-select>
-                        </div>
-                      </div>
-                      <div class="col-sm-2">
-                        <div class="form-group">
-                          <label class="label">{{'Common.type' | translate | headtitlecase}}</label>
-                          <nb-select size="medium" formControlName="Type" fullWidth>
-                            <nb-option value="">Kiểu DL...</nb-option>
-                            <nb-option value="INTEGER">Số nguyên</nb-option>
-                            <nb-option value="DOUBLE">Số thực</nb-option>
-                            <nb-option value="DATETIME">Ngày giờ</nb-option>
-                            <nb-option value="PRODUCTGROUP">Danh mục sản phẩm</nb-option>
-                          </nb-select>
-                        </div>
-                      </div> -->
                       <div class="col-sm-7">
                         <div class="form-group">
                           <label class="label">{{'Common.data' | translate | headtitlecase}}</label>
@@ -147,28 +121,17 @@
                           <input type="text" *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DOUBLE'" nbInput
                             fullWidth formControlName="Data" placeholder="Sớ thực">
 
-                          <!-- <input (dateTimeChange)="onDateTimeChange($event, condition.get('Data'))" type="text"
-                            *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DATE_TIME'"
-                            [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [selectMode]="'range'" nbInput fullWidth formControlName="Data"
-                            placeholder="{{'Common.DataType.datetime' | translate | headtitlecase}}">
-                          <owl-date-time #dt1></owl-date-time> -->
                           <ngx-datetime-picker *ngIf="condition.get('Cond')?.value?.DefaultDataType == 'DATE_TIME'"
                             formControlName="Data" [selectMode]="'range'"
                             placeholder="{{'Common.DataType.datetime' | translate | headtitlecase}}">
                           </ngx-datetime-picker>
 
-
-                          <input type="text" *ngIf="!condition.get('Cond')?.value?.DefaultDataType" nbInput fullWidth
-                            formControlName="Data"
+                          <input type="text"
+                            *ngIf="!condition.get('Cond')?.value?.DefaultDataType || condition.get('Cond')?.value?.DefaultDataType == 'STRING'"
+                            nbInput fullWidth formControlName="Data"
                             placeholder="{{'Common.DataType.string' | translate | headtitlecase}}">
                         </div>
                       </div>
-                      <!-- <div class="col-sm-1">
-                        <div class="form-group">
-                          <label class="label">{{'Common.break' | translate | headtitlecase}}</label>
-                          <nb-checkbox formControlName="BreakOnFalse" title="Dừng khi điều kiện này sai"></nb-checkbox>
-                        </div>
-                      </div> -->
                     </div>
                   </div>
                   <div class="col-sm-1">
@@ -191,53 +154,34 @@
             <label class="label">{{'Helpdesk.Route.actions' | translate | headtitlecase}}</label>
             <div class="row">
               <div class="col-sm-1 label">Stt</div>
-              <div class="col-sm-10">
+              <div class="col-sm-11">
                 <div class="row">
-                  <div class="col-sm-6 label">Hành động</div>
-                  <div class="col-sm-6 label">Tham số</div>
+                  <div class="col-sm-11 label">{{'Helpdesk.Route.action' | translate | headtitlecase}}</div>
+                  <div class="col-sm-1 label">{{'Common.breakOnFail' | translate | headtitlecase}}</div>
+                  <!-- <div class="col-sm-1 label">{{'Common.breakOnFail' | translate | headtitlecase}}</div> -->
                 </div>
               </div>
-              <div class="col-sm-1" style="text-align: center;">
+              <!-- <div class="col-sm-1" style="text-align: center;">
                 <button nbButton status="success" (click)="addActionFormGroup(i)" size="medium"
                   style="width: 100%; margin-bottom: 3px;" hero>
                   <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                 </button>
-              </div>
+              </div> -->
             </div>
 
-            <div formArrayName="Actions" class="form-details">
+            <div formArrayName="Actions" class="form-details" [sortablejs]="getActions(i)"
+              [sortablejsOptions]="{ handle: '.sorting-handle' }">
               <div class="form-detail-item" *ngFor="let action of getActions(i).controls; let id=index"
                 [formGroup]="action">
+                <hr>
                 <div class="row">
                   <div class="col-sm-1">
                     <div class="form-group">
                       <label class="label">Stt</label>
-                      <input nbInput fullWidth disabled="true" value="{{ id + 1 }}" style="text-align: center;">
+                      <input nbInput fullWidth disabled="true" class="sorting-handle" value="{{ id + 1 }}"
+                        style="text-align: center;">
                       <input type="hidden" formControlName="Id">
                     </div>
-                  </div>
-                  <div class="col-sm-10">
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label class="label">Loại</label>
-                          <nb-select size="medium" formControlName="Action" fullWidth>
-                            <nb-option value="">Hành động...</nb-option>
-                            <nb-option value="CREATE_TICKET">Tạo yêu cầu</nb-option>
-                            <nb-option value="TRANSFER_TICKET_TO_GROUP">Chuyển yêu cầu đến</nb-option>
-                            <nb-option value="ARCHIVE">Lưu trữ</nb-option>
-                          </nb-select>
-                        </div>
-                      </div>
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label class="label">Tham số</label>
-                          <input type="text" nbInput fullWidth formControlName="Parameters" placeholder="Tham số">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-1">
                     <div class="form-group">
                       <label class="label">CM</label>
                       <button nbButton status="danger" hero size="medium" (click)="removeActionGroup(i, id)"
@@ -245,7 +189,159 @@
                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                       </button>
                     </div>
+                    <div class="form-group">
+                      <label class="label">Del</label>
+                      <button nbButton status="success" (click)="addActionFormGroup(i)" size="medium"
+                      style="width: 100%; margin-bottom: 3px;" hero>
+                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                    </button>
+                    </div>
+
                   </div>
+                  <div class="col-sm-11">
+                    <div class="row">
+                      <div class="col-sm-11">
+                        <div class="form-group">
+                          <label class="label">Loại</label>
+                          <nb-select size="medium" formControlName="Action" fullWidth>
+                            <nb-option value="">Hành động...</nb-option>
+                            <!-- <nb-option value="SET_VALUE">Gán giá trị</nb-option> -->
+                            <nb-option value="CREATE_TICKET">Tạo yêu cầu</nb-option>
+                            <nb-option value="TRANSFER_TICKET_TO_GROUP">Chuyển yêu cầu đến</nb-option>
+                            <!-- <nb-option value="ARCHIVE">Lưu trữ</nb-option> -->
+                          </nb-select>
+                        </div>
+                      </div>
+                      <!-- <div class="col-sm-6">
+                        <div class="form-group">
+                          <label class="label">Tham số</label>
+                          <ngx-select2
+                            formControlName="Paramaters"
+                            [select2Option]="select2OptionForActionParammeters"
+                            [data]="actionParameters">
+                          </ngx-select2>
+                        </div>
+                      </div> -->
+                      <div class="col-sm-1">
+                        <div class="form-group">
+                          <label class="label">{{'Common.break' | translate | headtitlecase}}</label>
+                          <nb-checkbox formControlName="BreakOnFail" title="Dừng khi lỗi"></nb-checkbox>
+                        </div>
+                      </div>
+                      <div class="col-sm-12">
+
+
+
+                        <div style="border: 1px solid #e4e9f2;
+                        border-radius: 0.5rem;
+                        margin: -5px;
+                        padding: 0.5rem;
+                        padding-bottom: 0px;
+                        margin-bottom: 0.5rem;">
+                          <!-- Action parameters form -->
+                          <!-- <label class="label">{{'Helpdesk.Route.actionParameters' | translate | headtitlecase}}</label> -->
+                          <div class="row">
+                            <div class="col-sm-1 label">Stt</div>
+                            <div class="col-sm-10">
+                              <div class="row">
+                                <div class="col-sm-5 label">{{'Helpdesk.Route.Action.parameter' | translate | headtitlecase}}
+                                </div>
+                                <div class="col-sm-7 label">{{'Helpdesk.Route.Action.value' | translate | headtitlecase}}
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-sm-1" style="text-align: center;">
+                              <button nbButton status="success" (click)="addActionParameterFormGroup(action, i)"
+                                size="medium" style="width: 100%; margin-bottom: 3px;" hero>
+                                <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div formArrayName="Parameters" class="form-details"
+                            [sortablejs]="getActionParameters(action, id)"
+                            [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                            <div class="form-detail-item"
+                              *ngFor="let parameter of getActionParameters(action, i).controls; let ip=index"
+                              [formGroup]="parameter">
+                              <div class="row">
+                                <div class="col-sm-1">
+                                  <div class="form-group">
+                                    <label class="label">Stt</label>
+                                    <input nbInput fullWidth disabled="true" class="sorting-handle" value="{{ ip + 1 }}"
+                                      style="text-align: center;">
+                                    <input type="hidden" formControlName="Id">
+                                  </div>
+                                </div>
+                                <div class="col-sm-10">
+                                  <div class="row">
+                                    <div class="col-sm-5">
+                                      <div class="form-group">
+                                        <label class="label">{{'Common.parameter' | translate | headtitlecase}}</label>
+                                        <ngx-select2 formControlName="Parameter" [data]="paramList"
+                                          [select2Option]="select2OptionForParam">
+                                        </ngx-select2>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-7">
+                                      <div class="form-group">
+                                        <label class="label">{{'Common.data' | translate | headtitlecase}}</label>
+                                        <ngx-select2
+                                          *ngIf="parameter.get('Parameter')?.value?.DefaultDataType == 'OBJECT' || parameter.get('Parameter')?.value?.DefaultDataType == 'OBJECTS'"
+                                          formControlName="Data"
+                                          [select2Option]="getSlect2ForActionParameterData(parameter.get('Parameter')?.value)"
+                                          [data]="getSelect2DataListForActionParamaterData(parameter.get('Parameter')?.value)">
+                                        </ngx-select2>
+
+                                        <input type="text" *ngIf="parameter.get('Parameter')?.value?.DefaultDataType == 'INTEGER'" nbInput
+                                          fullWidth formControlName="Data"
+                                          placeholder="{{'Common.DataType.integer' | translate | headtitlecase}}">
+
+                                        <input type="text" *ngIf="parameter.get('Parameter')?.value?.DefaultDataType == 'DOUBLE'" nbInput
+                                          fullWidth formControlName="Data" placeholder="Sớ thực">
+
+                                        <ngx-datetime-picker *ngIf="parameter.get('Parameter')?.value?.DefaultDataType == 'DATE_TIME'"
+                                          formControlName="Data" [selectMode]="'range'"
+                                          placeholder="{{'Common.DataType.datetime' | translate | headtitlecase}}">
+                                        </ngx-datetime-picker>
+
+                                        <input type="text"
+                                          *ngIf="!parameter.get('Parameter')?.value?.DefaultDataType || parameter.get('Parameter')?.value?.DefaultDataType == 'STRING'"
+                                          nbInput fullWidth formControlName="Data"
+                                          placeholder="{{'Common.DataType.string' | translate | headtitlecase}}">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-sm-1">
+                                  <div class="form-group">
+                                    <label class="label">CM</label>
+                                    <button nbButton status="danger" hero size="medium"
+                                      (click)="removeActionParameterGroup(action, id, ip)"
+                                      style="width: 100%; margin-bottom: 3px;">
+                                      <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+                          <!-- End Action parameters form -->
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button nbButton status="danger" hero size="medium" (click)="removeActionGroup(i, id)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div> -->
                 </div>
 
               </div>

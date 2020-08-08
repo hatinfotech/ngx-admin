@@ -128,7 +128,7 @@ export class HelpdeskRouteActionModel {
   No?: string;
   Type?: string;
   Action?: string;
-  Parameters?: string;
+  Parameters?: HelpdeskRouteActionParameterModel[];
 }
 
 export class HelpdeskParamModel {
@@ -149,4 +149,43 @@ export class HelpdeskParamOptionModel {
   Param?: string;
   Data?: string;
   Label?: string;
+}
+
+export class HelpdeskRouteActionParameterModel {
+  Id?: string;
+  Parameter?: string;
+  Data?: string;
+}
+
+export class HelpdeskActionModel {
+  Id?: string;
+  Name?: string;
+  Description?: string;
+  Param?: string;
+  SetValue?: string;
+  ActionFunction?: string;
+
+  Params?: HelpdeskActionParamModel[];
+}
+
+export class HelpdeskActionParamModel {
+  Id?: string;
+  Action?: string;
+  Name?: string;
+  Type?: string;
+  Description?: string;
+  RemoteDataSource?: string;
+  RemoteDataResource?: string;
+
+  Options?: HelpdeskActionParamOptionModel[];
+}
+
+export class HelpdeskActionParamOptionModel {
+  Id?: string;
+  Action?: string;
+  Name?: string;
+  DataType?: string;
+  Description?: string;
+  RemoteDataSource?: string;
+  RemoteDataResource?: string;
 }

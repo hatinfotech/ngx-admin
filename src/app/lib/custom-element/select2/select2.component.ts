@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 import { Select2Options } from '../../../../vendor/ng2-select2/lib/ng2-select2.interface';
+import * as _ from "lodash"
 
 export interface Select2Option {
   [key: string]: any;
@@ -9,6 +10,7 @@ export interface Select2Option {
   width?: string;
   dropdownAutoWidth: boolean;
   minimumInputLength: number;
+  sorter?: boolean | ((a: any, b: any) => boolean);
   keyMap: {
     id: string,
     text: string,

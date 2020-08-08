@@ -37,6 +37,8 @@ import { CKEditorModule } from 'ng2-ckeditor';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { HelpdeskParamListComponent } from './param/helpdesk-param-list/helpdesk-param-list.component';
 import { HelpdeskParamFormComponent } from './param/helpdesk-param-form/helpdesk-param-form.component';
+import { HelpdeskActionListComponent } from './action/helpdesk-action-list/helpdesk-action-list.component';
+import { HelpdeskActionFormComponent } from './action/helpdesk-action-form/helpdesk-action-form.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,8 @@ import { HelpdeskParamFormComponent } from './param/helpdesk-param-form/helpdesk
     HelpdeskRouteFormComponent,
     HelpdeskParamListComponent,
     HelpdeskParamFormComponent,
+    HelpdeskActionListComponent,
+    HelpdeskActionFormComponent,
   ],
   imports: [
     CommonModule,

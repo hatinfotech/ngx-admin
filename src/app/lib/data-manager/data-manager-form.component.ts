@@ -16,6 +16,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   mode: 'dialog' | 'page' | 'inline' = 'page';
   listUrl: string;
 
+  /** Form Structure */
+  get formStructures() {
+    return {};
+  }
+
   /** Main form */
   form = this.formBuilder.group({
     array: this.formBuilder.array([
@@ -674,5 +679,50 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.addFormGroup();
     this.onProcessed();
   }
+
+  /** Form Group function */
+  makeNewChildFormGroup<T>(childName: string, data?: T): FormGroup {
+
+    if (!this.formStructures) {
+      throw Error('Form structure was not defined');
+    }
+
+    const fields = this.formStructures[childName];
+    if (!fields) {
+      throw Error(`Form structure for ${childName} was not defined`);
+    }
+
+    const newForm = this.formBuilder.group(fields);
+    if (data) {
+      const fieldNames = Object.keys(fields);
+      for (let i = 0; i < fieldNames.length; i++) {
+        if (/_old$/.test(fieldNames[i])) {
+          data[fieldNames[i] + '_old'] = data[fieldNames[i]];
+        }
+      }
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+  getChildFormArray(childName: string, parenItem: FormGroup) {
+    return parenItem.get(childName.split('.').pop()) as FormArray;
+  }
+  addChildFormGroup<T>(childName: string, parenItem: FormGroup, parentIndex: number, data?: T) {
+    const newFormGroup = this.makeNewChildFormGroup(childName, data);
+    const childFormArray = this.getChildFormArray(childName, parenItem);
+    childFormArray.push(newFormGroup);
+    this.onAddChildFormGroup(parentIndex, childFormArray.length - 1, newFormGroup);
+    return newFormGroup;
+  }
+  removeChildFormGroup(childName: string, parenItem: FormGroup, parentIndex: number, index: number) {
+    this.getChildFormArray(childName, parenItem).removeAt(index);
+    this.onRemoveChildFormGroup(parentIndex, index);
+    return false;
+  }
+  onAddChildFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+  }
+  onRemoveChildFormGroup(mainIndex: number, index: number) {
+  }
+  /** End Form Group function */
 
 }

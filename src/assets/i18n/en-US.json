@@ -63,7 +63,8 @@
       "ge": "greater than or equal",
       "ne": "not equal",
       "bw": "between",
-      "in": "in"
+      "in": "in",
+      "regex": "regex"
     },
     "DataType": {
       "string": "string",
@@ -73,7 +74,8 @@
       "time": "time",
       "datetime": "date time",
       "object": "object",
-      "objects": "objects"
+      "objects": "objects",
+      "boolean": "boolean"
     },
     "create": "create",
     "update": "update",
@@ -153,7 +155,10 @@
     "data": "data",
     "stopOnFailed": "stop on failed",
     "label": "label",
-    "remoteDataSource": "remote data source"
+    "remoteDataSource": "remote data source",
+    "remoteDataResource": "remote data resource",
+    "breakOnFail": "break on fail",
+    "dataType": "data type"
   },
   "Contact": {
     "name": "contact name",
@@ -341,7 +346,14 @@
       "options": "param options"
     },
     "Route": {
-      "priority": "priority"
+      "Action": {
+        "parameter": "parameter for action",
+        "value": "value for parameter"
+      },
+      "priority": "priority",
+      "conditions": "conditions for compare",
+      "actions": "actions for execute",
+      "action": "action"
     },
     "saveContact": "save contact",
     "changeStateConfirm": "change state for `{{description}}`"

@@ -2,23 +2,23 @@ import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleCh
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
 @Component({
-  selector: 'ngx-datetime-picker',
-  templateUrl: './datetime-pickter.component.html',
-  styleUrls: ['./datetime-picker.component.scss'],
+  selector: 'ngx-textntags',
+  templateUrl: './textntags.component.html',
+  styleUrls: ['./textntags.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DatetimPickerComponent),
+      useExisting: forwardRef(() => TextNTagsComponent),
       multi: true,
     },
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => DatetimPickerComponent),
+      useExisting: forwardRef(() => TextNTagsComponent),
       multi: true,
     },
   ],
 })
-export class DatetimPickerComponent implements ControlValueAccessor, Validator, OnChanges, AfterViewInit {
+export class TextNTagsComponent implements ControlValueAccessor, Validator, OnChanges, AfterViewInit {
 
   onChange: (item: any) => void;
   onTouched: () => void;
@@ -37,6 +37,20 @@ export class DatetimPickerComponent implements ControlValueAccessor, Validator, 
   }
 
   ngAfterViewInit() {
+    // $('textarea.tagged_text').textntags({
+    //   onDataRequest: function (mode, query, triggerChar, callback) {
+    //     var data = [
+    //       { id:1, name:'Daniel Zahariev',  'img':'http://example.com/img1.jpg', 'type':'contact' },
+    //       { id:2, name:'Daniel Radcliffe', 'img':'http://example.com/img2.jpg', 'type':'contact' },
+    //       { id:3, name:'Daniel Nathans',   'img':'http://example.com/img3.jpg', 'type':'contact' }
+    //     ];
+    
+    //     query = query.toLowerCase();
+    //     var found = _.filter(data, function(item) { return item.name.toLowerCase().indexOf(query) > -1; });
+    
+    //    callback.call(this, found);
+    //   }
+    // });
   }
 
   select2Value = '';
