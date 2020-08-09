@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 
-import { ViewCell } from 'ng2-smart-table';
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '../../../services/common.service';
 import { FormControl } from '@angular/forms';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { stat } from 'fs';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { ViewCell } from 'ng2-smart-table';
 
 @Component({
   template: `
@@ -102,7 +102,31 @@ export class SmartTableIconComponent implements ViewCell, OnInit {
 
 @Component({
   selector: 'ngx-smart-table-thumbnail',
-  template: `<div class="thumbnail" [ngStyle]="{'background-image': renderValue}"></div>`,
+  template: `
+    <div class="thumbnail-wrap" [ngStyle]="{'background-image': 'url(assets/icon/eva/image-outline.svg)'}">
+      <div class="thumbnail" [ngStyle]="{'background-image': renderValue}" (click)="onClick()" title="{{title}}"></div>
+    </div>`,
+  styles: [
+    `
+    .thumbnail-wrap {
+      border: 1px solid #ccc;
+      cursor: pointer;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      border-radius: 0.3rem;
+      width: 3rem;
+      min-height: 3rem;
+    }
+    .thumbnail {
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 3rem;
+      min-height: 3rem;
+      border-radius: 0.3rem;
+    }
+  `,
+  ],
 })
 export class SmartTableThumbnailComponent implements ViewCell, OnInit {
   // renderValue: string;
@@ -112,6 +136,7 @@ export class SmartTableThumbnailComponent implements ViewCell, OnInit {
   status: string = 'success';
   display: boolean = false;
   disabled: boolean = false;
+  title = '';
 
   @Input() value: string | number;
   @Input() rowData: any;
@@ -203,10 +228,10 @@ export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, Af
   set status(status: string) {
     if (this.jqueryInput) {
       this.jqueryInput.removeClass('status-primary');
-        this.jqueryInput.removeClass('status-info');
-        this.jqueryInput.removeClass('status-warning');
-        this.jqueryInput.removeClass('status-danger');
-        this.jqueryInput.removeClass('status-success');
+      this.jqueryInput.removeClass('status-info');
+      this.jqueryInput.removeClass('status-warning');
+      this.jqueryInput.removeClass('status-danger');
+      this.jqueryInput.removeClass('status-success');
       if (status) {
         this.jqueryInput.addClass('status-' + status);
       }

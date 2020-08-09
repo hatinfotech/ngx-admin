@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.2.13',
+  version: '2.0.2.14',
+  // 2.0.2.13: Hot update admin product: keep select item after form update
   // 2.0.2.13: Contact detail
   // 2.0.2.9: Permission for each data row (share permission)
   // 2.0.2.7: Update Ivoip Cdrs status icon

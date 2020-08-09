@@ -903,15 +903,15 @@ nb-card nb-tabset nb-tab {
   display: none;
 }
 
-ng2-smart-table {
-  .thumbnail {
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 3rem;
-    min-height: 3rem;
-    border-radius: 0.3rem;
-  }
-}
+// ng2-smart-table {
+  // .thumbnail {
+  //   background-size: cover;
+  //   background-repeat: no-repeat;
+  //   width: 3rem;
+  //   min-height: 3rem;
+  //   border-radius: 0.3rem;
+  // }
+// }
 
 @media (max-width: 40rem) {
   .ng2-smart-table-wrap table {

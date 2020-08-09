@@ -8,7 +8,7 @@ export class ProductModel {
   WarehouseUnit?: string & UnitModel;
   Description?: string;
   Technical?: string;
-  FeaturePicture?: string;
+  FeaturePicture?: string | number;
 
   // References
   Categories?: ProductCategoryModel[];
@@ -42,7 +42,7 @@ export class ProductUnitModel {
 export class ProductPictureModel {
   Id?: number;
   Product?: string;
-  Image?: string;
+  Image?: string | number;
   Description?: string;
 }
 

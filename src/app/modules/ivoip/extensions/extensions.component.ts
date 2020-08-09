@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../../services/api.service';
 import { Router } from '@angular/router';
 import { DataManagerListComponent } from '../../../lib/data-manager/data-manger-list.component';
 import { CommonService } from '../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { PbxExtensionModel } from '../../../models/pbx-extension.model';
+import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
   selector: 'ngx-extensions',

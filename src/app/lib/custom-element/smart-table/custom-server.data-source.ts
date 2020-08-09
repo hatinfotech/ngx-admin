@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { LocalDataSource } from 'ng2-smart-table';
 import { map } from 'rxjs/operators';
 import { ApiService } from '../../../services/api.service';
-import { resolve } from 'url';
+import { LocalDataSource } from 'ng2-smart-table';
 
 @Injectable()
 export class CustomServerDataSource<M> extends LocalDataSource {
@@ -15,6 +14,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
   initSortConfig: any;
   initPagingConf: any;
   initWithUserConfig = false;
+  isLocalUpdate = false;
 
   constructor(protected apiService: ApiService, protected url: string, filterConf?: any, sortConf?: any, pagingConf?: any) {
     super();
@@ -36,6 +36,10 @@ export class CustomServerDataSource<M> extends LocalDataSource {
   }
 
   getElements(): Promise<any> {
+    if (this.isLocalUpdate) {
+      // this.isLocalUpdate = false;
+      return super.getElements();
+    }
     if (this.initWithUserConfig) {
       setTimeout(() => {
         this.setFilter(this.initFilterConf);
@@ -84,7 +88,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
           item['No'] = (paging.page - 1) * paging.perPage + index + 1;
           return item;
         });
-        data = (this.prepareData ? this.prepareData(data) : data);
+        this.data = data = (this.prepareData ? this.prepareData(data) : data);
         return data;
       }),
     ).toPromise();

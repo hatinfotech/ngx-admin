@@ -1,10 +1,10 @@
-import { LocalDataSource, ViewCell } from 'ng2-smart-table';
+import { LocalDataSource, ViewCell, Ng2SmartTableComponent } from 'ng2-smart-table';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { OnInit, Input, AfterViewInit, Type } from '@angular/core';
+import { OnInit, Input, AfterViewInit, Type, ElementRef, ViewChild } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -14,6 +14,7 @@ import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-t
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
 import { DataManagerFormComponent } from './data-manager-form.component';
+import { CustomServerDataSource } from '../custom-element/smart-table/custom-server.data-source';
 
 export class SmartTableSetting {
   mode?: string;
@@ -63,6 +64,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   hasSelect = 'none';
   settings: SmartTableSetting;
   formDialog: Type<DataManagerFormComponent<M>>;
+  @ViewChild('table') table: Ng2SmartTableComponent;
 
   /** Seleted ids */
   selectedIds: string[] = [];
@@ -561,24 +563,58 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Implement required */
   async openFormDialog(ids?: string[], formDialog?: Type<DataManagerFormComponent<M>>) {
-    return new Promise<{ event: string, data?: M[] }>(resolve => {
-      this.commonService.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
-        context: {
-          inputMode: 'dialog',
-          inputId: ids,
-          onDialogSave: (newData: M[]) => {
-            resolve({ event: 'save', data: newData });
-            this.refresh();
+    return new Promise<{ event: string, data?: M[] }>(async resolve => {
+      ids = ids || [];
+      this.source['isLocalUpdate'] = true;
+      const editedItems = (await this.source.getElements()).filter((f: M) => ids.some(id => id === f[this.idKey]));
+      this.source['isLocalUpdate'] = false;
+      try {
+        this.commonService.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
+          context: {
+            inputMode: 'dialog',
+            inputId: ids,
+            onDialogSave: (newData: M[]) => {
+              resolve({ event: 'save', data: newData });
+              // this.refresh();
+              if (editedItems && editedItems.length > 0) {
+                this.updateItems(editedItems, newData);
+              } else {
+                this.prependItems(newData);
+              }
+            },
+            onDialogClose: () => {
+              resolve({ event: 'close' });
+            },
           },
-          onDialogClose: () => {
-            resolve({ event: 'close' });
-          },
-        },
-        closeOnEsc: false,
-        closeOnBackdropClick: false,
-      });
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      } catch (e) {
+        this.source['isLocalUpdate'] = false;
+        throw Error(e);
+      }
     });
 
+  }
+
+  async updateItems(items: M[], updatedData: M[]) {
+    this.source['isLocalUpdate'] = true;
+    for (let i = 0; i < items.length; i++) {
+      await this.source.update(items[i], updatedData.find(dt => dt[this.idKey] === items[i][this.idKey]));
+    }
+    this.source['isLocalUpdate'] = false;
+  }
+
+  async prependItems(items: M[]) {
+    this.source['isLocalUpdate'] = true;
+    for (let i = 0; i < items.length; i++) {
+      await this.source.prepend(items[i]);
+    }
+    this.source['isLocalUpdate'] = false;
+    const rows = this.table.grid.getRows().filter(row => this.selectedItems.some(item => item[this.idKey] === row.getData()[this.idKey]));
+    for (let j = 0; j < rows.length; j++) {
+      this.table.grid.multipleSelectRow(rows[j]);
+    }
   }
 
   choose() {
