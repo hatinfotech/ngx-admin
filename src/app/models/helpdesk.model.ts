@@ -182,10 +182,6 @@ export class HelpdeskActionParamModel {
 
 export class HelpdeskActionParamOptionModel {
   Id?: string;
-  Action?: string;
-  Name?: string;
-  DataType?: string;
-  Description?: string;
-  RemoteDataSource?: string;
-  RemoteDataResource?: string;
+  Data?: string;
+  Label?: string;
 }

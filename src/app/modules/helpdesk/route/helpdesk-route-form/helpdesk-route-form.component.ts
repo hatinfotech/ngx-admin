@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { HelpdeskRouteModel, HelpdeskRouteConditionModel, HelpdeskRouteActionModel, HelpdeskParamModel } from '../../../../models/helpdesk.model';
+import { HelpdeskRouteModel, HelpdeskRouteConditionModel, HelpdeskRouteActionModel, HelpdeskParamModel, HelpdeskActionParamModel, HelpdeskActionModel } from '../../../../models/helpdesk.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
@@ -144,6 +144,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
 
   async init() {
     this.paramList = (await this.apiService.getPromise<HelpdeskParamModel[]>('/helpdesk/params', { includeOptions: true })).map(item => ({ ...item, id: item.Name, text: item.Description }));
+    this.actionList = (await this.apiService.getPromise<HelpdeskActionModel[]>('/helpdesk/actions', { includeParams: true })).map(item => ({ ...item, id: item.Name, text: item.Description, Params: item.Params.map(param => ({ ...param, id: param.Name, text: param.Description })) }));
     return super.init();
   }
 
@@ -291,6 +292,19 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
   /** End Condition Form */
 
   /** Action Form */
+  actionList: HelpdeskActionModel[];
+  select2OptionForAction = {
+    placeholder: this.commonService.translateText('Common.param'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Name',
+      text: 'Description',
+    },
+  };
+
   makeNewActionFormGroup(data?: HelpdeskRouteActionModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
@@ -333,6 +347,21 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
 
 
   /** Action Parameter Form */
+  actionParamList: HelpdeskActionParamModel[];
+  actionParamOption = [
+    {
+      id: 'salesrequest',
+      text: 'Tương tác bán hàng',
+    },
+    {
+      id: 'supportrequest',
+      text: 'Tương tác hỗ trợ',
+    },
+    {
+      id: 'new',
+      text: 'New',
+    },
+  ];
   makeNewActionParameterFormGroup(data?: HelpdeskRouteActionModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
@@ -369,7 +398,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
     // this.componentList[mainIndex].splice(index, 1);
   }
 
-  getSlect2ForActionParameterData(param: HelpdeskParamModel) {
+  getSlect2ForActionParameterData(param: HelpdeskActionParamModel) {
     const option = {
       placeholder: this.commonService.translateText('Common.param'),
       allowClear: true,
@@ -377,7 +406,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
       dropdownAutoWidth: true,
       minimumInputLength: 0,
       tags: true,
-      multiple: param.DefaultDataType === 'OBJECTS',
+      multiple: param.Type === 'OBJECTS',
       keyMap: {
         id: 'id',
         text: 'text',
@@ -399,7 +428,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
     return option;
   }
 
-  getSelect2DataListForActionParamaterData(param: HelpdeskParamModel) {
+  getSelect2DataListForActionParamaterData(param: HelpdeskActionParamModel) {
     if (!param.RemoteDataSource && param.Options) {
       return param.Options.map(item => ({ ...item, id: item.Data, text: item.Label }));
     }

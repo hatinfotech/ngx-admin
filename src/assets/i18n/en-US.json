@@ -75,7 +75,8 @@
       "datetime": "date time",
       "object": "object",
       "objects": "objects",
-      "boolean": "boolean"
+      "boolean": "boolean",
+      "environment": "environment param"
     },
     "create": "create",
     "update": "update",
@@ -158,7 +159,8 @@
     "remoteDataSource": "remote data source",
     "remoteDataResource": "remote data resource",
     "breakOnFail": "break on fail",
-    "dataType": "data type"
+    "dataType": "data type",
+    "add": "add"
   },
   "Contact": {
     "name": "contact name",

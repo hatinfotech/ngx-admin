@@ -63,6 +63,9 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   refresh() {
     // this.loadList();
     this.source.refresh();
+    setTimeout(() => {
+      this.syncSelectedStatus();
+    }, 1000);
   }
 
 }

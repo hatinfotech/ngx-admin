@@ -44,7 +44,7 @@ export abstract class MinierpBaseListComponent<M> extends DataManagerListCompone
   }
 
   /** Api delete funciton */
-  executeDelete(id: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+  async executeDelete(id: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
     super.executeDelete({id: id,
       // 'hosting': this.webHostingService.activeHosting,
     }, success, error, complete);

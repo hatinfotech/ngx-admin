@@ -106,7 +106,7 @@ export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerL
     }
   }
 
-  executeDelete(ids: string[], callback: (result: any) => void) {
+  async executeDelete(ids: string[], callback: (result: any) => void) {
     const params = {};
     ids.forEach((item, index) => {
       params['id' + index] = encodeURIComponent(item);

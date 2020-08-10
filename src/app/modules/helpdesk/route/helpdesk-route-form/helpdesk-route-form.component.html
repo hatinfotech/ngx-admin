@@ -74,9 +74,9 @@
                 </div>
               </div>
               <div class="col-sm-1" style="text-align: center;">
-                <button nbButton status="success" (click)="addConditionFormGroup(i)" size="medium"
+                <button nbButton status="success" (click)="addConditionFormGroup(i)" size="tiny"
                   style="width: 100%; margin-bottom: 3px;" hero>
-                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                  {{'Common.add' | translate | headtitlecase}}
                 </button>
               </div>
             </div>
@@ -153,7 +153,12 @@
             <hr>
             <label class="label">{{'Helpdesk.Route.actions' | translate | headtitlecase}}</label>
             <div class="row">
-              <div class="col-sm-1 label">Stt</div>
+              <div class="col-sm-1 label">
+                <button nbButton status="success" (click)="addActionFormGroup(i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  {{'Common.add' | translate | headtitlecase}}
+                </button>
+              </div>
               <div class="col-sm-11">
                 <div class="row">
                   <div class="col-sm-11 label">{{'Helpdesk.Route.action' | translate | headtitlecase}}</div>
@@ -192,9 +197,9 @@
                     <div class="form-group">
                       <label class="label">Del</label>
                       <button nbButton status="success" (click)="addActionFormGroup(i)" size="medium"
-                      style="width: 100%; margin-bottom: 3px;" hero>
-                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
-                    </button>
+                        style="width: 100%; margin-bottom: 3px;" hero>
+                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                      </button>
                     </div>
 
                   </div>
@@ -203,13 +208,9 @@
                       <div class="col-sm-11">
                         <div class="form-group">
                           <label class="label">Loại</label>
-                          <nb-select size="medium" formControlName="Action" fullWidth>
-                            <nb-option value="">Hành động...</nb-option>
-                            <!-- <nb-option value="SET_VALUE">Gán giá trị</nb-option> -->
-                            <nb-option value="CREATE_TICKET">Tạo yêu cầu</nb-option>
-                            <nb-option value="TRANSFER_TICKET_TO_GROUP">Chuyển yêu cầu đến</nb-option>
-                            <!-- <nb-option value="ARCHIVE">Lưu trữ</nb-option> -->
-                          </nb-select>
+                          <ngx-select2 formControlName="Action" [data]="actionList"
+                            [select2Option]="select2OptionForAction">
+                          </ngx-select2>
                         </div>
                       </div>
                       <!-- <div class="col-sm-6">
@@ -244,16 +245,18 @@
                             <div class="col-sm-1 label">Stt</div>
                             <div class="col-sm-10">
                               <div class="row">
-                                <div class="col-sm-5 label">{{'Helpdesk.Route.Action.parameter' | translate | headtitlecase}}
+                                <div class="col-sm-5 label">
+                                  {{'Helpdesk.Route.Action.parameter' | translate | headtitlecase}}
                                 </div>
-                                <div class="col-sm-7 label">{{'Helpdesk.Route.Action.value' | translate | headtitlecase}}
+                                <div class="col-sm-7 label">
+                                  {{'Helpdesk.Route.Action.value' | translate | headtitlecase}}
                                 </div>
                               </div>
                             </div>
                             <div class="col-sm-1" style="text-align: center;">
                               <button nbButton status="success" (click)="addActionParameterFormGroup(action, i)"
-                                size="medium" style="width: 100%; margin-bottom: 3px;" hero>
-                                <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                size="tiny" style="width: 100%; margin-bottom: 3px;" hero>
+                                {{'Common.add' | translate | headtitlecase}}
                               </button>
                             </div>
                           </div>
@@ -278,7 +281,7 @@
                                     <div class="col-sm-5">
                                       <div class="form-group">
                                         <label class="label">{{'Common.parameter' | translate | headtitlecase}}</label>
-                                        <ngx-select2 formControlName="Parameter" [data]="paramList"
+                                        <ngx-select2 formControlName="Parameter" [data]="action.get('Action')?.value?.Params"
                                           [select2Option]="select2OptionForParam">
                                         </ngx-select2>
                                       </div>
@@ -287,26 +290,33 @@
                                       <div class="form-group">
                                         <label class="label">{{'Common.data' | translate | headtitlecase}}</label>
                                         <ngx-select2
-                                          *ngIf="parameter.get('Parameter')?.value?.DefaultDataType == 'OBJECT' || parameter.get('Parameter')?.value?.DefaultDataType == 'OBJECTS'"
+                                          *ngIf="parameter.get('Parameter')?.value?.Type == 'OBJECT' || parameter.get('Parameter')?.value?.Type == 'OBJECTS' || parameter.get('Parameter')?.value?.Type == 'ENV_PARAM'"
                                           formControlName="Data"
                                           [select2Option]="getSlect2ForActionParameterData(parameter.get('Parameter')?.value)"
-                                          [data]="getSelect2DataListForActionParamaterData(parameter.get('Parameter')?.value)">
+                                          [data]="parameter.get('Parameter')?.value?.Options">
                                         </ngx-select2>
 
-                                        <input type="text" *ngIf="parameter.get('Parameter')?.value?.DefaultDataType == 'INTEGER'" nbInput
-                                          fullWidth formControlName="Data"
+                                        <input type="text"
+                                          *ngIf="parameter.get('Parameter')?.value?.Type == 'INTEGER'"
+                                          nbInput fullWidth formControlName="Data"
                                           placeholder="{{'Common.DataType.integer' | translate | headtitlecase}}">
 
-                                        <input type="text" *ngIf="parameter.get('Parameter')?.value?.DefaultDataType == 'DOUBLE'" nbInput
+                                        <input type="text"
+                                          *ngIf="parameter.get('Parameter')?.value?.Type == 'DOUBLE'" nbInput
                                           fullWidth formControlName="Data" placeholder="Sớ thực">
 
-                                        <ngx-datetime-picker *ngIf="parameter.get('Parameter')?.value?.DefaultDataType == 'DATE_TIME'"
+                                        <ngx-datetime-picker
+                                          *ngIf="parameter.get('Parameter')?.value?.Type == 'DATE_TIME'"
                                           formControlName="Data" [selectMode]="'range'"
                                           placeholder="{{'Common.DataType.datetime' | translate | headtitlecase}}">
                                         </ngx-datetime-picker>
 
+                                          <nb-checkbox
+                                          *ngIf="parameter.get('Parameter')?.value?.Type == 'BOOLEAN'"
+                                          formControlName="Data" title="check"></nb-checkbox>
+
                                         <input type="text"
-                                          *ngIf="!parameter.get('Parameter')?.value?.DefaultDataType || parameter.get('Parameter')?.value?.DefaultDataType == 'STRING'"
+                                          *ngIf="!parameter.get('Parameter')?.value?.Type || parameter.get('Parameter')?.value?.Type == 'STRING'"
                                           nbInput fullWidth formControlName="Data"
                                           placeholder="{{'Common.DataType.string' | translate | headtitlecase}}">
                                       </div>

@@ -410,8 +410,12 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   /** Api delete funciton */
-  executeDelete(id: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
-    this.apiService.delete(this.apiPath, id, success, error, complete);
+  async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+    const deletedItems = await this.convertIdsToItems(ids);
+    this.apiService.delete(this.apiPath, ids, (resp) => {
+      this.removeGridItems(deletedItems);
+      if (success) success(resp);
+    }, error, complete);
   }
 
   // executeDelete(ids: string[], callback: (result: any) => void) {
@@ -435,7 +439,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   refresh() {
-    this.loadList();
+    this.loadList(() => {
+      this.syncSelectedStatus();
+    });
   }
 
   onResume() {
@@ -561,6 +567,13 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return settings;
   }
 
+  async convertIdsToItems(ids: string[]) {
+    this.source['isLocalUpdate'] = true;
+    const editedItems = (await this.source.getElements()).filter((f: M) => ids.some(id => id === f[this.idKey]));
+    this.source['isLocalUpdate'] = false;
+    return editedItems;
+  }
+
   /** Implement required */
   async openFormDialog(ids?: string[], formDialog?: Type<DataManagerFormComponent<M>>) {
     return new Promise<{ event: string, data?: M[] }>(async resolve => {
@@ -577,9 +590,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
               resolve({ event: 'save', data: newData });
               // this.refresh();
               if (editedItems && editedItems.length > 0) {
-                this.updateItems(editedItems, newData);
+                this.updateGridItems(editedItems, newData);
               } else {
-                this.prependItems(newData);
+                this.prependGridItems(newData);
               }
             },
             onDialogClose: () => {
@@ -597,7 +610,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   }
 
-  async updateItems(items: M[], updatedData: M[]) {
+  async updateGridItems(items: M[], updatedData: M[]) {
     this.source['isLocalUpdate'] = true;
     for (let i = 0; i < items.length; i++) {
       await this.source.update(items[i], updatedData.find(dt => dt[this.idKey] === items[i][this.idKey]));
@@ -605,15 +618,42 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     this.source['isLocalUpdate'] = false;
   }
 
-  async prependItems(items: M[]) {
+  async prependGridItems(items: M[]) {
     this.source['isLocalUpdate'] = true;
     for (let i = 0; i < items.length; i++) {
       await this.source.prepend(items[i]);
     }
     this.source['isLocalUpdate'] = false;
+    setTimeout(() => {
+      this.syncSelectedStatus();
+    });
+  }
+
+  async removeGridItems(items: M[]) {
+    this.source['isLocalUpdate'] = true;
+    for (let i = 0; i < items.length; i++) {
+      await this.source.remove(items[i]);
+    }
+    this.source['isLocalUpdate'] = false;
+    setTimeout(() => {
+      const rows = this.table.grid.getRows().filter(row => (this.selectedItems.some(item => item[this.idKey] === row.getData()[this.idKey]) && items.some(item => item[this.idKey] !== row.getData()[this.idKey])));
+      for (let j = 0; j < rows.length; j++) {
+        this.table.grid.multipleSelectRow(rows[j]);
+      }
+    }, 100);
+  }
+
+  syncSelectedStatus() {
     const rows = this.table.grid.getRows().filter(row => this.selectedItems.some(item => item[this.idKey] === row.getData()[this.idKey]));
-    for (let j = 0; j < rows.length; j++) {
-      this.table.grid.multipleSelectRow(rows[j]);
+    for (let i = 0; i < rows.length; i++) {
+      this.table.grid.multipleSelectRow(rows[i]);
+    }
+  }
+
+  selectAll() {
+    const rows = this.table.grid.getRows();
+    for (let i = 0; i < rows.length; i++) {
+      this.table.grid.multipleSelectRow(rows[i]);
     }
   }
 

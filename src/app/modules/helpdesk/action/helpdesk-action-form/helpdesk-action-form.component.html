@@ -36,7 +36,12 @@
             <hr>
             <label class="label">{{'Helpdesk.Param.params' | translate | headtitlecase}}</label>
             <div class="row">
-              <div class="col-sm-1 label">Stt</div>
+              <div class="col-sm-1 label">
+                <button type="button" nbButton status="success" (click)="addChildFormGroup('Main.Params', formItem, i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  {{'Common.add' | translate | headtitlecase}}
+                </button>
+              </div>
               <div class="col-sm-11">
                 <div class="row">
                   <div class="col-sm-3 label">{{'Common.name' | translate | headtitlecase}}</div>
@@ -47,9 +52,11 @@
                 </div>
               </div>
               <!-- <div class="col-sm-1" style="text-align: center;">
-                <button nbButton status="success" (click)="addChildFormGroup('Main.Params', formItem, i)" size="medium"
+                <nb-icon pack="eva" icon="plus-circle-outline" (click)="addChildFormGroup('Main.Params', formItem, i)"
+                  status="success" style="margin-right: 0.8rem; cursor: pointer;"></nb-icon>
+                <button type="button" nbButton status="success" (click)="addChildFormGroup('Main.Params', formItem, i)" size="tiny"
                   style="width: 100%; margin-bottom: 3px;" hero>
-                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                  Add
                 </button>
               </div> -->
             </div>
@@ -113,6 +120,8 @@
                             <nb-option value="OBJECT">{{'Common.DataType.object' | translate | headtitlecase}}
                             </nb-option>
                             <nb-option value="OBJECTS">{{'Common.DataType.objects' | translate | headtitlecase}}
+                            </nb-option>
+                            <nb-option value="ENV_PARAM">{{'Common.DataType.environment' | translate | headtitlecase}}
                             </nb-option>
                           </nb-select>
                         </div>

@@ -75,7 +75,8 @@
       "datetime": "ngày giờ",
       "object": "đới tượng",
       "objects": "nhiều đối tượng",
-      "boolean": "đúng/sai"
+      "boolean": "đúng/sai",
+      "environment": "tham số môi trường"
     },
     "create": "tạo",
     "update": "cập nhật",
@@ -156,8 +157,9 @@
     "label": "nhãn",
     "remoteDataSource": "nguồn dữ liệu",
     "remoteDataResource": "remote data resource",
-    "breakOnFail": "dừng khi gặp lỗi",
-    "dataType": "kiểu dữ liệu"
+    "breakOnFail": "ngắt/lỗi",
+    "dataType": "kiểu dữ liệu",
+    "add": "thêm"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -357,7 +359,7 @@
       },
       "priority": "ưu tiên",
       "conditions": "các điều kiện so sánh",
-      "actions": "các hành động được thự thi",
+      "actions": "các hành động được thực thi",
       "action": "hành động"
     },
     "saveContact": "lưu liên hệ",

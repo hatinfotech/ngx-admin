@@ -274,14 +274,16 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   // }
 
   /** Implement required */
-  openAssignCategoiesDialplog() {
+  async openAssignCategoiesDialplog() {
     if (this.selectedIds.length > 0) {
+      const editedItems = await this.convertIdsToItems(this.selectedIds);
       this.commonService.openDialog(AssignCategoriesFormComponent, {
         context: {
           inputMode: 'dialog',
           inputProducts: this.selectedItems,
           onDialogSave: (newData: ProductModel[]) => {
-            this.refresh();
+            // this.refresh();
+            this.updateGridItems(editedItems, newData);
           },
           onDialogClose: () => {
           },
