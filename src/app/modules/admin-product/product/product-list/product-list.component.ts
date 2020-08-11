@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
-import { ProductModel, ProductCategoryModel } from '../../../../models/product.model';
+import { ProductModel, ProductCategoryModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -14,6 +14,7 @@ import { FormGroup } from '@angular/forms';
 import { FileModel } from '../../../../models/file.model';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { UnitModel } from '../../../../models/unit.model';
 
 @Component({
   selector: 'ngx-product-list',
@@ -169,10 +170,10 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       },
       WarehouseUnit: {
         title: 'ĐVT',
-        type: 'string',
+        type: 'html',
         width: '10%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['WarehouseUnit'] ? this.commonService.getObjectText(product['WarehouseUnit']) : '';
+          return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
         },
       },
       Code: {
@@ -210,7 +211,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         // } else {
         //   delete product['FeaturePictureThumbnail'];
         // }
-        if (typeof product.WarehouseUnit === 'object') {
+        if (product.WarehouseUnit && product.WarehouseUnit.Name) {
           product.WarehouseUnit.text = product.WarehouseUnit.Name;
         }
         return product;
@@ -221,7 +222,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
-      params['includeUnit'] = true;
+      params['includeWarehouseUnit'] = true;
       params['includeFeaturePicture'] = true;
       params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
