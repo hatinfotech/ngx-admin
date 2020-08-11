@@ -1,7 +1,7 @@
 <div class="dialog-wrap" #dialogWrap>
   <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
     <nb-card-header>
-      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.Voucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Purchase.Voucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
       <!-- <nav>
         {{'Sales.SalesVoucher.title' | translate:{action:commonService.translate.instant('Common.preview'), definition:''} | headtitlecase}}
@@ -26,9 +26,9 @@
           </div>
         </div>
         <div>
-          <div class="print-title">{{ 'Sales.SalesVoucher.title' | translate:{action: '', definition: ''} | uppercase }}
+          <div class="print-title">{{ 'Purchase.Voucher.title' | translate:{action: '', definition: ''} | uppercase }}
           </div>
-          <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }}</div>
+          <div class="under-title">{{ data.Code }} - {{ data.DateOfPurchase | date:'short' }}</div>
         </div>
         <div>
           <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
@@ -58,7 +58,7 @@
               </colgroup>
               <tr class="print-voucher-detail-header">
                 <th>{{'Common.noNumber' | translate | headtitlecase}}</th>
-                <th>{{'Sales.technicalDescription' | translate | headtitlecase}}</th>
+                <th>{{'Purchase.technicalDescription' | translate | headtitlecase}}</th>
                 <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                 <th class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</th>
                 <th class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</th>
@@ -67,7 +67,7 @@
               </tr>
               <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{renderValue(detail.ProductName)}} <br>
+                <td>{{renderValue(detail.Product?.Name)}} <br>
                   <!-- <span style="font-size: 10px; font-style: italic;">
                     {{'Common.note' | translate}} : {{detail.Product?.Code}},
                     {{'Common.code' | translate}} : {{detail.Product?.Code}},
@@ -89,8 +89,9 @@
         </div>
         <div>
           <div class="under-line">{{'Common.note' | translate | headtitlecase}}: {{renderValue(data.Note)}}</div>
-          <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
-            {{renderValue(data.DeliveryAddress)}}</div>
+          <!-- <div class="under-line">{{'Purchase.deliveryAddress' | translate | headtitlecase}}: -->
+            <!-- {{renderValue(data.DeliveryAddress)}} -->
+          <!-- </div> -->
           <!-- <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:
             {{renderValue(data.DirectReceiverName)}}</div> -->
         </div>
@@ -102,7 +103,7 @@
           </div>
           <div style="text-align: center; flex: 0 0 50%;">
             <br>
-            {{'Common.customer' | translate | headtitlecase}}
+            {{'Purchase.deliveryPerson' | translate | headtitlecase}}
             <br><br><br>
           </div>
         </div>

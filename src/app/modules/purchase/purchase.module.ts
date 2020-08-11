@@ -12,18 +12,40 @@ import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE, OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
 import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { NgxMaskModule } from 'ngx-mask';
 import { options } from '../sales/sales.module';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PurchaseComponent } from './purchase.component';
 import { PurchasePriceTableImportComponent } from './price-table/purchase-price-table-import/purchase-price-table-import.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { PurchaseVoucherListComponent } from './voucher/purchase-voucher-list/purchase-voucher-list.component';
+import { PurchaseVoucherFormComponent } from './voucher/purchase-voucher-form/purchase-voucher-form.component';
+import { PurchaseVoucherPrintComponent } from './voucher/purchase-voucher-print/purchase-voucher-print.component';
+import { PurchaseSimpleVoucherFormComponent } from './voucher/purchase-simple-voucher-form/purchase-simple-voucher-form.component';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 
+export class DynamicLocaleId extends String {
+  constructor(public translate: TranslateService) {
+    super();
+  }
 
+  toString() {
+    return this.translate.currentLang;
+  }
+}
+export const MY_MOMENT_FORMATS = {
+    parseInput: 'l LT',
+    fullPickerInput: 'l LT',
+    datePickerInput: 'l',
+    timePickerInput: 'LT',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+};
 @NgModule({
   declarations: [
     PurchasePriceTableListComponent,
@@ -31,6 +53,10 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     PurchasePriceTablePrintComponent,
     PurchaseComponent,
     PurchasePriceTableImportComponent,
+    PurchaseVoucherListComponent,
+    PurchaseVoucherFormComponent,
+    PurchaseVoucherPrintComponent,
+    PurchaseSimpleVoucherFormComponent,
   ],
   imports: [
     CommonModule,
@@ -53,7 +79,7 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     NbActionsModule,
     NbRadioModule,
     NbDatepickerModule,
-    // CurrencyMaskModule,
+    CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
     DialogModule,
@@ -74,9 +100,20 @@ import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/
     PurchasePriceTablePrintComponent,
     PurchasePriceTableImportComponent,
     SmartTableFilterComponent,
+    PurchaseVoucherFormComponent,
+    PurchaseSimpleVoucherFormComponent,
+    PurchaseVoucherPrintComponent,
   ],
   providers: [
     CurrencyPipe,
+    // {
+    //   provide: OWL_DATE_TIME_LOCALE,
+    //   useClass: DynamicLocaleId,
+    //   deps: [TranslateService],
+
+    // },
+    // {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
+    // {provide: OWL_DATE_TIME_FORMATS, useValue: MY_MOMENT_FORMATS},
   ],
 })
 export class PurchaseModule { }

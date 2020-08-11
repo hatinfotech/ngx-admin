@@ -1,7 +1,7 @@
 import { UnitModel } from './unit.model';
 
 export class ProductModel {
-
+  [key: string]: any;
   Code?: string;
   Sku?: string;
   Name?: string;
@@ -9,6 +9,8 @@ export class ProductModel {
   Description?: string;
   Technical?: string;
   FeaturePicture?: string | number;
+
+  Units?: UnitModel[];
 
   // References
   Categories?: ProductCategoryModel[];

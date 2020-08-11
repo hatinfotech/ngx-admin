@@ -1,6 +1,7 @@
 import { TaxModel } from './tax.model';
 import { ProductModel } from './product.model';
 import { ContactModel } from './contact.model';
+import { UnitModel } from './unit.model';
 
 export class PurchasePriceTableModel {
   Id?: string & number;
@@ -46,4 +47,43 @@ export class PurchasePriceTableDetailModel {
   Sku?: string;
   Name?: string;
   Description?: string;
+}
+
+export class PurchaseVoucherModel {
+  Id?: string | number;
+  Code?: string;
+  Object?: string | ContactModel;
+  ObjectName?: string;
+  ObjectAddress?: string;
+  ObjectPhone?: string;
+  PurchaseStaff?: string;
+  DateOfPurchase?: string;
+  Invoice?: string;
+  Tax?: string | TaxModel;
+  DateOfCreate?: string;
+  TotalMoney?: string;
+  State?: string;
+  Branch?: string;
+  Warehouse?: string;
+  InventoryReceivingVoucher?: string;
+  OrderVoucher?: string;
+  RelativeDeliveryVoucher?: string;
+  Creator?: string;
+  Note?: string;
+  PriceTable?: string;
+  PurchaseCost?: string;
+
+  Details?: PurchaseVoucherDetailModel[];
+}
+
+export class PurchaseVoucherDetailModel {
+  Id?: string | number;
+  Voucher?: PurchaseVoucherModel & string;
+  Product?: ProductModel & string;
+  ProductName?: string;
+  Quantity?: number;
+  Unit?: UnitModel & string;
+  Tax?: TaxModel & string;
+  Price?: number;
+  ImageThumbnail?: string;
 }

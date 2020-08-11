@@ -177,7 +177,8 @@
     "name": "customer name"
   },
   "Product": {
-    "name": "product name"
+    "name": "product name",
+    "unit": "unit"
   },
   "Voucher": {
     "organizationOrPersornal": "organization/persornal",
@@ -263,7 +264,12 @@
   "Purchase": {
     "PriceTable": {
       "title": "{{action}} purchase price table {{definition}}"
-    }
+    },
+    "Voucher": {
+      "title": "{{action}} purchase voucher {{definition}}",
+      "suggestedSalesPrice": "suggested sales price"
+    },
+    "dateOfPurchase": "date of purchase"
   },
   "AdminProduct": {
     "chooseProducts": "choose product",

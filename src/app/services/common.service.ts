@@ -459,6 +459,11 @@ export class CommonService {
     return { prefix: '', suffix: ' ' + getCurrencySymbol('VND', 'narrow', this.translate.currentLang), thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
   }
 
+  getNumberMaskConfig(): CurrencyMaskConfig {
+    const locale = this.getCurrentLoaleDataset();
+    return { prefix: '', suffix: ' ', thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
+  }
+
   getObjectId(obj: any, idName?: string) {
     return obj && typeof obj[idName || 'id'] !== 'undefined' ? obj[idName || 'id'] : obj;
   }

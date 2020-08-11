@@ -177,7 +177,8 @@
     "name": "tên khách hàng"
   },
   "Product": {
-    "name": "tên sản phẩm"
+    "name": "tên sản phẩm",
+    "unit": "đơn vị tính"
   },
   "Voucher": {
     "organizationOrPersornal": "tổ chức/cá nhân",
@@ -266,7 +267,12 @@
   "Purchase": {
     "PriceTable": {
       "title": "{{definition}}{{action}} bảng giá mua vào"
-    }
+    },
+    "Voucher": {
+      "title": "{{definition}}{{action}} phiếu mua hàng",
+      "suggestedSalesPrice": "gợi ý giá bán"
+    },
+    "dateOfPurchase": "ngày mua hàng"
   },
   "AdminProduct": {
     "chooseProducts": "chọn sản phẩm",

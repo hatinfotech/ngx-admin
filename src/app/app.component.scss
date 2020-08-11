@@ -440,6 +440,34 @@ ngx-header ngx-action-control-list {
 }
 .select2-results {
   background: #f7f9fc;
+
+  .select2-results__options {
+    .select2-results__option {
+      .select2-results-option-with-image {
+        display: flex;
+
+        .image-wrap {
+          background-repeat: no-repeat;
+          background-size: cover;
+          width: 1.5rem;
+          height: 1.5rem;
+          border-radius: 0.2rem;
+          background-image: url(assets/icon/eva/image-outline.svg);
+
+          .image {
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 0.2rem;
+          }
+        }
+        .text {
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
 }
 
 .form-group[state="warning"] {
@@ -904,13 +932,13 @@ nb-card nb-tabset nb-tab {
 }
 
 // ng2-smart-table {
-  // .thumbnail {
-  //   background-size: cover;
-  //   background-repeat: no-repeat;
-  //   width: 3rem;
-  //   min-height: 3rem;
-  //   border-radius: 0.3rem;
-  // }
+// .thumbnail {
+//   background-size: cover;
+//   background-repeat: no-repeat;
+//   width: 3rem;
+//   min-height: 3rem;
+//   border-radius: 0.3rem;
+// }
 // }
 
 @media (max-width: 40rem) {

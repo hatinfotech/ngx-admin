@@ -62,7 +62,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NbActionsModule,
     NbRadioModule,
     NbDatepickerModule,
-    // CurrencyMaskModule,
+    CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
     DialogModule,
