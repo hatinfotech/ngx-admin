@@ -413,7 +413,8 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
     const deletedItems = await this.convertIdsToItems(ids);
     this.apiService.delete(this.apiPath, ids, (resp) => {
-      this.removeGridItems(deletedItems);
+      // this.removeGridItems(deletedItems);
+      this.refresh();
       if (success) success(resp);
     }, error, complete);
   }
@@ -578,9 +579,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   async openFormDialog(ids?: string[], formDialog?: Type<DataManagerFormComponent<M>>) {
     return new Promise<{ event: string, data?: M[] }>(async resolve => {
       ids = ids || [];
-      this.source['isLocalUpdate'] = true;
-      const editedItems = (await this.source.getElements()).filter((f: M) => ids.some(id => id === f[this.idKey]));
-      this.source['isLocalUpdate'] = false;
+      // this.source['isLocalUpdate'] = true;
+      // const editedItems = (await this.source.getElements()).filter((f: M) => ids.some(id => id === f[this.idKey]));
+      // this.source['isLocalUpdate'] = false;
       try {
         this.commonService.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
           context: {
@@ -588,12 +589,12 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
             inputId: ids,
             onDialogSave: (newData: M[]) => {
               resolve({ event: 'save', data: newData });
-              // this.refresh();
-              if (editedItems && editedItems.length > 0) {
-                this.updateGridItems(editedItems, newData);
-              } else {
-                this.prependGridItems(newData);
-              }
+              this.refresh();
+              // if (editedItems && editedItems.length > 0) {
+              //   this.updateGridItems(editedItems, newData);
+              // } else {
+              //   this.prependGridItems(newData);
+              // }
             },
             onDialogClose: () => {
               resolve({ event: 'close' });

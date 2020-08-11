@@ -127,6 +127,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     params['includeGroups'] = true;
     params['includePictures'] = true;
     params['includeUnitConversions'] = true;
+    params['includeWarehouseUnit'] = true;
     super.executeGet(params, success, error);
   }
 

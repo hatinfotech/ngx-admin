@@ -172,7 +172,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         type: 'string',
         width: '10%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['WarehouseUnit'] ? product['WarehouseUnit']['Name'] : '';
+          return product['WarehouseUnit'] ? this.commonService.getObjectText(product['WarehouseUnit']) : '';
         },
       },
       Code: {
@@ -198,7 +198,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
 
     // Set DataSource: prepareData
     source.prepareData = (data: ProductModel[]) => {
-      data.map((product: any) => {
+      data.map((product: ProductModel) => {
         // if (product['WarehouseUnit']) {
         //   product['WarehouseUnit'] = product['WarehouseUnit']['Name'];
         // }
@@ -210,6 +210,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         // } else {
         //   delete product['FeaturePictureThumbnail'];
         // }
+        if (typeof product.WarehouseUnit === 'object') {
+          product.WarehouseUnit.text = product.WarehouseUnit.Name;
+        }
         return product;
       });
       return data;

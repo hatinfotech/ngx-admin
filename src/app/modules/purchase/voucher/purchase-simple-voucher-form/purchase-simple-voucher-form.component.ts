@@ -215,7 +215,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
   executeGet(params: any, success: (resources: PurchaseVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     // params['includeConditions'] = true;
     // params['includeProduct'] = true;
-    params['includeContact'] = true;
+    params['includeObject'] = true;
     params['includeDetails'] = true;
     params['useBaseTimezone'] = true;
     super.executeGet(params, success, error);
