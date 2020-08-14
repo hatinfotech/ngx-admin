@@ -312,7 +312,7 @@ export class CommonService {
   convertUnicodeToNormal(text: string) {
     return text.replace(/[^\u0000-\u007E]/g, (a) => {
       return this.DIACRITICS[a] || a;
-    }).replace(/[^a-z0-9]+/ig, '');
+    }).replace(/[^a-z0-9 ]+/ig, '');
   }
 
   smartFilter(value: string, query: string) {

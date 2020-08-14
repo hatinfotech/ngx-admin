@@ -189,7 +189,11 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   async loadCache(): Promise<any> {
-    return false;
+    return true;
+  }
+
+  async clearCache(): Promise<any> {
+    return true;
   }
 
 }

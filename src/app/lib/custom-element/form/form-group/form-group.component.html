@@ -1,0 +1,13 @@
+<div class="form-group" [attr.state]="formControlValidate(formGroup.get(name), 'warning')">
+  <label class="label">
+    <span class="valid">{{label | translate | headtitlecase}}</span>
+    <span
+      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant(label)} | headtitlecase }}</span>
+      <span *ngIf="required" class="text-danger">&nbsp;(*)</span>
+      &nbsp;<nb-icon *ngIf="allowCopy" class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, index, name)"
+      title="{{'Common.copyToAllNextForm' | translate}}"
+      pack="eva" icon="copy-outline">
+    </nb-icon>
+  </label>
+  <ng-content></ng-content>
+</div>

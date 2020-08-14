@@ -1,27 +1,63 @@
 import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
-import { Select2Options } from '../../../../vendor/ng2-select2/lib/ng2-select2.interface';
-import * as _ from "lodash"
+import { Select2Options, Select2AjaxOptions, Select2QueryOptions, Select2SelectionObject, IdTextPair } from '../../../../vendor/ng2-select2/lib/ng2-select2.interface';
+import * as _ from 'lodash';
 
 export interface Select2Option {
   [key: string]: any;
-  placeholder: string;
-  allowClear: boolean;
   width?: string;
-  dropdownAutoWidth: boolean;
-  minimumInputLength: number;
-  sorter?: boolean | ((a: any, b: any) => boolean);
+  dropdownAutoWidth?: boolean;
+  minimumInputLength?: number;
+  minimumResultsForSearch?: number;
+  maximumSelectionSize?: number;
+  placeholder?: string | IdTextPair;
+  separator?: string;
+  allowClear?: boolean;
+  multiple?: boolean;
+  closeOnSelect?: boolean;
+  openOnEnter?: boolean;
+  id?: (object: any) => string;
+  matcher?: (term: string, text: string, option: any) => boolean;
+  formatSelection?: (object: any, container: JQuery, escapeMarkup: (markup: string) => string) => string;
+  formatResult?: (object: any, container: JQuery, query: any, escapeMarkup: (markup: string) => string) => string;
+  formatResultCssClass?: (object: any) => string;
+  formatNoMatches?: (term: string) => string;
+  formatSearching?: () => string;
+  formatInputTooShort?: (term: string, minLength: number) => string;
+  formatSelectionTooBig?: (maxSize: number) => string;
+  formatLoadMore?: (pageNumber: number) => string;
+  createSearchChoice?: (term: string, data: any) => any;
+  initSelection?: (element: JQuery, callback: (data: any) => void) => void;
+  tokenizer?: (input: string, selection: any[], selectCallback: () => void, options: Select2Options) => string;
+  tokenSeparators?: string[];
+  query?: (options: Select2QueryOptions) => void;
+  ajax?: Select2AjaxOptions;
+  data?: any;
+  tags?: any;
+  containerCss?: any;
+  containerCssClass?: any;
+  dropdownCss?: any;
+  dropdownCssClass?: any;
+  escapeMarkup?: (markup: string) => string;
+  theme?: string;
+  /**
+  * Template can return both plain string that will be HTML escaped and a jquery object that can render HTML
+  */
+  templateSelection?: (object: Select2SelectionObject) => any;
+  templateResult?: (object: Select2SelectionObject) => any;
+  language?: string | string[] | {};
+  selectOnClose?: boolean;
+  sorter?: (data: any[]) => any[];
+
   keyMap: {
     id: string,
     text: string,
   };
-  multiple?: boolean;
-  tags?: boolean;
-  ajax?: {
-    url: (params: { term: string }) => string;
-    delay: number,
-    processResults: (data: any, params: any) => { results: [] },
-  };
+  // ajax?: {
+  //   url: (params: { term: string }) => string;
+  //   delay: number,
+  //   processResults: (data: any, params: any) => { results: [] },
+  // };
 }
 
 @Component({

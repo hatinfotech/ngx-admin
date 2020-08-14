@@ -1,0 +1,61 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()"
+  (keydown.enter)="$event.preventDefault()" class="popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
+            [title]="title ? title : ('Warehouse.Book.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+            [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="Warehouse" label="Common.warehouse" [array]="array"
+                  [index]="i" [allowCopy]="false" [required]="false">
+                  <ngx-select2 formControlName="Warehouse" [select2Option]="select2OptionForWarehouse"
+                    [data]="warehouseList">
+                  </ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="PreviousBook" label="Warehouse.previousBook"
+                  [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="PreviousBook"
+                    placeholder="{{'Warehouse.previousBook' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i"
+                  [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Code"
+                    placeholder="{{'Common.code' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Note" label="Common.note" [array]="array" [index]="i"
+                  [allowCopy]="false" [required]="false">
+                  <textarea nbInput fullWidth formControlName="Note"
+                    placeholder="{{'Common.note' | translate | headtitlecase}}"></textarea>
+                </ngx-form-group>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero
+              style="float: left;">{{'Common.addOne' | translate | headtitlecase}}
+              nữa</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;"
+              hero>{{'Common.save' | translate | headtitlecase}}</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

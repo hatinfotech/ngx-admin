@@ -160,7 +160,20 @@
     "remoteDataResource": "remote data resource",
     "breakOnFail": "break on fail",
     "dataType": "data type",
-    "add": "add"
+    "add": "add",
+    "warehouse": "warehouse",
+    "branch": "branch",
+    "coordinateX": "coordinate X",
+    "coordinateY": "coordinate Y",
+    "coordinateZ": "coordinate Z",
+    "findOrder": "find order",
+    "copyToAllNextForm": "copy to all next form",
+    "path": "path",
+    "container": "container",
+    "suggest": "suggest",
+    "lock": "lock",
+    "lockBook": "lock book",
+    "openBook": "open book"
   },
   "Contact": {
     "name": "contact name",
@@ -270,6 +283,23 @@
       "suggestedSalesPrice": "suggested sales price"
     },
     "dateOfPurchase": "date of purchase"
+  },
+  "Warehouse": {
+    "GoodsReceiptNote": {
+      "title": "{{action}} goods receipt note {{definition}}"
+    },
+    "GoodsContainer": {
+      "title": "{{action}} goods container {{definition}}"
+    },
+    "Book": {
+      "title": "{{action}} warehouse book {{definition}}"
+    },
+    "Menu": {
+      "book": "warehouse book"
+    },
+    "openBook": "mở sổ kho",
+    "lockBook": "khóa sổ kho",
+    "dateOfReceipted": "date of receipted"
   },
   "AdminProduct": {
     "chooseProducts": "choose product",

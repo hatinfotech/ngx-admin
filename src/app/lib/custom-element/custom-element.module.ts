@@ -17,6 +17,7 @@ import { CardHeaderComponent } from './card-header/card-header.component';
 import { CardHeaderCustomComponent } from './card-header/card-header-custom.component';
 import { DatetimPickerComponent } from './datetime-picker/datetime-picker.component';
 import { TextNTagsComponent } from './textntags/textntags.component';
+import { FormGroupComponent } from './form/form-group/form-group.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,7 @@ import { TextNTagsComponent } from './textntags/textntags.component';
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
-    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent, DatetimPickerComponent, TextNTagsComponent,
+    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
   ],
   imports: [
     CommonModule,
@@ -51,6 +52,8 @@ import { TextNTagsComponent } from './textntags/textntags.component';
     OwlNativeDateTimeModule,
     TranslateModule,
     CurrencyMaskModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [
     Select2Component,
@@ -67,7 +70,7 @@ import { TextNTagsComponent } from './textntags/textntags.component';
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
-    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent, DatetimPickerComponent, TextNTagsComponent,
+    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
   ],
 })
 export class CustomElementModule { }

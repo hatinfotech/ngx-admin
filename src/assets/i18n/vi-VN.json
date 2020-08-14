@@ -159,7 +159,20 @@
     "remoteDataResource": "remote data resource",
     "breakOnFail": "ngắt/lỗi",
     "dataType": "kiểu dữ liệu",
-    "add": "thêm"
+    "add": "thêm",
+    "warehouse": "kho/bãi",
+    "branch": "chi nhánh",
+    "coordinateX": "tòa độ X",
+    "coordinateY": "tòa độ Y",
+    "coordinateZ": "tòa độ Z",
+    "findOrder": "thứ tự tìm kiếm",
+    "copyToAllNextForm": "sao chép cho tất cả các biểu mẫu bên dưới",
+    "path": "đường dẫn",
+    "container": "chố chứa",
+    "suggest": "gợi ý",
+    "lock": "khóa",
+    "lockBook": "khóa sổ",
+    "openBook": "mở sổ"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -273,6 +286,23 @@
       "suggestedSalesPrice": "gợi ý giá bán"
     },
     "dateOfPurchase": "ngày mua hàng"
+  },
+  "Warehouse": {
+    "GoodsReceiptNote": {
+      "title": "{{definition}}{{action}} phiếu nhập kho"
+    },
+    "GoodsContainer": {
+      "title": "{{definition}}{{action}} chỗ chứa hàng hóa"
+    },
+    "Book": {
+      "title": "{{definition}}{{action}} sổ kho"
+    },
+    "Menu": {
+      "book": "sổ kho"
+    },
+    "openBook": "mở sổ kho",
+    "lockBook": "khóa sổ kho",
+    "dateOfReceipted": "ngày nhập kho"
   },
   "AdminProduct": {
     "chooseProducts": "chọn sản phẩm",

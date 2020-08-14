@@ -1,0 +1,100 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()"
+  (keydown.enter)="$event.preventDefault()" class="popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
+            [title]="title ? title : ('Warehouse.GoodsContainer.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+            [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i"
+                  [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Code"
+                    placeholder="{{'Common.code' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-9">
+                <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="Name"
+                    placeholder="{{'Common.name' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Parent" label="Common.parent" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Parent" [select2Option]="select2OptionForParent" (click)="onParentClick($event, formItem)" >
+                  </ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Warehouse" label="Common.warehouse" [array]="array"
+                  [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Warehouse" [select2Option]="select2OptionForWarehouse" [data]="warehouseList">
+                  </ngx-select2>
+                </ngx-form-group>
+              </div>
+              <!-- <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Branch" label="Common.branch" [array]="array"
+                  [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Branch" [select2Option]="select2OptionForParent">
+                  </ngx-select2>
+                </ngx-form-group>
+              </div> -->
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="FindOrder" label="Common.findOrder" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="false">
+                  <input type="number" nbInput fullWidth formControlName="FindOrder"
+                    placeholder="{{'Common.findOrder' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="X" label="Common.coordinateX" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="X"
+                    placeholder="{{'Common.coordinateX' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Y" label="Common.coordinateY" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Y"
+                    placeholder="{{'Common.coordinateY' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="Z" label="Common.coordinateZ" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Z"
+                    placeholder="{{'Common.coordinateZ' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Description" label="Common.description" [array]="array"
+                  [index]="i" [allowCopy]="true" [required]="false">
+                  <textarea nbInput fullWidth formControlName="Description"
+                    placeholder="{{'Common.description' | translate | headtitlecase}}"></textarea>
+                </ngx-form-group>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero style="float: left;">Thêm cái
+              nữa</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

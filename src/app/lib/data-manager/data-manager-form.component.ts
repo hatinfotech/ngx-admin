@@ -50,20 +50,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       },
     },
     {
-      name: 'remove',
-      status: 'warning',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
-      icon: 'minus-circle',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
-      size: 'medium',
-      hidden: () => this.array.controls.length < 2,
-      disabled: () => this.isProcessing,
-      click: (option: ActionControlListOption) => {
-        this.removeFormGroup(option.formIndex);
-        return false;
-      },
-    },
-    {
       name: 'close',
       status: 'danger',
       label: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
@@ -73,6 +59,20 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       disabled: () => this.isProcessing,
       click: () => {
         this.goback();
+      },
+    },
+    {
+      name: 'remove',
+      status: 'warning',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
+      icon: 'minus-circle',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
+      size: 'medium',
+      hidden: () => this.array.controls.length < 2,
+      disabled: () => this.isProcessing,
+      click: (event, option: ActionControlListOption) => {
+        this.removeFormGroup(option.formIndex);
+        return false;
       },
     },
   ];
@@ -239,6 +239,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   async init(): Promise<boolean> {
+    await this.loadCache();
     if (this.inputMode) {
       this.mode = this.inputMode;
     }

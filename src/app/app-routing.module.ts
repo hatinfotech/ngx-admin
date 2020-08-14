@@ -342,6 +342,16 @@ const routes: Routes = [
     loadChildren: () => import('./modules/virtual-phone/virtual-phone.module')
       .then(m => m.VirtualPhoneModule),
   },
+  // Warehouse
+  {
+    path: 'warehouse',
+    resolve: {
+      configuration: RoutingResolve,
+    },
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/warehouse/warehouse.module')
+      .then(m => m.WarehouseModule),
+  },
   { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
   { path: '**', redirectTo: 'mini-erp' },
 ];
