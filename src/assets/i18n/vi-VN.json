@@ -292,6 +292,9 @@
     "GoodsReceiptNote": {
       "title": "{{definition}}{{action}} phiếu nhập kho"
     },
+    "GoodsDeliveryNote": {
+      "title": "{{definition}}{{action}} phiếu xuất kho"
+    },
     "GoodsContainer": {
       "title": "{{definition}}{{action}} chỗ chứa hàng hóa"
     },

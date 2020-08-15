@@ -50,6 +50,42 @@ export class WarehouseGoodsReceiptNoteDetailModel {
   ImageThumbnail?: string;
 }
 
+
+export class WarehouseGoodsDeliveryNoteModel {
+  Id?: string | number;
+  Code?: string;
+  Title?: string;
+  Description?: string;
+  Object?: string & ContactModel;
+  ObjectName?: string;
+  ObjectPhone?: string;
+  ObjectEmail?: string;
+  ObjectAddress?: string;
+  DateOfCreated?: string;
+  DateOfDelivered?: string;
+  Creator?: string & UserModel;
+  Executor?: string & UserModel;
+  RelateVoucher?: string;
+  Warehouse?: string;
+  Branch?: string;
+
+  Bookkeeping?: boolean;
+
+  Details?: WarehouseGoodsDeliveryNoteDetailModel[];
+}
+
+export class WarehouseGoodsDeliveryNoteDetailModel {
+  Id?: string | number;
+  Voucher?: string & WarehouseGoodsReceiptNoteModel;
+  Product?: string & ProductModel;
+  ProductName?: string;
+  Unit?: string & UnitModel;
+  Quantity?: string & number;
+  PriceOfDelivered?: string;
+  Location?: string;
+  ImageThumbnail?: string;
+}
+
 export class WarehouseGoodsContainerModel {
   id?: string; text?: string;
 

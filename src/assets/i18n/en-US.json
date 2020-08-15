@@ -289,6 +289,9 @@
     "GoodsReceiptNote": {
       "title": "{{action}} goods receipt note {{definition}}"
     },
+    "GoodsDeliveryNote": {
+      "title": "{{action}} goods delivery note {{definition}}"
+    },
     "GoodsContainer": {
       "title": "{{action}} goods container {{definition}}"
     },
