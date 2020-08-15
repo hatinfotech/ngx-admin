@@ -113,16 +113,17 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           },
         },
       },
-      Containers: {
+      Container: {
         title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
         type: 'html',
-        width: '20%',
+        width: '15%',
         valuePrepareFunction: (value: string, product: GoodsModel) => {
-          try {
-            return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
-          } catch (e) {
-            return '';
-          }
+          return  this.commonService.getObjectText(value);
+          // try {
+          //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
+          // } catch (e) {
+          //   return '';
+          // }
         },
         filter: {
           type: 'custom',
@@ -171,7 +172,12 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       Sku: {
         title: 'Sku',
         type: 'string',
-        width: '15%',
+        width: '10%',
+      },
+      Inventory: {
+        title: this.commonService.translateText('Warehouse.inventory'),
+        type: 'string',
+        width: '10%',
       },
     },
   });
@@ -220,9 +226,9 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
-      params['includeContainers'] = true;
-      params['includeUnit'] = true;
       params['includeFeaturePicture'] = true;
+      params['includeUnit'] = true;
+      params['includeContainer'] = true;
       params['includeInventory'] = true;
       // params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';

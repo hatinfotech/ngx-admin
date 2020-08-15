@@ -265,6 +265,84 @@ export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, Af
 }
 
 @Component({
+  template: `
+    <!-- <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox> -->
+    <input #inputText type="text" [name]="name" nbInput fullWidth
+        [placeholder]="placeholder" class="align-right" [formControl]="inputControl"
+        currencyMask [options]="numberFormat">
+  `,
+})
+export class SmartTableNumberEditableComponent implements ViewCell, OnInit, AfterViewInit {
+
+  inputControl = new FormControl;
+  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+
+  renderValue: boolean;
+  disable: boolean = false;
+  placeholder: string = '';
+  delay: number = 1000;
+  name: string = '';
+  isPatchingValue = false;
+
+  @Input() value: string | number;
+  @Input() rowData: any;
+  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+  @ViewChild('inputText', { static: false }) input: ElementRef;
+
+  jqueryInput: JQuery;
+
+  constructor(public commonService: CommonService) {
+    this.inputControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(this.delay),
+      )
+      .subscribe((value: number) => {
+        this.onChange(value);
+      });
+
+  }
+
+  set status(status: string) {
+    if (this.jqueryInput) {
+      this.jqueryInput.removeClass('status-primary');
+      this.jqueryInput.removeClass('status-info');
+      this.jqueryInput.removeClass('status-warning');
+      this.jqueryInput.removeClass('status-danger');
+      this.jqueryInput.removeClass('status-success');
+      if (status) {
+        this.jqueryInput.addClass('status-' + status);
+      }
+    }
+  }
+
+  ngAfterViewInit() {
+    // console.log(this.input.nativeElement);
+    const thisInput = this.jqueryInput = $(this.input.nativeElement);
+    thisInput.keyup(e => {
+      if (e.keyCode === 13) {
+        thisInput.closest('tr').next().find('input[name="' + this.name + '"]').focus();
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.renderValue = this.value ? true : false;
+    this.isPatchingValue = true;
+    this.inputControl.patchValue(this.value);
+    this.isPatchingValue = false;
+  }
+
+  onChange(value: any) {
+    if (this.value !== value && !this.isPatchingValue) {
+      this.valueChange.emit(value);
+      this.value = value;
+    }
+  }
+
+}
+
+@Component({
   selector: 'ngx-stmart-table-icon-view',
   template: `
     <div style="text-align: center">

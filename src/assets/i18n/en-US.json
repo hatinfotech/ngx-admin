@@ -308,7 +308,8 @@
     "openBook": "mở sổ kho",
     "lockBook": "khóa sổ kho",
     "dateOfReceipted": "date of receipted",
-    "assignContainer": "asign container"
+    "assignContainer": "asign container",
+    "inventory": "inventory"
   },
   "AdminProduct": {
     "chooseProducts": "choose product",

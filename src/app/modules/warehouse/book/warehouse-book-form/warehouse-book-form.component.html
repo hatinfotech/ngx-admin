@@ -41,6 +41,34 @@
                 </ngx-form-group>
               </div>
             </div>
+
+
+            <!-- Detail form -->
+            <!-- <hr> -->
+            <!-- <label class="label">{{'Voucher.productOrservice' | translate | headtitlecase}}</label> -->
+
+            <div class="row title">
+              <div class="col-md-12">
+                <label class="label"><span class="valid">Bảng cập nhật tồn đầu</span></label>
+              </div>
+            </div>
+            <div class="ng2-smart-table-wrap" style="border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
+              <div class="ng2-smart-table-wrap">
+                <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
+                  (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)"
+                  (edit)="onEditAction($event)" (create)="onSerialAction($event)">
+                </ng2-smart-table>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12" style="text-align: right;">
+
+              </div>
+            </div>
+            <!-- End Detail form -->
+
+
           </div>
         </nb-card-body>
         <nb-card-footer>

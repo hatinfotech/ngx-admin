@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
-import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent } from './smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
@@ -35,7 +35,9 @@ import { FormGroupComponent } from './form/form-group/form-group.component';
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
-    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
+    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent,
+    IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
+    SmartTableNumberEditableComponent,
   ],
   imports: [
     CommonModule,
@@ -70,7 +72,9 @@ import { FormGroupComponent } from './form/form-group/form-group.component';
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
-    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent, IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
+    CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent,
+    IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
+    SmartTableNumberEditableComponent,
   ],
 })
 export class CustomElementModule { }

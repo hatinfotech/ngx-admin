@@ -311,7 +311,8 @@
     "openBook": "mở sổ kho",
     "lockBook": "khóa sổ kho",
     "dateOfReceipted": "ngày nhập kho",
-    "assignContainer": "gán vị trí"
+    "assignContainer": "gán vị trí",
+    "inventory": "tồn kho"
   },
   "AdminProduct": {
     "chooseProducts": "chọn sản phẩm",
