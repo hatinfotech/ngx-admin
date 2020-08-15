@@ -67,7 +67,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   @ViewChild('table') table: Ng2SmartTableComponent;
 
   /** Seleted ids */
-  selectedIds: string[] = [];
+  selectedIds: (string | any)[] = [];
   selectedItems: M[] = [];
 
   /** Local dat source */
@@ -79,7 +79,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   abstract apiPath: string;
 
   /** Resource id key */
-  abstract idKey: string;
+  abstract idKey: string | string[];
 
   protected refreshPendding = false;
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
@@ -309,7 +309,14 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   onUserRowSelect(event: any) {
     this.selectedItems = event.selected;
     this.selectedIds = event.selected.map((item: M) => {
-      return item[this.idKey];
+      if (this.idKey instanceof Array) {
+        const id: any = {};
+        for (let i = 0; i < this.idKey.length; i++) {
+          id[this.idKey[i]] = this.commonService.getObjectId(item[this.idKey[i]]);
+        }
+        return id;
+      }
+      return item[this.idKey as string];
     });
     // console.info(event);
     // if (this.selectedIds.length > 0) {
@@ -327,7 +334,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   /** Edit event */
   onEditAction(event: { data: M }) {
     // this.router.navigate(['modules/manager/form', event.data[this.idKey]]);
-    this.openForm([event.data[this.idKey]]);
+    this.openForm([event.data[this.idKey as string]]);
   }
 
   /** Create and multi edit/delete action */
@@ -427,7 +434,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Delete action */
   delete(event: any): void {
-    this.deleteConfirm([event.data[this.idKey]], () => this.loadList());
+    this.deleteConfirm([event.data[this.idKey as string]], () => this.loadList());
     //   if (window.confirm('Bạn có muốn xoá dữ liệu \'' + event.data.Name + '\' không?')) {
     //     this.apiService.delete(this.apiPath, event.data.Name, result => {
     //       // event.confirm.resolve();
@@ -570,7 +577,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   async convertIdsToItems(ids: string[]) {
     this.source['isLocalUpdate'] = true;
-    const editedItems = (await this.source.getElements()).filter((f: M) => ids.some(id => id === f[this.idKey]));
+    const editedItems = (await this.source.getElements()).filter((f: M) => ids.some(id => id === f[this.idKey as string]));
     this.source['isLocalUpdate'] = false;
     return editedItems;
   }
@@ -614,7 +621,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   async updateGridItems(items: M[], updatedData: M[]) {
     this.source['isLocalUpdate'] = true;
     for (let i = 0; i < items.length; i++) {
-      await this.source.update(items[i], updatedData.find(dt => dt[this.idKey] === items[i][this.idKey]));
+      await this.source.update(items[i], updatedData.find(dt => dt[this.idKey as string] === items[i][this.idKey as string]));
     }
     this.source['isLocalUpdate'] = false;
   }
@@ -637,7 +644,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     }
     this.source['isLocalUpdate'] = false;
     setTimeout(() => {
-      const rows = this.table.grid.getRows().filter(row => (this.selectedItems.some(item => item[this.idKey] === row.getData()[this.idKey]) && items.some(item => item[this.idKey] !== row.getData()[this.idKey])));
+      const rows = this.table.grid.getRows().filter(row => (this.selectedItems.some(item => item[this.idKey as string] === row.getData()[this.idKey as string]) && items.some(item => item[this.idKey as string] !== row.getData()[this.idKey as string])));
       for (let j = 0; j < rows.length; j++) {
         this.table.grid.multipleSelectRow(rows[j]);
       }
@@ -645,10 +652,18 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   syncSelectedStatus() {
-    const rows = this.table.grid.getRows().filter(row => this.selectedItems.some(item => item[this.idKey] === row.getData()[this.idKey]));
+    const selectedItems: M[] = [];
+    const rows = this.table.grid.getRows()
+      .filter(row => this.selectedItems
+        .some(item => this.idKey instanceof Array
+          ? (this.idKey.filter(idKey => this.commonService.getObjectId(item[idKey]) === this.commonService.getObjectId(row.getData()[idKey]))
+            .length === this.idKey.length)
+          : item[this.idKey as string] === row.getData()[this.idKey as string]));
     for (let i = 0; i < rows.length; i++) {
       this.table.grid.multipleSelectRow(rows[i]);
+      selectedItems.push(rows[i].getData());
     }
+    this.selectedItems = selectedItems;
   }
 
   selectAll() {

@@ -39,11 +39,38 @@ import { WarehousePrintComponent } from './warehouse/warehouse-print/warehouse-p
 import { WarehouseBookListComponent } from './book/warehouse-book-list/warehouse-book-list.component';
 import { WarehouseBookFormComponent } from './book/warehouse-book-form/warehouse-book-form.component';
 import { WarehouseBookPrintComponent } from './book/warehouse-book-print/warehouse-book-print.component';
+import { WarehouseGoodsListComponent } from './goods/warehouse-goods-list/warehouse-goods-list.component';
+import { WarehouseGoodsFormComponent } from './goods/warehouse-goods-form/warehouse-goods-form.component';
+import { WarehouseGoodsPrintComponent } from './goods/warehouse-goods-print/warehouse-goods-print.component';
+import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
+import { AssignContainerFormComponent } from './goods/assign-containers-form/assign-containers-form.component';
 
 
 
 @NgModule({
-  declarations: [WarehouseComponent, WarehouseGoodsReceiptNoteListComponent, WarehouseGoodsReceiptNoteFormComponent, WarehouseGoodsReceiptNotePrintComponent, WarehouseGoodsDeliveryNoteListComponent, WarehouseGoodsDeliveryNoteFormComponent, WarehouseGoodsDeliveryNotePrintComponent, WarehouseSimpleGoodsReceiptNoteFormComponent, WarehouseGoodsContainerListComponent, WarehouseGoodsContainerFormComponent, WarehouseGoodsContainerPrintComponent, WarehouseListComponent, WarehouseFormComponent, WarehousePrintComponent, WarehouseBookListComponent, WarehouseBookFormComponent, WarehouseBookPrintComponent],
+  declarations: [
+    WarehouseComponent,
+    WarehouseGoodsReceiptNoteListComponent,
+    WarehouseGoodsReceiptNoteFormComponent,
+    WarehouseGoodsReceiptNotePrintComponent,
+    WarehouseGoodsDeliveryNoteListComponent,
+    WarehouseGoodsDeliveryNoteFormComponent,
+    WarehouseGoodsDeliveryNotePrintComponent,
+    WarehouseSimpleGoodsReceiptNoteFormComponent,
+    WarehouseGoodsContainerListComponent,
+    WarehouseGoodsContainerFormComponent,
+    WarehouseGoodsContainerPrintComponent,
+    WarehouseListComponent,
+    WarehouseFormComponent,
+    WarehousePrintComponent,
+    WarehouseBookListComponent,
+    WarehouseBookFormComponent,
+    WarehouseBookPrintComponent,
+    WarehouseGoodsListComponent,
+    WarehouseGoodsFormComponent,
+    WarehouseGoodsPrintComponent,
+    AssignContainerFormComponent,
+  ],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -74,6 +101,7 @@ import { WarehouseBookPrintComponent } from './book/warehouse-book-print/warehou
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     CKEditorModule,
+    NgxUploaderModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,
@@ -85,6 +113,8 @@ import { WarehouseBookPrintComponent } from './book/warehouse-book-print/warehou
     WarehouseSimpleGoodsReceiptNoteFormComponent,
     WarehouseGoodsContainerFormComponent,
     WarehouseBookFormComponent,
+    WarehouseGoodsFormComponent,
+    AssignContainerFormComponent,
   ],
   providers: [
     CurrencyPipe,

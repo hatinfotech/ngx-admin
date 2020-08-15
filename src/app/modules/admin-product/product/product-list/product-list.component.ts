@@ -13,7 +13,6 @@ import { AssignCategoriesFormComponent } from '../assign-categories-form/assign-
 import { FormGroup } from '@angular/forms';
 import { FileModel } from '../../../../models/file.model';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { UnitModel } from '../../../../models/unit.model';
 
 @Component({
@@ -26,7 +25,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   componentName: string = 'ProductListComponent';
   formPath = '/admin-product/product/form';
   apiPath = '/admin-product/products';
-  idKey = 'Code';
+  idKey: string | string[] = 'Code';
   formDialog = ProductFormComponent;
 
   reuseDialog = true;
@@ -53,7 +52,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
 
     // Append assign category buton
     this.actionButtonList.unshift({
-      name: 'assign',
+      name: 'assignCategories',
       status: 'info',
       label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag'), 'head-title'),
       icon: 'pricetags',
@@ -200,17 +199,6 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     // Set DataSource: prepareData
     source.prepareData = (data: ProductModel[]) => {
       data.map((product: ProductModel) => {
-        // if (product['WarehouseUnit']) {
-        //   product['WarehouseUnit'] = product['WarehouseUnit']['Name'];
-        // }
-        // if (product['Categories']) {
-        //   product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
-        // }
-        // if (product['FeaturePictureThumbnail']) {
-        //   product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
-        // } else {
-        //   delete product['FeaturePictureThumbnail'];
-        // }
         if (product.WarehouseUnit && product.WarehouseUnit.Name) {
           product.WarehouseUnit.text = product.WarehouseUnit.Name;
         }
@@ -250,32 +238,6 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       if (callback) callback(rs);
     });
   }
-
-  /** Implement required */
-  // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(ProductFormComponent, {
-  //     context: {
-  //       inputMode: 'dialog',
-  //       inputId: ids,
-  //       onDialogSave: (newData: ProductModel[]) => {
-  //         if (onDialogSave) onDialogSave(newData);
-  //         this.loadCache();
-  //       },
-  //       onDialogClose: () => {
-  //         if (onDialogClose) onDialogClose();
-  //         this.refresh();
-  //       },
-  //     },
-  //     closeOnEsc: false,
-  //     closeOnBackdropClick: false,
-  //   });
-  // }
-
-  // /** Go to form */
-  // gotoForm(id?: string): false {
-  //   this.openFormDialplog(id ? decodeURIComponent(id).split('&') : null);
-  //   return false;
-  // }
 
   /** Implement required */
   async openAssignCategoiesDialplog() {

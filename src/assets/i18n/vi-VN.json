@@ -292,17 +292,23 @@
       "title": "{{definition}}{{action}} phiếu nhập kho"
     },
     "GoodsContainer": {
-      "title": "{{definition}}{{action}} chỗ chứa hàng hóa"
+      "title": "{{definition}}{{action}}chỗ chứa hàng hóa"
     },
     "Book": {
       "title": "{{definition}}{{action}} sổ kho"
     },
     "Menu": {
-      "book": "sổ kho"
+      "book": "sổ kho",
+      "goods": "hàng hóa vật tư",
+      "goodsReceiptNote": "phiếu nhập kho",
+      "goodsDeliveryNote": "phiếu xuất kho",
+      "warehouseList": "danh sách kho",
+      "goodsContainer": "chỗ chứa hàng hóa"
     },
     "openBook": "mở sổ kho",
     "lockBook": "khóa sổ kho",
-    "dateOfReceipted": "ngày nhập kho"
+    "dateOfReceipted": "ngày nhập kho",
+    "assignContainer": "gán vị trí"
   },
   "AdminProduct": {
     "chooseProducts": "chọn sản phẩm",

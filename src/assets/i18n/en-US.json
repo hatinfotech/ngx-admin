@@ -295,11 +295,17 @@
       "title": "{{action}} warehouse book {{definition}}"
     },
     "Menu": {
-      "book": "warehouse book"
+      "book": "warehouse book",
+      "goods": "goods",
+      "goodsReceiptNote": "goods receipt note",
+      "goodsDeliveryNote": "goods delivery note",
+      "warehouseList": "warehouse list",
+      "goodsContainer": "goods container"
     },
     "openBook": "mở sổ kho",
     "lockBook": "khóa sổ kho",
-    "dateOfReceipted": "date of receipted"
+    "dateOfReceipted": "date of receipted",
+    "assignContainer": "asign container"
   },
   "AdminProduct": {
     "chooseProducts": "choose product",

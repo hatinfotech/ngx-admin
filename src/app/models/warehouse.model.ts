@@ -78,3 +78,15 @@ export class WarehouseBookModel {
   State?: string;
   CurrentCycle?: string;
 }
+
+export class WarehouseGoodsInContainerModel {
+  Id?: string | number;
+  Warehouse?: string & WarehouseModel;
+  Goods?: string & GoodsModel;
+  Unit?: string & UnitModel;
+  Container?: string & WarehouseGoodsContainerModel;
+}
+
+export class GoodsModel extends ProductModel {
+  Containers?: WarehouseGoodsInContainerModel[];
+}

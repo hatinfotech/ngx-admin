@@ -12,6 +12,8 @@ import { WarehouseListComponent } from './warehouse/warehouse-list/warehouse-lis
 import { WarehouseFormComponent } from './warehouse/warehouse-form/warehouse-form.component';
 import { WarehouseBookListComponent } from './book/warehouse-book-list/warehouse-book-list.component';
 import { WarehouseBookFormComponent } from './book/warehouse-book-form/warehouse-book-form.component';
+import { WarehouseGoodsListComponent } from './goods/warehouse-goods-list/warehouse-goods-list.component';
+import { WarehouseGoodsFormComponent } from './goods/warehouse-goods-form/warehouse-goods-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -111,6 +113,25 @@ const routes: Routes = [{
       path: 'book/form/:id',
       canActivate: [AuthGuardService],
       component: WarehouseBookFormComponent,
+    },
+    // warehouse goods
+    {
+      path: 'goods/list',
+      canActivate: [AuthGuardService],
+      component: WarehouseGoodsListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'goods/form',
+      canActivate: [AuthGuardService],
+      component: WarehouseGoodsFormComponent,
+    },
+    {
+      path: 'goods/form/:id',
+      canActivate: [AuthGuardService],
+      component: WarehouseGoodsFormComponent,
     },
   ],
 }];
