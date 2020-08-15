@@ -67,17 +67,17 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
       const ids = [];
       const updateList: GoodsModel[] = [];
       for (let p = 0; p < this.inputGoodsList.length; p++) {
-        const product: GoodsModel = { Code: this.inputGoodsList[p].Code, Containers: this.inputGoodsList[p].Containers, WarehouseUnit:  this.inputGoodsList[p].WarehouseUnit};
+        const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit:  this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit)};
         ids.push(product.Code);
-        for (let c = 0; c < choosedContainers.length; c++) {
-          const choosed = choosedContainers[c];
-          if (!product.Containers.some(cate => choosed['id'] === cate['id'])) {
-            product.Containers.push({ Container: this.commonService.getObjectId(choosed), Goods: product.Code, Unit: this.commonService.getObjectId(product.WarehouseUnit) } as any);
-          }
-        }
+        // for (let c = 0; c < choosedContainers.length; c++) {
+        //   const choosed = choosedContainers[c];
+        //   // if (!product.Containers.some(cate => choosed['id'] === cate['id'])) {
+        //   //   product.Containers.push({ Container: this.commonService.getObjectId(choosed), Goods: product.Code, Unit: this.commonService.getObjectId(product.WarehouseUnit) } as any);
+        //   // }
+        // }
         updateList.push(product);
       }
-      this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids }, updateList).then(rs => {
+      this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, assignContainers: choosedContainers.map(container => this.commonService.getObjectId(container)).join(',') }, updateList).then(rs => {
         this.onDialogSave(rs);
         this.processing = false;
         this.close();
@@ -92,13 +92,13 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
       const ids = [];
       const updateList: GoodsModel[] = [];
       for (let p = 0; p < this.inputGoodsList.length; p++) {
-        const product: GoodsModel = { Code: this.inputGoodsList[p].Code, Containers: this.inputGoodsList[p].Containers, WarehouseUnit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
+        const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
         ids.push(product.Code);
-        product.Containers = product.Containers.filter(container => !choosedContainers.some(choosed => this.commonService.getObjectId(choosed) === this.commonService.getObjectId(container['Container'])));
+        // product.Containers = product.Containers.filter(container => !choosedContainers.some(choosed => this.commonService.getObjectId(choosed) === this.commonService.getObjectId(container['Container'])));
 
         updateList.push(product);
       }
-      this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids }, updateList).then(rs => {
+      this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, revokeContainers: choosedContainers.map(container => this.commonService.getObjectId(container)).join(',')}, updateList).then(rs => {
         this.onDialogSave(rs);
         this.processing = false;
         this.close();
