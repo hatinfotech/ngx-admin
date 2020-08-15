@@ -18,6 +18,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ContactModel } from '../../../../models/contact.model';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { delay } from 'rxjs/operators';
+import { Select2SelectionObject } from '../../../../../vendor/ng2-select2/lib/ng2-select2.interface';
 
 @Component({
   selector: 'ngx-warehouse-simple-goods-receipt-note-form',
@@ -144,7 +145,7 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
         };
       },
     },
-    templateResult: (state: ProductModel): JQuery | string => {
+    templateResult: (state: Select2SelectionObject & ProductModel): JQuery | string => {
       if (!state.id) {
         return state.text;
       }
@@ -157,7 +158,7 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
         <div class="text">' + state.text + (state.Units ? ('<br>' + this.commonService.translateText('Product.unit') + ': ' + state.Units.map(unit => unit.Name).join(', ')) : '') + '</div>\
       </div>');
     },
-    templateSelection: (state: ProductModel): JQuery | string => {
+    templateSelection: (state: Select2SelectionObject & ProductModel): JQuery | string => {
       if (!state.id) {
         return state.text;
       }

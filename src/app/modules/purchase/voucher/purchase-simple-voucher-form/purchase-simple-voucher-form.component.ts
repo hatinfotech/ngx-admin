@@ -19,6 +19,7 @@ import { ProductModel } from '../../../../models/product.model';
 import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchase-voucher-print.component';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { Select2OptionData } from '../../../../../vendor/ng2-select2/lib/ng2-select2';
+import { Select2SelectionObject } from '../../../../../vendor/ng2-select2/lib/ng2-select2.interface';
 
 @Component({
   selector: 'ngx-purchase-simple-voucher-form',
@@ -133,7 +134,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
         };
       },
     },
-    templateResult: (state: ProductModel): JQuery | string => {
+    templateResult: (state: Select2SelectionObject & ProductModel): JQuery | string => {
       if (!state.id) {
         return state.text;
       }
@@ -146,7 +147,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
         <div class="text">' + state.text + (state.Units ? ('<br>' + this.commonService.translateText('Product.unit') + ': ' + state.Units.map(unit => unit.Name).join(', ')) : '') + '</div>\
       </div>');
     },
-    templateSelection: (state: ProductModel): JQuery | string => {
+    templateSelection: (state: Select2SelectionObject & ProductModel): JQuery | string => {
       if (!state.id) {
         return state.text;
       }

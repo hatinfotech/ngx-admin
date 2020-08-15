@@ -14,6 +14,7 @@ import { FormGroup } from '@angular/forms';
 import { FileModel } from '../../../../models/file.model';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { UnitModel } from '../../../../models/unit.model';
+import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 
 @Component({
   selector: 'ngx-product-list',
@@ -37,7 +38,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   static pagingConf = { page: 1, perPage: 40 };
 
   // Category list for filter
-  categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+  categoryList: ProductCategoryModel[] = [];
+  containerList: WarehouseGoodsContainerModel[] = [];
+  unitList: UnitModel[] = [];
 
   constructor(
     public apiService: ApiService,
@@ -70,6 +73,8 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   async loadCache() {
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true }));
   }
 
   async init() {

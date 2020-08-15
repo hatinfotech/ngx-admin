@@ -1,3 +1,4 @@
+import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { WarehouseBookModel, WarehouseModel, GoodsModel } from '../../../../models/warehouse.model';
@@ -8,7 +9,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ProductCategoryModel } from '../../../../models/product.model';
+import { ProductCategoryModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { SmartTableThumbnailComponent, SmartTableCurrencyEditableComponent, SmartTableCheckboxComponent, SmartTableNumberEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
@@ -17,6 +18,7 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { takeUntil } from 'rxjs/operators';
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
+import { UnitModel } from '../../../../models/unit.model';
 
 @Component({
   selector: 'ngx-warehouse-book-form',
@@ -73,6 +75,8 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
     WarehouseBookFormComponent._warehouseList = null;
     // WarehouseBookFormComponent._goodsContainerList = null;
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true }));
     return super.clearCache();
   }
 
@@ -154,7 +158,8 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
 
   // Category list for filter
   categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
-
+  containerList: WarehouseGoodsContainerModel[] = [];
+  unitList: UnitModel[] = [];
   // async loadCache() {
   //   // iniit category
   //   this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
@@ -237,20 +242,87 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
           },
         },
       },
-      WarehouseUnit: {
-        title: 'ĐVT',
-        type: 'string',
-        width: '10%',
-        valuePrepareFunction: (value) => {
-          return this.commonService.getObjectText(value);
-        },
-      },
       Container: {
         title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
-        type: 'string',
+        type: 'html',
         width: '15%',
-        valuePrepareFunction: (value) => {
-          return this.commonService.getObjectText(value);
+        valuePrepareFunction: (value: string, product: GoodsModel) => {
+          return  this.commonService.getObjectText(value);
+          // try {
+          //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
+          // } catch (e) {
+          //   return '';
+          // }
+        },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', {action: this.commonService.translateText('Common.choose'), definition: ''}),
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              logic: 'OR',
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
+        },
+      },
+      ConversionUnit: {
+        title: 'ĐVT',
+        type: 'html',
+        width: '10%',
+        valuePrepareFunction: (value: string, product: GoodsModel) => {
+          return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+        },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: this.commonService.translateText('AdminProduct.Unit.title', {action: this.commonService.translateText('Common.choose'), definition: ''}),
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              logic: 'OR',
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.unitList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
         },
       },
       Code: {

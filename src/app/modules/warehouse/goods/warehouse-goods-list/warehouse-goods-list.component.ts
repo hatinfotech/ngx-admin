@@ -131,7 +131,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           config: {
             delay: 0,
             select2Option: {
-              placeholder: 'Chọn danh mục...',
+              placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', {action: this.commonService.translateText('Common.choose'), definition: ''}),
               allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
@@ -141,6 +141,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                 text: 'text',
               },
               multiple: true,
+              logic: 'OR',
               ajax: {
                 url: (params: any) => {
                   return 'data:text/plan,[]';
@@ -148,7 +149,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                 delay: 0,
                 processResults: (data: any, params: any) => {
                   return {
-                    results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
                   };
                 },
               },
@@ -156,12 +157,43 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           },
         },
       },
-      WarehouseUnit: {
+      ConversionUnit: {
         title: 'ĐVT',
         type: 'html',
         width: '10%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
           return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+        },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: this.commonService.translateText('AdminProduct.Unit.title', {action: this.commonService.translateText('Common.choose'), definition: ''}),
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              logic: 'OR',
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.unitList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
         },
       },
       Code: {

@@ -436,7 +436,7 @@ export class CommonService {
   }
 
   translateText(key: string | Array<string>, interpolateParams?: Object, transform?: 'title' | 'upper' | 'lower' | 'head-title') {
-    return this.textTransform(this.translate.instant(key, interpolateParams), transform ? transform : 'head-title');
+    return this.textTransform(this.translate.instant(key, interpolateParams).trim(), transform ? transform : 'head-title');
   }
 
   getCurrentLoaleDataset() {

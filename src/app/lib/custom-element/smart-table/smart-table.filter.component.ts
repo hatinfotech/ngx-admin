@@ -134,6 +134,7 @@ export class SmartTableClearingFilterComponent extends SmartTableFilterComponent
 export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent implements OnInit, OnChanges {
   inputControl = new FormControl();
   select2Option: Select2Option & { data?: () => any[] };
+  logic: 'AND' | 'OR' = 'AND';
 
   constructor() {
     super();
@@ -141,6 +142,9 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
 
   ngOnInit() {
     this.select2Option = this.column.getFilterConfig().select2Option;
+    if (this.select2Option.logic) {
+      this.logic = this.select2Option.logic;
+    }
 
     if (this.delay > 0) {
       this.inputControl.valueChanges
@@ -150,7 +154,7 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
         )
         .subscribe((value: [] & any) => {
           if (this.select2Option.multiple) {
-            this.query = value.length === 0 ? '' : '{' + value.map((item: any) => item.id).join(',') + '}';
+            this.query = value.length === 0 ? '' : (this.logic === 'AND' ? '{' : '[') + value.map((item: any) => item.id).join(',') + (this.logic === 'AND' ? '}' : ']');
             this.setFilter();
           } else {
             this.query = value;
@@ -160,7 +164,7 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
     } else {
       const value = this.inputControl.value;
       if (this.select2Option.multiple) {
-        this.query = value.length === 0 ? '' : '{' + value.map((item: any) => item.id).join(',') + '}';
+        this.query = value.length === 0 ? '' : (this.logic === 'AND' ? '{' : '[') + value.map((item: any) => item.id).join(',') + (this.logic === 'AND' ? '}' : ']');
         this.setFilter();
       } else {
         this.query = value;
