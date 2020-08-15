@@ -173,7 +173,8 @@
     "suggest": "suggest",
     "lock": "lock",
     "lockBook": "lock book",
-    "openBook": "open book"
+    "openBook": "open book",
+    "bookkeeping": "bookkeeping"
   },
   "Contact": {
     "name": "contact name",
@@ -292,7 +293,9 @@
       "title": "{{action}} goods container {{definition}}"
     },
     "Book": {
-      "title": "{{action}} warehouse book {{definition}}"
+      "title": "{{action}} warehouse book {{definition}}",
+      "voucherWasWroteInToWahouseBook": "voucher was wrote in to warehouse book",
+      "voucherWasUnwroteInToWahouseBook": "voucher was unwrote out of warehouse book"
     },
     "Menu": {
       "book": "warehouse book",

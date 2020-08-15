@@ -13,13 +13,19 @@
             <div class="row">
               <!-- <input type="hidden" formControlName="Code"> -->
               <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Warehouse" label="Common.warehouse" [array]="array"
+                  [index]="i" [allowCopy]="false" [required]="true">
+                  <ngx-select2 formControlName="Warehouse" [select2Option]="select2OptionForWarehouse" [data]="warehouseList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
                 <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal"
                   [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption"
                     (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-3">
                 <ngx-form-group [formGroup]="formItem" name="ObjectName" label="Common.name" [array]="array" [index]="i"
                   [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="ObjectName"
@@ -90,26 +96,17 @@
                   <div class="col-lg-1">
                     <div class="row">
                       <div class="col-md-6 col-sm-3 col-xs-3">
-                        <ngx-form-group [formGroup]="detail" name="Id" label="Common.noNumber" [array]="getDetails(formItem)"
-                          [index]="i" [allowCopy]="false" [required]="false">
+                        <ngx-form-group [formGroup]="detail" name="Id" label="Common.noNumber"
+                          [array]="getDetails(formItem)" [index]="i" [allowCopy]="false" [required]="false">
                           <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}"
                             style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
                           <input type="hidden" formControlName="Id">
                         </ngx-form-group>
-                        <!-- <div class="form-group">
-                          <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
-                          <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}"
-                            style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
-                          <input type="hidden" formControlName="Id">
-                        </div>
-                        <div class="form-group">
-                          <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
-                        </div> -->
                       </div>
 
                       <div class="col-md-6 col-sm-9 col-xs-9">
-                        <ngx-form-group [formGroup]="detail" name="Image" label="Common.image" [array]="getDetails(formItem)"
-                          [index]="ic" [allowCopy]="false" [required]="false">
+                        <ngx-form-group [formGroup]="detail" name="Image" label="Common.image"
+                          [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                           <input type="button" nbInput fullWidth formControlName="Image"
                             placeholder="{{'Common.image' | translate | headtitlecase}}" style="
                           height: 2.5rem;
@@ -125,8 +122,8 @@
                   <div class="col-lg-5">
                     <div class="row">
                       <div class="col-md-12">
-                        <ngx-form-group [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)"
-                          [index]="ic" [allowCopy]="false" [required]="true">
+                        <ngx-form-group [formGroup]="detail" name="Product" label="Voucher.productOrService"
+                          [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct"
                             (selectChange)="onSelectProduct(detail, $event)">
                           </ngx-select2>
@@ -137,16 +134,16 @@
                   <div class="col-lg-6">
                     <div class="row">
                       <div class="col-md-3">
-                        <ngx-form-group [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)"
-                          [index]="ic" [allowCopy]="false" [required]="true">
+                        <ngx-form-group [formGroup]="detail" name="Unit" label="Voucher.unit"
+                          [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <ngx-select2 formControlName="Unit" [data]="detail.get('Unit')['dataList']"
-                            [select2Option]="select2OptionForUnit">
+                            [select2Option]="select2OptionForUnit" (selectChange)="onSelectUnit(detail, $event)">
                           </ngx-select2>
                         </ngx-form-group>
                       </div>
                       <div class="col-md-5">
-                        <ngx-form-group [formGroup]="detail" name="Container" label="Common.container" [array]="getDetails(formItem)"
-                          [index]="ic" [allowCopy]="false" [required]="true">
+                        <ngx-form-group [formGroup]="detail" name="Container" label="Common.container"
+                          [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <ngx-select2 formControlName="Container" [select2Option]="select2OptionForContainer"
                             [data]="detail.get('Container')['dataList']"
                             (click)="onContainerClick($event, select2, detail)" #select2>
@@ -154,8 +151,8 @@
                         </ngx-form-group>
                       </div>
                       <div class="col-md-3">
-                        <ngx-form-group [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)"
-                          [index]="ic" [allowCopy]="false" [required]="true">
+                        <ngx-form-group [formGroup]="detail" name="Quantity" label="Voucher.quantity"
+                          [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <input type="text" nbInput fullWidth formControlName="Quantity"
                             placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right"
                             currencyMask [options]="numberFormat">

@@ -221,8 +221,9 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
       params['includeContainers'] = true;
-      // params['includeWarehouseUnit'] = true;
+      params['includeUnit'] = true;
       params['includeFeaturePicture'] = true;
+      params['includeInventory'] = true;
       // params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
       return params;

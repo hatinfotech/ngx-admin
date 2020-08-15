@@ -172,7 +172,8 @@
     "suggest": "gợi ý",
     "lock": "khóa",
     "lockBook": "khóa sổ",
-    "openBook": "mở sổ"
+    "openBook": "mở sổ",
+    "bookkeeping": "ghi sổ"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -295,7 +296,9 @@
       "title": "{{definition}}{{action}}chỗ chứa hàng hóa"
     },
     "Book": {
-      "title": "{{definition}}{{action}} sổ kho"
+      "title": "{{definition}}{{action}} sổ kho",
+      "voucherWasWroteInToWahouseBook": "phiếu đã được ghi vào sổ kho",
+      "voucherWasUnwroteInToWahouseBook": "phiếu đã được xóa khỏi sổ kho"
     },
     "Menu": {
       "book": "sổ kho",

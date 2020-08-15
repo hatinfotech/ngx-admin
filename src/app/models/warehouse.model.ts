@@ -33,6 +33,8 @@ export class WarehouseGoodsReceiptNoteModel {
   Warehouse?: string;
   Branch?: string;
 
+  Bookkeeping?: boolean;
+
   Details?: WarehouseGoodsReceiptNoteDetailModel[];
 }
 

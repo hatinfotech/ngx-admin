@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { WarehouseGoodsReceiptNoteModel, WarehouseGoodsReceiptNoteDetailModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
+import { WarehouseGoodsReceiptNoteModel, WarehouseGoodsReceiptNoteDetailModel, WarehouseGoodsContainerModel, GoodsModel, WarehouseModel } from '../../../../models/warehouse.model';
 import { environment } from '../../../../../environments/environment';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { TaxModel } from '../../../../models/tax.model';
@@ -15,7 +15,6 @@ import { Select2Option, Select2Component } from '../../../../lib/custom-element/
 import { ProductModel } from '../../../../models/product.model';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PromotionActionModel } from '../../../../models/promotion.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { delay } from 'rxjs/operators';
@@ -76,6 +75,18 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
     },
   };
 
+  warehouseList: WarehouseModel[];
+  select2OptionForWarehouse = {
+    placeholder: this.commonService.translateText('Common.choose'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -118,7 +129,7 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { includeUnit: true, 'filter_Name': params['term'], limit: 20, includeFeaturePicture: true, includeUnits: true });
+        return this.apiService.buildApiUrl('/warehouse/goods', { 'filter_Name': params['term'], limit: 20, includeFeaturePicture: true, includeUnits: true, includeContainers: true });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -250,11 +261,12 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
   }
 
   async init(): Promise<boolean> {
+    this.warehouseList = await this.apiService.getPromise<WarehouseModel[]>('/warehouse/warehouses', { includeIdText: true, sort_Name: 'asc' });
     this.goodsContainerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', {
       includeIdText: true, includePath: true, includeWarehouse: true,
       select: 'Parent=>Parent,Code=>Code,Name=>Name,Warehouse=>Warehouse',
     })).map(item => {
-      item['text'] = (item['Warehouse'].text || '') + item['Path'];
+      item['text'] = item['Path'];
       return item;
     });
 
@@ -299,28 +311,23 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
       if (itemFormData.Details) {
         itemFormData.Details.forEach(detail => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
-          newDetailFormGroup.get('Unit')['dataList'] = detail.Product['Units'];
-          newDetailFormGroup.get('Container')['dataList'] = [
-            {
+          newDetailFormGroup.get('Unit')['dataList'] = detail.Product.Units;
+          const containers = [];
+          try {
+            containers.push({
               id: 'A-' + this.commonService.translateText('Common.suggest'),
               text: 'A-' + this.commonService.translateText('Common.suggest'),
-              children: [
-                {
-                  id: 'GOCO168202',
-                  text: 'Kho hàng hóa/Kệ 1/Tầng 1/Ngăn 1',
-                },
-                {
-                  id: 'GOCO168203',
-                  text: 'Kho hàng hóa/Kệ 1/Tầng 1/Ngăn 2',
-                },
-              ],
-            },
-            {
-              id: 'B-' + this.commonService.translateText('Common.all'),
-              text: 'B-' + this.commonService.translateText('Common.all'),
-              children: this.goodsContainerList,
-            },
-          ];
+              children: detail.Product.Units.find(unit => this.commonService.getObjectId(unit) === this.commonService.getObjectId(detail.Unit))['Containers'],
+            });
+          } catch (e) { console.log(e); }
+
+          containers.push({
+            id: 'B-' + this.commonService.translateText('Common.all'),
+            text: 'B-' + this.commonService.translateText('Common.all'),
+            children: this.goodsContainerList,
+          });
+          newDetailFormGroup.get('Container')['dataList'] = containers;
+
           if (detail.ImageThumbnail) {
             newDetailFormGroup.get('Image')['thumbnail'] = detail.ImageThumbnail + '?token=' + this.apiService.getAccessToken();
           }
@@ -357,6 +364,7 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
       ObjectName: [''],
       // Tax: [''],
       Title: [''],
+      Warehouse: ['', Validators.required],
       DateOfReceipted: [new Date()],
       Description: [''],
       PriceTable: [''],
@@ -496,34 +504,13 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
 
   }
 
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+  onSelectProduct(detail: FormGroup, selectedData: GoodsModel) {
     console.log(selectedData);
     if (selectedData) {
       let defaultUnit = null;
-      if (selectedData['Units']) {
-        defaultUnit = selectedData['Units'].find((item: any) => item['DefaultImport'] === '1');
-        detail.get('Unit')['dataList'] = selectedData['Units'].map((item: any) => ({ ...item, id: item['Code'], text: item['Name'] }));
-        detail.get('Container')['dataList'] = [
-          {
-            id: 'A-' + this.commonService.translateText('Common.suggest'),
-            text: 'A-' + this.commonService.translateText('Common.suggest'),
-            children: [
-              {
-                id: 'GOCO168202',
-                text: 'Kho hàng hóa/Kệ 1/Tầng 1/Ngăn 1',
-              },
-              {
-                id: 'GOCO168203',
-                text: 'Kho hàng hóa/Kệ 1/Tầng 1/Ngăn 2',
-              },
-            ],
-          },
-          {
-            id: 'B-' + this.commonService.translateText('Common.all'),
-            text: 'B-' + this.commonService.translateText('Common.all'),
-            children: this.goodsContainerList,
-          },
-        ];
+      if (selectedData.Units) {
+        defaultUnit = selectedData.Units.find((item: any) => item['DefaultImport'] === '1');
+        detail.get('Unit')['dataList'] = selectedData.Units.map((item: any) => ({ ...item, id: item['Code'], text: item['Name'] }));
         if (defaultUnit) {
           detail.get('Unit').patchValue({
             id: defaultUnit['Code'],
@@ -543,6 +530,25 @@ export class WarehouseSimpleGoodsReceiptNoteFormComponent extends DataManagerFor
       detail.get('Unit').setValue('');
     }
     return false;
+  }
+
+  onSelectUnit(detail: FormGroup, selectedData: UnitModel & {Containers: WarehouseGoodsContainerModel[]}) {
+    const containers = [];
+    try {
+      containers.push({
+        id: 'A-' + this.commonService.translateText('Common.suggest'),
+        text: 'A-' + this.commonService.translateText('Common.suggest'),
+        children: selectedData.Containers,
+      });
+    } catch (e) { console.log(e); }
+
+    containers.push({
+      id: 'B-' + this.commonService.translateText('Common.all'),
+      text: 'B-' + this.commonService.translateText('Common.all'),
+      children: this.goodsContainerList,
+    });
+
+    detail.get('Container')['dataList'] = containers;
   }
 
   // calculatToMoney(detail: FormGroup) {
