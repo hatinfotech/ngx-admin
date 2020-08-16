@@ -341,9 +341,9 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         type: 'number-editable',
         editable: true,
         delay: 3000,
-        onChange: (value: number, row: GoodsModel, instance: SmartTableCurrencyEditableComponent) => {
+        onChange: (value: number, row: GoodsModel, instance: SmartTableNumberEditableComponent) => {
           const masterPriceTable = this.array.controls[0].get('Code').value;
-          if (value) {
+          if (value !== null) {
             if (this.commonService.getObjectId(row.WarehouseUnit)) {
               // if (!instance.isPatchingValue) {
               instance.status = 'primary';

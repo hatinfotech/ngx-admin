@@ -40,7 +40,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     multiple: false,
     ajax: {
       url: (params: any) => {
-        const option: any = { 'filter_Name': params['term'], includeIdText: true, includeWarehouse: true, select: 'Parent=>Parent,Code=>Code,Name=>Name,Warehouse=>Warehouse,Path=>Path' };
+        const option: any = { 'filter_Path': params['term'], includeIdText: true, includeWarehouse: true, select: 'Parent=>Parent,Code=>Code,Name=>Name,Warehouse=>Warehouse,Path=>Path' };
         if (this.activeFormGroup) {
           const warehouseFormControl = this.activeFormGroup.get('Warehouse');
           if (warehouseFormControl) {
