@@ -10,7 +10,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductCategoryModel, ProductUnitConversoinModel } from '../../../../models/product.model';
-import { SmartTableThumbnailComponent, SmartTableCurrencyEditableComponent, SmartTableCheckboxComponent, SmartTableNumberEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableThumbnailComponent, SmartTableCurrencyEditableComponent, SmartTableCheckboxComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
@@ -169,14 +169,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
   rows = [];
 
   settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
+    actions: false,
     pager: this.configPaging(),
     columns: {
       FeaturePictureThumbnail: {
@@ -247,7 +240,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         type: 'html',
         width: '15%',
         valuePrepareFunction: (value: string, product: GoodsModel) => {
-          return  this.commonService.getObjectText(value);
+          return this.commonService.getObjectText(value);
           // try {
           //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
           // } catch (e) {
@@ -260,7 +253,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
           config: {
             delay: 0,
             select2Option: {
-              placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', {action: this.commonService.translateText('Common.choose'), definition: ''}),
+              placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
               allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
@@ -289,7 +282,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       ConversionUnit: {
         title: 'ĐVT',
         type: 'html',
-        width: '10%',
+        width: '5%',
         valuePrepareFunction: (value: string, product: GoodsModel) => {
           return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
         },
@@ -299,7 +292,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
           config: {
             delay: 0,
             select2Option: {
-              placeholder: this.commonService.translateText('AdminProduct.Unit.title', {action: this.commonService.translateText('Common.choose'), definition: ''}),
+              placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
               allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
@@ -333,7 +326,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       Sku: {
         title: 'Sku',
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
       Inventory: {
         title: this.commonService.translateText('Warehouse.inventory'),
@@ -345,7 +338,6 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
           const masterPriceTable = this.array.controls[0].get('Code').value;
           if (value !== null) {
             if (this.commonService.getObjectId(row.WarehouseUnit)) {
-              // if (!instance.isPatchingValue) {
               instance.status = 'primary';
               console.log(instance.rowData.Code);
               this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
@@ -355,19 +347,15 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
                 unit: this.commonService.getObjectId(row.WarehouseUnit),
                 container: this.commonService.getObjectId(row['Container']),
                 inventory: value,
+                currency: value,
               }, [{
                 MasterPriceTable: masterPriceTable,
                 Product: row.Code,
                 Unit: row.WarehouseUnit.Code,
                 Price: value,
               }]).then(rs => {
-                // console.log(rs);
                 console.log(instance.rowData.Code);
                 instance.status = 'success';
-                // setTimeout(() => {
-                //   console.log(instance.rowData.Code);
-                //   instance.status = '';
-                // }, 15000);
               });
               // }
             } else {
@@ -388,7 +376,56 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
               });
             }
           }
-          // }
+        },
+      },
+      UnitPrice: {
+        title: this.commonService.translateText('Warehouse.warehousePrice'),
+        width: '10%',
+        type: 'number-editable',
+        editable: true,
+        delay: 3000,
+        onChange: (value: number, row: GoodsModel, instance: SmartTableNumberEditableComponent) => {
+          const masterPriceTable = this.array.controls[0].get('Code').value;
+          if (value !== null) {
+            if (this.commonService.getObjectId(row.WarehouseUnit)) {
+              instance.status = 'primary';
+              console.log(instance.rowData.Code);
+              this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
+                id: [this.array.controls[0].get('Code').value],
+                updateHeadInventory: true,
+                goods: row.Code,
+                unit: this.commonService.getObjectId(row.WarehouseUnit),
+                container: this.commonService.getObjectId(row['Container']),
+                unitPrice: value,
+                currency: this.commonService.loginInfo.configuration.defaultCurrency,
+              }, [{
+                MasterPriceTable: masterPriceTable,
+                Product: row.Code,
+                Unit: row.WarehouseUnit.Code,
+                Price: value,
+              }]).then(rs => {
+                console.log(instance.rowData.Code);
+                instance.status = 'success';
+              });
+              // }
+            } else {
+              instance.status = 'danger';
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: 'Cảnh báo',
+                  content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+                  actions: [
+                    {
+                      label: 'Trở về',
+                      icon: 'back',
+                      status: 'info',
+                      action: () => { },
+                    },
+                  ],
+                },
+              });
+            }
+          }
         },
       },
     },
@@ -444,6 +481,24 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         column.type = 'custom';
         column.renderComponent = SmartTableNumberEditableComponent;
         column.onComponentInitFunction = (instance: SmartTableNumberEditableComponent) => {
+          instance.disable = !column.editable;
+          instance.placeholder = column.title;
+          instance.name = key;
+          if (column.delay) {
+            instance.delay = column.delay;
+          }
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            if (column.onChange) {
+              column.onChange(value, instance.rowData, instance);
+            }
+          });
+        };
+      }
+
+      if (column.type === 'text-editable') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableTextEditableComponent;
+        column.onComponentInitFunction = (instance: SmartTableTextEditableComponent) => {
           instance.disable = !column.editable;
           instance.placeholder = column.title;
           instance.name = key;

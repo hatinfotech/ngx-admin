@@ -45,6 +45,7 @@ import { WarehouseGoodsPrintComponent } from './goods/warehouse-goods-print/ware
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { AssignContainerFormComponent } from './goods/assign-containers-form/assign-containers-form.component';
 import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from './goods-delivery-note/warehouse-simple-goods-delivery-note-form/warehouse-simple-goods-delivery-note-form.component';
+import { WarehouseBookCommitComponent } from './book/warehouse-book-commit/warehouse-book-commit.component';
 
 
 
@@ -72,6 +73,7 @@ import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from './goods-delivery-
     WarehouseGoodsPrintComponent,
     AssignContainerFormComponent,
     WarehouseSimpleGoodsDeliveryNoteFormComponent,
+    WarehouseBookCommitComponent,
   ],
   imports: [
     CommonModule,
@@ -119,6 +121,7 @@ import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from './goods-delivery-
     AssignContainerFormComponent,
     WarehouseSimpleGoodsDeliveryNoteFormComponent,
     WarehouseGoodsDeliveryNotePrintComponent,
+    WarehouseBookCommitComponent,
   ],
   providers: [
     CurrencyPipe,

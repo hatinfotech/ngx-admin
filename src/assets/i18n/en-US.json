@@ -174,7 +174,8 @@
     "lock": "lock",
     "lockBook": "lock book",
     "openBook": "open book",
-    "bookkeeping": "bookkeeping"
+    "bookkeeping": "bookkeeping",
+    "currency": "currency"
   },
   "Contact": {
     "name": "contact name",
@@ -298,7 +299,9 @@
     "Book": {
       "title": "{{action}} warehouse book {{definition}}",
       "voucherWasWroteInToWahouseBook": "voucher was wrote in to warehouse book",
-      "voucherWasUnwroteInToWahouseBook": "voucher was unwrote out of warehouse book"
+      "voucherWasUnwroteInToWahouseBook": "voucher was unwrote out of warehouse book",
+      "commit": "book commited",
+      "commitTo": "book commit to"
     },
     "Menu": {
       "book": "warehouse book",
@@ -312,7 +315,9 @@
     "lockBook": "khóa sổ kho",
     "dateOfReceipted": "date of receipted",
     "assignContainer": "asign container",
-    "inventory": "inventory"
+    "inventory": "inventory",
+    "account": "warehouse account",
+    "warehousePrice": "warehousePrice"
   },
   "AdminProduct": {
     "chooseProducts": "choose product",

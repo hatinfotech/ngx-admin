@@ -8,7 +8,7 @@ import { OnInit, Input, AfterViewInit, Type, ElementRef, ViewChild } from '@angu
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableCheckboxComponent } from '../custom-element/smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
@@ -554,6 +554,19 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         column.type = 'custom';
         column.renderComponent = SmartTableCheckboxComponent;
         column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
+          instance.disable = !column.editable;
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            if (column.onChange) {
+              column.onChange(value, instance.rowData, instance);
+            }
+          });
+        };
+      }
+
+      if (column.type === 'datetime') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableDateTimeComponent;
+        column.onComponentInitFunction = (instance: SmartTableDateTimeComponent) => {
           instance.disable = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             if (column.onChange) {

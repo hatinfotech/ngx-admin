@@ -89,15 +89,18 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
       Note: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
         type: 'string',
-        width: '20%',
+        width: '30%',
       },
       Warehouse: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.warehouse'), 'head-title'),
         type: 'string',
         width: '15%',
+        valuePrepareFunction: (value) => {
+          return this.commonService.getObjectText(value);
+        },
       },
-      DateOfPurchase: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfPurchase'), 'head-title'),
+      DateOfReceipted: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfReceipted'), 'head-title'),
         type: 'custom',
         width: '15%',
         renderComponent: SmartTableDateTimeComponent,

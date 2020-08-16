@@ -52,7 +52,7 @@
                 <label class="label"><span class="valid">Bảng cập nhật tồn đầu</span></label>
               </div>
             </div>
-            <div class="ng2-smart-table-wrap" style="border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
+            <div class="ng2-smart-table-wrap" style="border: #ccc 1px solid; border-radius: 3px; overflow-y: hidden; overflow-x: auto;">
               <div class="ng2-smart-table-wrap">
                 <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
                   (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)"

@@ -59,6 +59,7 @@ export class WarehouseFormComponent extends DataManagerFormComponent<WarehouseMo
       Name: ['', Validators.required],
       Description: [''],
       Branch: ['MAINBRANCH'],
+      AccAccount: ['156', Validators.required],
     });
     if (data) {
       data['Code_old'] = data['Code'];

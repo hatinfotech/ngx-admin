@@ -11,53 +11,43 @@
             <div class="row">
               <input type="hidden" formControlName="Code_old">
               <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                  <label class="label"><span class="valid">Tên kho/bãi</span><span class="invalid">Tên kho/bãi là bắt buộc
-                      (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Name')"
-                        pack="eva" icon="copy-outline">
-                      </nb-icon></label>
-                      <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên kho/bãi">
-                </div>
+                <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name"
+                  [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name' | translate | headtitlecase}}">
+                </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Branch'), 'warning')">
-                  <label class="label"><span class="valid">Branch</span><span class="invalid">Branch là bắt buộc
-                      (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Code')"
-                        pack="eva" icon="copy-outline">
-                      </nb-icon></label>
-                      <input type="text" nbInput fullWidth formControlName="Branch" placeholder="Chi nhánh">
-                </div>
+                <ngx-form-group [formGroup]="formItem" name="Branch" label="Common.branch"
+                  [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <input type="text" nbInput fullWidth formControlName="Branch" placeholder="{{'Common.branch' | translate | headtitlecase}}">
+                </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                  <label class="label"><span class="valid">Mã</span><span class="invalid">Mã là bắt buộc
-                      (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Code')"
-                        pack="eva" icon="copy-outline">
-                      </nb-icon></label>
-                      <input type="text" nbInput fullWidth formControlName="Code" placeholder="Tự động tạo">
-                </div>
+                <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code"
+                  [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.code' | translate | headtitlecase}}">
+                </ngx-form-group>
               </div>
-              <div class="col-sm-12">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
-                  <label class="label"><span class="valid">Tên kho/bãi</span><span class="invalid">Tên kho/bãi là bắt buộc
-                      (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Name')"
-                        pack="eva" icon="copy-outline">
-                      </nb-icon></label>
-                      <input type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả">
-                </div>
+              <div class="col-sm-9">
+                <ngx-form-group [formGroup]="formItem" name="Description" label="Warehouse.account"
+                  [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="AccAccount" label="Warehouse.account"
+                  [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <input type="text" nbInput fullWidth formControlName="AccAccount" placeholder="{{'Warehouse.account' | translate | headtitlecase}}">
+                </ngx-form-group>
               </div>
             </div>
           </div>
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <button nbButton status="warning" (click)="addFormGroup($event)" hero style="float: left;">Thêm cái nữa</button>
-            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
-            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero style="float: left;">{{'Common.addOne' | translate | headtitlecase}}</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
           </div>
         </nb-card-footer>
       </nb-card>

@@ -1,0 +1,28 @@
+<form class="popup">
+    <nb-card class="small-header popup">
+      <nb-card-header>
+        <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Warehouse.Book.commit' | translate | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label class="label"><span class="valid">{{'Warehouse.Book.commitTo' | translate | headtitlecase}}</span>
+              </label>
+              <input type="text" [owlDateTime]="dateOfReceipted" [owlDateTimeTrigger]="dateOfReceipted" nbInput
+                fullWidth [formControl]="formControl"
+                placeholder="{{'Warehouse.Book.commitTo' | translate | headtitlecase}}">
+                <owl-date-time #dateOfReceipted></owl-date-time>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+      <nb-card-footer>
+        <div class="buttons-row" style="text-align: right;">
+          <button nbButton status="warning" hero>{{'Common.close' | translate | headtitlecase}}</button>
+          <button type="button" nbButton status="success" [disabled]="!formControl.value || processing" hero
+            (click)="commit()">{{'Warehouse.Book.commit' | translate | headtitlecase}}</button>
+        </div>
+      </nb-card-footer>
+    </nb-card>
+  </form>

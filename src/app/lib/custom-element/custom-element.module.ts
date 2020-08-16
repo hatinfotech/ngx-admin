@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
-import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent } from './smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
@@ -38,6 +38,7 @@ import { FormGroupComponent } from './form/form-group/form-group.component';
     CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent,
     IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
     SmartTableNumberEditableComponent,
+    SmartTableTextEditableComponent,
   ],
   imports: [
     CommonModule,
@@ -75,6 +76,7 @@ import { FormGroupComponent } from './form/form-group/form-group.component';
     CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent,
     IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
     SmartTableNumberEditableComponent,
+    SmartTableTextEditableComponent,
   ],
 })
 export class CustomElementModule { }

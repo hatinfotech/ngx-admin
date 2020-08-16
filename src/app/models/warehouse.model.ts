@@ -115,6 +115,7 @@ export class WarehouseBookModel {
   Note?: string;
   State?: string;
   CurrentCycle?: string;
+  Commited?: string;
 }
 
 export class WarehouseGoodsInContainerModel {

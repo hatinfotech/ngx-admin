@@ -10,6 +10,11 @@ export class LoginInfoModel {
   distribution?: {fileStores: {[key: string]: FileStoreModel}, cookie: string};
   system?: {version?: string};
   phoneExtensions?: UserPhoneExtensionModel[];
+  configuration?: {
+    locale?: string,
+    timezone?: string,
+    defaultCurrency?: string,
+  };
 
   constructor() { }
 

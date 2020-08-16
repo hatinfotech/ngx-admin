@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { WarehouseBookCommitComponent } from '../warehouse-book-commit/warehouse-book-commit.component';
 
 @Component({
   selector: 'ngx-warehouse-book-list',
@@ -48,6 +49,28 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
       }
       return button;
     });
+    this.actionButtonList.splice(2, 0,
+      {
+        name: 'commit',
+        status: 'primary',
+        label: this.commonService.translateText('Warehouse.Book.commit', 'head-title'),
+        icon: 'lock',
+        title: this.commonService.translateText('Warehouse.Book.commit', 'head-title'),
+        size: 'medium',
+        disabled: () => this.selectedIds.length === 0,
+        click: () => {
+          this.commonService.openDialog(WarehouseBookCommitComponent, {
+            context: {
+              inputWarehouseBooks: this.selectedItems,
+              onDialogSave: (rs) => {
+                this.refresh();
+              },
+            },
+          });
+          return false;
+        },
+      },
+    );
 
     // Remove edit button
     this.actionButtonList = this.actionButtonList.filter(button => button.name !== 'edit');
@@ -75,16 +98,11 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
       Note: {
         title: this.commonService.translateText('Common.note'),
         type: 'string',
-        width: '25%',
+        width: '30%',
       },
-      DateOfStart: {
-        title: this.commonService.translateText('Common.dateOfStart'),
-        type: 'string',
-        width: '15%',
-      },
-      DateofEnd: {
-        title: this.commonService.translateText('Common.dateOfEnd'),
-        type: 'string',
+      Commited: {
+        title: this.commonService.translateText('Warehouse.Book.commit'),
+        type: 'datetime',
         width: '15%',
       },
       State: {
