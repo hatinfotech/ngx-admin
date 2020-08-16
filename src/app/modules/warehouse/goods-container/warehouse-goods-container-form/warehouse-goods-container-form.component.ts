@@ -40,7 +40,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     multiple: false,
     ajax: {
       url: (params: any) => {
-        const option: any = { 'filter_Name': params['term'], includeIdText: true, includePath: true, includeWarehouse: true, select: 'Parent=>Parent,Code=>Code,Name=>Name,Warehouse=>Warehouse' };
+        const option: any = { 'filter_Name': params['term'], includeIdText: true, includeWarehouse: true, select: 'Parent=>Parent,Code=>Code,Name=>Name,Warehouse=>Warehouse,Path=>Path' };
         if (this.activeFormGroup) {
           const warehouseFormControl = this.activeFormGroup.get('Warehouse');
           if (warehouseFormControl) {
@@ -56,9 +56,6 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
         return {
           results: data.filter((item: WarehouseGoodsContainerModel) => {
             return this.commonService.getObjectId(item.Warehouse) === warehouse;
-          }).map((item: WarehouseGoodsContainerModel) => {
-            item['text'] = (item['Warehouse'].text || '') + item['Path'];
-            return item;
           }),
         };
       },

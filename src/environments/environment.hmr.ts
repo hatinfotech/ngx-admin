@@ -10,7 +10,7 @@
 
 export const environment = {
   // Version structure s.m.f.b.e : Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.3.4.dev',
+  version: '2.0.3.6.dev',
   // 2.0.1.0.dev : Develop helpdesl manager module
   production: false,
   hmr: true,
