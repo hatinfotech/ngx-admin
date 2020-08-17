@@ -24,11 +24,22 @@ import { SystemLocaleConfigComponent } from './configuration/system-configuratio
 import { UserConfigBoardComponent } from './configuration/user-config-board/user-config-board.component';
 import { UserLocaleConfigComponent } from './configuration/user-config-board/user-locale-config/user-locale-config.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SystemActionListComponent } from './action/system-action-list/system-action-list.component';
+import { SystemActionFormComponent } from './action/system-action-form/system-action-form.component';
+import { SystemParamListComponent } from './param/system-param-list/system-param-list.component';
+import { SystemParamFormComponent } from './param/system-param-form/system-param-form.component';
+import { SystemRouteListComponent } from './route/system-route-list/system-route-list.component';
+import { SystemRouteFormComponent } from './route/system-route-form/system-route-form.component';
+
 
 
 
 @NgModule({
-  declarations: [SystemComponent, SystemParameterListComponent, SystemParameterFormComponent, SystemConfigurationBoardComponent, SystemLocaleConfigComponent, UserConfigBoardComponent, UserLocaleConfigComponent],
+  declarations: [SystemComponent, SystemParameterListComponent, SystemParameterFormComponent,
+    SystemConfigurationBoardComponent, SystemLocaleConfigComponent, UserConfigBoardComponent,
+    UserLocaleConfigComponent, SystemActionListComponent, SystemActionFormComponent,
+    SystemParamListComponent, SystemParamFormComponent, SystemRouteListComponent, SystemRouteFormComponent,
+  ],
   imports: [
     CommonModule,
     NbTabsetModule,

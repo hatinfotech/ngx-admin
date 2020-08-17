@@ -215,6 +215,34 @@
     "title": "{{definition}}{{action}} tham số hệ thống",
     "Config": {
       "userLocale": "Cấu hình ngôn ngữ & vùng miền"
+    },
+    "Route": {
+      "Rule": {
+        "title": "{{definition}}{{action}} luật định tuyến"
+      },
+      "Param": {
+        "title": "{{definition}}{{action}} tham số định tuyến",
+        "options": "các tùy chọn tham số",
+        "defaultOperator": "điều kiện mặc định",
+        "defaultDataType": "kểu dữ liệu mặc định"
+      },
+      "Action": {
+        "title": "{{definition}}{{action}} dành động định tuyến",
+        "parameter": "tham số cho hành động",
+        "value": "giá trị cho tham số"
+      },
+      "priority": "ưu tiên",
+      "conditions": "các điều kiện so sánh",
+      "actions": "các hành động được thực thi",
+      "action": "hành động"
+    },
+    "Menu": {
+      "route": "định tuyến",
+      "Route": {
+        "rule": "luật định tuyến",
+        "param": "tham số định tuyến",
+        "action": "hành động định tuyến"
+      }
     }
   },
   "Ivoip": {

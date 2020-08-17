@@ -1,0 +1,266 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
+  (keydown.enter)="onControlEnter($event)" class="popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
+            [title]="title ? title : ('System.Action.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+            [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <input formControlName="Name_old" type="hidden">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}} (*)</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name'}}">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}}
+                      (*)</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }}
+                      (*)</span></label>
+                  <textarea nbInput fullWidth formControlName="Description"
+                    placeholder="{{'Common.description' | translate | headtitlecase}}" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Param form -->
+            <hr>
+            <label class="label">{{'System.Param.params' | translate | headtitlecase}}</label>
+            <div class="row">
+              <div class="col-sm-1 label">
+                <button type="button" nbButton status="success" (click)="addChildFormGroup('Main.Params', formItem, i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  {{'Common.add' | translate | headtitlecase}}
+                </button>
+              </div>
+              <div class="col-sm-11">
+                <div class="row">
+                  <div class="col-sm-3 label">{{'Common.name' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label">{{'Common.dataType' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label">{{'Common.remoteDataSource' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label">{{'Common.remoteDataResource' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label">{{'Common.description' | translate | headtitlecase}}</div>
+                </div>
+              </div>
+              <!-- <div class="col-sm-1" style="text-align: center;">
+                <nb-icon pack="eva" icon="plus-circle-outline" (click)="addChildFormGroup('Main.Params', formItem, i)"
+                  status="success" style="margin-right: 0.8rem; cursor: pointer;"></nb-icon>
+                <button type="button" nbButton status="success" (click)="addChildFormGroup('Main.Params', formItem, i)" size="tiny"
+                  style="width: 100%; margin-bottom: 3px;" hero>
+                  Add
+                </button>
+              </div> -->
+            </div>
+
+            <div formArrayName="Params" class="form-details">
+              <div class="form-detail-item"
+                *ngFor="let param of getChildFormArray('Main.Params', formItem, i).controls; let ic=index"
+                [formGroup]="param">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <input nbInput fullWidth class="sorting-handle" disabled="true" value="{{ ic + 1 }}"
+                        style="text-align: center; cursor: grab;">
+                      <input type="hidden" formControlName="Id">
+                    </div>
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button type="button" nbButton status="danger" hero size="medium"
+                        (click)="removeChildFormGroup('Main.Params', formItem, i, ic)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                    <div class="form-group">
+                      <label class="label">Stt</label>
+                      <button type="button" nbButton status="success" (click)="addChildFormGroup('Main.Params', formItem, i)"
+                        size="medium" style="width: 100%; margin-bottom: 3px;" hero>
+                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-sm-11">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="label">{{'Common.name' | translate | headtitlecase}}</label>
+                          <input type="text" nbInput fullWidth formControlName="Name"
+                            placeholder="{{'Common.name' | translate | headtitlecase}}">
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group" [attr.state]="formControlValidate(param.get('Type'), 'warning')">
+                          <label class="label"><span class="valid">{{'Common.dataType' | translate | headtitlecase}}
+                              (*)</span><span
+                              class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.dataType')} | headtitlecase }}
+                              (*)</span></label>
+                          <nb-select size="medium" formControlName="Type" fullWidth
+                            placeholder="{{'Common.dataType' | translate | headtitlecase}}">
+                            <nb-option value="STRING">{{'Common.DataType.string' | translate | headtitlecase}}
+                            </nb-option>
+                            <nb-option value="INTEGER">{{'Common.DataType.int' | translate | headtitlecase}}</nb-option>
+                            <nb-option value="BOOLEAN">{{'Common.DataType.boolean' | translate | headtitlecase}}
+                            </nb-option>
+                            <nb-option value="DOUBLE">{{'Common.DataType.float' | translate | headtitlecase}}
+                            </nb-option>
+                            <nb-option value="DATE">{{'Common.DataType.date' | translate | headtitlecase}}</nb-option>
+                            <nb-option value="TIME">{{'Common.DataType.time' | translate | headtitlecase}}</nb-option>
+                            <nb-option value="DATE_TIME">{{'Common.DataType.datetime' | translate | headtitlecase}}
+                            </nb-option>
+                            <nb-option value="OBJECT">{{'Common.DataType.object' | translate | headtitlecase}}
+                            </nb-option>
+                            <nb-option value="OBJECTS">{{'Common.DataType.objects' | translate | headtitlecase}}
+                            </nb-option>
+                            <nb-option value="ENV_PARAM">{{'Common.DataType.environment' | translate | headtitlecase}}
+                            </nb-option>
+                          </nb-select>
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group">
+                          <label class="label">{{'Common.remoteDataSource' | translate | headtitlecase}}</label>
+                          <input type="text" nbInput fullWidth formControlName="RemoteDataSource"
+                            placeholder="{{'Common.remoteDataSource' | translate | headtitlecase}}">
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group">
+                          <label class="label">{{'Common.remoteDataResource' | translate | headtitlecase}}</label>
+                          <input type="text" nbInput fullWidth formControlName="RemoteDataResource"
+                            placeholder="{{'Common.remoteDataResource' | translate | headtitlecase}}">
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="label">{{'Common.description' | translate | headtitlecase}}</label>
+                          <input type="text" nbInput fullWidth formControlName="Description"
+                            placeholder="{{'Common.description' | translate | headtitlecase}}">
+                        </div>
+                      </div>
+
+                      <div class="col-sm-12">
+                        <div style="border: 1px solid #e4e9f2;
+                        border-radius: 0.5rem;
+                        margin: -5px;
+                        padding: 0.5rem;
+                        padding-bottom: 0px;
+                        margin-bottom: 0.5rem;">
+                          <!-- Action param option form -->
+                          <!-- <label class="label">{{'System.Route.actionParameters' | translate | headtitlecase}}</label> -->
+                          <div class="row">
+                            <div class="col-sm-1 label">Stt</div>
+                            <div class="col-sm-10">
+                              <div class="row">
+                                <div class="col-sm-6 label">
+                                  {{'System.Route.Action.data' | translate | headtitlecase}}
+                                </div>
+                                <div class="col-sm-6 label">
+                                  {{'System.Route.Action.label' | translate | headtitlecase}}
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-sm-1" style="text-align: center;">
+                              <button type="button" nbButton status="success"
+                                (click)="addChildFormGroup('Main.Params.Options', param, ic)" size="medium"
+                                style="width: 100%; margin-bottom: 3px;" hero>
+                                <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div formArrayName="Options" class="form-details"
+                            [sortablejs]="getChildFormArray('Main.Params.Options', param, id)"
+                            [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                            <div class="form-detail-item"
+                              *ngFor="let option of getChildFormArray('Main.Params.Options', param, i).controls; let ip=index"
+                              [formGroup]="option">
+                              <div class="row">
+                                <div class="col-sm-1">
+                                  <div class="form-group">
+                                    <label class="label">Stt</label>
+                                    <input nbInput fullWidth disabled="true" class="sorting-handle" value="{{ ip + 1 }}"
+                                      style="text-align: center;">
+                                    <input type="hidden" formControlName="Id">
+                                  </div>
+                                </div>
+                                <div class="col-sm-10">
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                      <div class="form-group">
+                                        <label class="label">{{'Common.data' | translate | headtitlecase}}</label>
+                                        <input type="text" nbInput fullWidth formControlName="Data"
+                                          placeholder="{{'Common.DataType.data' | translate | headtitlecase}}">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                      <div class="form-group">
+                                        <label class="label">{{'Common.label' | translate | headtitlecase}}</label>
+                                        <input type="text" nbInput fullWidth formControlName="Label"
+                                          placeholder="{{'Common.DataType.label' | translate | headtitlecase}}">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-sm-1">
+                                  <div class="form-group">
+                                    <label class="label">CM</label>
+                                    <button type="button" nbButton status="danger" hero size="medium"
+                                      (click)="removeChildFormGroup('Main.Params.Options', param, ic, ip)"
+                                      style="width: 100%; margin-bottom: 3px;">
+                                      <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+                          <!-- End Action param options form -->
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-1">
+                    <div class="form-group">
+                      <label class="label">CM</label>
+                      <button type="button" nbButton status="danger" hero size="medium"
+                        (click)="removeChildFormGroup('Main.Params', formItem, i, ic)"
+                        style="width: 100%; margin-bottom: 3px;">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div> -->
+                </div>
+
+              </div>
+            </div>
+            <!-- End Confition form -->
+
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+            <button type="button" nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

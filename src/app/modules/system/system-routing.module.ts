@@ -6,6 +6,12 @@ import { SystemParameterListComponent } from './parameter/system-parameter-list/
 import { SystemParameterFormComponent } from './parameter/system-parameter-form/system-parameter-form.component';
 import { SystemConfigurationBoardComponent } from './configuration/system-configuration-board/system-configuration-board.component';
 import { UserConfigBoardComponent } from './configuration/user-config-board/user-config-board.component';
+import { SystemRouteListComponent } from './route/system-route-list/system-route-list.component';
+import { SystemRouteFormComponent } from './route/system-route-form/system-route-form.component';
+import { SystemParamListComponent } from './param/system-param-list/system-param-list.component';
+import { SystemParamFormComponent } from './param/system-param-form/system-param-form.component';
+import { SystemActionListComponent } from './action/system-action-list/system-action-list.component';
+import { SystemActionFormComponent } from './action/system-action-form/system-action-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -38,6 +44,63 @@ const routes: Routes = [{
       path: 'user-config-board',
       canActivate: [AuthGuardService],
       component: UserConfigBoardComponent,
+    },
+    // Routes
+    {
+      path: 'route/rule/list',
+      canActivate: [AuthGuardService],
+      component: SystemRouteListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'route/rule/form',
+      canActivate: [AuthGuardService],
+      component: SystemRouteFormComponent,
+    },
+    {
+      path: 'route/rule/form/:id',
+      canActivate: [AuthGuardService],
+      component: SystemRouteFormComponent,
+    },
+    // Params
+    {
+      path: 'route/param/list',
+      canActivate: [AuthGuardService],
+      component: SystemParamListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'route/param/form',
+      canActivate: [AuthGuardService],
+      component: SystemParamFormComponent,
+    },
+    {
+      path: 'route/param/form/:id',
+      canActivate: [AuthGuardService],
+      component: SystemParamFormComponent,
+    },
+    // Action
+    {
+      path: 'route/action/list',
+      canActivate: [AuthGuardService],
+      component: SystemActionListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'route/action/form',
+      canActivate: [AuthGuardService],
+      component: SystemActionFormComponent,
+    },
+    {
+      path: 'route/action/form/:id',
+      canActivate: [AuthGuardService],
+      component: SystemActionFormComponent,
     },
   ],
 }];
