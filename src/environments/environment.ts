@@ -10,7 +10,7 @@
 
 export const environment = {
   // Version structure s.m.f.b.e : Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.3.8.dev',
+  version: '2.0.3.9.dev',
   production: false,
   hmr: false,
   basePath: 'probox-core',

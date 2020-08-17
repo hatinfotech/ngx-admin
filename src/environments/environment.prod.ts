@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.3.8',
+  version: '2.0.3.9',
   // 2.0.3.2: fix data-manager-list component: update grid after form udpate
   // 2.0.3.1: Dev basic purchase voucher list form print, fix lose product unit after save product
   // 2.0.2.13: Hot update admin product: keep select item after form update
