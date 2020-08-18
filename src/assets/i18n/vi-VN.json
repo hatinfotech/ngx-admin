@@ -140,6 +140,7 @@
     "approve": "duyệt",
     "dateOfApproved": "ngày duyệt",
     "tag": "gắn thẻ",
+    "tag/untag": "gắn/gở thẻ",
     "export": "xuất",
     "table": "bảng",
     "change": "thay đổi",
@@ -346,6 +347,7 @@
     "lockBook": "khóa sổ kho",
     "dateOfReceipted": "ngày nhập kho",
     "assignContainer": "gán vị trí",
+    "assign/unassignContainer": "gán/gở vị trí",
     "inventory": "tồn kho",
     "account": "tài khoản kho",
     "warehousePrice": "giá kho"

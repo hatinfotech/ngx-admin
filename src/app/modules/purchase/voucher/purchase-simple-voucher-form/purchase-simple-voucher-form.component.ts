@@ -20,6 +20,7 @@ import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchas
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { Select2OptionData } from '../../../../../vendor/ng2-select2/lib/ng2-select2';
 import { Select2SelectionObject } from '../../../../../vendor/ng2-select2/lib/ng2-select2.interface';
+import { PriceReportDetail } from '../../../../models/price-report.model';
 
 @Component({
   selector: 'ngx-purchase-simple-voucher-form',
@@ -39,6 +40,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
   // localeExtra = localeViExtra;
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  taxFormat: CurrencyMaskConfig = this.commonService.getTaxMaskConfig();
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
 
   /** Tax list */
@@ -269,6 +271,12 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
       DateOfPurchase: [new Date()],
       Note: [''],
       PriceTable: [''],
+      IsPayment: ['0'],
+      InvoiceStatus: [''],
+      InvoiceTemplate: [''],
+      InvoiceSymbol: [''],
+      InvoiceNumber: [''],
+      InvoiceDate: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -313,6 +321,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
       Price: [0],
       SuggestedSalesPrice: [0],
       Unit: [''],
+      Tax: ['0'],
       // Tax: [''],
       ToMoney: [0],
       Image: [''],
@@ -440,7 +449,11 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
   }
 
   calculatToMoney(detail: FormGroup) {
-    const toMoney = detail.get('Quantity').value * detail.get('Price').value;
+    const quantity = parseFloat(detail.get('Quantity').value);
+    const price = parseFloat(detail.get('Price').value);
+    const tax = parseFloat(detail.get('Tax').value || 0);
+
+    const toMoney = (price + price * tax / 100) * quantity;
     // let tax = detail.get('Tax').value;
     // if (tax) {
     //   if (typeof tax === 'string') {
@@ -494,6 +507,20 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
       },
     });
     return false;
+  }
+
+  onInvoiceStatusChange(event: any, formGroup: FormGroup) {
+
+    const details = this.getDetails(formGroup).controls;
+    for (let i = 0; i < details.length; i++) {
+      if (event === 'INCLUDE') {
+        details[i].get('Tax').setValue(10);
+      } else {
+        details[i].get('Tax').setValue(0);
+      }
+      this.toMoney(formGroup, details[i] as FormGroup);
+    }
+
   }
 
 }

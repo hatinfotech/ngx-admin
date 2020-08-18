@@ -140,6 +140,7 @@
     "approve": "approve",
     "dateOfApproved": "approved date",
     "tag": "tag",
+    "tag/untag": "tag/untag",
     "export": "export",
     "table": "table",
     "change": "change",
@@ -342,7 +343,8 @@
     "openBook": "mở sổ kho",
     "lockBook": "khóa sổ kho",
     "dateOfReceipted": "date of receipted",
-    "assignContainer": "asign container",
+    "assignContainer": "assign container",
+    "assign/unassignContainer": "assign/unassign container",
     "inventory": "inventory",
     "account": "warehouse account",
     "warehousePrice": "warehousePrice"

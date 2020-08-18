@@ -39,7 +39,6 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
 
   // Category list for filter
   categoryList: ProductCategoryModel[] = [];
-  containerList: WarehouseGoodsContainerModel[] = [];
   unitList: UnitModel[] = [];
 
   constructor(
@@ -57,9 +56,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     this.actionButtonList.unshift({
       name: 'assignCategories',
       status: 'info',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag'), 'head-title'),
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
       icon: 'pricetags',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag'), 'head-title'),
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
       size: 'medium',
       disabled: () => this.selectedIds.length === 0,
       hidden: () => false,
@@ -73,7 +72,6 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   async loadCache() {
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
     this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true }));
   }
 

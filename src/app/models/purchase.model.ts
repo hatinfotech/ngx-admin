@@ -73,6 +73,15 @@ export class PurchaseVoucherModel {
   PriceTable?: string;
   PurchaseCost?: string;
 
+  IsPayment?: boolean;
+  InvoiceStatus?: string;
+  InvoiceTemplate?: string;
+  InvoiceSymbol?: string;
+  InvoiceNumber?: string;
+  InvoiceDate?: string;
+  GoodsReceiptNote?: string;
+  PaymentVoucher?: string;
+
   Details?: PurchaseVoucherDetailModel[];
 }
 

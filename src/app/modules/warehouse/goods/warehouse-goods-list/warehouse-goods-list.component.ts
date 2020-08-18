@@ -11,7 +11,7 @@ import { ProductModel, ProductUnitConversoinModel } from '../../../../models/pro
 import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UnitModel } from '../../../../models/unit.model';
-import { GoodsModel } from '../../../../models/warehouse.model';
+import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -25,6 +25,8 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
   apiPath = '/warehouse/goods';
   idKey: string | string[] = ['Code', 'WarehouseUnit'];
   formDialog = WarehouseGoodsFormComponent;
+
+  containerList: WarehouseGoodsContainerModel[] = [];
 
   settings = this.configSetting({
     mode: 'external',
@@ -227,14 +229,19 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     this.actionButtonList.map(button => {
       if (button.name === 'assignCategories') {
         button.name = 'assginContainer';
-        button.label = this.commonService.translateText('Warehouse.assignContainer');
-        button.title = this.commonService.translateText('Warehouse.assignContainer');
+        button.label = this.commonService.translateText('Warehouse.assign/unassignContainer');
+        button.title = this.commonService.translateText('Warehouse.assign/unassignContainer');
         button.click = (event, option) => {
           this.openAssignContainersDialog();
         };
       }
       return button;
     });
+  }
+
+  async init() {
+    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
+    return super.init();
   }
 
   ngOnInit(): void {
