@@ -25,6 +25,7 @@ export class SystemActionFormComponent extends DataManagerFormComponent<SystemAc
       'Main': {
         Name_old: [''],
         Name: ['', Validators.required],
+        ActionFunction: ['', Validators.required],
         Description: ['', Validators.required],
         Params: this.formBuilder.array([]),
       },

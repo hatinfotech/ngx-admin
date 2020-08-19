@@ -34,13 +34,28 @@
       <div class="row m-list-item" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.tickets"
         [style.color]="item.TicketStateColor" (click)="selectOne($event, item)"
         [ngStyle]="{color: item.State['Color']}">
-        <div class="col-md-6 m-list-item-property">
+        <div class="col-md-4 m-list-item-property">
           <div class="caption">Nội dung yêu cầu</div>
-          <div class="value">
+          <div class="value" *ngIf="item.Infos?.Request_Source">
+            <nb-icon icon="document-text" pack="ion"></nb-icon> Nguồn thông tin: {{ item.Infos?.Request_Source }}
+          </div>
+          <div class="value" *ngIf="item.Infos?.Customer_Groups">
+            <nb-icon icon="document-text" pack="ion"></nb-icon> Nhóm khách hàng: {{ item.Infos?.Customer_Groups }}
+          </div>
+          <div class="value" *ngIf="item.Infos?.Ticket_Description">
+            <nb-icon icon="document-text" pack="ion"></nb-icon> Nội dung yêu cầu: {{ item.Infos?.Ticket_Description }}
+          </div>
+          <div class="value" *ngIf="item.Infos?.Description">
             <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Description }}
           </div>
-          <div class="value">
-            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn {{ item.LastMessage }}
+          <div class="value" *ngIf="item.Infos?.LastMessage">
+            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn: {{ item.LastMessage }}
+          </div>
+        </div>
+        <div class="col-md-3 m-list-item-property">
+          <div class="caption">Quy trình tiếp nhận</div>
+          <div class="value" *ngIf="item.Infos?.Processing">
+            <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Infos?.Processing }}
           </div>
         </div>
         <div class="col-md-3 m-list-item-property">
@@ -48,8 +63,6 @@
           <div class="value nowrap" *ngIf="!!item.ObjectPhone">
             <nb-icon icon="person" pack="ion"></nb-icon> {{ item.ObjectName }} <span *ngIf="!item.Object">(<a href="#"
                 (click)="saveContact(item)">{{'Helpdesk.saveContact' | translate}}</a>)</span>
-
-
           </div>
           <div class="value nowrap" *ngIf="!!item.ObjectPhone">
             <nb-icon icon="ios-telephone" pack="ion"></nb-icon> {{ item.ObjectPhone }} (<a style="cursor: pointer;"
@@ -57,6 +70,10 @@
           </div>
           <div class="value nowrap" *ngIf="!!item.ObjectEmail">
             <nb-icon icon="email" pack="ion"></nb-icon> {{ item.ObjectEmail }}
+          </div>
+          <div class="caption" *ngIf="item.Infos?.Groups">Nhân viên/Nhóm tiếp nhận</div>
+          <div class="value nowrap" *ngIf="item.Infos?.Groups">
+            <nb-icon icon="person" pack="ion"></nb-icon> {{ item.Infos?.Groups }}
           </div>
         </div>
         <!-- <div class="col-md-3 m-list-item-property">
@@ -74,7 +91,7 @@
             <nb-icon icon="map" pack="ion"></nb-icon> {{ item.ObjectAddress }}
           </div>
         </div> -->
-        <div class="col-md-3 m-list-item-property">
+        <div class="col-md-2 m-list-item-property">
           <div class="caption">Trạng thái</div>
           <div class="value nowrap state" *ngIf="!!item?.State['Code']">
             <nb-icon [icon]="item.State['Icon'].split('.')[1]" [pack]="item.State['Icon'].split('.')[0]"></nb-icon>

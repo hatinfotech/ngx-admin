@@ -12,23 +12,26 @@
           <div [formGroup]="formItem">
             <input formControlName="Name_old" type="hidden">
             <div class="row">
-              <div class="col-sm-12">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}} (*)</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name'}}">
-                </div>
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i"
+                  [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="Name"
+                    placeholder="{{'Common.name' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="ActionFunction" label="Common.function" [array]="array" [index]="i"
+                  [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="ActionFunction"
+                    placeholder="ModuleName_Action::functionName">
+                </ngx-form-group>
               </div>
               <div class="col-sm-12">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}}
-                      (*)</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }}
-                      (*)</span></label>
+                <ngx-form-group [formGroup]="formItem" name="Description" label="Common.description" [array]="array" [index]="i"
+                  [allowCopy]="false" [required]="true">
                   <textarea nbInput fullWidth formControlName="Description"
-                    placeholder="{{'Common.description' | translate | headtitlecase}}" rows="3"></textarea>
-                </div>
+                  placeholder="{{'Common.description' | translate | headtitlecase}}" rows="3"></textarea>
+                </ngx-form-group>
               </div>
             </div>
 

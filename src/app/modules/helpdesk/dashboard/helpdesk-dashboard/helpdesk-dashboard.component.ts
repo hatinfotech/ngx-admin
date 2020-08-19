@@ -309,6 +309,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       offset: (cardData.pageToLoadNext - 1) * this.pageSize,
       includeState: true,
       includeLastMessage: true,
+      includeInfosAsKeyValue: true,
     }, nextList => {
       // this.dataList = list.map(item => {
       //   item['selected'] = false;

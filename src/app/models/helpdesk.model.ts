@@ -50,8 +50,17 @@ export class HelpdeskTicketModel {
 
   [key: string]: any,
 
+  Infos?: { [key: string]: any } & HelpdeskTicketInfoModel[];
+
   constructor() { }
 
+}
+
+export class HelpdeskTicketInfoModel {
+  Id?: string;
+  Ticket?: string & HelpdeskTicketModel;
+  Name?: string;
+  Data?: string;
 }
 
 export class HelpdeskTicketStateModel {
