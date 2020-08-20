@@ -230,14 +230,27 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   async callStateListen(callState: CallState) {
     if (callState.state === 'incomming') {
-      const formComponent = await this.createNewItem(callState.partnerNumber, callState.session.id) as { form: QuickTicketFormComponent };
 
-      callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
-        if (state === 'terminated') {
-          // Check point call logs and map call log id
-          this.monitorAndMapCallLog(callState, formComponent);
+      await this.apiService.postPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', {
+        createTicketFromWebPhone: true,
+        callerNumber: callState.partnerNumber,
+        callSessionId: callState.session.id,
+      }, []);
+      const ticket = (await this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { filterInfo_EQ_Ivoip_Call_Session: callState.session.id }))[0];
+
+      if (ticket) {
+        this.editItem(ticket.Code);
+        const existsQuickForm = this.quickTicketFormList.filter(f => f.index === ticket.Code)[0];
+        if (existsQuickForm) {
+          callState.session.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(async state => {
+            if (state === 'terminated') {
+              // Check point call logs and map call log id
+              this.monitorAndMapCallLog(callState, existsQuickForm);
+            }
+          });
         }
-      });
+      }
+
     }
     if (callState.state === 'waiting-incomming') {
       const formComponent = await this.createDependingTicketByPhoneNumber(callState.partnerNumber, callState.session.id);
@@ -282,6 +295,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [formComponent.form.id[0]] }, [{
           Code: formComponent.form.id[0],
           CallLog: callLogs[0].Id,
+          Info_CallLog: callLogs[0].Id,
         }]);
       }
     }
@@ -310,6 +324,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       includeState: true,
       includeLastMessage: true,
       includeInfosAsKeyValue: true,
+      includeProcedure: true,
     }, nextList => {
       // this.dataList = list.map(item => {
       //   item['selected'] = false;
@@ -644,50 +659,51 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   async fetchLostTicketByCallLogs() {
-    const callresult = ['missed', 'voicemail', 'cancelled', 'failed'];
-    for (let h = 0; h < callresult.length; h++) {
-      const lostCall = (await this.apiService.getPromise<PbxCdrModel[]>('/helpdesk/relativeCallLogs', {
-        filter_CallResult: callresult[h],
-        filter_Direction: 'inbound',
-      }));
-      if (lostCall && lostCall.length > 0) {
-        let isCheckPoint = false;
-        for (let i = 0; i < lostCall.length; i++) {
-          console.log(lostCall[i]);
-          const phonenumber = lostCall[i].CallerNumber.replace(/[^0-9]/g, '');
-          let contactName = phonenumber;
-          let contactAddress = '';
-          let contactEmail = '';
-          let contactCode = null;
-          const contact = (await this.apiService.getPromise<ContactModel[]>('/contact/contacts', { filter_Phone: phonenumber }))[0];
-          if (contact) {
-            contactName = contact.Name;
-            contactEmail = contact.Email;
-            contactAddress = contact.Address;
-            contactCode = contact.Code;
-          }
-          const newTicket: HelpdeskTicketModel = {
-            Object: contactCode,
-            ObjectName: contactName,
-            ObjectPhone: phonenumber,
-            ObjectEmail: contactEmail,
-            ObjectAddress: contactAddress,
-            Description: 'Yêu cầu bị nhỡ từ số ' + phonenumber + (contact ? (' của khách hàng ' + contact.Name) : '') + ' vào lúc ' + (this.datePipe.transform(lostCall[i].Start)),
-            CallLog: lostCall[i].Id,
-            State: 'MISSED',
-          };
-          try {
-            await this.apiService.postPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { autoCreateChatRoom: true, silient: true }, [newTicket]);
-            if (!isCheckPoint) {
-              this.apiService.putPromise('/helpdesk/relativeCallLogs/checkpoint', { date: new Date(lostCall[i].Start).toISOString() }, []);
-              isCheckPoint = true;
-            }
-          } catch (e) {
-            console.log(e);
-          }
-        }
-      }
-    }
+    // const callresult = ['missed', 'voicemail', 'cancelled', 'failed'];
+    // for (let h = 0; h < callresult.length; h++) {
+    //   const lostCall = (await this.apiService.getPromise<PbxCdrModel[]>('/helpdesk/relativeCallLogs', {
+    //     filter_CallResult: callresult[h],
+    //     filter_Direction: 'inbound',
+    //   }));
+    //   if (lostCall && lostCall.length > 0) {
+    //     let isCheckPoint = false;
+    //     for (let i = 0; i < lostCall.length; i++) {
+    //       console.log(lostCall[i]);
+    //       const phonenumber = lostCall[i].CallerNumber.replace(/[^0-9]/g, '');
+    //       let contactName = phonenumber;
+    //       let contactAddress = '';
+    //       let contactEmail = '';
+    //       let contactCode = null;
+    //       const contact = (await this.apiService.getPromise<ContactModel[]>('/contact/contacts', { filter_Phone: phonenumber }))[0];
+    //       if (contact) {
+    //         contactName = contact.Name;
+    //         contactEmail = contact.Email;
+    //         contactAddress = contact.Address;
+    //         contactCode = contact.Code;
+    //       }
+    //       const newTicket: HelpdeskTicketModel = {
+    //         Object: contactCode,
+    //         ObjectName: contactName,
+    //         ObjectPhone: phonenumber,
+    //         ObjectEmail: contactEmail,
+    //         ObjectAddress: contactAddress,
+    //         Description: 'Yêu cầu bị nhỡ từ số ' + phonenumber + (contact ? (' của khách hàng ' + contact.Name) : '') + ' vào lúc ' + (this.datePipe.transform(lostCall[i].Start)),
+    //         CallLog: lostCall[i].Id,
+    //         State: 'MISSED',
+    //       };
+    //       try {
+    //         await this.apiService.postPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { autoCreateChatRoom: true, silient: true }, [newTicket]);
+    //         if (!isCheckPoint) {
+    //           this.apiService.putPromise('/helpdesk/relativeCallLogs/checkpoint', { date: new Date(lostCall[i].Start).toISOString() }, []);
+    //           isCheckPoint = true;
+    //         }
+    //       } catch (e) {
+    //         console.log(e);
+    //       }
+    //     }
+    //   }
+    // }
+    await this.apiService.postPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { 'createTicketFromCallLogs': true }, []);
     this.refresh();
     return true;
   }

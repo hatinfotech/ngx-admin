@@ -426,7 +426,9 @@
       "approved": "approved ticket"
     },
     "Menu": {
-      "userExtensions": "Extensions numbers"
+      "userExtensions": "Extensions numbers",
+      "procedure": "quy trình",
+      "dashboard": "dashboard"
     },
     "Param": {
       "options": "param options"
@@ -440,6 +442,10 @@
       "conditions": "conditions for compare",
       "actions": "actions for execute",
       "action": "action"
+    },
+    "Procedure": {
+      "title": "{{action}} procedure {{definition}}",
+      "steps": "implement steps"
     },
     "saveContact": "save contact",
     "changeStateConfirm": "change state for `{{description}}`"

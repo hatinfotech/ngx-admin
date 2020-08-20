@@ -91,8 +91,8 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     // super.ngOnInit();
   }
 
-  formLoad(formData: PbxExtensionModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PbxExtensionModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: PbxExtensionModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PbxExtensionModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Domains form load
       if (itemFormData.follow_me_destinations) {

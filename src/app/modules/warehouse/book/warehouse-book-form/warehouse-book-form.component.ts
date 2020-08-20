@@ -130,8 +130,8 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
     this.loadGoodsContainerList(event.Code);
   }
 
-  formLoad(formData: WarehouseBookModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WarehouseBookModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: WarehouseBookModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WarehouseBookModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
       // Load details
       this.loadList();
 

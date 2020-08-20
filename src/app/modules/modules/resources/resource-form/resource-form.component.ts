@@ -123,8 +123,8 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
     });
   }
 
-  formLoad(formData: ResourceModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ResourceModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: ResourceModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ResourceModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Components form load
       if (itemFormData.Permissions) itemFormData.Permissions.forEach(component => {

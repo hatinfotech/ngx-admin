@@ -268,8 +268,8 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: SalesMasterPriceTableModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesMasterPriceTableModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: SalesMasterPriceTableModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesMasterPriceTableModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
       // if (itemFormData.Details) {

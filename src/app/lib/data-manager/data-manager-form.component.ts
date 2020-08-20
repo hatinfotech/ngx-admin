@@ -31,6 +31,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() inputId: string[];
   @Input() onDialogSave?: (newData: M[]) => void;
+  @Input() isDuplicate: boolean;
 
   favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
   @Input() title?: string;
@@ -246,22 +247,28 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.activeRoute.queryParams.subscribe(queryParams => {
       this.queryParam = queryParams;
     });
-    this.getRequestId(id => {
-      if (id) {
-        this.id = id;
-        if (this.id.length > 0) {
-          this.formLoad();
+    await new Promise<boolean>(resolve => {
+      this.getRequestId(id => {
+        if (id) {
+          this.id = id;
+          if (this.id.length > 0) {
+            this.formLoad().then(() => {
+              resolve(true);
+            });
+          } else {
+            // this.formLoading = false;
+            this.onProcessed();
+          }
         } else {
+          this.array.clear();
+          this.addFormGroup();
           // this.formLoading = false;
           this.onProcessed();
+          resolve(true);
         }
-      } else {
-        this.array.clear();
-        this.addFormGroup();
-        // this.formLoading = false;
-        this.onProcessed();
-      }
+      });
     });
+
     return true;
     // this.activeRoute.params.subscribe(params => {
     //   // this.id = params['id']; // (+) converts string 'id' to a number
@@ -307,41 +314,47 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   /** Get data from api and patch data for form */
-  formLoad(formData?: M[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: M) => void) {
+  async formLoad(formData?: M[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: M) => Promise<void>) {
     // this.formLoading = true;
     // this.form.disable();
     this.onProcessing();
 
     /** If has formData input, use formData for patch */
-    ((callback: (data: M[]) => void) => {
-      if (formData) {
-        callback(formData);
-      } else {
-        this.getFormData(callback);
-      }
-    })((data: M[]) => {
-
-      this.array.clear();
-      data.forEach(item => {
-        const newForm = this.makeNewFormGroup(item);
-        this.array.push(newForm);
-        this.onAddFormGroup(this.array.length - 1, newForm, item);
-        if (formItemLoadCallback) {
-          formItemLoadCallback(this.array.length - 1, newForm, item);
+    return new Promise<boolean>(resovle => {
+      ((callback: (data: M[]) => Promise<void>) => {
+        if (formData) {
+          callback(formData);
+        } else {
+          this.getFormData((data: M[]) => {
+            callback(data);
+            resovle(true);
+          });
         }
+      })(async (data: M[]) => {
+        this.array.clear();
+        for (let i = 0; i < data.length; i++) {
+          // data.forEach(item => {
+          const item = data[i];
+          const newForm = this.makeNewFormGroup(item);
+          this.array.push(newForm);
+          this.onAddFormGroup(this.array.length - 1, newForm, item);
+          if (formItemLoadCallback) {
+            await formItemLoadCallback(this.array.length - 1, newForm, item);
+          }
+          // });
+        }
+
+        resovle(true);
+        setTimeout(() => {
+          // this.formLoading = false;
+          // const aPastFormData = {formData: this.form.value.array, meta: null};
+          // this.onUpdatePastFormData(aPastFormData);
+          // this.pastFormData.push(aPastFormData);
+          // this.pushPastFormData(this.form.value.array);
+          this.onProcessed();
+        }, 1000);
       });
-
-      setTimeout(() => {
-        // this.formLoading = false;
-        // const aPastFormData = {formData: this.form.value.array, meta: null};
-        // this.onUpdatePastFormData(aPastFormData);
-        // this.pastFormData.push(aPastFormData);
-        // this.pushPastFormData(this.form.value.array);
-        this.onProcessed();
-      }, 1000);
-
     });
-
   }
 
   /** Get main form array */
@@ -661,8 +674,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
+    // this.destroy$.next();
+    // this.destroy$.complete();
   }
 
   get isEditMode() {

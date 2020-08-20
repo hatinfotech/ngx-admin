@@ -110,8 +110,8 @@ export class PromotionFormComponent extends DataManagerFormComponent<PromotionMo
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: PromotionModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PromotionModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: PromotionModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PromotionModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Conditions form load
       if (itemFormData.Conditions) {

@@ -58,13 +58,15 @@ export class ProductGroupFormComponent extends DataManagerFormComponent<ProductG
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: ProductGroupModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ProductGroupModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: ProductGroupModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ProductGroupModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
       }
+
+      // return true;
     });
 
   }

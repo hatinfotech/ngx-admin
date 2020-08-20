@@ -150,8 +150,8 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     return result;
   }
 
-  formLoad(formData: CrawlPlanModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CrawlPlanModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: CrawlPlanModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CrawlPlanModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Components form load
       if (itemFormData.Stores) itemFormData.Stores.forEach(component => {

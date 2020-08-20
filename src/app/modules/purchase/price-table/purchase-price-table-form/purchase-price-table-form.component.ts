@@ -216,8 +216,8 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: PurchasePriceTableModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PurchasePriceTableModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: PurchasePriceTableModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PurchasePriceTableModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
       if (itemFormData.Details) {

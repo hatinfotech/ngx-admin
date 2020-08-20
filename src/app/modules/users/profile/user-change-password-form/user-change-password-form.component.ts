@@ -81,8 +81,8 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
     };
   }
 
-  formLoad(formData?: UserModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: UserModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData?: UserModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: UserModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Resources form load
       if (itemFormData.UserPhoneExtensions) itemFormData.UserPhoneExtensions.forEach(phoneExt => {

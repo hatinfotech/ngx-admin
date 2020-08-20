@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'ngx-helpdesk-param-list',
   templateUrl: './helpdesk-param-list.component.html',
-  styleUrls: ['./helpdesk-param-list.component.scss']
+  styleUrls: ['./helpdesk-param-list.component.scss'],
 })
 export class HelpdeskParamListComponent extends DataManagerListComponent<HelpdeskParamModel> implements OnInit {
 

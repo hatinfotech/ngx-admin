@@ -39,6 +39,8 @@ import { HelpdeskParamListComponent } from './param/helpdesk-param-list/helpdesk
 import { HelpdeskParamFormComponent } from './param/helpdesk-param-form/helpdesk-param-form.component';
 import { HelpdeskActionListComponent } from './action/helpdesk-action-list/helpdesk-action-list.component';
 import { HelpdeskActionFormComponent } from './action/helpdesk-action-form/helpdesk-action-form.component';
+import { HelpdeskProcedureListComponent } from './procedure/helpdesk-procedure-list/helpdesk-procedure-list.component';
+import { HelpdeskProcedureFormComponent } from './procedure/helpdesk-procedure-form/helpdesk-procedure-form.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +64,8 @@ import { HelpdeskActionFormComponent } from './action/helpdesk-action-form/helpd
     HelpdeskParamFormComponent,
     HelpdeskActionListComponent,
     HelpdeskActionFormComponent,
+    HelpdeskProcedureListComponent,
+    HelpdeskProcedureFormComponent,
   ],
   imports: [
     CommonModule,
@@ -92,7 +96,6 @@ import { HelpdeskActionFormComponent } from './action/helpdesk-action-form/helpd
 
     NbUserModule,
     NbButtonModule,
-    NbIconModule,
     NbTabsetModule,
     NbSelectModule,
     NbListModule,
@@ -119,6 +122,7 @@ import { HelpdeskActionFormComponent } from './action/helpdesk-action-form/helpd
     TicketPmsFormComponent,
     HelpdeskRouteFormComponent,
     HelpdeskParamFormComponent,
+    HelpdeskProcedureFormComponent,
   ],
 })
 export class HelpdeskModule { }

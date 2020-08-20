@@ -69,8 +69,8 @@ export class SystemParameterFormComponent extends DataManagerFormComponent<Syste
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: SystemParameterModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SystemParameterModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: SystemParameterModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SystemParameterModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Direct callback
       if (formItemLoadCallback) {

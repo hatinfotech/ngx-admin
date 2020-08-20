@@ -4,29 +4,11 @@
 <ngx-quick-ticket-form *ngFor="let quickForm of quickTicketFormList; let i = index;" (onInit)="onQuickFormInit($event)"
   [phoneNumber]="quickForm.phoneNumber" [index]="quickForm.index" [ticketCode]="quickForm.ticketCode"
   [inputMode]="'inline'" (onClose)="onQuickFormClose($event)"></ngx-quick-ticket-form>
-
-<!-- <div class="row" *ngIf="!showQuickForm">
-  <div id="trafficeChart" class="col-12 col-md-6">
-    <nb-card size="tiny" style="height: 8rem">
-      <ngx-stats-card-front></ngx-stats-card-front>
-    </nb-card>
-  </div>
-  <div class="col-12 col-md-6">
-    <nb-card size="tiny" style="height: 8rem">
-      <ngx-stats-card-back></ngx-stats-card-back>
-    </nb-card>
-  </div>
-</div> -->
-
 <nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
   <nb-card-header id="helpdeskHeader">
     <ngx-card-header [size]="size" [icon]="favicon"
       [title]="title ? title : ('Helpdesk.Ticket.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)"
       [controls]="actionButtonList"></ngx-card-header>
-    <!-- <nav>
-      <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Yêu cầu mới
-      <ngx-action-control-list style="float: right;" [list]="actionControlList"></ngx-action-control-list>
-    </nav> -->
   </nb-card-header>
   <nb-card-body>
     <div class="m-list" nbInfiniteList listenWindowScroll [threshold]="500"
@@ -37,28 +19,34 @@
         <div class="col-md-4 m-list-item-property">
           <div class="caption">Nội dung yêu cầu</div>
           <div class="value" *ngIf="item.Infos?.Request_Source">
-            <nb-icon icon="document-text" pack="ion"></nb-icon> Nguồn thông tin: {{ item.Infos?.Request_Source }}
+            <nb-icon icon="android-exit" pack="ion"></nb-icon> Nguồn thông tin:
+            {{ item.Infos.Request_Source | objectstext }}
           </div>
-          <div class="value" *ngIf="item.Infos?.Customer_Groups">
-            <nb-icon icon="document-text" pack="ion"></nb-icon> Nhóm khách hàng: {{ item.Infos?.Customer_Groups }}
+          <div class="value" *ngIf="item.Infos?.Customer_Groups_Matched">
+            <nb-icon icon="ios-people" pack="ion"></nb-icon> Nhóm khách hàng:
+            {{ item.Infos.Customer_Groups_Matched | objectstext }}
           </div>
-          <div class="value" *ngIf="item.Infos?.Ticket_Description">
-            <nb-icon icon="document-text" pack="ion"></nb-icon> Nội dung yêu cầu: {{ item.Infos?.Ticket_Description }}
-          </div>
-          <div class="value" *ngIf="item.Infos?.Description">
+          <!-- <div class="value" *ngIf="item.Infos?.Description">
+            <nb-icon icon="document-text" pack="ion"></nb-icon> Nội dung yêu cầu: {{ item.Infos.Description }}
+          </div> -->
+          <div class="value" *ngIf="item?.Description">
             <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Description }}
           </div>
-          <div class="value" *ngIf="item.Infos?.LastMessage">
+          <div class="value" *ngIf="item?.LastMessage">
             <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn: {{ item.LastMessage }}
           </div>
         </div>
-        <div class="col-md-3 m-list-item-property">
-          <div class="caption">Quy trình tiếp nhận</div>
-          <div class="value" *ngIf="item.Infos?.Processing">
-            <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Infos?.Processing }}
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">{{item.Infos?.Helpdesk_Procedure | objecttext}}</div>
+          <div class="value" *ngIf="item.Infos?.Helpdesk_Procedure">
+            <!-- <nb-icon icon="document-text" pack="ion"></nb-icon> {{ item.Infos?.Helpdesk_Procedure | objecttext }} -->
+            <ul style="list-style: decimal; padding-left: 1rem;" *ngIf="item.Infos?.Helpdesk_Procedure?.Steps">
+              <li
+                *ngFor="let step of item.Infos?.Helpdesk_Procedure?.Steps">{{step.Description}}</li>
+            </ul>
           </div>
         </div>
-        <div class="col-md-3 m-list-item-property">
+        <div class="col-md-2 m-list-item-property">
           <div class="caption">Người yêu cầu</div>
           <div class="value nowrap" *ngIf="!!item.ObjectPhone">
             <nb-icon icon="person" pack="ion"></nb-icon> {{ item.ObjectName }} <span *ngIf="!item.Object">(<a href="#"
@@ -69,11 +57,11 @@
               href="#" (click)="phoneCall(item, item.ObjectPhone, item.ObjectName)">call</a>)
           </div>
           <div class="value nowrap" *ngIf="!!item.ObjectEmail">
-            <nb-icon icon="email" pack="ion"></nb-icon> {{ item.ObjectEmail }}
+            <nb-icon icon="android-mail" pack="ion"></nb-icon> {{ item.ObjectEmail }}
           </div>
-          <div class="caption" *ngIf="item.Infos?.Groups">Nhân viên/Nhóm tiếp nhận</div>
-          <div class="value nowrap" *ngIf="item.Infos?.Groups">
-            <nb-icon icon="person" pack="ion"></nb-icon> {{ item.Infos?.Groups }}
+          <div class="caption" *ngIf="item.Infos?.User_Group" style="margin-top: 0.5rem;">Nhân viên/Nhóm tiếp nhận</div>
+          <div class="value nowrap" *ngIf="item.Infos?.User_Group">
+            <nb-icon icon="android-contacts" pack="ion"></nb-icon> {{ item.Infos?.User_Group | objecttext }}
           </div>
         </div>
         <!-- <div class="col-md-3 m-list-item-property">
@@ -116,25 +104,37 @@
       </div>
 
       <div class="row m-list-item ghost" *ngFor="let _ of infiniteLoadModel.placeholders">
-        <div class="col-md-6 m-list-item-property">
+        <div class="col-md-4 m-list-item-property">
           <div class="caption">Nội dung yêu cầu</div>
           <div class="value">
-            <nb-icon icon="document-text" pack="ion"></nb-icon> Mô tả
+            <nb-icon icon="document-text" pack="ion"></nb-icon> Mô tả...
           </div>
           <div class="value">
-            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn
+            <nb-icon icon="chatbox-working" pack="ion"></nb-icon> Tin nhắn...
           </div>
         </div>
-        <div class="col-md-3 m-list-item-property">
+        <div class="col-md-4 m-list-item-property">
+          <div class="caption">Quy trình tiếp nhận</div>
+          <div class="value nowrap">
+            <nb-icon icon="text" pack="ion"></nb-icon> Các bước thực hiện...
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="text" pack="ion"></nb-icon> Các bước thực hiện...
+          </div>
+          <div class="value nowrap">
+            <nb-icon icon="text" pack="ion"></nb-icon> Các bước thực hiện...
+          </div>
+        </div>
+        <div class="col-md-2 m-list-item-property">
           <div class="caption">Người yêu cầu</div>
           <div class="value nowrap">
-            <nb-icon icon="person" pack="ion"></nb-icon> Tên
+            <nb-icon icon="person" pack="ion"></nb-icon> Tên...
           </div>
           <div class="value nowrap">
-            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> Số điện thoại
+            <nb-icon icon="ios-telephone" pack="ion"></nb-icon> Số điện thoại...
           </div>
           <div class="value nowrap">
-            <nb-icon icon="email" pack="ion"></nb-icon> Email
+            <nb-icon icon="email" pack="ion"></nb-icon> Email...
           </div>
         </div>
         <!-- <div class="col-md-3 m-list-item-property">
@@ -152,16 +152,16 @@
             <nb-icon icon="map" pack="ion"></nb-icon>
           </div>
         </div> -->
-        <div class="col-md-3 m-list-item-property">
+        <div class="col-md-2 m-list-item-property">
           <div class="caption">Trạng thái</div>
           <div class="value nowrap">
-            <nb-icon icon="radio-waves" pack="ion"></nb-icon> Trạng thái
+            <nb-icon icon="radio-waves" pack="ion"></nb-icon> Trạng thái...
           </div>
           <div class="value">
-            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> Phòng chat
+            <nb-icon icon="chatbubbles" pack="ion"></nb-icon> Phòng chat...
           </div>
           <div class="value">
-            <nb-icon icon="android-create" pack="ion"></nb-icon> Chỉnh sửa
+            <nb-icon icon="android-create" pack="ion"></nb-icon> Chỉnh sửa...
           </div>
         </div>
       </div>

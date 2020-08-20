@@ -304,8 +304,8 @@ export class WarehouseSimpleGoodsDeliveryNoteFormComponent extends DataManagerFo
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: WarehouseGoodsDeliveryNoteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WarehouseGoodsDeliveryNoteModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: WarehouseGoodsDeliveryNoteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WarehouseGoodsDeliveryNoteModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
       if (itemFormData.Details) {

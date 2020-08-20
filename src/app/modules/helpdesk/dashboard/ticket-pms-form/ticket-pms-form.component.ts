@@ -142,8 +142,8 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: HelpdeskTicketModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskTicketModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: HelpdeskTicketModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskTicketModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Conditions form load
       if (itemFormData.Permissions) {

@@ -121,8 +121,8 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     return super.init();
   }
 
-  formLoad(formData: ContactModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ContactModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: ContactModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ContactModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       if (itemFormData.Details) {
         itemFormData.Details.forEach(detail => {

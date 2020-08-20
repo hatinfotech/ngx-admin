@@ -59,8 +59,8 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
     });
   }
 
-  formLoad(formData: PbxModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PbxModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: PbxModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PbxModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Domains form load
       if (itemFormData.Domains) {

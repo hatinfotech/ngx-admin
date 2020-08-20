@@ -103,8 +103,8 @@ export class UserLocaleConfigComponent extends DataManagerFormComponent<LocaleCo
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: LocaleConfigModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: LocaleConfigModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: LocaleConfigModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: LocaleConfigModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Direct callback
       if (formItemLoadCallback) {

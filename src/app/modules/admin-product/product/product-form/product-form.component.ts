@@ -131,8 +131,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: ProductModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ProductModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: ProductModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ProductModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Conditions form load
       if (itemFormData.Pictures) {

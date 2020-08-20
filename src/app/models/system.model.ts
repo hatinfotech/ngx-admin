@@ -73,6 +73,8 @@ export class SystemParamOptionModel {
 
 export class SystemRouteActionParameterModel {
   Id?: string;
+  Action?: string & SystemActionModel;
+  Route?: string & SystemRouteModel;
   Parameter?: string;
   Data?: string;
 }

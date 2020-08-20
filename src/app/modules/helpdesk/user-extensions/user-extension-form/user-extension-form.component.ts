@@ -105,8 +105,8 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
     };
   }
 
-  formLoad(formData?: HelpdeskUserModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskUserModel) => void) {
-    super.formLoad(formData, async (index, newForm, itemFormData) => {
+  async formLoad(formData?: HelpdeskUserModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskUserModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Resources form load
       if (itemFormData.Extensions) {

@@ -194,3 +194,23 @@ export class HelpdeskActionParamOptionModel {
   Data?: string;
   Label?: string;
 }
+
+export class HelpdeskProcedureModel {
+  Id?: string | number;
+  Code?: string;
+  Name?: string;
+  Description?: string;
+  DateOfCreated?: string;
+  Creator?: string;
+  State?: string;
+
+  Steps?: HelpdeskProcedureStepModel[];
+}
+
+export class HelpdeskProcedureStepModel {
+  Id?: string  | number;
+  Procedure?: string & HelpdeskProcedureModel;
+  No?: string;
+  Title?: string;
+  Description?: string;
+}

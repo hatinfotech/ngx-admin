@@ -30,6 +30,7 @@ import { SystemParamListComponent } from './param/system-param-list/system-param
 import { SystemParamFormComponent } from './param/system-param-form/system-param-form.component';
 import { SystemRouteListComponent } from './route/system-route-list/system-route-list.component';
 import { SystemRouteFormComponent } from './route/system-route-form/system-route-form.component';
+import { SystemLibraryIconComponent } from './library/icon/system-library-icon/system-library-icon.component';
 
 
 
@@ -38,7 +39,7 @@ import { SystemRouteFormComponent } from './route/system-route-form/system-route
   declarations: [SystemComponent, SystemParameterListComponent, SystemParameterFormComponent,
     SystemConfigurationBoardComponent, SystemLocaleConfigComponent, UserConfigBoardComponent,
     UserLocaleConfigComponent, SystemActionListComponent, SystemActionFormComponent,
-    SystemParamListComponent, SystemParamFormComponent, SystemRouteListComponent, SystemRouteFormComponent,
+    SystemParamListComponent, SystemParamFormComponent, SystemRouteListComponent, SystemRouteFormComponent, SystemLibraryIconComponent,
   ],
   imports: [
     CommonModule,

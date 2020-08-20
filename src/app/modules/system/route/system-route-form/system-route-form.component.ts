@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SystemRouteModel, SystemParamModel, SystemActionModel, SystemRouteConditionModel, SystemRouteActionModel, SystemActionParamModel } from '../../../../models/system.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -143,7 +143,43 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   async init() {
     this.paramList = (await this.apiService.getPromise<SystemParamModel[]>('/system/params', { includeOptions: true })).map(item => ({ ...item, id: item.Name, text: item.Description }));
     this.actionList = (await this.apiService.getPromise<SystemActionModel[]>('/system/actions', { includeParams: true })).map(item => ({ ...item, id: item.Name, text: item.Description, Params: item.Params.map(param => ({ ...param, id: param.Name, text: param.Description })) }));
-    return super.init();
+    return super.init().then(status => {
+      if (this.isDuplicate) {
+        this.id = [];
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          this.getConditions(index).controls.forEach(conditonFormGroup => {
+            conditonFormGroup.get('Id').setValue('');
+          });
+          this.getActions(index).controls.forEach(actionFormGroup => {
+            actionFormGroup.get('Id').setValue('');
+            this.getActionParameters(actionFormGroup as FormGroup).controls.forEach(parameter => {
+              parameter.get('Id').setValue('');
+            });
+          });
+        });
+        //   const inputSystemRoute = { ...this.inputSystemRoute };
+        //   inputSystemRoute.Conditions = { ...inputSystemRoute.Conditions };
+        //   inputSystemRoute.Actions = { ...inputSystemRoute.Actions };
+        //   inputSystemRoute.Conditions.forEach(condition => {
+        //     condition.Id = null;
+        //     condition.Route = null;
+        //   });
+        //   inputSystemRoute.Actions.forEach(action => {
+        //     action.Parameters = { ...action.Parameters };
+        //     action.Parameters.forEach(parameter => {
+        //       parameter.Route = null;
+        //       parameter.Action = null;
+        //     });
+        //     action.Id = null;
+        //     action.Route = null;
+        //   });
+
+        //   this.array.controls[0].patchValue(inputSystemRoute);
+        //   this.onAddFormGroup(this.array.length - 1, this.array.controls[0] as FormGroup, inputSystemRoute);
+      }
+      return status;
+    });
   }
 
   ngOnInit() {
@@ -170,22 +206,27 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   //   super.executePost(params, data, success, error);
   // }
 
-  formLoad(formData: SystemRouteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SystemRouteModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: SystemRouteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SystemRouteModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Conditions form load
       if (itemFormData.Conditions) {
-        itemFormData.Conditions.forEach(condition => {
+        for (let c = 0; c < itemFormData.Conditions.length; c++) {
+          const condition = itemFormData.Conditions[c];
+          // itemFormData.Conditions.forEach(condition => {
           const newConditionFormGroup = this.makeNewConditionFormGroup(condition);
           this.getConditions(index).push(newConditionFormGroup);
           const comIndex = this.getConditions(index).length - 1;
           this.onAddConditionFormGroup(index, comIndex, newConditionFormGroup);
-        });
+          // });
+        }
       }
 
       // Actions form load
       if (itemFormData.Actions) {
-        itemFormData.Actions.forEach((action, actionIndex) => {
+        for (let i = 0; i < itemFormData.Actions.length; i++) {
+          const action = itemFormData.Actions[i];
+          // itemFormData.Actions.forEach((action, actionIndex) => {
           // action['Parameters'] = [{}];
           const newActionFormGroup = this.makeNewActionFormGroup(action);
           this.getActions(index).push(newActionFormGroup);
@@ -194,22 +235,27 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
 
 
           if (action.Parameters) {
-            action.Parameters.forEach((parameter, parameterIndex) => {
+            for (let p = 0; p < action.Parameters.length; p++) {
+              const parameter = action.Parameters[p];
+              // action.Parameters.forEach((parameter, parameterIndex) => {
               const newActionParameterFormGroup = this.makeNewActionParameterFormGroup(parameter);
-              this.getActionParameters(newActionFormGroup, actionIndex).push(newActionParameterFormGroup);
-              const comIndex2 = this.getActionParameters(newActionFormGroup, actionIndex).length - 1;
+              this.getActionParameters(newActionFormGroup, p).push(newActionParameterFormGroup);
+              const comIndex2 = this.getActionParameters(newActionFormGroup, p).length - 1;
               this.onAddActionParameterFormGroup(index, comIndex2, newActionParameterFormGroup);
-            });
+              // });
+            }
           }
-        });
+          // });
+        }
       }
 
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
       }
-    });
 
+      // return;
+    });
   }
 
   makeNewFormGroup(data?: SystemRouteModel): FormGroup {
@@ -230,6 +276,41 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: SystemRouteModel): void {
     super.onAddFormGroup(index, newForm, formData);
+    // Conditions form load
+    // if (formData.Conditions) {
+    //   formData.Conditions.forEach(condition => {
+    //     const newConditionFormGroup = this.makeNewConditionFormGroup(condition);
+    //     this.getConditions(index).push(newConditionFormGroup);
+    //     const comIndex = this.getConditions(index).length - 1;
+    //     this.onAddConditionFormGroup(index, comIndex, newConditionFormGroup);
+    //   });
+    // }
+
+    // // Actions form load
+    // if (formData.Actions) {
+    //   formData.Actions.forEach((action, actionIndex) => {
+    //     // action['Parameters'] = [{}];
+    //     const newActionFormGroup = this.makeNewActionFormGroup(action);
+    //     this.getActions(index).push(newActionFormGroup);
+    //     const comIndex = this.getActions(index).length - 1;
+    //     this.onAddActionFormGroup(index, comIndex, newActionFormGroup);
+
+
+    //     if (action.Parameters) {
+    //       action.Parameters.forEach((parameter, parameterIndex) => {
+    //         const newActionParameterFormGroup = this.makeNewActionParameterFormGroup(parameter);
+    //         this.getActionParameters(newActionFormGroup, actionIndex).push(newActionParameterFormGroup);
+    //         const comIndex2 = this.getActionParameters(newActionFormGroup, actionIndex).length - 1;
+    //         this.onAddActionParameterFormGroup(index, comIndex2, newActionParameterFormGroup);
+    //       });
+    //     }
+    //   });
+    // }
+
+    // Direct callback
+    // if (formItemLoadCallback) {
+    //   formItemLoadCallback(index, newForm, itemFormData);
+    // }
   }
   onRemoveFormGroup(index: number): void {
 
@@ -373,7 +454,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     }
     return newForm;
   }
-  getActionParameters(parentFormGroup: FormGroup, formGroupIndex: number) {
+  getActionParameters(parentFormGroup: FormGroup, formGroupIndex?: number) {
     return parentFormGroup.get('Parameters') as FormArray;
   }
   addActionParameterFormGroup(parentFormGroup: FormGroup, formGroupIndex: number) {

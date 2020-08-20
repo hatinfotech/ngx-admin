@@ -1,0 +1,10 @@
+<nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
+  <nb-card-header id="helpdeskHeader">
+    Icons
+  </nb-card-header>
+  <nb-card-body>
+    <span class="icon" *ngFor="let icon of icons">
+      <nb-icon icon="{{icon}}" pack="ion"></nb-icon> {{icon}}
+    </span>
+  </nb-card-body>
+</nb-card>

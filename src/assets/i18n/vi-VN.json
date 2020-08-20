@@ -429,7 +429,9 @@
       "approved": "duyệt yêu cầu"
     },
     "Menu": {
-      "userExtensions": "Số nội bộ (sip)"
+      "userExtensions": "Số nội bộ (sip)",
+      "procedure": "quy trình",
+      "dashboard": "dashboard"
     },
     "Param": {
       "options": "các tùy chọn tham số",
@@ -445,6 +447,10 @@
       "conditions": "các điều kiện so sánh",
       "actions": "các hành động được thực thi",
       "action": "hành động"
+    },
+    "Procedure": {
+      "title": "{{action}}{{definition}} quy trình",
+      "steps": "các bước thực hiện"
     },
     "saveContact": "lưu liên hệ",
     "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`"

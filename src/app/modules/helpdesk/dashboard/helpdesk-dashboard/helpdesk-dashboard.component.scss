@@ -63,7 +63,8 @@
     }
     .m-list-item {
       margin-left: -24px;
-      margin-right: -24px;color: var(--gray-dark);
+      margin-right: -24px;
+      color: var(--gray-dark);
       border-bottom: 1px solid #eee;
       &nb-icon {
         font-size: 1rem;
@@ -75,6 +76,14 @@
         padding-top: 1rem;
         padding-bottom: 1rem;
         font-weight: 600;
+
+        ul {
+          li {
+            color: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+          }
+        }
 
         .value.state {
           display: flex;

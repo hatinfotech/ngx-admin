@@ -217,8 +217,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: SalesVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesVoucherModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: SalesVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesVoucherModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
       if (itemFormData.Details) {

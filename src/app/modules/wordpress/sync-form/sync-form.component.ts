@@ -363,8 +363,8 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   }
 
 
-  formLoad(formData: WpSiteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WpSiteModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: WpSiteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WpSiteModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Components form load
       if (itemFormData.SyncTargets) itemFormData.SyncTargets.forEach(component => {

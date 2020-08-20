@@ -13,6 +13,8 @@ import { HelpdeskParamListComponent } from './param/helpdesk-param-list/helpdesk
 import { HelpdeskParamFormComponent } from './param/helpdesk-param-form/helpdesk-param-form.component';
 import { HelpdeskActionListComponent } from './action/helpdesk-action-list/helpdesk-action-list.component';
 import { HelpdeskActionFormComponent } from './action/helpdesk-action-form/helpdesk-action-form.component';
+import { HelpdeskProcedureListComponent } from './procedure/helpdesk-procedure-list/helpdesk-procedure-list.component';
+import { HelpdeskProcedureFormComponent } from './procedure/helpdesk-procedure-form/helpdesk-procedure-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -68,62 +70,24 @@ const routes: Routes = [{
       canActivate: [AuthGuardService],
       component: UserExtensionFormComponent,
     },
-    // Routes
+    // procedure
     {
-      path: 'route/list',
+      path: 'procedure/list',
       canActivate: [AuthGuardService],
-      component: HelpdeskRouteListComponent,
+      component: HelpdeskProcedureListComponent,
       data: {
         reuse: true,
       },
     },
     {
-      path: 'route/form',
+      path: 'procedure/form',
       canActivate: [AuthGuardService],
-      component: HelpdeskRouteFormComponent,
+      component: HelpdeskProcedureFormComponent,
     },
     {
-      path: 'route/form/:id',
+      path: 'user-extension/form/:id',
       canActivate: [AuthGuardService],
-      component: HelpdeskRouteFormComponent,
-    },
-    // Params
-    {
-      path: 'param/list',
-      canActivate: [AuthGuardService],
-      component: HelpdeskParamListComponent,
-      data: {
-        reuse: true,
-      },
-    },
-    {
-      path: 'param/form',
-      canActivate: [AuthGuardService],
-      component: HelpdeskParamFormComponent,
-    },
-    {
-      path: 'param/form/:id',
-      canActivate: [AuthGuardService],
-      component: HelpdeskParamFormComponent,
-    },
-    // Action
-    {
-      path: 'action/list',
-      canActivate: [AuthGuardService],
-      component: HelpdeskActionListComponent,
-      data: {
-        reuse: true,
-      },
-    },
-    {
-      path: 'action/form',
-      canActivate: [AuthGuardService],
-      component: HelpdeskActionFormComponent,
-    },
-    {
-      path: 'action/form/:id',
-      canActivate: [AuthGuardService],
-      component: HelpdeskActionFormComponent,
+      component: HelpdeskProcedureFormComponent,
     },
   ],
 }];

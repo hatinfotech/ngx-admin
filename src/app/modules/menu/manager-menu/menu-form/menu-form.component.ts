@@ -206,8 +206,8 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     };
   }
 
-  formLoad(formData: MenuItemModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: MenuItemModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: MenuItemModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: MenuItemModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Components form load
       if (itemFormData.Components) {

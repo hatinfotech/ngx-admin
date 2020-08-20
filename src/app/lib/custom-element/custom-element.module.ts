@@ -18,6 +18,8 @@ import { CardHeaderCustomComponent } from './card-header/card-header-custom.comp
 import { DatetimPickerComponent } from './datetime-picker/datetime-picker.component';
 import { TextNTagsComponent } from './textntags/textntags.component';
 import { FormGroupComponent } from './form/form-group/form-group.component';
+import { ObjectIdPipe, ObjectsIdPipe } from '../pipes/objectid';
+import { ObjectTextPipe, ObjectsTextPipe } from '../pipes/objecttext';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,10 @@ import { FormGroupComponent } from './form/form-group/form-group.component';
     ActionControlListComponent,
     AgListComponent,
     HeadTitlePipe,
+    ObjectIdPipe,
+    ObjectTextPipe,
+    ObjectsTextPipe,
+    ObjectsIdPipe,
     SmartTableDateTimeComponent,
     SmartTableDateTimeRangeFilterComponent,
     SmartTableClearingFilterComponent,
@@ -67,6 +73,10 @@ import { FormGroupComponent } from './form/form-group/form-group.component';
     ActionControlListComponent,
     AgListComponent,
     HeadTitlePipe,
+    ObjectIdPipe,
+    ObjectTextPipe,
+    ObjectsIdPipe,
+    ObjectsTextPipe,
     SmartTableDateTimeComponent,
     SmartTableDateTimeRangeFilterComponent,
     SmartTableClearingFilterComponent,

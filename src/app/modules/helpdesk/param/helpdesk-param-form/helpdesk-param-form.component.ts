@@ -48,8 +48,8 @@ export class HelpdeskParamFormComponent extends DataManagerFormComponent<Helpdes
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: HelpdeskParamModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskParamModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: HelpdeskParamModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskParamModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Options form load
       if (itemFormData.Options) {

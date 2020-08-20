@@ -172,8 +172,8 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
   //   super.executePost(params, data, success, error);
   // }
 
-  formLoad(formData: HelpdeskRouteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskRouteModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: HelpdeskRouteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: HelpdeskRouteModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Conditions form load
       if (itemFormData.Conditions) {

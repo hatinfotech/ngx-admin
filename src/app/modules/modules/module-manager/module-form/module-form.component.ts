@@ -55,8 +55,8 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     );
   }
 
-  formLoad(formData: ModuleModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ModuleModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: ModuleModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ModuleModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Components form load
       if (itemFormData.Components) itemFormData.Components.forEach(component => {

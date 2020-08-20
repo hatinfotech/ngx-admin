@@ -224,8 +224,8 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: PurchaseVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PurchaseVoucherModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: PurchaseVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: PurchaseVoucherModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
       if (itemFormData.Details) {

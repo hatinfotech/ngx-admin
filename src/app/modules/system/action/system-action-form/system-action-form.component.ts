@@ -74,8 +74,8 @@ export class SystemActionFormComponent extends DataManagerFormComponent<SystemAc
     super.executeGet(params, success, error);
   }
 
-  formLoad(formData: SystemActionModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SystemActionModel) => void) {
-    super.formLoad(formData, (index, newForm, itemFormData) => {
+  async formLoad(formData: SystemActionModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SystemActionModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Options form load
       if (itemFormData.Params) {

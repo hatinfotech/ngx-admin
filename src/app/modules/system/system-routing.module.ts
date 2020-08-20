@@ -12,6 +12,7 @@ import { SystemParamListComponent } from './param/system-param-list/system-param
 import { SystemParamFormComponent } from './param/system-param-form/system-param-form.component';
 import { SystemActionListComponent } from './action/system-action-list/system-action-list.component';
 import { SystemActionFormComponent } from './action/system-action-form/system-action-form.component';
+import { SystemLibraryIconComponent } from './library/icon/system-library-icon/system-library-icon.component';
 
 const routes: Routes = [{
   path: '',
@@ -101,6 +102,12 @@ const routes: Routes = [{
       path: 'route/action/form/:id',
       canActivate: [AuthGuardService],
       component: SystemActionFormComponent,
+    },
+    // Icon
+    {
+      path: 'library/icon',
+      canActivate: [AuthGuardService],
+      component: SystemLibraryIconComponent,
     },
   ],
 }];
