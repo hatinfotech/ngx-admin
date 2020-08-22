@@ -175,7 +175,9 @@
     "lockBook": "khóa sổ",
     "openBook": "mở sổ",
     "bookkeeping": "ghi sổ",
-    "currency": "tiền tệ"
+    "currency": "tiền tệ",
+    "status": "trạng thái",
+    "refreshToken": "làm mới token"
   },
   "Contact": {
     "name": "tên liên hệ",
@@ -454,6 +456,20 @@
     },
     "saveContact": "lưu liên hệ",
     "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`"
+  },
+  "ZaloOa": {
+    "OfficialAccount":{
+      "title": "{{action}}{{definition}} tài khoản OA",
+      "confirmRefreshTokenMessage": "bạn phải đăng nhập tài khoản admin của zalo oa trước khi thực hiện thao tác này"
+    },
+    "Menu": {
+      "zaloOa": "Zalo OA",
+      "ZaloOa": {
+        "officialAccounts": "tài khoản OA"
+      }
+    },
+    "appid": "Zalo App ID",
+    "callbackUrl": "url nhận token"
   },
   "Print": {
     "listTemplate": "mẫu danh sách",

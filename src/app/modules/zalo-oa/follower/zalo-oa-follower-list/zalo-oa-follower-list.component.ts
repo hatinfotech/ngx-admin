@@ -1,25 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { HelpdeskUserModel } from '../../../../models/helpdesk.model';
-import { UserExtensionFormComponent } from '../user-extension-form/user-extension-form.component';
+import { ContactModel } from '../../../../models/contact.model';
+import { UserExtensionFormComponent } from '../../../helpdesk/user-extensions/user-extension-form/user-extension-form.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
+import { UserExtensionListComponent } from '../../../helpdesk/user-extensions/user-extension-list/user-extension-list.component';
+import { ZaloOaFollowerFormComponent } from '../zalo-oa-follower-form/zalo-oa-follower-form.component';
 
 @Component({
-  selector: 'ngx-user-extension-list',
-  templateUrl: './user-extension-list.component.html',
-  styleUrls: ['./user-extension-list.component.scss'],
+  selector: 'ngx-zalo-oa-follower-list',
+  templateUrl: './zalo-oa-follower-list.component.html',
+  styleUrls: ['./zalo-oa-follower-list.component.scss'],
 })
-export class UserExtensionListComponent extends ServerDataManagerListComponent<HelpdeskUserModel> implements OnInit {
+export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<ContactModel> implements OnInit {
 
-  componentName: string = 'UserExtensionListComponent';
-  formPath = '/helpdesk/user-extension/form';
-  apiPath = '/helpdesk/users';
+  componentName: string = 'ZaloOaFollowerListComponent';
+  formPath = '/zalo-oa/follower/form';
+  apiPath = '/zalo-oa/followers';
   idKey = 'Code';
-  formDialog = UserExtensionFormComponent;
+  formDialog = ZaloOaFollowerFormComponent;
 
   reuseDialog = true;
 
@@ -35,7 +37,7 @@ export class UserExtensionListComponent extends ServerDataManagerListComponent<H
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<UserExtensionListComponent>,
+    public ref: NbDialogRef<ZaloOaFollowerListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }

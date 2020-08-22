@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { HelpdeskUserModel } from '../../../../models/helpdesk.model';
-import { UserExtensionFormComponent } from '../user-extension-form/user-extension-form.component';
+import { ContactModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
+import { ZaloOaFollowerListComponent } from '../../follower/zalo-oa-follower-list/zalo-oa-follower-list.component';
 
 @Component({
-  selector: 'ngx-user-extension-list',
-  templateUrl: './user-extension-list.component.html',
-  styleUrls: ['./user-extension-list.component.scss'],
+  selector: 'ngx-zalo-oa-conversation',
+  templateUrl: './zalo-oa-conversation.component.html',
+  styleUrls: ['./zalo-oa-conversation.component.scss'],
 })
-export class UserExtensionListComponent extends ServerDataManagerListComponent<HelpdeskUserModel> implements OnInit {
+export class ZaloOaConversationComponent extends ServerDataManagerListComponent<ContactModel> implements OnInit {
 
-  componentName: string = 'UserExtensionListComponent';
-  formPath = '/helpdesk/user-extension/form';
-  apiPath = '/helpdesk/users';
+  componentName: string = 'ZaloOaConversationComponent';
+  formPath = '/zalo-oa/follower/form';
+  apiPath = '/zalo-oa/followers';
   idKey = 'Code';
-  formDialog = UserExtensionFormComponent;
+  // formDialog = ZaloOaFollowerFormComponent;
 
   reuseDialog = true;
 
@@ -35,7 +35,7 @@ export class UserExtensionListComponent extends ServerDataManagerListComponent<H
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<UserExtensionListComponent>,
+    public ref: NbDialogRef<ZaloOaFollowerListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }

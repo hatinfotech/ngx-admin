@@ -176,7 +176,9 @@
     "lockBook": "lock book",
     "openBook": "open book",
     "bookkeeping": "bookkeeping",
-    "currency": "currency"
+    "currency": "currency",
+    "status": "status",
+    "refreshToken": "refresh token"
   },
   "Contact": {
     "name": "contact name",
@@ -449,6 +451,20 @@
     },
     "saveContact": "save contact",
     "changeStateConfirm": "change state for `{{description}}`"
+  },
+  "ZaloOa": {
+    "OfficialAccount":{
+      "title": "{{action}} official account {{definition}}",
+      "confirmRefreshTokenMessage": "you mus login zalo's admin account before execute this command"
+    },
+    "Menu": {
+      "zaloOa": "Zalo OA",
+      "ZaloOa": {
+        "officialAccounts": "official account"
+      }
+    },
+    "appid": "Zalo App ID",
+    "callbackUrl": "callback url received token"
   },
   "Print": {
     "listTemplate": "list template",

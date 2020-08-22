@@ -108,7 +108,6 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
             <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
               (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
             <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
