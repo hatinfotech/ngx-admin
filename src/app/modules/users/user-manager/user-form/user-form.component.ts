@@ -54,17 +54,7 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
   }
 
   async init() {
-    this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 9999999 },
-      list => {
-        this.groupList = list.map((item: UserGroupModel) => {
-          return {
-            ...item,
-            Group: item.Code,
-            id: item.Code,
-            text: item.Name + ': ' + item.Description,
-          };
-        });
-      });
+    this.groupList = (await this.apiService.getPromise<UserGroupModel[]>('/user/groups', { includeIdText: true }));
     return await super.init();
   }
 

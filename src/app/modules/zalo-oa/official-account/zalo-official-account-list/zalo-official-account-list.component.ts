@@ -80,12 +80,12 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
       Status: {
         title: this.commonService.translateText('Common.status'),
         type: 'boolean',
-        width: '10%',
+        width: '5%',
       },
       RefreshToken: {
         title: this.commonService.translateText('Common.refreshToken'),
         type: 'custom',
-        width: '5%',
+        width: '10%',
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
@@ -112,6 +112,35 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
                   },
                 ],
               },
+            });
+          });
+        },
+      },
+      WebhookToken: {
+        title: this.commonService.translateText('ZaloOa.Webhook.token'),
+        type: 'custom',
+        width: '10%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'unlock';
+          instance.display = true;
+          instance.status = 'danger';
+          instance.title = this.commonService.translateText('ZaloOa.Webhook.token');
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((officialAccount: ZaloOaOfficialAccountModel) => {
+            this.apiService.getPromise<ZaloOaOfficialAccountModel[]>('/zalo-oa/official-accounts', { 'generateWebhookToken': true, id: [officialAccount.Code] }).then(token => {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: this.commonService.translateText('ZaloOa.Webhook.token'),
+                  content: token[0].WebhookToken,
+                  actions: [
+                    {
+                      label: this.commonService.translateText('Common.close'),
+                      status: 'danger',
+                    },
+                  ],
+                },
+              });
             });
           });
         },

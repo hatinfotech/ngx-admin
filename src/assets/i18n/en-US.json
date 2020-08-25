@@ -178,7 +178,8 @@
     "bookkeeping": "bookkeeping",
     "currency": "currency",
     "status": "status",
-    "refreshToken": "refresh token"
+    "refreshToken": "refresh token",
+    "sync": "sync"
   },
   "Contact": {
     "name": "contact name",
@@ -457,14 +458,19 @@
       "title": "{{action}} official account {{definition}}",
       "confirmRefreshTokenMessage": "you mus login zalo's admin account before execute this command"
     },
+    "Webhook": {
+      "token": "webhook token"
+    },
     "Menu": {
       "zaloOa": "Zalo OA",
       "ZaloOa": {
-        "officialAccounts": "official account"
+        "officialAccounts": "official account",
+        "follower": "following customer"
       }
     },
     "appid": "Zalo App ID",
-    "callbackUrl": "callback url received token"
+    "callbackUrl": "callback url received token",
+    "apiUrl": "api url"
   },
   "Print": {
     "listTemplate": "list template",

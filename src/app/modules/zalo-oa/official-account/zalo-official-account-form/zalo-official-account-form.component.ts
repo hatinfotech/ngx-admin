@@ -87,6 +87,7 @@ export class ZaloOfficialAccountFormComponent extends DataManagerFormComponent<Z
       AppId: ['', Validators.required],
       OaId: ['', Validators.required],
       CallbackUrl: ['', Validators.required],
+      ApiUrl: ['', Validators.required],
       Status: [true],
     });
     if (data) {

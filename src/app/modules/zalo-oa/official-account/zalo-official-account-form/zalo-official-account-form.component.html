@@ -32,7 +32,7 @@
                     placeholder="{{'Common.code' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-6">
                 <ngx-form-group [formGroup]="formItem" name="CallbackUrl" label="ZaloOa.callbackUrl" [array]="array" [index]="i"
                   [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="CallbackUrl"
@@ -44,6 +44,13 @@
                   [allowCopy]="false" [required]="true">
                   <input type="text" nbInput fullWidth formControlName="OaId"
                     placeholder="{{'ZaloOa.oaid' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="ApiUrl" label="ZaloOa.apiUrl" [array]="array" [index]="i"
+                  [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="ApiUrl"
+                    placeholder="{{'ZaloOa.apiUrl' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
               <div class="col-sm-12">

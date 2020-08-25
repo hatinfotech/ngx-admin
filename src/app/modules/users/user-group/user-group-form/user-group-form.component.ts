@@ -55,6 +55,22 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
       id: 'Code',
       text: 'Name',
     },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/user/users', { select: 'Code=>Code,Name=>Name,id=>Code,text=>Code', filter_Name: params['term'] ? params['term'] : '' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
   };
 
   parentList: UserGroupModel[];
@@ -102,6 +118,10 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
       });
 
 
+  }
+
+  async init() {
+    return super.init();
   }
 
   /** Get form data by id from api */

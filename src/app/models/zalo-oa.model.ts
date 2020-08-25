@@ -1,4 +1,5 @@
 export class ZaloOaOfficialAccountModel {
+  [key: string]: any;
   Id?: string | number;
   Code?: string;
   Name?: string;
@@ -11,4 +12,7 @@ export class ZaloOaOfficialAccountModel {
   AccessToken?: string;
   AccessTokenExpired?: string;
   CallbackUrl?: string;
+  ApiUrl?: string;
+  WebhookUser?: string;
+  WebhookToken?: string;
 }

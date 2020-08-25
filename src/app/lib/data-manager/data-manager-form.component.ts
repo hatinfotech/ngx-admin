@@ -345,14 +345,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         }
 
         resovle(true);
-        setTimeout(() => {
+        // setTimeout(() => {
           // this.formLoading = false;
           // const aPastFormData = {formData: this.form.value.array, meta: null};
           // this.onUpdatePastFormData(aPastFormData);
           // this.pastFormData.push(aPastFormData);
           // this.pushPastFormData(this.form.value.array);
           this.onProcessed();
-        }, 1000);
+        // }, 1000);
       });
     });
   }

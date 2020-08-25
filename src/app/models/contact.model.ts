@@ -88,7 +88,7 @@ export class ContactModel {
   // References
   Organizations?: ContactModel[];
   Groups?: ContactGroupModel[];
-  Details?: ContactDetailModel[];
+  Details?: ContactDetailModel[] & {[key: string]: any};
 
   constructor() { }
 
