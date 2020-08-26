@@ -2,7 +2,7 @@ import { ChatRoom, IChatRoomContext, JWTToken } from '../../../lib/nam-chat/chat
 import { User } from '../../../@core/data/users';
 import { Messages } from 'framework7/components/messages/messages';
 // import { Messagebar } from 'framework7/components/messagebar/messagebar';
-import { Message } from '../../../lib/nam-chat/model/message';
+import { Message, MessageAttachment } from '../../../lib/nam-chat/model/message';
 import { CommonService } from '../../../services/common.service';
 import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
 import { Component } from 'framework7';
@@ -129,8 +129,23 @@ export class MessagesPage implements IChatRoomContext {
   onChatRoomReconnect(): void {
 
   }
+
+  createThumbnailWrap(attachments: MessageAttachment[]) {
+    let images = '';
+    let totalImage = 0;
+    if (attachments) {
+      totalImage = attachments.length;
+      for (let i = 0; i < totalImage; i++) {
+        const attachment = attachments[i];
+        images += `<div class="message-bubble-img-wrap" style="background-image: url('${attachment.payload.thumbnail + '?token=' + this.apiService.getAccessToken()}'); ${totalImage % 2 !== 0 && i === 0 ? 'width: 100%; height: 100px' : ''}"></div>`;
+      }
+    }
+    return images;
+  }
+
   onChatRoomHadNewMessage(newMessage: Message): void {
     if (this.f7Messages) {
+      const images = this.createThumbnailWrap(newMessage.attachments);
       this.f7Messages.addMessage({
         type: newMessage.from.id === this.user.id ? 'sent' : 'received',
         avatar: newMessage.from.avatar,
@@ -139,10 +154,11 @@ export class MessagesPage implements IChatRoomContext {
         textHeader: null,
         text: newMessage.content,
         textFooter: null,
-        footer: newMessage.date,
+        footer: this.commonService.datePipe.transform(newMessage.date, 'short'),
         isTitle: false,
-        image: '',
-        imageSrc: newMessage.attachments && newMessage.attachments.length > 0 ? newMessage.attachments[0].payload.thumbnail : '',
+        image: images,
+        imageSrc: '',
+        // cssClass: newMessage.attachments && newMessage.attachments.length > 0 ? '' : '',
       }, 'append');
     }
   }
@@ -207,6 +223,19 @@ export class MessagesPage implements IChatRoomContext {
           .red-link {
             color: red;
           }
+          .framework7 .ios .message-bubble .message-bubble-img-wrap {
+            width: 50%;
+            height: 73px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            float: left;
+          }
+          .framework7 .ios .message-bubble {
+            min-width: 200px;
+          }
+          .framework7 .messages-title, .framework7 .message {
+              margin-top: 17px;
+          }
         `,
         data: function () {
           return {
@@ -253,25 +282,32 @@ export class MessagesPage implements IChatRoomContext {
           sheetToggle: function () {
             const self = this;
             // self.messagebar.sheetToggle();
-            $this.parentCompoent.uploadFile().then(rs => {
-              console.log(rs);
-              self.sendMessage({
-                attachments: [
-                  {
-                    type: 'image',
-                    payload: {
-                      id: `${rs.Store}/${rs.Id}.${rs.Extension}`,
-                      thumbnail: rs.Thumbnail,
-                      url: rs.DownloadLink,
-                    },
+            $this.parentCompoent.uploadFile().then((files: FileModel[]) => {
+              for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                console.log(file);
+                // self.messagebar.sheetToggle();
+                if (!self.messagebar.selectedAttachments) {
+                  self.messagebar.selectedAttachments = [];
+                }
+                self.messagebar.attachments.unshift(file.Thumbnail + '?token=' + $this.apiService.getAccessToken());
+                self.messagebar.selectedAttachments.unshift({
+                  type: 'image',
+                  payload: {
+                    id: `${file.Store}/${file.Id}.${file.Extension}`,
+                    thumbnail: file.Thumbnail,
+                    url: file.DownloadLink,
                   },
-                ],
-              });
+                });
+              }
+              self.messagebar.renderAttachments();
+              self.checkAttachments();
             });
           },
           deleteAttachment: function (e: any, index: number) {
             const self = this;
             const image = self.messagebar.attachments.splice(index, 1)[0];
+            self.messagebar.selectedAttachments.splice(index, 1)[0];
             self.messagebar.renderAttachments();
             self.checkAttachments();
             // Uncheck in sheet
@@ -308,28 +344,25 @@ export class MessagesPage implements IChatRoomContext {
             const self = this;
             const text: string = message && message.content ? message.content : self.messagebar.getValue().replace(/\n/g, '<br>').trim();
             const messagesToSend = [];
-            // self.messagebar.attachments.forEach(function (attachment) {
-            //   const size = attachment.split('placeholder/cats-')[1].split('-')[0].split('x');
-            //   messagesToSend.push({
-            //     image: '<img src="' + attachment + '" style="width: ' + (size[0] / 2) + 'px; height: ' + (size[1] / 2) + 'px">',
-            //   });
-            // });
-            // if (text.trim().length) {
+            const images = $this.createThumbnailWrap(self.messagebar.selectedAttachments);
+            if (self.messagebar.selectedAttachments) {
+              message.attachments = self.messagebar.selectedAttachments;
+            }
             const msg: GuiMessage = {
               text: text,
+              image: images,
             };
-            if (message && message.attachments) {
-              msg.imageSrc = message.attachments[0].payload.thumbnail + '?token=' + $this.apiService.getAccessToken();
-            }
+
             messagesToSend.push(msg);
             // }
             // // Reset attachments
-            // self.messagebar.attachments = [];
-            // self.checkAttachments();
+            self.messagebar.attachments = [];
+            self.messagebar.selectedAttachments = [];
+            self.checkAttachments();
             // // Hide sheet
-            // self.messagebar.sheetHide();
+            self.messagebar.sheetHide();
             // Uncheck selected images in sheet
-            // self.messagebar.$sheetEl.find('input').prop('checked', false);
+            self.messagebar.$sheetEl.find('input').prop('checked', false);
             // Clear area
             self.messagebar.clear();
             // Focus area
@@ -344,12 +377,6 @@ export class MessagesPage implements IChatRoomContext {
               content: text,
               attachments: message.attachments,
             };
-
-            // if(message && message.attachments) {
-            //   msgData.attachments = message.attachments
-            // }
-
-            // if ()
 
             const rspMessage = $this.currentChatRoom.sendMessage(msgData, $this.user);
             console.info(rspMessage);

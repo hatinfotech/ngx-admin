@@ -8,7 +8,7 @@ import {
   NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries
 } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Location, getCurrencySymbol, getLocaleNumberFormat, NumberFormatStyle, CurrencyPipe } from '@angular/common';
+import { Location, getCurrencySymbol, getLocaleNumberFormat, NumberFormatStyle, CurrencyPipe, DatePipe } from '@angular/common';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
 import localeVi from '@angular/common/locales/vi';
 import localeEn from '@angular/common/locales/en';
@@ -83,6 +83,7 @@ export class CommonService {
     public translate: TranslateService,
     public currencyPipe: CurrencyPipe,
     public iconsLibrary: NbIconLibraries,
+    public datePipe: DatePipe,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {

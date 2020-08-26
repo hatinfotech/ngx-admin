@@ -508,7 +508,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   dragOver: { [key: string]: boolean } = {};
   filesIndex: { [key: string]: UploadFile } = {};
   pictureFormIndex: { [key: string]: FormGroup } = {};
-  uploadComplete$ = new Subject<{tracking: string, file: FileModel}>();
+  uploadComplete$ = new Subject<{ tracking: string, file: FileModel }>();
   uploadAddToQueue$ = new Subject<any>();
   uploadForProduct: ProductModel;
   @ViewChild('uploadBtn') uploadBtn: ElementRef;
@@ -627,14 +627,20 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   async uploadFile() {
     this.uploadBtn.nativeElement.click();
-    return new Promise<FileModel>(resolve => {
-      const subscription1  = this.uploadAddToQueue$.subscribe(index => {
-        const subscription2 = this.uploadComplete$.pipe(take(1)).subscribe(response => {
+    const uploadedFiles = [];
+    return new Promise<FileModel[]>(resolve => {
+      const subscription1 = this.uploadAddToQueue$.subscribe(index => {
+        const subscription2 = this.uploadComplete$.subscribe(response => {
           if (index === response.tracking) {
+            uploadedFiles.push(response.file);
             console.log(response);
-            subscription1.unsubscribe();
-            subscription2.unsubscribe();
-            resolve(response.file);
+            this.files = this.files.filter(f => f.id !== index);
+            this.filesIndex[index] = null;
+            if (this.files.length === 0) {
+              subscription1.unsubscribe();
+              subscription2.unsubscribe();
+              resolve(uploadedFiles);
+            }
           }
         });
       });

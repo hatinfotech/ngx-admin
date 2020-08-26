@@ -6,13 +6,15 @@ export interface Message {
   chatRoom: string;
   from?: User;
   content?: any;
-  attachments?: {
-    type: string,
-    payload: {
-      thumbnail: string;
-      url?: string;
-    },
-  }[];
+  attachments?: MessageAttachment[];
   action?: Action;
   date?: string;
+}
+
+export interface MessageAttachment {
+  type: string;
+  payload: {
+    thumbnail: string,
+    url?: string,
+  };
 }

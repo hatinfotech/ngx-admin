@@ -5,12 +5,12 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.4.7',
-  // 2.0.4.7: Demo connect zalo oa api and webhook: send media mesage
-  // 2.0.4.6: Demo connect zalo oa api and webhook: receive attachments
-  // 2.0.4.5: Demo connect zalo oa api and webhook: fix zalo gửi tin nhắn có thông báo
-  // 2.0.4.4: Demo connect zalo oa api and webhook: set relate customer user to chat message
-  // 2.0.4.3: Demo connect zalo oa api and webhook
+  version: '2.0.5.8',
+  // 2.0.5.7: Demo connect zalo oa api and webhook: dev message attachments
+  // 2.0.5.6: Demo connect zalo oa api and webhook: receive attachments
+  // 2.0.5.5: Demo connect zalo oa api and webhook: fix zalo gửi tin nhắn có thông báo
+  // 2.0.5.4: Demo connect zalo oa api and webhook: set relate customer user to chat message
+  // 2.0.5.3: Demo connect zalo oa api and webhook
   // 2.0.4.2: Update helpdesk module: develop route for call logs and web phone, some fix
   // 2.0.4.1: Update helpdesk module: collect and show mo info
   // 2.0.3.2: fix data-manager-list component: update grid after form udpate
