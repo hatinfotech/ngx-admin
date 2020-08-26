@@ -5,7 +5,9 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.4.5',
+  version: '2.0.4.7',
+  // 2.0.4.7: Demo connect zalo oa api and webhook: send media mesage
+  // 2.0.4.6: Demo connect zalo oa api and webhook: receive attachments
   // 2.0.4.5: Demo connect zalo oa api and webhook: fix zalo gửi tin nhắn có thông báo
   // 2.0.4.4: Demo connect zalo oa api and webhook: set relate customer user to chat message
   // 2.0.4.3: Demo connect zalo oa api and webhook

@@ -1,4 +1,4 @@
-import { OnInit, AfterViewInit, Component } from '@angular/core';
+import { OnInit, AfterViewInit, Component, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { CommonService } from '../../services/common.service';
 import { ChatManager } from './../../lib/nam-chat/chat-manager';
@@ -8,7 +8,7 @@ import Framework7 from 'framework7/framework7.esm.bundle';
 import { Messages } from 'framework7/components/messages/messages';
 import { Router as F7Router } from 'framework7/modules/router/router';
 // import { MessagesPage, AboutPage } from './f7pages';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { Message } from '../../lib/nam-chat/model/message';
 import { User } from '../../lib/nam-chat/model/user';
 import { BaseComponent } from '../../lib/base-component';
@@ -22,6 +22,10 @@ import { AboutPage } from './f7pages/about.page';
 import { PhonePage } from './f7pages/phone.page';
 import { Track } from '../../@core/utils/player.service';
 import { Component as F7Component } from 'framework7';
+import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../vendor/ngx-uploader/src/public_api';
+import { FormGroup } from '@angular/forms';
+import { ProductModel } from '../../models/product.model';
+import { FileModel } from '../../models/file.model';
 
 // Global var
 let f7app = null;
@@ -288,7 +292,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
     this.ready$.subscribe(isReady => {
       if (isReady) {
-        this.messagePage = new MessagesPage(this, this.commonService, this.authService);
+        this.messagePage = new MessagesPage(this, this.commonService, this.authService, this.apiService);
         const routes: any[] = [
           this.messagePage.f7Component,
           new AboutPage(this, this.commonService, this.authService).f7Component,
@@ -396,7 +400,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
     }
     const id = option['ChatRoom'];
     this.mainView.router.navigate(`/chat-room/${id}`);
-    return new Promise<F7Component & {sendMessage?: (message: any) => void}>(resolve => {
+    return new Promise<F7Component & { sendMessage?: (message: any) => void }>(resolve => {
       this.messagePage.onOpenChatRoom$.asObservable().subscribe(f7MessageComponent => {
         if (f7MessageComponent.$route.params['id'] === option.ChatRoom) {
           resolve(f7MessageComponent);
@@ -494,5 +498,148 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
       },
     ];
   }
+
+  /** ngx-uploader */
+  options: UploaderOptions = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
+  formData: FormData;
+  files: UploadFile[] = [];
+  uploadInput: EventEmitter<UploadInput> = new EventEmitter<UploadInput>();
+  humanizeBytes: Function = humanizeBytes;
+  dragOver: { [key: string]: boolean } = {};
+  filesIndex: { [key: string]: UploadFile } = {};
+  pictureFormIndex: { [key: string]: FormGroup } = {};
+  uploadComplete$ = new Subject<{tracking: string, file: FileModel}>();
+  uploadAddToQueue$ = new Subject<any>();
+  uploadForProduct: ProductModel;
+  @ViewChild('uploadBtn') uploadBtn: ElementRef;
+
+  async onUploadOutput(output: UploadOutput) {
+    // console.log(output);
+    // console.log(this.files);
+    switch (output.type) {
+      case 'allAddedToQueue':
+        // uncomment this if you want to auto upload files when added
+        const event: UploadInput = {
+          type: 'uploadAll',
+          url: this.apiService.buildApiUrl('/file/files'),
+          method: 'POST',
+          data: { foo: 'bar' },
+        };
+        this.uploadInput.emit(event);
+        break;
+      case 'addedToQueue':
+        if (typeof output.file !== 'undefined') {
+          this.files.push(output.file);
+          this.filesIndex[output.file.id] = output.file;
+          this.uploadAddToQueue$.next(output.file.id);
+        }
+        break;
+      case 'uploading':
+        if (typeof output.file !== 'undefined') {
+          // update current data in files array for uploading file
+          const index = this.files.findIndex((file) => typeof output.file !== 'undefined' && file.id === output.file.id);
+          this.files[index] = output.file;
+          console.log(`[${output.file.progress.data.percentage}%] Upload file ${output.file.name}`);
+        }
+        break;
+      case 'removed':
+        // remove file from array when removed
+        this.files = this.files.filter((file: UploadFile) => file !== output.file);
+        break;
+      case 'dragOver':
+        // this.dragOver[formItemIndex] = true;
+        break;
+      case 'dragOut':
+      case 'drop':
+        // this.dragOver[formItemIndex] = false;
+        break;
+      case 'done':
+        // The file is downloaded
+        console.log('Upload complete');
+        const fileResponse: FileModel = output.file.response[0];
+
+        try {
+
+          if (fileResponse) {
+
+            // get product
+            // const product = (await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { id: [this.uploadForProduct.Code], includePictures: true }))[0];
+            // if (product) {
+            //   product.Pictures.push({ Image: fileResponse.Store + '/' + fileResponse.Id });
+            //   await this.apiService.putPromise<ProductModel[]>('/admin-product/products', {}, [{
+            //     Code: this.uploadForProduct.Code,
+            //     FeaturePicture: fileResponse.Store + '/' + fileResponse.Id,
+            //     Pictures: product.Pictures,
+            //   }]);
+
+            // this.source['isLocalUpdate'] = true; // local reload
+            // await this.source.update(this.uploadForProduct, { ...this.uploadForProduct, FeaturePictureThumbnail: fileResponse['Thumbnail'] });
+            // this.source['isLocalUpdate'] = true;
+
+            this.uploadComplete$.next({
+              tracking: output.file.id,
+              file: fileResponse,
+            });
+
+            // this.files = [];
+            this.uploadBtn.nativeElement.value = '';
+
+            // } else {
+            //   throw Error('Get product failed');
+            // }
+
+          } else {
+            throw Error('upload failed');
+          }
+
+          console.log(output);
+        } catch (e) {
+          this.files = [];
+          this.uploadBtn.nativeElement.value = '';
+        }
+
+        break;
+    }
+  }
+
+  startUpload(): void {
+    const event: UploadInput = {
+      type: 'uploadAll',
+      url: this.apiService.buildApiUrl('/file/files'),
+      method: 'POST',
+      data: { foo: 'bar' },
+    };
+
+    this.uploadInput.emit(event);
+  }
+
+  cancelUpload(id: string): void {
+    this.uploadInput.emit({ type: 'cancel', id: id });
+  }
+
+  removeFile(id: string): void {
+    this.uploadInput.emit({ type: 'remove', id: id });
+  }
+
+  removeAllFiles(): void {
+    this.uploadInput.emit({ type: 'removeAll' });
+  }
+
+  async uploadFile() {
+    this.uploadBtn.nativeElement.click();
+    return new Promise<FileModel>(resolve => {
+      const subscription1  = this.uploadAddToQueue$.subscribe(index => {
+        const subscription2 = this.uploadComplete$.pipe(take(1)).subscribe(response => {
+          if (index === response.tracking) {
+            console.log(response);
+            subscription1.unsubscribe();
+            subscription2.unsubscribe();
+            resolve(response.file);
+          }
+        });
+      });
+    });
+  }
+  /** End ngx-uploader */
 
 }

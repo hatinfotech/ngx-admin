@@ -715,5 +715,9 @@
     </div>
   </div>
 </div>
-<ngx-dialpad [ngClass]="{'minimized': mobileAppService.callScrennMinimized}" [ngStyle]="{'display': mobileScreen != 'phone' && !mobileAppService.callScrennMinimized ? 'none' : ''}"></ngx-dialpad>
-<ngx-media-player *ngIf="mobileScreen == 'media-player'" [tracks]="mediaTracks" [ngStyle]="{'display': mobileScreen != 'media-player' ? 'none' : ''}"></ngx-media-player>
+<ngx-dialpad [ngClass]="{'minimized': mobileAppService.callScrennMinimized}"
+  [ngStyle]="{'display': mobileScreen != 'phone' && !mobileAppService.callScrennMinimized ? 'none' : ''}"></ngx-dialpad>
+<ngx-media-player *ngIf="mobileScreen == 'media-player'" [tracks]="mediaTracks"
+  [ngStyle]="{'display': mobileScreen != 'media-player' ? 'none' : ''}"></ngx-media-player>
+<input type="file" #uploadBtn ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)"
+  [uploadInput]="uploadInput" multiple style="display: none;">

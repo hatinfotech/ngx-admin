@@ -6,6 +6,13 @@ export interface Message {
   chatRoom: string;
   from?: User;
   content?: any;
+  attachments?: {
+    type: string,
+    payload: {
+      thumbnail: string;
+      url?: string;
+    },
+  }[];
   action?: Action;
   date?: string;
 }
