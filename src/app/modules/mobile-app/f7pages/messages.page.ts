@@ -5,7 +5,7 @@ import { Messages } from 'framework7/components/messages/messages';
 import { Message, MessageAttachment } from '../../../lib/nam-chat/model/message';
 import { CommonService } from '../../../services/common.service';
 import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
-import { Component } from 'framework7';
+import { Component, Component as F7Component } from 'framework7';
 import { MobileAppComponent } from '../mobile-app.component';
 import { EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../vendor/ngx-uploader/src/public_api';
@@ -80,7 +80,7 @@ export class MessagesPage implements IChatRoomContext {
     // this.commonService.loginInfo;
     return new Promise<boolean>(async resolve => {
       const chatRoom = this.chatRoomCacheList[chatRoomId];
-      if (!chatRoom) {
+      // if (!chatRoom) {
         if (chatRoomId) {
           this.chatRoomId = chatRoomId;
           this.user = {
@@ -101,10 +101,10 @@ export class MessagesPage implements IChatRoomContext {
           resolve(false);
           return;
         }
-      } else {
-        this.currentChatRoom = chatRoom;
-        this.currentChatRoom.connect();
-      }
+      // } else {
+      //   this.currentChatRoom = chatRoom;
+      //   this.currentChatRoom.connect();
+      // }
       resolve(true);
     });
   }
@@ -183,7 +183,7 @@ export class MessagesPage implements IChatRoomContext {
             </div>
             <div class="title">Messages</div>
             <div class="right">
-              <a href="#" class="link">
+              <a href="#" class="link" @click="openSetting">
                 <i class="icon f7-icons if-not-md">menu</i>
                 <i class="icon material-icons md-only">menu</i>
               </a>
@@ -403,6 +403,10 @@ export class MessagesPage implements IChatRoomContext {
                 self.responseInProgress = false;
               }, 4000);
             }, 1000);
+          },
+          openSetting: () => {
+            const self: MessagesPage = this;
+            this.parentCompoent.mainView.router.navigate('/chat-room-setting/' + this.chatRoomId);
           },
         },
         on: {

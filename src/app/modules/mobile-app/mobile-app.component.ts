@@ -26,6 +26,8 @@ import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput }
 import { FormGroup } from '@angular/forms';
 import { ProductModel } from '../../models/product.model';
 import { FileModel } from '../../models/file.model';
+import { ChatRoomSettingPage } from './f7pages/chat-room-setting.page';
+import { ContactsPage } from './f7pages/contacts.page';
 
 // Global var
 let f7app = null;
@@ -226,6 +228,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   mediaTracks: Track[] = [];
 
   messagePage: MessagesPage;
+  chatRoomSettingPage: ChatRoomSettingPage;
 
   // app: Framework7;
   constructor(
@@ -293,10 +296,13 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
     this.ready$.subscribe(isReady => {
       if (isReady) {
         this.messagePage = new MessagesPage(this, this.commonService, this.authService, this.apiService);
+        this.chatRoomSettingPage = new ChatRoomSettingPage(this, this.commonService, this.authService, this.apiService);
         const routes: any[] = [
           this.messagePage.f7Component,
+          this.chatRoomSettingPage.f7Component,
           new AboutPage(this, this.commonService, this.authService).f7Component,
           new PhonePage(this, this.commonService, this.authService).f7Component,
+          new ContactsPage(this, this.commonService, this.authService, this.apiService).f7Component,
         ];
 
         // Init Framework7 app
@@ -320,7 +326,9 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
             // ... other parameters˛
           });
 
-          this.mainView = this.f7app.views.create('.view-main');
+          this.mainView = this.f7app.views.create('.view-main', {
+            stackPages: true,
+          });
           this.f7app.$('.navbars.navbar-hidden').removeClass('navbar-hidden');
 
           const chatRoomGuiConfig: Messages.Parameters = {
