@@ -407,10 +407,17 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
       this.switchScreen('f7app');
     }
     const id = option['ChatRoom'];
-    this.mainView.router.navigate(`/chat-room/${id}`);
+    if (this.mainView.history.some(url => url === `/chat-room/${id}`)) {
+      this.mainView.router.back(`/chat-room/${id}`, { force: true });
+    } else {
+      this.mainView.router.navigate(`/chat-room/${id}`);
+    }
     return new Promise<F7Component & { sendMessage?: (message: any) => void }>(resolve => {
-      this.messagePage.onOpenChatRoom$.asObservable().subscribe(f7MessageComponent => {
+      const subcription = this.messagePage.onOpenChatRoom$.asObservable().subscribe(f7MessageComponent => {
         if (f7MessageComponent.$route.params['id'] === option.ChatRoom) {
+          if (subcription) {
+            subcription.unsubscribe();
+          }
           resolve(f7MessageComponent);
         }
       });

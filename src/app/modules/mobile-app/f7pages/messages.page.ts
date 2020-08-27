@@ -80,7 +80,7 @@ export class MessagesPage implements IChatRoomContext {
     // this.commonService.loginInfo;
     return new Promise<boolean>(async resolve => {
       const chatRoom = this.chatRoomCacheList[chatRoomId];
-      // if (!chatRoom) {
+      if (!chatRoom) {
         if (chatRoomId) {
           this.chatRoomId = chatRoomId;
           this.user = {
@@ -101,10 +101,13 @@ export class MessagesPage implements IChatRoomContext {
           resolve(false);
           return;
         }
-      // } else {
-      //   this.currentChatRoom = chatRoom;
-      //   this.currentChatRoom.connect();
-      // }
+      } else {
+        this.currentChatRoom = chatRoom;
+        this.currentChatRoom.connect();
+        chatRoom.setContextAndSync(this).then(() => {
+          console.log('sync chat room with new context success');
+        });
+      }
       resolve(true);
     });
   }

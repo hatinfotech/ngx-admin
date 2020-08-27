@@ -51,6 +51,27 @@ export class ChatRoom {
     });
   }
 
+  public async setContextAndSync(context: IChatRoomContext) {
+    this.context = context;
+    await this.syncToContext();
+    return true;
+  }
+
+  public async syncToContext() {
+    console.info('load last messages...');
+    // const lastMessage = this.messageList[this.messageList.length - 1];
+    // const lastMessages = await this.roomSocket.emit<Message[]>('request-last-messages', lastMessage ? lastMessage.index : 0);
+
+    // if (lastMessages && lastMessages.length > 0) {
+    //   for (let i = 0; i < lastMessages.length; i++) {
+    //     this.messageList.push(lastMessages[i]);
+    //   }
+    // }
+    for (let i = 0; i < this.messageList.length; i++) {
+      this.context.onChatRoomHadNewMessage(this.messageList[i]);
+    }
+  }
+
   async initNamespaceSocket() {
     console.info('Init namespace socket : ' + this.id);
     // let result: any;
