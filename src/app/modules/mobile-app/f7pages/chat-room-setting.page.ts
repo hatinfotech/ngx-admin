@@ -1,14 +1,17 @@
-import { ChatRoom, IChatRoomContext, JWTToken } from '../../../lib/nam-chat/chat-room';
+import { ChatRoom, JWTToken } from '../../../lib/nam-chat/chat-room';
 import { User } from '../../../@core/data/users';
 import { Messages } from 'framework7/components/messages/messages';
 // import { Messagebar } from 'framework7/components/messagebar/messagebar';
-import { Message, MessageAttachment } from '../../../lib/nam-chat/model/message';
+import { MessageAttachment } from '../../../lib/nam-chat/model/message';
 import { CommonService } from '../../../services/common.service';
-import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
-import { Component } from 'framework7';
+import { NbAuthService } from '@nebular/auth';
+import Framework7, { Component } from 'framework7';
 import { MobileAppComponent } from '../mobile-app.component';
 import { EventEmitter } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { ChatRoomMemberModel } from '../../../models/chat-room.model';
+import { Router as F7Router } from 'framework7/modules/router/router';
+import { ContactModel } from '../../../models/contact.model';
 
 export class ChatRoomSettingPage {
 
@@ -21,6 +24,8 @@ export class ChatRoomSettingPage {
   onOpenChatRoom$ = new EventEmitter<Component & { sendMessage?: (message: any) => void }>();
 
   private chatRoomCacheList: { [key: string]: ChatRoom } = {};
+  activePage: { app: Framework7, $f7router: F7Router.Router, $f7route: { query: any, context: any, params: any }, [key: string]: any };
+  activeConponent: Component & { [key: string]: any };
 
   constructor(
     public parentCompoent: MobileAppComponent,
@@ -119,45 +124,24 @@ export class ChatRoomSettingPage {
           </div>
         </div>
         <div class="page-content">
-          <div class="block-title">Swipe with confirm modal</div>
+          <div class="block-title">Thành viên</div>
           <div class="list">
             <ul>
-              <li class="swipeout">
+            {{#each members}}
+              <li class="swipeout" _id="{{Id}}" chatRoom="{{ChatRoom}}" user="{{User}}">
                 <div class="item-content swipeout-content">
                   <div class="item-media">
                     <i class="f7-icons">doc_person_fill</i>
                   </div>
                   <div class="item-inner">
-                    <div class="item-title">Swipe me please</div>
+                    <div class="item-title">{{Name}}</div>
                   </div>
                 </div>
                 <div class="swipeout-actions-right">
-                  <a href="#" data-confirm="Are you sure you want this item" class="swipeout-delete">Delete</a>
+                  <a href="#" @click="removeMemberConfirm" x-data-confirm="Are you sure you want this item" class="swipeout-delete">Delete</a>
                 </div>
               </li>
-              <li class="swipeout">
-                <div class="item-content swipeout-content">
-                  <div class="item-media">
-                    <i class="f7-icons">doc_person_fill</i>
-                  </div>
-                  <div class="item-inner">
-                    <div class="item-title">Swipe me too</div>
-                  </div>
-                </div>
-                <div class="swipeout-actions-right">
-                  <a href="#" data-confirm="Are you sure you want this item" class="swipeout-delete">Delete</a>
-                </div>
-              </li>
-              <li>
-                <div class="item-content">
-                  <div class="item-media">
-                  <i class="f7-icons">doc_person_fill</i>
-                  </div>
-                  <div class="item-inner">
-                    <div class="item-title">I am removable</div>
-                  </div>
-                </div>
-              </li>
+              {{/each}}
               <li @click="openChooseContact">
                 <div class="item-content">
                   <div class="item-media">
@@ -190,56 +174,42 @@ export class ChatRoomSettingPage {
               margin-top: 17px;
           }
         `,
-        data: function () {
+        data: () => {
+
           return {
-            images: [
-              'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
-              'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
-              'https://cdn.framework7.io/placeholder/cats-400x300-3.jpg',
-              'https://cdn.framework7.io/placeholder/cats-300x150-4.jpg',
-              'https://cdn.framework7.io/placeholder/cats-150x300-5.jpg',
-              'https://cdn.framework7.io/placeholder/cats-300x300-6.jpg',
-              'https://cdn.framework7.io/placeholder/cats-300x300-7.jpg',
-              'https://cdn.framework7.io/placeholder/cats-200x300-8.jpg',
-              'https://cdn.framework7.io/placeholder/cats-400x300-9.jpg',
-              'https://cdn.framework7.io/placeholder/cats-300x150-10.jpg',
-            ],
-            people: [
-              {
-                name: 'Kate Johnson',
-                avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
-              },
-              {
-                name: 'Blue Ninja',
-                avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-              },
-            ],
-            answers: [
-              'Yes!',
-              'No',
-              'Hm...',
-              'I am not sure',
-              'And what about you?',
-              'May be ;)',
-              'Lorem ipsum dolor sit amet, consectetur',
-              'What?',
-              'Are you sure?',
-              'Of course',
-              'Need to think about it',
-              'Amazing!!!',
-            ],
-            responseInProgress: false,
+            members: [],
           };
         },
         methods: {
           openChooseContact: () => {
             const self = this;
-            this.parentCompoent.mainView.router.navigate('/contacts', {
+            self.parentCompoent.mainView.router.navigate('/contacts', {
               context: {
-                onChooseContact: (contact: any[]) => {
+                onChooseContact: (contact: ContactModel) => {
                   console.log(contact);
+                  $this.apiService.postPromise<ChatRoomMemberModel[]>('/chat/room-members', { filter_ChatRoom: $this.activePage.route.params['id'] }, [{
+                    ChatRoom: $this.activePage.route.params['id'],
+                    User: contact.User,
+                  }]).then(members => {
+                    $this.apiService.getPromise<ChatRoomMemberModel[]>('/chat/room-members', { filter_ChatRoom: $this.activePage.route.params['id'] }).then(members2 => {
+                      $this.activeConponent.$setState({
+                        members: members2,
+                      });
+                    });
+                  }).catch(e => {
+                    console.error(e);
+                  });
                 },
               },
+            });
+          },
+          removeMemberConfirm: (event: MouseEvent) => {
+            console.log(event.currentTarget['parentNode']['parentNode']);
+            const element = event.currentTarget['parentNode']['parentNode'];
+            $this.activeConponent.$app.swipeout.close(element, () => {
+              $this.apiService.delete('/chat/room-members', $(element).attr('_id'), rs => {
+                $this.activeConponent.$app.swipeout.delete(element, () => {});
+              });
             });
           },
         },
@@ -254,6 +224,14 @@ export class ChatRoomSettingPage {
             const app = self.$app;
 
             $this.instances[self.$route.params['id']] = self;
+            $this.activeConponent = this;
+            $this.activePage = page;
+
+            $this.apiService.getPromise<ChatRoomMemberModel[]>('/chat/room-members', { filter_ChatRoom: page.route.params['id'] }).then(members => {
+              self.$setState({
+                members: members,
+              });
+            });
             try {
               // $this.initChatRoom(self.$route.params['id']).then(rs => {
               //   if (rs) {

@@ -204,8 +204,8 @@ export class ContactsPage {
           },
           pageInit: function (e, page) {
             const self = this;
-            $this.activeConponent = this,
-              $this.activePage = page;
+            $this.activeConponent = this;
+            $this.activePage = page;
             self.searchBar = self.$app.searchbar.create({
               el: '.searchbar-contacts',
               // searchContainer: '.virtual-list-vdom',

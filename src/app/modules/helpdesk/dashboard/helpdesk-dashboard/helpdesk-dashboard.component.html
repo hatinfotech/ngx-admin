@@ -48,7 +48,7 @@
         </div>
         <div class="col-md-2 m-list-item-property">
           <div class="caption">Người yêu cầu</div>
-          <div class="value nowrap" *ngIf="!!item.ObjectPhone">
+          <div class="value nowrap" *ngIf="!!item.ObjectName">
             <nb-icon icon="person" pack="ion"></nb-icon> {{ item.ObjectName }} <span *ngIf="!item.Object">(<a href="#"
                 (click)="saveContact(item)">{{'Helpdesk.saveContact' | translate}}</a>)</span>
           </div>
