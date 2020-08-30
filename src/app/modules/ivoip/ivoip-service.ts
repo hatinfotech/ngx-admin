@@ -14,9 +14,9 @@ export class PbxDomainSelection {
   }[];
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable(
+  // { providedIn: 'root' },
+)
 export class IvoipService {
 
   protected domainList: PbxDomainSelection[] = [];
@@ -34,7 +34,7 @@ export class IvoipService {
     // this.getPbxActiveDomainUuid();
     this.authService.onAuthenticationChange().subscribe(state => {
       if (state) {
-        this.loadDomainList();
+        // this.loadDomainList();
       } else {
         this.clearCache();
       }
