@@ -709,42 +709,69 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   previewState(item: HelpdeskTicketModel) {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
-      context: {
-        title: this.commonService.translateText('Helpdesk.Ticket.title', { action: this.commonService.translate.instant('Common.changeState'), definition: '' }),
-        content: this.commonService.translateText('Helpdesk.changeStateConfirm', { description: `<i>${item.Description}</i>` }),
-        actions: [
-          {
-            label: this.commonService.translateText('Helpdesk.State.approved'),
-            status: 'danger',
-            action: () => {
-              this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'APPROVED' }, [{ Code: item.Code }])
-                .then((result) => {
+    if (item.State.id === 'OPEN') {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
+        context: {
+          title: this.commonService.translateText('Helpdesk.Ticket.title', { action: this.commonService.translate.instant('Helpdesk.accept'), definition: '' }),
+          content: this.commonService.translateText('Helpdesk.acceptStateConfirm', { description: `<i>${item.Description}</i>` }),
+          actions: [
+            {
+              label: this.commonService.translateText('Common.close'),
+              status: 'primary',
+              action: () => { },
+            },
+            {
+              label: this.commonService.translateText('Helpdesk.State.accepted'),
+              status: 'success',
+              action: () => {
+                this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'ACCEPT' }, [{ Code: item.Code }]).then((result) => {
+                  this.refresh();
+                  this.openChatRoom(item.ChatRoom);
+                  this.editItem(item.Code);
+                });
+              },
+            },
+          ],
+        },
+      });
+    } else {
+      this.commonService.openDialog(ShowcaseDialogComponent, {
+        context: {
+          title: this.commonService.translateText('Helpdesk.Ticket.title', { action: this.commonService.translate.instant('Common.changeState'), definition: '' }),
+          content: this.commonService.translateText('Helpdesk.changeStateConfirm', { description: `<i>${item.Description}</i>` }),
+          actions: [
+            {
+              label: this.commonService.translateText('Helpdesk.State.approved'),
+              status: 'danger',
+              action: () => {
+                this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'APPROVED' }, [{ Code: item.Code }])
+                  .then((result) => {
+                    this.refresh();
+                  });
+              },
+            },
+            {
+              label: this.commonService.translateText('Helpdesk.State.cancel'),
+              status: 'warning',
+              action: () => {
+                this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'CANCEL' }, [{ Code: item.Code }]).then((result) => {
                   this.refresh();
                 });
+              },
             },
-          },
-          {
-            label: this.commonService.translateText('Helpdesk.State.cancel'),
-            status: 'warning',
-            action: () => {
-              this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'CANCEL' }, [{ Code: item.Code }]).then((result) => {
-                this.refresh();
-              });
+            {
+              label: this.commonService.translateText('Helpdesk.State.complete'),
+              status: 'success',
+              action: () => {
+                this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'COMPLETE' }, [{ Code: item.Code }]).then((result) => {
+                  this.refresh();
+                });
+              },
             },
-          },
-          {
-            label: this.commonService.translateText('Helpdesk.State.complete'),
-            status: 'success',
-            action: () => {
-              this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'COMPLETE' }, [{ Code: item.Code }]).then((result) => {
-                this.refresh();
-              });
-            },
-          },
-        ],
-      },
-    });
+          ],
+        },
+      });
+    }
   }
 
   /** Open assign categories dialog */

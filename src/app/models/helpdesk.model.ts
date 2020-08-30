@@ -27,7 +27,7 @@ export class HelpdeskTicketModel {
   SupportedPersonAddress?: string;
   TimeDuration?: string;
   DateOfStart?: string;
-  State?: string | HelpdeskTicketStateModel;
+  State?: string & HelpdeskTicketStateModel;
   DateOfCreate?: string;
   DateOfUpdate?: string;
   DateOfComplete?: string;

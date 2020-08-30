@@ -186,7 +186,9 @@
     "address": "address",
     "email": "email",
     "phone": "phone",
-    "taxCode": "mã số thuế"
+    "taxCode": "mã số thuế",
+    "syncMainToDetail": "sync to contact detail",
+    "syncMainToDetaisyncMainToDetailCompleteMessagel": "are you waint to sync to contact details for all contacts ?"
   },
   "Bank": {
     "name": "bank name",
@@ -426,7 +428,8 @@
     "State": {
       "complete": "complete ticket",
       "cancel": "cancel ticket",
-      "approved": "approved ticket"
+      "approved": "approved ticket",
+      "accepted": "accepted ticket"
     },
     "Menu": {
       "userExtensions": "Extensions numbers",
@@ -451,7 +454,9 @@
       "steps": "implement steps"
     },
     "saveContact": "save contact",
-    "changeStateConfirm": "change state for `{{description}}`"
+    "changeStateConfirm": "change state for `{{description}}`",
+    "acceptStateConfirm": "accept ticket `{{description}}`",
+    "accept": "accept"
   },
   "ZaloOa": {
     "OfficialAccount":{

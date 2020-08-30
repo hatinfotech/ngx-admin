@@ -12,6 +12,7 @@ import { ActionControl } from '../../../../lib/custom-element/action-control-lis
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ContactModel } from '../../../../models/contact.model';
 import { ContactFormComponent } from '../contact-form/contact-form.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-contact-list',
@@ -121,6 +122,57 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     //     return false;
     //   },
     // },
+    {
+      type: 'button',
+      name: 'sync',
+      status: 'danger',
+      label: 'Đồng bộ chi tiết liên hệ',
+      icon: 'file-add',
+      title: 'Đồng bộ chi tiết liên hệ',
+      size: 'medium',
+      disabled: (option) => {
+        return option && !!option['disabled'];
+      },
+      click: (event, option) => {
+        this.commonService.openDialog(ShowcaseDialogComponent, {
+          context: {
+            title: this.commonService.translateText('Contact.syncMainToDetail'),
+            content: this.commonService.translateText('Contact.syncMainToDetailConfirmMessage'),
+            actions: [
+              {
+                label: this.commonService.translateText('Common.close'),
+                status: 'primary',
+                action: () => { },
+              },
+              {
+                label: this.commonService.translateText('Common.sync'),
+                status: 'success',
+                action: () => {
+                  // option.disabled = true;
+                  this.apiService.putPromise<any>('/contact/contacts', { syncMainToDetail: true }, []).then(rs => {
+                    // option.disabled = false;
+                    this.commonService.openDialog(ShowcaseDialogComponent, {
+                      context: {
+                        title: this.commonService.translateText('Contact.syncMainToDetail'),
+                        content: this.commonService.translateText('Contact.syncMainToDetailCompleteMessage'),
+                        actions: [
+                          {
+                            label: this.commonService.translateText('Common.ok'),
+                            status: 'success',
+                            action: () => { },
+                          },
+                        ],
+                      },
+                    });
+                  });
+                },
+              },
+            ],
+          },
+        });
+
+      },
+    },
     {
       type: 'button',
       name: 'create',
@@ -313,7 +365,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
 
   // quickTicketFormList: { index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }[] = [];
 
-  infiniteLoadModel: {data: (ContactModel&{selected?: boolean, color?: string})[], placeholders: any[], loading: boolean, pageToLoadNext: number} = {
+  infiniteLoadModel: { data: (ContactModel & { selected?: boolean, color?: string })[], placeholders: any[], loading: boolean, pageToLoadNext: number } = {
     data: [],
     placeholders: [],
     loading: false,
@@ -339,7 +391,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', {filter_Name: params['term']});
+        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -415,7 +467,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     });
   }
 
-  loadNext(cardData: {data: (ContactModel&{selected?: boolean, color?: string})[], placeholders: any[], loading: boolean, pageToLoadNext: number}) {
+  loadNext(cardData: { data: (ContactModel & { selected?: boolean, color?: string })[], placeholders: any[], loading: boolean, pageToLoadNext: number }) {
     if (cardData.loading) { return; }
 
     cardData.loading = true;
@@ -441,7 +493,7 @@ export class ContactListComponent extends BaseComponent implements OnInit, OnDes
     // if (this.filterEmail) query['filterEmail'] = this.filterEmail;
     // if (this.filterAddress) query['filterAddress'] = this.filterAddress;
 
-    this.apiService.getPromise<(ContactModel&{selected?: boolean, color?: string})[]>('/contact/contacts', query).then(nextList => {
+    this.apiService.getPromise<(ContactModel & { selected?: boolean, color?: string })[]>('/contact/contacts', query).then(nextList => {
       // this.dataList = list.map(item => {
       //   item['selected'] = false;
       //   return item;

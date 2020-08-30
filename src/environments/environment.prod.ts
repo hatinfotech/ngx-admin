@@ -5,7 +5,9 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.0.5.9',
+  version: '2.0.5.11',
+  // 2.0.5.11: Demo connect zalo oa api and webhook: add zalo tags, auto map contact, design helpdesk dashboard,...
+  // 2.0.5.10: Demo connect zalo oa api and webhook: add zalo tags, auto map contact,...
   // 2.0.5.9: Demo connect zalo oa api and webhook: auto create ticket, auto reply first message, auto send notification message on ticket state change
   // 2.0.5.7: Demo connect zalo oa api and webhook: dev message attachments
   // 2.0.5.6: Demo connect zalo oa api and webhook: receive attachments

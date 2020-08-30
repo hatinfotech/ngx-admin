@@ -186,7 +186,9 @@
     "email": "email",
     "phone": "điện thoại",
     "taxCode": "mã số thuế",
-    "choosePms": "chọn quyền"
+    "choosePms": "chọn quyền",
+    "syncMainToDetail": "đồng bộ đến chi tiết liên hệ",
+    "syncMainToDetailConfirmMessage": "bạn có muốn đồng bộ thông tin liên hệ xuống chi tiết cho tất cả liên hệ ?"
   },
   "Bank": {
     "name": "tên ngân hàng",
@@ -429,7 +431,8 @@
     "State": {
       "complete": "hoàn thành y/c",
       "cancel": "hủy yêu cầu",
-      "approved": "duyệt yêu cầu"
+      "approved": "duyệt yêu cầu",
+      "accepted": "tiếp nhận yêu cầu"
     },
     "Menu": {
       "userExtensions": "Số nội bộ (sip)",
@@ -456,7 +459,9 @@
       "steps": "các bước thực hiện"
     },
     "saveContact": "lưu liên hệ",
-    "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`"
+    "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`",
+    "acceptStateConfirm": "Tiếp nhận yêu cầu `{{description}}`",
+    "accept": "tiếp nhận"
   },
   "ZaloOa": {
     "OfficialAccount":{

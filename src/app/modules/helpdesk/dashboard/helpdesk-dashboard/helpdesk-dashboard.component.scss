@@ -30,13 +30,33 @@
 
   .value {
     margin-top: 0.25rem;
+    background-color: #4645450f;
+
+    border-radius: 2px;
+    overflow: hidden;
+
     // color: nb-theme(color-info-default);
+    nb-icon {
+      background: #0000000d;
+      margin-right: 0.3rem;
+      border-right: 2px solid #00000008;
+      width: 30px;
+      // border-top-left-radius: 3px;
+    }
+    nb-icon:before {
+      margin-left: 0.3rem;
+    }
   }
 
   .value.nowrap {
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+
+    // overflow: hidden;
+    // align-items: center;
   }
 
   .delta {

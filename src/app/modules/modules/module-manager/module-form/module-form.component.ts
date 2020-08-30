@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { ResourceModel } from '../../../../models/resource.model';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { CommonService } from '../../../../services/common.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-module-form',
@@ -48,6 +49,13 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     this.restrict();
     super.ngOnInit();
   }
+
+  /** Execute api get */
+  executeGet(params: any, success: (resources: ModuleModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+    // params['includeCode'] = true;
+    super.executeGet(params, success, error);
+  }
+
 
   getFormData(callback: (data: ModuleModel[]) => void) {
     this.apiService.get<ModuleModel[]>(this.apiPath, { id: this.id, multi: true, includeComponents: true, includeResources: true },
