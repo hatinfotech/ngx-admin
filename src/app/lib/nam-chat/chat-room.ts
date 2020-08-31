@@ -12,11 +12,12 @@ export interface JWTToken {
 export interface IChatRoomContext {
 
   getAuthenticateToken(): JWTToken;
-  onChatRoomInit(): void;
-  onChatRoomConnect(): void;
-  onChatRoomReconnect(): void;
-  onChatRoomHadNewMessage(newMessage: Message): void;
-
+  getLastMesssage(): Message;
+  onChatRoomInit(): Promise<boolean>;
+  onChatRoomConnect(): Promise<boolean>;
+  onChatRoomReconnect(): Promise<boolean>;
+  onNewMessage(newMessage: Message): Promise<boolean>;
+  onRestoreMessages(namespace: string, messages: Message[]): Promise<boolean>;
 }
 
 export class ChatRoom {
@@ -67,9 +68,13 @@ export class ChatRoom {
     //     this.messageList.push(lastMessages[i]);
     //   }
     // }
-    for (let i = 0; i < this.messageList.length; i++) {
-      this.context.onChatRoomHadNewMessage(this.messageList[i]);
-    }
+    // const contextLastMessage = this.context.getLastMesssage();
+    // for (let i = 0; i < this.messageList.length; i++) {
+    //   // if (!contextLastMessage || contextLastMessage.index < this.messageList[i].index) {
+    //     this.context.onNewMessage(this.messageList[i], true);
+    //   // }
+    // }
+    return this.context.onRestoreMessages(this.id, this.messageList);
   }
 
   async initNamespaceSocket() {
@@ -136,7 +141,8 @@ export class ChatRoom {
     //   this.context.onChatRoomHadNewMessage(request.data);
     // });
     this.roomSocket.on<Message>('message').subscribe(newMessage => {
-      this.context.onChatRoomHadNewMessage(newMessage.data);
+      this.messageList.push(newMessage.data);
+      this.context.onNewMessage(newMessage.data);
     });
 
     this.state$.subscribe(async (state) => {
@@ -145,14 +151,16 @@ export class ChatRoom {
         this.takeUntil('load-last-message', 500).then(async () => {
           console.info('load last messages...');
           const lastMessage = this.messageList[this.messageList.length - 1];
-          const lastMessages = await this.roomSocket.emit<Message[]>('request-last-messages', lastMessage ? lastMessage.index : 0);
+          const lastMessages = await this.roomSocket.emit<Message[]>('request-last-messages', lastMessage && lastMessage.index || 0);
 
-          if (lastMessages && lastMessages.length > 0) {
-            lastMessages.forEach(newMessage => {
-              this.messageList.push(newMessage);
-              this.context.onChatRoomHadNewMessage(newMessage);
-            });
-          }
+          // if (lastMessages && lastMessages.length > 0) {
+          //   lastMessages.forEach(newMessage => {
+          //     this.messageList.push(newMessage);
+          //     this.context.onNewMessage(newMessage, true);
+          //   });
+          // }
+          this.messageList = lastMessages;
+          this.context.onRestoreMessages(this.id, lastMessages);
         });
       }
     });
@@ -211,6 +219,7 @@ export class ChatRoom {
       message.index = Date.now();
       try {
         const result = await this.roomSocket.emit<Message>('message', message);
+        this.messageList.push(result);
         console.log(result);
         resolve(result);
       } catch (e) {

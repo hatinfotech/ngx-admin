@@ -3,7 +3,7 @@ import { Action } from './action';
 
 export interface Message {
   index?: number;
-  chatRoom: string;
+  namespace: string;
   from?: User;
   content?: any;
   attachments?: MessageAttachment[];
