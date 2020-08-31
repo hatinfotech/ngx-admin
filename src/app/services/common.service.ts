@@ -168,8 +168,13 @@ export class CommonService {
     this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
       this.mainSocketInfo = rs;
       this.mainSocketInfo.url = `${this.mainSocketInfo.protocol || 'https'}://${this.mainSocketInfo.domain}:${this.mainSocketInfo.port}`;
-      this.mainSocket = new MySocket(this.mainSocketInfo.url);
-      console.info('Conntect to local chat server success');
+      // this.mainSocket = new MySocket(this.mainSocketInfo.url);
+      this.initMainSocket().then(sc => {
+        // this.mainSocket = sc;
+        // sc.on('Helpdesk_Had_New_Ticket').subscribe();
+        console.info('Conntect to local chat server success');
+      });
+
     }).catch(e => console.error(e));
 
     // Subcribe authorized event
@@ -192,7 +197,19 @@ export class CommonService {
       this.mainSocket = new MySocket(this.mainSocketInfo.url);
       const subscription = this.mainSocket.onConnect$.subscribe(rs => {
         resolve(this.mainSocket);
-        subscription.unsubscribe();
+        this.mainSocket.emit('register', {
+          token: this.apiService.getAccessToken(),
+          user: {
+            id: this.loginInfo.user.Code,
+            name: this.loginInfo.user.Name,
+          },
+        }).then(rs2 => {
+          console.log('Main socket registerd');
+          console.log(rs2);
+        });
+        if (subscription) {
+          subscription.unsubscribe();
+        }
       });
     });
 

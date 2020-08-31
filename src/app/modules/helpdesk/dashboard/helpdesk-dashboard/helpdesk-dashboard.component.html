@@ -59,7 +59,7 @@
           </div>
         </div>
         <div class="col-md-2 m-list-item-property">
-          <div class="caption" *ngIf="item.Infos?.User_Group">Nhân viên/Nhóm tương tác</div>
+          <div class="caption">Nhân viên/Nhóm tương tác</div>
           <div class="value nowrap" *ngIf="item.Infos?.User_Group">
             <nb-icon icon="android-contacts" pack="ion"></nb-icon> <span class="text">Nhóm: {{ item.Infos?.User_Group | objecttext }}</span>
           </div>
@@ -117,7 +117,7 @@
           </div>
           <div class="value nowrap">
             <nb-icon icon="share" pack="ion"></nb-icon>
-            <a href="#" (click)="openAssignCategoiesDialog(item)">{{ 'Common.share' | translate | headtitlecase }}</a>
+            <a href="#" (click)="openShareDialog(item)">{{ 'Common.share' | translate | headtitlecase }}</a>
           </div>
         </div>
       </div>

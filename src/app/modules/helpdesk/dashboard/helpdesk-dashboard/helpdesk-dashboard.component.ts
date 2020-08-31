@@ -226,6 +226,27 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         // }
       });
 
+    this.commonService.getMainSocket().then(sc => {
+      sc.on<HelpdeskTicketModel>('Helpdesk_Had_New_Ticket').subscribe(rs => {
+        console.log(rs.data);
+        // this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', {
+        //   id: [rs.data.Code],
+        //   sort_LastUpdate: 'desc',
+        //   limit: this.pageSize,
+        //   includeState: true,
+        //   includeLastMessage: true,
+        //   includeInfosAsKeyValue: true,
+        //   includeProcedure: true,
+        // }).then(tickets => {
+        //   // this.infiniteLoadModel.tickets.unshift(tickets[0]);
+        //   this.updateList(tickets);
+        // });
+        this.updateItemsByCode(rs.data.Code).then(rs2 => {
+          rs.callback(true);
+        });
+      });
+    });
+
   }
 
   async callStateListen(callState: CallState) {
@@ -318,7 +339,6 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     this.apiService.get<HelpdeskTicketModel[]>('/helpdesk/tickets', {
       search: this.keyword,
       sort_LastUpdate: 'desc',
-      // sort_Id: 'desc',
       limit: this.pageSize,
       offset: (cardData.pageToLoadNext - 1) * this.pageSize,
       includeState: true,
@@ -550,17 +570,41 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   onQuickFormClose(index: string) {
 
+    let ticketCode: string;
     if (index) {
+      const closeForm = this.quickTicketFormList.find(f => f.index === index);
+      ticketCode = closeForm.ticketCode;
+      // this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', {
+      //   id: [closeForm.ticketCode],
+      //   sort_LastUpdate: 'desc',
+      //   limit: this.pageSize,
+      //   includeState: true,
+      //   includeLastMessage: true,
+      //   includeInfosAsKeyValue: true,
+      //   includeProcedure: true,
+      // }).then(tickets => {
+      //   // this.infiniteLoadModel.tickets.unshift(tickets[0]);
+      //   this.updateList(tickets);
+      // });
+
       this.quickTicketFormList = this.quickTicketFormList.filter(f => f.index !== index);
       console.info(this.quickTicketFormList);
     }
 
     if (this.quickTicketFormList.length === 0) {
       this.showQuickForm = false;
-      this.keyword = '';
-      setTimeout(() => {
+      if (this.keyword) {
+        this.keyword = '';
         this.refresh();
-      }, 1000);
+      } else {
+        this.updateItemsByCode(ticketCode);
+      }
+      // setTimeout(() => {
+      //   // this.refresh();
+      //   // this.updateList(this.quickTicketFormList[index]);
+      // }, 1000);
+    } else {
+      this.updateItemsByCode(ticketCode);
     }
   }
 
@@ -725,9 +769,11 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
               status: 'success',
               action: () => {
                 this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'ACCEPT' }, [{ Code: item.Code }]).then((result) => {
-                  this.refresh();
-                  this.openChatRoom(item.ChatRoom);
-                  this.editItem(item.Code);
+                  // this.refresh();
+                  this.updateItemsByCode(item.Code).then(rs => {
+                    this.openChatRoom(item.ChatRoom);
+                    this.editItem(item.Code);
+                  });
                 });
               },
             },
@@ -746,7 +792,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
               action: () => {
                 this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'APPROVED' }, [{ Code: item.Code }])
                   .then((result) => {
-                    this.refresh();
+                    // this.refresh();
+                    this.updateItemsByCode(item.Code).then(rs => { });
                   });
               },
             },
@@ -755,7 +802,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
               status: 'warning',
               action: () => {
                 this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'CANCEL' }, [{ Code: item.Code }]).then((result) => {
-                  this.refresh();
+                  // this.refresh();
+                  this.updateItemsByCode(item.Code).then(rs => { });
                 });
               },
             },
@@ -764,7 +812,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
               status: 'success',
               action: () => {
                 this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'COMPLETE' }, [{ Code: item.Code }]).then((result) => {
-                  this.refresh();
+                  // this.refresh();
+                  this.updateItemsByCode(item.Code).then(rs => { });
                 });
               },
             },
@@ -775,7 +824,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   /** Open assign categories dialog */
-  openAssignCategoiesDialog(ticket: HelpdeskTicketModel) {
+  openShareDialog(ticket: HelpdeskTicketModel) {
     if (ticket) {
       this.commonService.openDialog(TicketPmsFormComponent, {
         context: {
@@ -791,5 +840,39 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         closeOnBackdropClick: false,
       });
     }
+  }
+
+  updateList(updateTickets: HelpdeskTicketModel[]) {
+
+    const newStates = this.infiniteLoadModel;
+    for (let i = 0; i < updateTickets.length; i++) {
+      const index = newStates.tickets.findIndex(ticket => ticket.Code === updateTickets[i].Code);
+      if (index > -1) {
+        newStates.tickets[index] = updateTickets[i];
+      } else {
+        newStates.tickets.unshift(updateTickets[i]);
+      }
+    }
+
+    // this.infiniteLoadModel = [newStates];
+
+  }
+
+  async updateItemsByCode(ticketCode: string) {
+    const promise = this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', {
+      id: [ticketCode],
+      sort_LastUpdate: 'desc',
+      limit: this.pageSize,
+      includeState: true,
+      includeLastMessage: true,
+      includeInfosAsKeyValue: true,
+      includeProcedure: true,
+    });
+    promise.then(tickets => {
+      // this.infiniteLoadModel.tickets.unshift(tickets[0]);
+      this.updateList(tickets);
+      return true;
+    });
+    return promise;
   }
 }
