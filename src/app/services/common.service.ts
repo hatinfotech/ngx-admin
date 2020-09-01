@@ -157,6 +157,18 @@ export class CommonService {
           this.timezone$.next({ timezone, skipUpdate: true });
           // localStorage.setItem('configuration.locale', locale);
           // localStorage.setItem('configuration.timezone', timezone);
+
+          // Re-register main socket on login changed
+          this.mainSocket.emit('register', {
+            token: this.apiService.getAccessToken(),
+            user: {
+              id: this.loginInfo.user.Code,
+              name: this.loginInfo.user.Name,
+            },
+          }).then(rs2 => {
+            console.log('Main socket registerd');
+            console.log(rs2);
+          });
         });
       } else {
         // this.loginInfoSubject.next(new LoginInfoModel());
@@ -210,6 +222,18 @@ export class CommonService {
         if (subscription) {
           subscription.unsubscribe();
         }
+      });
+      this.mainSocket.onReconnect$.subscribe(rs => {
+        this.mainSocket.emit('register', {
+          token: this.apiService.getAccessToken(),
+          user: {
+            id: this.loginInfo.user.Code,
+            name: this.loginInfo.user.Name,
+          },
+        }).then(rs2 => {
+          console.log('Main socket registerd');
+          console.log(rs2);
+        });
       });
     });
 

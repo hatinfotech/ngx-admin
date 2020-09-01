@@ -74,6 +74,9 @@ export class ChatRoom {
     //     this.context.onNewMessage(this.messageList[i], true);
     //   // }
     // }
+    if (!this.messageList || this.messageList.length === 0) {
+      this.messageList = await this.roomSocket.emit<Message[]>('request-last-messages', 0);
+    }
     return this.context.onRestoreMessages(this.id, this.messageList);
   }
 
@@ -169,7 +172,7 @@ export class ChatRoom {
   }
 
   reInit() {
-    this.roomSocket.removeAllListeners();
+    // this.roomSocket.removeAllListeners();
 
     console.info('Init namespace socket : ' + this.id);
     // let result: any;
@@ -182,7 +185,7 @@ export class ChatRoom {
     });
 
     // this.initNamespaceSocket();
-    this.roomSocket.initEvent();
+    // this.roomSocket.initEvent();
   }
 
   register(timeout?: number): Promise<boolean> {

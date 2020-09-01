@@ -27,7 +27,7 @@ export class GuiMessage {
 }
 
 export interface State {
-  component?: Component & {messagebar?: Messagebar.Messagebar, checkAttachments?: () => void};
+  component?: Component & { messagebar?: Messagebar.Messagebar, checkAttachments?: () => void };
   id?: string;
   socket?: ChatRoom;
   lastMessage?: Message;
@@ -369,7 +369,7 @@ export class MessagesPage implements IChatRoomContext {
                 }
                 self.messagebar.attachments.unshift(file.Thumbnail + '?token=' + $this.apiService.getAccessToken());
                 self.messagebar.selectedAttachments.unshift({
-                  type: 'image',
+                  type: /jpg|jpeg|png/.test(file.Extension) ? 'image' : 'file',
                   payload: {
                     id: `${file.Store}/${file.Id}.${file.Extension}`,
                     thumbnail: file.Thumbnail,

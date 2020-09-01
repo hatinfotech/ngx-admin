@@ -12,6 +12,10 @@ export interface ISocketResult<T> {
   callback?: (response: any) => void;
 }
 
+export interface IMySocketContext {
+  getLoginInfo: () => { token: string, user: { id: string, name: string, [key: string]: any }, [key: string]: any };
+}
+
 export class MySocket {
   socket: SocketIOClient.Socket;
   io: SocketIOClient.Manager;
@@ -40,6 +44,9 @@ export class MySocket {
 
   private events: { [key: string]: Subscriber<any>[] } = {};
 
+  /** Context where sokcet using */
+  protected context: IMySocketContext;
+
   constructor(uri: string, opts?: SocketIOClient.ConnectOpts) {
     this.socket = socketIo(uri, opts);
     this.initEvent();
@@ -52,6 +59,17 @@ export class MySocket {
     });
 
     this.stateSubject.next('constructor');
+
+    this.onReconnect$.subscribe(att => {
+      console.info(this.id + ' reconnected : ' + att);
+      this.stateSubject.next('reconnected');
+
+      this.reInit();
+    });
+  }
+
+  setContext(context: IMySocketContext) {
+    this.context = context;
   }
 
   initEvent() {
@@ -97,6 +115,11 @@ export class MySocket {
   removeAllListeners() {
     this.stateSubject.next('no-event');
     this.socket.removeAllListeners();
+  }
+
+  reInit() {
+    this.removeAllListeners();
+    this.initEvent();
   }
 
   public async emit<T>(event: string, data: any, timeout?: number): Promise<T> {
@@ -170,35 +193,8 @@ export class MySocket {
     return this.socket.disconnect();
   }
 
-  // on<T>(event: string): Observable<T> {
-  //   return new Observable<T>(observer => {
-  //     this.socket.on(event, (data: T) => observer.next(data));
-  //   });
-  // }
-
-  onBk<T>(event: string): Observable<{ data: T, callback?: (response?: any) => void }> {
-    return new Observable<{ data: T, callback?: () => void }>(observer => {
-      this.socket.on(event, (request: SocketData<T>) => {
-        observer.next({
-          data: request && request.data ? request.data : null,
-          callback: (response?: any) => {
-            this.callback<any>(request.seq, response);
-          },
-        });
-      });
-    });
-  }
-
   on<T>(event: string): Observable<{ data: T, callback?: (response?: any) => void }> {
     const osb = new Observable<ISocketResult<T>>(subscriber => {
-      // this.socket.on(event, (request: SocketData<T>) => {
-      //   subscriber.next({
-      //     data: request && request.data ? request.data : null,
-      //     callback: (response?: any) => {
-      //       this.callback<any>(request.seq, response);
-      //     }
-      //   });
-      // });
       if (!this.events[event]) {
         this.events[event] = [];
       }
@@ -206,16 +202,6 @@ export class MySocket {
       this.eventRegister(event, subscriber);
     });
     return osb;
-    // return new Observable<{ data: T, callback?: () => void }>(observer => {
-    //   this.socket.on(event, (request: SocketData<T>) => {
-    //     observer.next({
-    //       data: request && request.data ? request.data : null,
-    //       callback: (response?: any) => {
-    //         this.callback<any>(request.seq, response);
-    //       }
-    //     });
-    //   });
-    // });
   }
 
 
@@ -230,22 +216,6 @@ export class MySocket {
       });
     });
   }
-
-  // onConnect() {
-  //   return this.on<any>('connect');
-  // }
-
-  // onReconnect(): Observable<> {
-
-  // }
-
-  // onReconnecting() {
-
-  // }
-
-  // onDisconnect() {
-
-  // }
 
   public async callback<T>(seq: number, data: T) {
     this.socket.emit('callback', { seq, type: 'success', data });
