@@ -1,5 +1,5 @@
 import { CustomElementModule } from './../../lib/custom-element/custom-element.module';
-=import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthComponent } from './auth.component';
