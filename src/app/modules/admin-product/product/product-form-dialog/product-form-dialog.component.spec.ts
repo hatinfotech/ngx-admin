@@ -8,7 +8,7 @@ describe('ProductFormDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductFormDialogComponent ]
+      declarations: [ ProductFormDialogComponent ],
     })
     .compileComponents();
   }));

@@ -4,14 +4,10 @@ import { UserGroupModel } from '../../../../models/user-group.model';
 import { UserGroupFormComponent } from '../user-group-form/user-group-form.component';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
-import { ProductCategoryModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { AssignCategoriesFormComponent } from '../../../admin-product/product/assign-categories-form/assign-categories-form.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-user-group-list',

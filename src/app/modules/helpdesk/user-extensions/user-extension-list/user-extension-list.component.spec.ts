@@ -8,7 +8,7 @@ describe('UserExtensionListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserExtensionListComponent ]
+      declarations: [ UserExtensionListComponent ],
     })
     .compileComponents();
   }));

@@ -5,10 +5,10 @@ import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
 import {
   NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
-  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries
+  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries,
 } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Location, getCurrencySymbol, getLocaleNumberFormat, NumberFormatStyle, CurrencyPipe, DatePipe } from '@angular/common';
+import { Location, getCurrencySymbol, CurrencyPipe, DatePipe } from '@angular/common';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
 import localeVi from '@angular/common/locales/vi';
 import localeEn from '@angular/common/locales/en';

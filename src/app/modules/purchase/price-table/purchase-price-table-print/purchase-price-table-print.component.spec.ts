@@ -8,7 +8,7 @@ describe('PurchasePriceTablePrintComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PurchasePriceTablePrintComponent ]
+      declarations: [ PurchasePriceTablePrintComponent ],
     })
     .compileComponents();
   }));

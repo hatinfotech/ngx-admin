@@ -8,7 +8,7 @@ describe('SystemLibraryIconComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SystemLibraryIconComponent ]
+      declarations: [ SystemLibraryIconComponent ],
     })
     .compileComponents();
   }));

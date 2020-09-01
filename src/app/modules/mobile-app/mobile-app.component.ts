@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { NbAuthService } from '@nebular/auth';
 import { MobileAppService } from './mobile-app.service';
 import { NbThemeService } from '@nebular/theme';
-import { takeUntil, map, take } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { MessagesPage } from './f7pages/messages.page';
 import { AboutPage } from './f7pages/about.page';
 import { PhonePage } from './f7pages/phone.page';

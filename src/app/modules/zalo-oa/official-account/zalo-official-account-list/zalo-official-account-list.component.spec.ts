@@ -8,7 +8,7 @@ describe('ZaloOfficialAccountListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ZaloOfficialAccountListComponent ]
+      declarations: [ ZaloOfficialAccountListComponent ],
     })
     .compileComponents();
   }));

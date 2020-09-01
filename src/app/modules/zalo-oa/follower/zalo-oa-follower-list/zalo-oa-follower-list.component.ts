@@ -1,19 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ContactModel } from '../../../../models/contact.model';
-import { UserExtensionFormComponent } from '../../../helpdesk/user-extensions/user-extension-form/user-extension-form.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
-import { UserExtensionListComponent } from '../../../helpdesk/user-extensions/user-extension-list/user-extension-list.component';
 import { ZaloOaFollowerFormComponent } from '../zalo-oa-follower-form/zalo-oa-follower-form.component';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
-import { ZaloOaOfficialAccountModel } from '../../../../models/zalo-oa.model';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { PhoneManager } from '../../../mobile-app/phone-manager/phone-manager';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 
 @Component({

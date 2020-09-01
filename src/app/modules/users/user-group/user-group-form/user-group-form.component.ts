@@ -8,7 +8,6 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { UserModel } from '../../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'ngx-user-group-form',

@@ -8,7 +8,7 @@ describe('UserExtensionFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserExtensionFormComponent ]
+      declarations: [ UserExtensionFormComponent ],
     })
     .compileComponents();
   }));

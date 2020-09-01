@@ -6,7 +6,6 @@ import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
-import { PriceTablePrintComponent } from '../../price-table/price-table-print/price-table-print.component';
 import { DatePipe } from '@angular/common';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 

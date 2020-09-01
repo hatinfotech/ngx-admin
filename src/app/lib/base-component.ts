@@ -1,13 +1,12 @@
-import { OnInit, OnDestroy, Input, Type, TemplateRef, AfterViewInit } from '@angular/core';
+import { OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core';
 import { CommonService } from '../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { ReuseComponent } from './reuse-component';
 import { Subscription, Subject } from 'rxjs';
-import { NbDialogRef, NbDialogConfig } from '@nebular/theme';
+import { NbDialogRef } from '@nebular/theme';
 import { Icon } from './custom-element/card-header/card-header.component';
 import { ActionControl } from './custom-element/action-control-list/action-control.interface';
-import { ModuleModel } from '../models/module.model';
 
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent, AfterViewInit {
 

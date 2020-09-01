@@ -8,7 +8,7 @@ describe('SystemParamFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SystemParamFormComponent ]
+      declarations: [ SystemParamFormComponent ],
     })
     .compileComponents();
   }));

@@ -1,5 +1,4 @@
 import { Router as F7Router } from 'framework7/modules/router/router';
-import { View } from 'framework7/components/view/view';
 import { ChatRoom, JWTToken } from '../../../lib/nam-chat/chat-room';
 import { User } from '../../../@core/data/users';
 import { Messages } from 'framework7/components/messages/messages';
@@ -13,7 +12,6 @@ import { EventEmitter } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { ContactModel } from '../../../models/contact.model';
 import { VirtualList } from '@ag-grid-community/all-modules';
-import { Page } from 'framework7/components/page/page';
 
 export class GuiMessage {
   type?: 'sent' | 'received';

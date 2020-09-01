@@ -8,7 +8,7 @@ describe('MasterPriceTablePrintComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MasterPriceTablePrintComponent ]
+      declarations: [ MasterPriceTablePrintComponent ],
     })
     .compileComponents();
   }));

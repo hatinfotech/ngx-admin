@@ -505,7 +505,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     if (existsQuickForm) {
       this.showQuickForm = true;
       // if (!existsQuickForm.form.description) {
-      const message = 'Yêu cầu bị nhỡ từ khách hàng có số điện thoại ' + callState.session.caller.phone + ' vào ' + (new Date().toString())
+      const message = 'Yêu cầu bị nhỡ từ khách hàng có số điện thoại ' + callState.session.caller.phone + ' vào ' + (new Date().toString());
       existsQuickForm.form.description += ('\n' + message);
       try {
         existsQuickForm.form.f7ChatRoom.sendMessage({ Text: message });

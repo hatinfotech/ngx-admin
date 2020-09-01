@@ -8,7 +8,7 @@ describe('PurchasePriceTableImportComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PurchasePriceTableImportComponent ]
+      declarations: [ PurchasePriceTableImportComponent ],
     })
     .compileComponents();
   }));

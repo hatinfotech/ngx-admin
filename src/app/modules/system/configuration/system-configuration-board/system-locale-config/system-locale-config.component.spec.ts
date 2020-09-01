@@ -8,7 +8,7 @@ describe('SystemLocaleConfigComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SystemLocaleConfigComponent ]
+      declarations: [ SystemLocaleConfigComponent ],
     })
     .compileComponents();
   }));

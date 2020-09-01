@@ -8,7 +8,7 @@ describe('SystemRouteListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SystemRouteListComponent ]
+      declarations: [ SystemRouteListComponent ],
     })
     .compileComponents();
   }));

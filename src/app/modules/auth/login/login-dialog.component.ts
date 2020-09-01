@@ -2,9 +2,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { Component, OnInit, ChangeDetectorRef, Inject, OnDestroy, Input, AfterViewInit } from '@angular/core';
 import { NbLoginComponent, NbAuthService, NB_AUTH_OPTIONS, NbAuthResult } from '@nebular/auth';
 import { Router } from '@angular/router';
-import { last, takeUntil, take } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { time } from 'console';
 
 @Component({
   selector: 'ngx-login-dialog',

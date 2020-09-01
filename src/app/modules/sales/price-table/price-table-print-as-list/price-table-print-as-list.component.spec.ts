@@ -8,7 +8,7 @@ describe('PriceTablePrintAsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PriceTablePrintAsListComponent ]
+      declarations: [ PriceTablePrintAsListComponent ],
     })
     .compileComponents();
   }));

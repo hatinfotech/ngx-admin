@@ -7,11 +7,8 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { PriceTableFormComponent } from '../../price-table/price-table-form/price-table-form.component';
 import { MasterPriceTableFormComponent } from '../master-price-table-form/master-price-table-form.component';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
-import { UnitModel } from '../../../../models/unit.model';
 import { ProductModel } from '../../../../models/product.model';
 
 @Component({

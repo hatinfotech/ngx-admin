@@ -15,7 +15,7 @@ export enum UploadStatus {
   Queue,
   Uploading,
   Done,
-  Cancelled
+  Cancelled,
 }
 
 export interface UploadProgress {

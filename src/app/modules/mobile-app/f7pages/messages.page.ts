@@ -4,7 +4,7 @@ import { Messages } from 'framework7/components/messages/messages';
 import { Message, MessageAttachment } from '../../../lib/nam-chat/model/message';
 import { CommonService } from '../../../services/common.service';
 import { NbAuthService, NbAuthOAuth2Token } from '@nebular/auth';
-import { Component, Component as F7Component } from 'framework7';
+import { Component } from 'framework7';
 import { MobileAppComponent } from '../mobile-app.component';
 import { EventEmitter } from '@angular/core';
 import { FileModel } from '../../../models/file.model';

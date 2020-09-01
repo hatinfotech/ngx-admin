@@ -8,7 +8,7 @@ describe('ZaloOaFollowerFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ZaloOaFollowerFormComponent ]
+      declarations: [ ZaloOaFollowerFormComponent ],
     })
     .compileComponents();
   }));

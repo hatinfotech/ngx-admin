@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DataManagerFormComponent } from '../../../lib/data-manager/data-manager-form.component';
 import { EmailAddressListModel, EmailAddressListDetailModel } from '../../../models/email.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,18 +7,15 @@ import { ApiService } from '../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CommonService } from '../../../services/common.service';
 import { EmailAddressFormComponent } from '../address/email-address-form/email-address-form.component';
-import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../vendor/ngx-uploader/src/public_api';
 import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 import { SmsReceipientModel } from '../../../models/sms.model';
-import { DialogFormComponent } from '../../dialog/dialog-form/dialog-form.component';
-import { FileModel } from '../../../models/file.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
 
 @Component({
   selector: 'ngx-email-sent-stats-list',
   templateUrl: './email-sent-stats-list.component.html',
-  styleUrls: ['./email-sent-stats-list.component.scss']
+  styleUrls: ['./email-sent-stats-list.component.scss'],
 })
 export class EmailSentStatsListComponent extends DataManagerFormComponent<EmailAddressListModel> implements OnInit {
 

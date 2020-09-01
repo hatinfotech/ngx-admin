@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { OnInit, Input, AfterViewInit, Type, ElementRef, ViewChild } from '@angular/core';
+import { OnInit, Input, AfterViewInit, Type, ViewChild } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -14,7 +14,6 @@ import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-t
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
 import { DataManagerFormComponent } from './data-manager-form.component';
-import { CustomServerDataSource } from '../custom-element/smart-table/custom-server.data-source';
 
 export class SmartTableSetting {
   mode?: string;

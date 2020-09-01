@@ -7,7 +7,6 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { PurchasePriceTableFormComponent } from '../purchase-price-table-form/purchase-price-table-form.component';
 import { PurchasePriceTableImportComponent } from '../purchase-price-table-import/purchase-price-table-import.component';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 

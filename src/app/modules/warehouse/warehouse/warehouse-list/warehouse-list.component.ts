@@ -11,7 +11,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'ngx-warehouse-list',
   templateUrl: './warehouse-list.component.html',
-  styleUrls: ['./warehouse-list.component.scss']
+  styleUrls: ['./warehouse-list.component.scss'],
 })
 export class WarehouseListComponent extends DataManagerListComponent<WarehouseModel> implements OnInit {
 

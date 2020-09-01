@@ -8,7 +8,7 @@ describe('HelpdeskRouteFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HelpdeskRouteFormComponent ]
+      declarations: [ HelpdeskRouteFormComponent ],
     })
     .compileComponents();
   }));

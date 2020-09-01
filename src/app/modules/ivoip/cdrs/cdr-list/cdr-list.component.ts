@@ -10,7 +10,7 @@ import { CdrModel } from '../../../../models/cdr.model';
 import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
 import { TranslateService } from '@ngx-translate/core';
-import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableSelectFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableSelectFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @Component({
   selector: 'ngx-cdr-list',

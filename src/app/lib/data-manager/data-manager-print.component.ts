@@ -1,9 +1,7 @@
 import { environment } from './../../../environments/environment';
 import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core'; import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../models/sales.model'; import { CommonService } from '../../services/common.service'; import { Router } from '@angular/router'; import { ApiService } from '../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
-import { DataManagerFormComponent } from './data-manager-form.component';
 import { Icon } from '../custom-element/card-header/card-header.component';
-import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 
 declare var $: JQueryStatic;
 

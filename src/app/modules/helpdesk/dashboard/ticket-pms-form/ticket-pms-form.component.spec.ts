@@ -8,7 +8,7 @@ describe('TicketPmsFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TicketPmsFormComponent ]
+      declarations: [ TicketPmsFormComponent ],
     })
     .compileComponents();
   }));

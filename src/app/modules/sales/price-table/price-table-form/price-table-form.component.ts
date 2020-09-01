@@ -19,13 +19,12 @@ import { ProductListComponent } from '../../../admin-product/product/product-lis
 import { PurchasePriceTableDetailModel } from '../../../../models/purchase.model';
 import { BehaviorSubject } from 'rxjs';
 import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
-import { isNumber } from 'util';
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { takeUntil, first } from 'rxjs/operators';
 import { PriceTablePrintAsListComponent } from '../price-table-print-as-list/price-table-print-as-list.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { AgSelectEditorComponent } from '../../../../lib/custom-element/ag-grid/ag-grid-select-editor.component';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { DecimalPipe } from '@angular/common';
 
 
 @Component({

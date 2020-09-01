@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SystemRouteModel, SystemParamModel, SystemActionModel, SystemRouteConditionModel, SystemRouteActionModel, SystemActionParamModel } from '../../../../models/system.model';
 import { ActivatedRoute, Router } from '@angular/router';

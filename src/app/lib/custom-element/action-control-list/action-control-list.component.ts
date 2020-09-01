@@ -2,7 +2,6 @@ import { takeUntil, filter } from 'rxjs/operators';
 import { Component, Input, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActionControl, ActionControlListOption } from './action-control.interface';
 import { CommonService } from '../../../services/common.service';
-import { LayoutService } from '../../../@core/utils/layout.service';
 import { NbLayoutScrollService } from '@nebular/theme';
 import { Subject } from 'rxjs';
 

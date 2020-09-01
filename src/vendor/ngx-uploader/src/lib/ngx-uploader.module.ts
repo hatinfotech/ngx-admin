@@ -4,6 +4,6 @@ import { NgFileSelectDirective } from './ng-file-select.directive';
 
 @NgModule({
   declarations: [NgFileDropDirective, NgFileSelectDirective],
-  exports: [NgFileDropDirective, NgFileSelectDirective]
+  exports: [NgFileDropDirective, NgFileSelectDirective],
 })
 export class NgxUploaderModule { }

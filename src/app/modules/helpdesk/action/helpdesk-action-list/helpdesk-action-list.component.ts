@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { HelpdeskParamFormComponent } from '../../param/helpdesk-param-form/helpdesk-param-form.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';

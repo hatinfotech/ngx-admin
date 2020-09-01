@@ -4,7 +4,6 @@ import { MobileAppComponent } from './mobile-app.component';
 import { CallingSession } from './phone-manager/calling-session';
 import { DialpadComponent } from './dialpad/dialpad.component';
 import { Track } from '../../@core/utils/player.service';
-import { Component as F7Component } from 'framework7';
 
 export interface CallState {
   state: string;

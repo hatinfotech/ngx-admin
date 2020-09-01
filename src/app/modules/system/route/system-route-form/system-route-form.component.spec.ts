@@ -8,7 +8,7 @@ describe('SystemRouteFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SystemRouteFormComponent ]
+      declarations: [ SystemRouteFormComponent ],
     })
     .compileComponents();
   }));

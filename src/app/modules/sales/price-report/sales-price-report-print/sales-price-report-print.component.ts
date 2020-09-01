@@ -1,5 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
-import { BaseComponent } from '../../../../lib/base-component';
+import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';

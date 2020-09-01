@@ -8,7 +8,7 @@ describe('PriceTableListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PriceTableListComponent ]
+      declarations: [ PriceTableListComponent ],
     })
     .compileComponents();
   }));

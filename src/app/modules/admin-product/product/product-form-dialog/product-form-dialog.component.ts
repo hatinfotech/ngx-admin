@@ -4,7 +4,7 @@ import { NbDialogRef } from '@nebular/theme';
 @Component({
   selector: 'ngx-product-form-dialog',
   templateUrl: './product-form-dialog.component.html',
-  styleUrls: ['./product-form-dialog.component.scss']
+  styleUrls: ['./product-form-dialog.component.scss'],
 })
 export class ProductFormDialogComponent<M> implements OnInit, AfterViewInit {
 

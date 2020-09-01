@@ -8,7 +8,7 @@ describe('WarehouseGoodsDeliveryNotePrintComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WarehouseGoodsDeliveryNotePrintComponent ]
+      declarations: [ WarehouseGoodsDeliveryNotePrintComponent ],
     })
     .compileComponents();
   }));

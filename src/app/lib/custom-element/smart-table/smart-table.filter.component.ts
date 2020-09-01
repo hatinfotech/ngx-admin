@@ -1,10 +1,8 @@
-import { resolve } from 'url';
 import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { DefaultFilter } from 'ng2-smart-table';
 import { FormControl } from '@angular/forms';
-import { distinctUntilChanged, debounceTime, map, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Select2Option } from '../select2/select2.component';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'ngx-smart-table-filter',

@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { SalesVoucherModel, SalesPriceReportDetailModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
+import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
-import { SalesPriceReportPrintComponent } from '../../price-report/sales-price-report-print/sales-price-report-print.component';
 import { DatePipe } from '@angular/common';
 
 @Component({

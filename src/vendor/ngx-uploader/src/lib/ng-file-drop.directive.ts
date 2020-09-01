@@ -4,7 +4,7 @@ import { NgUploaderService } from './ngx-uploader.class';
 import { Subscription } from 'rxjs';
 
 @Directive({
-  selector: '[ngFileDrop]'
+  selector: '[ngFileDrop]',
 })
 export class NgFileDropDirective implements OnInit, OnDestroy {
   @Input() options: UploaderOptions;
@@ -33,7 +33,7 @@ export class NgFileDropDirective implements OnInit, OnDestroy {
     this._sub.push(
       this.upload.serviceEvents.subscribe((event: UploadOutput) => {
         this.uploadOutput.emit(event);
-      })
+      }),
     );
 
     if (this.uploadInput instanceof EventEmitter) {

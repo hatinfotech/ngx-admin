@@ -8,7 +8,7 @@ describe('ZaloOfficialAccountFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ZaloOfficialAccountFormComponent ]
+      declarations: [ ZaloOfficialAccountFormComponent ],
     })
     .compileComponents();
   }));

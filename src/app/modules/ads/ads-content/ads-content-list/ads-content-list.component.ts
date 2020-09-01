@@ -7,7 +7,6 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { AdsContentFormComponent } from '../ads-content-form/ads-content-form.component';
-import { AdsCodeFormComponent } from '../../ads-code/ads-code-form/ads-code-form.component';
 
 @Component({
   selector: 'ngx-ads-content-list',

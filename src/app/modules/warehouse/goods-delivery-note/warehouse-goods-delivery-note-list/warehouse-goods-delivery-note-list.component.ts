@@ -114,16 +114,16 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
         width: '5%',
         editable: true,
         onChange: (value, rowData: WarehouseGoodsDeliveryNoteModel, instance) => {
-          this.apiService.putPromise<WarehouseModel[]>('/warehouse/warehouses', {id: [this.commonService.getObjectId(rowData.Warehouse)], bookkeeping: value, voucher: rowData.Code}, [{
+          this.apiService.putPromise<WarehouseModel[]>('/warehouse/warehouses', { id: [this.commonService.getObjectId(rowData.Warehouse)], bookkeeping: value, voucher: rowData.Code }, [{
             Code: this.commonService.getObjectId(rowData.Warehouse),
           }]).then(rs => {
             // console.log(rs);
             // this.refresh();
-            this.commonService.toastService.show(value ? this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook') : this.commonService.translateText('Warehouse.Book.voucherWasUnwroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'),{
+            this.commonService.toastService.show(value ? this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook') : this.commonService.translateText('Warehouse.Book.voucherWasUnwroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'), {
               status: value ? 'success' : 'warning',
             });
           }).catch(e => {
-            this.commonService.toastService.show(this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'),{
+            this.commonService.toastService.show(this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'), {
               status: 'danger',
             });
           });

@@ -1,5 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ActionControl } from '../action-control-list/action-control.interface';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'ngx-card-header-custom',

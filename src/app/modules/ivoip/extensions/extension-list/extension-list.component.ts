@@ -7,11 +7,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ViewCell } from 'ng2-smart-table';
 import { IvoipService } from '../../ivoip-service';
-import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { ExtensionFormComponent } from '../extension-form/extension-form.component';
-import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
-import { param } from 'jquery';
 import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
 import { IconViewComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 

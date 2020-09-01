@@ -10,8 +10,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { constructor } from 'wpapi';
-import { error, data } from 'jquery';
 import { SmsModel } from '../../../../models/sms.model';
 
 @Component({

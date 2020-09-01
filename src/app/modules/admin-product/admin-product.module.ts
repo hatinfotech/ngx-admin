@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdminProductComponent } from './admin-product.component';
 import { ProductListComponent } from './product/product-list/product-list.component';
 import { ProductFormComponent } from './product/product-form/product-form.component';
-import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule, NbDialogRef } from '@nebular/theme';
+import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
 import { AdminProductRoutingModule } from './admin-product-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
@@ -12,7 +12,7 @@ import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
-import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { CKEditorModule } from 'ng2-ckeditor';
 import { ProductCategoryListComponent } from './category/product-category-list/product-category-list.component';

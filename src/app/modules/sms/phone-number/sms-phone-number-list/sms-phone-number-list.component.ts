@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { EmailAddressFormComponent } from '../../../email-marketing/address/email-address-form/email-address-form.component';
 import { SmsPhoneNumberFormComponent } from '../sms-phone-number-form/sms-phone-number-form.component';
 
 @Component({

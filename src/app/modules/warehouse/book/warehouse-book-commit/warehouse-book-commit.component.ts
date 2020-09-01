@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BaseComponent } from '../../../../lib/base-component';
-import { ProductModel } from '../../../../models/product.model';
 import { FormControl } from '@angular/forms';
 import { WarehouseGoodsContainerModel, GoodsModel, WarehouseBookModel } from '../../../../models/warehouse.model';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
@@ -8,7 +7,6 @@ import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
-import { AssignContainerFormComponent } from '../../goods/assign-containers-form/assign-containers-form.component';
 
 @Component({
   selector: 'ngx-warehouse-book-commit',

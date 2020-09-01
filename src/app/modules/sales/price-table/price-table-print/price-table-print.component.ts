@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { SalesPriceTableModel, SalesPriceReportDetailModel, SalesPriceTableDetailModel } from '../../../../models/sales.model';
+import { SalesPriceTableModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';

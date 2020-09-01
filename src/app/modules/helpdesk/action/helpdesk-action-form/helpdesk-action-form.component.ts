@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { HelpdeskActionModel, HelpdeskActionParamModel } from '../../../../models/helpdesk.model';
+import { HelpdeskActionModel } from '../../../../models/helpdesk.model';
 
 @Component({
   selector: 'ngx-helpdesk-action-form',

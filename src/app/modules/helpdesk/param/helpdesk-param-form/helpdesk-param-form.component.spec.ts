@@ -8,7 +8,7 @@ describe('HelpdeskParamFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HelpdeskParamFormComponent ]
+      declarations: [ HelpdeskParamFormComponent ],
     })
     .compileComponents();
   }));

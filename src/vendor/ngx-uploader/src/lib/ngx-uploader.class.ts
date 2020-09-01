@@ -28,7 +28,7 @@ export class NgUploaderService {
     concurrency: number = Number.POSITIVE_INFINITY,
     contentTypes: string[] = ['*'],
     maxUploads: number = Number.POSITIVE_INFINITY,
-    maxFileSize: number = Number.POSITIVE_INFINITY
+    maxFileSize: number = Number.POSITIVE_INFINITY,
   ) {
     this.queue = [];
     this.serviceEvents = new EventEmitter<UploadOutput>();
@@ -40,7 +40,7 @@ export class NgUploaderService {
 
     this.uploadScheduler
       .pipe(
-        mergeMap(upload => this.startUpload(upload), concurrency)
+        mergeMap(upload => this.startUpload(upload), concurrency),
       )
       .subscribe(uploadOutput => this.serviceEvents.emit(uploadOutput));
   }
@@ -183,8 +183,8 @@ export class NgUploaderService {
               startTime: progressStartTime,
               endTime: null,
               eta: eta,
-              etaHuman: this.secondsToHuman(eta)
-            }
+              etaHuman: this.secondsToHuman(eta),
+            },
           };
 
           observer.next({ type: 'uploading', file: file });
@@ -209,8 +209,8 @@ export class NgUploaderService {
               startTime: progressStartTime,
               endTime: new Date().getTime(),
               eta: eta,
-              etaHuman: this.secondsToHuman(eta || 0)
-            }
+              etaHuman: this.secondsToHuman(eta || 0),
+            },
           };
 
           file.responseStatus = xhr.status;
@@ -319,12 +319,12 @@ export class NgUploaderService {
           startTime: null,
           endTime: null,
           eta: null,
-          etaHuman: null
-        }
+          etaHuman: null,
+        },
       },
       lastModifiedDate: new Date(file.lastModified),
       sub: undefined,
-      nativeFile: file
+      nativeFile: file,
     };
   }
 

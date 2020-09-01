@@ -1,8 +1,7 @@
-import { error } from 'jquery';
 import { Injectable } from '@angular/core';
 import {
   HttpClient, HttpResponse, HttpErrorResponse,
-  HttpInterceptor, HttpRequest, HttpHandler, HttpEvent
+  HttpInterceptor, HttpRequest, HttpHandler, HttpEvent,
 } from '@angular/common/http';
 import { NbAuthService, NbAuthToken } from '@nebular/auth';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';

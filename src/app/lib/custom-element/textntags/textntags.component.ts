@@ -44,10 +44,10 @@ export class TextNTagsComponent implements ControlValueAccessor, Validator, OnCh
     //       { id:2, name:'Daniel Radcliffe', 'img':'http://example.com/img2.jpg', 'type':'contact' },
     //       { id:3, name:'Daniel Nathans',   'img':'http://example.com/img3.jpg', 'type':'contact' }
     //     ];
-    
+
     //     query = query.toLowerCase();
     //     var found = _.filter(data, function(item) { return item.name.toLowerCase().indexOf(query) > -1; });
-    
+
     //    callback.call(this, found);
     //   }
     // });

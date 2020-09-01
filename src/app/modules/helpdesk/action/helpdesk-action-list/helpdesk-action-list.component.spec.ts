@@ -8,7 +8,7 @@ describe('HelpdeskActionListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HelpdeskActionListComponent ]
+      declarations: [ HelpdeskActionListComponent ],
     })
     .compileComponents();
   }));

@@ -17,7 +17,6 @@ import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales
 import { HttpErrorResponse } from '@angular/common/http';
 import { ContactModel } from '../../../../models/contact.model';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
-import { delay } from 'rxjs/operators';
 import { Select2SelectionObject } from '../../../../../vendor/ng2-select2/lib/ng2-select2.interface';
 
 @Component({

@@ -14,7 +14,6 @@ import { FormGroup } from '@angular/forms';
 import { FileModel } from '../../../../models/file.model';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { UnitModel } from '../../../../models/unit.model';
-import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 
 @Component({
   selector: 'ngx-product-list',

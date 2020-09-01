@@ -7,8 +7,6 @@ import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { IvoipService } from '../../ivoip-service';
 import { CallBlockFormComponent } from '../call-block-form/call-block-form.component';
-import { Template } from '@angular/compiler/src/render3/r3_ast';
-import { options } from '../../../sales/sales.module';
 
 @Component({
   selector: 'ngx-call-block-list',

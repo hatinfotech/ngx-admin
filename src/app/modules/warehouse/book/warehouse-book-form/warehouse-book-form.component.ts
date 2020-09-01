@@ -2,8 +2,7 @@ import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.mod
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { WarehouseBookModel, WarehouseModel, GoodsModel } from '../../../../models/warehouse.model';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';

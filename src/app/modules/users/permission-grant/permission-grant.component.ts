@@ -9,7 +9,6 @@ import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/for
 import { Subject } from 'rxjs';
 import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
 import { NbDialogService } from '@nebular/theme';
-import localeEn from '@angular/common/locales/en';
 
 @Component({
   selector: 'ngx-permission-grant',

@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
-import { WarehouseGoodsReceiptNoteModel, WarehouseBookModel, WarehouseModel } from '../../../../models/warehouse.model';
+import { WarehouseGoodsReceiptNoteModel, WarehouseModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService, NbGlobalLogicalPosition } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { WarehouseSimpleGoodsReceiptNoteFormComponent } from '../warehouse-simple-goods-receipt-note-form/warehouse-simple-goods-receipt-note-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { of as observableOf } from 'rxjs';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-list',
@@ -117,16 +115,16 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
         width: '5%',
         editable: true,
         onChange: (value, rowData: WarehouseGoodsReceiptNoteModel, instance) => {
-          this.apiService.putPromise<WarehouseModel[]>('/warehouse/warehouses', {id: [this.commonService.getObjectId(rowData.Warehouse)], bookkeeping: value, voucher: rowData.Code}, [{
+          this.apiService.putPromise<WarehouseModel[]>('/warehouse/warehouses', { id: [this.commonService.getObjectId(rowData.Warehouse)], bookkeeping: value, voucher: rowData.Code }, [{
             Code: this.commonService.getObjectId(rowData.Warehouse),
           }]).then(rs => {
             // console.log(rs);
             // this.refresh();
-            this.commonService.toastService.show(value ? this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook') : this.commonService.translateText('Warehouse.Book.voucherWasUnwroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'),{
+            this.commonService.toastService.show(value ? this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook') : this.commonService.translateText('Warehouse.Book.voucherWasUnwroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'), {
               status: value ? 'success' : 'warning',
             });
           }).catch(e => {
-            this.commonService.toastService.show(this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'),{
+            this.commonService.toastService.show(this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'), {
               status: 'danger',
             });
           });

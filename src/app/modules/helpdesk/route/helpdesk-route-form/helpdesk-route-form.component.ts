@@ -7,8 +7,6 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Subject } from 'rxjs';
-import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-helpdesk-route-form',

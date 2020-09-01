@@ -8,8 +8,6 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { ProductModel } from '../../../../models/product.model';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-sales-price-report-list',

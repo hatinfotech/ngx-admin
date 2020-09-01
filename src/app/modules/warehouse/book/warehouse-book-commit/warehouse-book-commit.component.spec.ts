@@ -8,7 +8,7 @@ describe('WarehouseBookCommitComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WarehouseBookCommitComponent ]
+      declarations: [ WarehouseBookCommitComponent ],
     })
     .compileComponents();
   }));

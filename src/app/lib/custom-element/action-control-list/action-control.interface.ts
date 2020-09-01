@@ -1,4 +1,3 @@
-import { Template } from '@angular/compiler/src/render3/r3_ast';
 import { Select2Option } from '../select2/select2.component';
 import { FormGroup } from '@angular/forms';
 

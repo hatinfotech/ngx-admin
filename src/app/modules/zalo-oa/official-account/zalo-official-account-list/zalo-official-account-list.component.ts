@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ZaloOaOfficialAccountModel } from '../../../../models/zalo-oa.model';
-import { ZaloOaFollowerFormComponent } from '../../follower/zalo-oa-follower-form/zalo-oa-follower-form.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -12,7 +11,6 @@ import { ZaloOfficialAccountFormComponent } from '../zalo-official-account-form/
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { Content } from '@angular/compiler/src/render3/r3_ast';
 
 @Component({
   selector: 'ngx-zalo-official-account-list',

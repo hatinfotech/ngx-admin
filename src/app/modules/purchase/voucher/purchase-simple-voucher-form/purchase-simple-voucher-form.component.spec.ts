@@ -8,7 +8,7 @@ describe('PurchaseSimpleVoucherFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PurchaseSimpleVoucherFormComponent ]
+      declarations: [ PurchaseSimpleVoucherFormComponent ],
     })
     .compileComponents();
   }));

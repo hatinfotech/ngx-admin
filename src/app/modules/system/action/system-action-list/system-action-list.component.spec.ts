@@ -8,7 +8,7 @@ describe('SystemActionListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SystemActionListComponent ]
+      declarations: [ SystemActionListComponent ],
     })
     .compileComponents();
   }));
