@@ -56,9 +56,9 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
     // Extend action control list
     this.actionButtonList.unshift({
       type: 'select2',
-      name: 'pbxdomain',
+      name: 'hosting',
       status: 'success',
-      label: 'Tạo',
+      label: 'Hosting',
       icon: 'plus',
       title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
       size: 'medium',

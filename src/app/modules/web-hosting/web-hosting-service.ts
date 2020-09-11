@@ -41,13 +41,17 @@ export class WebHostingService {
     private commonService: CommonService,
   ) {
     const oldActiveHosting = this.activeHosting;
-    this.activeHosting = Date.now().toString();
+    // this.activeHosting = Date.now().toString();
     this.apiService.get<WhHostingModel[]>('/web-hosting/hostings', {}, hostings => {
       this.hostingList = this.commonService.convertOptionList(hostings, 'Code', 'Host');
-      this.activeHosting = oldActiveHosting;
-      this.hostingList.forEach(hosting => {
+      // this.activeHosting = oldActiveHosting;
+
+      for (const hosting of this.hostingList) {
         this.hostingMap[hosting.Code] = hosting;
-      });
+        if (!this.activeHosting || this.activeHosting === 'null') {
+          this.activeHosting = hosting.Code;
+        }
+      }
       this.reloadHostingData(() => {
         this.readySubject.next(true);
       }, true);
