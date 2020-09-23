@@ -65,12 +65,15 @@ export class FileStoreFormComponent extends DataManagerFormComponent<FileStoreMo
   makeNewFormGroup(data?: FileStoreModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code_old: [''],
+      Type: [''],
       Code: ['', Validators.required],
       Name: ['', Validators.required],
-      Protocol: ['', Validators.required],
-      Host: ['', Validators.required],
-      Port: ['', Validators.required],
+      Protocol: [''],
+      Host: [''],
+      Port: [''],
       Path: ['', Validators.required],
+      DirPath: ['', Validators.required],
+      RemoteToken: [''],
     });
     if (data) {
       data['Code_old'] = data['Code'];

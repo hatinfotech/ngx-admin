@@ -133,12 +133,14 @@ export class DynamicLocaleId extends String {
           ,
           logout: {
             // ...
-            endpoint: '/user/logout',
+            // endpoint: '/user/logout',
+            endpoint: '',
             redirect: {
-              success: '/auth/login',
+              success: '/auth/logout',
               // success: null,
               failure: null, // stay on the same page
             },
+            requireValidToken: true,
           },
           register: {
             // ...

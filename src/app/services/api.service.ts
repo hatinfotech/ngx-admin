@@ -134,6 +134,9 @@ export class ApiService {
     if (token) {
       paramsStr += (paramsStr ? '&' : '') + 'token=' + token;
     }
+    if(/^http/i.test(path)) {
+        return `${path}?${paramsStr}`;
+    }
     return `${this.baseApiUrl}${path}?${paramsStr}`;
   }
 
@@ -388,6 +391,26 @@ export class ApiService {
     //     this.onUnauthorizied();
     //   }
     // });
+  }
+
+  deletePromise(enpoint: string, id: string | string[] | { [key: string]: string }) {
+    let apiUrl = '';
+    if(id === null) {
+      id = [];
+    }
+    if (Array.isArray(id)) {
+      const params = {};
+      id.forEach((item, index) => {
+        params['id' + index] = encodeURIComponent(item);
+      });
+      apiUrl = this.buildApiUrl(`${enpoint}`, params);
+    } else if (typeof id === 'object') {
+      apiUrl = this.buildApiUrl(enpoint, id);
+    }
+    return this._http.delete(apiUrl)
+      .pipe(retry(0), take(1), catchError(e => {
+        return this.handleError(e, id['silent']);
+      })).toPromise();
   }
 
   getEmployees(): Observable<EmployeeModel[]> {

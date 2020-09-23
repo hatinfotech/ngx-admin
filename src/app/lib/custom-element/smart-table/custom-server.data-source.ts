@@ -31,6 +31,10 @@ export class CustomServerDataSource<M> extends LocalDataSource {
     }
   }
 
+  setUrl(url: string) {
+    this.url = url;
+  }
+
   count(): number {
     return this.lastRequestCount;
   }

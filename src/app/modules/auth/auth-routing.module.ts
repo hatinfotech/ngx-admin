@@ -9,10 +9,10 @@ const routes: Routes = [{
   path: '',
   component: AuthComponent,
   children: [
-    // {
-    //   path: '',
-    //   component: NbAuthComponent,  // <---
-    // },
+    {
+      path: '',
+      component: LoginComponent,  // <---
+    },
     // {
     //   path: 'auth',
     //   loadChildren: './auth/auth.module#AuthModule',

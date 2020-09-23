@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
-import { FileModel } from '../../../../models/file.model';
+import { FileModel, FileStoreModel } from '../../../../models/file.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -9,6 +9,7 @@ import { FileFormComponent } from '../file-form/file-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { SmartTableThumbnailComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
+import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 
 @Component({
   selector: 'ngx-file-list',
@@ -23,6 +24,21 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
   idKey = 'Id';
 
   @ViewChild('uploadButton') uploadButton: ElementRef;
+
+
+  fileStoreList: FileStoreModel[] = [];
+  currentFileStore: FileStoreModel;
+  fileStoreListConfig = {
+    placeholder: 'Chọn hosting...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
 
   constructor(
     public apiService: ApiService,
@@ -57,6 +73,41 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
     this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
     this.humanizeBytes = humanizeBytes;
     /** End ngx-uploader */
+  }
+
+  async init() {
+    const result = await super.init();
+    this.fileStoreList = await this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Name: 'asc', select: 'id=>Code,text=>Name,Code=>Code,Name=>Name,Path=>Path' });
+    this.actionButtonList.unshift({
+      type: 'select2',
+      name: 'fileStore',
+      status: 'success',
+      label: 'File Store',
+      icon: 'plus',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      size: 'medium',
+      select2: { data: this.fileStoreList, option: this.fileStoreListConfig },
+      value: () => '',
+      change: (value: FileStoreModel, option: any) => {
+        this.currentFileStore = value;
+        if (this.currentFileStore && this.currentFileStore.Path) {
+          this.apiPath = this.currentFileStore.Path + '/v1/file/files';
+          (this.source as CustomServerDataSource<FileModel>).setUrl(this.apiPath);
+        } else {
+          this.apiPath = '/v1/file/files';
+          (this.source as CustomServerDataSource<FileModel>).setUrl(this.apiPath);
+        }
+        this.refresh();
+      },
+      disabled: () => {
+        return false;
+      },
+      click: () => {
+        this.gotoForm();
+        return false;
+      },
+    });
+    return result;
   }
 
   editing = {};
@@ -147,8 +198,8 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
     // Set DataSource: prepareData
     source.prepareData = (data: FileModel[]) => {
       data.forEach(item => {
-        item['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-        item['DownloadLink'] += '?token=' + this.apiService.getAccessToken();
+        // item['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+        // item['DownloadLink'] += '?token=' + this.apiService.getAccessToken();
       });
       return data;
     };
@@ -216,7 +267,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
         // uncomment this if you want to auto upload files when added
         const event: UploadInput = {
           type: 'uploadAll',
-          url: this.apiService.buildApiUrl('/file/files'),
+          url: this.apiService.buildApiUrl(this.apiPath),
           method: 'POST',
           data: { foo: 'bar' },
         };

@@ -7,6 +7,10 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FileStoreFormComponent } from '../file-store-form/file-store-form.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { ZaloOaOfficialAccountModel } from '../../../../models/zalo-oa.model';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-file-store-list',
@@ -20,17 +24,6 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
   apiPath = '/file/file-stores';
   idKey = 'Code';
   formDialog = FileStoreFormComponent;
-
-  constructor(
-    public apiService: ApiService,
-    public router: Router,
-    public commonService: CommonService,
-    public dialogService: NbDialogService,
-    public toastService: NbToastrService,
-    public _http: HttpClient,
-  ) {
-    super(apiService, router, commonService, dialogService, toastService);
-  }
 
   editing = {};
   rows = [];
@@ -98,8 +91,48 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
       //       });
       //     },
       //   },
+      Token: {
+        title: this.commonService.translateText('Common.token'),
+        type: 'custom',
+        width: '10%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'unlock';
+          instance.display = true;
+          instance.status = 'danger';
+          instance.title = this.commonService.translateText('ZaloOa.Webhook.token');
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((fileStore: FileStoreModel) => {
+            this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { 'generateToken': true, id: [fileStore.Code] }).then(token => {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: this.commonService.translateText('File.FileStore.token'),
+                  content: token[0].Token,
+                  actions: [
+                    {
+                      label: this.commonService.translateText('Common.close'),
+                      status: 'danger',
+                    },
+                  ],
+                },
+              });
+            });
+          });
+        },
+      },
     },
   });
+
+  constructor(
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public _http: HttpClient,
+  ) {
+    super(apiService, router, commonService, dialogService, toastService);
+  }
 
   ngOnInit() {
     this.restrict();

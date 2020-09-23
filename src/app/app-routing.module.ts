@@ -52,37 +52,37 @@ const routes: Routes = [
   //   loadChildren: () => import('./modules/mini-erp.module')
   //     .then(m => m.MiniErpModule),
   // },
-  {
-    path: 'auth',
-    component: NbAuthComponent,
-    children: [
-      {
-        path: '',
-        component: NbLoginComponent,
-      },
-      // {
-      //   path: 'login',
-      //   component: NbLoginComponent,
-      //   // component: LoginComponent,
-      // },
-      // {
-      //   path: 'register',
-      //   component: NbRegisterComponent,
-      // },
-      // {
-      //   path: 'logout',
-      //   component: NbLogoutComponent,
-      // },
-      // {
-      //   path: 'request-password',
-      //   component: NbRequestPasswordComponent,
-      // },
-      // {
-      //   path: 'reset-password',
-      //   component: NbResetPasswordComponent,
-      // },
-    ],
-  },
+  // {
+  //   path: 'auth',
+  //   component: NbAuthComponent,
+  //   children: [
+  //     {
+  //       path: '',
+  //       component: NbLoginComponent,
+  //     },
+  //     // {
+  //     //   path: 'login',
+  //     //   component: NbLoginComponent,
+  //     //   // component: LoginComponent,
+  //     // },
+  //     // {
+  //     //   path: 'register',
+  //     //   component: NbRegisterComponent,
+  //     // },
+  //     // {
+  //     //   path: 'logout',
+  //     //   component: NbLogoutComponent,
+  //     // },
+  //     // {
+  //     //   path: 'request-password',
+  //     //   component: NbRequestPasswordComponent,
+  //     // },
+  //     // {
+  //     //   path: 'reset-password',
+  //     //   component: NbResetPasswordComponent,
+  //     // },
+  //   ],
+  // },
   {
     path: '',
     redirectTo: '/dashboard',

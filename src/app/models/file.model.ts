@@ -19,12 +19,16 @@ export class FileStoreModel {
 
   Id?: string;
   Code?: string;
+  Type?: string;
   Name?: string;
   Protocol?: string;
   Host?: string;
   Port?: number;
   Path?: string;
+  DirPath?: string;
   requestCookieUrl?: string;
+  Token?: string;
+  RemoteToken?: string;
 
   constructor() { }
 
