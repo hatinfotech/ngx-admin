@@ -39,52 +39,48 @@
   </div>
 </template>
 <script>
-  return {
-    data: function () {
-      return {
-        items: [
-          {
-            picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg',
-            song: 'Yellow Submarine',
-            author: 'Beatles',
-          },
-          {
-            picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg',
-            song: 'Don\'t Stop Me Now',
-            author: 'Queen',
-          },
-          {
-            picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg',
-            song: 'Billie Jean',
-            author: 'Michael Jackson',
-          },
-        ],
-        songs: ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'],
-        authors: ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers']
-      }
-    },
-    methods: {
-      loadMore: function (e, done) {
-        var self = this;
-        var $ = self.$$;
+    return {
+        data: function() {
+            return {
+                items: [{
+                    picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg',
+                    song: 'Yellow Submarine',
+                    author: 'Beatles',
+                }, {
+                    picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg',
+                    song: 'Don\'t Stop Me Now',
+                    author: 'Queen',
+                }, {
+                    picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg',
+                    song: 'Billie Jean',
+                    author: 'Michael Jackson',
+                }, ],
+                songs: ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'],
+                authors: ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers']
+            }
+        },
+        methods: {
+            loadMore: function(e, done) {
+                var self = this;
+                var $ = self.$$;
 
-        setTimeout(function () {
-          // Add new item
-          self.items.push({
-            picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-' + (Math.floor(Math.random() * 10) + 1) + '.jpg',
-            song: self.songs[Math.floor(Math.random() * self.songs.length)],
-            author: self.authors[Math.floor(Math.random() * self.authors.length)],
-          })
+                setTimeout(function() {
+                    // Add new item
+                    self.items.push({
+                        picURL: 'https://cdn.framework7.io/placeholder/abstract-88x88-' + (Math.floor(Math.random() * 10) + 1) + '.jpg',
+                        song: self.songs[Math.floor(Math.random() * self.songs.length)],
+                        author: self.authors[Math.floor(Math.random() * self.authors.length)],
+                    })
 
-          // Update state to rerender
-          self.$setState({
-            items: self.items,
-          });
+                    // Update state to rerender
+                    self.$setState({
+                        items: self.items,
+                    });
 
-          // Done
-          done();
-        }, 1000);
-      }
+                    // Done
+                    done();
+                }, 1000);
+            }
+        }
     }
-  }
 </script>
