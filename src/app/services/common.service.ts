@@ -33,6 +33,7 @@ export class CommonService {
     // 'ECommerceComponent',
     // 'DashboardComponent',
   ];
+  public env = environment;
   private previousUrl = null;
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
 
@@ -452,6 +453,13 @@ export class CommonService {
 
   getBaseUrl() {
     return `${window.location.origin}/${environment.basePath}`;
+  }
+
+  getApiUrl() {
+    if(/^http/i.test(this.env.api.baseUrl)) {
+      return this.env.api.baseUrl;
+    } 
+    return window.location.origin + this.env.api.baseUrl;
   }
 
   textTitleCase(text: string): string {

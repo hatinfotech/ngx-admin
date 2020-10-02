@@ -42,6 +42,7 @@ import { CustomElementModule } from '../lib/custom-element/custom-element.module
 import { VirtualPhoneModule } from '../modules/virtual-phone/virtual-phone.module';
 import { MobileAppModule } from '../modules/mobile-app/mobile-app.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SmartBotModule } from '../modules/smart-bot/smart-bot.module';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -60,6 +61,7 @@ const NB_MODULES = [
   VirtualPhoneModule,
   MobileAppModule,
   TranslateModule,
+  SmartBotModule,
 ];
 const COMPONENTS = [
   HeaderComponent,
