@@ -16,7 +16,7 @@ import { BaseComponent } from '../lib/base-component';
 import { LoginInfoModel } from '../models/login-info.model';
 import { TranslateService } from '@ngx-translate/core';
 import { LocaleConfigModel } from '../models/system.model';
-import { environment } from '../../environments/environment.hmr';
+import { environment } from '../../environments/environment';
 import { MySocket } from '../lib/nam-socket/my-socket';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 

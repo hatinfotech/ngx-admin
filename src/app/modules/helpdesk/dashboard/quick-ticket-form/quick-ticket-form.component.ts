@@ -420,7 +420,8 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     if (this.id[0]) {
       this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [this.id[0]], select: 'ChatRoom=>ChatRoom' }).then(tickets => {
         if (tickets && tickets.length > 0) {
-          this.mobileAppService.request('open-chat-room', tickets[0]['ChatRoom']);
+          // this.mobileAppService.request('open-chat-room', tickets[0]['ChatRoom']);
+          this.mobileAppService.openChatRoom({ ChatRoom: tickets[0]['ChatRoom'], silient: true });
         }
       });
 

@@ -30,6 +30,6 @@ export const environment = {
   localApp: {
     // enabled: true, // prod
     enabled: false,
-    url: '/app/ITLocal/index.html',
+    url: 'http://localhost:8100',
   },
 };

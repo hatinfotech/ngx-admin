@@ -57,6 +57,6 @@ export const environment = {
   },
   localApp: {
     enabled: false,
-    url: '/app/ITLocal/index.html',
+    url: '/app/Smart-BOT/',
   },
 };

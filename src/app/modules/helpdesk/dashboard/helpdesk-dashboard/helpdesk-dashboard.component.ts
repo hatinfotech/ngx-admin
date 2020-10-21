@@ -556,7 +556,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
             if (newTickets[0] && newTickets[0].ChatRoom) {
               // Attach F7ChatRoom in to quick form component
               this.openChatRoom(newTickets[0].ChatRoom, true).then(f7ChatRoom => {
-                form.f7ChatRoom = f7ChatRoom;
+                // form.f7ChatRoom = f7ChatRoom; // todo: replace by smart-bot
                 // setTimeout(() => {
                 //   f7ChatRoom.sendMessage({ Text: form.description });
                 // }, 5000);
@@ -657,19 +657,20 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  phoneCall(ticket: HelpdeskTicketModel, phone: string, name: string) {
+  async phoneCall(ticket: HelpdeskTicketModel, phone: string, name: string) {
     if (ticket && ticket.Code) {
-      const callSession = this.mobileAppService.phoneCall(phone, name);
-      callSession.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(state => {
-        if (state === 'progress') {
-          this.commonService.takeUntil('add_call_sessin_to_ticket', 3000).then(() => {
-            if (callSession && callSession.id) {
-              this.apiService.postPromise<HelpdeskTicketCallingSessionModel[]>('/helpdesk/ticketCallingSessions', {}, [{ Ticket: ticket.Code, CallSession: callSession.id, State: 'CALLOUT' }]).then(rs => {
-                console.log(rs);
-              });
-            }
-          });
-        }
+      this.mobileAppService.phoneCall(phone, name).then(callSessionId => {
+        // callSession.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(state => {
+        this.commonService.takeUntil('add_call_sessin_to_ticket', 3000).then(() => {
+          if (callSessionId) {
+            this.apiService.postPromise<HelpdeskTicketCallingSessionModel[]>('/helpdesk/ticketCallingSessions', {}, [{ Ticket: ticket.Code, CallSession: callSessionId, State: 'CALLOUT' }]).then(rs => {
+              console.log(rs);
+            });
+          }
+        });
+        // });
+      }).catch(e => {
+        console.error(e);
       });
     } else {
       console.error('Ticket was not provided');

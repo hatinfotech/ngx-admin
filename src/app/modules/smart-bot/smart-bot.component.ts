@@ -5,6 +5,7 @@ import { filter, take } from 'rxjs/operators';
 import { FrameSocket } from '../../lib/frame-socket/frame-socket';
 import { ApiService } from '../../services/api.service';
 import { CommonService } from '../../services/common.service';
+import { MobileAppService } from '../mobile-app/mobile-app.service';
 
 @Component({
   selector: 'ngx-smart-bot',
@@ -13,7 +14,7 @@ import { CommonService } from '../../services/common.service';
 })
 export class SmartBotComponent implements OnInit, AfterViewInit {
 
-  frameSource = 'http://localhost:8100';
+  frameSource = this.commonService.env.localApp.url;
   frameSafeSource: SafeResourceUrl;
 
   @ViewChild('frameRef') frameRef: ElementRef;
@@ -26,6 +27,7 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
     public apiService: ApiService,
     public commonService: CommonService,
     public authService: NbAuthService,
+    public mobileService: MobileAppService,
   ) { }
 
   ngOnInit(): void {
@@ -33,14 +35,8 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // window.onmessage = function (e) {
-    //   console.debug(e);
-    // };
-    // setTimeout(() => {
-    //   this.frame = this.frameRef.nativeElement;
-    //   this.frame.contentWindow.postMessage({ type: 'request', data: { command: 'frame-prepare' } }, '*');
-    // }, 20000);
 
+    /** Prepare mobile app */
     this.frame = this.frameRef.nativeElement;
     this.frameSocket = new FrameSocket(this.frame.contentWindow);
     this.frameSocket.on<boolean>('ready').pipe(filter(request => request.data), take(1)).subscribe(request => {
@@ -48,6 +44,7 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
         console.debug(rsp);
       });
     });
+    this.mobileService.frameSocket = this.frameSocket;
 
     this.authService.onAuthenticationChange().subscribe(status => {
       if (!status) {

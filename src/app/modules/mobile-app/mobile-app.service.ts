@@ -4,6 +4,7 @@ import { MobileAppComponent } from './mobile-app.component';
 import { CallingSession } from './phone-manager/calling-session';
 import { DialpadComponent } from './dialpad/dialpad.component';
 import { Track } from '../../@core/utils/player.service';
+import { FrameSocket } from '../../lib/frame-socket/frame-socket';
 
 export interface CallState {
   state: string;
@@ -22,6 +23,7 @@ export class MobileAppService {
 
   requestOpenChatRoomSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   requestOpenChatRoom$: Observable<string> = this.requestOpenChatRoomSubject.asObservable();
+  frameSocket: FrameSocket;
 
   public mobileApp: MobileAppComponent;
   public callScreen: DialpadComponent;
@@ -70,9 +72,16 @@ export class MobileAppService {
   }
 
   async openChatRoom(params: { ChatRoom: string, [key: string]: any }) {
-    if (this.mobileApp) {
-      return this.mobileApp.openChatRoom(params);
+    if(!this.frameSocket) {
+      throw new Error('Frame socket was not init');
     }
+    this.frameSocket.emit('open-chat-room', {chatRoom: params.ChatRoom, type: 'HELPDESK'}).then(rsp => {
+      console.debug(rsp);
+    });
+    return true;
+    // if (this.mobileApp) {
+      // return this.mobileApp.openChatRoom(params);
+    // }11111
     throw Error('Mobile app was not registered !!!');
   }
 
@@ -80,8 +89,16 @@ export class MobileAppService {
     this.mobileApp.switchScreen(screen);
   }
 
-  phoneCall(phone: string, name: string): CallingSession {
-    return this.callScreen.call(phone, name);
+  /**
+   * Send make phone call request to mobile app
+   * then return promise with CallSession.id as string
+   */
+  async phoneCall(phone: string, name: string): Promise<string> {
+    // return this.callScreen.call(phone, name);
+    if(!this.frameSocket) {
+      throw new Error('Frame socket was not init');
+    }
+    return this.frameSocket.emit<string>('phone-call', {phonenumber: phone, name: name});
   }
 
   playMedia(tracks: Track[]) {
