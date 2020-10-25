@@ -54,6 +54,12 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
       }
     });
 
+    this.authService.onTokenChange().subscribe(token => {
+      this.frameSocket.emit('set-token', { ...token.getPayload(), api_url: this.commonService.getApiUrl() }).then(rsp => {
+        console.debug(rsp);
+      });
+    })
+
   }
 
 }
