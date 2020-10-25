@@ -21,6 +21,33 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
   apiPath = '/helpdesk/tickets';
   baseFormUrl = '/helpdesk/ticket-pms/form';
 
+  pmsList: {id?: string, text?: string, [key: string]: any}[] = [
+    {
+      id: 'ITHELPDESK',
+      text: 'Hỗ trợ IT'
+    },
+    {
+      id: 'SALESHELPDESK',
+      text: 'Hỗ trợ bán hàng'
+    },
+    {
+      id: 'ITCOORDINATORS',
+      text: 'Điều phối IT'
+    },
+    {
+      id: 'SALESCOORDINATORS',
+      text: 'Điều phối bán hàng'
+    },
+    {
+      id: 'CUSTOMER',
+      text: 'Khách hàng'
+    },
+    {
+      id: 'HELPDESKCREATOR',
+      text: 'Người tạo yêu cầu'
+    },
+  ];
+
   @Input() inputResource: HelpdeskTicketModel;
 
   select2OptionForUser = {
@@ -92,20 +119,20 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
     },
   };
 
-  pmsList: { id: string, text: string, [key: string]: any }[] = [
-    {
-      id: 'VIEW',
-      text: this.commonService.translateText('Common.Pms.view'),
-    },
-    {
-      id: 'EDIT',
-      text: this.commonService.translateText('Common.Pms.edit'),
-    },
-    {
-      id: 'MANAGE',
-      text: this.commonService.translateText('Common.Pms.manage'),
-    },
-  ];
+  // pmsList: { id: string, text: string, [key: string]: any }[] = [
+  //   {
+  //     id: 'VIEW',
+  //     text: this.commonService.translateText('Common.Pms.view'),
+  //   },
+  //   {
+  //     id: 'EDIT',
+  //     text: this.commonService.translateText('Common.Pms.edit'),
+  //   },
+  //   {
+  //     id: 'MANAGE',
+  //     text: this.commonService.translateText('Common.Pms.manage'),
+  //   },
+  // ];
 
   constructor(
     public activeRoute: ActivatedRoute,
