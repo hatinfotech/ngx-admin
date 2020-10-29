@@ -1,101 +1,94 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
-  (keydown.enter)="onControlEnter($event)" class="popup">
-  <div formArrayName="array">
-    <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup">
-        <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
-            [title]="title ? title : ('Common.share' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
-            [controls]="actionButtonList"></ngx-card-header>
-        </nb-card-header>
-        <nb-card-body>
-          <div [formGroup]="formItem">
-            <div class="row">
-              <input type="hidden" formControlName="Code">
-              <div class="col-sm-12">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
-                  <label class="label"><span class="valid">Mô tả</span><span class="invalid">Mô tả là bắt buộc
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="popup">
+    <div formArrayName="array">
+        <div *ngFor="let formItem of array.controls; let i = index">
+            <nb-card class="small-header popup">
+                <nb-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Common.share' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+                        [controls]="actionButtonList"></ngx-card-header>
+                </nb-card-header>
+                <nb-card-body>
+                    <div [formGroup]="formItem">
+                        <div class="row">
+                            <input type="hidden" formControlName="Code">
+                            <div class="col-sm-12">
+                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
+                                    <label class="label"><span class="valid">Mô tả</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span>
                     <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Description')"
                       pack="eva" icon="copy-outline">
                     </nb-icon>
                   </label>
-                  <textarea type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả" size="5"></textarea>
-                </div>
-              </div>
+                                    <textarea type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả" size="5"></textarea>
+                                </div>
+                            </div>
 
-              <div class="col-sm-12">
+                            <div class="col-sm-12">
 
-                <!-- Detail form -->
-                <!-- <hr> -->
-                <div class="row" style="align-items: flex-end;">
-                  <div class="col-sm-3 label">{{'Common.user' | translate | headtitlecase}}</div>
-                  <div class="col-sm-4 label">{{'Common.userGroup' | translate | headtitlecase}}</div>
-                  <div class="col-sm-4 label">{{'Common.permission' | translate | headtitlecase}}</div>
-                  <div class="col-sm-1" style="text-align: right;">
-                    <nb-icon pack="eva" icon="plus-circle-outline" (click)="addPermissionFormGroup(formItem)" status="success"
-                      style="margin-right: 0.8rem;"></nb-icon>
-                  </div>
-                </div>
+                                <!-- Detail form -->
+                                <!-- <hr> -->
+                                <div class="row" style="align-items: flex-end;">
+                                    <div class="col-sm-4 label">{{'Common.userGroup' | translate | headtitlecase}}</div>
+                                    <div class="col-sm-3 label">{{'Common.user' | translate | headtitlecase}}</div>
+                                    <div class="col-sm-4 label">{{'Common.permission' | translate | headtitlecase}}</div>
+                                    <div class="col-sm-1" style="text-align: right;">
+                                        <nb-icon pack="eva" icon="plus-circle-outline" (click)="addPermissionFormGroup(formItem)" status="success" style="margin-right: 0.8rem;"></nb-icon>
+                                    </div>
+                                </div>
 
-                <div formArrayName="Permissions" class="form-details" [sortablejs]="getPermissions(formItem)"
-                  [sortablejsOptions]="{ handle: '.sorting-handle' }">
-                  <!-- <div formArrayName="Details" class="form-details"> -->
-                  <hr>
-                  <div class="form-detail-item"
-                    *ngFor="let permission of getPermissions(formItem).controls; let ic=index" [formGroup]="permission">
-                    <input type="hidden" formControlName="Id">
+                                <div formArrayName="Permissions" class="form-details" [sortablejs]="getPermissions(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                                    <!-- <div formArrayName="Details" class="form-details"> -->
+                                    <hr>
+                                    <div class="form-detail-item" *ngFor="let permission of getPermissions(formItem).controls; let ic=index" [formGroup]="permission">
+                                        <input type="hidden" formControlName="Id">
 
-                    <div class="row">
-                      <div class="col-md-3 col-sm-8 col-xs-8">
-                        <div class="form-group">
-                          <label class="label">{{'Common.user' | translate | headtitlecase}}</label>
-                          <ngx-select2 formControlName="User" [select2Option]="select2OptionForUser">
-                          </ngx-select2>
-                        </div>
-                      </div>
-                      <div class="col-md-4 col-sm-8 col-xs-8">
-                        <div class="form-group">
-                          <label class="label">{{'Common.group' | translate | headtitlecase}}</label>
-                          <ngx-select2 formControlName="Group" [select2Option]="select2OptionForGroup">
-                          </ngx-select2>
-                        </div>
-                      </div>
-                      <div class="col-md-4 col-sm-4 col-xs-4">
-                        <div class="form-group">
-                          <label class="label">{{'Common.permission' | translate | headtitlecase}}</label>
-                          <ngx-select2 formControlName="Pms" [select2Option]="select2OptionForPms" [data]="pmsList">
-                          </ngx-select2>
-                        </div>
-                      </div>
-                      <div class="col-sm-1">
-                        <div class="form-group">
-                          <label class="label">CM</label>
-                          <button nbButton status="danger" hero size="medium"
-                            (click)="removePermissionGroup(formItem, permission, ic)" style="margin-bottom: 3px; float: right;">
+                                        <div class="row">
+                                            <div class="col-md-4 col-sm-8 col-xs-8">
+                                                <div class="form-group">
+                                                    <label class="label">{{'Common.group' | translate | headtitlecase}}</label>
+                                                    <ngx-select2 formControlName="Group" [select2Option]="select2OptionForGroup">
+                                                    </ngx-select2>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-8 col-xs-8">
+                                                <div class="form-group">
+                                                    <label class="label">{{'Common.user' | translate | headtitlecase}}</label>
+                                                    <ngx-select2 formControlName="User" [select2Option]="select2OptionForUser">
+                                                    </ngx-select2>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                                <div class="form-group">
+                                                    <label class="label">{{'Common.permission' | translate | headtitlecase}}</label>
+                                                    <ngx-select2 formControlName="Roles" [select2Option]="select2OptionForPms" [data]="pmsList">
+                                                    </ngx-select2>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    <label class="label">CM</label>
+                                                    <button nbButton status="danger" hero size="medium" (click)="removePermissionGroup(formItem, permission, ic)" style="margin-bottom: 3px; float: right;">
                             <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                           </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Detail form -->
+                            </div>
+
                         </div>
-                      </div>
+
                     </div>
-                  </div>
-                </div>
-                <!-- End Detail form -->
-              </div>
+                </nb-card-body>
+                <nb-card-footer>
+                    <div class="buttons-row" style="text-align: right;">
+                        <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+                        <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+                    </div>
+                </nb-card-footer>
+            </nb-card>
 
-            </div>
-
-          </div>
-        </nb-card-body>
-        <nb-card-footer>
-          <div class="buttons-row" style="text-align: right;">
-            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
-              (click)="saveAndClose()">Lưu & Đóng</button>
-            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
-          </div>
-        </nb-card-footer>
-      </nb-card>
-
+        </div>
     </div>
-  </div>
 </form>

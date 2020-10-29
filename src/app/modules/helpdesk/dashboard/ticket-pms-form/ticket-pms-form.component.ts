@@ -220,7 +220,7 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
       Id: [''],
       Group: [''],
       User: [''],
-      Pms: [''],
+      Roles: [''],
     });
 
     if (data) {
