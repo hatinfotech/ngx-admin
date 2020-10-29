@@ -166,6 +166,8 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
   /** Execute api get */
   executeGet(params: any, success: (resources: HelpdeskTicketModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includePermissions'] = true;
+    params['sort_Group'] = 'desc';
+    params['sort_User'] = 'acc';
     super.executeGet(params, success, error);
   }
 
