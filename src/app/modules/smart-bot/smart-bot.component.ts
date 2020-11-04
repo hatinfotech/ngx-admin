@@ -46,6 +46,14 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
     });
     this.mobileService.frameSocket = this.frameSocket;
 
+    this.frameSocket.on('refresh-token').subscribe(request => {
+      console.log('smart-bot send request refresh token');
+      this.authService.refreshToken('email', { token: this.apiService.token }).subscribe((authResult) => {
+        console.log('smart-bot callback  refresh token');
+        request.callback('callback', authResult && authResult.getToken().getPayload());
+      });
+    });
+
     this.authService.onAuthenticationChange().subscribe(status => {
       if (!status) {
         this.frameSocket.emit('remove-token', {}).then(rsp => {
