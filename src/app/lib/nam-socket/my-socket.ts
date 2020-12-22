@@ -43,6 +43,7 @@ export class MySocket {
   onDisconnect$ = this.onDisconnectSubject.asObservable();
 
   private events: { [key: string]: Subscriber<any>[] } = {};
+  public socketServerId$ = new BehaviorSubject<string>(null);
 
   /** Context where sokcet using */
   protected context: IMySocketContext;

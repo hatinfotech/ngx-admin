@@ -3,6 +3,9 @@ import { Component, OnInit, ChangeDetectorRef, Inject, OnDestroy, Input, AfterVi
 import { NbLoginComponent, NbAuthService, NB_AUTH_OPTIONS, NbAuthResult } from '@nebular/auth';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { QRCode, ErrorCorrectLevel, QRNumber, QRAlphaNum, QR8BitByte, QRKanji } from 'qrcode-generator-ts/js';
+import { CommonService } from '../../../services/common.service';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'ngx-login-dialog',
@@ -11,11 +14,14 @@ import { Subject } from 'rxjs';
 })
 export class LoginDialogComponent extends NbLoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @Input() onSuccess?: (redirect: string) => void;
+  @Input() onSuccess?: (redirect?: string) => void;
   @Input() allowBack?: boolean = true;
 
   protected destroy$: Subject<void> = new Subject<void>();
   static instances: LoginDialogComponent[] = [];
+
+  qrCodeImgData: string;
+  isLoginByApp: boolean = false
 
   constructor(
     service: NbAuthService,
@@ -23,9 +29,65 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
     cd: ChangeDetectorRef,
     public router: Router,
     public ref: NbDialogRef<LoginDialogComponent>,
+    public commonService: CommonService,
+    public apiService: ApiService,
+    public authService: NbAuthService,
   ) {
     super(service, options, cd, router);
     LoginDialogComponent.instances.push(this);
+    this.commonService.getMainSocket().then(mainSocket => {
+      mainSocket.socketServerId$.subscribe(async socketServerId => {
+        if (socketServerId) {
+          try {
+            const qr = new QRCode();
+            qr.setTypeNumber(3);
+            qr.setErrorCorrectLevel(ErrorCorrectLevel.M);
+            qr.addData('SCAN2LOGIN|' + socketServerId); // Alphabet and Number
+            qr.make();
+            this.qrCodeImgData = qr.toDataURL(20, 0);
+            await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      });
+
+      // console.log('main socket service id : ' + mainSocket.socketServerId$.getValue());
+      mainSocket.on<{ refresh_token: string, access_token: string }>('login-by-other-device').subscribe((request) => {
+        // Set token to local store
+        console.log(request);
+        // const redirect = result.getRedirect();
+        const refreshToken = request.data && request.data.refresh_token;
+        const accessToken = request.data && request.data.access_token;
+        if (refreshToken) {
+          localStorage.setItem('auth_app_token', JSON.stringify({
+            name: "nb:auth:oauth2:jwt:token",
+            ownerStrategyName: "email",
+            createdAt: Date.now(),
+            value: '{"access_token":"' + accessToken + '","refresh_token":"' + refreshToken + '"}',
+          }));
+          localStorage.setItem('api_access_token', accessToken);
+          localStorage.setItem('api_refresh_token', refreshToken);
+          this.apiService.refreshToken(() => {
+            console.log('refresh token success');
+            // if (this.onSuccess) {
+            //   setTimeout(() => {
+            //     this.onSuccess(null);
+            //   }, this.redirectDelay);
+            // }
+            // setTimeout(() => {
+            //   this.close();
+            // }, this.redirectDelay);
+            window.location.href = '/probox-core';
+          });
+
+          // reply response
+          request.callback(true);
+        } else {
+          request.callback(false);
+        }
+      });
+    });
   }
 
   ngOnInit() { }

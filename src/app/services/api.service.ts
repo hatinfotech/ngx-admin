@@ -86,11 +86,11 @@ export class ApiService {
   }
 
   setAccessToken(token: string) {
-    localStorage.setItem('api_access_token', token);
+    localStorage.setItem('api_access_token', token || '');
   }
 
   setRefreshToken(token: string) {
-    localStorage.setItem('api_refresh_token', token);
+    localStorage.setItem('api_refresh_token', token || '');
   }
 
   getAccessToken(): string {
@@ -629,7 +629,7 @@ export class ApiInterceptor implements HttpInterceptor {
       // console.log('Refresh token in progress');
       return this.refreshTokenSubject
         .pipe(filter(result => result === true),
-          take(1), switchMap(() => this.continueRequest(req, next, this.apiService.token.access_token)));
+          take(1), switchMap(() => this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token)));
     }
 
     this.refreshTokenInProgress = true;
@@ -642,7 +642,7 @@ export class ApiInterceptor implements HttpInterceptor {
         this.apiService.setToken(authResult.getToken());
         this.refreshTokenSubject.next(true);
         // console.log('Refresh token success');
-        return this.continueRequest(req, next, this.apiService.token.access_token);
+        return this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token);
       }
       this.apiService.onUnauthorizied();
       return throwError('AutRefresh token fail');
@@ -656,7 +656,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
   continueRequest(req: HttpRequest<any>, next: HttpHandler, accessToken: string) {
     return next.handle(req.clone({
-      url: req.url.replace(/token=([^\/=\?&]+)/, `token=${accessToken}`),
+      url: accessToken ? req.url.replace(/token=([^\/=\?&]+)/, `token=${accessToken}`) : req.url,
     }));
   }
 }

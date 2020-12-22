@@ -3,6 +3,7 @@ import { NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../services/common.service';
 import { Router } from '@angular/router';
 import { LoginDialogComponent } from './login-dialog.component';
+import { ApiToken } from '../../../services/api.service';
 
 @Component({
   selector: 'ngx-login',
@@ -27,7 +28,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (LoginDialogComponent.instances.length === 0) {
       this.commonService.openDialog(LoginDialogComponent, {
         context: {
-          onSuccess: (redirect: string) => {
+          onSuccess: (redirect?: string) => {
             this.showBackground = false;
             this.goback(redirect);
           },

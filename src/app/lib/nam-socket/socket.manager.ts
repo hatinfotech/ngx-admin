@@ -25,7 +25,7 @@ export class SocketManager {
   ) {
     // this.initIoConnection();
     if (!socketServerUri) {
-      this.socketServerUri = this.commonService.mainSocketInfo.url;
+      this.socketServerUri = this.commonService.mainSocketInfo$.getValue().url;
     }
   }
 

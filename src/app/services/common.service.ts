@@ -19,6 +19,7 @@ import { LocaleConfigModel } from '../models/system.model';
 import { environment } from '../../environments/environment';
 import { MySocket } from '../lib/nam-socket/my-socket';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { filter, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -122,7 +123,7 @@ export class CommonService {
 
   loginInfo$ = new BehaviorSubject<LoginInfoModel>(null);
   private mainSocket: MySocket;
-  mainSocketInfo: { protocol?: string, domain: string; port: number; url?: string };
+  mainSocketInfo$ = new BehaviorSubject<{ protocol?: string, domain: string; port: number; url?: string }>(null);
 
   // localStorageAvailable$: BehaviorSubject<WindowLocalStorage> = new BehaviorSubject<WindowLocalStorage>(null);
 
@@ -189,6 +190,19 @@ export class CommonService {
     // })();
     /** End Load langCode */
 
+    // Init main socket
+    this.apiService.getPromise<{ domain: string, port: number, protocol?: string, url?: string }>('/chat/services/connect-info', {}).then(rs => {
+      rs.url = `${rs.protocol || 'https'}://${rs.domain}:${rs.port}`;
+      this.mainSocketInfo$.next(rs);
+      // this.mainSocket = new MySocket(this.mainSocketInfo.url);
+      this.initMainSocket().then(sc => {
+        // this.mainSocket = sc;
+        // sc.on('Helpdesk_Had_New_Ticket').subscribe();
+        console.info('Conntect to local chat server success');
+      });
+
+    }).catch(e => console.error(e));
+
     this.authService.onAuthenticationChange().subscribe(state => {
       console.info('Authentication change with state ' + state);
       if (state) {
@@ -230,18 +244,7 @@ export class CommonService {
       }
     });
 
-    // Init main socket
-    this.apiService.getPromise<{ domain: string, port: number }>('/chat/services/connect-info', {}).then(rs => {
-      this.mainSocketInfo = rs;
-      this.mainSocketInfo.url = `${this.mainSocketInfo.protocol || 'https'}://${this.mainSocketInfo.domain}:${this.mainSocketInfo.port}`;
-      // this.mainSocket = new MySocket(this.mainSocketInfo.url);
-      this.initMainSocket().then(sc => {
-        // this.mainSocket = sc;
-        // sc.on('Helpdesk_Had_New_Ticket').subscribe();
-        console.info('Conntect to local chat server success');
-      });
 
-    }).catch(e => console.error(e));
 
     // Subcribe authorized event
     this.apiService.unauthorizied$.subscribe(info => {
@@ -259,37 +262,46 @@ export class CommonService {
   }
 
   async initMainSocket(): Promise<MySocket> {
-    return new Promise<MySocket>((resolve, reject) => {
-      this.mainSocket = new MySocket(this.mainSocketInfo.url);
-      const subscription = this.mainSocket.onConnect$.subscribe(rs => {
-        resolve(this.mainSocket);
-        this.mainSocket.emit('register', {
-          token: this.apiService.getAccessToken(),
-          user: {
-            id: this.loginInfo.user.Code,
-            name: this.loginInfo.user.Name,
-          },
-        }).then(rs2 => {
-          console.log('Main socket registerd');
-          console.log(rs2);
-        });
-        if (subscription) {
-          subscription.unsubscribe();
-        }
-      });
-      this.mainSocket.onReconnect$.subscribe(rs => {
-        this.mainSocket.emit('register', {
-          token: this.apiService.getAccessToken(),
-          user: {
-            id: this.loginInfo.user.Code,
-            name: this.loginInfo.user.Name,
-          },
-        }).then(rs2 => {
-          console.log('Main socket registerd');
-          console.log(rs2);
-        });
+    const mainSocketInfo = await this.mainSocketInfo$.pipe(filter(f => !!f), take(1)).toPromise();
+    if (this.mainSocket) {
+      return this.mainSocket.onConnect$.pipe(filter(f => f), take(1)).toPromise().then(rs => this.mainSocket);
+    }
+    this.mainSocket = new MySocket(mainSocketInfo.url);
+    // return new Promise<MySocket>((resolve, reject) => {
+
+    // Auto register when main socket reconnected
+    this.mainSocket.onReconnect$.subscribe(rs => {
+      this.mainSocket.emit('register', {
+        token: this.apiService.getAccessToken(),
+        user: {
+          id: this.loginInfo.user.Code,
+          name: this.loginInfo.user.Name,
+        },
+      }).then(rs2 => {
+        console.log('Main socket registerd');
+        console.log(rs2);
       });
     });
+
+    return this.mainSocket.onConnect$.pipe(filter(f => f), take(1)).toPromise().then(rs => {
+      // resolve(this.mainSocket);
+      return this.mainSocket.emit<{ socketServerId: string }>('register', {
+        // token: this.apiService.getAccessToken(),
+        // user: {
+        //   id: this.loginInfo.user.Code,
+        //   name: this.loginInfo.user.Name,
+        // },
+      }).then(rs2 => {
+        console.log('Main socket registerd');
+        console.log(rs2);
+        this.mainSocket.socketServerId$.next(rs2.socketServerId);
+        return this.mainSocket;
+      });
+      // if (subscription) {
+      //   subscription.unsubscribe();
+      // }
+    });
+    // });
 
   }
 
