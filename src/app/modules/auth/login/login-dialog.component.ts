@@ -53,33 +53,37 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
       });
 
       // console.log('main socket service id : ' + mainSocket.socketServerId$.getValue());
-      mainSocket.on<{ refresh_token: string, access_token: string }>('login-by-other-device').subscribe((request) => {
+      mainSocket.on<{ secondLoginToken: string }>('login-by-other-device').subscribe((request) => {
         // Set token to local store
         console.log(request);
         // const redirect = result.getRedirect();
-        const refreshToken = request.data && request.data.refresh_token;
-        const accessToken = request.data && request.data.access_token;
-        if (refreshToken) {
-          localStorage.setItem('auth_app_token', JSON.stringify({
-            name: "nb:auth:oauth2:jwt:token",
-            ownerStrategyName: "email",
-            createdAt: Date.now(),
-            value: '{"access_token":"' + accessToken + '","refresh_token":"' + refreshToken + '"}',
-          }));
-          localStorage.setItem('api_access_token', accessToken);
-          localStorage.setItem('api_refresh_token', refreshToken);
-          this.apiService.refreshToken(() => {
-            console.log('refresh token success');
-            // if (this.onSuccess) {
-            //   setTimeout(() => {
-            //     this.onSuccess(null);
-            //   }, this.redirectDelay);
-            // }
-            // setTimeout(() => {
-            //   this.close();
-            // }, this.redirectDelay);
-            window.location.href = '/probox-core';
-          });
+        const secondLoginToken = request.data && request.data.secondLoginToken;
+        if (secondLoginToken) {
+
+          
+          this.user.secondLoginToken = secondLoginToken;
+          this.login();
+
+          // localStorage.setItem('auth_app_token', JSON.stringify({
+          //   name: "nb:auth:oauth2:jwt:token",
+          //   ownerStrategyName: "email",
+          //   createdAt: Date.now(),
+          //   value: '{"access_token":"' + accessToken + '","refresh_token":"' + refreshToken + '"}',
+          // }));
+          // localStorage.setItem('api_access_token', accessToken);
+          // localStorage.setItem('api_refresh_token', refreshToken);
+          // this.apiService.refreshToken(() => {
+          //   console.log('refresh token success');
+          //   // if (this.onSuccess) {
+          //   //   setTimeout(() => {
+          //   //     this.onSuccess(null);
+          //   //   }, this.redirectDelay);
+          //   // }
+          //   // setTimeout(() => {
+          //   //   this.close();
+          //   // }, this.redirectDelay);
+          //   window.location.href = '/probox-core';
+          // });
 
           // reply response
           request.callback(true);
