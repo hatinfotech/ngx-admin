@@ -499,6 +499,30 @@ export class ApiService {
         },
       });
     }
+    if (e.status === 406) {
+      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Truy cập không tin cậy',
+          content: this.joinLogs(e),
+          actions: [
+            {
+              label: 'Đăng nhập lại',
+              icon: 'back',
+              status: 'info',
+              action: () => { 
+                this.unauthoriziedSubject.next({
+                  previousUrl: this.router.url,
+                });
+                // this.router.navigate(['/auth/login']);
+                if (LoginDialogComponent.instances.length === 0) {
+                  this.dialogService.open(LoginDialogComponent);
+                }
+              },
+            },
+          ],
+        },
+      });
+    }
     if (e.status === 400) {
       if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
