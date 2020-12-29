@@ -67,35 +67,35 @@ export class DialpadComponent implements OnInit, AfterViewInit, IPhoneContext {
     this.mobileAppService.registerCallScreen(this);
     // Init sip phone
     this.phoneManager = new PhoneManager(this);
-    try {
-      this.commonService.loginInfo$.subscribe(loginInfo => {
-        if (loginInfo) {
+    // try {
+    //   this.commonService.loginInfo$.subscribe(loginInfo => {
+    //     if (loginInfo) {
 
-          // unregister
-          this.phoneManager.unregister();
+    //       // unregister
+    //       this.phoneManager.unregister();
 
-          // register
-          const userPhoneExtList = loginInfo.phoneExtensions;
-          if (userPhoneExtList) {
-            userPhoneExtList.forEach(userPhoneExt => {
-              this.sipPhoneUser = new User(
-                userPhoneExt.Extension + '@' + userPhoneExt.Domain,
-                userPhoneExt.DisplayName, userPhoneExt.Extension,
-                userPhoneExt.Extension + '@' + userPhoneExt.Domain,
-                userPhoneExt.Domain, userPhoneExt.Password,
-                userPhoneExt.Transport + '://' + userPhoneExt.Host + ':' + userPhoneExt.Port);
-              const userAgent = this.phoneManager.register(this.sipPhoneUser);
-              if (userAgent) {
-                userAgent.activated = true;
-                this.sipUsername = userAgent.user.uri;
-              }
-            });
-          }
-        }
-      });
-      // const userPhoneExtList = this.commonService.loginInfo$.phoneExtensions;
+    //       // register
+    //       const userPhoneExtList = loginInfo.phoneExtensions;
+    //       if (userPhoneExtList) {
+    //         userPhoneExtList.forEach(userPhoneExt => {
+    //           this.sipPhoneUser = new User(
+    //             userPhoneExt.Extension + '@' + userPhoneExt.Domain,
+    //             userPhoneExt.DisplayName, userPhoneExt.Extension,
+    //             userPhoneExt.Extension + '@' + userPhoneExt.Domain,
+    //             userPhoneExt.Domain, userPhoneExt.Password,
+    //             userPhoneExt.Transport + '://' + userPhoneExt.Host + ':' + userPhoneExt.Port);
+    //           const userAgent = this.phoneManager.register(this.sipPhoneUser);
+    //           if (userAgent) {
+    //             userAgent.activated = true;
+    //             this.sipUsername = userAgent.user.uri;
+    //           }
+    //         });
+    //       }
+    //     }
+    //   });
+    //   // const userPhoneExtList = this.commonService.loginInfo$.phoneExtensions;
 
-    } catch (e) { console.error(e); }
+    // } catch (e) { console.error(e); }
 
 
     // Phone manager events
