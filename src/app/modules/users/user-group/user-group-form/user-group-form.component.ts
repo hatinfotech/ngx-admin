@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -49,10 +49,10 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    multiple: true,
+    multiple: false,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
     ajax: {
       url: params => {
@@ -84,6 +84,43 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
       text: 'Description',
     },
   };
+
+  roles: { id: string, text: string }[] = [
+    {
+      id: 'MANAGER',
+      text: 'Manager',
+    },
+    {
+      id: 'MEMBER',
+      text: 'Member',
+    },
+  ];
+  select2OptionForRoles = {
+    placeholder: 'Chọn nhóm vai trò...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+
+  // resourceList: ResourceModel[][][] = [];
+  // select2OptionForResource = {
+  //   placeholder: 'Chọn Resource...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   keyMap: {
+  //     id: 'Name',
+  //     text: 'Description',
+  //   },
+  // };
 
   ngOnInit() {
     this.restrict();
@@ -119,13 +156,60 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
 
   }
 
+  async formLoad(formData: UserGroupModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: UserGroupModel) => void) {
+    return super.formLoad(formData, async (index, newForm, itemFormData) => {
+
+      // Resources form load
+      if (itemFormData.Users) {
+        itemFormData.Users.forEach(user => {
+          const newResourceFormGroup = this.makeNewUserFormGroup(user);
+          this.getUsers(index).push(newResourceFormGroup);
+          const comIndex = this.getUsers(index).length - 1;
+          this.onAddUserFormGroup(index, comIndex, newResourceFormGroup);
+
+          // module['Users'].map(item => {
+          //   item['id'] = item['Name'];
+          //   item['text'] = item['Description'] ? item['Description'] : item['Name'];
+          //   return item;
+          // });
+
+          // const module = this.moduleList.find((value, i, obj) => {
+          //   return resource['Module'] === value['Name'];
+          // });
+          // if (module && module['Resources']) {
+          //   this.resourceList[index][comIndex] = module['Resources'].map(item => {
+          //     item['id'] = item['Name'];
+          //     item['text'] = item['Description'] ? item['Description'] : item['Name'];
+          //     return item;
+          //   });
+
+          //   const resourceChooseList = module['Resources'].find((value, i, obj) => {
+          //     return value.Name === resource['Resource'];
+          //   });
+          //   newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
+
+
+          // }
+
+        });
+      }
+
+
+      // Direct callback
+      if (formItemLoadCallback) {
+        formItemLoadCallback(index, newForm, itemFormData);
+      }
+    });
+
+  }
+
   async init() {
     return super.init();
   }
 
   /** Get form data by id from api */
   getFormData(callback: (data: UserGroupModel[]) => void) {
-    this.apiService.get<UserGroupModel[]>(this.apiPath, { id: this.id, multi: true, includeUsers: true },
+    this.apiService.get<UserGroupModel[]>(this.apiPath, { id: this.id, multi: true, includeUsersInGroup: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
@@ -138,8 +222,9 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
       Code: ['', Validators.required],
       Name: ['', Validators.required],
       Parent: [''],
-      Users: [''],
+      // Users: [''],
       Description: [''],
+      Users: this.formBuilder.array([]),
     });
     if (data) {
       data[this.idKey + '_old'] = data.Code;
@@ -149,9 +234,10 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: UserGroupModel): void {
     super.onAddFormGroup(index, newForm, formData);
+    // this.resourceList.push([]);
   }
   onRemoveFormGroup(index: number): void {
-
+    // this.resourceList.splice(index, 1);
   }
   goback(): false {
     super.goback();
@@ -169,7 +255,91 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
 
   /** Execute api get */
   executeGet(params: any, success: (resources: UserGroupModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['includeUsers'] = true;
+    params['includeUsersInGroup'] = true;
     return super.executeGet(params, success, error);
   }
+
+  makeNewUserFormGroup(data?: UserModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      // Id_old: [''],
+      Id: [''],
+      User: ['', Validators.required],
+      Roles: [''],
+    });
+
+    if (data) {
+      // data['Id_old'] = data['Id'];
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+
+  getUsers(formGroupIndex: number) {
+    return this.array.controls[formGroupIndex].get('Users') as FormArray;
+  }
+
+  addUserFormGroup(formGroupIndex: number) {
+    // this.resourceList[formGroupIndex].push([]);
+    const newFormGroup = this.makeNewUserFormGroup();
+    this.getUsers(formGroupIndex).push(newFormGroup);
+    this.onAddUserFormGroup(formGroupIndex, this.getUsers(formGroupIndex).length - 1, newFormGroup);
+    return false;
+  }
+
+  onAddUserFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+    // this.resourceList[mainIndex].push([]);
+  }
+
+  removeUser(formGroupIndex: number, index: number) {
+    this.getUsers(formGroupIndex).removeAt(index);
+    // this.componentList[formGroupIndex].splice(index, 1);
+    this.onRemoveUserFormGroup(formGroupIndex, index);
+    return false;
+  }
+
+  onRemoveUserFormGroup(mainIndex: number, index: number) {
+    // this.resourceList[mainIndex].splice(index, 1);
+  }
+
+
+
+  copyResourceFormControlValueToOthers(i: number, ic: number, formControlName: string) {
+    const currentFormControl = this.getUsers(i).controls[ic].get(formControlName);
+    this.getUsers(i).controls.forEach((formItem, index) => {
+      if (index !== i) {
+        formItem.get(formControlName).patchValue(currentFormControl.value);
+      }
+    });
+  }
+
+  onModuleChangeForResource(event: { Resources: any[] }, i: number, ir: number) {
+    // console.info(event);
+    if (event.Resources) {
+      event.Resources.unshift({
+        Name: '',
+        Description: 'Chọn resource',
+      });
+      // this.resourceList[i][ir] = event.Resources.map(item => {
+      //   item['id'] = item['Name'];
+      //   item['text'] = item['Description'] ? item['Description'] : item['Name'];
+      //   return item;
+      // });
+    }
+  }
+
+  getResourceChooseList(mainFormIndex: number, resourceIndex: number) {
+    // if (this.resourceList && this.resourceList[mainFormIndex] && this.resourceList[mainFormIndex][resourceIndex]) {
+    //   return this.resourceList[mainFormIndex][resourceIndex];
+    // }
+    return [];
+  }
+
+
+
+
+
+
+
+
+
 }
