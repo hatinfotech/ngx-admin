@@ -1,505 +1,508 @@
 {
-  "HOME": {
-    "TITLE": "Chào angular ngx translate",
-    "TEXT": "Ví dụ này được tạo cùng với ngx translate",
-    "SELECT": "Chọn ngôn ngữ"
-  },
-  "Information": {
-    "Voucher": {
-      "register": "MTSG CORP\nTầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu,\nP. Đakao, Q.1, TPHCM\nĐiện thoại : 02877701666 | Mã số thuế : 0310522373"
-    }
-  },
-  "Sales": {
-    "PriceReport": {
-      "title": "{{definition}}{{action}} phiếu báo giá",
-      "List": {
-        "Title": ""
-      },
-      "Form": {
-        "title": "{{action}} phiếu báo giá"
-      }
+    "HOME": {
+        "TITLE": "Chào angular ngx translate",
+        "TEXT": "Ví dụ này được tạo cùng với ngx translate",
+        "SELECT": "Chọn ngôn ngữ"
     },
-    "SalesVoucher": {
-      "title": "{{action}}{{definition}} phiếu bán hàng",
-      "List": {
-        "title": "sales voucher list"
-      },
-      "Form": {
-        "title": "{{action}} sales voucher"
-      }
-    },
-    "PriceTable": {
-      "title": "{{action}}{{definition}} bảng giá bán",
-      "printTableTitle": "bảng in giá bán ra"
-    },
-    "MasterPriceTable": {
-      "title": "{{action}}{{definition}} bảng giá bán",
-      "type": "loại bảng giá",
-      "approve": "duyệt bảng giá",
-      "approvedComfirmMessage": "bạn có chắc là muốn duyệt '{{title}}'?"
-    },
-    "addProduct": "thêm hàng hoá/dịch vụ",
-    "directReceiver": "người trực tiếp nhận hàng",
-    "deliveryAddress": "địa chỉ nhận hàng",
-    "paymentStep": "bước thanh toán",
-    "technicalDescription": "Diễn giải thông số kỹ thuật",
-    "dateOfReported": "ngày báo giá",
-    "declareSaledProducts": "khai báo hàng đã bán",
-    "chooseMasterPriceTableType": "chọn loại",
-    "retail": "bán lẻ",
-    "wholesale": "bán sỉ"
-  },
-  "Common": {
-    "Pms": {
-      "view": "xem",
-      "edit": "chỉnh sửa",
-      "manage": "quản lý"
-    },
-    "Compare": {
-      "lt": "nhỏ hơn",
-      "le": "nhỏ hơn hoặc bằng",
-      "eq": "bằng",
-      "gt": "lớn hơn",
-      "ge": "lớn hơn hoặc bằng",
-      "ne": "khác",
-      "bw": "trong khoản",
-      "in": "thuộc",
-      "regex": "so khớp"
-    },
-    "DataType": {
-      "string": "chuỗi",
-      "int": "số nguyên",
-      "double": "số thực",
-      "date": "ngày tháng",
-      "time": "giờ",
-      "datetime": "ngày giờ",
-      "object": "đới tượng",
-      "objects": "nhiều đối tượng",
-      "boolean": "đúng/sai",
-      "environment": "tham số môi trường"
-    },
-    "create": "tạo",
-    "update": "cập nhật",
-    "delete": "xoá",
-    "remove": "gở bỏ",
-    "edit": "chỉnh",
-    "ok": "ok",
-    "cancel": "hủy",
-    "yes": "có",
-    "no": "không",
-    "noNumber": "stt",
-    "confirm": "xác nhận",
-    "enable": "kích hoạt",
-    "disable": "vô hiệu hoá",
-    "list": "danh sách",
-    "preview": "xem trước",
-    "print": "in",
-    "save": "lưu",
-    "saveAndClose": "lưu & đóng",
-    "title": "tiêu đề",
-    "recipient": "người nhận",
-    "taxCode": "mã số thuê",
-    "tax": "thuế",
-    "note": "ghi chú",
-    "description": "mô tả",
-    "type": "loại",
-    "imgae": "ảnh",
-    "picture": "hình",
-    "photo": "hình",
-    "reload": "tải lại",
-    "refresh": "làm mới",
-    "undo": "hoàn tác",
-    "close": "đóng",
-    "customer": "khách hàng",
-    "dateOfcreated": "ngày tạo",
-    "isApprove": "đã duyệt",
-    "name": "tên",
-    "address": "địa chỉ",
-    "phone": "điện thoại",
-    "email": "email",
-    "code": "mã",
-    "employee": "nhân viên",
-    "exportTo": "xuất {{to}}",
-    "goback": "trở về",
-    "sort": "sắp xếp",
-    "value": "giá trị",
-    "module": "module",
-    "selectTimezone": "Chọn muối giờ",
-    "choose": "chọn",
-    "clearFilter": "đặt lại bộ lọc",
-    "reset": "đặt lại",
-    "state": "trạng thái",
-    "all": "tất cả",
-    "import": "nhập khẩu",
-    "upload": "tải lên",
-    "copy": "sao chép",
-    "clear": "clear",
-    "parent": "cha",
-    "assign": "gán",
-    "revoke": "gở",
-    "approve": "duyệt",
-    "dateOfApproved": "ngày duyệt",
-    "tag": "gắn thẻ",
-    "tag/untag": "gắn/gở thẻ",
-    "export": "xuất",
-    "table": "bảng",
-    "change": "thay đổi",
-    "changeState": "thay đổi trạng thái",
-    "share": "chia sẻ",
-    "user": "người dùng",
-    "userGroup": "nhóm người dùng",
-    "permission": "quyền",
-    "next": "tiếp",
-    "previous": "trước",
-    "parameter": "tham số",
-    "condition": "điều kiện",
-    "data": "dữ liệu",
-    "stopOnFailed": "dừng khi sai",
-    "label": "nhãn",
-    "remoteDataSource": "nguồn dữ liệu",
-    "remoteDataResource": "remote data resource",
-    "breakOnFail": "ngắt/lỗi",
-    "dataType": "kiểu dữ liệu",
-    "add": "thêm",
-    "warehouse": "kho/bãi",
-    "branch": "chi nhánh",
-    "coordinateX": "tòa độ X",
-    "coordinateY": "tòa độ Y",
-    "coordinateZ": "tòa độ Z",
-    "findOrder": "thứ tự tìm kiếm",
-    "copyToAllNextForm": "sao chép cho tất cả các biểu mẫu bên dưới",
-    "path": "đường dẫn",
-    "container": "chố chứa",
-    "suggest": "gợi ý",
-    "lock": "khóa",
-    "lockBook": "khóa sổ",
-    "openBook": "mở sổ",
-    "bookkeeping": "ghi sổ",
-    "currency": "tiền tệ",
-    "status": "trạng thái",
-    "refreshToken": "làm mới token",
-    "sync": "đồng bộ"
-  },
-  "Contact": {
-    "name": "tên liên hệ",
-    "address": "địa chỉ",
-    "email": "email",
-    "phone": "điện thoại",
-    "taxCode": "mã số thuế",
-    "choosePms": "chọn quyền",
-    "syncMainToDetail": "đồng bộ đến chi tiết liên hệ",
-    "syncMainToDetailConfirmMessage": "bạn có muốn đồng bộ thông tin liên hệ xuống chi tiết cho tất cả liên hệ ?"
-  },
-  "Bank": {
-    "name": "tên ngân hàng",
-    "code": "số tài khoàn"
-  },
-  "Customer": {
-    "name": "tên khách hàng"
-  },
-  "Product": {
-    "name": "tên sản phẩm",
-    "unit": "đơn vị tính"
-  },
-  "Voucher": {
-    "organizationOrPersornal": "tổ chức/cá nhân",
-    "productOrservice": "hàng hoá/dịch vụ",
-    "quantity": "số lượng",
-    "unit": "đơn vị tính",
-    "shortQuantity": "SL",
-    "shortUnit": "ĐVT",
-    "price": "đơn giá",
-    "tax": "thuế",
-    "toMoney": "thành tiền",
-    "dearCustomer": "Kính gửi quý khách hàng",
-    "total": "tổng cộng"
-  },
-  "Form": {
-    "requireLabel": "{{field}} là bắt buộc"
-  },
-  "System": {
-    "title": "{{definition}}{{action}} tham số hệ thống",
-    "Config": {
-      "userLocale": "Cấu hình ngôn ngữ & vùng miền"
-    },
-    "Route": {
-      "Rule": {
-        "title": "{{definition}}{{action}} luật định tuyến"
-      },
-      "Param": {
-        "title": "{{definition}}{{action}} tham số định tuyến",
-        "options": "các tùy chọn tham số",
-        "defaultOperator": "điều kiện mặc định",
-        "defaultDataType": "kểu dữ liệu mặc định"
-      },
-      "Action": {
-        "title": "{{definition}}{{action}} dành động định tuyến",
-        "parameter": "tham số cho hành động",
-        "value": "giá trị cho tham số"
-      },
-      "priority": "ưu tiên",
-      "conditions": "các điều kiện so sánh",
-      "actions": "các hành động được thực thi",
-      "action": "hành động"
-    },
-    "Menu": {
-      "route": "định tuyến",
-      "Route": {
-        "rule": "luật định tuyến",
-        "param": "tham số định tuyến",
-        "action": "hành động định tuyến"
-      }
-    }
-  },
-  "Ivoip": {
-    "List": {
-      "title": "Danh sách chi tiết cuộc gọi"
-    },
-    "CallState": {
-      "ORIGINATOR_CANCEL": "Cuộc gọi nhỡ",
-      "NORMAL_CLEARING": "Hoàn tất cuộc gọi",
-      "CALL_REJECTED": "Bị chặn",
-      "INCOMPATIBLE_DESTINATION": "Không xác định",
-      "EXCHANGE_ROUTING_ERROR": "lỗi định tuyến",
-      "NORMAL_TEMPORARY_FAILURE": "không xác định"
-    },
-    "CallResult": {
-      "answered": "OK",
-      "missed": "nhỡ",
-      "voicemail": "hộp thư thoại",
-      "cancelled": "không bắt máy",
-      "failed": "lỗi"
-    },
-    "Direction": {
-      "local": "nội bộ",
-      "inbound": "gọi vào",
-      "outbound": "gọi ra"
-    },
-    "CallBlock": {
-      "title": "{{definition}}{{action}} chặn số"
-    },
-    "CallCenter": {
-      "title": "{{definition}}{{action}} trung tâm cuộc gọi"
-    },
-    "CallRoute": {
-      "title": "{{definition}}{{action}} đều hướng cuộc gọi"
-    },
-    "Dialplan": {
-      "title": "{{definition}}{{action}} định tuyến cuộc gọi"
-    },
-    "Device": {
-      "title": "{{definition}}{{action}} điện thoại IP"
-    },
-    "Cdrs": {
-      "title": "lịch sử cuộc gọi"
-    },
-    "local": "nội bộ",
-    "inbound": "gọi vào",
-    "outbound": "gọi ra",
-    "direction": "hướng gọi",
-    "extension": "số nội bộ",
-    "callerNumber": "số người gọi",
-    "callerName": "tên người gọi",
-    "calleeNumber": "số gọi đến",
-    "calleeName": "tên gọi đên",
-    "forwardTo": "chuyển đến",
-    "destination": "số đích",
-    "startedTime": "TG bắt đầu",
-    "ringingTime": "TG đỗ chuông",
-    "duration": "thời lượng",
-    "soundRecord": "ghi âm",
-    "callState": "trạng thái cuộc gọi",
-    "receivedNumber": "số nhận cuộc gọi",
-    "hangupCase": "gác máy",
-    "sipInfo": "thông tin sip"
-  },
-  "Purchase": {
-    "PriceTable": {
-      "title": "{{definition}}{{action}} bảng giá mua vào"
-    },
-    "Voucher": {
-      "title": "{{definition}}{{action}} phiếu mua hàng",
-      "suggestedSalesPrice": "gợi ý giá bán"
-    },
-    "dateOfPurchase": "ngày mua hàng"
-  },
-  "Warehouse": {
-    "GoodsReceiptNote": {
-      "title": "{{definition}}{{action}} phiếu nhập kho"
-    },
-    "GoodsDeliveryNote": {
-      "title": "{{definition}}{{action}} phiếu xuất kho"
-    },
-    "GoodsContainer": {
-      "title": "{{definition}}{{action}} chỗ chứa hàng hóa"
-    },
-    "Book": {
-      "title": "{{definition}}{{action}} sổ kho",
-      "voucherWasWroteInToWahouseBook": "phiếu đã được ghi vào sổ kho",
-      "voucherWasUnwroteInToWahouseBook": "phiếu đã được xóa khỏi sổ kho",
-      "commit": "chốt sổ",
-      "commitTo": "chốt sổ tới ngày"
-    },
-    "Menu": {
-      "book": "sổ kho",
-      "goods": "hàng hóa vật tư",
-      "goodsReceiptNote": "phiếu nhập kho",
-      "goodsDeliveryNote": "phiếu xuất kho",
-      "warehouseList": "danh sách kho",
-      "goodsContainer": "chỗ chứa hàng hóa"
-    },
-    "openBook": "mở sổ kho",
-    "lockBook": "khóa sổ kho",
-    "dateOfReceipted": "ngày nhập kho",
-    "assignContainer": "gán vị trí",
-    "assign/unassignContainer": "gán/gở vị trí",
-    "inventory": "tồn kho",
-    "account": "tài khoản kho",
-    "warehousePrice": "giá kho"
-  },
-  "AdminProduct": {
-    "chooseProducts": "chọn sản phẩm",
-    "conversionRatio": "tỷ lệ chuyển đổi",
-    "defaultSales": "mặc định bán",
-    "defaultPurchase": "mặc định mua",
-    "addUnitConversion": "thêm đơn vị chuyển đổi",
-    "categories": "danh mục sản phẩm",
-    "assignCategories": "gán danh mục sản phẩm",
-    "productList": "danh sách sản phẩm",
-    "Product": {
-      "title": "{{definition}}{{action}} sản phẩm"
-    },
-    "Category": {
-      "title": "{{definition}}{{action}} danh mục sản phẩm"
-    },
-    "Group": {
-      "title": "{{definition}}{{action}} nhóm sản phẩm"
-    },
-    "Unit": {
-      "title": "{{definition}}{{action}} đơn vị tính"
-    },
-    "Menu": {
-      "product": "danh sách sản phẩm",
-      "category": "danh mục sản phẩm",
-      "group": "nhóm sản phẩm",
-      "unit": "đơn vị tính"
-    }
-  },
-  "Ads": {
-    "Code": {
-      "title": "{{definition}}{{action}} định danh quảng cáo"
-    },
-    "Content": {
-      "title": "{{definition}}{{action}} nội dung quảng cáo"
-    }
-  },
-  "Crawl": {
-    "Plan": {
-      "title": "{{definition}}{{action}} kế hoạch thu thập dữ liệu"
-    },
-    "Server": {
-      "title": "{{definition}}{{action}} máy chủ thu thập dữ liệu"
-    }
-  },
-  "EmailMarketing": {
-    "Address": {
-      "title": "{{definition}} gửi mail {{action}}"
-    },
-    "Advertisement": {
-      "title": "{{definition}}{{action}} email quảng cáo"
-    },
-    "Template": {
-      "title": "{{definition}}{{action}} emai mẫu"
-    },
-    "Gateway": {
-      "title": "{{definition}}{{action}} mail gateway"
-    }
-  },
-  "File": {
-    "File": {
-      "title": "{{definition}}{{action}} file"
-    },
-    "Store": {
-      "title": "{{definition}}{{action}} file store"
-    },
-    "dragAndDropToUpload": "kéo & thả file vào để upload"
-  },
-  "Helpdesk": {
-    "Ticket": {
-      "title": "{{action}}{{definition}} yêu cầu"
-    },
-    "State": {
-      "complete": "hoàn thành y/c",
-      "cancel": "hủy yêu cầu",
-      "approved": "duyệt yêu cầu",
-      "accepted": "tiếp nhận yêu cầu"
-    },
-    "Menu": {
-      "userExtensions": "Số nội bộ (sip)",
-      "procedure": "quy trình",
-      "dashboard": "dashboard"
-    },
-    "Param": {
-      "options": "các tùy chọn tham số",
-      "defaultOperator": "điều kiện mặc định",
-      "defaultDataType": "kểu dữ liệu mặc định"
-    },
-    "Route": {
-      "Action": {
-        "parameter": "tham số cho hành động",
-        "value": "giá trị cho tham số"
-      },
-      "priority": "ưu tiên",
-      "conditions": "các điều kiện so sánh",
-      "actions": "các hành động được thực thi",
-      "action": "hành động"
-    },
-    "Procedure": {
-      "title": "{{action}}{{definition}} quy trình",
-      "steps": "các bước thực hiện"
-    },
-    "saveContact": "lưu liên hệ",
-    "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`",
-    "acceptStateConfirm": "Tiếp nhận yêu cầu `{{description}}`",
-    "accept": "tiếp nhận"
-  },
-  "ZaloOa": {
-    "OfficialAccount":{
-      "title": "{{action}}{{definition}} tài khoản OA",
-      "confirmRefreshTokenMessage": "bạn phải đăng nhập tài khoản admin của zalo oa trước khi thực hiện thao tác này"
-    },
-    "Webhook": {
-      "token": "webhook token"
-    },
-    "Menu": {
-      "zaloOa": "Zalo OA",
-      "ZaloOa": {
-        "officialAccounts": "tài khoản OA",
-        "follower": "khách đang quan tâm"
-      }
-    },
-    "appid": "Zalo App ID",
-    "callbackUrl": "url nhận token",
-    "apiUrl": "api url"
-  },
-  "Print": {
-    "listTemplate": "mẫu danh sách",
-    "gridTemplate": "mẫu lưới",
-    "chooseTemplate": "chọn mẫu in",
-    "template": "mẫu in"
-  },
-  "Menu": {
-    "System": {
-      "parameters": "Tham số",
-      "configBoard": "bảng cấu hình",
-      "userConfigBoard": "bảng cấu hình người dùng"
+    "Information": {
+        "Voucher": {
+            "register": "MTSG CORP\nTầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu,\nP. Đakao, Q.1, TPHCM\nĐiện thoại : 02877701666 | Mã số thuế : 0310522373"
+        }
     },
     "Sales": {
-      "salesVoucher": "phiếu bán hàng",
-      "dateOfDelivery": "ngày giao hàng",
-      "priceTable": "bảng giá",
-      "masterPriceTable": "bảng giá chính",
-      "priceTablePrint": "bảng in giá"
+        "PriceReport": {
+            "title": "{{definition}}{{action}} phiếu báo giá",
+            "List": {
+                "Title": ""
+            },
+            "Form": {
+                "title": "{{action}} phiếu báo giá"
+            }
+        },
+        "SalesVoucher": {
+            "title": "{{action}}{{definition}} phiếu bán hàng",
+            "List": {
+                "title": "sales voucher list"
+            },
+            "Form": {
+                "title": "{{action}} sales voucher"
+            }
+        },
+        "PriceTable": {
+            "title": "{{action}}{{definition}} bảng giá bán",
+            "printTableTitle": "bảng in giá bán ra"
+        },
+        "MasterPriceTable": {
+            "title": "{{action}}{{definition}} bảng giá bán",
+            "type": "loại bảng giá",
+            "approve": "duyệt bảng giá",
+            "approvedComfirmMessage": "bạn có chắc là muốn duyệt '{{title}}'?"
+        },
+        "addProduct": "thêm hàng hoá/dịch vụ",
+        "directReceiver": "người trực tiếp nhận hàng",
+        "deliveryAddress": "địa chỉ nhận hàng",
+        "paymentStep": "bước thanh toán",
+        "technicalDescription": "Diễn giải thông số kỹ thuật",
+        "dateOfReported": "ngày báo giá",
+        "declareSaledProducts": "khai báo hàng đã bán",
+        "chooseMasterPriceTableType": "chọn loại",
+        "retail": "bán lẻ",
+        "wholesale": "bán sỉ"
+    },
+    "Common": {
+        "Pms": {
+            "view": "xem",
+            "edit": "chỉnh sửa",
+            "manage": "quản lý"
+        },
+        "Compare": {
+            "lt": "nhỏ hơn",
+            "le": "nhỏ hơn hoặc bằng",
+            "eq": "bằng",
+            "gt": "lớn hơn",
+            "ge": "lớn hơn hoặc bằng",
+            "ne": "khác",
+            "bw": "trong khoản",
+            "in": "thuộc",
+            "regex": "so khớp"
+        },
+        "DataType": {
+            "string": "chuỗi",
+            "int": "số nguyên",
+            "double": "số thực",
+            "date": "ngày tháng",
+            "time": "giờ",
+            "datetime": "ngày giờ",
+            "object": "đới tượng",
+            "objects": "nhiều đối tượng",
+            "boolean": "đúng/sai",
+            "environment": "tham số môi trường"
+        },
+        "create": "tạo",
+        "update": "cập nhật",
+        "delete": "xoá",
+        "remove": "gở bỏ",
+        "edit": "chỉnh",
+        "ok": "ok",
+        "cancel": "hủy",
+        "yes": "có",
+        "no": "không",
+        "noNumber": "stt",
+        "confirm": "xác nhận",
+        "enable": "kích hoạt",
+        "disable": "vô hiệu hoá",
+        "list": "danh sách",
+        "preview": "xem trước",
+        "print": "in",
+        "save": "lưu",
+        "saveAndClose": "lưu & đóng",
+        "title": "tiêu đề",
+        "recipient": "người nhận",
+        "taxCode": "mã số thuê",
+        "tax": "thuế",
+        "note": "ghi chú",
+        "description": "mô tả",
+        "type": "loại",
+        "imgae": "ảnh",
+        "picture": "hình",
+        "photo": "hình",
+        "reload": "tải lại",
+        "refresh": "làm mới",
+        "undo": "hoàn tác",
+        "close": "đóng",
+        "customer": "khách hàng",
+        "dateOfcreated": "ngày tạo",
+        "isApprove": "đã duyệt",
+        "name": "tên",
+        "address": "địa chỉ",
+        "phone": "điện thoại",
+        "email": "email",
+        "code": "mã",
+        "employee": "nhân viên",
+        "exportTo": "xuất {{to}}",
+        "goback": "trở về",
+        "sort": "sắp xếp",
+        "value": "giá trị",
+        "module": "module",
+        "selectTimezone": "Chọn muối giờ",
+        "choose": "chọn",
+        "clearFilter": "đặt lại bộ lọc",
+        "reset": "đặt lại",
+        "state": "trạng thái",
+        "all": "tất cả",
+        "import": "nhập khẩu",
+        "upload": "tải lên",
+        "copy": "sao chép",
+        "clear": "clear",
+        "parent": "cha",
+        "assign": "gán",
+        "revoke": "gở",
+        "approve": "duyệt",
+        "dateOfApproved": "ngày duyệt",
+        "tag": "gắn thẻ",
+        "tag/untag": "gắn/gở thẻ",
+        "export": "xuất",
+        "table": "bảng",
+        "change": "thay đổi",
+        "changeState": "thay đổi trạng thái",
+        "share": "chia sẻ",
+        "user": "người dùng",
+        "userGroup": "nhóm người dùng",
+        "permission": "quyền",
+        "next": "tiếp",
+        "previous": "trước",
+        "parameter": "tham số",
+        "condition": "điều kiện",
+        "data": "dữ liệu",
+        "stopOnFailed": "dừng khi sai",
+        "label": "nhãn",
+        "remoteDataSource": "nguồn dữ liệu",
+        "remoteDataResource": "remote data resource",
+        "breakOnFail": "ngắt/lỗi",
+        "dataType": "kiểu dữ liệu",
+        "add": "thêm",
+        "warehouse": "kho/bãi",
+        "branch": "chi nhánh",
+        "coordinateX": "tòa độ X",
+        "coordinateY": "tòa độ Y",
+        "coordinateZ": "tòa độ Z",
+        "findOrder": "thứ tự tìm kiếm",
+        "copyToAllNextForm": "sao chép cho tất cả các biểu mẫu bên dưới",
+        "path": "đường dẫn",
+        "container": "chố chứa",
+        "suggest": "gợi ý",
+        "lock": "khóa",
+        "lockBook": "khóa sổ",
+        "openBook": "mở sổ",
+        "bookkeeping": "ghi sổ",
+        "currency": "tiền tệ",
+        "status": "trạng thái",
+        "refreshToken": "làm mới token",
+        "sync": "đồng bộ"
+    },
+    "Contact": {
+        "name": "tên liên hệ",
+        "address": "địa chỉ",
+        "email": "email",
+        "phone": "điện thoại",
+        "taxCode": "mã số thuế",
+        "choosePms": "chọn quyền",
+        "syncMainToDetail": "đồng bộ đến chi tiết liên hệ",
+        "syncMainToDetailConfirmMessage": "bạn có muốn đồng bộ thông tin liên hệ xuống chi tiết cho tất cả liên hệ ?"
+    },
+    "Bank": {
+        "name": "tên ngân hàng",
+        "code": "số tài khoàn"
+    },
+    "Customer": {
+        "name": "tên khách hàng"
+    },
+    "Product": {
+        "name": "tên sản phẩm",
+        "unit": "đơn vị tính"
+    },
+    "Voucher": {
+        "organizationOrPersornal": "tổ chức/cá nhân",
+        "productOrservice": "hàng hoá/dịch vụ",
+        "quantity": "số lượng",
+        "unit": "đơn vị tính",
+        "shortQuantity": "SL",
+        "shortUnit": "ĐVT",
+        "price": "đơn giá",
+        "tax": "thuế",
+        "toMoney": "thành tiền",
+        "dearCustomer": "Kính gửi quý khách hàng",
+        "total": "tổng cộng"
+    },
+    "Form": {
+        "requireLabel": "{{field}} là bắt buộc"
+    },
+    "System": {
+        "title": "{{definition}}{{action}} tham số hệ thống",
+        "Config": {
+            "userLocale": "Cấu hình ngôn ngữ & vùng miền"
+        },
+        "Route": {
+            "Rule": {
+                "title": "{{definition}}{{action}} luật định tuyến"
+            },
+            "Param": {
+                "title": "{{definition}}{{action}} tham số định tuyến",
+                "options": "các tùy chọn tham số",
+                "defaultOperator": "điều kiện mặc định",
+                "defaultDataType": "kểu dữ liệu mặc định"
+            },
+            "Action": {
+                "title": "{{definition}}{{action}} dành động định tuyến",
+                "parameter": "tham số cho hành động",
+                "value": "giá trị cho tham số"
+            },
+            "priority": "ưu tiên",
+            "conditions": "các điều kiện so sánh",
+            "actions": "các hành động được thực thi",
+            "action": "hành động"
+        },
+        "Menu": {
+            "route": "định tuyến",
+            "Route": {
+                "rule": "luật định tuyến",
+                "param": "tham số định tuyến",
+                "action": "hành động định tuyến"
+            }
+        }
+    },
+    "Ivoip": {
+        "List": {
+            "title": "Danh sách chi tiết cuộc gọi"
+        },
+        "CallState": {
+            "ORIGINATOR_CANCEL": "Cuộc gọi nhỡ",
+            "NORMAL_CLEARING": "Hoàn tất cuộc gọi",
+            "CALL_REJECTED": "Bị chặn",
+            "INCOMPATIBLE_DESTINATION": "Không xác định",
+            "EXCHANGE_ROUTING_ERROR": "lỗi định tuyến",
+            "NORMAL_TEMPORARY_FAILURE": "không xác định",
+            "USER_BUSY": "bận",
+            "NO_ANSWER": "không trả lời"
+        },
+        "CallResult": {
+            "answered": "OK",
+            "missed": "nhỡ",
+            "voicemail": "hộp thư thoại",
+            "cancelled": "không bắt máy",
+            "failed": "lỗi",
+            "null": "lỗi"
+        },
+        "Direction": {
+            "local": "nội bộ",
+            "inbound": "gọi vào",
+            "outbound": "gọi ra"
+        },
+        "CallBlock": {
+            "title": "{{definition}}{{action}} chặn số"
+        },
+        "CallCenter": {
+            "title": "{{definition}}{{action}} trung tâm cuộc gọi"
+        },
+        "CallRoute": {
+            "title": "{{definition}}{{action}} đều hướng cuộc gọi"
+        },
+        "Dialplan": {
+            "title": "{{definition}}{{action}} định tuyến cuộc gọi"
+        },
+        "Device": {
+            "title": "{{definition}}{{action}} điện thoại IP"
+        },
+        "Cdrs": {
+            "title": "lịch sử cuộc gọi"
+        },
+        "local": "nội bộ",
+        "inbound": "gọi vào",
+        "outbound": "gọi ra",
+        "direction": "hướng gọi",
+        "extension": "số nội bộ",
+        "callerNumber": "số người gọi",
+        "callerName": "tên người gọi",
+        "calleeNumber": "số gọi đến",
+        "calleeName": "tên gọi đên",
+        "forwardTo": "chuyển đến",
+        "destination": "số đích",
+        "startedTime": "TG bắt đầu",
+        "ringingTime": "TG đỗ chuông",
+        "duration": "thời lượng",
+        "soundRecord": "ghi âm",
+        "callState": "trạng thái cuộc gọi",
+        "receivedNumber": "số nhận cuộc gọi",
+        "hangupCase": "gác máy",
+        "sipInfo": "thông tin sip"
+    },
+    "Purchase": {
+        "PriceTable": {
+            "title": "{{definition}}{{action}} bảng giá mua vào"
+        },
+        "Voucher": {
+            "title": "{{definition}}{{action}} phiếu mua hàng",
+            "suggestedSalesPrice": "gợi ý giá bán"
+        },
+        "dateOfPurchase": "ngày mua hàng"
+    },
+    "Warehouse": {
+        "GoodsReceiptNote": {
+            "title": "{{definition}}{{action}} phiếu nhập kho"
+        },
+        "GoodsDeliveryNote": {
+            "title": "{{definition}}{{action}} phiếu xuất kho"
+        },
+        "GoodsContainer": {
+            "title": "{{definition}}{{action}} chỗ chứa hàng hóa"
+        },
+        "Book": {
+            "title": "{{definition}}{{action}} sổ kho",
+            "voucherWasWroteInToWahouseBook": "phiếu đã được ghi vào sổ kho",
+            "voucherWasUnwroteInToWahouseBook": "phiếu đã được xóa khỏi sổ kho",
+            "commit": "chốt sổ",
+            "commitTo": "chốt sổ tới ngày"
+        },
+        "Menu": {
+            "book": "sổ kho",
+            "goods": "hàng hóa vật tư",
+            "goodsReceiptNote": "phiếu nhập kho",
+            "goodsDeliveryNote": "phiếu xuất kho",
+            "warehouseList": "danh sách kho",
+            "goodsContainer": "chỗ chứa hàng hóa"
+        },
+        "openBook": "mở sổ kho",
+        "lockBook": "khóa sổ kho",
+        "dateOfReceipted": "ngày nhập kho",
+        "assignContainer": "gán vị trí",
+        "assign/unassignContainer": "gán/gở vị trí",
+        "inventory": "tồn kho",
+        "account": "tài khoản kho",
+        "warehousePrice": "giá kho"
+    },
+    "AdminProduct": {
+        "chooseProducts": "chọn sản phẩm",
+        "conversionRatio": "tỷ lệ chuyển đổi",
+        "defaultSales": "mặc định bán",
+        "defaultPurchase": "mặc định mua",
+        "addUnitConversion": "thêm đơn vị chuyển đổi",
+        "categories": "danh mục sản phẩm",
+        "assignCategories": "gán danh mục sản phẩm",
+        "productList": "danh sách sản phẩm",
+        "Product": {
+            "title": "{{definition}}{{action}} sản phẩm"
+        },
+        "Category": {
+            "title": "{{definition}}{{action}} danh mục sản phẩm"
+        },
+        "Group": {
+            "title": "{{definition}}{{action}} nhóm sản phẩm"
+        },
+        "Unit": {
+            "title": "{{definition}}{{action}} đơn vị tính"
+        },
+        "Menu": {
+            "product": "danh sách sản phẩm",
+            "category": "danh mục sản phẩm",
+            "group": "nhóm sản phẩm",
+            "unit": "đơn vị tính"
+        }
+    },
+    "Ads": {
+        "Code": {
+            "title": "{{definition}}{{action}} định danh quảng cáo"
+        },
+        "Content": {
+            "title": "{{definition}}{{action}} nội dung quảng cáo"
+        }
+    },
+    "Crawl": {
+        "Plan": {
+            "title": "{{definition}}{{action}} kế hoạch thu thập dữ liệu"
+        },
+        "Server": {
+            "title": "{{definition}}{{action}} máy chủ thu thập dữ liệu"
+        }
+    },
+    "EmailMarketing": {
+        "Address": {
+            "title": "{{definition}} gửi mail {{action}}"
+        },
+        "Advertisement": {
+            "title": "{{definition}}{{action}} email quảng cáo"
+        },
+        "Template": {
+            "title": "{{definition}}{{action}} emai mẫu"
+        },
+        "Gateway": {
+            "title": "{{definition}}{{action}} mail gateway"
+        }
+    },
+    "File": {
+        "File": {
+            "title": "{{definition}}{{action}} file"
+        },
+        "Store": {
+            "title": "{{definition}}{{action}} file store"
+        },
+        "dragAndDropToUpload": "kéo & thả file vào để upload"
+    },
+    "Helpdesk": {
+        "Ticket": {
+            "title": "{{action}}{{definition}} yêu cầu"
+        },
+        "State": {
+            "complete": "hoàn thành y/c",
+            "cancel": "hủy yêu cầu",
+            "approved": "duyệt yêu cầu",
+            "accepted": "tiếp nhận yêu cầu"
+        },
+        "Menu": {
+            "userExtensions": "Số nội bộ (sip)",
+            "procedure": "quy trình",
+            "dashboard": "dashboard"
+        },
+        "Param": {
+            "options": "các tùy chọn tham số",
+            "defaultOperator": "điều kiện mặc định",
+            "defaultDataType": "kểu dữ liệu mặc định"
+        },
+        "Route": {
+            "Action": {
+                "parameter": "tham số cho hành động",
+                "value": "giá trị cho tham số"
+            },
+            "priority": "ưu tiên",
+            "conditions": "các điều kiện so sánh",
+            "actions": "các hành động được thực thi",
+            "action": "hành động"
+        },
+        "Procedure": {
+            "title": "{{action}}{{definition}} quy trình",
+            "steps": "các bước thực hiện"
+        },
+        "saveContact": "lưu liên hệ",
+        "changeStateConfirm": "Thay đổi trạng thái cho yêu cầu `{{description}}`",
+        "acceptStateConfirm": "Tiếp nhận yêu cầu `{{description}}`",
+        "accept": "tiếp nhận"
+    },
+    "ZaloOa": {
+        "OfficialAccount": {
+            "title": "{{action}}{{definition}} tài khoản OA",
+            "confirmRefreshTokenMessage": "bạn phải đăng nhập tài khoản admin của zalo oa trước khi thực hiện thao tác này"
+        },
+        "Webhook": {
+            "token": "webhook token"
+        },
+        "Menu": {
+            "zaloOa": "Zalo OA",
+            "ZaloOa": {
+                "officialAccounts": "tài khoản OA",
+                "follower": "khách đang quan tâm"
+            }
+        },
+        "appid": "Zalo App ID",
+        "callbackUrl": "url nhận token",
+        "apiUrl": "api url"
+    },
+    "Print": {
+        "listTemplate": "mẫu danh sách",
+        "gridTemplate": "mẫu lưới",
+        "chooseTemplate": "chọn mẫu in",
+        "template": "mẫu in"
+    },
+    "Menu": {
+        "System": {
+            "parameters": "Tham số",
+            "configBoard": "bảng cấu hình",
+            "userConfigBoard": "bảng cấu hình người dùng"
+        },
+        "Sales": {
+            "salesVoucher": "phiếu bán hàng",
+            "dateOfDelivery": "ngày giao hàng",
+            "priceTable": "bảng giá",
+            "masterPriceTable": "bảng giá chính",
+            "priceTablePrint": "bảng in giá"
+        }
     }
-  }
 }

@@ -1,500 +1,503 @@
 {
-  "HOME": {
-    "TITLE": "Hello angular with ngx translate",
-    "TEXT": "This demo has been create using ngx translate",
-    "SELECT": "Select language"
-  },
-  "Information": {
-    "Voucher": {
-      "register": "MTSG CORP\nTầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu\nP. Đakao, Q.1, TPHCM\nĐiện thoại : 02877701666 | Mã số thuế : 0310522373"
-    }
-  },
-  "Sales": {
-    "PriceReport": {
-      "title": "{{action}} price report voucher {{definition}}",
-      "List": {
-        "title": "price report list"
-      },
-      "Form": {
-        "title": "{{action}} price report voucher"
-      }
+    "HOME": {
+        "TITLE": "Hello angular with ngx translate",
+        "TEXT": "This demo has been create using ngx translate",
+        "SELECT": "Select language"
     },
-    "SalesVoucher": {
-      "title": "{{action}} sales voucher {{definition}}",
-      "List": {
-        "title": "sales voucher list"
-      },
-      "Form": {
-        "title": "{{action}} sales voucher"
-      }
-    },
-    "PriceTable": {
-      "title": "{{action}} sales price table {{definition}}",
-      "printTableTitle": "print table of sales price"
-    },
-    "MasterPriceTable": {
-      "title": "{{action}} sales master price table {{definition}}",
-      "type": "price table type",
-      "approve": "price table approving",
-      "approvedComfirmMessage": "are you sure approve sales price table '{{title}}'?"
-    },
-    "addProduct": "add product/dịch vụ",
-    "directReceiver": "direct receiver",
-    "deliveryAddress": "delivery address",
-    "paymentStep": "payment step",
-    "technicalDescription": "technical description",
-    "dateOfReported": "date of reported",
-    "declareSaledProducts": "declare saled products",
-    "chooseMasterPriceTableType": "choose type",
-    "retail": "retail",
-    "wholesale": "wholesale"
-  },
-  "Common": {
-    "Pms": {
-      "view": "view",
-      "edit": "edit",
-      "manage": "manage"
-    },
-    "Compare": {
-      "lt": "less than",
-      "le": "less than or equal",
-      "eq": "equal",
-      "gt": "greater than",
-      "ge": "greater than or equal",
-      "ne": "not equal",
-      "bw": "between",
-      "in": "in",
-      "regex": "regex"
-    },
-    "DataType": {
-      "string": "string",
-      "int": "integer",
-      "double": "double",
-      "date": "date",
-      "time": "time",
-      "datetime": "date time",
-      "object": "object",
-      "objects": "objects",
-      "boolean": "boolean",
-      "environment": "environment param"
-    },
-    "create": "create",
-    "update": "update",
-    "delete": "delete",
-    "remove": "remove",
-    "ddit": "edit",
-    "ok": "ok",
-    "cancel": "cancel",
-    "yes": "yes",
-    "no": "no",
-    "noNumber": "no",
-    "confirm": "confirm",
-    "enable": "enable",
-    "disable": "disable",
-    "list": "list",
-    "preview": "preview",
-    "print": "print",
-    "save": "save",
-    "saveAndClose": "save & close",
-    "title": "title",
-    "recipient": "recipient",
-    "taxCode": "tax code",
-    "tax": "tax",
-    "note": "note",
-    "description": "description",
-    "type": "type",
-    "imgae": "image",
-    "picture": "picture",
-    "photo": "photo",
-    "reload": "reload",
-    "refresh": "refresh",
-    "undo": "undo",
-    "close": "close",
-    "customer": "customer",
-    "dateOfcreated": "date of created",
-    "isApprove": "approved",
-    "name": "name",
-    "address": "address",
-    "phone": "phone",
-    "email": "email",
-    "code": "code",
-    "employee": "employee",
-    "exportTo": "export {{to}}",
-    "goback": "go back",
-    "sort": "sort",
-    "value": "value",
-    "module": "module",
-    "selectTimezone": "Select timezone",
-    "choose": "choose",
-    "clearFilter": "clear filter",
-    "reset": "reset",
-    "state": "state",
-    "all": "all",
-    "import": "import",
-    "upload": "upload",
-    "copy": "copy",
-    "clear": "clear",
-    "parent": "parent",
-    "assign": "assign",
-    "revoke": "revoke",
-    "approve": "approve",
-    "dateOfApproved": "approved date",
-    "tag": "tag",
-    "tag/untag": "tag/untag",
-    "export": "export",
-    "table": "table",
-    "change": "change",
-    "changeState": "change state",
-    "share": "share",
-    "choosePms": "choose pms",
-    "user": "user",
-    "userGroup": "user group",
-    "permission": "permission",
-    "next": "next",
-    "previous": "previous",
-    "parameter": "parameter",
-    "condition": "condition",
-    "data": "data",
-    "stopOnFailed": "stop on failed",
-    "label": "label",
-    "remoteDataSource": "remote data source",
-    "remoteDataResource": "remote data resource",
-    "breakOnFail": "break on fail",
-    "dataType": "data type",
-    "add": "add",
-    "warehouse": "warehouse",
-    "branch": "branch",
-    "coordinateX": "coordinate X",
-    "coordinateY": "coordinate Y",
-    "coordinateZ": "coordinate Z",
-    "findOrder": "find order",
-    "copyToAllNextForm": "copy to all next form",
-    "path": "path",
-    "container": "container",
-    "suggest": "suggest",
-    "lock": "lock",
-    "lockBook": "lock book",
-    "openBook": "open book",
-    "bookkeeping": "bookkeeping",
-    "currency": "currency",
-    "status": "status",
-    "refreshToken": "refresh token",
-    "sync": "sync"
-  },
-  "Contact": {
-    "name": "contact name",
-    "address": "address",
-    "email": "email",
-    "phone": "phone",
-    "taxCode": "mã số thuế",
-    "syncMainToDetail": "sync to contact detail",
-    "syncMainToDetaisyncMainToDetailCompleteMessagel": "are you waint to sync to contact details for all contacts ?"
-  },
-  "Bank": {
-    "name": "bank name",
-    "code": "bank code"
-  },
-  "Customer": {
-    "name": "customer name"
-  },
-  "Product": {
-    "name": "product name",
-    "unit": "unit"
-  },
-  "Voucher": {
-    "organizationOrPersornal": "organization/persornal",
-    "productOrservice": "product/service",
-    "quantity": "quantity",
-    "unit": "unit",
-    "shortQuantity": "qty",
-    "shortUnit": "unit",
-    "price": "price",
-    "tax": "tax",
-    "toMoney": "to money",
-    "dearCustomer": "Dear customer",
-    "total": "total"
-  },
-  "Form": {
-    "requireLabel": "{{field}} is require"
-  },
-  "System": {
-    "title": "{{action}} system parameter {{definition}}",
-    "Config": {
-      "userLocale": "User locale config"
-    },
-    "Route": {
-      "Rule": {
-        "title": "{{action}} route rule {{definition}}"
-      },
-      "Param": {
-        "title": "{{action}} route param {{definition}}",
-        "options": "các tùy chọn tham số",
-        "defaultOperator": "điều kiện mặc định",
-        "defaultDataType": "kểu dữ liệu mặc định"
-      },
-      "Action": {
-        "title": "{{action}} aroute ction {{definition}}",
-        "parameter": "tham số cho hành động",
-        "value": "giá trị cho tham số"
-      },
-      "priority": "ưu tiên",
-      "conditions": "các điều kiện so sánh",
-      "actions": "các hành động được thực thi",
-      "action": "hành động"
-    },
-    "Menu": {
-      "route": "route",
-      "Route": {
-        "rule": "route rule",
-        "param": "route param",
-        "action": "route action"
-      }
-    }
-  },
-  "Ivoip": {
-    "List": {
-      "title": "Call detail record list"
-    },
-    "CallState": {
-      "ORIGINATOR_CANCEL": "originator cancel",
-      "NORMAL_CLEARING": "normal clearing",
-      "CALL_REJECTED": "call rejected",
-      "INCOMPATIBLE_DESTINATION": "incompatible destination",
-      "EXCHANGE_ROUTING_ERROR": "Exchange routing error",
-      "NORMAL_TEMPORARY_FAILURE": "temporary failed"
-    },
-    "CallResult": {
-      "answered": "OK",
-      "missed": "missed",
-      "voicemail": "voicemail",
-      "cancelled": "cancelled",
-      "failed": "failed"
-    },
-    "Direction": {
-      "local": "local",
-      "inbound": "inbound",
-      "outbound": "outbound"
-    },
-    "CallBlock": {
-      "title": "{{action}} call block {{definition}}"
-    },
-    "CallRoute": {
-      "title": "{{action}} call route {{definition}}"
-    },
-    "Dialplan": {
-      "title": "{{action}} dialplan {{definition}}"
-    },
-    "Device": {
-      "title": "{{action}} IP Phone {{definition}}"
-    },
-    "Cdrs": {
-      "title": "call detail records"
-    },
-    "local": "local",
-    "inbound": "inbound",
-    "outbound": "outbound",
-    "direction": "direction",
-    "extension": "extension",
-    "callerNumber": "caller number",
-    "callerName": "caller name",
-    "calleeNumber": "callee number",
-    "calleeName": "callee name",
-    "forwardTo": "forward to",
-    "destination": "destination",
-    "startedTime": "started time",
-    "ringingTime": "ringing time",
-    "duration": "duration",
-    "soundRecord": "sound record",
-    "callState": "call state",
-    "receivedNumber": "received number",
-    "hangupCase": "hangup case",
-    "sipInfo": "sip info"
-  },
-  "Purchase": {
-    "PriceTable": {
-      "title": "{{action}} purchase price table {{definition}}"
-    },
-    "Voucher": {
-      "title": "{{action}} purchase voucher {{definition}}",
-      "suggestedSalesPrice": "suggested sales price"
-    },
-    "dateOfPurchase": "date of purchase"
-  },
-  "Warehouse": {
-    "GoodsReceiptNote": {
-      "title": "{{action}} goods receipt note {{definition}}"
-    },
-    "GoodsDeliveryNote": {
-      "title": "{{action}} goods delivery note {{definition}}"
-    },
-    "GoodsContainer": {
-      "title": "{{action}} goods container {{definition}}"
-    },
-    "Book": {
-      "title": "{{action}} warehouse book {{definition}}",
-      "voucherWasWroteInToWahouseBook": "voucher was wrote in to warehouse book",
-      "voucherWasUnwroteInToWahouseBook": "voucher was unwrote out of warehouse book",
-      "commit": "book commited",
-      "commitTo": "book commit to"
-    },
-    "Menu": {
-      "book": "warehouse book",
-      "goods": "goods",
-      "goodsReceiptNote": "goods receipt note",
-      "goodsDeliveryNote": "goods delivery note",
-      "warehouseList": "warehouse list",
-      "goodsContainer": "goods container"
-    },
-    "openBook": "mở sổ kho",
-    "lockBook": "khóa sổ kho",
-    "dateOfReceipted": "date of receipted",
-    "assignContainer": "assign container",
-    "assign/unassignContainer": "assign/unassign container",
-    "inventory": "inventory",
-    "account": "warehouse account",
-    "warehousePrice": "warehousePrice"
-  },
-  "AdminProduct": {
-    "chooseProducts": "choose product",
-    "conversionRatio": "conversion ratio",
-    "defaultSales": "default sales",
-    "defaultPurchase": "default purchase",
-    "addUnitConversion": "add unit conversion",
-    "categories": "product categories",
-    "assignCategories": "assign product categories",
-    "productList": "product list",
-    "Product": {
-      "title": "{{action}} product {{definition}}"
-    },
-    "Category": {
-      "title": "{{action}} product category {{definition}}"
-    },
-    "Group": {
-      "title": "{{action}} product group {{definition}}"
-    },
-    "Unit": {
-      "title": "{{action}} unit {{definition}}"
-    },
-    "Menu": {
-      "product": "product list",
-      "category": "product category",
-      "group": "product group",
-      "unit": "unit"
-    }
-  },
-  "Ads": {
-    "Code": {
-      "title": "{{action}} ads code {{definition}}"
-    },
-    "Content": {
-      "title": "{{action}} ads content {{definition}}"
-    }
-  },
-  "Crawl": {
-    "Plan": {
-      "title": "{{action}} crawl plan {{definition}}"
-    },
-    "Server": {
-      "title": "{{action}} crawl server {{definition}}"
-    }
-  },
-  "EmailMarketing": {
-    "Address": {
-      "title": "{{action}}} sent mail {{definition}"
-    },
-    "Advertisement": {
-      "title": "{{action}} advertisement email {{definition}}"
-    },
-    "Template": {
-      "title": "{{action}} emai template {{definition}}"
-    },
-    "Gatewya": {
-      "title": "{{action}} mail gateway {{definition}} "
-    }
-  },
-  "File": {
-    "File": {
-      "title": "{{action}} file {{definition}}"
-    },
-    "Store": {
-      "title": "{{action}} file store {{definition}}"
-    },
-    "dragAndDropToUpload": "kéo & thả file vào để upload"
-  },
-  "Helpdesk": {
-    "Ticket": {
-      "title": "{{action}} helpdesk ticket {{definition}}"
-    },
-    "State": {
-      "complete": "complete ticket",
-      "cancel": "cancel ticket",
-      "approved": "approved ticket",
-      "accepted": "accepted ticket"
-    },
-    "Menu": {
-      "userExtensions": "Extensions numbers",
-      "procedure": "quy trình",
-      "dashboard": "dashboard"
-    },
-    "Param": {
-      "options": "param options"
-    },
-    "Route": {
-      "Action": {
-        "parameter": "parameter for action",
-        "value": "value for parameter"
-      },
-      "priority": "priority",
-      "conditions": "conditions for compare",
-      "actions": "actions for execute",
-      "action": "action"
-    },
-    "Procedure": {
-      "title": "{{action}} procedure {{definition}}",
-      "steps": "implement steps"
-    },
-    "saveContact": "save contact",
-    "changeStateConfirm": "change state for `{{description}}`",
-    "acceptStateConfirm": "accept ticket `{{description}}`",
-    "accept": "accept"
-  },
-  "ZaloOa": {
-    "OfficialAccount":{
-      "title": "{{action}} official account {{definition}}",
-      "confirmRefreshTokenMessage": "you mus login zalo's admin account before execute this command"
-    },
-    "Webhook": {
-      "token": "webhook token"
-    },
-    "Menu": {
-      "zaloOa": "Zalo OA",
-      "ZaloOa": {
-        "officialAccounts": "official account",
-        "follower": "following customer"
-      }
-    },
-    "appid": "Zalo App ID",
-    "callbackUrl": "callback url received token",
-    "apiUrl": "api url"
-  },
-  "Print": {
-    "listTemplate": "list template",
-    "gridTemplate": "grid template",
-    "chooseTemplate": "choose template",
-    "template": "print template"
-  },
-  "Menu": {
-    "System": {
-      "parameters": "parameters",
-      "configBoard": "config board",
-      "userConfigBoard": "user config board"
+    "Information": {
+        "Voucher": {
+            "register": "MTSG CORP\nTầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu\nP. Đakao, Q.1, TPHCM\nĐiện thoại : 02877701666 | Mã số thuế : 0310522373"
+        }
     },
     "Sales": {
-      "salesVoucher": "sales voucher",
-      "dateOfDelivery": "date of delivery",
-      "priceTable": "price table",
-      "masterPriceTable": "master price table",
-      "priceTablePrint": "print price table"
+        "PriceReport": {
+            "title": "{{action}} price report voucher {{definition}}",
+            "List": {
+                "title": "price report list"
+            },
+            "Form": {
+                "title": "{{action}} price report voucher"
+            }
+        },
+        "SalesVoucher": {
+            "title": "{{action}} sales voucher {{definition}}",
+            "List": {
+                "title": "sales voucher list"
+            },
+            "Form": {
+                "title": "{{action}} sales voucher"
+            }
+        },
+        "PriceTable": {
+            "title": "{{action}} sales price table {{definition}}",
+            "printTableTitle": "print table of sales price"
+        },
+        "MasterPriceTable": {
+            "title": "{{action}} sales master price table {{definition}}",
+            "type": "price table type",
+            "approve": "price table approving",
+            "approvedComfirmMessage": "are you sure approve sales price table '{{title}}'?"
+        },
+        "addProduct": "add product/dịch vụ",
+        "directReceiver": "direct receiver",
+        "deliveryAddress": "delivery address",
+        "paymentStep": "payment step",
+        "technicalDescription": "technical description",
+        "dateOfReported": "date of reported",
+        "declareSaledProducts": "declare saled products",
+        "chooseMasterPriceTableType": "choose type",
+        "retail": "retail",
+        "wholesale": "wholesale"
+    },
+    "Common": {
+        "Pms": {
+            "view": "view",
+            "edit": "edit",
+            "manage": "manage"
+        },
+        "Compare": {
+            "lt": "less than",
+            "le": "less than or equal",
+            "eq": "equal",
+            "gt": "greater than",
+            "ge": "greater than or equal",
+            "ne": "not equal",
+            "bw": "between",
+            "in": "in",
+            "regex": "regex"
+        },
+        "DataType": {
+            "string": "string",
+            "int": "integer",
+            "double": "double",
+            "date": "date",
+            "time": "time",
+            "datetime": "date time",
+            "object": "object",
+            "objects": "objects",
+            "boolean": "boolean",
+            "environment": "environment param"
+        },
+        "create": "create",
+        "update": "update",
+        "delete": "delete",
+        "remove": "remove",
+        "ddit": "edit",
+        "ok": "ok",
+        "cancel": "cancel",
+        "yes": "yes",
+        "no": "no",
+        "noNumber": "no",
+        "confirm": "confirm",
+        "enable": "enable",
+        "disable": "disable",
+        "list": "list",
+        "preview": "preview",
+        "print": "print",
+        "save": "save",
+        "saveAndClose": "save & close",
+        "title": "title",
+        "recipient": "recipient",
+        "taxCode": "tax code",
+        "tax": "tax",
+        "note": "note",
+        "description": "description",
+        "type": "type",
+        "imgae": "image",
+        "picture": "picture",
+        "photo": "photo",
+        "reload": "reload",
+        "refresh": "refresh",
+        "undo": "undo",
+        "close": "close",
+        "customer": "customer",
+        "dateOfcreated": "date of created",
+        "isApprove": "approved",
+        "name": "name",
+        "address": "address",
+        "phone": "phone",
+        "email": "email",
+        "code": "code",
+        "employee": "employee",
+        "exportTo": "export {{to}}",
+        "goback": "go back",
+        "sort": "sort",
+        "value": "value",
+        "module": "module",
+        "selectTimezone": "Select timezone",
+        "choose": "choose",
+        "clearFilter": "clear filter",
+        "reset": "reset",
+        "state": "state",
+        "all": "all",
+        "import": "import",
+        "upload": "upload",
+        "copy": "copy",
+        "clear": "clear",
+        "parent": "parent",
+        "assign": "assign",
+        "revoke": "revoke",
+        "approve": "approve",
+        "dateOfApproved": "approved date",
+        "tag": "tag",
+        "tag/untag": "tag/untag",
+        "export": "export",
+        "table": "table",
+        "change": "change",
+        "changeState": "change state",
+        "share": "share",
+        "choosePms": "choose pms",
+        "user": "user",
+        "userGroup": "user group",
+        "permission": "permission",
+        "next": "next",
+        "previous": "previous",
+        "parameter": "parameter",
+        "condition": "condition",
+        "data": "data",
+        "stopOnFailed": "stop on failed",
+        "label": "label",
+        "remoteDataSource": "remote data source",
+        "remoteDataResource": "remote data resource",
+        "breakOnFail": "break on fail",
+        "dataType": "data type",
+        "add": "add",
+        "warehouse": "warehouse",
+        "branch": "branch",
+        "coordinateX": "coordinate X",
+        "coordinateY": "coordinate Y",
+        "coordinateZ": "coordinate Z",
+        "findOrder": "find order",
+        "copyToAllNextForm": "copy to all next form",
+        "path": "path",
+        "container": "container",
+        "suggest": "suggest",
+        "lock": "lock",
+        "lockBook": "lock book",
+        "openBook": "open book",
+        "bookkeeping": "bookkeeping",
+        "currency": "currency",
+        "status": "status",
+        "refreshToken": "refresh token",
+        "sync": "sync"
+    },
+    "Contact": {
+        "name": "contact name",
+        "address": "address",
+        "email": "email",
+        "phone": "phone",
+        "taxCode": "mã số thuế",
+        "syncMainToDetail": "sync to contact detail",
+        "syncMainToDetaisyncMainToDetailCompleteMessagel": "are you waint to sync to contact details for all contacts ?"
+    },
+    "Bank": {
+        "name": "bank name",
+        "code": "bank code"
+    },
+    "Customer": {
+        "name": "customer name"
+    },
+    "Product": {
+        "name": "product name",
+        "unit": "unit"
+    },
+    "Voucher": {
+        "organizationOrPersornal": "organization/persornal",
+        "productOrservice": "product/service",
+        "quantity": "quantity",
+        "unit": "unit",
+        "shortQuantity": "qty",
+        "shortUnit": "unit",
+        "price": "price",
+        "tax": "tax",
+        "toMoney": "to money",
+        "dearCustomer": "Dear customer",
+        "total": "total"
+    },
+    "Form": {
+        "requireLabel": "{{field}} is require"
+    },
+    "System": {
+        "title": "{{action}} system parameter {{definition}}",
+        "Config": {
+            "userLocale": "User locale config"
+        },
+        "Route": {
+            "Rule": {
+                "title": "{{action}} route rule {{definition}}"
+            },
+            "Param": {
+                "title": "{{action}} route param {{definition}}",
+                "options": "các tùy chọn tham số",
+                "defaultOperator": "điều kiện mặc định",
+                "defaultDataType": "kểu dữ liệu mặc định"
+            },
+            "Action": {
+                "title": "{{action}} aroute ction {{definition}}",
+                "parameter": "tham số cho hành động",
+                "value": "giá trị cho tham số"
+            },
+            "priority": "ưu tiên",
+            "conditions": "các điều kiện so sánh",
+            "actions": "các hành động được thực thi",
+            "action": "hành động"
+        },
+        "Menu": {
+            "route": "route",
+            "Route": {
+                "rule": "route rule",
+                "param": "route param",
+                "action": "route action"
+            }
+        }
+    },
+    "Ivoip": {
+        "List": {
+            "title": "Call detail record list"
+        },
+        "CallState": {
+            "ORIGINATOR_CANCEL": "originator cancel",
+            "NORMAL_CLEARING": "normal clearing",
+            "CALL_REJECTED": "call rejected",
+            "INCOMPATIBLE_DESTINATION": "incompatible destination",
+            "EXCHANGE_ROUTING_ERROR": "Exchange routing error",
+            "NORMAL_TEMPORARY_FAILURE": "temporary failed",
+            "USER_BUSY": "busy",
+            "NO_ANSWER": "no answer"
+        },
+        "CallResult": {
+            "answered": "OK",
+            "missed": "missed",
+            "voicemail": "voicemail",
+            "cancelled": "cancelled",
+            "failed": "failed",
+            "null": "failed"
+        },
+        "Direction": {
+            "local": "local",
+            "inbound": "inbound",
+            "outbound": "outbound"
+        },
+        "CallBlock": {
+            "title": "{{action}} call block {{definition}}"
+        },
+        "CallRoute": {
+            "title": "{{action}} call route {{definition}}"
+        },
+        "Dialplan": {
+            "title": "{{action}} dialplan {{definition}}"
+        },
+        "Device": {
+            "title": "{{action}} IP Phone {{definition}}"
+        },
+        "Cdrs": {
+            "title": "call detail records"
+        },
+        "local": "local",
+        "inbound": "inbound",
+        "outbound": "outbound",
+        "direction": "direction",
+        "extension": "extension",
+        "callerNumber": "caller number",
+        "callerName": "caller name",
+        "calleeNumber": "callee number",
+        "calleeName": "callee name",
+        "forwardTo": "forward to",
+        "destination": "destination",
+        "startedTime": "started time",
+        "ringingTime": "ringing time",
+        "duration": "duration",
+        "soundRecord": "sound record",
+        "callState": "call state",
+        "receivedNumber": "received number",
+        "hangupCase": "hangup case",
+        "sipInfo": "sip info"
+    },
+    "Purchase": {
+        "PriceTable": {
+            "title": "{{action}} purchase price table {{definition}}"
+        },
+        "Voucher": {
+            "title": "{{action}} purchase voucher {{definition}}",
+            "suggestedSalesPrice": "suggested sales price"
+        },
+        "dateOfPurchase": "date of purchase"
+    },
+    "Warehouse": {
+        "GoodsReceiptNote": {
+            "title": "{{action}} goods receipt note {{definition}}"
+        },
+        "GoodsDeliveryNote": {
+            "title": "{{action}} goods delivery note {{definition}}"
+        },
+        "GoodsContainer": {
+            "title": "{{action}} goods container {{definition}}"
+        },
+        "Book": {
+            "title": "{{action}} warehouse book {{definition}}",
+            "voucherWasWroteInToWahouseBook": "voucher was wrote in to warehouse book",
+            "voucherWasUnwroteInToWahouseBook": "voucher was unwrote out of warehouse book",
+            "commit": "book commited",
+            "commitTo": "book commit to"
+        },
+        "Menu": {
+            "book": "warehouse book",
+            "goods": "goods",
+            "goodsReceiptNote": "goods receipt note",
+            "goodsDeliveryNote": "goods delivery note",
+            "warehouseList": "warehouse list",
+            "goodsContainer": "goods container"
+        },
+        "openBook": "mở sổ kho",
+        "lockBook": "khóa sổ kho",
+        "dateOfReceipted": "date of receipted",
+        "assignContainer": "assign container",
+        "assign/unassignContainer": "assign/unassign container",
+        "inventory": "inventory",
+        "account": "warehouse account",
+        "warehousePrice": "warehousePrice"
+    },
+    "AdminProduct": {
+        "chooseProducts": "choose product",
+        "conversionRatio": "conversion ratio",
+        "defaultSales": "default sales",
+        "defaultPurchase": "default purchase",
+        "addUnitConversion": "add unit conversion",
+        "categories": "product categories",
+        "assignCategories": "assign product categories",
+        "productList": "product list",
+        "Product": {
+            "title": "{{action}} product {{definition}}"
+        },
+        "Category": {
+            "title": "{{action}} product category {{definition}}"
+        },
+        "Group": {
+            "title": "{{action}} product group {{definition}}"
+        },
+        "Unit": {
+            "title": "{{action}} unit {{definition}}"
+        },
+        "Menu": {
+            "product": "product list",
+            "category": "product category",
+            "group": "product group",
+            "unit": "unit"
+        }
+    },
+    "Ads": {
+        "Code": {
+            "title": "{{action}} ads code {{definition}}"
+        },
+        "Content": {
+            "title": "{{action}} ads content {{definition}}"
+        }
+    },
+    "Crawl": {
+        "Plan": {
+            "title": "{{action}} crawl plan {{definition}}"
+        },
+        "Server": {
+            "title": "{{action}} crawl server {{definition}}"
+        }
+    },
+    "EmailMarketing": {
+        "Address": {
+            "title": "{{action}}} sent mail {{definition}"
+        },
+        "Advertisement": {
+            "title": "{{action}} advertisement email {{definition}}"
+        },
+        "Template": {
+            "title": "{{action}} emai template {{definition}}"
+        },
+        "Gatewya": {
+            "title": "{{action}} mail gateway {{definition}} "
+        }
+    },
+    "File": {
+        "File": {
+            "title": "{{action}} file {{definition}}"
+        },
+        "Store": {
+            "title": "{{action}} file store {{definition}}"
+        },
+        "dragAndDropToUpload": "kéo & thả file vào để upload"
+    },
+    "Helpdesk": {
+        "Ticket": {
+            "title": "{{action}} helpdesk ticket {{definition}}"
+        },
+        "State": {
+            "complete": "complete ticket",
+            "cancel": "cancel ticket",
+            "approved": "approved ticket",
+            "accepted": "accepted ticket"
+        },
+        "Menu": {
+            "userExtensions": "Extensions numbers",
+            "procedure": "quy trình",
+            "dashboard": "dashboard"
+        },
+        "Param": {
+            "options": "param options"
+        },
+        "Route": {
+            "Action": {
+                "parameter": "parameter for action",
+                "value": "value for parameter"
+            },
+            "priority": "priority",
+            "conditions": "conditions for compare",
+            "actions": "actions for execute",
+            "action": "action"
+        },
+        "Procedure": {
+            "title": "{{action}} procedure {{definition}}",
+            "steps": "implement steps"
+        },
+        "saveContact": "save contact",
+        "changeStateConfirm": "change state for `{{description}}`",
+        "acceptStateConfirm": "accept ticket `{{description}}`",
+        "accept": "accept"
+    },
+    "ZaloOa": {
+        "OfficialAccount": {
+            "title": "{{action}} official account {{definition}}",
+            "confirmRefreshTokenMessage": "you mus login zalo's admin account before execute this command"
+        },
+        "Webhook": {
+            "token": "webhook token"
+        },
+        "Menu": {
+            "zaloOa": "Zalo OA",
+            "ZaloOa": {
+                "officialAccounts": "official account",
+                "follower": "following customer"
+            }
+        },
+        "appid": "Zalo App ID",
+        "callbackUrl": "callback url received token",
+        "apiUrl": "api url"
+    },
+    "Print": {
+        "listTemplate": "list template",
+        "gridTemplate": "grid template",
+        "chooseTemplate": "choose template",
+        "template": "print template"
+    },
+    "Menu": {
+        "System": {
+            "parameters": "parameters",
+            "configBoard": "config board",
+            "userConfigBoard": "user config board"
+        },
+        "Sales": {
+            "salesVoucher": "sales voucher",
+            "dateOfDelivery": "date of delivery",
+            "priceTable": "price table",
+            "masterPriceTable": "master price table",
+            "priceTablePrint": "print price table"
+        }
     }
-  }
 }

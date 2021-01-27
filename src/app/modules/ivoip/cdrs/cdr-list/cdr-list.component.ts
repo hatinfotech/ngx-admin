@@ -107,7 +107,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
           if (cell === 'voicemail') real = this.commonService.translateText('Ivoip.CallResult.cancelled');
           if (cell === 'failed') real = this.commonService.translateText('Ivoip.CallResult.cancelled');
 
-          return this.commonService.translateText('Ivoip.CallResult.' + cell + (real ? (' (' + real + ')') : ''));
+          return this.commonService.translateText('Ivoip.CallResult.' + cell) + (real ? (' (' + real + ')') : '');
         },
       },
       Extension: {
@@ -198,6 +198,8 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
               { value: 'NORMAL_CLEARING', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.NORMAL_CLEARING'), 'head-title') },
               { value: 'CALL_REJECTED', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.CALL_REJECTED'), 'head-title') },
               { value: 'INCOMPATIBLE_DESTINATION', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.INCOMPATIBLE_DESTINATION'), 'head-title') },
+              { value: 'USER_BUSY', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.USER_BUSY'), 'head-title') },
+              { value: 'NO_ANSWER', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallState.NO_ANSWER'), 'head-title') },
             ],
           },
         },

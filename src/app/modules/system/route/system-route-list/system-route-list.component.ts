@@ -8,13 +8,14 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 
 @Component({
   selector: 'ngx-system-route-list',
   templateUrl: './system-route-list.component.html',
   styleUrls: ['./system-route-list.component.scss'],
 })
-export class SystemRouteListComponent  extends DataManagerListComponent<SystemRouteModel> implements OnInit {
+export class SystemRouteListComponent extends ServerDataManagerListComponent<SystemRouteModel> implements OnInit {
 
   componentName: string = 'SystemRouteListComponent';
   formPath = '/system/route/form';
@@ -77,44 +78,49 @@ export class SystemRouteListComponent  extends DataManagerListComponent<SystemRo
         type: 'string',
         width: '10%',
       },
-        Copy: {
-          title: 'Copy',
-          type: 'custom',
-          width: '10%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'copy';
-            instance.label = this.commonService.translateText('Common.copy');
-            instance.display = true;
-            instance.status = 'success';
-            instance.valueChange.subscribe(value => {
-              // if (value) {
-              //   instance.disabled = false;
-              // } else {
-              //   instance.disabled = true;
-              // }
-            });
-            instance.click.subscribe(async (row: SystemRouteModel) => {
+      Priority: {
+        title: 'Ưu tiên',
+        type: 'string',
+        width: '10%',
+      },
+      Copy: {
+        title: 'Copy',
+        type: 'custom',
+        width: '10%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'copy';
+          instance.label = this.commonService.translateText('Common.copy');
+          instance.display = true;
+          instance.status = 'success';
+          instance.valueChange.subscribe(value => {
+            // if (value) {
+            //   instance.disabled = false;
+            // } else {
+            //   instance.disabled = true;
+            // }
+          });
+          instance.click.subscribe(async (row: SystemRouteModel) => {
 
-              this.commonService.openDialog(SystemRouteFormComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  inputId: [row.Code],
-                  isDuplicate: true,
-                  onDialogSave: (newData: SystemRouteModel[]) => {
-                    // if (onDialogSave) onDialogSave(row);
-                  },
-                  onDialogClose: () => {
-                    // if (onDialogClose) onDialogClose();
-                    this.refresh();
-                  },
+            this.commonService.openDialog(SystemRouteFormComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [row.Code],
+                isDuplicate: true,
+                onDialogSave: (newData: SystemRouteModel[]) => {
+                  // if (onDialogSave) onDialogSave(row);
                 },
-              });
-
+                onDialogClose: () => {
+                  // if (onDialogClose) onDialogClose();
+                  this.refresh();
+                },
+              },
             });
-          },
+
+          });
         },
+      },
     },
   });
 
@@ -127,5 +133,26 @@ export class SystemRouteListComponent  extends DataManagerListComponent<SystemRo
     super.getList((rs) => {
       if (callback) callback(rs);
     });
+  }
+
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    source.prepareData = (data: SystemRouteModel[]) => {
+      data.forEach(item => {
+        // item['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+        // item['DownloadLink'] += '?token=' + this.apiService.getAccessToken();
+      });
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['sort_Priority'] = 'asc';
+      return params;
+    };
+
+    return source;
   }
 }
