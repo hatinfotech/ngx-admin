@@ -83,6 +83,11 @@ export class SystemRouteListComponent extends ServerDataManagerListComponent<Sys
         type: 'string',
         width: '10%',
       },
+      Enable: {
+        title: 'Kích hoạt',
+        type: 'string',
+        width: '10%',
+      },
       Copy: {
         title: 'Copy',
         type: 'custom',

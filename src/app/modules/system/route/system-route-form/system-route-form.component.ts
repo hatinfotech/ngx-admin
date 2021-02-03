@@ -83,6 +83,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    tags: true,
     keyMap: {
       id: 'Name',
       text: 'Description',
@@ -96,6 +97,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
       width: '100%',
       dropdownAutoWidth: true,
       minimumInputLength: 0,
+      tags: true,
       multiple: param.DefaultDataType === 'OBJECTS',
       keyMap: {
         id: 'id',
@@ -263,6 +265,8 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
       Code: [{ disabled: true, value: '' }],
       Type: [{ disabled: true, value: '' }, Validators.required],
       State: [{ disabled: true, value: '' }],
+      Enable: [true],
+      RouteIndex: [''],
       Name: ['', Validators.required],
       Description: ['', Validators.required],
       Priority: ['999'],
