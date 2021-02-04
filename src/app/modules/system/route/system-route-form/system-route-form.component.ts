@@ -90,6 +90,29 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     },
   };
 
+  select2OptionForOperator = {
+    placeholder: this.commonService.translateText('Common.param'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: false,
+    minimumInputLength: 0,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  operatorList = [
+    {id: 'EQ', text: '='},
+    {id: 'LT', text: '<'},
+    {id: 'LE', text: '<='},
+    {id: 'GT', text: '>'},
+    {id: 'GE', text: '=>'},
+    {id: 'NE', text: '!='},
+    {id: 'IN', text: 'IN'},
+  ];
+
   getSlect2ForConditionData(param: SystemParamModel) {
     const option = {
       placeholder: this.commonService.translateText('Common.param'),
