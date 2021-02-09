@@ -155,7 +155,7 @@ export class CommonService {
         translate.use(info.locale);
         localStorage.setItem('configuration.locale', info.locale);
         if (!info.skipUpdate) {
-          this.apiService.putPromise<LocaleConfigModel[]>('/system/user-locales', {}, [{ LocaleCode: info.locale }]).then(rs => {
+          this.apiService.putPromise<LocaleConfigModel[]> ('/system/user-locales', {}, [{ LocaleCode: info.locale }]).then(rs => {
             console.log('Update locale success');
           });
         }

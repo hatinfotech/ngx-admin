@@ -101,7 +101,7 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
                     label: this.commonService.translateText('Common.refreshToken'),
                     status: 'success',
                     action: () => {
-                      window.open(`https://oauth.zaloapp.com/v3/oa/permission?app_id=${officialAccount.AppId}&redirect_uri=${officialAccount.CallbackUrl}`, '_blank');
+                      window.open(`https://oauth.zaloapp.com/v3/oa/permission?app_id=${officialAccount.AppId}&redirect_uri=${encodeURIComponent(officialAccount.CallbackUrl)}`, '_blank');
                     },
                   },
                   {
