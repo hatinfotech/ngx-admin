@@ -17,7 +17,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 })
 export class UserListComponent extends ServerDataManagerListComponent<UserModel> implements OnInit {
 
-  componentName: string = 'UserGroupListComponent';
+  componentName: string = 'UserListComponent';
   formPath = '/user/user/form';
   apiPath = '/user/users';
   idKey = 'Code';
