@@ -362,6 +362,16 @@ const routes: Routes = [
     loadChildren: () => import('./modules/zalo-oa/zalo-oa.module')
       .then(m => m.ZaloOaModule),
   },
+  // Accounting
+  {
+    path: 'accounting',
+    resolve: {
+      configuration: RoutingResolve,
+    },
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/accounting/accounting.module')
+      .then(m => m.AccountingModule),
+  },
   { path: '', redirectTo: 'mini-erp', pathMatch: 'full' },
   { path: '**', redirectTo: 'mini-erp' },
 ];

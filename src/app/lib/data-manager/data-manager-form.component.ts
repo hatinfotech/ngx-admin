@@ -257,6 +257,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
             });
           } else {
             // this.formLoading = false;
+            resolve(true);
             this.onProcessed();
           }
         } else {

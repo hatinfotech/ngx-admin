@@ -16,6 +16,7 @@ export class FormGroupComponent implements OnInit {
   @Input() index: number;
   @Input() label: string;
   @Input() required?: boolean;
+  @Input() align = 'left';
   constructor(
     public commonService: CommonService,
   ) { }
