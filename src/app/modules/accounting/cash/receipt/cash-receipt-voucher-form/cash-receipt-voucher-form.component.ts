@@ -5,11 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
 import { CashVoucherDetailModel, CashVoucherModel } from '../../../../../models/accounting.model';
-import { UserGroupModel } from '../../../../../models/user-group.model';
-import { UserModel } from '../../../../../models/user.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
-import { UserGroupFormComponent } from '../../../../users/user-group/user-group-form/user-group-form.component';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-form',
@@ -44,38 +41,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   //   }
   // }
 
-  userList: UserModel[];
-  select2OptionForContacts = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    multiple: false,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    // ajax: {
-    //   url: params => {
-    //     return this.apiService.buildApiUrl('/contact/contacts', { select: 'Code=>Code,Name=>Name,id=>Code,text=>Code', filter_Name: params['term'] ? params['term'] : '' });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     // console.info(data, params);
-    //     return {
-    //       results: data.map(item => {
-    //         item['id'] = item['Code'];
-    //         item['text'] = item['Name'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
-  };
-
-  parentList: UserGroupModel[];
-  select2OptionForParent = {
+  select2OptionForContact = {
     placeholder: 'Chọn liên hệ...',
     allowClear: true,
     width: '100%',
@@ -129,52 +95,9 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   };
 
 
-  // resourceList: ResourceModel[][][] = [];
-  // select2OptionForResource = {
-  //   placeholder: 'Chọn Resource...',
-  //   allowClear: true,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   keyMap: {
-  //     id: 'Name',
-  //     text: 'Description',
-  //   },
-  // };
-
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
-    // this.apiService.get<UserGroupModel[]>(
-    //   '/user/groups', { limit: 99999 },
-    //   list1 => {
-    //     list1.unshift({
-    //       Code: '',
-    //       Description: 'Chọn nhóm cha...',
-    //     });
-    //     this.parentList = list1.map(item => {
-    //       item['id'] = item['Code'];
-    //       item['text'] = item['Name'] + ': ' + item['Description'];
-    //       return item;
-    //     });
-
-    //     this.apiService.get<UserModel[]>('/user/users', { limit: 9999999, isMulti: true, select: 'Code,Name' },
-    //       list => {
-    //         this.userList = list.filter((item: UserModel) => {
-    //           if (item['Code'] && item['Name']) {
-    //             // item['User'] = item['Code'];
-    //             item['id'] = item['Code'];
-    //             item['text'] = item['Name'];
-    //             return true;
-    //           }
-    //           return false;
-    //         });
-    //         super.ngOnInit();
-    //       });
-
-    //   });
-
-
   }
 
   async formLoad(formData: CashVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CashVoucherModel) => void) {
@@ -187,34 +110,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
           this.getDetails(index).push(newResourceFormGroup);
           const comIndex = this.getDetails(index).length - 1;
           this.onAddDetailFormGroup(index, comIndex, newResourceFormGroup);
-
-          // module['Users'].map(item => {
-          //   item['id'] = item['Name'];
-          //   item['text'] = item['Description'] ? item['Description'] : item['Name'];
-          //   return item;
-          // });
-
-          // const module = this.moduleList.find((value, i, obj) => {
-          //   return resource['Module'] === value['Name'];
-          // });
-          // if (module && module['Resources']) {
-          //   this.resourceList[index][comIndex] = module['Resources'].map(item => {
-          //     item['id'] = item['Name'];
-          //     item['text'] = item['Description'] ? item['Description'] : item['Name'];
-          //     return item;
-          //   });
-
-          //   const resourceChooseList = module['Resources'].find((value, i, obj) => {
-          //     return value.Name === resource['Resource'];
-          //   });
-          //   newResourceFormGroup.get('Resource').patchValue(resource['Resource']);
-
-
-          // }
-
         });
       }
-
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -303,7 +200,6 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     });
 
     if (data) {
-      // data['Id_old'] = data['Id'];
       newForm.patchValue(data);
     }
     return newForm;
@@ -314,7 +210,6 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   addDetailFormGroup(formGroupIndex: number) {
-    // this.resourceList[formGroupIndex].push([]);
     const newFormGroup = this.makeNewDetailFormGroup();
     this.getDetails(formGroupIndex).push(newFormGroup);
     this.onAddDetailFormGroup(formGroupIndex, this.getDetails(formGroupIndex).length - 1, newFormGroup);
@@ -322,7 +217,6 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   onAddDetailFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
-    // this.resourceList[mainIndex].push([]);
   }
 
   removeDetail(formGroupIndex: number, index: number) {
@@ -335,46 +229,4 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   onRemoveDetailFormGroup(mainIndex: number, index: number) {
     // this.resourceList[mainIndex].splice(index, 1);
   }
-
-
-
-  copyResourceFormControlValueToOthers(i: number, ic: number, formControlName: string) {
-    const currentFormControl = this.getDetails(i).controls[ic].get(formControlName);
-    this.getDetails(i).controls.forEach((formItem, index) => {
-      if (index !== i) {
-        formItem.get(formControlName).patchValue(currentFormControl.value);
-      }
-    });
-  }
-
-  onModuleChangeForResource(event: { Resources: any[] }, i: number, ir: number) {
-    // console.info(event);
-    if (event.Resources) {
-      event.Resources.unshift({
-        Name: '',
-        Description: 'Chọn resource',
-      });
-      // this.resourceList[i][ir] = event.Resources.map(item => {
-      //   item['id'] = item['Name'];
-      //   item['text'] = item['Description'] ? item['Description'] : item['Name'];
-      //   return item;
-      // });
-    }
-  }
-
-  getResourceChooseList(mainFormIndex: number, resourceIndex: number) {
-    // if (this.resourceList && this.resourceList[mainFormIndex] && this.resourceList[mainFormIndex][resourceIndex]) {
-    //   return this.resourceList[mainFormIndex][resourceIndex];
-    // }
-    return [];
-  }
-
-
-
-
-
-
-
-
-
 }
