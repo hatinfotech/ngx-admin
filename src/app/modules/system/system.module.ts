@@ -31,6 +31,8 @@ import { SystemParamFormComponent } from './param/system-param-form/system-param
 import { SystemRouteListComponent } from './route/system-route-list/system-route-list.component';
 import { SystemRouteFormComponent } from './route/system-route-form/system-route-form.component';
 import { SystemLibraryIconComponent } from './library/icon/system-library-icon/system-library-icon.component';
+import { ThemeConfigBoardComponent } from './configuration/theme-config-board/theme-config-board.component';
+import { ThemeConfigComponent } from './configuration/theme-config-board/theme-config/theme-config.component';
 
 
 
@@ -39,7 +41,7 @@ import { SystemLibraryIconComponent } from './library/icon/system-library-icon/s
   declarations: [SystemComponent, SystemParameterListComponent, SystemParameterFormComponent,
     SystemConfigurationBoardComponent, SystemLocaleConfigComponent, UserConfigBoardComponent,
     UserLocaleConfigComponent, SystemActionListComponent, SystemActionFormComponent,
-    SystemParamListComponent, SystemParamFormComponent, SystemRouteListComponent, SystemRouteFormComponent, SystemLibraryIconComponent,
+    SystemParamListComponent, SystemParamFormComponent, SystemRouteListComponent, SystemRouteFormComponent, SystemLibraryIconComponent, ThemeConfigBoardComponent, ThemeConfigComponent,
   ],
   imports: [
     CommonModule,
@@ -80,6 +82,7 @@ import { SystemLibraryIconComponent } from './library/icon/system-library-icon/s
   ],
   exports: [
     UserLocaleConfigComponent,
+    ThemeConfigComponent,
   ],
   entryComponents: [
     SystemParameterFormComponent,

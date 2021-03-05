@@ -5,7 +5,7 @@ import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
 import {
   NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
-  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries,
+  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries, NbThemeService,
 } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location, getCurrencySymbol, CurrencyPipe, DatePipe } from '@angular/common';
@@ -91,7 +91,8 @@ export class CommonService {
   private previousUrl = null;
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
 
-  public locale$: BehaviorSubject<{ locale: string, skipUpdate?: boolean }> = new BehaviorSubject<{ locale: string, skipUpdate?: boolean }>(null);
+  public locale$ = new BehaviorSubject<{ locale: string, skipUpdate?: boolean }>(null);
+  public theme$= new BehaviorSubject<{ theme: string, skipUpdate?: boolean }>(null);
   public timezone$: BehaviorSubject<{ timezone: string, skipUpdate?: boolean }> = new BehaviorSubject<{ timezone: string, skipUpdate?: boolean }>(null);
   public configReady$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -139,6 +140,7 @@ export class CommonService {
     public currencyPipe: CurrencyPipe,
     public iconsLibrary: NbIconLibraries,
     public datePipe: DatePipe,
+    private themeService: NbThemeService,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
@@ -155,8 +157,20 @@ export class CommonService {
         translate.use(info.locale);
         localStorage.setItem('configuration.locale', info.locale);
         if (!info.skipUpdate) {
-          this.apiService.putPromise<LocaleConfigModel[]> ('/system/user-locales', {}, [{ LocaleCode: info.locale }]).then(rs => {
+          this.apiService.putPromise<LocaleConfigModel[]> ('/system/user-configs', {}, [{ LocaleCode: info.locale }]).then(rs => {
             console.log('Update locale success');
+          });
+        }
+      }
+    });
+    this.theme$.subscribe(info => {
+      if (info) {
+        // translate.use(info.theme);
+        localStorage.setItem('configuration.theme', info.theme);
+        this.themeService.changeTheme(info.theme);
+        if (!info.skipUpdate) {
+          this.apiService.putPromise<LocaleConfigModel[]> ('/system/user-configs', {}, [{ Theme: info.theme }]).then(rs => {
+            console.log('Update theme success');
           });
         }
       }
@@ -221,8 +235,10 @@ export class CommonService {
           }
           const locale = loginInfo['configuration']['locale'] || 'vi-VN';
           const timezone = loginInfo['configuration']['timezone'] || 'America/Los_Angeles';
+          const theme = loginInfo['configuration']['theme'] || 'default';
           this.locale$.next({ locale, skipUpdate: true });
           this.timezone$.next({ timezone, skipUpdate: true });
+          this.theme$.next({ theme, skipUpdate: true });
           // localStorage.setItem('configuration.locale', locale);
           // localStorage.setItem('configuration.timezone', timezone);
 

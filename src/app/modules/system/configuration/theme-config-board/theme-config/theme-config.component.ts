@@ -1,25 +1,25 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../../../../../../environments/environment';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
 import { LocaleConfigModel } from '../../../../../models/system.model';
-import { environment } from '../../../../../../environments/environment';
 import { TaxModel } from '../../../../../models/tax.model';
 import { UnitModel } from '../../../../../models/unit.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../../services/common.service';
-import { TranslateService } from '@ngx-translate/core';
 import { Timezone } from '../../system-configuration-board/system-locale-config/system-locale-config.component';
-import { HttpErrorResponse } from '@angular/common/http';
 import * as timezones from '../../../../../../assets/timezones.json';
 
 @Component({
-  selector: 'ngx-user-locale-config',
-  templateUrl: './user-locale-config.component.html',
-  styleUrls: ['./user-locale-config.component.scss'],
+  selector: 'ngx-theme-config',
+  templateUrl: './theme-config.component.html',
+  styleUrls: ['./theme-config.component.scss']
 })
-export class UserLocaleConfigComponent extends DataManagerFormComponent<LocaleConfigModel> implements OnInit {
+export class ThemeConfigComponent extends DataManagerFormComponent<LocaleConfigModel> implements OnInit {
 
   componentName: string = 'UserLocaleConfigComponent';
   idKey = 'Code';
@@ -115,8 +115,8 @@ export class UserLocaleConfigComponent extends DataManagerFormComponent<LocaleCo
   makeNewFormGroup(data?: LocaleConfigModel): FormGroup {
     const newForm = this.formBuilder.group({
       _index: [''],
-      Locale: ['', Validators.required],
-      Timezone: ['', Validators.required],
+      // Locale: ['', Validators.required],
+      Theme: ['', Validators.required],
     });
     if (data) {
       // data['Name_old'] = data['Name'];

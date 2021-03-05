@@ -24,17 +24,24 @@ export class FrameSocket {
     public receiver$ = this.receiverSubject.asObservable();
 
     constructor(
-        protected connection: Window
+        protected connection: Window,
+        public id: string,
     ) {
         this.on<FrameSocketData<any>>('callback').subscribe((result) => {
             console.debug('On Callback : ', result);
             this.emitCallbackSubject.next(result.data);
             // this.stateSubject.next('init-event ');
         });
-        window.onmessage = (e: { data: any }) => {
-            console.debug(e);
-            this.receiverSubject.next(e.data);
-        }
+        window.addEventListener('message', (event) => {
+            console.debug(event);
+            if (event && event.data && event.data.id == this.id) {
+                this.receiverSubject.next(event.data);
+            }
+        });
+        // window.onmessage = (e: { data: any }) => {
+        //     console.debug(e);
+        //     this.receiverSubject.next(e.data);
+        // }
         this.init();
     }
 
@@ -49,7 +56,7 @@ export class FrameSocket {
         const checkpointSeq = this.seq++;
         this.connection.postMessage({ type: event === 'callback' ? 'response' : 'request', seq: checkpointSeq, event: event, data }, '*');
         const result = await this.emitCallback$.pipe(filter(rs => rs && rs.seq === checkpointSeq), take(1)).toPromise();
-        if(!result || result.type == 'error') {
+        if (!result || result.type == 'error') {
             throw Error(result.data);
         }
         return result.data;
@@ -57,7 +64,7 @@ export class FrameSocket {
 
     on<T>(event: string): Observable<IFrameSocketResult<T>> {
         return this.receiver$.pipe(filter(request => request && request.event == event), map(request => ({
-            data: request.data, 
+            data: request.data,
             callback: (type: string, response) => {
                 this.emit('callback', { type, seq: request.seq, data: response });
             }

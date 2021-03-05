@@ -13,6 +13,7 @@ export class LocaleConfigModel {
   User?: string;
   LocaleCode?: string;
   Timezone?: string;
+  Theme?: string;
 }
 
 export class CurrencyConfigModel {

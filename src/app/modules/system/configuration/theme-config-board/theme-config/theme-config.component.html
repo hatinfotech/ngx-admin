@@ -3,7 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('User.LocaleConfig.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('User.ThemeConfig.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
                         [controls]="actionButtonList"></ngx-card-header>
 
                     <!-- <nav>
@@ -18,24 +18,17 @@
                     <div [formGroup]="formItem">
                         <div class="row">
                             <input type="hidden" [value]="i" formControlName="_index">
-                            <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Locale'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.language')} | headtitlecase }}
+                            <div class="col-sm-12">
+                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Theme'), 'warning')">
+                                    <label class="label"><span class="valid">{{'Common.theme' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.theme')} | headtitlecase }}
                       (*)</span></label>
-                                    <nb-select size="medium" formControlName="Locale" fullWidth>
-                                        <nb-option value="vi-VN">Việt Nam (vi-VN)</nb-option>
-                                        <nb-option value="en-US">English and US region (en-US)</nb-option>
+                                    <nb-select size="medium" formControlName="Theme" fullWidth>
+                                        <nb-option value="default">Default - Giao diện sáng</nb-option>
+                                        <nb-option value="dark">Dark - Giao diện tối</nb-option>
+                                        <nb-option value="cosmic">Cosmic - Giao diện tối màu tím</nb-option>
+                                        <nb-option value="corporate">Corporate - Giao diện sáng phẳng</nb-option>
                                     </nb-select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Timezone'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.value' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.timezone')} | headtitlecase }}
-                      (*)</span></label>
-                                    <ngx-select2 [data]="tz" formControlName="Timezone" [select2Option]="select2OptionTimezone">
-                                    </ngx-select2>
                                 </div>
                             </div>
                         </div>
