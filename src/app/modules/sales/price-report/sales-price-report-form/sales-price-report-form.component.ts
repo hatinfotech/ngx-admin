@@ -421,7 +421,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         }
       }
     }
-
   }
 
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {

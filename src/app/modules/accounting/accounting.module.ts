@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { AccountingComponent } from './accounting.component';
 import { CashPaymentVoucherListComponent } from './cash/payment/cash-payment-voucher-list/cash-payment-voucher-list.component';
 import { CashPaymentVoucherFormComponent } from './cash/payment/cash-payment-voucher-form/cash-payment-voucher-form.component';
@@ -18,6 +18,8 @@ import { CustomElementModule } from '../../lib/custom-element/custom-element.mod
 import { DialogModule } from '../dialog/dialog.module';
 import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
 import { AccountingRoutingModule } from './accounting-routing.module';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { SmartTableCurrencyComponent, SmartTableCurrencyEditableComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 
 
 
@@ -53,12 +55,21 @@ import { AccountingRoutingModule } from './accounting-routing.module';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     CKEditorModule,
+    CurrencyMaskModule,
     NgxUploaderModule,
     TranslateModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,
     }),
-  ]
+  ],
+  entryComponents: [
+    SmartTableCurrencyEditableComponent,
+    SmartTableCurrencyComponent,
+  ],
+  providers: [
+    { provide: CurrencyPipe, useValue: {} },
+    { provide: DecimalPipe, useValue: {} },
+  ],
 })
 export class AccountingModule { }

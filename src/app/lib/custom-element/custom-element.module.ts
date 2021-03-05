@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
-import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent } from './smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
@@ -45,6 +45,7 @@ import { ObjectTextPipe, ObjectsTextPipe } from '../pipes/objecttext';
     IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
     SmartTableNumberEditableComponent,
     SmartTableTextEditableComponent,
+    SmartTableCurrencyComponent,
   ],
   imports: [
     CommonModule,
@@ -87,6 +88,11 @@ import { ObjectTextPipe, ObjectsTextPipe } from '../pipes/objecttext';
     IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
     SmartTableNumberEditableComponent,
     SmartTableTextEditableComponent,
+    SmartTableCurrencyComponent,
+  ],
+  providers: [
+    { provide: CurrencyPipe, useValue: {} },
+    { provide: DecimalPipe, useValue: {} },
   ],
 })
 export class CustomElementModule { }

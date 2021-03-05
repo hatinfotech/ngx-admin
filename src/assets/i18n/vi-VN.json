@@ -178,7 +178,15 @@
         "currency": "tiền tệ",
         "status": "trạng thái",
         "refreshToken": "làm mới token",
-        "sync": "đồng bộ"
+        "sync": "đồng bộ",
+        "Object": {
+            "title": "Liên hệ",
+            "name": "Tên",
+            "phone": "Số điện thoại",
+            "email": "Email",
+            "address": "Địa chỉ",
+            "taxCode": "Mã số thuế"
+        }
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -484,6 +492,11 @@
         "appid": "Zalo App ID",
         "callbackUrl": "url nhận token",
         "apiUrl": "api url"
+    },
+    "Accounting": {
+        "CashReceipt": {
+            "title": ""
+        }
     },
     "Print": {
         "listTemplate": "mẫu danh sách",

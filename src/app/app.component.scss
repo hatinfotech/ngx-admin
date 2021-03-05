@@ -964,6 +964,50 @@ body .form-group[state="warning"] textarea:focus {
     top: -14px;
 }
 
+.fit-fist-col,
+.fit-last-col {
+    padding-right: 9px;
+    padding-left: 9px;
+}
+
+.fit-row {
+    .fit-fist-col {
+        width: 60px;
+    }
+    .fit-last-col {
+        width: 60px;
+        text-align: right;
+    }
+    .fit-content-column {
+        width: calc(100% - 120px);
+    }
+    .fit-control-button {
+        width: 50px;
+        margin-bottom: 3px;
+    }
+    .fit-sequence {
+        text-align: center;
+        width: 40px;
+    }
+}
+
+.fit-row.form-detail-header,
+.fit-row.form-detail-footer {
+    .fit-control-button {
+        width: 50px;
+        margin-bottom: 3px;
+        height: 30px;
+    }
+}
+
+.form-detail-header {
+    .column {
+        line-height: 30px;
+        // border-bottom: 1px solid #7978786b;
+        margin-bottom: 3px;
+    }
+}
+
 
 /* End form */
 

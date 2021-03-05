@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { SmartTableCurrencyComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../../models/user-group.model';
 import { ApiService } from '../../../../../services/api.service';
@@ -72,10 +73,10 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         width: '5%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
-      Name: {
-        title: 'Name',
+      ObjectName: {
+        title: 'Object',
         type: 'string',
-        width: '30%',
+        width: '20%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Description: {
@@ -84,15 +85,25 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         width: '30%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
-      ParentDescription: {
-        title: 'Nhóm cha',
+      RelationVoucher: {
+        title: 'Relation Voucher',
         type: 'string',
         width: '20%',
       },
       Code: {
         title: 'Mã',
         type: 'string',
-        width: '20%',
+        width: '10%',
+      },
+      Amount: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.amount'), 'head-title'),
+        type: 'custom',
+        width: '10%',
+        position: 'right',
+        renderComponent: SmartTableCurrencyComponent,
+        onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+          // instance.format$.next('medium');
+        },
       },
     },
   });

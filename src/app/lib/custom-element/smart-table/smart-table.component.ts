@@ -187,6 +187,36 @@ export class SmartTableDateTimeComponent implements ViewCell, OnInit {
 }
 
 @Component({
+  template: `{{this.value | currency:'VND'}}`,
+})
+export class SmartTableCurrencyComponent implements ViewCell, OnInit {
+
+  // renderValue: string;
+  disable: boolean = false;
+  // format$ = new BehaviorSubject('short');
+
+  @Input() value: string;
+  @Input() rowData: any;
+
+  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+  // curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
+
+  constructor(
+    public commonService: CommonService,
+  ) { }
+
+  ngOnInit() {
+    // this.renderValue = this.value;
+  }
+
+  onChange(value: any) {
+    this.valueChange.emit(value);
+    this.value = value;
+  }
+
+}
+
+@Component({
   template: `
     <!-- <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox> -->
     <input #inputText type="text" [name]="name" nbInput fullWidth

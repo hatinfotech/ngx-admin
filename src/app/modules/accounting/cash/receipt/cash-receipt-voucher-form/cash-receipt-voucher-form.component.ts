@@ -3,8 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
 import { CashVoucherDetailModel, CashVoucherModel } from '../../../../../models/accounting.model';
+import { ContactModel } from '../../../../../models/contact.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 
@@ -15,10 +17,16 @@ import { CommonService } from '../../../../../services/common.service';
 })
 export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<CashVoucherModel> implements OnInit {
 
+  // Base variables
   componentName = 'CashReceiptVoucherFormComponent';
   idKey = 'Code';
   apiPath = '/accounting/cash-vouchers';
   baseFormUrl = '/accouting/cash-receipt-voucher/form';
+
+  // variables
+  locale = this.commonService.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
+  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -71,6 +79,60 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     },
   };
 
+  // Currency list
+  currencyList = [
+    {
+      id: 'VND',
+      text: 'Việt Nam đồng (VND)',
+    },
+    {
+      id: 'USD',
+      text: 'Đô la mỹ (USD)',
+    },
+  ];
+  select2OptionForCurrencyList = {
+    placeholder: 'Currency...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  // Accounting Business Option
+  select2DataForAccountingBusiness = [
+    {
+      id: 'SALESRECEIPT',
+      text: 'Thu tiền bán hàng',
+    },
+    {
+      id: 'DEBTRECEIPT',
+      text: 'Thu tiền công nợ',
+    },
+    {
+      id: 'CONTRACTRECEIPT',
+      text: 'Thu tiền hợp đồng',
+    },
+  ];
+  select2OptionForAccountingBusiness = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
   roles: { id: string, text: string }[] = [
     {
       id: 'MANAGER',
@@ -105,8 +167,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
       // Resources form load
       if (itemFormData.Details) {
-        itemFormData.Details.forEach(user => {
-          const newResourceFormGroup = this.makeNewDetailFormGroup(user);
+        itemFormData.Details.forEach(detail => {
+          const newResourceFormGroup = this.makeNewDetailFormGroup(newForm, detail);
           this.getDetails(index).push(newResourceFormGroup);
           const comIndex = this.getDetails(index).length - 1;
           this.onAddDetailFormGroup(index, comIndex, newResourceFormGroup);
@@ -126,6 +188,10 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       this.getRequestId(id => {
         if (!id || id.length === 0) {
           this.addDetailFormGroup(0);
+        } else {
+          for (const mainForm of this.array.controls) {
+            this.toMoney(mainForm as FormGroup);
+          }
         }
       });
       return rs;
@@ -134,7 +200,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   /** Get form data by id from api */
   getFormData(callback: (data: CashVoucherModel[]) => void) {
-    this.apiService.get<CashVoucherModel[]>(this.apiPath, { id: this.id, multi: true, includeUsersInGroup: true },
+    this.apiService.get<CashVoucherModel[]>(this.apiPath, { id: this.id, multi: true, includeDetails: true, includeContact: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
@@ -143,7 +209,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   makeNewFormGroup(data?: CashVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: ['', Validators.required],
+      Code: [''],
       Description: ['', Validators.required],
       RelatedUserName: [''],
       DateOfImplement: [''],
@@ -153,9 +219,10 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       ObjectEmail: [''],
       ObjectAddress: [''],
       ObjectTaxCode: [''],
-      Currency: [''],
+      Currency: ['VND', Validators.required],
       RelationVoucher: [''],
       Details: this.formBuilder.array([]),
+      _total: [''],
     });
     if (data) {
       data[this.idKey + '_old'] = data.Code;
@@ -186,11 +253,12 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   /** Execute api get */
   executeGet(params: any, success: (resources: CashVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeUsersInGroup'] = true;
+    params['includeDetails'] = true;
+    params['includeContact'] = true;
     return super.executeGet(params, success, error);
   }
 
-  makeNewDetailFormGroup(data?: CashVoucherDetailModel): FormGroup {
+  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CashVoucherDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
       AccountingBusiness: [''],
@@ -201,6 +269,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
     if (data) {
       newForm.patchValue(data);
+      // this.toMoney(parentFormGroup, newForm);
     }
     return newForm;
   }
@@ -210,7 +279,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   addDetailFormGroup(formGroupIndex: number) {
-    const newFormGroup = this.makeNewDetailFormGroup();
+    const newFormGroup = this.makeNewDetailFormGroup(this.array.controls[formGroupIndex] as FormGroup);
     this.getDetails(formGroupIndex).push(newFormGroup);
     this.onAddDetailFormGroup(formGroupIndex, this.getDetails(formGroupIndex).length - 1, newFormGroup);
     return false;
@@ -228,5 +297,56 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   onRemoveDetailFormGroup(mainIndex: number, index: number) {
     // this.resourceList[mainIndex].splice(index, 1);
+    this.toMoney(this.array.controls[mainIndex] as FormGroup);
   }
+
+  // Orverride
+  getRawFormData() {
+    const data = super.getRawFormData();
+    for (const item of data.array) {
+      item['Type'] = 'RECEIPT';
+    }
+    return data;
+  }
+
+  onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('ObjectName').setValue(selectedData.Name);
+          formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          formGroup.get('ObjectAddress').setValue(selectedData.Address);
+          formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
+  }
+
+  onChangeCurrency(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+
+  }
+
+  toMoney(formItem: FormGroup) {
+    // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+    this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
+      // Call culate total
+      const details = formItem.get('Details') as FormArray;
+      let total = 0;
+      for (const detail of details.controls) {
+        // total += this.calculatToMoney(details.controls[i] as FormGroup);
+        total += parseInt(detail.get('Amount').value || 0);
+
+      }
+      formItem.get('_total').setValue(total);
+    });
+    return false;
+  }
+
 }
