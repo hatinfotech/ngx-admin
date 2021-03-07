@@ -58,27 +58,32 @@
                             <tr class="print-voucher-detail-header">
                                 <th>{{'Common.noNumber' | translate | headtitlecase}}</th>
                                 <th>{{'Sales.technicalDescription' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</th>
                             </tr>
-                            <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
-                                <td>{{i + 1}}</td>
-                                <td>{{renderValue(detail.Description)}} <br>
-                                    <span style="font-size: 10px; font-style: italic;">
-                    {{'Common.note' | translate}} : {{detail.Product?.Code}},
-                    {{'Common.code' | translate}} : {{detail.Product?.Code}},
-                    {{'Common.sort' | translate | headtitlecase}}: {{detail.No}}
-                  </span>
-                                </td>
-                                <td class="text-align-right">{{detail.Unit?.Name}}</td>
-                                <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
-                                <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
-                                <td class="text-align-right">{{detail.Tax?.Label2}}</td>
-                                <td class="text-align-right">{{toMoney(detail) | currency:'VND'}}</td>
-                            </tr>
+                            <ng-container *ngFor="let detail of data.Details; let i = index;">
+                                <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
+                                    <td colspan="7" style="font-weight: bold;">{{renderValue(detail.Description)}}</td>
+                                </tr>
+                                <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
+                                    <td>{{detail.No}}</td>
+                                    <td>{{renderValue(detail.Description)}} <br>
+                                        <span style="font-size: 10px; font-style: italic;">
+                                          {{'Common.note' | translate}} : {{detail.Product?.Code}},
+                                          {{'Common.code' | translate}} : {{detail.Product?.Code}},
+                                          {{'Common.sort' | translate | headtitlecase}}:{{detail.No}}
+                                        </span>
+                                    </td>
+                                    <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
+                                    <td class="text-align-right">{{detail.Unit?.Name || detail.Unit}}</td>
+                                    <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail.Tax?.Label2}}</td>
+                                    <td class="text-align-right">{{toMoney(detail) | currency:'VND'}}</td>
+                                </tr>
+                            </ng-container>
                             <tr>
                                 <td colspan="6" class="text-align-right" i18n>{{'Voucher.total' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{getTotal() | currency:'VND'}}</td>

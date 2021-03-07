@@ -106,6 +106,7 @@ export class ApiService {
   }
 
   buildApiUrl(path: string, params?: Object) {
+    this.refreshToken(() => {});
     const token = this.getAccessToken();
     let paramsStr = '';
 

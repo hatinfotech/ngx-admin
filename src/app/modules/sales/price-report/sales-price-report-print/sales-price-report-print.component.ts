@@ -66,8 +66,13 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   getTotal() {
     let total = 0;
     const details = this.data.Details;
+    let no = 1;
     for (let i = 0; i < details.length; i++) {
-      total += this.toMoney(details[i]);
+      const detail = details[i];
+      if(detail.Type === 'PRODUCT'){
+        detail['No'] = no++;
+      }
+      total += this.toMoney(detail);
     }
     return total;
   }

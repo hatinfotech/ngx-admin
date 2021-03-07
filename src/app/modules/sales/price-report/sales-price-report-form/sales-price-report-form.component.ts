@@ -327,7 +327,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: [''],
+      Tax: ['VAT10'],
       ToMoney: [0],
       Image: [''],
       Reason: [''],
@@ -349,6 +349,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
     this.getDetails(parentFormGroup).push(newChildFormGroup);
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
+    // newChildFormGroup.get('Type').patchValue('PRODUCT');
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
@@ -483,6 +484,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     data.Details.forEach(detail => {
       if (typeof detail['Tax'] === 'string') {
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+        detail['Unit'] = this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
       }
     });
     this.commonService.openDialog(SalesPriceReportPrintComponent, {

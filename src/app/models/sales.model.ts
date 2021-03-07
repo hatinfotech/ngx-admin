@@ -100,6 +100,7 @@ export class SalesPriceReportModel {
 export class SalesPriceReportDetailModel {
   Id?: string & number;
   No?: number;
+  Type?: string;
   Product?: string & ProductModel;
   Description: string;
   Quantity: number;

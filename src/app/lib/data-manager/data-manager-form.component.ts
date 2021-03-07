@@ -740,4 +740,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
   /** End Form Group function */
 
+  getFieldValue(form: FormGroup, fieldName: string) {
+    const value = form.get(fieldName).value;
+    return this.commonService.getObjectId(value);
+  }
+
 }
