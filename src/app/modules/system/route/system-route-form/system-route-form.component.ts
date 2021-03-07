@@ -538,7 +538,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
         url: params => {
           return this.apiService.buildApiUrl(param.RemoteDataSource, { 'search': params['term'], includeIdText: true });
         },
-        delay: 300,
+        delay: 500,
         processResults: (data: any, params: any) => {
           // console.info(data, params);
           return { results: data };

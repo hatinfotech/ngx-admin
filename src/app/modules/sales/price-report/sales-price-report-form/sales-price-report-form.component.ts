@@ -33,8 +33,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
-  numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
+  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
+  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
 
   /** Tax list */
@@ -52,6 +52,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // multiple: true,
+    // tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -118,17 +119,18 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', {select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
+          results: data
+          // .map(item => {
+          //   item['id'] = item['Code'];
+          //   item['text'] = item['Name'];
+          //   return item;
+          // }),
         };
       },
     },
@@ -172,24 +174,24 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       id: 'Code',
       text: 'Name',
     },
-    // multiple: false,
-    // ajax: {
-    //   url: params => {
-    //     return this.apiService.buildApiUrl('/accounting/taxes', { 'filter_Name': params['term'] });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     // console.info(data, params);
-    //     return {
-    //       results: data.map(item => {
-    //         item['id'] = item['Code'];
-    //         item['text'] = item['Name'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
   };
+
+  // Type field option
+  select2OptionForType = {
+    placeholder: 'Chọn loại...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+  select2DataForType = [
+    {id: 'PRODUCT', text: 'Sản phẩm'},
+    {id: 'CATEGORY', text: 'Danh mục'},
+  ];
 
   ngOnInit() {
     this.restrict();
@@ -267,7 +269,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
-      Object: ['', Validators.required],
+      Object: [''],
       ObjectName: [''],
       ObjectEmail: [''],
       ObjectPhone: [''],
@@ -279,7 +281,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       ObjectBankCode: [''],
       PaymentStep: [''],
       DeliveryAddress: [''],
-      Title: ['', Validators.required],
+      Title: [''],
       Note: [''],
       Reported: [''],
       _total: [''],
@@ -319,9 +321,9 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     const newForm = this.formBuilder.group({
       Id: [''],
       No: [''],
-      Type: [''],
+      Type: ['PRODUCT'],
       Product: [''],
-      Description: ['', Validators.required],
+      Description: [''],
       Quantity: [1],
       Price: [0],
       Unit: [''],
@@ -427,13 +429,13 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     console.log(selectedData);
     if (selectedData) {
       detail.get('Description').setValue(selectedData.Name);
-      detail.get('Unit').patchValue({
-        id: selectedData.WarehouseUnit['Code'],
-        text: selectedData.WarehouseUnit['Name'],
-        Code: selectedData.WarehouseUnit['Code'],
-        Name: selectedData.WarehouseUnit['Name'],
-        Symbol: selectedData.WarehouseUnit['Symbol'],
-      });
+      // detail.get('Unit').patchValue({
+      //   id: selectedData.WarehouseUnit['Code'],
+      //   text: selectedData.WarehouseUnit['Name'],
+      //   Code: selectedData.WarehouseUnit['Code'],
+      //   Name: selectedData.WarehouseUnit['Name'],
+      //   Symbol: selectedData.WarehouseUnit['Symbol'],
+      // });
     } else {
       detail.get('Description').setValue('');
       detail.get('Unit').setValue('');

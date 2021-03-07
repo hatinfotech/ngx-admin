@@ -210,9 +210,15 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
       // note: Fix for init NULL value for ajax type
       // if (this.select2Option['ajax']) {
       // this.data = [{ id: '', text: '' }];
+
+      if(!this.data) {
+        this.data = [];
+      }
+
       if (!this.data.some(item => this.getItemId(item) === '')) {
         this.data.push({ id: '', text: '' });
       }
+
       // }
       this.value = '';
     }
