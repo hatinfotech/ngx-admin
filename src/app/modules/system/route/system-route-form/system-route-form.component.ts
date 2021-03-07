@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { SystemRouteModel, SystemParamModel, SystemActionModel, SystemRouteConditionModel, SystemRouteActionModel, SystemActionParamModel } from '../../../../models/system.model';
+import { SystemRouteModel, SystemParamModel, SystemActionModel, SystemRouteConditionModel, SystemRouteActionModel, SystemActionParamModel, SystemRouteActionParameterModel } from '../../../../models/system.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
@@ -104,13 +104,13 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   };
 
   operatorList = [
-    {id: 'EQ', text: '='},
-    {id: 'LT', text: '<'},
-    {id: 'LE', text: '<='},
-    {id: 'GT', text: '>'},
-    {id: 'GE', text: '=>'},
-    {id: 'NE', text: '!='},
-    {id: 'IN', text: 'IN'},
+    { id: 'EQ', text: '=' },
+    { id: 'LT', text: '<' },
+    { id: 'LE', text: '<=' },
+    { id: 'GT', text: '>' },
+    { id: 'GE', text: '=>' },
+    { id: 'NE', text: '!=' },
+    { id: 'IN', text: 'IN' },
   ];
 
   getSlect2ForConditionData(param: SystemParamModel) {
@@ -468,7 +468,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
       text: 'New',
     },
   ];
-  makeNewActionParameterFormGroup(data?: SystemRouteActionModel): FormGroup {
+  makeNewActionParameterFormGroup(data?: SystemRouteActionParameterModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
       Parameter: [''],
@@ -477,6 +477,9 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
 
     if (data) {
       // data['Id_old'] = data['Id'];
+      // if(data.Data === null) {
+      //   data.Data = ' ';
+      // }
       newForm.patchValue(data);
     }
     return newForm;
@@ -489,6 +492,10 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     const newFormGroup = this.makeNewActionParameterFormGroup();
     this.getActionParameters(parentFormGroup, formGroupIndex).push(newFormGroup);
     this.onAddActionParameterFormGroup(formGroupIndex, this.getActions(formGroupIndex).length - 1, newFormGroup);
+    // const dataField = newFormGroup.get('Data');
+    // // if(dataField.value === null) {
+    //   dataField.patchValue('123');
+    // // }
     return false;
   }
   removeActionParameterGroup(parentFormGroup: FormGroup, formGroupIndex: number, index: number) {
@@ -499,6 +506,13 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   }
   onAddActionParameterFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
     // this.componentList[mainIndex].push([]);
+    // const dataField = newFormGroup.get('Data');
+    // if(dataField.value === null) {
+    //   dataField.patchValue('XXXXXX');
+    //   setTimeout(() => {
+    //     dataField.patchValue('');
+    //   }, 3000);
+    // }
   }
   onRemoveActionParameterFormGroup(mainIndex: number, index: number) {
     // this.componentList[mainIndex].splice(index, 1);

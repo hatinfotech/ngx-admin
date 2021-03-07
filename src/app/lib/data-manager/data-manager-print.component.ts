@@ -12,6 +12,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   @ViewChild('printContent', { read: ViewContainerRef, static: true }) printContent: ViewContainerRef;
   @Input() onSaveAndClose?: (id: any) => void;
   @Input() onSaveAndPrint?: (id: any) => void;
+  @Input() onClose?: (id: any) => void;
 
   favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
   @Input() title?: string;

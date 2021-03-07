@@ -9,24 +9,25 @@ import { ViewCell } from 'ng2-smart-table';
 
 @Component({
   template: `
-    <div [style]="style">{{renderValue}}</div>
+    <div [style]="style" [class]="class">{{this.value}}</div>
   `,
 })
 export class SmartTableBaseComponent implements ViewCell, OnInit {
 
-  renderValue: boolean;
+  // renderValue: any;
   disable: boolean = false;
   style: string;
+  class: string;
 
   @Input() value: string | number;
   @Input() rowData: any;
 
   @Output() valueChange: EventEmitter<any> = new EventEmitter();
 
-  constructor(){}
+  constructor() { }
 
   ngOnInit() {
-    this.renderValue = this.value ? true : false;
+    // this.renderValue = this.value ? true : false;
   }
 
   onChange(value: any) {
@@ -38,10 +39,10 @@ export class SmartTableBaseComponent implements ViewCell, OnInit {
 
 @Component({
   template: `
-    <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox>
+    <div [style]="style" [class]="class"><nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox></div>
   `,
 })
-export class SmartTableCheckboxComponent implements ViewCell, OnInit {
+export class SmartTableCheckboxComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
   renderValue: boolean;
   disable: boolean = false;
@@ -65,11 +66,13 @@ export class SmartTableCheckboxComponent implements ViewCell, OnInit {
 @Component({
   selector: 'ngx-smart-table-button',
   template: `
-  <button *ngIf="display" [disabled]="disabled" nbButton [status]="status" hero size="small" (click)="onClick()" title="{{title}}">
-    <nb-icon [pack]="iconPack" [icon]="icon"> {{label}}</nb-icon>
-  </button>`,
+  <div [style]="style" [class]="class">
+    <button *ngIf="display" [disabled]="disabled" nbButton [status]="status" hero size="small" (click)="onClick()" title="{{title}}">
+      <nb-icon [pack]="iconPack" [icon]="icon"> {{label}}</nb-icon>
+    </button>
+  </div>`,
 })
-export class SmartTableButtonComponent implements ViewCell, OnInit {
+export class SmartTableButtonComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
   renderValue: string;
   iconPack: string;
   icon: string;
@@ -99,10 +102,10 @@ export class SmartTableButtonComponent implements ViewCell, OnInit {
 @Component({
   selector: 'ngx-smart-table-button',
   template: `
-  <nb-icon [pack]="iconPack" [icon]="icon" [status]="status" (click)="onClick()" style="cursor: pointer"> {{label}}</nb-icon>
+  <div [style]="style" [class]="class"><nb-icon [pack]="iconPack" [icon]="icon" [status]="status" (click)="onClick()" style="cursor: pointer"> {{label}}</nb-icon></div>
   `,
 })
-export class SmartTableIconComponent implements ViewCell, OnInit {
+export class SmartTableIconComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
   renderValue: string;
   iconPack: string;
@@ -132,9 +135,11 @@ export class SmartTableIconComponent implements ViewCell, OnInit {
 @Component({
   selector: 'ngx-smart-table-thumbnail',
   template: `
+  <div [style]="style" [class]="class">
     <div class="thumbnail-wrap" [ngStyle]="{'background-image': 'url(assets/icon/eva/image-outline.svg)'}">
       <div class="thumbnail" [ngStyle]="{'background-image': renderValue}" (click)="onClick()" title="{{title}}"></div>
-    </div>`,
+    </div>
+</div>`,
   styles: [
     `
     .thumbnail-wrap {
@@ -157,7 +162,7 @@ export class SmartTableIconComponent implements ViewCell, OnInit {
   `,
   ],
 })
-export class SmartTableThumbnailComponent implements ViewCell, OnInit {
+export class SmartTableThumbnailComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
   // renderValue: string;
   iconPack: string;
   icon: string;
@@ -191,9 +196,11 @@ export class SmartTableThumbnailComponent implements ViewCell, OnInit {
 }
 
 @Component({
-  template: `{{this.value | date:(format$ | async)}}`,
+  template: `<div [style]="style" [class]="class">
+    {{this.value | date:(format$ | async)}}
+</div>`,
 })
-export class SmartTableDateTimeComponent implements ViewCell, OnInit {
+export class SmartTableDateTimeComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
   // renderValue: string;
   disable: boolean = false;
@@ -216,7 +223,7 @@ export class SmartTableDateTimeComponent implements ViewCell, OnInit {
 }
 
 @Component({
-  template: `<div [style]="style">{{this.value | currency:'VND'}}</div>`,
+  template: `<div [style]="style" [class]="class">{{this.value | currency:'VND'}}</div>`,
 })
 export class SmartTableCurrencyComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
@@ -232,7 +239,7 @@ export class SmartTableCurrencyComponent extends SmartTableBaseComponent impleme
 
   constructor(
     public commonService: CommonService,
-  ) { 
+  ) {
     super();
   }
 
@@ -250,12 +257,14 @@ export class SmartTableCurrencyComponent extends SmartTableBaseComponent impleme
 @Component({
   template: `
     <!-- <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox> -->
-    <input #inputText type="text" [name]="name" nbInput fullWidth
-        [placeholder]="placeholder" class="align-right" [formControl]="inputControl"
-        currencyMask [options]="curencyFormat">
+    <div [style]="style" [class]="class">
+      <input #inputText type="text" [name]="name" nbInput fullWidth
+          [placeholder]="placeholder" class="align-right" [formControl]="inputControl"
+          currencyMask [options]="curencyFormat">
+    </div>
   `,
 })
-export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, AfterViewInit {
+export class SmartTableCurrencyEditableComponent extends SmartTableBaseComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
@@ -275,6 +284,7 @@ export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, Af
   jqueryInput: JQuery;
 
   constructor(public commonService: CommonService) {
+    super();
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -328,12 +338,14 @@ export class SmartTableCurrencyEditableComponent implements ViewCell, OnInit, Af
 @Component({
   template: `
     <!-- <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox> -->
-    <input #inputText type="text" [name]="name" nbInput fullWidth
-        [placeholder]="placeholder" class="align-right" [formControl]="inputControl"
-        currencyMask [options]="numberFormat">
+    <div [style]="style" [class]="class">
+      <input #inputText type="text" [name]="name" nbInput fullWidth
+          [placeholder]="placeholder" class="align-right" [formControl]="inputControl"
+          currencyMask [options]="numberFormat">
+    </div>
   `,
 })
-export class SmartTableNumberEditableComponent implements ViewCell, OnInit, AfterViewInit {
+export class SmartTableNumberEditableComponent extends SmartTableBaseComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
@@ -353,6 +365,7 @@ export class SmartTableNumberEditableComponent implements ViewCell, OnInit, Afte
   jqueryInput: JQuery;
 
   constructor(public commonService: CommonService) {
+    super();
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -405,11 +418,13 @@ export class SmartTableNumberEditableComponent implements ViewCell, OnInit, Afte
 
 @Component({
   template: `
+  <div [style]="style" [class]="class">
     <input #inputText type="text" [name]="name" nbInput fullWidth
         [placeholder]="placeholder" class="align-right" [formControl]="inputControl">
+  </div>
   `,
 })
-export class SmartTableTextEditableComponent implements ViewCell, OnInit, AfterViewInit {
+export class SmartTableTextEditableComponent extends SmartTableBaseComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
 
@@ -429,6 +444,7 @@ export class SmartTableTextEditableComponent implements ViewCell, OnInit, AfterV
   jqueryInput: JQuery;
 
   constructor(public commonService: CommonService) {
+    super();
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -489,13 +505,15 @@ export class SmartTableTextEditableComponent implements ViewCell, OnInit, AfterV
 @Component({
   selector: 'ngx-stmart-table-icon-view',
   template: `
+  <div [style]="style" [class]="class">
     <div style="text-align: center">
       <i *ngIf="type==='font'" style="font-size: 1.5rem; cursor: pointer; color: #42aaff;" (click)="onClick()" [class]="renderValue"></i>
       <nb-icon style="width: 1.5rem; height: 1.5rem; cursor: pointer" *ngIf="type==='nb'" [pack]="pack" [icon]="renderValue" [status]="status" (click)="onClick()"></nb-icon>
     </div>
+  </div>
   `,
 })
-export class IconViewComponent implements ViewCell, OnInit {
+export class IconViewComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
   renderValue: string;
   type: 'nb' | 'font';
   pack?: string | 'eva';

@@ -139,6 +139,10 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       id: 'SALARYPAYMENT',
       text: 'Trả tiền lương nhân viên',
     },
+    {
+      id: 'ADVANCES2EMPLOYEES',
+      text: 'Tạm ứng cho nhân viên',
+    },
   ];
   select2OptionForAccountingBusiness = {
     placeholder: 'Nghiệp vụ kế toán...',

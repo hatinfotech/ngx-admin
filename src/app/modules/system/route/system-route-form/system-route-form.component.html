@@ -258,16 +258,11 @@
                                                                                 <ngx-select2 *ngIf="parameter.get('Parameter')?.value?.Type == 'OBJECT' || parameter.get('Parameter')?.value?.Type == 'OBJECTS' || parameter.get('Parameter')?.value?.Type == 'ENV_PARAM'" formControlName="Data" [select2Option]="getSlect2ForActionParameterData(parameter.get('Parameter')?.value)"
                                                                                     [data]="parameter.get('Parameter')?.value?.Options">
                                                                                 </ngx-select2>
-
                                                                                 <input type="text" *ngIf="parameter.get('Parameter')?.value?.Type == 'INTEGER'" nbInput fullWidth formControlName="Data" placeholder="{{'Common.DataType.integer' | translate | headtitlecase}}">
-
                                                                                 <input type="text" *ngIf="parameter.get('Parameter')?.value?.Type == 'DOUBLE'" nbInput fullWidth formControlName="Data" placeholder="Sớ thực">
-
                                                                                 <ngx-datetime-picker *ngIf="parameter.get('Parameter')?.value?.Type == 'DATE_TIME'" formControlName="Data" [selectMode]="'range'" placeholder="{{'Common.DataType.datetime' | translate | headtitlecase}}">
                                                                                 </ngx-datetime-picker>
-
                                                                                 <nb-checkbox *ngIf="parameter.get('Parameter')?.value?.Type == 'BOOLEAN'" formControlName="Data" title="check"></nb-checkbox>
-
                                                                                 <input type="text" *ngIf="!parameter.get('Parameter')?.value?.Type || parameter.get('Parameter')?.value?.Type == 'STRING'" nbInput fullWidth formControlName="Data" placeholder="{{'Common.DataType.string' | translate | headtitlecase}}">
                                                                             </div>
                                                                         </div>

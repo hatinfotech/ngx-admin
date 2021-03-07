@@ -18,6 +18,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   /** Component name */
   componentName = 'CashPaymentVoucherPrintComponent';
   title: string = 'Xem trước phiếu thu';
+  approvedConfirm?: boolean;
   env = environment;
 
   constructor(
@@ -85,6 +86,28 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
 
   get identifier() {
     return this.data.Code;
+  }
+
+  approve() {
+    if (this.data) {
+      this.apiService.putPromise('/accounting/cash-vouchers', {id: [this.data.Code], approve: true}, [{Code: this.data.Code}]).then(rs => {
+        if (this.onClose) {
+          this.onClose(this.data.Code);
+        }
+        this.close();
+      });
+    }
+  }
+
+  cancel() {
+    if (this.data) {
+      this.apiService.putPromise('/accounting/cash-vouchers', {id: [this.data.Code], cancel: true}, [{Code: this.data.Code}]).then(rs => {
+        if (this.onClose) {
+          this.onClose(this.data.Code);
+        }
+        this.close();
+      });
+    }
   }
 
 }

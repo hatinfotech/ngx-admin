@@ -2,13 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { SmartTableDateTimeComponent, SmartTableCurrencyComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
+import { takeUntil } from 'rxjs/operators';
+import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
+import { CashVoucherModel } from '../../../../../models/accounting.model';
 import { UserGroupModel } from '../../../../../models/user-group.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { ShowcaseDialogComponent } from '../../../../dialog/showcase-dialog/showcase-dialog.component';
 import { CashPaymentVoucherFormComponent } from '../cash-payment-voucher-form/cash-payment-voucher-form.component';
+import { CashPaymentVoucherPrintComponent } from '../cash-payment-voucher-print/cash-payment-voucher-print.component';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-list',
@@ -120,6 +124,56 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           instance.style = 'text-align: right';
         },
       },
+      State: {
+        title: this.commonService.translateText('Common.approve'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'checkmark-circle';
+          instance.display = true;
+          instance.status = 'warning';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.approve');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            // this.commonService.openDialog(ShowcaseDialogComponent, {
+            //   context: {
+            //     title: this.commonService.translateText('Common.confirm'),
+            //     content: 'Accounting.CashPayment.approveConfirmText',
+            //     actions: [
+            //       {
+            //         label: this.commonService.translateText('Common.close'),
+            //         status: 'primary',
+            //       },
+            //       {
+            //         label: this.commonService.translateText('Common.approve'),
+            //         status: 'danger',
+            //         action: () => {
+            //           this.apiService.putPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: [rowData.Code], approve: true }, [{ Code: rowData.Code }]).then(rs => {
+            //             this.refresh();
+            //           });
+            //         }
+            //       },
+            //     ],
+            //   },
+            // });
+
+            this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
+              this.preview(rs[0]);
+            });
+
+
+          });
+        },
+      }
     },
   });
 
@@ -169,6 +223,25 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
       // });
       if (callback) callback(rs);
     });
+  }
+
+  preview(data: CashVoucherModel) {
+    // data.Details.forEach(detail => {
+    //   // if (typeof detail['Tax'] === 'string') {
+    //   //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+    //   // }
+    // });
+    this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
+      context: {
+        title: 'Xem trước',
+        data: data,
+        approvedConfirm: true,
+        onClose: (id: string) => {
+          this.refresh();
+        },
+      },
+    });
+    return false;
   }
 
 }
