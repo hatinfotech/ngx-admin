@@ -20,11 +20,13 @@ import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module'
 import { AccountingRoutingModule } from './accounting-routing.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { SmartTableCurrencyComponent, SmartTableCurrencyEditableComponent } from '../../lib/custom-element/smart-table/smart-table.component';
+import { CashReceiptVoucherPrintComponent } from './cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+import { CashPaymentVoucherPrintComponent } from './cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
 
 
 
 @NgModule({
-  declarations: [AccountingComponent, CashReceiptVoucherListComponent, CashReceiptVoucherFormComponent, CashPaymentVoucherListComponent, CashPaymentVoucherFormComponent, CashReceiptVoucherFormComponent, CashReceiptVoucherListComponent],
+  declarations: [AccountingComponent, CashReceiptVoucherListComponent, CashReceiptVoucherFormComponent, CashPaymentVoucherListComponent, CashPaymentVoucherFormComponent, CashReceiptVoucherFormComponent, CashReceiptVoucherListComponent, CashReceiptVoucherPrintComponent, CashPaymentVoucherPrintComponent],
   imports: [
     CommonModule,
     NbTabsetModule,

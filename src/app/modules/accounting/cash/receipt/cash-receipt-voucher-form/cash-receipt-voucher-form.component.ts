@@ -4,11 +4,14 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { ActionControlListOption } from '../../../../../lib/custom-element/action-control-list/action-control.interface';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
 import { CashVoucherDetailModel, CashVoucherModel } from '../../../../../models/accounting.model';
 import { ContactModel } from '../../../../../models/contact.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { SalesPriceReportPrintComponent } from '../../../../sales/price-report/sales-price-report-print/sales-price-report-print.component';
+import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-form',
@@ -39,6 +42,21 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     public ref: NbDialogRef<CashReceiptVoucherFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** Append print button to head card */
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
   }
 
   // getRequestId(callback: (id?: string[]) => void) {
@@ -175,6 +193,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
         });
       }
 
+      this.toMoney(newForm);
+
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
@@ -188,11 +208,12 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       this.getRequestId(id => {
         if (!id || id.length === 0) {
           this.addDetailFormGroup(0);
-        } else {
-          for (const mainForm of this.array.controls) {
-            this.toMoney(mainForm as FormGroup);
-          }
-        }
+        } 
+        // else {
+        //   for (const mainForm of this.array.controls) {
+        //     this.toMoney(mainForm as FormGroup);
+        //   }
+        // }
       });
       return rs;
     });
@@ -345,6 +366,29 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
       }
       formItem.get('_total').setValue(total);
+    });
+    return false;
+  }
+
+
+  preview(formItem: FormGroup) {
+    const data: CashVoucherModel = formItem.value;
+    data.Details.forEach(detail => {
+      // if (typeof detail['Tax'] === 'string') {
+      //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+      // }
+    });
+    this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
+      context: {
+        title: 'Xem trước',
+        data: data,
+        onSaveAndClose: (priceReportCode: string) => {
+          this.saveAndClose();
+        },
+        onSaveAndPrint: (priceReportCode: string) => {
+          this.save();
+        },
+      },
     });
     return false;
   }

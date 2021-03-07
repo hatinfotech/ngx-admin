@@ -3,7 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Accounting.CashReceipt.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Accounting.CashReceiptVoucher.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
                         [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
@@ -65,9 +65,9 @@
                             <!-- <div class="row"> -->
                             <!-- <div class="col-sm-12"> -->
                             <div class="row fit-content-column">
-                                <div class="col-sm-4 label column">AccountingBusiness</div>
-                                <div class="col-sm-6 label column">Description</div>
-                                <div class="col-sm-2 label column" style="text-align: right;">Amount</div>
+                                <div class="col-sm-4 label column">{{'Common.accountingBusiness' | translate | headtitlecase}}</div>
+                                <div class="col-sm-6 label column">{{'Common.description' | translate | headtitlecase}}</div>
+                                <div class="col-sm-2 label column" style="text-align: right;">{{'Common.numOfMoney' | translate | headtitlecase}}</div>
                             </div>
                             <!-- </div> -->
                             <!-- </div> -->

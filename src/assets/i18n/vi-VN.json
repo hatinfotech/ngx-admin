@@ -186,7 +186,12 @@
             "email": "Email",
             "address": "Địa chỉ",
             "taxCode": "Mã số thuế"
-        }
+        },
+        "treasurer": "thủ quỹ",
+        "payer": "người thanh toán",
+        "numOfMoney": "số tiền",
+        "relationVoucher": "chứng từ liên quan",
+        "created": "ngày tạo"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -494,8 +499,11 @@
         "apiUrl": "api url"
     },
     "Accounting": {
-        "CashReceipt": {
-            "title": ""
+        "CashReceiptVoucher": {
+            "title": "phiếu thu"
+        },
+        "CashPaymentVoucher": {
+            "title": "phiếu chi"
         }
     },
     "Print": {

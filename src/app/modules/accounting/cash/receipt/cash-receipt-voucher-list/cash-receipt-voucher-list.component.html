@@ -1,13 +1,6 @@
 <nb-card class="small-header smart-table">
     <nb-card-header>
         <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Accounting.CashReceiptVoucher.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
-
-        <!-- <nav>
-        <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh nhóm người dùng
-        <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
-          <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
-        </button>
-      </nav> -->
     </nb-card-header>
 
     <nb-card-body>

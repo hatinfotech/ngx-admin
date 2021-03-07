@@ -9,6 +9,35 @@ import { ViewCell } from 'ng2-smart-table';
 
 @Component({
   template: `
+    <div [style]="style">{{renderValue}}</div>
+  `,
+})
+export class SmartTableBaseComponent implements ViewCell, OnInit {
+
+  renderValue: boolean;
+  disable: boolean = false;
+  style: string;
+
+  @Input() value: string | number;
+  @Input() rowData: any;
+
+  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+
+  constructor(){}
+
+  ngOnInit() {
+    this.renderValue = this.value ? true : false;
+  }
+
+  onChange(value: any) {
+    this.valueChange.emit(value);
+    this.value = value;
+  }
+
+}
+
+@Component({
+  template: `
     <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox>
   `,
 })
@@ -187,9 +216,9 @@ export class SmartTableDateTimeComponent implements ViewCell, OnInit {
 }
 
 @Component({
-  template: `{{this.value | currency:'VND'}}`,
+  template: `<div [style]="style">{{this.value | currency:'VND'}}</div>`,
 })
-export class SmartTableCurrencyComponent implements ViewCell, OnInit {
+export class SmartTableCurrencyComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
   // renderValue: string;
   disable: boolean = false;
@@ -203,7 +232,9 @@ export class SmartTableCurrencyComponent implements ViewCell, OnInit {
 
   constructor(
     public commonService: CommonService,
-  ) { }
+  ) { 
+    super();
+  }
 
   ngOnInit() {
     // this.renderValue = this.value;

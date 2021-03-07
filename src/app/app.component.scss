@@ -685,12 +685,12 @@ body ng2-smart-table table tr.ng2-smart-titles th:first-child {
 
 body ng2-smart-table table tr:nth-child(odd) th:first-child:hover,
 body ng2-smart-table table tr:nth-child(odd) td:first-child:hover {
-    background-image: linear-gradient(to right, #d9dce0, #edf1f7);
+    background-image: linear-gradient(to right, #d9dce0a6, #edf1f700);
 }
 
 body ng2-smart-table table tr:nth-child(even) th:first-child:hover,
 body ng2-smart-table table tr:nth-child(even) td:first-child:hover {
-    background-image: linear-gradient(to right, #d9dce0, #edf1f7);
+    background-image: linear-gradient(to right, #d9dce05e, #edf1f700);
 }
 
 // body ng2-smart-table table tr.ng2-smart-titles th:first-child input {
@@ -941,7 +941,7 @@ body .form-group[state="warning"] textarea:focus {
     // right: -14px;
     // top: -14px;
     right: 0;
-    top: 0;
+    top: -7px;
     color: #7d7d7da6;
 }
 

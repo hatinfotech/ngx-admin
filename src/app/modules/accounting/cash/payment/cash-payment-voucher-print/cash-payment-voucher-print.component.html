@@ -1,0 +1,84 @@
+<div class="dialog-wrap" #dialogWrap>
+    <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+        <nb-card-header>
+            <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Accounting.CashPaymentVoucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body class="print-body" #printContent>
+            <div id="print-area">
+                <div style="display: flex; flex-wrap: wrap">
+                    <div style="flex: 0 0 60%;">
+                        <pre>{{'Information.Voucher.register' | translate }}</pre>
+                    </div>
+                    <div style="text-align: right; flex: 0 0 40%;">
+                        <img [src]="env.register.logo.voucher" style="height: 50px;">
+                    </div>
+                </div>
+                <div>
+                    <div class="print-title">{{ 'Accounting.CashPaymentVoucher.title' | translate:{action: '', definition: ''} | uppercase }}
+                    </div>
+                    <div class="under-title">{{ data.Code }} - {{ data.DateOfImplement | date:'short' }}</div>
+                </div>
+                <div>
+                    <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} : {{renderValue(data.ObjectName)}}
+                    </div>
+                    <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <table style="width: 100%;" class="print-voucher-detail-table">
+                            <colgroup>
+                                <!--STT-->
+                                <col span="1" style="width: 1cm;">
+                                <!--Dien giai-->
+                                <col span="1" style="width: 9cm;">
+                                <!--Thanh tien-->
+                                <col span="1" style="width: 2cm; text-align: right;">
+                            </colgroup>
+                            <tr class="print-voucher-detail-header">
+                                <th>{{'Common.noNumber' | translate | headtitlecase}}</th>
+                                <th class="">{{'Common.description' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Common.numOfMoney' | translate | headtitlecase}}</th>
+                            </tr>
+                            <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
+                                <td>{{i + 1}}</td>
+                                <td>{{renderValue(detail.Description)}}</td>
+                                <td class="text-align-right">{{renderValue(detail.Amount) | currency:'VND'}}</td>
+                            </tr>
+                            <tr style="font-weight: bold;">
+                                <td> </td>
+                                <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{getTotal() | currency:'VND'}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <div class="under-line">{{'Common.description' | translate | headtitlecase}}: {{renderValue(data.Description)}}</div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap">
+                    <div style="text-align: center; flex: 0 0 50%;">
+                        <br> {{'Common.treasurer' | translate | headtitlecase}}
+                        <br><br><br>
+                    </div>
+                    <div style="text-align: center; flex: 0 0 50%;">
+                        <br> {{'Common.payer' | translate | headtitlecase}}
+                        <br><br><br>
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="buttons-row">
+                <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
+          <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+        </button>
+                <button nbButton hero status="danger" (click)="saveAndClose();">
+          <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+        </button>
+                <button nbButton hero status="warning" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
+                <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</div>
