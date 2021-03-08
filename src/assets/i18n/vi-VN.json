@@ -191,7 +191,8 @@
         "payer": "người thanh toán",
         "numOfMoney": "số tiền",
         "relationVoucher": "chứng từ liên quan",
-        "created": "ngày tạo"
+        "created": "ngày tạo",
+        "contact": "liên hệ"
     },
     "Contact": {
         "name": "tên liên hệ",

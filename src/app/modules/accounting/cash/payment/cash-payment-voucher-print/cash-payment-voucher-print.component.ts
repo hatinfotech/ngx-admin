@@ -46,11 +46,15 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
     this.ref.close();
   }
 
-  renderValue(value: any) {
-    if (value && value['text']) {
-      return value['text'];
+  renderValue(value: any, type?: string) {
+    let v = value;
+    if (v && value['text']) {
+      v = value['text'] || "";
     }
-    return value;
+    if(type === 'html') {
+      return v.replace(/\n/g, '<br>');
+    }
+    return v;
   }
 
   toMoney(detail: CashVoucherDetailModel) {

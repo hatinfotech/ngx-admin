@@ -19,7 +19,7 @@
                     <div class="under-title">{{ data.Code }} - {{ data.DateOfImplement | date:'short' }}</div>
                 </div>
                 <div>
-                    <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} : {{renderValue(data.ObjectName)}}
+                    <div class="under-line">{{'Common.contact' | translate | headtitlecase}} : {{renderValue(data.ObjectName)}}
                     </div>
                     <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}
                     </div>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="under-line">{{'Common.description' | translate | headtitlecase}}: {{renderValue(data.Description)}}</div>
+                    <div class="under-line">{{'Common.description' | translate | headtitlecase}}: <span [innerHTML]="renderValue(data.Description, 'html')"></span></div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap">
                     <div style="text-align: center; flex: 0 0 50%;">
