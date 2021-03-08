@@ -119,7 +119,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', {select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -189,8 +189,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
   };
   select2DataForType = [
-    {id: 'PRODUCT', text: 'Sản phẩm'},
-    {id: 'CATEGORY', text: 'Danh mục'},
+    { id: 'PRODUCT', text: 'Sản phẩm' },
+    { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
   ngOnInit() {
@@ -484,7 +484,9 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     data.Details.forEach(detail => {
       if (typeof detail['Tax'] === 'string') {
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-        detail['Unit'] = this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
+        if (this.unitList) {
+          detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
+        }
       }
     });
     this.commonService.openDialog(SalesPriceReportPrintComponent, {
