@@ -33,6 +33,7 @@ import { MasterPriceTableListComponent } from './master-price-table/master-price
 import { MasterPriceTableFormComponent } from './master-price-table/master-price-table-form/master-price-table-form.component';
 import { MasterPriceTablePrintComponent } from './master-price-table/master-price-table-print/master-price-table-print.component';
 import { ProductFormComponent } from '../admin-product/product/product-form/product-form.component';
+import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -78,6 +79,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NgxMaskModule.forRoot(options),
     TranslateModule,
     AdminProductModule,
+    NgxUploaderModule,
   ],
   entryComponents: [
     SalesPriceReportFormComponent,

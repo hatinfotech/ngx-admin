@@ -5,27 +5,6 @@
                 <nb-card-header>
                     <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
                         [controls]="actionButtonList"></ngx-card-header>
-
-                    <!-- <nav>
-            {{ 'Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
-            <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
-              title="{{'Common.close' | translate | headtitlecase}}">
-              <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
-            </button>
-            <button nbButton status="success" hero size="tiny" (click)="onFormReload()" style="float: right;"
-              [disabled]="isProcessing" title="{{'Common.reload' | translate | headtitlecase}}">
-              <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | headtitlecase}}
-            </button>
-            <button nbButton status="primary" hero size="tiny" (click)="preview(formItem)" style="float: right;"
-              [disabled]="isProcessing" title="{{'Common.print' | translate | headtitlecase}}">
-              <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
-            </button>
-            <button nbButton status="warning" hero size="tiny" (click)="onFormUndo()"
-              [disabled]="!canUndo || isProcessing" style="float: right;"
-              title="{{'Common.undo' | translate | headtitlecase}}">
-              <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
-            </button>
-          </nav> -->
                 </nb-card-header>
                 <nb-card-body>
                     <div [formGroup]="formItem">
@@ -190,7 +169,7 @@
                                             <div class="col-md-3 col-sm-3 col-xs-3">
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                     <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
-                                                    <input nbInput fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
+                                                    <input nbInput class="sorting-handle" title="Ké thả để di chuyển" fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
                                                     <input type="hidden" formControlName="Id">
                                                 </div>
                                                 <div class="form-group">
@@ -204,16 +183,11 @@
                                             <div class="col-md-9 col-sm-9 col-xs-9">
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                     <label class="label">{{'Common.image' | translate | headtitlecase}}</label>
-                                                    <input type="button" nbInput fullWidth formControlName="Image" placeholder="{{'Common.image' | translate | headtitlecase}}" style="
-                                                      height: 5.5rem;
-                                                      background-repeat: no-repeat;
-                                                      background-size: contain;
-                                                      background-position: center;
-                                                      background-image: url(assets/icon/eva/image-outline.svg);" class="sorting-handle">
+                                                    <input type="button" class="detail-thumbnail" nbInput fullWidth formControlName="Image" placeholder="{{'Common.image' | translate | headtitlecase}}">
                                                 </div>
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">
                                                     <label class="label">Stt</label>
-                                                    <input type="text" nbInput fullWidth placeholder="Kéo để di chuyển" disabled  class="sorting-handle">
+                                                    <input type="text" nbInput fullWidth placeholder="Kéo để di chuyển" disabled class="sorting-handle" style="cursor: pointer;">
                                                 </div>
                                             </div>
                                         </div>
@@ -222,12 +196,10 @@
                                         <div class="row">
                                             <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
-                                                    <label class="label"><span
-                              class="valid">{{'Voucher.productOrService' | translate | headtitlecase}}</span><span
-                              class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Vouhcer.productOrService')} | headtitlecase }}
-                              (*)</span></label>
-                                                    <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event)">
-                                                    </ngx-select2>
+                                                    <label class="label">
+                                                        <span class="valid">{{'Voucher.productOrService' | translate | headtitlecase}}</span>
+                                                        <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Vouhcer.productOrService')} | headtitlecase }} (*)</span></label>
+                                                    <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event)"></ngx-select2>
                                                 </div>
                                             </div>
                                             <!-- <div class="col-md-4 col-sm-4 col-sx-4">
