@@ -38,7 +38,7 @@
         "@agm/core": "^1.1.0",
         "@akveo/ng2-completer": "^9.0.1",
         "@angular/animations": "^9.0.4",
-        "@angular/cdk": "^9.1.2",
+        "@angular/cdk": "^9.2.4",
         "@angular/cli": "^9.1.11",
         "@angular/common": "^9.0.4",
         "@angular/compiler": "^9.0.4",
