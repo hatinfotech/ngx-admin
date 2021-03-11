@@ -11,19 +11,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PbxGatewayModel } from '../../../../models/pbx-gateway.model';
 import { PbxModel } from '../../../../models/pbx.model';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
-import { UserModel } from '../../../../models/user.model';
 import { PbxPstnNumberModel } from '../../../../models/pbx-pstn-number.model';
 import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { PbxDialplanModel } from '../../../../models/pbx-dialplan.model';
 import { WhWebsiteModel } from '../../../../models/wh-website.model';
 import { WhDatabaseUserModel } from '../../../../models/wh-database-user.model';
 import { WhDatabaseModel } from '../../../../models/wh-database.model';
-import { WhFtpModel } from '../../../../models/wh-ftp.model';
 import { MiniErpDeploymentModel } from '../../../../models/minierp-deployment.model';
 import { WhHostingModel } from '../../../../models/wh-hosting.model';
 import { PbxUserModel } from '../../../../models/pbx-user.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { PbxDeploymentModel } from '../../../../models/pbx-deployment.model';
+import { WhCronJobModel } from '../../../../models/wh-cron-job.model';
+import { WhFtpModel } from '../../../../models/wh-ftp.model';
 
 export class Executable {
   message: string;
@@ -508,6 +508,43 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     });
   }
 
+  async deployMiniErpCronJob(hosting: string, domainId: string, command: string, run_min: string, run_hour: string, run_mday: string, run_month: string, run_wday: string) {
+    return new Promise<WhCronJobModel>((resolve, reject) => {
+
+      this.apiService.get<WhCronJobModel[]>('/web-hosting/cron-jobs', { hosting: hosting, parent_domain_id: domainId, silent: true }, oldCronJobs => {
+
+        let cronJob = oldCronJobs[0];
+        let menthod = 'POST';
+        if (cronJob) {
+          menthod = 'PUT';
+        } else {
+          cronJob = new WhCronJobModel();
+        }
+
+        cronJob.parent_domain_id = domainId;
+        cronJob.command = command;
+        cronJob.run_min = run_min;
+        cronJob.run_hour = run_hour;
+        cronJob.run_mday = run_mday;
+        cronJob.run_month = run_month;
+        cronJob.run_wday = run_wday;
+        cronJob.type = 'url';
+        cronJob.log = 'n';
+        cronJob.active = 'y';
+
+        this.apiService.postPut<WhCronJobModel[]>(menthod, '/web-hosting/cron-jobs', { hosting: hosting }, [cronJob], newCronJobs => {
+          const newCronJob = newCronJobs[0];
+          if (newCronJob) {
+            resolve(newCronJob);
+          } else {
+            reject('Lỗi khởi tạo cron job');
+          }
+        }, e => reject(e));
+      }, e => reject(e));
+
+    });
+  }
+
   async deployMiniErpDatabaseUser(hosting: string, clientId: string, username: string) {
     return new Promise<WhDatabaseUserModel>((resolve, reject) => {
 
@@ -761,6 +798,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     let newPbxPstnNumber: PbxPstnNumberModel;
     let newPbxOutboundRule: PbxDialplanModel;
     let newWesite: WhWebsiteModel;
+    let newCronJob: WhCronJobModel;
     let newWebsiteDbUser: WhDatabaseUserModel;
     let newWesiteDb: WhDatabaseModel;
     let newWebsiteFtp: WhFtpModel;
@@ -827,6 +865,15 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         delayTry: 15000,
         execute: async () => {
           newWesite = await this.deployMiniErpWebiste(hosting.Code, newPbxDomain.DomainName);
+          return true;
+        },
+      },
+      {
+        message: 'Tạo cron job',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newCronJob = await this.deployMiniErpCronJob(hosting.Code, newWesite.domain_id, `https://${newWesite.domain}/robot.php`, '*', '*', '*', '*', '*');
           return true;
         },
       },
@@ -1015,7 +1062,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         // Close previous notification and open new
         if (this.longToastRef) this.longToastRef.close();
         this.longToastRef = this.toastrService.show('Thử lại trong ' + (execute.delayTry / 1000) + ' giây nữa...', 'Lỗi ' + execute.message, { status: 'danger', hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, duration: 0 });
-        await new Promise(resolve => setTimeout(() => resolve(), execute.delayTry));
+        await new Promise(resolve => setTimeout(() => resolve(true), execute.delayTry));
       }
 
     }

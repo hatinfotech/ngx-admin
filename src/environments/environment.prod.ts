@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.1.0.0',
+  version: '2.1.0.1',
   // 2.1.0.0: Begin dev accounting module
   // 2.0.5.16: Hotfix hosting module for mini-erp
   // 2.0.5.15: Demo connect zalo oa api and webhook: fix main socket reconnect and restore event whene chat server reload
