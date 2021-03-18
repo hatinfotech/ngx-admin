@@ -37,7 +37,7 @@ export class SystemRouteConditionModel {
   Route?: string;
   No?: string;
   Type?: string;
-  Cond?: string;
+  Cond?: string & {Options?: {id?: string, text?: string}[], DefaultDataType?: string};
   Operator?: string;
   Data?: string;
   BreakOnFalse?: string;
@@ -76,7 +76,8 @@ export class SystemRouteActionParameterModel {
   Id?: string;
   Action?: string & SystemActionModel;
   Route?: string & SystemRouteModel;
-  Parameter?: string;
+  Parameter?: string & {Type?: string, id?: string, text?: string};
+  Type?: string & {id?: string, text?: string};
   Data?: string;
 }
 

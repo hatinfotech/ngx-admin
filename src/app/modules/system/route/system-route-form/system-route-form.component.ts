@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-system-route-form',
@@ -113,41 +114,20 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     { id: 'IN', text: 'IN' },
   ];
 
-  getSlect2ForConditionData(param: SystemParamModel) {
-    const option = {
-      placeholder: this.commonService.translateText('Common.param'),
-      allowClear: true,
-      width: '100%',
-      dropdownAutoWidth: true,
-      minimumInputLength: 0,
-      tags: true,
-      multiple: param.DefaultDataType === 'OBJECTS',
-      keyMap: {
-        id: 'id',
-        text: 'text',
-      },
-    };
-
-    if (param.RemoteDataSource) {
-      option['ajax'] = {
-        url: params => {
-          return this.apiService.buildApiUrl(param.RemoteDataSource, { 'search': params['term'], includeIdText: true });
-        },
-        delay: 300,
-        processResults: (data: any, params: any) => {
-          // console.info(data, params);
-          return { results: data };
-        },
-      };
-    }
-    return option;
-  }
-
-  getSelect2DataListForConditionData(param: SystemParamModel) {
+  getSelect2DataListForConditionData(param: SystemParamModel, operator?: string) {
+    let data = null;
     if (!param.RemoteDataSource && param.Options) {
-      return param.Options.map(item => ({ ...item, id: item.Data, text: item.Label }));
+      data = param.Options.map(item => ({ ...item, id: item.Data, text: item.Label }));
     }
-    return null;
+
+    // if (operator === 'IN') {
+    //   if (data.length === 0) {
+    //     console.log('calculate option' + Date.now());
+    //     return [{ id: "asdfasdfa", text: "asdfasdfa" }, { id: "asdfasdfasdf", text: "asdfasdfasdf" }];
+    //   }
+    // }
+
+    return data;
   }
 
   paramList: SystemParamModel[];
@@ -368,11 +348,101 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
       // BreakOnFalse: [''],
     });
 
+    newForm.get('Cond').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((cond: { Options?: { id?: string, text?: string }[], DefaultDataType?: string }) => {
+      const operator = newForm.get('Operator').value;
+      this.onVariableFieldChange(newForm, 'Data', { ...cond, DataType: cond.DefaultDataType }, operator);
+    });
+    newForm.get('Operator').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(operator => {
+      const cond: { Options?: { id?: string, text?: string }[], DefaultDataType?: string } = newForm.get('Cond').value;
+      this.onVariableFieldChange(newForm, 'Data', cond, operator);
+    });
+
     if (data) {
+      newForm['inputType'] = this.calculateDataInputType(data.Cond?.DefaultDataType, data.Operator);
       newForm.patchValue(data);
+    } else {
+      newForm['inputType'] = 'text';
     }
     return newForm;
   }
+
+  onVariableFieldChange(newForm: FormGroup, dataFieldName: string, cond: { Options?: { id?: string, text?: string }[], DataType?: string, RemoteDataSource?: string }, operator: string | { id: string, text: string }) {
+    newForm['inputType'] = this.calculateDataInputType(cond?.DataType, operator);
+    if (cond.Options) {
+      newForm['dataList'] = cond?.Options;
+    }
+    newForm['select2Options'] = this.getSlect2OptionForData(cond?.DataType, cond.RemoteDataSource, operator);
+    if (newForm['inputType'] === 'text') {
+      const currentVal = newForm.get(dataFieldName).value;
+
+      try {
+        if (currentVal instanceof Array) {
+          newForm.get(dataFieldName).patchValue(JSON.stringify(currentVal.map(item => ({ id: item.id, text: item.text }))));
+        } else if (currentVal instanceof Object) {
+          newForm.get(dataFieldName).patchValue(JSON.stringify({ id: currentVal.id, text: currentVal.text }));
+        }
+      } catch (err) { }
+
+    }
+    if (newForm['inputType'] === 'select2') {
+      const currentVal = newForm.get(dataFieldName).value;
+      if (typeof currentVal === 'string' && currentVal !== '') {
+        try {
+          newForm.get(dataFieldName).patchValue(JSON.parse(currentVal));
+        } catch (err) { }
+      }
+    }
+  }
+
+  calculateDataInputType(dataType: string, operator: string | { id: string, text: string }) {
+    return this.commonService.getObjectId(operator) === 'IN' ? 'select2'
+      : ((['ENV_PARAM'].indexOf(dataType) > -1) ? 'select2remotesource'
+        : ((['OBJECTS'].indexOf(dataType) > -1) ? 'select2multi'
+          : ((['OBJECT'].indexOf(dataType) > -1) ? 'select2'
+            : (dataType === 'INTEGER' ? 'integer'
+              : (dataType === 'DOUBLE' ? 'double'
+                : (dataType === 'BOOLEAN' ? 'boolean'
+                  : (dataType === 'DATE_TIME' ? 'datetime'
+                    : 'text')))))));
+  }
+
+  getSlect2OptionForData(dataType: string, remoteDataSource?: string, operator?: string | { id: string, text: string }) {
+    const option = {
+      placeholder: this.commonService.translateText('Common.param'),
+      allowClear: true,
+      width: '100%',
+      dropdownAutoWidth: true,
+      minimumInputLength: 0,
+      tags: true,
+      multiple: dataType === 'OBJECTS' || this.commonService.getObjectId(operator) === 'IN',
+      keyMap: {
+        id: 'id',
+        text: 'text',
+      },
+    };
+
+    let rds = '';
+    if (dataType === 'ENV_PARAM') {
+      rds = '/system/params';
+    } else {
+      rds = remoteDataSource;
+    }
+
+    if (rds) {
+      option['ajax'] = {
+        url: params => {
+          return this.apiService.buildApiUrl(rds, { 'search': params['term'], includeIdText: true });
+        },
+        delay: 300,
+        processResults: (data: any, params: any) => {
+          // console.info(data, params);
+          return { results: data };
+        },
+      };
+    }
+    return option;
+  }
+
   getConditions(formGroupIndex: number) {
     return this.array.controls[formGroupIndex].get('Conditions') as FormArray;
   }
@@ -468,19 +538,96 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
       text: 'New',
     },
   ];
+  select2OptionForType = {
+    placeholder: this.commonService.translateText('Common.dataType'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+  typeList = [
+    {
+      id: 'STRING',
+      text: this.commonService.translateText('Common.DataType.string'),
+    },
+    {
+      id: 'INTEGER',
+      text: this.commonService.translateText('Common.DataType.int'),
+    },
+    {
+      id: 'BOOLEAN',
+      text: this.commonService.translateText('Common.DataType.boolean'),
+    },
+    {
+      id: 'DOUBLE',
+      text: this.commonService.translateText('Common.DataType.float'),
+    },
+    {
+      id: 'DATE',
+      text: this.commonService.translateText('Common.DataType.date'),
+    },
+    {
+      id: 'TIME',
+      text: this.commonService.translateText('Common.DataType.time'),
+    },
+    {
+      id: 'DATE_TIME',
+      text: this.commonService.translateText('Common.DataType.datetime'),
+    },
+    {
+      id: 'OBJECT',
+      text: this.commonService.translateText('Common.DataType.object'),
+    },
+    {
+      id: 'OBJECTS',
+      text: this.commonService.translateText('Common.DataType.objects'),
+    },
+    {
+      id: 'ENV_PARAM',
+      text: this.commonService.translateText('Common.DataType.environment'),
+    },
+    {
+      id: 'STRING',
+      text: this.commonService.translateText('Common.DataType.string'),
+    },
+  ];
+  convertDataTypeToInputType(dataType: string) {
+    const map = {
+      STRING: 'EQ',
+    };
+  }
   makeNewActionParameterFormGroup(data?: SystemRouteActionParameterModel): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [''],
       Parameter: [''],
+      Type: ['', Validators.required],
       Data: [''],
     });
 
+    newForm.get('Parameter').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((parameter: { id?: string, text?: string, Options?: any[], Type?: string, RemoteDataSource?: string }) => {
+      const type = newForm.get('Type').value;
+      if (parameter.Type && !type) {
+        newForm.get('Type').patchValue(parameter.Type);
+      }
+      // this.onVariableFieldChange(newForm, 'Data', { ...parameter, DataType: this.commonService.getObjectId(type) || parameter.Type }, '=');
+    });
+    newForm.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((type: { id?: string, text?: string }) => {
+      const parameter = newForm.get('Parameter').value || {};
+      this.onVariableFieldChange(newForm, 'Data', { ...parameter, DataType: this.commonService.getObjectId(type) || parameter.Type }, '=');
+    });
+
     if (data) {
-      // data['Id_old'] = data['Id'];
-      // if(data.Data === null) {
-      //   data.Data = ' ';
-      // }
+      newForm['inputType'] = this.calculateDataInputType(data.Parameter?.Type, '=');
+      if (!this.commonService.getObjectId(data.Type)) {
+        data.Type = data.Parameter.Type;
+      }
       newForm.patchValue(data);
+    } else {
+      newForm['inputType'] = 'text';
     }
     return newForm;
   }

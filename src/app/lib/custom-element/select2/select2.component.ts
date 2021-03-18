@@ -193,31 +193,38 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
         }
         this.value = value.map(i => (this.getItemId(i) || i));
       } else {
-        if (this.getItemId(value) && this.getItemText(value)) {
+        let vl = null;
+        if(!(value instanceof Object)) {
+          vl = {id: value, text: value};
+        } else {
+          vl = value;
+        }
+        if (this.getItemId(vl) && this.getItemText(vl)) {
           // Auto push item to data if not exists
           if (!this.data) {
             this.data = [];
           }
-          if (!this.data.some(item => this.getItemId(item) === this.getItemId(value))) {
-            this.data.push({ id: this.getItemId(value), text: this.getItemText(value) });
+          if (!this.data.some(item => this.getItemId(item) === this.getItemId(vl))) {
+            this.data.push({ id: this.getItemId(vl), text: this.getItemText(vl) });
           }
-          this.value = this.getItemId(value);
+          this.value = this.getItemId(vl);
         } else {
-          this.value = value;
+          this.value = vl;
         }
       }
-    } else {
+    } 
+    else {
       // note: Fix for init NULL value for ajax type
       // if (this.select2Option['ajax']) {
       // this.data = [{ id: '', text: '' }];
 
-      if(!this.data) {
-        this.data = [];
-      }
+      // if(!this.data) {
+      //   this.data = [];
+      // }
 
-      if (!this.data.some(item => this.getItemId(item) === '')) {
-        this.data.push({ id: '', text: '' });
-      }
+      // if (!this.data.some(item => this.getItemId(item) === '')) {
+      //   this.data.push({ id: '', text: '' });
+      // }
 
       // }
       this.value = '';
