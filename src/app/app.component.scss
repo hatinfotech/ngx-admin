@@ -73,6 +73,15 @@ body .logo-container {
     .color-darkslategray {
         color: #4ea7a7;
     }
+    tree-node-content span {
+        color: #fff;
+    }
+    .node-content-wrapper-focused,
+    .node-content-wrapper:hover {
+        tree-node-content span {
+            color: #000;
+        }
+    }
 }
 
 .tag {
