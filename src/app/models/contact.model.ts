@@ -89,6 +89,7 @@ export class ContactModel {
   Organizations?: ContactModel[];
   Groups?: ContactGroupModel[];
   Details?: ContactDetailModel[] & {[key: string]: any};
+  OutsideReferences?: OutsideReferenceModel[] & {[key: string]: any};
 
   constructor() { }
 
@@ -102,6 +103,20 @@ export class ContactDetailModel {
   DateOfInsert?: string;
   DateOfValidConfirm?: string;
   DateOfInvalidConfirm?: string;
+}
+export class OutsideReferenceModel {
+  Id?: string;
+  Contact?: string;
+  Platform?: string;
+  Page?: string;
+  PageUid?: string;
+  AppUid?: string;
+  UserUid?: string;
+  UserByApp?: string;
+  Name?: string;
+  Phone?: string;
+  Address?: string;
+  State?: string;
 }
 
 export class ContactDetailTypeModel {

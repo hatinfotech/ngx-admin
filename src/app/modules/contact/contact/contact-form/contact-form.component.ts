@@ -49,6 +49,35 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     },
   };
 
+  select2OptionForPage = {
+    placeholder: this.commonService.translateText('Common.page') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/zalooa/official-accounts', { filter_Name: params['term'], select: 'id=>Code,text=>Name' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            // item['id'] = item['Code'];
+            // item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
   select2GroupsOption = {
     placeholder: 'Nhóm...',
     allowClear: true,
@@ -93,6 +122,35 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     },
   };
 
+  platformList: IdTextModel[] = [
+    { id: 'ZALO', text: 'Zalo' },
+    { id: 'FACEBOOK', text: 'Facebook' },
+  ];
+  select2OptionForPlatForm = {
+    placeholder: this.commonService.translateText('Common.platform') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+  select2BaseOption = {
+    placeholder: this.commonService.translateText('Common.select') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -132,6 +190,15 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
         });
       }
 
+      if (itemFormData.OutsideReferences) {
+        itemFormData.OutsideReferences.forEach(outsideReference => {
+          const newUnitConversionFormGroup = this.makeNewOutsideReferenceFormGroup(outsideReference);
+          this.getOutsideReferences(newForm).push(newUnitConversionFormGroup);
+          const comIndex = this.getOutsideReferences(newForm).length - 1;
+          this.onAddOutsideReferenceFormGroup(newForm, comIndex, newUnitConversionFormGroup);
+        });
+      }
+
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
@@ -149,6 +216,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     params['includeOrganizations'] = true;
     params['includeGroups'] = true;
     params['includeDetails'] = true;
+    params['includeOutsideReferences'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -168,6 +236,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
       Organizations: [''],
       Groups: [''],
       Details: this.formBuilder.array([]),
+      OutsideReferences: this.formBuilder.array([]),
     });
     if (data) {
       newForm.patchValue(data);
@@ -236,6 +305,41 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   onAddDetailFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
   }
   onRemoveDetailFormGroup(formItem: FormGroup, index: number) {
+  }
+  /** End Details Form */
+
+  /** Outside References Form */
+  makeNewOutsideReferenceFormGroup(data?: ContactDetailModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      Id: [''],
+      Platform: ['', Validators.required],
+      Page: ['', Validators.required],
+      UserUid: ['', Validators.required],
+      State: [''],
+    });
+
+    if (data) {
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+  getOutsideReferences(formItem: FormGroup) {
+    return formItem.get('OutsideReferences') as FormArray;
+  }
+  addOutsideReferenceFormGroup(formItem: FormGroup) {
+    const newFormGroup = this.makeNewOutsideReferenceFormGroup();
+    this.getOutsideReferences(formItem).push(newFormGroup);
+    this.onAddDetailFormGroup(formItem, this.getOutsideReferences(formItem).length - 1, newFormGroup);
+    return false;
+  }
+  removeOutsideReferenceGroup(parentForm: FormGroup, formItem: FormGroup, index: number) {
+    this.getOutsideReferences(parentForm).removeAt(index);
+    this.onRemoveOutsideReferenceFormGroup(formItem, index);
+    return false;
+  }
+  onAddOutsideReferenceFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
+  }
+  onRemoveOutsideReferenceFormGroup(formItem: FormGroup, index: number) {
   }
   /** End Details Form */
 }

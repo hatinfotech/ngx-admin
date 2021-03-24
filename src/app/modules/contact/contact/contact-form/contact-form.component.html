@@ -11,112 +11,167 @@
                         <div class="row">
                             <input type="hidden" formControlName="Code">
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
-                                    <label class="label"><span class="valid">Danh xưng</span><span class="invalid">Danh xưng là bắt buộc
-                      (*)</span></label>
-                                    <input type="text" nbInput fullWidth formControlName="Title" placeholder="Danh xưng">
-                                </div>
+                                <ngx-form-group [formGroup]="formItem" name="Title" label="Contact.title" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Contact.title' | translate | headtitlecase}}">
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ShortName'), 'warning')">
-                                    <label class="label"><span class="valid">Tên rút gọn</span><span class="invalid">Tên rút gọn là bắt buộc
-                      (*)</span></label>
-                                    <input type="text" nbInput fullWidth formControlName="ShortName" placeholder="Tên rút gọn">
-                                </div>
+                                <ngx-form-group [formGroup]="formItem" name="ShortName" label="Contact.shortName" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="ShortName" placeholder="{{'Contact.shortName' | translate | headtitlecase}}">
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                                    <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
-                      (*)</span></label>
-                                    <input type="text" nbInput fullWidth formControlName="Name" placeholder="Name">
-                                </div>
+                                <ngx-form-group [formGroup]="formItem" name="Name" label="Contact.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Contact.name' | translate | headtitlecase}}">
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Organizations'), 'warning')">
-                                    <label class="label"><span class="valid">Tổ chức</span><span class="invalid">Tổ chức là bắt buộc
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="Organizations" label="Common.organizations" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <ngx-select2 [select2Option]="select2Option" formControlName="Organizations"></ngx-select2>
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
-                                    <label class="label"><span class="valid">Nhóm (tự động tạo nhóm)</span><span class="invalid">Nhóm là bắt buộc
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="Groups" label="Common.groups" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <ngx-select2 [select2Option]="select2GroupsOption" formControlName="Groups"></ngx-select2>
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Email'), 'warning')">
-                                    <label class="label"><span class="valid">Email</span><span class="invalid">Email là bắt buộc
-                      (*)</span></label>
-                                    <input type="text" nbInput fullWidth formControlName="Email" placeholder="Email">
-                                </div>
+                                <ngx-form-group [formGroup]="formItem" name="Email" label="Contact.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="Email" placeholder="{{'Contact.email' | translate | headtitlecase}}">
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Phone'), 'warning')">
-                                    <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại
-                      là bắt buộc (*)</span></label>
-                                    <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Phone">
-                                </div>
+                                <ngx-form-group [formGroup]="formItem" name="Phone" label="Contact.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="Phone" placeholder="{{'Contact.phone' | translate | headtitlecase}}">
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Address'), 'warning')">
-                                    <label class="label"><span class="valid">Địa chỉ</span><span class="invalid">Địa chỉ là bắt buộc
-                      (*)</span></label>
-                                    <input type="text" nbInput fullWidth formControlName="Address" placeholder="Địa chỉ">
-                                </div>
+                                <ngx-form-group [formGroup]="formItem" name="Address" label="Contact.address" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="Address" placeholder="{{'Contact.address' | translate | headtitlecase}}">
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
-                                    <label class="label"><span class="valid">Ghi chú</span><span class="invalid">Ghi chú là bắt buộc
-                      (*)</span></label>
-                                    <textarea nbInput fullWidth formControlName="Note" placeholder="Ghi chú"></textarea>
-                                </div>
+                                <ngx-form-group [formGroup]="formItem" name="Note" label="Contact.note" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <textarea nbInput fullWidth formControlName="Note" placeholder="{{'Contact.note' | translate | headtitlecase}}"></textarea>
+                                </ngx-form-group>
                             </div>
-                            <!-- <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Enabled'), 'warning')">
-                  <label class="label"><span class="valid">Kích hoạt (*)</span><span class="invalid"></span></label>
-                  <nb-checkbox formControlName="Enabled" >Kích hoạt</nb-checkbox>
-                </div>
-              </div> -->
                             <div class="col-sm-12">
 
                                 <!-- Detail form -->
-                                <!-- <hr> -->
-                                <div class="row" style="align-items: flex-end;">
-                                    <div class="col-sm-3 label">{{'Common.type' | translate | headtitlecase}}</div>
-                                    <div class="col-sm-8 label">{{'Common.detail' | translate | headtitlecase}}</div>
-                                    <div class="col-sm-1" style="text-align: right;">
-                                        <nb-icon pack="eva" icon="plus-circle-outline" (click)="addDetailFormGroup(formItem)" status="success" style="margin-right: 0.8rem;"></nb-icon>
+                                <div class="row fit-row form-detail-header">
+                                    <div class="fit-fist-col label column">Stt</div>
+                                    <div class="row fit-content-column">
+                                        <div class="col-sm-3 label column">{{'Common.type' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-9 label column">{{'Common.detail' | translate | headtitlecase}}</div>
+                                    </div>
+                                    <div class="fit-last-col column">
+                                        <button class="fit-control-button" nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero>
+                                            <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                                <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)">
                                     <!-- <div formArrayName="Details" class="form-details"> -->
                                     <hr>
                                     <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail">
                                         <input type="hidden" formControlName="Id">
 
-                                        <div class="row">
-                                            <div class="col-sm-3">
+                                        <div class="row fit-row">
+                                            <div class="fit-fist-col label">
                                                 <div class="form-group">
-                                                    <label class="label">{{'Common.user' | translate | headtitlecase}}</label>
-                                                    <ngx-select2 formControlName="Type" [select2Option]="select2OptionForType" [data]="typeList">
-                                                    </ngx-select2>
+                                                    <label class="label">Stt</label>
+                                                    <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ ic + 1 }}">
+                                                    <input type="hidden" formControlName="Id">
                                                 </div>
                                             </div>
-                                            <div class="col-sm-8">
-                                                <div class="form-group">
-                                                    <label class="label">{{'Common.detail' | translate | headtitlecase}}</label>
-                                                    <input nbInput fullWidth formControlName="Detail" placeholder="{{'Common.detail' | translate | headtitlecase}}">
+                                            <div class="row fit-content-column">
+                                                <div class="col-sm-3">
+                                                    <ngx-form-group [formGroup]="detail" name="Type" label="Contact.type" [array]="getDetails(detail)" [index]="ic" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="Type" [select2Option]="select2OptionForType" [data]="typeList"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    <ngx-form-group [formGroup]="detail" name="Detail" label="Contact.detail" [array]="getDetails(detail)" [index]="ic" [allowCopy]="false" [required]="true">
+                                                        <input nbInput fullWidth formControlName="Detail" placeholder="{{'Common.detail' | translate | headtitlecase}}">
+                                                    </ngx-form-group>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-1">
-                                                <div class="form-group">
+                                            <div class="fit-last-col">
+                                                <div class="form-group" style="text-align: right;">
                                                     <label class="label">CM</label>
-                                                    <button nbButton status="danger" hero size="medium" (click)="removeDetailGroup(formItem, detail, ic)" style="margin-bottom: 3px; float: right;">
-                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
-                          </button>
+                                                    <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeDetailGroup(formItem, detail, ic)">
+                                                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Detail form -->
+                            </div>
+                            <div class="col-sm-12">
+                                <br>
+                                <hr>
+
+                                <!-- Detail form -->
+                                <div class="row fit-row form-detail-header">
+                                    <div class="fit-fist-col label column">Stt</div>
+                                    <div class="row fit-content-column">
+                                        <div class="col-sm-2 label column">{{'Common.plaform' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-4 label column">{{'Common.page' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-4 label column">{{'Common.useruid' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-2 label column">{{'Common.state' | translate | headtitlecase}}</div>
+                                    </div>
+                                    <div class="fit-last-col column">
+                                        <button class="fit-control-button" nbButton status="success" (click)="addOutsideReferenceFormGroup(formItem)" size="medium" hero>
+                                            <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div formArrayName="OutsideReferences" class="form-details" [sortablejs]="getOutsideReferences(formItem)">
+                                    <!-- <div formArrayName="Details" class="form-details"> -->
+                                    <hr>
+                                    <div class="form-detail-item" *ngFor="let outsideReference of getOutsideReferences(formItem).controls; let io=index" [formGroup]="outsideReference">
+                                        <input type="hidden" formControlName="Id">
+
+                                        <div class="row fit-row">
+                                            <div class="fit-fist-col label">
+                                                <div class="form-group">
+                                                    <label class="label">Stt</label>
+                                                    <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ io + 1 }}">
+                                                    <input type="hidden" formControlName="Id">
+                                                </div>
+                                            </div>
+                                            <div class="row fit-content-column">
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [formGroup]="outsideReference" name="Platform" label="Contact.outsideReferencePlatform" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="Platform" [select2Option]="select2OptionForPlatForm" [data]="platformList"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <ngx-form-group [formGroup]="outsideReference" name="Page" label="Contact.page" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <ngx-form-group [formGroup]="outsideReference" name="UserUid" label="Contact.useruid" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <input nbInput fullWidth formControlName="UserUid" placeholder="{{'Common.useruid' | translate | headtitlecase}}">
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [formGroup]="outsideReference" name="State" label="Contact.state" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'FOLLOW', text: this.commonService.translateText('Common.follow')}, {id: 'UNFOLLOW', text: this.commonService.translateText('Common.unfollow')}]"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                            </div>
+                                            <div class="fit-last-col">
+                                                <div class="form-group" style="text-align: right;">
+                                                    <label class="label">CM</label>
+                                                    <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeDetailGroup(formItem, outsideReference, i)">
+                                                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
