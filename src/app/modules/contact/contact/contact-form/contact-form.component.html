@@ -71,7 +71,7 @@
                                     </div>
                                 </div>
 
-                                <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)">
+                                <div formArrayName="Details" class="form-details">
                                     <!-- <div formArrayName="Details" class="form-details"> -->
                                     <hr>
                                     <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail">
@@ -113,6 +113,7 @@
                             <div class="col-sm-12">
                                 <br>
                                 <hr>
+                                <label class="label">Liên kết với các nền tảng khác</label>
 
                                 <!-- Detail form -->
                                 <div class="row fit-row form-detail-header">
@@ -130,7 +131,7 @@
                                     </div>
                                 </div>
 
-                                <div formArrayName="OutsideReferences" class="form-details" [sortablejs]="getOutsideReferences(formItem)">
+                                <div formArrayName="OutsideReferences" class="form-details">
                                     <!-- <div formArrayName="Details" class="form-details"> -->
                                     <hr>
                                     <div class="form-detail-item" *ngFor="let outsideReference of getOutsideReferences(formItem).controls; let io=index" [formGroup]="outsideReference">
@@ -169,7 +170,7 @@
                                             <div class="fit-last-col">
                                                 <div class="form-group" style="text-align: right;">
                                                     <label class="label">CM</label>
-                                                    <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeDetailGroup(formItem, outsideReference, i)">
+                                                    <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeOutsideReferenceGroup(formItem, outsideReference, i)">
                                                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                                                     </button>
                                                 </div>

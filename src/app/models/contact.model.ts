@@ -50,6 +50,7 @@ export class ContactModel {
   CurrentDevice?: string;
   Sex?: string;
   Avatar?: string;
+  AvatarUrl?: string;
   Created?: string;
   WorkStatus?: string;
   PlaceOfBirth?: string;
@@ -84,6 +85,7 @@ export class ContactModel {
   SipUser?: string;
   SipDomain?: string;
   SipPassword?: string;
+  IsDeleted?: boolean;
 
   // References
   Organizations?: ContactModel[];

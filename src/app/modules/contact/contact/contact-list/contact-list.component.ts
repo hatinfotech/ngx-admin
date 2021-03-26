@@ -1,697 +1,333 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2 } from '@angular/core';
-import { BaseComponent } from '../../../../lib/base-component';
-import { CommonService } from '../../../../services/common.service';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../../services/api.service';
-import { takeWhile } from 'rxjs/operators';
-import { UserActive, UserActivityData } from '../../../../@core/data/user-activity';
-import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService } from '@nebular/theme';
-import { OrdersChart } from '../../../../@core/data/orders-chart';
-import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
-import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { LocalDataSource } from 'ng2-smart-table';
+import { takeUntil } from 'rxjs/operators';
+import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
+import { SmartTableBaseComponent, SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { CashVoucherModel } from '../../../../models/accounting.model';
 import { ContactModel } from '../../../../models/contact.model';
-import { ContactFormComponent } from '../contact-form/contact-form.component';
+import { UserGroupModel } from '../../../../models/user-group.model';
+import { ApiService } from '../../../../services/api.service';
+import { CommonService } from '../../../../services/common.service';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { ContactFormComponent } from '../contact-form/contact-form.component';
 
 @Component({
   selector: 'ngx-contact-list',
   templateUrl: './contact-list.component.html',
-  styleUrls: ['./contact-list.component.scss'],
 })
-export class ContactListComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ContactListComponent extends ServerDataManagerListComponent<ContactModel> implements OnInit {
 
-  componentName = 'ContactListComponent';
+  componentName: string = 'ContactListComponent';
+  formPath = '/contact/contact-form/form';
+  apiPath = '/contact/contacts';
   idKey = 'Code';
+  formDialog = ContactFormComponent;
 
-  // private $: any;
+  reuseDialog = true;
+  static _dialog: NbDialogRef<ContactFormComponent>;
 
-  private alive = true;
-  // select2Option = {
-  //   placeholder: 'Chọn...',
-  //   allowClear: false,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   keyMap: {
-  //     id: 'DomainUuid',
-  //     text: 'DomainName',
-  //   },
-  // };
-
-  userActivity: UserActive[] = [];
-  type = 'month';
-  types = ['week', 'month', 'year'];
-  currentTheme: string;
-  option: any;
-
-  dataList: ContactModel[] | { selected: boolean }[] = [];
-  selectedItems: ContactModel[] = [];
-  selectedItemEles: { id: string, el: any }[] = [];
-
-  ordersChartData: OrdersChart;
-
-  // @ViewChild('helpdeskDashboard', { static: true }) helpdeskDashboard: ElementRef;
-  // @ViewChild('helpdeskHeader', { static: true }) helpdeskHeader: ElementRef;
-
-  hadRowsSelected = false;
-  hadMultiRowSelected = false;
-  actionButtonList: ActionControl[] = [
-    // {
-    //   type: 'text',
-    //   name: 'search',
-    //   status: 'default',
-    //   label: 'Search',
-    //   icon: 'message-square',
-    //   title: 'Tìm kiếm',
-    //   size: 'tiny',
-    //   value: () => {
-    //     return this.keyword;
-    //   },
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     // this.refresh();
-    //     return false;
-    //   },
-    //   change: (event, option) => {
-    //     this.keyword = event.target.value;
-    //     this.onFilterChange();
-    //     return false;
-    //   },
-    //   typing: (event, option) => {
-    //     this.keyword = event.target.value;
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'chat',
-    //   status: 'success',
-    //   label: 'Chat',
-    //   icon: 'message-square',
-    //   title: 'Vào phòng chat',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
-    //   },
-    //   click: () => {
-    //     // this.refresh();
-    //     if (this.selectedItems.length > 0) {
-    //       this.openChatRoom(this.selectedItems[0].ChatRoom);
-    //     }
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'call',
-    //   status: 'primary',
-    //   label: 'Gọi',
-    //   icon: 'phone-call',
-    //   title: 'Gọi cho người được hỗ trợ',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     this.commonService.openMenuSidebar();
-    //     this.mobileAppService.switchScreen('phone');
-    //     // this.refresh();
-    //     return false;
-    //   },
-    // },
-    {
-      type: 'button',
-      name: 'sync',
-      status: 'danger',
-      label: 'Đồng bộ chi tiết liên hệ',
-      icon: 'file-add',
-      title: 'Đồng bộ chi tiết liên hệ',
-      size: 'medium',
-      disabled: (option) => {
-        return option && !!option['disabled'];
-      },
-      click: (event, option) => {
-        this.commonService.openDialog(ShowcaseDialogComponent, {
-          context: {
-            title: this.commonService.translateText('Contact.syncMainToDetail'),
-            content: this.commonService.translateText('Contact.syncMainToDetailConfirmMessage'),
-            actions: [
-              {
-                label: this.commonService.translateText('Common.close'),
-                status: 'primary',
-                action: () => { },
-              },
-              {
-                label: this.commonService.translateText('Common.sync'),
-                status: 'success',
-                action: () => {
-                  // option.disabled = true;
-                  this.apiService.putPromise<any>('/contact/contacts', { syncMainToDetail: true }, []).then(rs => {
-                    // option.disabled = false;
-                    this.commonService.openDialog(ShowcaseDialogComponent, {
-                      context: {
-                        title: this.commonService.translateText('Contact.syncMainToDetail'),
-                        content: this.commonService.translateText('Contact.syncMainToDetailCompleteMessage'),
-                        actions: [
-                          {
-                            label: this.commonService.translateText('Common.ok'),
-                            status: 'success',
-                            action: () => { },
-                          },
-                        ],
-                      },
-                    });
-                  });
-                },
-              },
-            ],
-          },
-        });
-
-      },
-    },
-    {
-      type: 'button',
-      name: 'create',
-      status: 'warning',
-      label: 'Tạo liên hệ',
-      icon: 'file-add',
-      title: 'Tạo liên hệ mới',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.createNewItem();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'advanceFilter',
-      status: 'primary',
-      label: 'Tìm kiếm nâng cao',
-      icon: 'funnel',
-      title: 'Tìm kiếm nâng cao',
-      size: 'medium',
-      hidden: () => {
-        return this.isAdvanceFilter;
-      },
-      click: () => {
-        this.isAdvanceFilter = true;
-        // this.reset();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'Bỏ lọc',
-      status: 'danger',
-      label: 'Đặt lại',
-      icon: 'refresh',
-      title: 'Đặt lại tìm kiếm và sắp xếp',
-      size: 'medium',
-      hidden: () => {
-        return !this.isAdvanceFilter;
-      },
-      click: () => {
-        this.reset();
-        this.isAdvanceFilter = false;
-        return false;
-      },
-    },
-    // {
-    //   type: 'button',
-    //   name: 'create',
-    //   status: 'info',
-    //   label: 'Cập nhật',
-    //   icon: 'edit',
-    //   title: 'Cập nhật TICKET',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     this.editItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'view',
-    //   status: 'success',
-    //   label: 'Xem',
-    //   icon: 'external-link',
-    //   title: 'Xem thông tin TICKET',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
-    //   },
-    //   click: () => {
-    //     // this.createNewItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'remove',
-    //   status: 'danger',
-    //   label: 'Huỷ',
-    //   icon: 'close-circle',
-    //   title: 'Huỷ yêu cầu',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected;
-    //   },
-    //   click: () => {
-    //     // this.reset();
-    //     return false;
-    //   },
-    // },
-    {
-      type: 'button',
-      name: 'refresh',
-      status: 'success',
-      label: 'Refresh',
-      icon: 'sync',
-      title: 'Làm mới',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.refresh();
-        return false;
-      },
-    },
-  ];
-
-  keyword: string = '';
-
-  showQuickForm = false;
-  isAdvanceFilter = false;
-
-  filter: { [key: string]: { type?: string, name?: string, placeholder?: string, value?: string } } = {
-    Title: {
-      type: 'text',
-      name: 'Name',
-      placeholder: 'Tên',
-      value: '',
-    },
-    Name: {
-      type: 'text',
-      name: 'Name',
-      placeholder: 'Tên',
-      value: '',
-    },
-    ShortName: {
-      type: 'text',
-      name: 'ShortName',
-      placeholder: 'Tên',
-      value: '',
-    },
-    Phone: {
-      type: 'text',
-      name: 'Phone',
-      placeholder: 'Số điện thoại',
-      value: '',
-    },
-    Phone2: {
-      type: 'text',
-      name: 'Phone',
-      placeholder: 'Số điện thoại',
-      value: '',
-    },
-    Phone3: {
-      type: 'text',
-      name: 'Phone',
-      placeholder: 'Số điện thoại',
-      value: '',
-    },
-    Email: {
-      type: 'text',
-      name: 'Email',
-      placeholder: 'Email',
-      value: '',
-    },
-    Address: {
-      type: 'text',
-      name: 'Address',
-      placeholder: 'Địa chỉ',
-      value: '',
-    },
-    Organization: {
-      type: 'text',
-      name: 'Organization',
-      placeholder: 'Công ty',
-      value: '',
-    },
-    Type: {
-      type: 'text',
-      name: 'Type',
-      placeholder: 'Công ty',
-      value: '',
-    },
-    Note: {
-      type: 'text',
-      name: 'Type',
-      placeholder: 'Công ty',
-      value: '',
-    },
-  };
-
-  // quickTicketFormList: { index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }[] = [];
-
-  infiniteLoadModel: { data: (ContactModel & { selected?: boolean, color?: string })[], placeholders: any[], loading: boolean, pageToLoadNext: number } = {
-    data: [],
-    placeholders: [],
-    loading: false,
-    pageToLoadNext: 1,
-  };
-  pageSize = 10;
-
-  // @ViewChild('quickTicketForm', { static: true }) quickTicketForm: QuickTicketFormComponent;
-
-  quickFormOnInitSubject = new BehaviorSubject<string>(null);
-  quickFormOnInit$ = this.quickFormOnInitSubject.asObservable();
-  private callStateSubscription: Subscription;
-
-  select2Option = {
-    placeholder: 'Nhóm...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 1,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
-        };
-      },
-    },
-  };
-
-  textCorlors = {
-    darkslategray: {
-      light: 'darkslategray',
-      dark: '#519696',
-    },
-    orange: {
-      light: 'orange',
-      dark: 'orange',
-    },
-  };
+  // Smart table
+  static filterConfig: any;
+  static sortConf: any;
+  static pagingConf = { page: 1, perPage: 40 };
+  prepareRemoveSource: CustomServerDataSource<ContactModel>;
 
   constructor(
-    public commonService: CommonService,
-    public router: Router,
     public apiService: ApiService,
-    public themeService: NbThemeService,
-    public userActivityService: UserActivityData,
-    public ordersProfitChartService: OrdersProfitChartData,
-    public layoutScrollService: NbLayoutScrollService,
-    public iconsLibrary: NbIconLibraries,
-    public renderer: Renderer2,
+    public router: Router,
+    public commonService: CommonService,
     public dialogService: NbDialogService,
-    // private mobileAppService: MobileAppService,
-    // private mmobileAppService: MobileAppService,
+    public toastService: NbToastrService,
+    public _http: HttpClient,
+    public ref: NbDialogRef<ContactListComponent>,
   ) {
-    super(commonService, router, apiService);
-
-    // iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
-    iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
-
-    this.themeService.getJsTheme()
-      .pipe(takeWhile(() => this.alive))
-      .subscribe(theme => {
-        this.currentTheme = theme.name;
-      });
-
-    this.getUserActivity(this.type);
-    this.getOrdersChartData('week');
-
-    this.loadList();
-  }
-
-  onResume() {
-    // this.commonService.openMobileSidebar();
-    super.onResume();
-    this.callStateSubscription.unsubscribe();
-  }
-
-  ngOnInit() {
-    this.commonService.openMobileSidebar();
-  }
-
-  onFilterChange() {
-    this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
-      this.infiniteLoadModel.pageToLoadNext = 1;
-      this.infiniteLoadModel.data = [];
-      this.loadNext(this.infiniteLoadModel);
+    super(apiService, router, commonService, dialogService, toastService, ref);
+    this.actionButtonList.unshift({
+      name: 'merge',
+      status: 'danger',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.merge'), 'head-title'),
+      icon: 'checkmark-square',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.merge'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.selectedIds.length === 0,
+      hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
+      click: () => {
+        console.log('merge contact', this.selectedIds);
+        return false;
+      },
     });
-  }
-
-  loadNext(cardData: { data: (ContactModel & { selected?: boolean, color?: string })[], placeholders: any[], loading: boolean, pageToLoadNext: number }) {
-    if (cardData.loading) { return; }
-
-    cardData.loading = true;
-    cardData.placeholders = new Array(this.pageSize);
-
-    const query = {
-      search: this.keyword,
-      sort_Id: 'desc',
-      includeOrganizations: true,
-      includeGroups: true,
-      limit: this.pageSize,
-      offset: (cardData.pageToLoadNext - 1) * this.pageSize,
+    this.prepareRemoveSource = new CustomServerDataSource<ContactModel>(this.apiService, this.getApiPath());
+    // Set DataSource: prepareParams
+    this.prepareRemoveSource.prepareParams = (params: any) => {
+      params['sort_Id'] = 'desc';
+      params['includeOrganizations'] = true;
+      params['includeGroups'] = true;
+      params['eq_IsDeleted'] = '1';
+      return params;
     };
 
-    Object.keys(this.filter).forEach(k => {
-      if (this.filter[k].value) {
-        query['filter_' + k] = this.filter[k].value;
+    // this.prepareRemoveSource.prepareData = (data: ContactModel[] | any) => {
+    //   return data;
+    // };
+  }
+
+  // async loadCache() {
+  //   // iniit category
+  //   // this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+  // }
+
+  async init() {
+    // await this.loadCache();
+    return super.init();
+  }
+
+  editing = {};
+  rows = [];
+
+  settings = this.configSetting({
+    mode: 'external',
+    selectMode: 'multi',
+    actions: {
+      position: 'right',
+    },
+    add: this.configAddButton(),
+    edit: this.configEditButton(),
+    delete: this.configDeleteButton(),
+    pager: this.configPaging(),
+    columns: {
+      AvatarUrl: {
+        title: 'Hình',
+        type: 'custom',
+        width: '5%',
+        valuePrepareFunction: (value: string, contact: ContactModel) => {
+          return contact.AvatarUrl;
+        },
+        renderComponent: SmartTableThumbnailComponent,
+        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.subscribe(async (row: ContactModel) => {
+            // if (this.files.length === 0) {
+            //   this.uploadForProduct = row;
+            //   this.uploadBtn.nativeElement.click();
+            // } else {
+            //   this.commonService.toastService.show(
+            //     this.commonService.translateText('Common.uploadInProcess'),
+            //     this.commonService.translateText('Common.upload'),
+            //     {
+            //       status: 'warning',
+            //     });
+            // }
+          });
+          instance.title = this.commonService.translateText('click to change main contact avatar');
+        },
+      },
+      // No: {
+      //   title: 'No.',
+      //   type: 'string',
+      //   width: '5%',
+      //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      // },
+      Name: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+        type: 'string',
+        width: '20%',
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      },
+      Groups: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.groups'), 'head-title'),
+        type: 'html',
+        width: '20%',
+        valuePrepareFunction: (cell: any) => {
+          return cell && cell.map(group => `<div class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> ${group.Name}</div></div>`).join('');
+        },
+        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      },
+      // Phone: {
+      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.phone'), 'head-title'),
+      //   type: 'string',
+      //   width: '20%',
+      //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      // },
+      Email: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.email'), 'head-title'),
+        type: 'string',
+        width: '20%',
+      },
+      Code: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+        type: 'string',
+        width: '10%',
+      },
+      Created: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+        type: 'custom',
+        width: '10%',
+        filter: {
+          type: 'custom',
+          component: SmartTableDateTimeRangeFilterComponent,
+        },
+        renderComponent: SmartTableDateTimeComponent,
+        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+          // instance.format$.next('medium');
+        },
+      },
+      // Amount: {
+      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+      //   type: 'custom',
+      //   class: 'align-right',
+      //   width: '10%',
+      //   position: 'right',
+      //   renderComponent: SmartTableCurrencyComponent,
+      //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+      //     // instance.format$.next('medium');
+      //     instance.style = 'text-align: right';
+      //   },
+      // },
+      Merge: {
+        title: this.commonService.translateText('Common.preview'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'checkmark-circle';
+          instance.display = true;
+          instance.status = 'warning';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.approve');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            this.commonService.openDialog(ShowcaseDialogComponent, {
+              context: {
+                title: this.commonService.translateText('Common.confirm'),
+                content: 'Contact.mergeConfirm',
+                actions: [
+                  {
+                    label: this.commonService.translateText('Common.close'),
+                    status: 'primary',
+                  },
+                  {
+                    label: this.commonService.translateText('Common.merge'),
+                    status: 'danger',
+                    action: () => {
+                      this.apiService.putPromise<ContactModel[]>('/contact/contacts', { id: [rowData.Code], mergeContact: true, fromContacts: this.selectedItems.map(item => item.Code).join(',') }, [rowData]).then(rs => {
+                        // this.reset();
+                        this.unselectAll();
+                        this.refresh();
+                      });
+                    }
+                  },
+                ],
+              },
+            });
+
+            // this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
+            //   this.preview(rs[0]);
+            // });
+
+
+          });
+        },
       }
-    });
+    },
+  });
 
-    // if (this.filterName) query['filterName'] = this.filterName;
-    // if (this.filterPhone) query['filterPhone'] = this.filterPhone;
-    // if (this.filterEmail) query['filterEmail'] = this.filterEmail;
-    // if (this.filterAddress) query['filterAddress'] = this.filterAddress;
+  ngOnInit() {
+    this.restrict();
+    super.ngOnInit();
+  }
 
-    this.apiService.getPromise<(ContactModel & { selected?: boolean, color?: string })[]>('/contact/contacts', query).then(nextList => {
-      // this.dataList = list.map(item => {
-      //   item['selected'] = false;
-      //   return item;
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    // source.prepareData = (data: UserGroupModel[]) => {
+    //   // const paging = source.getPaging();
+    //   // data.map((product: any, index: number) => {
+    //   //   product['No'] = (paging.page - 1) * paging.perPage + index + 1;
+    //   //   return product;
+    //   // });
+    //   return data;
+    // };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['sort_Id'] = 'desc';
+      params['includeOrganizations'] = true;
+      params['includeGroups'] = true;
+      params['is_IsDeleted'] = 'NULL';
+      return params;
+    };
+
+    return source;
+  }
+
+  /** Api get funciton */
+  // executeGet(params: any, success: (resources: UserGroupModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: UserGroupModel[] | HttpErrorResponse) => void) {
+  //   params['includeCategories'] = true;
+  //   super.executeGet(params, success, error, complete);
+  // }
+
+  getList(callback: (list: UserGroupModel[]) => void) {
+    super.getList((rs) => {
+      // rs.map((product: any) => {
+      //   product['Unit'] = product['Unit']['Name'];
+      //   if (product['Categories']) {
+      //     product['CategoriesRendered'] = product['Categories'].map(cate => cate['text']).join(', ');
+      //   }
+      //   return product;
       // });
-
-      cardData.placeholders = [];
-      cardData.data.push(...nextList.map(i => {
-        i.color = 'darkslategray';
-        return i;
-      }));
-      cardData.loading = false;
-      cardData.pageToLoadNext++;
-
-    }).catch(e => {
-      cardData.loading = false;
+      if (callback) callback(rs);
     });
-
-    // this.newsService.load(cardData.pageToLoadNext, this.pageSize)
-    //   .subscribe(nextNews => {
-    //     cardData.placeholders = [];
-    //     cardData.news.push(...nextNews);
-    //     cardData.loading = false;
-    //     cardData.pageToLoadNext++;
-    //   });
   }
 
-  ngAfterViewInit(): void {
-    // tslint:disable-next-line: ban
-    const helpdeskDashboard = $(document.getElementById('helpdeskDashboard'));
-    // tslint:disable-next-line: ban
-    const helpdeskHeaderEle = $(document.getElementById('helpdeskHeader'));
-    this.subcriptions.push(this.layoutScrollService.getPosition().subscribe(position => {
-      console.info(position);
-    }));
-    let checkpoint = null;
-    this.subcriptions.push(this.layoutScrollService.onScroll().subscribe(position => {
-      const helpdeskHeaderOffset = helpdeskHeaderEle.offset();
-      const helpdeskDashboardOffset = helpdeskDashboard.offset();
-      if (!checkpoint && helpdeskHeaderOffset.top < 50) {
-        checkpoint = helpdeskDashboardOffset.top;
-
-        this.commonService.pushHeaderActionControlList(this.actionButtonList);
-
-        //   helpdeskHeaderEle.css({ position: 'fixed', zIndex: 1, width: fixedWidth, top: fixedOffset.top, left: helpdeskHeaderOffset.left });
-        //   helpdeskDashboard.css({paddingTop: helpdeskHeaderEle.height() + 17});
-      }
-
-      // console.info(`${checkpoint} && ${helpdeskDashboardOffset.top} >= ${checkpoint}`);
-      if (checkpoint && helpdeskDashboardOffset.top > checkpoint) {
-        //   helpdeskHeaderEle.css({ position: 'relative', zIndex: 'initial', width: 'initial', top: 'initial', left: 'initial' });
-        //   helpdeskDashboard.css({paddingTop: 'initial'});
-        this.commonService.pushHeaderActionControlList([]);
-        checkpoint = null;
-      }
-
-
-    }));
-  }
-
-  loadList() {
-    // this.apiService.get<ContactModel[]>('/helpdesk/tickets', { limit: 20 }, list => {
-    //   this.dataList = list.map(item => {
-    //     item['selected'] = false;
-    //     return item;
-    //   });
+  preview(data: CashVoucherModel) {
+    // data.Details.forEach(detail => {
+    //   // if (typeof detail['Tax'] === 'string') {
+    //   //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+    //   // }
     // });
-  }
-
-  getOrdersChartData(period: string) {
-    this.ordersProfitChartService.getOrdersChartData(period)
-      .pipe(takeWhile(() => this.alive))
-      .subscribe(ordersChartData => {
-        this.ordersChartData = ordersChartData;
-      });
-  }
-
-  getUserActivity(period: string) {
-    this.userActivityService.getUserActivityData(period)
-      .pipe(takeWhile(() => this.alive))
-      .subscribe(userActivityData => {
-        this.userActivity = userActivityData;
-      });
-  }
-
-  ngOnDestroy() {
-    this.alive = false;
-    this.commonService.pushHeaderActionControlList([]);
+    // this.commonService.openDialog(ContactFormComponent, {
+    //   context: {
+    //     title: 'Xem trước',
+    //     data: data,
+    //     approvedConfirm: true,
+    //     onClose: (id: string) => {
+    //       this.refresh();
+    //     },
+    //   },
+    // });
+    return false;
   }
 
   refresh() {
-    this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
-      this.infiniteLoadModel.pageToLoadNext = 1;
-      this.infiniteLoadModel.data = [];
-      this.loadNext(this.infiniteLoadModel);
-    });
-    this.deleteSelected();
-    return false;
+    super.refresh();
+    this.prepareRemoveSource.refresh();
   }
 
-  deleteSelected() {
-    this.selectedItems = [];
-    this.hadRowsSelected = false;
-    this.hadMultiRowSelected = false;
-    return false;
-  }
-
-  // editSelectedItem() {
-  //   return false;
-  // }
-
-  clearFilter() {
-    Object.keys(this.filter).forEach(k => this.filter[k].value = '');
-  }
-
-  reset() {
-    this.deleteSelected();
-    this.refresh();
-    return false;
-  }
-
-  toggleSelectItem(event: any, item: ContactModel) {
-    item['selected'] = !item['selected'];
-    if (item['selected']) {
-      this.selectedItems.push(item);
-      this.renderer.addClass(event.currentTarget, 'selected');
-    } else {
-      this.selectedItems = this.selectedItems.filter(sItem => sItem[this.idKey] !== item[this.idKey]);
-      this.renderer.removeClass(event.currentTarget, 'selected');
+  /** Api delete funciton */
+  async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+    let deletedItems: ContactModel[] = await this.convertIdsToItems(ids);
+    if (!deletedItems || deletedItems.length === 0) {
+      deletedItems = await this.convertIdsToItems(ids, this.prepareRemoveSource);
     }
-    // console.info(this.selectedItems);
-    this.hadRowsSelected = this.selectedItems.length > 0;
-    this.hadMultiRowSelected = this.selectedItems.length > 1;
-    return false;
-  }
-
-  selectOne(event: any, item: ContactModel) {
-    this.selectedItemEles.forEach(selectedItemEle => {
-      this.renderer.removeClass(selectedItemEle.el, 'selected');
-    });
-    this.selectedItems = [item];
-    this.selectedItemEles = [{ id: item[this.idKey], el: event.currentTarget }];
-    this.renderer.addClass(event.currentTarget, 'selected');
-    this.hadRowsSelected = this.selectedItems.length > 0;
-    this.hadMultiRowSelected = this.selectedItems.length > 1;
-    return false;
-  }
-
-  /** Implement required */
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ContactModel[]) => void, onDialogClose?: () => void) {
-    this.commonService.openDialog(ContactFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: ids,
-        onDialogSave: (newData: ContactModel[]) => {
-          if (onDialogSave) onDialogSave(newData);
-        },
-        onDialogClose: () => {
-          if (onDialogClose) onDialogClose();
-        },
-      },
-    });
-  }
-
-  editSelectedItem(): false {
-    // console.info(this.getSelectedRows());
-    this.openFormDialplog(this.selectedItems.map(i => i.Code), newData => {
+    this.apiService.delete(this.apiPath, {id: ids, permanent: (deletedItems[0] && deletedItems[0].IsDeleted)}, (resp) => {
+      // this.removeGridItems(deletedItems);
       this.refresh();
-    }, () => { });
-    return false;
+      if (success) success(resp);
+    }, error, complete);
   }
 
-  editItem(id: string): false {
-    // console.info(this.getSelectedRows());
-    this.openFormDialplog([id], newData => {
-      this.refresh();
-    }, () => { });
-    return false;
-  }
-
-  // createNew() {
-  //   this.openFormDialplog(null, newData => {
-  //     this.refresh();
-  //   }, () => { });
-  //   return false;
-  // }
-
-  createNewItem(): false {
-    this.openFormDialplog(null, newData => {
-      this.refresh();
-    }, () => { });
-    return false;
-  }
-
-  onObjectChange(event) {
-
-  }
-
-  search() {
-    this.refresh();
-  }
 }

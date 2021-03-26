@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ContactComponent } from './contact.component';
 import { AuthGuardService } from '../../services/auth-guard.service';
-import { ContactListComponent } from './contact/contact-list/contact-list.component';
 import { ContactFormComponent } from './contact/contact-form/contact-form.component';
+import { ContactListComponent } from './contact/contact-list/contact-list.component';
 
 const routes: Routes = [{
   path: '',

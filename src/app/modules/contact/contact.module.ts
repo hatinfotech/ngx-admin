@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContactComponent } from './contact.component';
-import { ContactListComponent } from './contact/contact-list/contact-list.component';
 import { ContactFormComponent } from './contact/contact-form/contact-form.component';
 import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
 import { ContactRoutingModule } from './contact-routing.module';
@@ -16,12 +15,15 @@ import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-tabl
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { ContactListComponent } from './contact/contact-list/contact-list.component';
+import { ContactListBkComponent } from './contact/contact-list-bk/contact-list.component';
 
 @NgModule({
   declarations: [
     ContactComponent,
-    ContactListComponent,
     ContactFormComponent,
+    ContactListComponent,
+    ContactListBkComponent,
   ],
   imports: [
     CommonModule,

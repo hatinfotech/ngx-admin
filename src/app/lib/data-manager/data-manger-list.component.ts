@@ -587,10 +587,10 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return settings;
   }
 
-  async convertIdsToItems(ids: string[]) {
+  async convertIdsToItems(ids: string[], source?: LocalDataSource) {
     this.source['isLocalUpdate'] = true;
-    const editedItems = (await this.source.getElements()).filter((f: M) => ids.some(id => id === f[this.idKey as string]));
-    this.source['isLocalUpdate'] = false;
+    const editedItems = (await (source || this.source).getElements()).filter((f: M) => ids.some(id => id === f[this.idKey as string]));
+    (source || this.source)['isLocalUpdate'] = false;
     return editedItems;
   }
 
@@ -683,6 +683,11 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     for (let i = 0; i < rows.length; i++) {
       this.table.grid.multipleSelectRow(rows[i]);
     }
+  }
+
+  unselectAll() {
+    this.selectedItems = [];
+    this.table.grid.selectAllRows(false);
   }
 
   choose() {

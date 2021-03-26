@@ -10,7 +10,6 @@ import { CashVoucherModel } from '../../../../../models/accounting.model';
 import { UserGroupModel } from '../../../../../models/user-group.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
-import { ShowcaseDialogComponent } from '../../../../dialog/showcase-dialog/showcase-dialog.component';
 import { CashPaymentVoucherFormComponent } from '../cash-payment-voucher-form/cash-payment-voucher-form.component';
 import { CashPaymentVoucherPrintComponent } from '../cash-payment-voucher-print/cash-payment-voucher-print.component';
 

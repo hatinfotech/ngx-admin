@@ -363,25 +363,25 @@ export class ApiService {
   }
 
   /** Restful api delete request */
-  delete(enpoint: string, id: string | string[] | { [key: string]: string }, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+  delete(enpoint: string, params: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
     // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
     //   if (result) {
     let apiUrl = '';
-    if (Array.isArray(id)) {
+    if (Array.isArray(params)) {
       // const _id = id.join(encodeURIComponent('-'));
       const params = {};
-      id.forEach((item, index) => {
+      (params as Array<any>).forEach((item, index) => {
         params['id' + index] = encodeURIComponent(item);
       });
       apiUrl = this.buildApiUrl(`${enpoint}`, params);
-    } else if (typeof id === 'object') {
-      apiUrl = this.buildApiUrl(enpoint, id);
+    } else if (typeof params === 'object') {
+      apiUrl = this.buildApiUrl(enpoint, params);
     }
     const obs = this._http.delete(apiUrl)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
         if (complete) complete(e);
-        return this.handleError(e, id['silent']);
+        return this.handleError(e, params['silent']);
       }))
       .subscribe((resp) => {
         success(resp);

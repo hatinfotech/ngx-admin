@@ -125,6 +125,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   platformList: IdTextModel[] = [
     { id: 'ZALO', text: 'Zalo' },
     { id: 'FACEBOOK', text: 'Facebook' },
+    { id: 'TELEGRAM', text: 'Telegram' },
   ];
   select2OptionForPlatForm = {
     placeholder: this.commonService.translateText('Common.platform') + '...',

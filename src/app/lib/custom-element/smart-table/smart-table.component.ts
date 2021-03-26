@@ -136,7 +136,7 @@ export class SmartTableIconComponent extends SmartTableBaseComponent implements 
   selector: 'ngx-smart-table-thumbnail',
   template: `
   <div [style]="style" [class]="class">
-    <div class="thumbnail-wrap" [ngStyle]="{'background-image': 'url(assets/icon/eva/image-outline.svg)'}">
+    <div class="thumbnail-wrap">
       <div class="thumbnail" [ngStyle]="{'background-image': renderValue}" (click)="onClick()" title="{{title}}"></div>
     </div>
 </div>`,
@@ -148,7 +148,11 @@ export class SmartTableIconComponent extends SmartTableBaseComponent implements 
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
-      border-radius: 0.3rem;
+      /* border-radius: 0.3rem; */
+      /* border-radius: 50%; */
+      border: none;
+      padding-top: 3px;
+      padding-bottom: 3px;
       width: 3rem;
       min-height: 3rem;
     }
@@ -157,7 +161,7 @@ export class SmartTableIconComponent extends SmartTableBaseComponent implements 
       background-repeat: no-repeat;
       width: 3rem;
       min-height: 3rem;
-      border-radius: 0.3rem;
+      border-radius: 50%;
     }
   `,
   ],
