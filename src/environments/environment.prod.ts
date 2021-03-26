@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.1.0.1',
+  version: '2.1.0.2',
+  // 2.1.0.2: Fix scan2login 
   // 2.1.0.1: Dev simple contact list 
   // 2.1.0.0: Begin dev accounting module
   // 2.0.5.16: Hotfix hosting module for mini-erp

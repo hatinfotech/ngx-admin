@@ -310,7 +310,14 @@ export class CommonService {
       }).then(rs2 => {
         console.log('Main socket registerd');
         console.log(rs2);
+        // Store socket service id
         this.mainSocket.socketServerId$.next(rs2.socketServerId);
+        return this.mainSocket;
+      }).catch((err: {socketServerId: string}) => {
+        if(err && err.socketServerId) {
+          // Store socket service id
+          this.mainSocket.socketServerId$.next(err.socketServerId);
+        }
         return this.mainSocket;
       });
       // if (subscription) {
