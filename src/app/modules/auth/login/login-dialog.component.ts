@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { QRCode, ErrorCorrectLevel, QRNumber, QRAlphaNum, QR8BitByte, QRKanji } from 'qrcode-generator-ts/js';
 import { CommonService } from '../../../services/common.service';
 import { ApiService } from '../../../services/api.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-login-dialog',
@@ -22,6 +23,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
 
   qrCodeImgData: string;
   isLoginByApp: boolean = false
+  env = environment;
 
   constructor(
     service: NbAuthService,

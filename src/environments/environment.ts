@@ -16,7 +16,10 @@ export const environment = {
   basePath: 'probox-core',
   register: {
     logo: {
-      voucher: 'assets/images/logo/probox-voucher-logo.png',
+      voucher: 'assets/images/logo/logo_probox_one_full.png',
+      login: 'assets/images/logo/logo_probox_one_full.png',
+      main: 'assets/images/logo/logo_probox_one_full.png',
+      header: 'assets/images/logo/logo_probox_one_full.png',
     },
   },
   api: {

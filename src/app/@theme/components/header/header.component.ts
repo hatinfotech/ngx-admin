@@ -10,6 +10,7 @@ import { CommonService } from '../../../services/common.service';
 import { ActionControl } from '../../../lib/custom-element/action-control-list/action-control.interface';
 import { VirtualPhoneService } from '../../../modules/virtual-phone/virtual-phone.service';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-header',
@@ -21,6 +22,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
   user: any;
+  env = environment;
 
   themes = [
     {

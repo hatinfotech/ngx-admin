@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.1.0.2',
+  version: '2.1.0.3',
+  // 2.1.0.3: change logo 
   // 2.1.0.2: Fix scan2login 
   // 2.1.0.1: Dev simple contact list 
   // 2.1.0.0: Begin dev accounting module
@@ -48,7 +49,10 @@ export const environment = {
   basePath: 'probox-core',
   register: {
     logo: {
-      voucher: 'assets/images/logo/probox-voucher-logo.png',
+      voucher: 'assets/images/logo/logo_probox_one_full.png',
+      login: 'assets/images/logo/logo_probox_one_full.png',
+      main: 'assets/images/logo/logo_probox_one_full.png',
+      header: 'assets/images/logo/logo_probox_one_full.png',
     },
   },
   api: {

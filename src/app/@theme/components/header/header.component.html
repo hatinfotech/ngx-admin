@@ -1,45 +1,43 @@
 <div class="header-container">
-  <div class="logo-container">
-    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
-      <nb-icon icon="menu-2-outline"></nb-icon>
-    </a>
-    <a class="logo" href="#" (click)="navigateHome()">
-      <div style="position: relative"><img src="assets/images/logo/logo_text_full.png" style="height: 2.7rem;">
-      </div>
-    </a>
-  </div>
-  <nb-select size="small" [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
-    <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
-  </nb-select>
-  <nb-select size="small" [selected]="translate.currentLang" (selectedChange)="changeLanguage($event)" status="primary"
-    style="margin-left: 1rem;">
-    <nb-option *ngFor="let lang of translate.getLangs()" [value]="lang">{{lang}}</nb-option>
-  </nb-select>
+    <div class="logo-container">
+        <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
+            <nb-icon icon="menu-2-outline"></nb-icon>
+        </a>
+        <a class="logo" href="#" (click)="navigateHome()">
+            <div style="position: relative"><img [src]="env.register.logo.header" style="height: 2.7rem;">
+            </div>
+        </a>
+    </div>
+    <nb-select size="small" [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
+        <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
+    </nb-select>
+    <nb-select size="small" [selected]="translate.currentLang" (selectedChange)="changeLanguage($event)" status="primary" style="margin-left: 1rem;">
+        <nb-option *ngFor="let lang of translate.getLangs()" [value]="lang">{{lang}}</nb-option>
+    </nb-select>
 
 
-  <!-- <ngx-select2 [data]="domainList" [value]="activePbxDoamin" [select2Option]="domainListConfig"
+    <!-- <ngx-select2 [data]="domainList" [value]="activePbxDoamin" [select2Option]="domainListConfig"
         (selectChange)="onChangeDomain($event)">
       </ngx-select2> -->
 </div>
 
 <div class="header-container">
-  <ngx-action-control-list style="float: right;" [list]="headerActionControlList" [hideLabel]="true">
-  </ngx-action-control-list>
+    <ngx-action-control-list style="float: right;" [list]="headerActionControlList" [hideLabel]="true">
+    </ngx-action-control-list>
 </div>
 
 <div class="header-container">
-  <nb-actions size="tiny">
+    <nb-actions size="tiny">
 
-    <nb-action class="control-item">
-      <nb-search type="rotate-layout"></nb-search>
-    </nb-action>
-    <nb-action class="control-item" icon="email-outline"></nb-action>
-    <nb-action class="control-item" icon="bell-outline"></nb-action>
-    <nb-action (click)="toggleChatbar()" class="control-item" icon="message-circle-outline"></nb-action>
-    <nb-action class="user-action" *nbIsGranted="['view', 'user']">
-      <nb-user [nbContextMenu]="userMenu" [onlyPicture]="userPictureOnly" [name]="commonService?.loginInfo?.user?.Name"
-        [picture]="commonService?.loginInfo?.user?.Avatar">
-      </nb-user>
-    </nb-action>
-  </nb-actions>
+        <nb-action class="control-item">
+            <nb-search type="rotate-layout"></nb-search>
+        </nb-action>
+        <nb-action class="control-item" icon="email-outline"></nb-action>
+        <nb-action class="control-item" icon="bell-outline"></nb-action>
+        <nb-action (click)="toggleChatbar()" class="control-item" icon="message-circle-outline"></nb-action>
+        <nb-action class="user-action" *nbIsGranted="['view', 'user']">
+            <nb-user [nbContextMenu]="userMenu" [onlyPicture]="userPictureOnly" [name]="commonService?.loginInfo?.user?.Name" [picture]="commonService?.loginInfo?.user?.Avatar">
+            </nb-user>
+        </nb-action>
+    </nb-actions>
 </div>
