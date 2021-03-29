@@ -1,3 +1,4 @@
+import { filter, take } from 'rxjs/operators';
 import { OnInit } from '@angular/core';
 import { ReuseComponent } from '../reuse-component';
 import { DataManagerListComponent } from './data-manger-list.component';
@@ -66,6 +67,11 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
     setTimeout(() => {
       this.syncSelectedStatus();
     }, 1000);
+  }
+
+  async refreshPromise() {
+    this.refresh();
+    return (this.source as CustomServerDataSource<M>).state$.pipe(filter(f => f === 'NORMAL'), take(1)).toPromise();
   }
 
 }

@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" autocomplete="off">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header">
@@ -73,7 +73,7 @@
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('ApiPassword'), 'warning')">
                   <label class="label"><span class="valid">Api Password (*)</span><span class="invalid">Api Password là bắt buộc (*)</span></label>
-                  <input type="password" nbInput fullWidth formControlName="ApiPassword" placeholder="Api Password">
+                  <input type="password" nbInput fullWidth formControlName="ApiPassword" placeholder="Api Password" autocomplete="new-password">
                 </div>
               </div>
               <div class="col-sm-3">

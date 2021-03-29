@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.1.0.3',
+  version: '2.1.1.1',
+  // 2.1.1.1: add feature: Ivoip - include extension registrations 
   // 2.1.0.3: change logo 
   // 2.1.0.2: Fix scan2login 
   // 2.1.0.1: Dev simple contact list 

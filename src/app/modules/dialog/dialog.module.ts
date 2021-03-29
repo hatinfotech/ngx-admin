@@ -7,6 +7,7 @@ import { ThemeModule } from '../../@theme/theme.module';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { DialogFormComponent } from './dialog-form/dialog-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 
 @NgModule({
   declarations: [ShowcaseDialogComponent, PlayerDialogComponent, DialogFormComponent],
@@ -27,6 +28,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NbCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
+    CustomElementModule,
   ],
   exports: [ShowcaseDialogComponent, PlayerDialogComponent, DialogFormComponent],
 })

@@ -9,7 +9,8 @@ import { ViewCell } from 'ng2-smart-table';
 import { IvoipService } from '../../ivoip-service';
 import { ExtensionFormComponent } from '../extension-form/extension-form.component';
 import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
-import { IconViewComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { IconViewComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-custom-view',
@@ -69,32 +70,7 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
     selectMode: 'multi',
     actions: {
       position: 'right',
-      // edit: false,
-      // custom: [
-      //   {
-      //     name: 'edit',
-      //     title: '<i class="fa fa-qr-code"></i>',
-      //   },
-      // ],
     },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 99999,
-    // },
     columns: {
       extension: {
         title: 'Extension',
@@ -107,14 +83,6 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
         width: '30%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
-      // number_alias: {
-      //   title: 'Alias',
-      //   type: 'string',
-      // },
-      // accountcode: {
-      //   title: 'Số Public',
-      //   type: 'string',
-      // },
       call_group: {
         title: 'Nhóm',
         type: 'string',
@@ -125,21 +93,77 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
         type: 'string',
         width: '10%',
       },
-      status: {
+      registrations: {
         title: 'Trạng thái',
-        type: 'string',
+        type: 'custom',
         width: '10%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'globe-outline';
+          instance.display = true;
+          instance.status = 'success';
+          instance.label = this.commonService.translateText('Common.offline');
+          instance.title = 'Không có thiết bị nào đăng ký cho extension này !';
+          instance.valueChange.subscribe((value: any[]) => {
+            if (!value || value.length == 0) {
+              instance.disabled = true;
+            } else {
+              instance.label = this.commonService.translateText('Common.online') + ' (' + value.length + ')';
+              instance.title = 'Có ' + value.length + ' thiết bị đăng ký cho extension này, bấm vào để kiểm tra !';
+            }
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PbxExtensionModel) => {
+            instance.disabled = true;
+            // Refresh list for get new include registration deveices
+            // this.refreshPromise().then(rs => {
+            // Get new row data after refresh
+            // const newRowData: PbxExtensionModel = this.source['data'].find(f => f.extension_uuid === rowData.extension_uuid);
+
+            if (rowData.registrations && rowData.registrations.length > 0) {
+              // Show table dialog
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: this.commonService.translateText('Ivoip.deviceRegisterInfo'),
+                  tableContent: {
+                    header: [
+                      { name: '#', title: '#' },
+                      { name: 'agent', title: 'Loại thiết bị' },
+                      { name: 'network-ip', title: 'Public IP' },
+                      { name: 'lan-ip', title: 'Local IP' },
+                      { name: 'ping-time', title: 'Ping' },
+                    ],
+                    data: rowData.registrations.map((item, index) => {
+                      item['#'] = index + 1;
+                      return item;
+                    }),
+                  },
+                  footerContent: '<i>refresh lại danh sách để có kết quả chính xác !</i>'
+                },
+              });
+              instance.disabled = false;
+            } else {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: this.commonService.translateText('Ivoip.deviceRegisterInfo'),
+                  content: this.commonService.translateText('Ivoip.noRegisterDevices'),
+                },
+              });
+            }
+            // });
+          });
+        },
       },
       enabled: {
         title: 'Kích hoạt',
-        type: 'string',
-        width: '10%',
+        type: 'boolean',
+        width: '5%',
       },
       qr_code: {
         class: 'genrate-qrcode',
         title: 'QR Code',
         type: 'custom',
-        width: '10%',
+        width: '5%',
         renderComponent: ButtonViewComponent,
         onComponentInitFunction: (instance: ButtonViewComponent) => {
           instance.renderValue = 'fa fa-qrcode';
@@ -164,13 +188,6 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
               context: {
                 title: this.commonService.translateText('Ivoip.sipInfo'),
                 content: '<div style="border-radius: 1rem; border: 1px solid #eee">' + row['sip_info'].replace(/\n/g, '<br>') + '</div>',
-                // actions: [
-                //   {
-                //     label: this.commonService.translateText('Common.close'),
-                //     status: 'danger',
-                //     action: () => {},
-                //   },
-                // ],
               },
               closeOnBackdropClick: true,
             });

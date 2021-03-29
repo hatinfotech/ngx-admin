@@ -1,0 +1,12 @@
+<table class="my-table">
+  <thead>
+    <tr>
+      <th *ngFor="let column of content.header">{{column.title}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of content.data">
+      <td *ngFor="let column of content.header">{{row[column.name]}}</td>
+    </tr>
+  </tbody>
+</table>

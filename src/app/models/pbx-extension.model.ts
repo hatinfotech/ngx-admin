@@ -59,6 +59,7 @@ export class PbxExtensionModel {
   absolute_codec_string?: string;
   force_ping?: string;
   devices?: PbxDeviceModel[];
+  registrations?: any[];
 
   constructor() { }
 

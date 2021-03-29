@@ -192,6 +192,8 @@
         "numOfMoney": "số tiền",
         "relationVoucher": "chứng từ liên quan",
         "created": "ngày tạo",
+        "online": "online",
+        "offline": "offline",
         "contact": "liên hệ"
     },
     "Contact": {
@@ -328,7 +330,9 @@
         "callState": "trạng thái cuộc gọi",
         "receivedNumber": "số nhận cuộc gọi",
         "hangupCase": "gác máy",
-        "sipInfo": "thông tin sip"
+        "sipInfo": "thông tin sip",
+        "deviceRegisterInfo": "thông tin thiết bị đăng ký",
+        "noRegisterDevices": "không có thiết bị nào đăng ký"
     },
     "Purchase": {
         "PriceTable": {

@@ -1,0 +1,12 @@
+.my-table {
+  width: 100%;
+  border-left: 0.0625rem solid #10142678;
+  border-top: 0.0625rem solid #10142678;
+
+  th,
+  td {
+    border-right: 0.0625rem solid #10142678;
+    border-bottom: 0.0625rem solid #10142678;
+    padding: 5px;
+  }
+}

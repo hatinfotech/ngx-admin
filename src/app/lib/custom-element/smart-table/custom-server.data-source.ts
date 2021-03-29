@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ApiService } from '../../../services/api.service';
 import { LocalDataSource } from 'ng2-smart-table';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class CustomServerDataSource<M> extends LocalDataSource {
@@ -15,6 +16,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
   initPagingConf: any;
   initWithUserConfig = false;
   isLocalUpdate = false;
+  state$ = new BehaviorSubject<string>('INIT');
 
   constructor(protected apiService: ApiService, protected url: string, filterConf?: any, sortConf?: any, pagingConf?: any) {
     super();
@@ -40,8 +42,10 @@ export class CustomServerDataSource<M> extends LocalDataSource {
   }
 
   getElements(): Promise<any> {
+    this.state$.next('GETELEMENT');
     if (this.isLocalUpdate) {
       // this.isLocalUpdate = false;
+      this.state$.next('NORMAL');
       return super.getElements();
     }
     if (this.initWithUserConfig) {
@@ -49,6 +53,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
         this.setFilter(this.initFilterConf);
         this.initWithUserConfig = false;
       }, 500);
+      this.state$.next('NORMAL');
       return new Promise<M>(resolve2 => { resolve2([] as any); });
     }
     let params = {};
@@ -95,7 +100,10 @@ export class CustomServerDataSource<M> extends LocalDataSource {
         this.data = data = (this.prepareData ? this.prepareData(data) : data);
         return data;
       }),
-    ).toPromise();
+    ).toPromise().then(rs => {
+      this.state$.next('NORMAL');
+      return rs;
+    });
 
   }
 

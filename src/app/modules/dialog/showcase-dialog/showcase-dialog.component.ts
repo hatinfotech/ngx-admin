@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
+import { MytableContent } from '../../../lib/custom-element/my-components/my-table/my-table.component';
 
 @Component({
   selector: 'ngx-showcase-dialog',
@@ -10,6 +11,8 @@ export class ShowcaseDialogComponent implements AfterViewInit {
 
   @Input() title: string;
   @Input() content: string;
+  @Input() footerContent: string;
+  @Input() tableContent: MytableContent;
   @Input() actions: { label: string, icon?: string, status?: string, action?: () => void }[];
   @ViewChild('dialogWrap', { static: true }) dialogWrap: ElementRef;
 

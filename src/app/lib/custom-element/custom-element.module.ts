@@ -20,6 +20,7 @@ import { TextNTagsComponent } from './textntags/textntags.component';
 import { FormGroupComponent } from './form/form-group/form-group.component';
 import { ObjectIdPipe, ObjectsIdPipe } from '../pipes/objectid';
 import { ObjectTextPipe, ObjectsTextPipe } from '../pipes/objecttext';
+import { MyTableComponent } from './my-components/my-table/my-table.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { ObjectTextPipe, ObjectsTextPipe } from '../pipes/objecttext';
     SmartTableTextEditableComponent,
     SmartTableCurrencyComponent,
     SmartTableBaseComponent,
+    MyTableComponent,
   ],
   imports: [
     CommonModule,
@@ -91,6 +93,7 @@ import { ObjectTextPipe, ObjectsTextPipe } from '../pipes/objecttext';
     SmartTableTextEditableComponent,
     SmartTableCurrencyComponent,
     SmartTableBaseComponent,
+    MyTableComponent,
   ],
   providers: [
     { provide: CurrencyPipe, useValue: {} },

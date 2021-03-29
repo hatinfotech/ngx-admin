@@ -9,8 +9,12 @@
         </button>
       </nav>
     </nb-card-header>
-    <nb-card-body [innerHTML]="content"></nb-card-body>
+    <nb-card-body *ngIf="content" [innerHTML]="content"></nb-card-body>
+    <nb-card-body class="table-content" *ngIf="tableContent">
+      <ngx-my-table [content]="tableContent"></ngx-my-table>
+    </nb-card-body>
     <nb-card-footer>
+      <span *ngIf="footerContent" [innerHTML]="footerContent"></span>
       <div class="buttons-row">
         <button *ngFor="let item of actions" nbButton hero [status]="item?.status"
           (click)="dismiss(); item?.action()">{{ item.label }}</button>
