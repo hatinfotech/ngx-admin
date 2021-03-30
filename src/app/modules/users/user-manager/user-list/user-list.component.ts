@@ -83,7 +83,8 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
           instance.icon = 'lock';
-          instance.label = 'Thông tin triển khai';
+          instance.label = 'Mở khóa';
+          instance.title = 'Cho phép đăng nhập';
           instance.display = true;
           instance.status = 'danger';
           instance.valueChange.subscribe(value => {
@@ -96,7 +97,7 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
               this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Mở khóa đăng nhập',
-                  content: 'Bạn có muốn MỞ KHÓA ĐĂNG NHẬP cho người dùng này? người dùng sẽ phải đăng nhập trong vòng 15 phút kẻ từ túc khóa đăng nhập đươc mở !',
+                  content: 'Bạn có muốn MỞ KHÓA ĐĂNG NHẬP cho người dùng này? người dùng sẽ phải đăng nhập trong vòng 15 phút kể từ túc khóa đăng nhập đươc mở !',
                   actions: [
                     {
                       status: 'primary',
