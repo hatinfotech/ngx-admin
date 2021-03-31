@@ -75,6 +75,10 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
   };
 
+  uploadConfig = {
+    
+  };
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -502,6 +506,10 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       },
     });
     return false;
+  }
+
+  getRawFormData() {
+    return super.getRawFormData();
   }
 
 }

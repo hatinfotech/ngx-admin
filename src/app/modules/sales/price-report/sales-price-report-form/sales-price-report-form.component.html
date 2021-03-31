@@ -169,7 +169,7 @@
                                             <div class="col-md-3 col-sm-3 col-xs-3">
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                     <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
-                                                    <input nbInput class="sorting-handle" title="Ké thả để di chuyển" fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
+                                                    <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
                                                     <input type="hidden" formControlName="Id">
                                                 </div>
                                                 <div class="form-group">
@@ -183,7 +183,8 @@
                                             <div class="col-md-9 col-sm-9 col-xs-9">
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                     <label class="label">{{'Common.image' | translate | headtitlecase}}</label>
-                                                    <input type="button" class="detail-thumbnail" nbInput fullWidth formControlName="Image" placeholder="{{'Common.image' | translate | headtitlecase}}">
+                                                    <!-- <input type="button" class="detail-thumbnail" nbInput fullWidth formControlName="Image" placeholder="{{'Common.image' | translate | headtitlecase}}"> -->
+                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem'}}"></ngx-files-input>
                                                 </div>
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">
                                                     <label class="label">Stt</label>

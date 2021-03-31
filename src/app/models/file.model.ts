@@ -13,6 +13,7 @@ export class FileModel {
   Store?: string;
   Thumbnail?: string;
   DownloadLink?: string;
+  OriginImage?: string;
 }
 
 export class FileStoreModel {

@@ -21,6 +21,9 @@ import { FormGroupComponent } from './form/form-group/form-group.component';
 import { ObjectIdPipe, ObjectsIdPipe } from '../pipes/objectid';
 import { ObjectTextPipe, ObjectsTextPipe } from '../pipes/objecttext';
 import { MyTableComponent } from './my-components/my-table/my-table.component';
+import { FileInputComponent } from './my-components/file-input/file-input.component';
+import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
+import { FilesInputComponent } from './my-components/files-input/files-input.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +52,8 @@ import { MyTableComponent } from './my-components/my-table/my-table.component';
     SmartTableCurrencyComponent,
     SmartTableBaseComponent,
     MyTableComponent,
+    FileInputComponent,
+    FilesInputComponent,
   ],
   imports: [
     CommonModule,
@@ -67,6 +72,7 @@ import { MyTableComponent } from './my-components/my-table/my-table.component';
     CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxUploaderModule,
   ],
   exports: [
     Select2Component,
@@ -94,6 +100,8 @@ import { MyTableComponent } from './my-components/my-table/my-table.component';
     SmartTableCurrencyComponent,
     SmartTableBaseComponent,
     MyTableComponent,
+    FileInputComponent,
+    FilesInputComponent,
   ],
   providers: [
     { provide: CurrencyPipe, useValue: {} },

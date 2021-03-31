@@ -1,0 +1,16 @@
+<div class="thumbnail input-full-width size-medium status-basic shape-rectangle scrollable-container" ngFileDrop
+  (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }"
+  [ngStyle]="style" fullWidth nbInput>
+  <div class="row">
+    <div class="col-md-6" *ngFor="let image of value; let i=index">
+      <div class="image" [ngStyle]="{backgroundImage: 'url('+(image?.Thumbnail)+')'}" (click)="preview(image)">
+        <nb-icon [pack]="'eva'" [icon]="'close-circle'" [status]="'danger'" (click)="remove(i)"></nb-icon>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <button class="upload-btn" nbButton size="tiny" (click)="chooseFile()">upload</button>
+    </div>
+  </div>
+</div>
+<input #uploadButton nbIn style="display: none;" type="file" ngFileSelect [options]="options"
+  (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple>

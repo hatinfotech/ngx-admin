@@ -127,6 +127,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         // tslint:disable-next-line: ban
         const compoentNativeEle = $(nativeEle);
         const overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
+        overlayWraper.addClass('scrollable-container');
         const overlayBackdrop = overlayWraper.prev();
 
         // Hide dialog
