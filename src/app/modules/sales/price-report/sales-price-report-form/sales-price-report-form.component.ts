@@ -117,6 +117,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -333,7 +334,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       Unit: [''],
       Tax: ['VAT10'],
       ToMoney: [0],
-      Image: [''],
+      Image: [[]],
       Reason: [''],
     });
 

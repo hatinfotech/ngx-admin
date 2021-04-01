@@ -107,7 +107,7 @@ export class ApiService {
 
   buildApiUrl(path: string, params?: Object) {
     this.refreshToken(() => {});
-    const token = this.getAccessToken();
+    const token = (params && params['token']) || this.getAccessToken();
     let paramsStr = '';
 
     if (typeof params === 'undefined') params = {};
