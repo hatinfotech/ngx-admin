@@ -77,7 +77,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
 
   writeValue(obj: any): void {
     // throw new Error('Method not implemented.');
-    console.log(obj);
+    // console.log(obj);
     this.value = !obj ? null : (obj instanceof Array ? obj.filter(img => !!img) : [obj]);
     // if (this.value && this.value.Thumbnail) {
     // this.thumbnail = this.value.Thumbnail;

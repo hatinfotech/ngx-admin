@@ -11,138 +11,84 @@
                         <div class="row">
                             <input type="hidden" formControlName="Code">
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
-                                    <label class="label"><span
-                      class="valid">{{'Voucher.organizationOrPersornal' | translate | headtitlecase}}</span><span
-                      class="invalid">
-                      {{'Voucher.organizationOrPersornal' | translate | headtitlecase}} (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectName'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="ObjectName" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="{{'Common.name' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Recipient'), 'warning')">
-                                    <label class="label"><span
-                      class="valid">{{'Common.recipient' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.recipient')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="Recipient" label="Common.recipient" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Recipient" placeholder="{{'Common.recipient' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-9">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectAddress'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.address' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.address')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="ObjectAddress" label="Common.address" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{'Common.address' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.phone' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.phone')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{'Common.phone' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectEmail'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.email' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.email')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="ObjectEmail" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="{{'Common.email' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectTaxCode'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Contact.taxCode' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Contact.taxCode')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="ObjectTaxCode" label="Contact.taxCode" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="{{'Contact.taxCode' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectBankName'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Bank.name' | translate | headtitlecase}}</span><span
-                      class="invalid">Tên ngân hàng
-                      là{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Bank.name')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="ObjectBankName" label="Bank.name" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="ObjectBankName" placeholder="{{'Bank.name' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectBankCode'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Bank.code' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Bank.code')} | headtitlecase }}
-                      buộc
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="ObjectBankCode" label="Bank.code" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="ObjectBankCode" placeholder="{{'Bank.code' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DirectReceiverName'), 'warning')">
-                                    <label class="label"><span
-                      class="valid">{{'Sales.directReceiver' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.directReceiver')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverName" label="Sales.directReceiver" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="DirectReceiverName" placeholder="{{'Sales.directReceiver' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('DeliveryAddress'), 'warning')">
-                                    <label class="label"><span
-                      class="valid">{{'Sales.deliveryAddress' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.deliveryAddress')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PaymentStep'), 'warning')">
-                                    <label class="label"><span
-                      class="valid">{{'Sales.paymentStep' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.paymentStep')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="PaymentStep" label="Sales.paymentStep" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="PaymentStep" placeholder="{{'Sales.paymentStep' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-9">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Title'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.title' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.title')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Reported'), 'warning')">
-                                    <label class="label"><span
-                      class="valid">{{'Sales.dateOfReported' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Sales.dateOfReported')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="Reported" label="Sales.dateOfReported" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" [owlDateTime]="Reported" [owlDateTimeTrigger]="Reported" nbInput fullWidth formControlName="Reported" placeholder="{{'Common.dateTime' | translate | headtitlecase}}">
                                     <owl-date-time #Reported></owl-date-time>
-                                </div>
+                                </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.note' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.note')} | headtitlecase }}
-                      (*)</span></label>
+                                <ngx-form-group [formGroup]="formItem" name="Note" label="Common.note" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <textarea nbInput fullWidth formControlName="Note" placeholder="{{'Common.note' | translate | headtitlecase}}" rows="4"></textarea>
-                                </div>
+                                </ngx-form-group>
                             </div>
                         </div>
 
                         <!-- Detail form -->
-                        <!-- <hr> -->
                         <label class="label">{{'Voucher.productOrservice' | translate | headtitlecase}}</label>
                         <div class="row">
                             <div class="col-sm-2 label">
@@ -160,18 +106,16 @@
                         </div>
 
                         <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
-                            <!-- <div formArrayName="Details" class="form-details"> -->
                             <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail">
                                 <hr>
                                 <div class="row">
                                     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                                <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                    <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
+                                                <ngx-form-group *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="No" label="Common.no" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
                                                     <input type="hidden" formControlName="Id">
-                                                </div>
+                                                </ngx-form-group>
                                                 <div class="form-group">
                                                     <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
                                                     <button nbButton status="{{getFieldValue(detail, 'Type') === 'PRODUCT' ? 'danger' : 'primary'}}" hero size="medium" (click)="removeDetailGroup(formItem, detail, ic)" style="width: 100%; margin-bottom: 3px; padding: 0">
@@ -181,11 +125,9 @@
                                             </div>
 
                                             <div class="col-md-9 col-sm-9 col-xs-9">
-                                                <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                    <label class="label">{{'Common.image' | translate | headtitlecase}}</label>
-                                                    <!-- <input type="button" class="detail-thumbnail" nbInput fullWidth formControlName="Image" placeholder="{{'Common.image' | translate | headtitlecase}}"> -->
+                                                <ngx-form-group *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="Image" label="Common.image" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem'}}"></ngx-files-input>
-                                                </div>
+                                                </ngx-form-group>
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">
                                                     <label class="label">Stt</label>
                                                     <input type="text" nbInput fullWidth placeholder="Kéo để di chuyển" disabled class="sorting-handle" style="cursor: pointer;">
@@ -196,69 +138,48 @@
                                     <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
-                                                    <label class="label">
-                                                        <span class="valid">{{'Voucher.productOrService' | translate | headtitlecase}}</span>
-                                                        <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Vouhcer.productOrService')} | headtitlecase }} (*)</span></label>
+                                                <ngx-form-group [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event)"></ngx-select2>
-                                                </div>
+                                                </ngx-form-group>
                                             </div>
-                                            <!-- <div class="col-md-4 col-sm-4 col-sx-4">
-                                                <div class="form-group">
-                                                    <label class="label">Stt</label>
-                                                    <input type="text" nbInput fullWidth formControlName="No" placeholder="Stt">
-                                                </div>
-                                            </div> -->
                                             <div class="col-md-12 col-sm-12 col-xs-12">
-                                                <div class="form-group">
-                                                    <label class="label">{{'Common.type' | translate | headtitlecase}}</label>
-                                                    <ngx-select2 [data]="select2DataForType" formControlName="Type" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForType">
-                                                    </ngx-select2>
-                                                </div>
+                                                <ngx-form-group [formGroup]="detail" name="Type" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <ngx-select2 [data]="select2DataForType" formControlName="Type" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForType"></ngx-select2>
+                                                </ngx-form-group>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <div class="form-group">
-                                                    <label class="label">{{'Voucher.quantity' | translate | headtitlecase}}</label>
+                                                <ngx-form-group [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" currencyMask [options]="numberFormat">
-                                                </div>
+                                                </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <div class="form-group">
-                                                    <label class="label">{{'Voucher.unit' | translate | headtitlecase}}</label>
-                                                    <ngx-select2 formControlName="Unit" [data]="unitList" [select2Option]="select2OptionForUnit">
-                                                    </ngx-select2>
-                                                </div>
+                                                <ngx-form-group [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <ngx-select2 formControlName="Unit" [data]="unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
+                                                </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <div class="form-group">
-                                                    <label class="label">{{'Voucher.price' | translate | headtitlecase}}</label>
+                                                <ngx-form-group [formGroup]="detail" name="Price" label="Voucher.price" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" currencyMask [options]="curencyFormat">
-                                                </div>
+                                                </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <div class="form-group">
-                                                    <label class="label align-right">{{'Voucher.tax' | translate | headtitlecase}}</label>
-                                                    <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(getDetails(formItem), ic, 'Tax')" pack="eva" icon="copy-outline" style="position: absolute; z-index: 1; right: -14px; top: -14px;">
-                                                    </nb-icon>
-                                                    <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForTax">
-                                                    </ngx-select2>
-                                                </div>
+                                                <ngx-form-group [formGroup]="detail" name="Tax" label="Voucher.tax" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false">
+                                                    <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForTax"></ngx-select2>
+                                                </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <div class="form-group">
-                                                    <label class="label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</label>
+                                                <ngx-form-group [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="curencyFormat">
-                                                </div>
+                                                </ngx-form-group>
                                             </div>
                                             <div class="col-md-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label class="label">{{'Common.description' | translate | headtitlecase}}</label>
+                                                <ngx-form-group [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
-                                                </div>
+                                                </ngx-form-group>
                                             </div>
                                         </div>
                                     </div>
@@ -268,9 +189,8 @@
                             <div class="row">
                                 <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                                     <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero [disabled]="isProcessing">
-                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
-                        {{'Sales.addProduct' | translate | headtitlecase}}
-                      </button>
+                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Sales.addProduct' | translate | headtitlecase}}
+                                    </button>
                                 </div>
                                 <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12"></div>
                                 <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
@@ -278,10 +198,8 @@
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>
-                                        <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">
-                                            {{'Voucher.total' | translate | headtitlecase}}</div>
-                                        <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">
-                                            {{formItem.get('_total').value | currency:'VND'}}</div>
+                                        <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">{{'Voucher.total' | translate | headtitlecase}}</div>
+                                        <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{formItem.get('_total').value | currency:'VND'}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -293,21 +211,18 @@
                         </div>
                         <!-- End Detail form -->
 
-
                     </div>
                 </nb-card-body>
                 <nb-card-footer>
                     <div class="buttons-row" style="text-align: right;">
                         <button nbButton hero status="primary" (click)="preview(formItem)" [disabled]="!form.valid || isProcessing">
-              <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
-            </button>
-                        <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+                            <nb-icon   on  b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                        </button>
                         <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
                         <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
                     </div>
                 </nb-card-footer>
             </nb-card>
-
         </div>
     </div>
 </form>
