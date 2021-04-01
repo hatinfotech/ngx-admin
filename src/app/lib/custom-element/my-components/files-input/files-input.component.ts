@@ -1,4 +1,4 @@
-import { FileModel } from './../../../../models/file.model';
+import { FileModel, FileStoreModel } from './../../../../models/file.model';
 import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChanges, Input, ViewChild, ElementRef, forwardRef } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
@@ -32,6 +32,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
   dragOver: boolean;
   thumbnail: string;
   value?: FileModel[];
+  fileStoreList: FileStoreModel[];
 
   @Input() config?: { style?: any };
   @ViewChild('uploadButton') uploadButton: ElementRef;
@@ -77,7 +78,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
   writeValue(obj: any): void {
     // throw new Error('Method not implemented.');
     console.log(obj);
-    this.value = obj instanceof Array ? obj.filter(img => !!img) : [obj];
+    this.value = !obj ? null : (obj instanceof Array ? obj.filter(img => !!img) : [obj]);
     // if (this.value && this.value.Thumbnail) {
     // this.thumbnail = this.value.Thumbnail;
     // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
@@ -99,14 +100,21 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
     // console.log(this.files);
     switch (output.type) {
       case 'allAddedToQueue':
-        // uncomment this if you want to auto upload files when added
-        const event: UploadInput = {
-          type: 'uploadAll',
-          url: this.apiService.buildApiUrl(this.apiPath),
-          method: 'POST',
-          data: { foo: 'bar' },
-        };
-        this.uploadInput.emit(event);
+        // uncomment this if you want to auto upload files when added 
+        let weight = 0;
+        for (const file of this.files) {
+          weight += file.size;
+        }
+        this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight, limit: 1 }).then(fileStores => {
+          const event: UploadInput = {
+            type: 'uploadAll',
+            url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', {token: fileStores[0]['UploadToken']}),
+            method: 'POST',
+            data: { foo: 'bar' },
+          };
+          this.uploadInput.emit(event);
+        });
+        
         break;
       case 'addedToQueue':
         if (typeof output.file !== 'undefined') {
