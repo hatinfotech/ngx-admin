@@ -97,6 +97,7 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
         width: '10%',
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.label = 'Tạo token';
           instance.iconPack = 'eva';
           instance.icon = 'unlock';
           instance.display = true;
