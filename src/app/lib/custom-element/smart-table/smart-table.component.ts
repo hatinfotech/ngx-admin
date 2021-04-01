@@ -68,7 +68,7 @@ export class SmartTableCheckboxComponent extends SmartTableBaseComponent impleme
   template: `
   <div [style]="style" [class]="class">
     <button *ngIf="display" [disabled]="disabled" nbButton [status]="status" hero size="small" (click)="onClick()" title="{{title}}">
-      <nb-icon [pack]="iconPack" [icon]="icon"></nb-icon>{{label}}
+      <nb-icon [pack]="iconPack" [icon]="icon"></nb-icon><ng-container *ngIf="label">{{label}}</ng-container>
     </button>
   </div>`,
 })
@@ -76,7 +76,7 @@ export class SmartTableButtonComponent extends SmartTableBaseComponent implement
   renderValue: string;
   iconPack: string;
   icon: string;
-  label: string = '';
+  label: string = null;
   status: string = 'success';
   display: boolean = false;
   disabled: boolean = false;
