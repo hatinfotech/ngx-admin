@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SimpleSalesVoucherFormComponent } from '../simple-sales-voucher-form/simple-sales-voucher-form.component';
+import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
 
 @Component({
   selector: 'ngx-sales-voucher-list',
@@ -20,6 +21,7 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
   formPath = '/sales/sales-voucher/form';
   apiPath = '/sales/sales-vouchers';
   idKey = 'Code';
+  formDialog = SalesVoucherFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -178,9 +180,9 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
   }
 
   /** Go to form */
-  gotoForm(id?: string): false {
-    this.openSimpleFormDialog(id ? decodeURIComponent(id).split('&') : null);
-    return false;
-  }
+  // gotoForm(id?: string): false {
+  //   this.openSimpleFormDialog(id ? decodeURIComponent(id).split('&') : null);
+  //   return false;
+  // }
 
 }

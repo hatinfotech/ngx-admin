@@ -33,6 +33,10 @@
     font-family: Open Sans, sans-serif;
 }
 
+.voucher-logo-image {
+    max-height: 70%; max-width: 70%;
+}
+
 .print-voucher-detail-table {
     page-break-inside: auto;
 }

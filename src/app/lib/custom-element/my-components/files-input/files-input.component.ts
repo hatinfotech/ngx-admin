@@ -145,6 +145,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         console.log('Upload complete', output);
         const respFile: FileModel = output.file.response[0];
         if (respFile) {
+          if(!this.value) this.value = [];
           this.value.push(respFile);
         }
         // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';

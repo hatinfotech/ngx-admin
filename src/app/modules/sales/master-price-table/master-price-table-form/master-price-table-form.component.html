@@ -5,27 +5,6 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.MasterPriceTable.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
-
-          <!-- <nav>
-            {{ 'Sales.MasterPriceTable.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
-            <button type="button" nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
-              title="{{'Common.close' | translate | headtitlecase}}">
-              <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
-            </button>
-            <button type="button" nbButton status="success" hero size="tiny" (click)="onFormReload()"
-              style="float: right;" [disabled]="isProcessing" title="{{'Common.reload' | translate | headtitlecase}}">
-              <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | headtitlecase}}
-            </button>
-            <button type="button" nbButton status="primary" hero size="tiny" (click)="preview(formItem)"
-              style="float: right;" [disabled]="isProcessing" title="{{'Common.print' | translate | headtitlecase}}">
-              <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
-            </button>
-            <button type="button" nbButton status="warning" hero size="tiny" (click)="onFormUndo()"
-              [disabled]="!canUndo || isProcessing" style="float: right;"
-              title="{{'Common.undo' | translate | headtitlecase}}">
-              <nb-icon pack="eva" icon="undo-outline"></nb-icon>{{'Common.undo' | translate | headtitlecase}}
-            </button>
-          </nav> -->
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">

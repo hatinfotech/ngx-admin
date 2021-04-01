@@ -8,7 +8,6 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { SalesPriceReportFormComponent } from '../../price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PromotionActionModel } from '../../../../models/promotion.model';
 import { ContactModel } from '../../../../models/contact.model';
@@ -35,10 +34,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
-  // localeExtra = localeViExtra;
-  curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
-  numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
-  // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
+  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
+  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
@@ -55,6 +52,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // multiple: true,
+    // tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -77,6 +75,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     },
   };
 
+  uploadConfig = {
+
+  };
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -88,6 +90,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     public ref: NbDialogRef<SalesVoucherFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
@@ -113,23 +117,20 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
+          results: data
         };
       },
     },
@@ -157,24 +158,24 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       id: 'Code',
       text: 'Name',
     },
-    // multiple: false,
-    // ajax: {
-    //   url: params => {
-    //     return this.apiService.buildApiUrl('/accounting/taxes', { 'filter_Name': params['term'] });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     // console.info(data, params);
-    //     return {
-    //       results: data.map(item => {
-    //         item['id'] = item['Code'];
-    //         item['text'] = item['Name'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
   };
+
+  // Type field option
+  select2OptionForType = {
+    placeholder: 'Chọn loại...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+  select2DataForType = [
+    { id: 'PRODUCT', text: 'Sản phẩm' },
+    { id: 'CATEGORY', text: 'Danh mục' },
+  ];
 
   ngOnInit() {
     this.restrict();
@@ -184,33 +185,31 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   async init(): Promise<boolean> {
 
     /** Load and cache tax list */
-    if (!SalesPriceReportFormComponent._taxList) {
-      this.taxList = SalesPriceReportFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+    if (!SalesVoucherFormComponent._taxList) {
+      this.taxList = SalesVoucherFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
         tax['id'] = tax.Code;
         tax['text'] = tax.Name;
         return tax;
       });
     } else {
-      this.taxList = SalesPriceReportFormComponent._taxList;
+      this.taxList = SalesVoucherFormComponent._taxList;
     }
 
     /** Load and cache unit list */
-    if (!SalesPriceReportFormComponent._unitList) {
-      this.unitList = SalesPriceReportFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+    if (!SalesVoucherFormComponent._unitList) {
+      this.unitList = SalesVoucherFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
         tax['id'] = tax.Code;
         tax['text'] = tax.Name;
         return tax;
       });
     } else {
-      this.taxList = SalesPriceReportFormComponent._taxList;
+      this.taxList = SalesVoucherFormComponent._taxList;
     }
     return super.init();
   }
 
   /** Execute api get */
   executeGet(params: any, success: (resources: SalesVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeConditions'] = true;
-    // params['includeProduct'] = true;
     params['includeContact'] = true;
     params['includeDetails'] = true;
     params['useBaseTimezone'] = true;
@@ -222,24 +221,14 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
       // Details form load
       if (itemFormData.Details) {
-        itemFormData.Details.forEach(condition => {
-          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
+        itemFormData.Details.forEach(detail => {
+          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
           const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
         });
       }
-
-      // // Actions form load
-      // if (itemFormData.Actions) {
-      //   itemFormData.Actions.forEach(action => {
-      //     const newActionFormGroup = this.makeNewActionFormGroup(action);
-      //     this.getActions(index).push(newActionFormGroup);
-      //     const comIndex = this.getActions(index).length - 1;
-      //     this.onAddActionFormGroup(index, comIndex, newActionFormGroup);
-      //   });
-      // }
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -252,22 +241,21 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   makeNewFormGroup(data?: SalesVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
-      Object: ['', Validators.required],
+      Object: [''],
       ObjectName: [''],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
+      Recipient: [''],
       ObjectTaxCode: [''],
       DirectReceiverName: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
-      Tax: [''],
+      DateOfDelivery: [''],
       DeliveryAddress: [''],
       Title: [''],
       Note: [''],
-      DateOfDelivery: [''],
-      PriceReportVoucher: [''],
-      PriceTable: [''],
+      DateOfSale: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -289,7 +277,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   goback(): false {
     super.goback();
     if (this.mode === 'page') {
-      this.router.navigate(['/sales/sales-voucher/list']);
+      this.router.navigate(['/promotion/promotion/list']);
     } else {
       this.ref.close();
       // this.dismiss();
@@ -305,22 +293,23 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     const newForm = this.formBuilder.group({
       Id: [''],
       No: [''],
-      Type: [''],
+      Type: ['PRODUCT'],
       Product: [''],
-      ProductName: ['', Validators.required],
+      ProductName: [''],
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: [''],
+      Tax: ['VAT10'],
       ToMoney: [0],
-      Image: [''],
+      Image: [[]],
       Reason: [''],
     });
 
     if (data) {
-      // data['Id_old'] = data['Id'];
-      // data.Price = parseFloat(data.Price) as any;
       newForm.patchValue(data);
+      if (!data['Type']) {
+        data["Type"] = 'PRODUCT';
+      }
       this.toMoney(parentFormGroup, newForm);
     }
     return newForm;
@@ -329,23 +318,24 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     return parentFormGroup.get('Details') as FormArray;
   }
   addDetailFormGroup(parentFormGroup: FormGroup) {
-    // this.componentList[formGroupIndex].push([]);
     const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
-    this.getDetails(parentFormGroup).push(newChildFormGroup);
+    const detailsFormArray = this.getDetails(parentFormGroup);
+    detailsFormArray.push(newChildFormGroup);
+    const noFormControl = newChildFormGroup.get('No');
+    if (!noFormControl.value) {
+      noFormControl.setValue(detailsFormArray.length);
+    }
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
     this.getDetails(parentFormGroup).removeAt(index);
-    // this.componentList[formGroupIndex].splice(index, 1);
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
-    // this.componentList[mainIndex].push([]);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
-    // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Detail Form */
 
@@ -369,7 +359,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     return this.array.controls[formGroupIndex].get('Actions') as FormArray;
   }
   addActionFormGroup(formGroupIndex: number) {
-    // this.componentList[formGroupIndex].push([]);
     const newFormGroup = this.makeNewActionFormGroup();
     this.getActions(formGroupIndex).push(newFormGroup);
     this.onAddActionFormGroup(formGroupIndex, this.getActions(formGroupIndex).length - 1, newFormGroup);
@@ -377,15 +366,12 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
   removeActionGroup(formGroupIndex: number, index: number) {
     this.getActions(formGroupIndex).removeAt(index);
-    // this.componentList[formGroupIndex].splice(index, 1);
     this.onRemoveActionFormGroup(formGroupIndex, index);
     return false;
   }
   onAddActionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
-    // this.componentList[mainIndex].push([]);
   }
   onRemoveActionFormGroup(mainIndex: number, index: number) {
-    // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Action Form */
 
@@ -407,20 +393,12 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         }
       }
     }
-
   }
 
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
     if (selectedData) {
       detail.get('ProductName').setValue(selectedData.Name);
-      detail.get('Unit').patchValue({
-        id: selectedData.WarehouseUnit['Code'],
-        text: selectedData.WarehouseUnit['Name'],
-        Code: selectedData.WarehouseUnit['Code'],
-        Name: selectedData.WarehouseUnit['Name'],
-        Symbol: selectedData.WarehouseUnit['Symbol'],
-      });
     } else {
       detail.get('ProductName').setValue('');
       detail.get('Unit').setValue('');
@@ -441,15 +419,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   toMoney(formItem: FormGroup, detail: FormGroup) {
-    // console.log('calculate to money: ' + (detail.get('Quantity').value * detail.get('Price').value));
-    // let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    // let tax = detail.get('Tax').value;
-    // if (tax) {
-    //   if (typeof tax === 'string') {
-    //     tax = this.taxList.filter(t => t.Code === tax)[0];
-    //   }
-    //   toMoney += toMoney * tax.Tax / 100;
-    // }
     detail.get('ToMoney').setValue(this.calculatToMoney(detail));
 
     // Call culate total
@@ -468,6 +437,9 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     data.Details.forEach(detail => {
       if (typeof detail['Tax'] === 'string') {
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+        if (this.unitList) {
+          detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
+        }
       }
     });
     this.commonService.openDialog(SalesVoucherPrintComponent, {
@@ -483,6 +455,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       },
     });
     return false;
+  }
+
+  getRawFormData() {
+    return super.getRawFormData();
   }
 
 }

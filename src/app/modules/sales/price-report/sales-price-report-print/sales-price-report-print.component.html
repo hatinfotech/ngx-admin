@@ -2,18 +2,6 @@
     <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
         <nb-card-header>
             <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
-
-            <!-- <nav>
-        {{'Sales.PriceReport.title' | translate:{action:commonService.translate.instant('Common.preview'), definition:''} | headtitlecase}}
-        <button nbButton status="danger" hero size="tiny" (click)="close()" style="float: right;"
-          title="{{'Common.goback' | translate | headtitlecase}}">
-          <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
-        </button>
-        <button nbButton status="primary" hero size="tiny" (click)="print()" style="float: right;"
-          title="{{'Common.print' | translate | headtitlecase}}">
-          <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
-        </button>
-      </nav> -->
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
@@ -22,7 +10,7 @@
                         <pre>{{'Information.Voucher.register' | translate }}</pre>
                     </div>
                     <div style="text-align: right; flex: 0 0 40%;">
-                        <img [src]="env.register.logo.voucher" style="max-height: 100%; max-width: 100%;">
+                        <img class="voucher-logo-image" [src]="env.register.logo.voucher">
                     </div>
                 </div>
                 <div>

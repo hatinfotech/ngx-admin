@@ -371,7 +371,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
           // } else {
           //   resolve2(this.smsSendList);
           // }
-          resolve2();
+          resolve2(null);
         }).then(emailAddressListDetails => {
           // smsSendList.forEach(item => {
           //   const message = this.generatePreviewByContact(item, this.array.controls[0]);

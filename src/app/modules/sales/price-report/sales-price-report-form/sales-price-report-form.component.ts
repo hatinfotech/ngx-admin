@@ -35,7 +35,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   locale = this.commonService.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
-  // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
@@ -131,11 +130,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         // console.info(data, params);
         return {
           results: data
-          // .map(item => {
-          //   item['id'] = item['Code'];
-          //   item['text'] = item['Name'];
-          //   return item;
-          // }),
         };
       },
     },
@@ -151,22 +145,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       id: 'Code',
       text: 'Name',
     },
-    // ajax: {
-    //   url: params => {
-    //     return this.apiService.buildApiUrl('/admin-product/units', { 'filter_Name': params['term'] });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     // console.info(data, params);
-    //     return {
-    //       results: data.map(item => {
-    //         item['id'] = item['Code'];
-    //         item['text'] = item['Name'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
   };
 
   select2OptionForTax = {
@@ -231,8 +209,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   /** Execute api get */
   executeGet(params: any, success: (resources: SalesPriceReportModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeConditions'] = true;
-    // params['includeProduct'] = true;
     params['includeContact'] = true;
     params['includeDetails'] = true;
     params['useBaseTimezone'] = true;
@@ -252,16 +228,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
         });
       }
-
-      // // Actions form load
-      // if (itemFormData.Actions) {
-      //   itemFormData.Actions.forEach(action => {
-      //     const newActionFormGroup = this.makeNewActionFormGroup(action);
-      //     this.getActions(index).push(newActionFormGroup);
-      //     const comIndex = this.getActions(index).length - 1;
-      //     this.onAddActionFormGroup(index, comIndex, newActionFormGroup);
-      //   });
-      // }
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -339,8 +305,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     });
 
     if (data) {
-      // data['Id_old'] = data['Id'];
-      // data.Price = parseFloat(data.Price) as any;
       newForm.patchValue(data);
       this.toMoney(parentFormGroup, newForm);
     }
@@ -350,24 +314,19 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     return parentFormGroup.get('Details') as FormArray;
   }
   addDetailFormGroup(parentFormGroup: FormGroup) {
-    // this.componentList[formGroupIndex].push([]);
     const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
     this.getDetails(parentFormGroup).push(newChildFormGroup);
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
-    // newChildFormGroup.get('Type').patchValue('PRODUCT');
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
     this.getDetails(parentFormGroup).removeAt(index);
-    // this.componentList[formGroupIndex].splice(index, 1);
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
-    // this.componentList[mainIndex].push([]);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
-    // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Detail Form */
 
@@ -391,7 +350,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     return this.array.controls[formGroupIndex].get('Actions') as FormArray;
   }
   addActionFormGroup(formGroupIndex: number) {
-    // this.componentList[formGroupIndex].push([]);
     const newFormGroup = this.makeNewActionFormGroup();
     this.getActions(formGroupIndex).push(newFormGroup);
     this.onAddActionFormGroup(formGroupIndex, this.getActions(formGroupIndex).length - 1, newFormGroup);
@@ -399,15 +357,12 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
   removeActionGroup(formGroupIndex: number, index: number) {
     this.getActions(formGroupIndex).removeAt(index);
-    // this.componentList[formGroupIndex].splice(index, 1);
     this.onRemoveActionFormGroup(formGroupIndex, index);
     return false;
   }
   onAddActionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
-    // this.componentList[mainIndex].push([]);
   }
   onRemoveActionFormGroup(mainIndex: number, index: number) {
-    // this.componentList[mainIndex].splice(index, 1);
   }
   /** End Action Form */
 
@@ -435,13 +390,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     console.log(selectedData);
     if (selectedData) {
       detail.get('Description').setValue(selectedData.Name);
-      // detail.get('Unit').patchValue({
-      //   id: selectedData.WarehouseUnit['Code'],
-      //   text: selectedData.WarehouseUnit['Name'],
-      //   Code: selectedData.WarehouseUnit['Code'],
-      //   Name: selectedData.WarehouseUnit['Name'],
-      //   Symbol: selectedData.WarehouseUnit['Symbol'],
-      // });
     } else {
       detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
@@ -462,15 +410,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   toMoney(formItem: FormGroup, detail: FormGroup) {
-    // console.log('calculate to money: ' + (detail.get('Quantity').value * detail.get('Price').value));
-    // let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    // let tax = detail.get('Tax').value;
-    // if (tax) {
-    //   if (typeof tax === 'string') {
-    //     tax = this.taxList.filter(t => t.Code === tax)[0];
-    //   }
-    //   toMoney += toMoney * tax.Tax / 100;
-    // }
     detail.get('ToMoney').setValue(this.calculatToMoney(detail));
 
     // Call culate total
