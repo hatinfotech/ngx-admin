@@ -1,4 +1,3 @@
-import { PriceReportModel } from './../../../../models/price-report.model';
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
@@ -41,12 +40,8 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
 
   async init() {
     const result = await super.init();
-    // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
+    this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
     return result;
-  }
-
-  renderTitle(data: SalesPriceReportModel) {
-    return `PhieuBaoGia_${this.identifier}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
   }
 
   close() {
@@ -70,9 +65,9 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return toMoney;
   }
 
-  getTotal(data) {
+  getTotal() {
     let total = 0;
-    const details = data.Details;
+    const details = this.data.Details;
     let no = 1;
     for (let i = 0; i < details.length; i++) {
       const detail = details[i];
@@ -84,9 +79,9 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return total;
   }
 
-  saveAndClose(data: SalesPriceReportModel) {
+  saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(data);
+      this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
