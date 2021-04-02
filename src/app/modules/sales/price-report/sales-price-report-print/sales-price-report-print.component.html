@@ -5,23 +5,19 @@
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
-                <div style="display: flex; flex-wrap: wrap">
-                    <div style="flex: 0 0 60%;">
-                        <pre>{{'Information.Voucher.register' | translate }}</pre>
-                    </div>
-                    <div style="text-align: right; flex: 0 0 40%;">
-                        <img class="voucher-logo-image" [src]="env.register.logo.voucher">
-                    </div>
-                </div>
+                <ngx-print-header></ngx-print-header>
                 <div>
-                    <div class="print-title">{{ 'Sales.PriceReport.title' | translate:{action: '', definition: ''} | uppercase }}
+                    <div class="print-title">{{ 'Sales.PriceReport.title' | translate:{action: '', definition: ''} |
+                        uppercase }}
                     </div>
                     <div class="under-title">{{ data.Code }} - {{ data.Reported | date:'short' }}</div>
                 </div>
                 <div>
-                    <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} : {{renderValue(data.ObjectName)}}
+                    <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+                        {{renderValue(data.ObjectName)}}
                     </div>
-                    <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}
+                    <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
+                        {{renderValue(data.ObjectAddress)}}
                     </div>
                 </div>
                 <div>
@@ -46,7 +42,8 @@
                             <tr class="print-voucher-detail-header">
                                 <th>{{'Common.noNumber' | translate | headtitlecase}}</th>
                                 <th>{{'Sales.technicalDescription' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}
+                                </th>
                                 <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</th>
@@ -54,15 +51,15 @@
                             </tr>
                             <ng-container *ngFor="let detail of data.Details; let i = index;">
                                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
-                                    <td colspan="7" style="font-weight: bold;">{{renderValue(detail.Description)}}</td>
+                                    <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
                                 </tr>
                                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                                     <td>{{detail.No}}</td>
-                                    <td>{{renderValue(detail.Description)}} <br>
+                                    <td [innerHTML]="renderValue(detail.Description)"><br>
                                         <span style="font-size: 10px; font-style: italic;">
-                                          {{'Common.note' | translate}} : {{detail.Product?.Code}},
-                                          {{'Common.code' | translate}} : {{detail.Product?.Code}},
-                                          {{'Common.sort' | translate | headtitlecase}}:{{detail.No}}
+                                            {{'Common.note' | translate}} : {{detail.Product?.Code}},
+                                            {{'Common.code' | translate}} : {{detail.Product?.Code}},
+                                            {{'Common.sort' | translate | headtitlecase}}:{{detail.No}}
                                         </span>
                                     </td>
                                     <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
@@ -73,17 +70,20 @@
                                 </tr>
                             </ng-container>
                             <tr>
-                                <td colspan="6" class="text-align-right" i18n>{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td colspan="6" class="text-align-right" i18n>{{'Voucher.total' | translate |
+                                    headtitlecase}}</td>
                                 <td class="text-align-right">{{getTotal() | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 <div>
-                    <div class="under-line">{{'Common.note' | translate | headtitlecase}}: {{renderValue(data.Note)}}</div>
-                    <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}: {{renderValue(data.DeliveryAddress)}}
+                    <div class="under-line">{{'Common.note' | translate | headtitlecase}}: <br><span [innerHTML]="renderValue(data.Note)"></span></div>
+                    <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
+                        {{renderValue(data.DeliveryAddress)}}
                     </div>
-                    <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}: {{renderValue(data.DirectReceiverName)}}
+                    <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:
+                        {{renderValue(data.DirectReceiverName)}}
                     </div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap">
@@ -100,14 +100,12 @@
         </nb-card-body>
         <nb-card-footer>
             <div class="buttons-row">
-                <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
-          <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
-        </button>
-                <button nbButton hero status="danger" (click)="saveAndClose();">
-          <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
-        </button>
-                <button nbButton hero status="warning" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
-                <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button>
+                <!-- <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier"><nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}</button> -->
+                <button nbButton hero status="danger" [disabled]="this.data.State == 'APPROVE'" (click)="approvedConfirm();">{{(this.data.State == 'APPROVE' ? 'Common.approved' : 'Common.approve') | translate | headtitlecase}}</button>
+                <button nbButton hero status="success" (click)="saveAndClose();"><nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+                <!-- <button nbButton hero status="info" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
+                <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button> -->
+                <button nbButton hero status="warning" (click)="prepareCopy();">{{'Common.copy' | translate | headtitlecase}}</button>
             </div>
         </nb-card-footer>
     </nb-card>

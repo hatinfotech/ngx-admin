@@ -24,6 +24,7 @@ import { MyTableComponent } from './my-components/my-table/my-table.component';
 import { FileInputComponent } from './my-components/file-input/file-input.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { FilesInputComponent } from './my-components/files-input/files-input.component';
+import { PrintHeaderComponent } from './print/print-header/print-header.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { FilesInputComponent } from './my-components/files-input/files-input.com
     MyTableComponent,
     FileInputComponent,
     FilesInputComponent,
+    PrintHeaderComponent,
   ],
   imports: [
     CommonModule,
@@ -102,6 +104,7 @@ import { FilesInputComponent } from './my-components/files-input/files-input.com
     MyTableComponent,
     FileInputComponent,
     FilesInputComponent,
+    PrintHeaderComponent,
   ],
   providers: [
     { provide: CurrencyPipe, useValue: {} },

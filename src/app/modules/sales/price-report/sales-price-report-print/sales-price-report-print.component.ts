@@ -1,3 +1,4 @@
+import { PriceReportModel } from './../../../../models/price-report.model';
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
@@ -7,6 +8,7 @@ import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { environment } from '../../../../../environments/environment';
 import { DatePipe } from '@angular/common';
+import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
 
 declare var $: JQueryStatic;
 
@@ -39,8 +41,12 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
 
   async init() {
     const result = await super.init();
-    this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
+    // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
     return result;
+  }
+
+  renderTitle(data: SalesPriceReportModel) {
+    return `PhieuBaoGia_${this.identifier}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
   }
 
   close() {
@@ -48,10 +54,11 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   }
 
   renderValue(value: any) {
+    let html = value;
     if (value && value['text']) {
-      return value['text'];
+      html = value['text'];
     }
-    return value;
+    return (html || '').replace(/\n/g, '<br>');
   }
 
   toMoney(detail: SalesPriceReportDetailModel) {
@@ -63,13 +70,13 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return toMoney;
   }
 
-  getTotal() {
+  getTotal(data) {
     let total = 0;
-    const details = this.data.Details;
+    const details = data.Details;
     let no = 1;
     for (let i = 0; i < details.length; i++) {
       const detail = details[i];
-      if(detail.Type === 'PRODUCT'){
+      if (detail.Type === 'PRODUCT') {
         detail['No'] = no++;
       }
       total += this.toMoney(detail);
@@ -77,9 +84,9 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return total;
   }
 
-  saveAndClose() {
+  saveAndClose(data: SalesPriceReportModel) {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      this.onSaveAndClose(data);
     }
     this.close();
     return false;
@@ -92,6 +99,57 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
 
   get identifier() {
     return this.data.Code;
+  }
+
+  prepareCopy() {
+    this.close();
+    this.commonService.openDialog(SalesPriceReportFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: [this.data.Code],
+        isDuplicate: true,
+        onDialogSave: (newData: SalesPriceReportModel[]) => {
+          // if (onDialogSave) onDialogSave(row);
+          this.onClose(newData);
+        },
+        onDialogClose: () => {
+          // if (onDialogClose) onDialogClose();
+          this.refresh();
+
+        },
+      },
+    });
+  }
+
+  approvedConfirm() {
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText('Common.approvedConfirm', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + this.data.Title + '`' }), [
+      {
+        label: this.commonService.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.commonService.translateText('Common.approve'),
+        status: 'danger',
+        action: () => {
+          this.apiService.putPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [this.data.Code], approve: true }, [{ Code: this.data.Code }]).then(rs => {
+            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.approvedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + this.data.Title + '`' }), [
+              {
+                label: this.commonService.translateText('Common.close'),
+                status: 'success',
+                action: () => {
+                  this.onClose(this.data);
+                },
+              },
+            ]);
+          }).catch(err => {
+
+          });
+        },
+      },
+    ]);
   }
 
 }

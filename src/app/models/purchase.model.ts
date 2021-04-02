@@ -1,3 +1,4 @@
+import { FileModel } from './file.model';
 import { TaxModel } from './tax.model';
 import { ProductModel } from './product.model';
 import { ContactModel } from './contact.model';
@@ -95,4 +96,46 @@ export class PurchaseVoucherDetailModel {
   Tax?: TaxModel & string;
   Price?: number;
   ImageThumbnail?: string;
+}
+
+export class PurchaseOrderVoucherModel {
+  Id?: string | number;
+  Code?: string;
+  Object?: string | ContactModel;
+  ObjectName?: string;
+  ObjectAddress?: string;
+  ObjectPhone?: string;
+  PurchaseStaff?: string;
+  DateOfPurchase?: string;
+  Invoice?: string;
+  Tax?: string | TaxModel;
+  DateOfCreate?: string;
+  TotalMoney?: string;
+  State?: string;
+  Branch?: string;
+  Warehouse?: string;
+  InventoryReceivingVoucher?: string;
+  OrderVoucher?: string;
+  RelativeDeliveryVoucher?: string;
+  Creator?: string;
+  Note?: string;
+  PriceTable?: string;
+  PurchaseCost?: string;
+
+  GoodsReceiptNote?: string;
+  PaymentVoucher?: string;
+
+  Details?: PurchaseOrderVoucherDetailModel[];
+}
+
+export class PurchaseOrderVoucherDetailModel {
+  Id?: string | number;
+  Voucher?: PurchaseVoucherModel & string;
+  Product?: ProductModel & string;
+  ProductName?: string;
+  Quantity?: number;
+  Unit?: UnitModel & string;
+  Tax?: TaxModel & string;
+  Price?: number;
+  Image?: FileModel[];
 }

@@ -26,6 +26,9 @@ import { PurchaseVoucherFormComponent } from './voucher/purchase-voucher-form/pu
 import { PurchaseVoucherPrintComponent } from './voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { PurchaseSimpleVoucherFormComponent } from './voucher/purchase-simple-voucher-form/purchase-simple-voucher-form.component';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { PurchaseOrderVoucherListComponent } from './order/purchase-order-voucher-list/purchase-order-voucher-list.component';
+import { PurchaseOrderVoucherFormComponent } from './order/purchase-order-voucher-form/purchase-order-voucher-form.component';
+import { PurchaseOrderVoucherPrintComponent } from './order/purchase-order-voucher-print/purchase-order-voucher-print.component';
 
 
 export class DynamicLocaleId extends String {
@@ -57,6 +60,9 @@ export const MY_MOMENT_FORMATS = {
     PurchaseVoucherFormComponent,
     PurchaseVoucherPrintComponent,
     PurchaseSimpleVoucherFormComponent,
+    PurchaseOrderVoucherListComponent,
+    PurchaseOrderVoucherFormComponent,
+    PurchaseOrderVoucherPrintComponent,
   ],
   imports: [
     CommonModule,

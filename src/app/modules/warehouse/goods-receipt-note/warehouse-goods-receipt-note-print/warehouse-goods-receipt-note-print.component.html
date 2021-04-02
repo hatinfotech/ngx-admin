@@ -17,14 +17,7 @@
     </nb-card-header>
     <nb-card-body #printContent>
       <div id="print-area">
-        <div style="display: flex; flex-wrap: wrap">
-          <div style="flex: 0 0 60%;">
-            <pre>{{'Information.Voucher.register' | translate }}</pre>
-          </div>
-          <div style="text-align: right; flex: 0 0 40%;">
-            <img [src]="env.register.logo.voucher" style="height: 50px;">
-          </div>
-        </div>
+        <ngx-print-header></ngx-print-header>
         <div>
           <div class="print-title">{{ 'Warehouse.GoodsReceiptNote.title' | translate:{action: '', definition: ''} | uppercase }}
           </div>

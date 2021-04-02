@@ -5,14 +5,7 @@
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
-                <div style="display: flex; flex-wrap: wrap">
-                    <div style="flex: 0 0 60%;">
-                        <pre>{{'Information.Voucher.register' | translate }}</pre>
-                    </div>
-                    <div style="text-align: right; flex: 0 0 40%;">
-                        <img class="voucher-logo-image" [src]="env.register.logo.voucher">
-                    </div>
-                </div>
+                <ngx-print-header></ngx-print-header>
                 <div>
                     <div class="print-title">{{ 'Accounting.CashReceiptVoucher.title' | translate:{action: '', definition: ''} | uppercase }}
                     </div>

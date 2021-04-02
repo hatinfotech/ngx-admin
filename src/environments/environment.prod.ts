@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.1.1.1',
+  version: '2.2.0.3',
+  // 2.2.0.0: Begin develop for commerce modules
   // 2.1.1.1: add feature: Ivoip - include extension registrations 
   // 2.1.0.3: change logo 
   // 2.1.0.2: Fix scan2login 
@@ -50,7 +51,7 @@ export const environment = {
   basePath: 'probox-core',
   register: {
     logo: {
-      voucher: 'assets/images/logo/logo_probox_one_full.png',
+      voucher: 'assets/images/logo/logo-dang-ky-nhan-hieu-probox.png',
       login: 'assets/images/logo/logo_probox_one_full.png',
       main: 'assets/images/logo/logo_probox_one_full.png',
       header: 'assets/images/logo/logo_probox_one_full.png',

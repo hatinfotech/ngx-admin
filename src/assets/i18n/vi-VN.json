@@ -6,7 +6,7 @@
     },
     "Information": {
         "Voucher": {
-            "register": "MTSG CORP\nTầng trệt, tòa nhà Rosana 60 Nguyễn Đình Chiểu,\nP. Đakao, Q.1, TPHCM\nĐiện thoại : 02877701666 | Mã số thuế : 0310522373"
+            "register": "CÔNG TY CỔ PHẦN CÔNG NGHỆ PROBOX\nĐịa chỉ : 19/3 đường Tân Chánh Hiệp 36, P.Tân Chánh Hiệp, Q.12, TPHCM\nMST : 0314341120"
         }
     },
     "Sales": {
@@ -194,7 +194,13 @@
         "created": "ngày tạo",
         "online": "online",
         "offline": "offline",
-        "contact": "liên hệ"
+        "contact": "liên hệ",
+        "approvedConfirm": "Bạn có chắc là muốn duyệt {{object}}?",
+        "approvedSuccess": "{{object}} đã được duyệt !",
+        "approved": "đã duyệt",
+        "notJustApproved": "chưa duyệt",
+        "completed": "hoàn tất",
+        "show": "xem"
     },
     "Contact": {
         "name": "tên liên hệ",

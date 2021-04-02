@@ -75,7 +75,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   };
 
   uploadConfig = {
-    
+
   };
 
   constructor(
@@ -182,7 +182,26 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   async init(): Promise<boolean> {
+    return super.init().then(status => {
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
+          this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
+            // Clear id
+            conditonFormGroup.get('Id').setValue('');
+          });
+        });
+      }
+      return status;
+    });
+  }
 
+  /** Override load cache menthod */
+  async loadCache(): Promise<any> {
+    const rs = await super.loadCache();
     /** Load and cache tax list */
     if (!SalesPriceReportFormComponent._taxList) {
       this.taxList = SalesPriceReportFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
@@ -204,7 +223,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     } else {
       this.taxList = SalesPriceReportFormComponent._taxList;
     }
-    return super.init();
+    return rs;    
   }
 
   /** Execute api get */
@@ -449,7 +468,9 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   getRawFormData() {
-    return super.getRawFormData();
+    const data =  super.getRawFormData();
+
+    return data;
   }
 
 }

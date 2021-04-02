@@ -163,25 +163,6 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
             });
           });
         });
-        //   const inputSystemRoute = { ...this.inputSystemRoute };
-        //   inputSystemRoute.Conditions = { ...inputSystemRoute.Conditions };
-        //   inputSystemRoute.Actions = { ...inputSystemRoute.Actions };
-        //   inputSystemRoute.Conditions.forEach(condition => {
-        //     condition.Id = null;
-        //     condition.Route = null;
-        //   });
-        //   inputSystemRoute.Actions.forEach(action => {
-        //     action.Parameters = { ...action.Parameters };
-        //     action.Parameters.forEach(parameter => {
-        //       parameter.Route = null;
-        //       parameter.Action = null;
-        //     });
-        //     action.Id = null;
-        //     action.Route = null;
-        //   });
-
-        //   this.array.controls[0].patchValue(inputSystemRoute);
-        //   this.onAddFormGroup(this.array.length - 1, this.array.controls[0] as FormGroup, inputSystemRoute);
       }
       return status;
     });

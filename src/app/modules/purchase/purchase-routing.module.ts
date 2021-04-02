@@ -6,6 +6,8 @@ import { PurchasePriceTableFormComponent } from './price-table/purchase-price-ta
 import { PurchaseComponent } from './purchase.component';
 import { PurchaseVoucherListComponent } from './voucher/purchase-voucher-list/purchase-voucher-list.component';
 import { PurchaseVoucherFormComponent } from './voucher/purchase-voucher-form/purchase-voucher-form.component';
+import { PurchaseOrderVoucherListComponent } from './order/purchase-order-voucher-list/purchase-order-voucher-list.component';
+import { PurchaseOrderVoucherFormComponent } from './order/purchase-order-voucher-form/purchase-order-voucher-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -48,6 +50,25 @@ const routes: Routes = [{
       path: 'voucher/form/:id',
       canActivate: [AuthGuardService],
       component: PurchaseVoucherFormComponent,
+    },
+    // Purchase Order voucher
+    {
+      path: 'order-voucher/list',
+      canActivate: [AuthGuardService],
+      component: PurchaseOrderVoucherListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'order-voucher/form',
+      canActivate: [AuthGuardService],
+      component: PurchaseOrderVoucherFormComponent,
+    },
+    {
+      path: 'order-voucher/form/:id',
+      canActivate: [AuthGuardService],
+      component: PurchaseOrderVoucherFormComponent,
     },
   ],
 }];
