@@ -440,7 +440,7 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
             });
             const details = this.getDetails(formItem);
             details.push(newDetail);
-            await new Promise(resolve => setTimeout(() => resolve(), 50));
+            await new Promise(resolve => setTimeout(() => resolve(true), 50));
           }
         }
       //   resolve();

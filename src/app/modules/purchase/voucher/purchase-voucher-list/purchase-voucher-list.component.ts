@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { PurchaseSimpleVoucherFormComponent } from '../purchase-simple-voucher-form/purchase-simple-voucher-form.component';
+import { PurchaseVoucherFormComponent } from '../purchase-voucher-form/purchase-voucher-form.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-list',
@@ -21,7 +22,7 @@ export class PurchaseVoucherListComponent extends DataManagerListComponent<Purch
   apiPath = '/purchase/vouchers';
   idKey = 'Code';
 
-  formDialog = PurchaseSimpleVoucherFormComponent;
+  formDialog = PurchaseVoucherFormComponent;
 
   constructor(
     public apiService: ApiService,
