@@ -118,7 +118,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
             // }
           });
           instance.click.subscribe(async (row: SalesMasterPriceTableModel) => {
-            this.preview(row);
+            this.preview([row]);
           });
         },
       },
@@ -168,31 +168,31 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   //   return false;
   // }
 
-  async preview(data: SalesMasterPriceTableModel) {
+  // async preview(data: SalesMasterPriceTableModel) {
 
-    data.Details = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[]>(
-      '/sales/master-price-table-details',
-      {
-        excludeNoPrice: true,
-        masterPriceTable: data.Code,
-        includeUnit: true,
-        includeFeaturePicture: true,
-        sort_Id: 'desc',
-      }));
+  //   data.Details = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[]>(
+  //     '/sales/master-price-table-details',
+  //     {
+  //       excludeNoPrice: true,
+  //       masterPriceTable: data.Code,
+  //       includeUnit: true,
+  //       includeFeaturePicture: true,
+  //       sort_Id: 'desc',
+  //     }));
 
-    this.commonService.openDialog(MasterPriceTablePrintComponent, {
-      context: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
-          this.refresh();
-        },
-        onSaveAndPrint: (priceReportCode: string) => {
-          this.refresh();
-        },
-      },
-    });
+  //   // this.commonService.openDialog(MasterPriceTablePrintComponent, {
+  //   //   context: {
+  //   //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
+  //   //     data: data,
+  //   //     onSaveAndClose: (priceReportCode: string) => {
+  //   //       this.refresh();
+  //   //     },
+  //   //     onSaveAndPrint: (priceReportCode: string) => {
+  //   //       this.refresh();
+  //   //     },
+  //   //   },
+  //   // });
 
-  }
+  // }
 
 }

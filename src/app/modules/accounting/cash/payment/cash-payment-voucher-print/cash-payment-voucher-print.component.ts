@@ -38,8 +38,20 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
 
   async init() {
     const result = await super.init();
-    this.title = `PhieuChi_${this.identifier}` + (this.data.DateOfImplement ? ('_' + this.datePipe.transform(this.data.DateOfImplement, 'short')) : '');
+    // this.title = `PhieuChi_${this.identifier}` + (this.data.DateOfImplement ? ('_' + this.datePipe.transform(this.data.DateOfImplement, 'short')) : '');
+    for (const data of this.data) {
+      data['Total'] = 0;
+      data['Title'] = this.renderTitle(data);
+      for (const detail of data.Details) {
+        data['Total'] += detail['Amount'] =  parseFloat(detail['Amount'] as any);
+      }
+    }
+
     return result;
+  }
+
+  renderTitle(data: CashVoucherModel) {
+    return `PhieuThu_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
   }
 
   close() {
@@ -58,7 +70,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   }
 
   toMoney(detail: CashVoucherDetailModel) {
-    let toMoney = parseInt(detail['Amount']);
+    let toMoney = parseInt(detail['Amount'] as any);
     // const tax = detail['Tax'] as any;
     // if (tax) {
     //   toMoney += toMoney * tax.Tax / 100;
@@ -68,16 +80,16 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
 
   getTotal() {
     let total = 0;
-    const details = this.data.Details;
-    for (let i = 0; i < details.length; i++) {
-      total += this.toMoney(details[i]);
-    }
+    // const details = this.data.Details;
+    // for (let i = 0; i < details.length; i++) {
+    //   total += this.toMoney(details[i]);
+    // }
     return total;
   }
 
   saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      // this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
@@ -89,29 +101,30 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
   approve() {
-    if (this.data) {
-      this.apiService.putPromise('/accounting/cash-vouchers', {id: [this.data.Code], approve: true}, [{Code: this.data.Code}]).then(rs => {
-        if (this.onClose) {
-          this.onClose(this.data.Code);
-        }
-        this.close();
-      });
-    }
+    // if (this.data) {
+    //   this.apiService.putPromise('/accounting/cash-vouchers', {id: [this.data.Code], approve: true}, [{Code: this.data.Code}]).then(rs => {
+    //     if (this.onClose) {
+    //       this.onClose(this.data.Code);
+    //     }
+    //     this.close();
+    //   });
+    // }
   }
 
   cancel() {
-    if (this.data) {
-      this.apiService.putPromise('/accounting/cash-vouchers', {id: [this.data.Code], cancel: true}, [{Code: this.data.Code}]).then(rs => {
-        if (this.onClose) {
-          this.onClose(this.data.Code);
-        }
-        this.close();
-      });
-    }
+    // if (this.data) {
+    //   this.apiService.putPromise('/accounting/cash-vouchers', {id: [this.data.Code], cancel: true}, [{Code: this.data.Code}]).then(rs => {
+    //     if (this.onClose) {
+    //       this.onClose(this.data.Code);
+    //     }
+    //     this.close();
+    //   });
+    // }
   }
 
 }

@@ -593,18 +593,18 @@ export class WarehouseSimpleGoodsDeliveryNoteFormComponent extends DataManagerFo
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
-      context: {
-        title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (priceReportCode: string) => {
-          this.save();
-        },
-      },
-    });
+    // this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
+    //   context: {
+    //     title: 'Xem trước',
+    //     data: data,
+    //     onSaveAndClose: (priceReportCode: string) => {
+    //       this.saveAndClose();
+    //     },
+    //     onSaveAndPrint: (priceReportCode: string) => {
+    //       this.save();
+    //     },
+    //   },
+    // });
     return false;
   }
 

@@ -42,6 +42,7 @@ export class SalesVoucherModel {
 
 export class SalesVoucherDetailModel {
   Id?: string & number;
+  Type?: string;
   Voucher?: string;
   PriceTableDetail?: string;
   Product?: string & ProductModel;

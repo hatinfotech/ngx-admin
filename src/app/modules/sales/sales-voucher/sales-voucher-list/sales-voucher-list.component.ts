@@ -9,6 +9,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SimpleSalesVoucherFormComponent } from '../simple-sales-voucher-form/simple-sales-voucher-form.component';
 import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
+import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
 
 @Component({
   selector: 'ngx-sales-voucher-list',
@@ -184,5 +185,24 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
   //   this.openSimpleFormDialog(id ? decodeURIComponent(id).split('&') : null);
   //   return false;
   // }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: ids, includeContact: true, includeDetails: true });
+  }
+
+  preview(data: SalesVoucherModel[]) {
+    this.commonService.openDialog(SalesVoucherPrintComponent, {
+      context: {
+        title: 'Xem trước',
+        data: data,
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onClose: (data: SalesVoucherModel) => {
+          this.refresh();
+        },
+      },
+    });
+    return false;
+  }
 
 }

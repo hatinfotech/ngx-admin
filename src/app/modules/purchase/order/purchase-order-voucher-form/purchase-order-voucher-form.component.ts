@@ -445,11 +445,11 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
+        data: [data],
+        onSaveAndClose: (priceReport: PurchaseOrderVoucherModel) => {
           this.saveAndClose();
         },
-        onSaveAndPrint: (priceReportCode: string) => {
+        onSaveAndPrint: (priceReport: PurchaseOrderVoucherModel) => {
           this.save();
         },
       },

@@ -38,7 +38,7 @@ export class PriceTablePrintAsListComponent extends DataManagerPrintComponent<Sa
   async init() {
     const result = await super.init();
     // this.calculateDetailRows();
-    this.title = `PhieuBaoGia_${this.identifier}` + (this.data.DateOfApprove ? ('_' + this.datePipe.transform(this.data.DateOfApprove, 'short')) : '');
+    // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.DateOfApprove ? ('_' + this.datePipe.transform(this.data.DateOfApprove, 'short')) : '');
     return result;
   }
 
@@ -73,7 +73,7 @@ export class PriceTablePrintAsListComponent extends DataManagerPrintComponent<Sa
 
   saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      // this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
@@ -85,7 +85,8 @@ export class PriceTablePrintAsListComponent extends DataManagerPrintComponent<Sa
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
   // public detailRows = [];

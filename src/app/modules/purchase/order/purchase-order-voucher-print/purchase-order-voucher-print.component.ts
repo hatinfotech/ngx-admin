@@ -37,8 +37,21 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
 
   async init() {
     const result = await super.init();
-    this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
+    // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
+
+    for (const data of this.data) {
+      data['Total'] = 0;
+      data['Title'] = this.renderTitle(data);
+      for (const detail of data.Details) {
+        data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      }
+    }
+
     return result;
+  }
+
+  renderTitle(data: PurchaseOrderVoucherModel) {
+    return `DonDatMuaHang_${this.getIdentified(data).join('-')}` + (data.DateOfPurchase ? ('_' + this.datePipe.transform(data.DateOfPurchase, 'short')) : '');
   }
 
   close() {
@@ -53,26 +66,32 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   }
 
   toMoney(detail: PurchaseVoucherDetailModel) {
-    let toMoney = detail.Quantity * detail.Price;
-    const tax = detail['Tax'] as any;
-    if (tax) {
-      toMoney += toMoney * tax.Tax / 100;
+    if (detail.Type === 'PRODUCT') {
+      let toMoney = detail['Quantity'] * detail['Price'];
+      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      if (detail.Tax) {
+        if (typeof detail.Tax.Tax == 'undefined') {
+          throw Error('tax not as tax model');
+        }
+        toMoney += toMoney * detail.Tax.Tax / 100;
+      }
+      return toMoney;
     }
-    return toMoney;
+    return 0;
   }
 
-  getTotal() {
+  getTotal(data: PurchaseOrderVoucherModel) {
     let total = 0;
-    const details = this.data.Details;
+    const details = data.Details;
     for (let i = 0; i < details.length; i++) {
       total += this.toMoney(details[i]);
     }
     return total;
   }
 
-  saveAndClose() {
+  saveAndClose(data: PurchaseOrderVoucherModel) {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      this.onSaveAndClose(data);
     }
     this.close();
     return false;
@@ -84,7 +103,8 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
 }

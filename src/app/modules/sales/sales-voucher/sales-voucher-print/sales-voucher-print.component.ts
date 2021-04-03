@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
+import { TaxModel } from '../../../../models/tax.model';
+import { UnitModel } from '../../../../models/unit.model';
 
 @Component({
   selector: 'ngx-sales-voucher-print',
@@ -37,8 +39,21 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
 
   async init() {
     const result = await super.init();
-    this.title = `SalesVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
+    // this.title = `SalesVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
+
+    for (const data of this.data) {
+      data['Total'] = 0;
+      data['Title'] = this.renderTitle(data);
+      for (const detail of data.Details) {
+        data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      }
+    }
+
     return result;
+  }
+
+  renderTitle(data: SalesVoucherModel) {
+    return `PhieuBanHang_${this.getIdentified(data).join('-')}` + (data.DateOfSale ? ('_' + this.datePipe.transform(data.DateOfSale, 'short')) : '');
   }
 
   close() {
@@ -53,26 +68,32 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   toMoney(detail: SalesVoucherDetailModel) {
-    let toMoney = detail['Quantity'] * detail['Price'];
-    const tax = detail['Tax'] as any;
-    if (tax) {
-      toMoney += toMoney * tax.Tax / 100;
+    if (detail.Type === 'PRODUCT') {
+      let toMoney = detail['Quantity'] * detail['Price'];
+      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      if (detail.Tax) {
+        if (typeof detail.Tax.Tax == 'undefined') {
+          throw Error('tax not as tax model');
+        }
+        toMoney += toMoney * detail.Tax.Tax / 100;
+      }
+      return toMoney;
     }
-    return toMoney;
+    return 0;
   }
 
   getTotal() {
     let total = 0;
-    const details = this.data.Details;
-    for (let i = 0; i < details.length; i++) {
-      total += this.toMoney(details[i]);
-    }
-    return total;
+    // const details = this.data.Details;
+    // for (let i = 0; i < details.length; i++) {
+    //   total += this.toMoney(details[i]);
+    // }
+    // return total;
   }
 
   saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      // this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
@@ -84,7 +105,8 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
 }

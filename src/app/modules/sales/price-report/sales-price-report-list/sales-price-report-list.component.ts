@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SalesPriceReportModel, SalesVoucherModel } from '../../../../models/sales.model';
+import { SalesPriceReportDetailModel, SalesPriceReportModel, SalesVoucherModel } from '../../../../models/sales.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -12,6 +12,8 @@ import { takeUntil } from 'rxjs/operators';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
+import { TaxModel } from '../../../../models/tax.model';
+import { UnitModel } from '../../../../models/unit.model';
 
 @Component({
   selector: 'ngx-sales-price-report-list',
@@ -46,20 +48,16 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
 
-  // async loadCache() {
-  //   // iniit category
-  //   // this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-  // }
-
   async init() {
-    // await this.loadCache();
     return super.init();
   }
 
   editing = {};
   rows = [];
 
-  stateDic = { APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'success' }, COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'danger' } };
+  stateDic = { 
+    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'primary' }, 
+    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success' } };
 
   settings = this.configSetting({
     mode: 'external',
@@ -143,7 +141,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             //   instance.disabled = true;
             // }
           });
-          instance.click.subscribe(async (row: SalesVoucherModel) => {
+          instance.click.subscribe(async (row: SalesPriceReportModel) => {
 
             this.commonService.openDialog(SalesPriceReportFormComponent, {
               context: {
@@ -186,9 +184,9 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             // instance.status = value === 'REQUEST' ? 'warning' : 'success';
             // instance.disabled = value !== 'REQUEST';
           });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
-            this.apiService.getPromise('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-              this.preview(rs[0]);
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
+            this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview(rs);
             });
           });
         },
@@ -203,7 +201,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           instance.iconPack = 'eva';
           instance.icon = 'external-link-outline';
           instance.display = true;
-          instance.status = 'success';
+          instance.status = 'primary';
           instance.style = 'text-align: right';
           instance.class = 'align-right';
           instance.title = this.commonService.translateText('Common.preview');
@@ -212,9 +210,9 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             // instance.status = value === 'REQUEST' ? 'warning' : 'success';
             // instance.disabled = value !== 'REQUEST';
           });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
-            this.apiService.getPromise('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-              this.preview(rs[0]);
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
+            this.getFormData([rowData.Code]).then(rs => {
+              this.preview(rs);
             });
           });
         },
@@ -227,18 +225,12 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     super.ngOnInit();
   }
 
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
+  }
+
   initDataSource() {
     const source = super.initDataSource();
-
-    // Set DataSource: prepareData
-    // source.prepareData = (data: UserGroupModel[]) => {
-    //   // const paging = source.getPaging();
-    //   // data.map((product: any, index: number) => {
-    //   //   product['No'] = (paging.page - 1) * paging.perPage + index + 1;
-    //   //   return product;
-    //   // });
-    //   return data;
-    // };
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
@@ -270,18 +262,14 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     });
   }
 
-  preview(data: SalesPriceReportModel) {
-    // data.Details.forEach(detail => {
-    //   // if (typeof detail['Tax'] === 'string') {
-    //   //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-    //   // }
-    // });
+  preview(data: SalesPriceReportModel[]) {
     this.commonService.openDialog(SalesPriceReportPrintComponent, {
       context: {
         title: 'Xem trước',
         data: data,
+        idKey: ['Code'],
         // approvedConfirm: true,
-        onClose: (id: string) => {
+        onClose: (data: SalesPriceReportModel) => {
           this.refresh();
         },
       },

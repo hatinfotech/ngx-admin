@@ -8,6 +8,7 @@ import { PurchaseOrderVoucherModel, PurchaseVoucherModel } from '../../../../mod
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { PurchaseOrderVoucherFormComponent } from '../purchase-order-voucher-form/purchase-order-voucher-form.component';
+import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-list',
@@ -95,6 +96,25 @@ export class PurchaseOrderVoucherListComponent extends DataManagerListComponent<
     super.getList((rs) => {
       if (callback) callback(rs);
     });
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/order-vouchers', { id: ids, includeContact: true, includeDetails: true });
+  }
+
+  preview(data: PurchaseOrderVoucherModel[]) {
+    this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
+      context: {
+        title: 'Xem trước',
+        data: data,
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onClose: (data: PurchaseOrderVoucherModel) => {
+          this.refresh();
+        },
+      },
+    });
+    return false;
   }
 
 }

@@ -373,19 +373,15 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   preview(formItem: FormGroup) {
     const data: CashVoucherModel = formItem.value;
-    data.Details.forEach(detail => {
-      // if (typeof detail['Tax'] === 'string') {
-      //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-      // }
-    });
     this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
+        data: [data],
+        idKey: ['Code'],
+        onSaveAndClose: (rs: CashVoucherModel) => {
           this.saveAndClose();
         },
-        onSaveAndPrint: (priceReportCode: string) => {
+        onSaveAndPrint: (rs: CashVoucherModel) => {
           this.save();
         },
       },

@@ -388,11 +388,11 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
+        data: [data],
+        onSaveAndClose: (rs: CashVoucherModel) => {
           this.saveAndClose();
         },
-        onSaveAndPrint: (priceReportCode: string) => {
+        onSaveAndPrint: (rs: CashVoucherModel) => {
           this.save();
         },
       },

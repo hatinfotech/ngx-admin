@@ -37,7 +37,7 @@ export class PurchasePriceTablePrintComponent extends DataManagerPrintComponent<
 
   async init() {
     const result = await super.init();
-    this.title = `PhieuBaoGia_${this.identifier}` + (this.data.DateOfApprove ? ('_' + this.datePipe.transform(this.data.DateOfApprove, 'short')) : '');
+    // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.DateOfApprove ? ('_' + this.datePipe.transform(this.data.DateOfApprove, 'short')) : '');
     return result;
   }
 
@@ -72,7 +72,7 @@ export class PurchasePriceTablePrintComponent extends DataManagerPrintComponent<
 
   saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      // this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
@@ -84,7 +84,8 @@ export class PurchasePriceTablePrintComponent extends DataManagerPrintComponent<
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
 }

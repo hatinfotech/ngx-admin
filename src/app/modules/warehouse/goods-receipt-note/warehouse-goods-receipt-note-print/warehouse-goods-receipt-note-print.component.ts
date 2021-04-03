@@ -37,7 +37,7 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
 
   async init() {
     const result = await super.init();
-    this.title = `GoodsReceiptNote_${this.identifier}` + (this.data.DateOfReceipted ? ('_' + this.datePipe.transform(this.data.DateOfReceipted, 'short')) : '');
+    // this.title = `GoodsReceiptNote_${this.identifier}` + (this.data.DateOfReceipted ? ('_' + this.datePipe.transform(this.data.DateOfReceipted, 'short')) : '');
     return result;
   }
 
@@ -52,9 +52,9 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
     return value;
   }
 
-  saveAndClose() {
+  saveAndClose(data: WarehouseGoodsReceiptNoteModel) {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      this.onSaveAndClose(data);
     }
     this.close();
     return false;
@@ -66,7 +66,8 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
 }

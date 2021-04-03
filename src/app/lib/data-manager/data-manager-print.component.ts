@@ -1,20 +1,23 @@
+import { ActionControlListOption } from './../custom-element/action-control-list/action-control.interface';
 import { environment } from './../../../environments/environment';
-import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core'; import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../models/sales.model'; import { CommonService } from '../../services/common.service'; import { Router } from '@angular/router'; import { ApiService } from '../../services/api.service';
+import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewChild, ViewContainerRef, AfterViewInit, ViewChildren, QueryList } from '@angular/core'; import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../models/sales.model'; import { CommonService } from '../../services/common.service'; import { Router } from '@angular/router'; import { ApiService } from '../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { Icon } from '../custom-element/card-header/card-header.component';
+import { NgModel } from '@angular/forms';
 
 declare var $: JQueryStatic;
 
 export abstract class DataManagerPrintComponent<M> extends BaseComponent implements OnInit, AfterViewInit {
 
   // title: string = 'Xem trước';
-  @Input() data: M;
-  @ViewChild('printContent', { read: ViewContainerRef, static: true }) printContent: ViewContainerRef;
-  @Input() onSaveAndClose?: (id: any) => void;
-  @Input() onSaveAndPrint?: (id: any) => void;
-  @Input() onClose?: (id: any) => void;
+  @Input() data: M[];
+  @ViewChildren('printContent', { read: ViewContainerRef }) printContent: QueryList<ViewContainerRef>;
+  @Input() onSaveAndClose?: (data: M) => void;
+  @Input() onSaveAndPrint?: (data: M) => void;
+  @Input() onClose?: (data: M) => void;
 
   favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
+  @Input() idKey?: string[];
   @Input() title?: string;
   @Input() size?: string = 'medium';
 
@@ -34,8 +37,34 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       size: 'medium',
       disabled: () => false,
       hidden: () => false,
-      click: () => {
-        this.print();
+      click: (event?: any, option?: ActionControlListOption) => {
+        if (this.data.length > 1) {
+          this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText('Print.multiPrintConfirm?'), [
+            {
+              label: this.commonService.translateText('Common.close'),
+              status: 'primary',
+              action: () => {
+
+              },
+            },
+            {
+              label: this.commonService.translateText('Common.all'),
+              status: 'danger',
+              action: () => {
+                this.print();
+              },
+            },
+            {
+              label: this.commonService.translateText('Common.current'),
+              status: 'success',
+              action: () => {
+                this.print(option?.index);
+              },
+            },
+          ]);
+        } else {
+          this.print(option?.index);
+        }
       },
     });
   }
@@ -59,10 +88,23 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   }
 
   async init() {
+    await this.loadCache();
     return super.init();
   }
 
   abstract close(): void;
+
+  getIdentified(data: M): string[] {
+    if (this.idKey && this.idKey.length > 0) {
+      return this.idKey.map(key => data[key]);
+    } else {
+      return data['Code'];
+    }
+  }
+
+  renderTitle(data: M) {
+    return `Preview-${this.getIdentified(data).join('-')}`;
+  }
 
   renderValue(value: any) {
     if (value && value['text']) {
@@ -71,7 +113,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     return value;
   }
 
-  print() {
+  print(index?: number) {
     if (this.onSaveAndPrint) {
       this.onSaveAndPrint(this.identifier);
     }
@@ -84,6 +126,20 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     document.body.appendChild(printFrame);
     const frameDoc = printFrame.contentWindow ? printFrame.contentWindow : printFrame.contentDocument['document'] ? printFrame.contentDocument['document'] : printFrame.contentDocument;
     frameDoc.document.open();
+    let printContent = '';
+    const printContentEles = this.printContent.toArray();
+    let title = 'ProBox one ®';
+    if (index !== undefined) {
+      printContent += printContentEles[index].element.nativeElement.innerHTML;
+      const data = this.data[index];
+      if(data) {
+        title += ' - ' + data['Title'];
+      }
+    } else {
+      for (const item of printContentEles) {
+        printContent += item.element.nativeElement.innerHTML;
+      }
+    }
     frameDoc.document.write(`
     <html>
       <head>
@@ -91,9 +147,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
         <link href="assets/style/print.css" rel="stylesheet" type="text/css" />
+        <title>${title}</title>
       </head>
       <body>
-        ${this.printContent.element.nativeElement.innerHTML}
+        ${printContent}
       </body>
     </html>`);
     const currentTitle = document.title;
@@ -114,15 +171,15 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     // }, 5000);
   }
 
-  saveAndClose() {
+  saveAndClose(data: M) {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.identifier);
+      this.onSaveAndClose(data);
     }
     this.close();
     return false;
   }
 
-  exportExcel(type: string) {
+  exportExcel(type: string, data: M) {
     this.close();
     return false;
   }

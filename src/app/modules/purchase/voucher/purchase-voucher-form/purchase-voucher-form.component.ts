@@ -433,22 +433,23 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   preview(formItem: FormGroup) {
     const data: PurchaseVoucherModel = formItem.value;
-    data.Details.forEach(detail => {
-      if (typeof detail['Tax'] === 'string') {
-        detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-        if (this.unitList) {
-          detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-        }
-      }
-    });
+    // data.Details.forEach(detail => {
+    //   if (typeof detail['Tax'] === 'string') {
+    //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+    //     if (this.unitList) {
+    //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
+    //     }
+    //   }
+    // });
     this.commonService.openDialog(PurchaseVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
+        data: [data],
+        idKey: ['Code'],
+        onSaveAndClose: (priceReport: PurchaseVoucherModel) => {
           this.saveAndClose();
         },
-        onSaveAndPrint: (priceReportCode: string) => {
+        onSaveAndPrint: (priceReport: PurchaseVoucherModel) => {
           this.save();
         },
       },

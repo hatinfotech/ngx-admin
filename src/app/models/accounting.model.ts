@@ -18,7 +18,7 @@ export interface CashVoucherModel {
     ObjectEmail?: string;
     ObjectAddress?: string;
     ObjectTaxCode?: string;
-    Amount?: string;
+    Amount?: number;
     Currency?: string;
     RelationVoucher?: string;
     Details?: CashVoucherDetailModel[];
@@ -29,7 +29,7 @@ export interface CashVoucherDetailModel {
     Voucher?: string;
     RelateCode?: string;
     Description?: string;
-    Amount?: string;
+    Amount?: number;
     Currency?: string;
     AccountingBusiness?: string;
 }

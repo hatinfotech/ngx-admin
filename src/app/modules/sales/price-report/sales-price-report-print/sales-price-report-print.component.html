@@ -1,7 +1,7 @@
 <div class="dialog-wrap" #dialogWrap>
-    <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+    <nb-card *ngFor="let data of this.data; let i=index;" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
         <nb-card-header>
-            <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
@@ -25,9 +25,9 @@
                         <table style="width: 100%;" class="print-voucher-detail-table">
                             <colgroup>
                                 <!--STT-->
-                                <col span="1" style="width: 1cm;">
+                                <col span="1" style="width: 0.5cm;">
                                 <!--Dien giai-->
-                                <col span="1" style="width: 5.5cm;">
+                                <col span="1" style="width: 6cm;">
                                 <!--DVT-->
                                 <col span="1" style="width: 1cm;">
                                 <!--So luong-->
@@ -40,7 +40,7 @@
                                 <col span="1" style="width: 2.7cm; text-align: right;">
                             </colgroup>
                             <tr class="print-voucher-detail-header">
-                                <th>{{'Common.noNumber' | translate | headtitlecase}}</th>
+                                <th>#</th>
                                 <th>{{'Sales.technicalDescription' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}
                                 </th>
@@ -66,13 +66,13 @@
                                     <td class="text-align-right">{{detail.Unit?.Name || detail.Unit}}</td>
                                     <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                                     <td class="text-align-right">{{detail.Tax?.Label2}}</td>
-                                    <td class="text-align-right">{{toMoney(detail) | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td>
                                 </tr>
                             </ng-container>
                             <tr>
                                 <td colspan="6" class="text-align-right" i18n>{{'Voucher.total' | translate |
                                     headtitlecase}}</td>
-                                <td class="text-align-right">{{getTotal() | currency:'VND'}}</td>
+                                <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>
@@ -101,11 +101,13 @@
         <nb-card-footer>
             <div class="buttons-row">
                 <!-- <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier"><nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}</button> -->
-                <button nbButton hero status="danger" [disabled]="this.data.State == 'APPROVE'" (click)="approvedConfirm();">{{(this.data.State == 'APPROVE' ? 'Common.approved' : 'Common.approve') | translate | headtitlecase}}</button>
-                <button nbButton hero status="success" (click)="saveAndClose();"><nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+                <button nbButton hero status="danger" [disabled]="['APPROVE','COMPLETE'].indexOf(this.data.State) > -1" (click)="approvedConfirm(data);">{{(this.data.State == 'APPROVE' ? 'Common.approved' : 'Common.approve') | translate | headtitlecase}}</button>
+                <button nbButton hero status="success" (click)="saveAndClose(data);">
+                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+                </button>
                 <!-- <button nbButton hero status="info" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
                 <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button> -->
-                <button nbButton hero status="warning" (click)="prepareCopy();">{{'Common.copy' | translate | headtitlecase}}</button>
+                <button nbButton hero status="warning" (click)="prepareCopy(data);">{{'Common.copy' | translate | headtitlecase}}</button>
             </div>
         </nb-card-footer>
     </nb-card>

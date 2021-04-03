@@ -475,18 +475,18 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
           includeUnit: true,
           includeFeaturePicture: true,
         }));
-      this.commonService.openDialog(printTemplate.name, {
-        context: {
-          title: 'Xem trước',
-          data: data,
-          onSaveAndClose: (priceReportCode: string) => {
-            this.saveAndClose();
-          },
-          onSaveAndPrint: (priceReportCode: string) => {
-            this.save();
-          },
-        },
-      });
+      // this.commonService.openDialog(printTemplate.name, {
+      //   context: {
+      //     title: 'Xem trước',
+      //     data: data,
+      //     onSaveAndClose: (priceReportCode: string) => {
+      //       this.saveAndClose();
+      //     },
+      //     onSaveAndPrint: (priceReportCode: string) => {
+      //       this.save();
+      //     },
+      //   },
+      // });
     } else {
       throw Error('Print.Error.noTemplateChoosed');
     }

@@ -40,7 +40,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   async init() {
     const result = await super.init();
     this.calculateDetailRows();
-    this.title = `PhieuBaoGia_${this.identifier}` + (this.data.DateOfApproved ? ('_' + this.datePipe.transform(this.data.DateOfApproved, 'short')) : '');
+    // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.DateOfApproved ? ('_' + this.datePipe.transform(this.data.DateOfApproved, 'short')) : '');
     return result;
   }
 
@@ -75,7 +75,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
 
   saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      // this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
@@ -87,21 +87,22 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
   public detailRows = [];
   calculateDetailRows() {
     this.detailRows = [];
     const numOfColumns = 4;
-    let currentRow = null;
-    for (let i = 0; i < this.data.Details.length; i++) {
-      if (i % 4 === 0) {
-        currentRow = [];
-        this.detailRows.push(currentRow);
-      }
-      currentRow.push(this.data.Details[i]);
-    }
+    // let currentRow = null;
+    // for (let i = 0; i < this.data.Details.length; i++) {
+    //   if (i % 4 === 0) {
+    //     currentRow = [];
+    //     this.detailRows.push(currentRow);
+    //   }
+    //   currentRow.push(this.data.Details[i]);
+    // }
   }
 
   approve(priceReport: SalesMasterPriceTableModel) {
@@ -123,7 +124,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
             action: () => {
               this.apiService.putPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { id: [priceReport.Code] }, [{ Code: priceReport.Code, Approved: true }]).then(rs => {
                 this.close();
-                this.onSaveAndClose(rs);
+                // this.onSaveAndClose(rs);
               });
             },
           },

@@ -5,18 +5,20 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
+import { CashVoucherModel } from '../../../../../models/accounting.model';
 import { UserGroupModel } from '../../../../../models/user-group.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { ProductListComponent } from '../../../../admin-product/product/product-list/product-list.component';
 import { CashReceiptVoucherFormComponent } from '../cash-receipt-voucher-form/cash-receipt-voucher-form.component';
+import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-list',
   templateUrl: './cash-receipt-voucher-list.component.html',
   styleUrls: ['./cash-receipt-voucher-list.component.scss']
 })
-export class CashReceiptVoucherListComponent extends ServerDataManagerListComponent<UserGroupModel> implements OnInit {
+export class CashReceiptVoucherListComponent extends ServerDataManagerListComponent<CashVoucherModel> implements OnInit {
 
   componentName: string = 'CashReceiptVoucherListComponent';
   formPath = '/accounting/cash-receipt-voucher/form';
@@ -170,6 +172,25 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
       // });
       if (callback) callback(rs);
     });
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: ids, includeContact: true, includeDetails: true, eq_Type: 'RECEIPT' });
+  }
+
+  preview(data: CashVoucherModel[]) {
+    this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
+      context: {
+        title: 'Xem trước',
+        data: data,
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onClose: (data: CashVoucherModel) => {
+          this.refresh();
+        },
+      },
+    });
+    return false;
   }
 
 }

@@ -445,11 +445,12 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     this.commonService.openDialog(SalesVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
+        data: [data],
+        idKey: ['Code'],
+        onSaveAndClose: (rs: SalesVoucherModel) => {
           this.saveAndClose();
         },
-        onSaveAndPrint: (priceReportCode: string) => {
+        onSaveAndPrint: (rs: SalesVoucherModel) => {
           this.save();
         },
       },

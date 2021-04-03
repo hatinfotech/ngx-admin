@@ -200,7 +200,8 @@
         "approved": "đã duyệt",
         "notJustApproved": "chưa duyệt",
         "completed": "hoàn tất",
-        "show": "xem"
+        "show": "xem",
+        "current": "hiện tại"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -521,7 +522,8 @@
         "listTemplate": "mẫu danh sách",
         "gridTemplate": "mẫu lưới",
         "chooseTemplate": "chọn mẫu in",
-        "template": "mẫu in"
+        "template": "mẫu in",
+        "multiPrintConfirm?": "bạn muốn in tất cả hay chỉ in phiếu hiện tại thôi ?"
     },
     "Menu": {
         "System": {

@@ -149,7 +149,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       size: 'medium',
       disabled: () => this.selectedIds.length === 0,
       click: () => {
-
+        this.getFormData(this.selectedIds).then(data => {
+          this.preview(data);
+        });
         return false;
       },
     },
@@ -208,6 +210,19 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     public ref?: NbDialogRef<DataManagerListComponent<M>>,
   ) {
     super(commonService, router, apiService, ref);
+  }
+
+  async getFormData(ids: string[]): Promise<M[]> {
+    return [];
+  }
+
+  preview(data: M[]) {
+    return true;
+  }
+
+  async init(): Promise<boolean> {
+    await this.loadCache();
+    return true;
   }
 
   /** List init event */

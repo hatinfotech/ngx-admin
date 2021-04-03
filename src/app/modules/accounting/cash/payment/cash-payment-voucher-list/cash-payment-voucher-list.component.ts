@@ -18,7 +18,7 @@ import { CashPaymentVoucherPrintComponent } from '../cash-payment-voucher-print/
   templateUrl: './cash-payment-voucher-list.component.html',
   styleUrls: ['./cash-payment-voucher-list.component.scss']
 })
-export class CashPaymentVoucherListComponent extends ServerDataManagerListComponent<UserGroupModel> implements OnInit {
+export class CashPaymentVoucherListComponent extends ServerDataManagerListComponent<CashVoucherModel> implements OnInit {
 
   componentName: string = 'CashPaymentVoucherListComponent';
   formPath = '/accounting/cash-payment-voucher/form';
@@ -224,18 +224,18 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
     });
   }
 
-  preview(data: CashVoucherModel) {
-    // data.Details.forEach(detail => {
-    //   // if (typeof detail['Tax'] === 'string') {
-    //   //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-    //   // }
-    // });
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: ids, includeContact: true, includeDetails: true, eq_Type: 'PAYMENT' });
+  }
+
+  preview(data: CashVoucherModel[]) {
     this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
         data: data,
-        approvedConfirm: true,
-        onClose: (id: string) => {
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onClose: (data: CashVoucherModel) => {
           this.refresh();
         },
       },

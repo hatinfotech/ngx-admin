@@ -8,6 +8,8 @@ import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-man
 import { environment } from '../../../../../environments/environment';
 import { DatePipe } from '@angular/common';
 import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
+import { TaxModel } from '../../../../models/tax.model';
+import { UnitModel } from '../../../../models/unit.model';
 
 declare var $: JQueryStatic;
 
@@ -40,8 +42,27 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
 
   async init() {
     const result = await super.init();
-    this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
+    // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
+    for (const data of this.data) {
+      data['Total'] = 0;
+      data['Title'] = this.renderTitle(data);
+      for (const detail of data.Details) {
+        data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      }
+    }
     return result;
+  }
+
+  // getIdentified(data: SalesPriceReportModel): string[] {
+  //   if (this.idKey && this.idKey.length > 0) {
+  //     return this.idKey.map(key => data[key]);
+  //   } else {
+  //     return data['Id'];
+  //   }
+  // }
+
+  renderTitle(data: SalesPriceReportModel) {
+    return `PhieuBaoGia_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
   }
 
   close() {
@@ -57,17 +78,23 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   }
 
   toMoney(detail: SalesPriceReportDetailModel) {
-    let toMoney = detail['Quantity'] * detail['Price'];
-    const tax = detail['Tax'] as any;
-    if (tax) {
-      toMoney += toMoney * tax.Tax / 100;
+    if (detail.Type === 'PRODUCT') {
+      let toMoney = detail['Quantity'] * detail['Price'];
+      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      if (detail.Tax) {
+        if (typeof detail.Tax.Tax == 'undefined') {
+          throw Error('tax not as tax model');
+        }
+        toMoney += toMoney * detail.Tax.Tax / 100;
+      }
+      return toMoney;
     }
-    return toMoney;
+    return 0;
   }
 
-  getTotal() {
+  getTotal(data: SalesPriceReportModel) {
     let total = 0;
-    const details = this.data.Details;
+    const details = data.Details;
     let no = 1;
     for (let i = 0; i < details.length; i++) {
       const detail = details[i];
@@ -79,9 +106,9 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return total;
   }
 
-  saveAndClose() {
+  saveAndClose(data: SalesPriceReportModel) {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      this.onSaveAndClose(data);
     }
     this.close();
     return false;
@@ -93,19 +120,20 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
-  prepareCopy() {
+  prepareCopy(data: SalesPriceReportModel) {
     this.close();
     this.commonService.openDialog(SalesPriceReportFormComponent, {
       context: {
         inputMode: 'dialog',
-        inputId: [this.data.Code],
+        inputId: [data.Code],
         isDuplicate: true,
         onDialogSave: (newData: SalesPriceReportModel[]) => {
           // if (onDialogSave) onDialogSave(row);
-          this.onClose(newData);
+          this.onClose(newData[0]);
         },
         onDialogClose: () => {
           // if (onDialogClose) onDialogClose();
@@ -116,8 +144,8 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     });
   }
 
-  approvedConfirm() {
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText('Common.approvedConfirm', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + this.data.Title + '`' }), [
+  approvedConfirm(data: SalesPriceReportModel) {
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText('Common.approvedConfirm', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -129,13 +157,13 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         label: this.commonService.translateText('Common.approve'),
         status: 'danger',
         action: () => {
-          this.apiService.putPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [this.data.Code], approve: true }, [{ Code: this.data.Code }]).then(rs => {
-            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.approvedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + this.data.Title + '`' }), [
+          this.apiService.putPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [data.Code], approve: true }, [{ Code: data.Code }]).then(rs => {
+            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.approvedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
                 label: this.commonService.translateText('Common.close'),
                 status: 'success',
                 action: () => {
-                  this.onClose(this.data);
+                  this.onClose(data);
                 },
               },
             ]);

@@ -38,8 +38,21 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
 
   async init() {
     const result = await super.init();
-    this.title = `PhieuThu_${this.identifier}` + (this.data.DateOfImplement ? ('_' + this.datePipe.transform(this.data.DateOfImplement, 'short')) : '');
+    // this.title = `PhieuThu_${this.identifier}` + (this.data.DateOfImplement ? ('_' + this.datePipe.transform(this.data.DateOfImplement, 'short')) : '');
+
+    for (const data of this.data) {
+      data['Total'] = 0;
+      data['Title'] = this.renderTitle(data);
+      for (const detail of data.Details) {
+        data['Total'] += parseFloat(detail['Amount'] as any);
+      }
+    }
+
     return result;
+  }
+
+  renderTitle(data: CashVoucherModel) {
+    return `PhieuThu_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
   }
 
   close() {
@@ -54,7 +67,7 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
   }
 
   toMoney(detail: CashVoucherDetailModel) {
-    let toMoney = parseInt(detail['Amount']);
+    let toMoney = parseInt(detail['Amount'] as any);
     // const tax = detail['Tax'] as any;
     // if (tax) {
     //   toMoney += toMoney * tax.Tax / 100;
@@ -62,18 +75,18 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
     return toMoney;
   }
 
-  getTotal() {
+  getTotal(data: CashVoucherModel) {
     let total = 0;
-    const details = this.data.Details;
+    const details = data.Details;
     for (let i = 0; i < details.length; i++) {
       total += this.toMoney(details[i]);
     }
     return total;
   }
 
-  saveAndClose() {
+  saveAndClose(data: CashVoucherModel) {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      this.onSaveAndClose(data);
     }
     this.close();
     return false;
@@ -85,7 +98,8 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
 }

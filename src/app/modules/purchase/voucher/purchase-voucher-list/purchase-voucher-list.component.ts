@@ -9,6 +9,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { PurchaseSimpleVoucherFormComponent } from '../purchase-simple-voucher-form/purchase-simple-voucher-form.component';
 import { PurchaseVoucherFormComponent } from '../purchase-voucher-form/purchase-voucher-form.component';
+import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchase-voucher-print.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-list',
@@ -96,6 +97,25 @@ export class PurchaseVoucherListComponent extends DataManagerListComponent<Purch
     super.getList((rs) => {
       if (callback) callback(rs);
     });
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers', { id: ids, includeContact: true, includeDetails: true });
+  }
+
+  preview(data: PurchaseVoucherModel[]) {
+    this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+      context: {
+        title: 'Xem trước',
+        data: data,
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onClose: (data: PurchaseVoucherModel) => {
+          this.refresh();
+        },
+      },
+    });
+    return false;
   }
 
 }

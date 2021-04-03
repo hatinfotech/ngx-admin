@@ -1,7 +1,7 @@
 <div class="dialog-wrap" #dialogWrap>
-    <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+    <nb-card *ngFor="let data of this.data; let i=index" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
         <nb-card-header>
-            <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Accounting.CashPaymentVoucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Accounting.CashPaymentVoucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
@@ -36,12 +36,12 @@
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
                                 <td>{{renderValue(detail.Description)}}</td>
-                                <td class="text-align-right">{{renderValue(detail.Amount) | currency:'VND'}}</td>
+                                <td class="text-align-right">{{detail.Amount | currency:'VND'}}</td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td> </td>
                                 <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
-                                <td class="text-align-right">{{getTotal() | currency:'VND'}}</td>
+                                <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>

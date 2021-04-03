@@ -293,24 +293,24 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
     });
   }
 
-  preview(data: CashVoucherModel) {
-    // data.Details.forEach(detail => {
-    //   // if (typeof detail['Tax'] === 'string') {
-    //   //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-    //   // }
-    // });
-    // this.commonService.openDialog(ContactFormComponent, {
-    //   context: {
-    //     title: 'Xem trước',
-    //     data: data,
-    //     approvedConfirm: true,
-    //     onClose: (id: string) => {
-    //       this.refresh();
-    //     },
-    //   },
-    // });
-    return false;
-  }
+  // preview(data: CashVoucherModel) {
+  //   // data.Details.forEach(detail => {
+  //   //   // if (typeof detail['Tax'] === 'string') {
+  //   //   //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+  //   //   // }
+  //   // });
+  //   // this.commonService.openDialog(ContactFormComponent, {
+  //   //   context: {
+  //   //     title: 'Xem trước',
+  //   //     data: data,
+  //   //     approvedConfirm: true,
+  //   //     onClose: (id: string) => {
+  //   //       this.refresh();
+  //   //     },
+  //   //   },
+  //   // });
+  //   return false;
+  // }
 
   refresh() {
     super.refresh();

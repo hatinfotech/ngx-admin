@@ -747,18 +747,18 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     // });
     const printTemplate = this.printTemplateList.find((item: { id: string }) => item.id === formItem.get('PrintTemplate').value);
     if (printTemplate) {
-      this.commonService.openDialog(printTemplate.name, {
-        context: {
-          title: 'Xem trước',
-          data: data,
-          onSaveAndClose: (priceReportCode: string) => {
-            this.saveAndClose();
-          },
-          onSaveAndPrint: (priceReportCode: string) => {
-            this.save();
-          },
-        },
-      });
+      // this.commonService.openDialog(printTemplate.name, {
+      //   context: {
+      //     title: 'Xem trước',
+      //     data: data,
+      //     onSaveAndClose: (priceReportCode: string) => {
+      //       this.saveAndClose();
+      //     },
+      //     onSaveAndPrint: (priceReportCode: string) => {
+      //       this.save();
+      //     },
+      //   },
+      // });
     } else {
       throw Error('Print.Error.noTemplateChoosed');
     }

@@ -1,3 +1,4 @@
+import { TaxModel } from './../models/tax.model';
 import { Injectable, Type, TemplateRef } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
@@ -20,6 +21,7 @@ import { environment } from '../../environments/environment';
 import { MySocket } from '../lib/nam-socket/my-socket';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { filter, take } from 'rxjs/operators';
+import { UnitModel } from '../models/unit.model';
 
 @Injectable({
   providedIn: 'root',
@@ -126,6 +128,9 @@ export class CommonService {
   private mainSocket: MySocket;
   mainSocketInfo$ = new BehaviorSubject<{ protocol?: string, domain: string; port: number; url?: string }>(null);
 
+  taxList: TaxModel[];
+  unitList: UnitModel[];
+
   // localStorageAvailable$: BehaviorSubject<WindowLocalStorage> = new BehaviorSubject<WindowLocalStorage>(null);
 
   constructor(
@@ -217,7 +222,7 @@ export class CommonService {
 
     }).catch(e => console.error(e));
 
-    this.authService.onAuthenticationChange().subscribe(state => {
+    this.authService.onAuthenticationChange().subscribe(async state => {
       console.info('Authentication change with state ' + state);
       if (state) {
         // Get login info
@@ -253,6 +258,19 @@ export class CommonService {
             console.log('Main socket registerd');
             console.log(rs2);
           });
+        });
+
+        // tax cache
+        this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+          tax['id'] = tax.Code;
+          tax['text'] = tax.Name;
+          return tax;
+        });
+
+        this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+          tax['id'] = tax.Code;
+          tax['text'] = tax.Name;
+          return tax;
         });
       } else {
         // this.loginInfoSubject.next(new LoginInfoModel());

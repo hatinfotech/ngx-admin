@@ -1,5 +1,5 @@
 <div class="dialog-wrap" #dialogWrap>
-  <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+  <nb-card *ngFor="let data of this.data" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
     <nb-card-header>
       <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.PriceTableOfPrinting.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
@@ -72,7 +72,7 @@
     </nb-card-body>
     <nb-card-footer>
       <div class="buttons-row">
-        <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
+        <button nbButton hero status="primary" (click)="print(0);" [disabled]="!identifier">
           <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
         </button>
         <button nbButton hero status="danger" (click)="saveAndClose();">

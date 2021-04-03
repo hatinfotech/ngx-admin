@@ -475,18 +475,18 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    this.commonService.openDialog(SalesVoucherPrintComponent, {
-      context: {
-        title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (priceReportCode: string) => {
-          this.save();
-        },
-      },
-    });
+    // this.commonService.openDialog(SalesVoucherPrintComponent, {
+    //   context: {
+    //     title: 'Xem trước',
+    //     data: data,
+    //     onSaveAndClose: (priceReportCode: string) => {
+    //       this.saveAndClose();
+    //     },
+    //     onSaveAndPrint: (priceReportCode: string) => {
+    //       this.save();
+    //     },
+    //   },
+    // });
     return false;
   }
 

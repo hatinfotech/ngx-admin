@@ -455,11 +455,11 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     this.commonService.openDialog(SalesPriceReportPrintComponent, {
       context: {
         title: 'Xem trước',
-        data: data,
-        onSaveAndClose: (priceReportCode: string) => {
+        data: [data],
+        onSaveAndClose: (priceReport: SalesPriceReportModel) => {
           this.saveAndClose();
         },
-        onSaveAndPrint: (priceReportCode: string) => {
+        onSaveAndPrint: (priceReport: SalesPriceReportModel) => {
           this.save();
         },
       },

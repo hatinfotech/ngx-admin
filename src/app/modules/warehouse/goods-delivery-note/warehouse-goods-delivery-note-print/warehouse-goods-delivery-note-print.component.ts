@@ -37,7 +37,7 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
 
   async init() {
     const result = await super.init();
-    this.title = `GoodsDeliveryNote_${this.identifier}` + (this.data.DateOfDelivered ? ('_' + this.datePipe.transform(this.data.DateOfDelivered, 'short')) : '');
+    // this.title = `GoodsDeliveryNote_${this.identifier}` + (this.data.DateOfDelivered ? ('_' + this.datePipe.transform(this.data.DateOfDelivered, 'short')) : '');
     return result;
   }
 
@@ -54,7 +54,7 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
 
   saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(this.data.Code);
+      // this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
@@ -66,7 +66,8 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
   }
 
   get identifier() {
-    return this.data.Code;
+    // return this.data.Code;
+    return '';
   }
 
 }

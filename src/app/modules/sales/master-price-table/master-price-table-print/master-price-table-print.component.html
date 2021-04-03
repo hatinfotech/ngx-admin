@@ -1,6 +1,6 @@
 <form class="popup">
   <div class="dialog-wrap" #dialogWrap>
-    <nb-card style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header popup">
+    <nb-card *ngFor="let data of this.data" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header popup">
       <nb-card-header>
         <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.MasterPriceTable.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
       </nb-card-header>
