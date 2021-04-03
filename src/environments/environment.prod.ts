@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.2.0.4',
+  version: '2.2.0.5',
   // 2.2.0.0: Begin develop for commerce modules
   // 2.1.1.1: add feature: Ivoip - include extension registrations 
   // 2.1.0.3: change logo 

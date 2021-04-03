@@ -58,7 +58,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '' });
+        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '', limit: 40 });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -123,7 +123,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
