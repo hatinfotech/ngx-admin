@@ -168,31 +168,33 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   //   return false;
   // }
 
-  // async preview(data: SalesMasterPriceTableModel) {
+  preview(data: SalesMasterPriceTableModel[]) {
 
-  //   data.Details = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[]>(
-  //     '/sales/master-price-table-details',
-  //     {
-  //       excludeNoPrice: true,
-  //       masterPriceTable: data.Code,
-  //       includeUnit: true,
-  //       includeFeaturePicture: true,
-  //       sort_Id: 'desc',
-  //     }));
+    this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[]>(
+      '/sales/master-price-table-details',
+      {
+        excludeNoPrice: true,
+        masterPriceTable: data[0].Code,
+        includeUnit: true,
+        includeFeaturePicture: true,
+        sort_Id: 'desc',
+      }).then(rs => {
+        data[0].Details = rs;
+        this.commonService.openDialog(MasterPriceTablePrintComponent, {
+          context: {
+            title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
+            data: data,
+            onSaveAndClose: (rs: SalesMasterPriceTableModel) => {
+              this.refresh();
+            },
+            onSaveAndPrint: (rs: SalesMasterPriceTableModel) => {
+              this.refresh();
+            },
+          },
+        });
+      });
+    return true;
 
-  //   // this.commonService.openDialog(MasterPriceTablePrintComponent, {
-  //   //   context: {
-  //   //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
-  //   //     data: data,
-  //   //     onSaveAndClose: (priceReportCode: string) => {
-  //   //       this.refresh();
-  //   //     },
-  //   //     onSaveAndPrint: (priceReportCode: string) => {
-  //   //       this.refresh();
-  //   //     },
-  //   //   },
-  //   // });
-
-  // }
+  }
 
 }

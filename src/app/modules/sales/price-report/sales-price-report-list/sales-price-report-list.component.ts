@@ -235,7 +235,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       // params['includeParent'] = true;
-      params['sort_Created'] = 'desc';
+      params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';
       return params;
     };

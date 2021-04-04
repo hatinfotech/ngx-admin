@@ -1,3 +1,4 @@
+import { SalesMasterPriceTableDetailModel } from './../../../../models/sales.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
@@ -51,7 +52,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // multiple: true,
-    // tags: true,
+    tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -67,6 +68,36 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
           results: data.map(item => {
             item['id'] = item['Code'];
             item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
+  select2SalesPriceReportOption = {
+    placeholder: 'Chọn bảng giá...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Title',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Title'];
             return item;
           }),
         };
@@ -123,13 +154,16 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
-          results: data
+          results: data.map(product => {
+            product['text'] = `${product['text']} - ${product['id']}`;
+            return product;
+          })
         };
       },
     },
@@ -223,13 +257,15 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     } else {
       this.taxList = SalesPriceReportFormComponent._taxList;
     }
-    return rs;    
+    return rs;
   }
 
   /** Execute api get */
   executeGet(params: any, success: (resources: SalesPriceReportModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
     params['includeDetails'] = true;
+    params['includeProductUnitList'] = true;
+    params['includeProductPrice'] = true;
     params['useBaseTimezone'] = true;
     super.executeGet(params, success, error);
   }
@@ -269,7 +305,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       DirectReceiverName: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
-      PaymentStep: [''],
+      // PaymentStep: [''],
+      PriceTable: [''],
       DeliveryAddress: [''],
       Title: [''],
       Note: [''],
@@ -326,6 +363,13 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     if (data) {
       newForm.patchValue(data);
       this.toMoney(parentFormGroup, newForm);
+      if (data.Product.Units && data.Product.Units.length > 0) {
+        newForm['unitList'] = data.Product.Units;
+      } else {
+        newForm['unitList'] = this.commonService.unitList;
+      }
+    } else {
+      newForm['unitList'] = this.commonService.unitList;
     }
     return newForm;
   }
@@ -405,14 +449,67 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     }
   }
 
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
     if (selectedData) {
       detail.get('Description').setValue(selectedData.Name);
+      this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+        priceTable: 'BGC435061',
+        product: this.commonService.getObjectId(selectedData),
+        includeUnit: true,
+      }).then(rs => {
+        console.log(rs);
+        detail['unitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
+        if (selectedData.Units) {
+          const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
+          if (detaultUnit) {
+            const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
+            detail.get('Unit').setValue('');
+            setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
+            // detail.get('Price').setValue('');
+            setTimeout(() => {
+              detail.get('Price').setValue(choosed.Price);
+              this.toMoney(parentForm, detail);
+            }, 0);
+          }
+        } else {
+          detail['unitList'] = this.commonService.unitList;
+        }
+      });
     } else {
       detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
     }
+
+    // if (selectedData.Units) {
+    // detail['unitList'] = selectedData.Units;
+    // const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
+    // if (detaultUnit) {
+    //   detail.get('Unit').setValue('');
+    //   setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
+    // }
+    // } else {
+    //   detail['unitList'] = this.commonService.unitList;
+    // }
+
+    return false;
+  }
+
+  onSelectUnit(detail: FormGroup, selectedData: UnitModel, formItem: FormGroup) {
+    if (selectedData && selectedData.Price !== null) {
+      detail.get('Price').setValue(selectedData.Price);
+      this.toMoney(formItem, detail);
+    }
+    // const product = this.commonService.getObjectId(detail.get('Product').value);
+    // const unit = this.commonService.getObjectId(selectedData);
+    // if(unit && product) {
+    //   this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+    //     priceTable: '',
+    //     product: product,
+    //   }).then(rs => {
+
+    //   });
+    // }
     return false;
   }
 
@@ -468,7 +565,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   getRawFormData() {
-    const data =  super.getRawFormData();
+    const data = super.getRawFormData();
 
     return data;
   }

@@ -46,8 +46,20 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     for (const data of this.data) {
       data['Total'] = 0;
       data['Title'] = this.renderTitle(data);
+      const taxMap = this.commonService.taxList.reduce(function (map, obj) {
+        map[obj.Code] = obj;
+        return map;
+      }, {});
+      const unitMap = this.commonService.unitList.reduce(function (map, obj) {
+        map[obj.Code] = obj;
+        return map;
+      }, {});
       for (const detail of data.Details) {
-        data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+        if (detail.Type === 'PRODUCT') {
+          detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
+          detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
+          data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+        }
       }
     }
     return result;
@@ -60,7 +72,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   //     return data['Id'];
   //   }
   // }
-
+  
   renderTitle(data: SalesPriceReportModel) {
     return `PhieuBaoGia_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
   }
@@ -80,7 +92,6 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   toMoney(detail: SalesPriceReportDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       if (detail.Tax) {
         if (typeof detail.Tax.Tax == 'undefined') {
           throw Error('tax not as tax model');

@@ -43,7 +43,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     {
       name: 'close',
       status: 'danger',
-      // label: 'Refresh',
+      label: 'esc',
       icon: 'close',
       title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
       size: 'medium',

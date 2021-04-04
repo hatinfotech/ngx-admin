@@ -47,7 +47,8 @@
         "declareSaledProducts": "khai báo hàng đã bán",
         "chooseMasterPriceTableType": "chọn loại",
         "retail": "bán lẻ",
-        "wholesale": "bán sỉ"
+        "wholesale": "bán sỉ",
+        "priceTable": "bảng giá"
     },
     "Common": {
         "Pms": {
@@ -201,7 +202,8 @@
         "notJustApproved": "chưa duyệt",
         "completed": "hoàn tất",
         "show": "xem",
-        "current": "hiện tại"
+        "current": "hiện tại",
+        "productOrService": "hàng hoá/dịch vụ"
     },
     "Contact": {
         "name": "tên liên hệ",

@@ -184,6 +184,7 @@ export class SalesMasterPriceTableModel {
 }
 
 export class SalesMasterPriceTableDetailModel {
+  [key: string]: any;
   Id?: string | number;
   No?: string | number;
   MasterPriceTable?: String & SalesMasterPriceTableModel;

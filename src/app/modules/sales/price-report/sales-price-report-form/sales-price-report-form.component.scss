@@ -2,3 +2,10 @@
 [name="Description"] [formcontrolname="Description"]{
     border-right: 4px solid var(--secondary);
 }
+
+[name="Note"] .scrollable-container {
+    height: 10rem;
+}
+[name="Description"] .scrollable-container {
+    height: 2.5rem;
+}

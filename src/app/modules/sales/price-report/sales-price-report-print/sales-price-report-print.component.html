@@ -55,9 +55,9 @@
                                 </tr>
                                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                                     <td>{{detail.No}}</td>
-                                    <td [innerHTML]="renderValue(detail.Description)"><br>
+                                    <td><span [innerHTML]="renderValue(detail.Description)"></span><br>
                                         <span style="font-size: 10px; font-style: italic;">
-                                            {{'Common.note' | translate}} : {{detail.Product?.Code}},
+                                            <!-- {{'Common.note' | translate}} : {{detail.Product?.Code}}, -->
                                             {{'Common.code' | translate}} : {{detail.Product?.Code}},
                                             {{'Common.sort' | translate | headtitlecase}}:{{detail.No}}
                                         </span>
@@ -70,15 +70,15 @@
                                 </tr>
                             </ng-container>
                             <tr>
-                                <td colspan="6" class="text-align-right" i18n>{{'Voucher.total' | translate |
-                                    headtitlecase}}</td>
+                                <td colspan="2" i18n>{{'Common.note' | translate | headtitlecase}}</td>
+                                <td colspan="4" class="text-align-right" i18n>{{'Voucher.total' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 <div>
-                    <div class="under-line">{{'Common.note' | translate | headtitlecase}}: <br><span [innerHTML]="renderValue(data.Note)"></span></div>
+                    <div class="under-line"><span [innerHTML]="renderValue(data.Note)"></span></div>
                     <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
                         {{renderValue(data.DeliveryAddress)}}
                     </div>

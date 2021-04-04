@@ -74,18 +74,18 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     super.ngOnInit();
   }
 
-  ngAfterViewInit(): void {
-    // const nativeEle = this;
-    // Fix dialog scroll
-    if (this.ref) {
-      const dialog: NbDialogRef<DataManagerPrintComponent<M>> = this.ref;
-      if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
-        const nativeEle = dialog.componentRef.location.nativeElement;
-        // tslint:disable-next-line: ban
-        $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
-      }
-    }
-  }
+  // ngAfterViewInit(): void {
+  //   // const nativeEle = this;
+  //   // Fix dialog scroll
+  //   if (this.ref) {
+  //     const dialog: NbDialogRef<DataManagerPrintComponent<M>> = this.ref;
+  //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
+  //       const nativeEle = dialog.componentRef.location.nativeElement;
+  //       // tslint:disable-next-line: ban
+  //       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+  //     }
+  //   }
+  // }
 
   async init() {
     await this.loadCache();
@@ -98,7 +98,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     if (this.idKey && this.idKey.length > 0) {
       return this.idKey.map(key => data[key]);
     } else {
-      return data['Code'];
+      return [data['Code']];
     }
   }
 
