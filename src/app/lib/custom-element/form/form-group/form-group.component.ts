@@ -15,6 +15,7 @@ export class FormGroupComponent implements OnInit {
   @Input() array: FormArray;
   @Input() index: number;
   @Input() label: string;
+  @Input() hideLabel: boolean = false;
   @Input() required?: boolean;
   @Input() align = 'left';
   constructor(

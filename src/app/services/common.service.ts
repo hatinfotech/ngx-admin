@@ -447,7 +447,29 @@ export class CommonService {
       // tslint:disable-next-line: ban
       $('html').css({ top: 0 });
     }, 50);
-    return this.dialogService.open<T>(content, userConfig);
+    const dialogLoading = $('\
+    <div class="cube" style="left: 50%; right: initial; bottom:initial; top: 50%">\
+      <div class="sides">\
+        <div class="top"></div>\
+        <div class="right"></div>\
+        <div class="bottom"></div>\
+        <div class="left"></div>\
+        <div class="front"></div>\
+        <div class="back"></div>\
+      </div>\
+    </div>');
+    userConfig.context['onAfterInit'] = () => {
+      setTimeout(() => {
+        dialogLoading.fadeOut(300);
+      }, 300);
+    };
+    const dialogRef = this.dialogService.open<T>(content, userConfig);
+    if(dialogRef['overlayRef'] && dialogRef['overlayRef']['_pane']) {
+      const panel = $(dialogRef['overlayRef']['_pane']);
+      panel.find('nb-dialog-container').append(dialogLoading);
+    }
+    
+    return dialogRef;
   }
 
   resumeDialog(dialogRef: NbDialogRef<BaseComponent> | any, config?: { events: { onDialogClose?: () => void, onDialogChoose?: (selectItems: any[]) => void } }): boolean {

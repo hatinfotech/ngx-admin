@@ -13,6 +13,7 @@ export class ShowcaseDialogComponent implements AfterViewInit {
   @Input() content: string;
   @Input() footerContent: string;
   @Input() tableContent: MytableContent;
+  @Input() onAfterInit: () => void;
   @Input() actions: { label: string, icon?: string, status?: string, action?: () => void }[];
   @ViewChild('dialogWrap', { static: true }) dialogWrap: ElementRef;
 
@@ -39,6 +40,7 @@ export class ShowcaseDialogComponent implements AfterViewInit {
       // tslint:disable-next-line: ban
       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
     }
+    this.onAfterInit && this.onAfterInit();
   }
 
   dismiss() {

@@ -1,0 +1,9 @@
+.form-group label {
+  display: none !important;
+}
+@media (min-width: 768px) {
+  .popup {
+    max-width: 768px;
+    margin: auto;
+  }
+}

@@ -52,9 +52,12 @@
     },
     "Common": {
         "Pms": {
+            "list": "xem danh sách",
             "view": "xem",
             "edit": "chỉnh sửa",
-            "manage": "quản lý"
+            "delete": "xóa",
+            "manage": "quản lý",
+            "print": "in"
         },
         "Compare": {
             "lt": "nhỏ hơn",
@@ -203,7 +206,8 @@
         "completed": "hoàn tất",
         "show": "xem",
         "current": "hiện tại",
-        "productOrService": "hàng hoá/dịch vụ"
+        "productOrService": "hàng hoá/dịch vụ",
+        "chooseSomething": "chọn {{something}}"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -244,6 +248,10 @@
     },
     "System": {
         "title": "{{definition}}{{action}} tham số hệ thống",
+        "Resource": {
+            "grantPermissionTitle": "phân quyền",
+            "permissionGrant": "phân quyền cho {{resource}}"
+        },
         "Config": {
             "userLocale": "Cấu hình ngôn ngữ & vùng miền"
         },

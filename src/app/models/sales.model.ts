@@ -3,8 +3,9 @@ import { UnitModel } from './unit.model';
 import { ProductModel } from './product.model';
 import { ContactModel } from './contact.model';
 import { UserModel } from './user.model';
+import { Model } from './model';
 
-export class SalesVoucherModel {
+export class SalesVoucherModel extends Model {
   Id?: string & number;
   Code?: string;
   No?: string;
@@ -40,7 +41,7 @@ export class SalesVoucherModel {
   Details: SalesVoucherDetailModel[];
 }
 
-export class SalesVoucherDetailModel {
+export class SalesVoucherDetailModel extends Model  {
   Id?: string & number;
   Type?: string;
   Voucher?: string;
@@ -55,7 +56,7 @@ export class SalesVoucherDetailModel {
 
 }
 
-export class SalesPriceReportModel {
+export class SalesPriceReportModel extends Model  {
   Id?: string & number;
   SequenceNumber?: string;
   Code?: string;
@@ -98,7 +99,7 @@ export class SalesPriceReportModel {
 
 }
 
-export class SalesPriceReportDetailModel {
+export class SalesPriceReportDetailModel extends Model  {
   Id?: string & number;
   No?: number;
   Type?: string;
@@ -113,7 +114,7 @@ export class SalesPriceReportDetailModel {
 }
 
 
-export class SalesPriceTableModel {
+export class SalesPriceTableModel extends Model  {
   Id?: string & number;
   Code?: string;
   Parent?: string & SalesPriceTableModel;
@@ -141,7 +142,7 @@ export class SalesPriceTableModel {
   Details?: SalesPriceTableDetailModel[];
 }
 
-export class SalesPriceTableDetailModel {
+export class SalesPriceTableDetailModel extends Model  {
   Id?: string;
   No?: string | number;
   PriceTable?: string;
@@ -162,7 +163,7 @@ export class SalesPriceTableDetailModel {
 }
 
 
-export class SalesMasterPriceTableModel {
+export class SalesMasterPriceTableModel extends Model  {
   Id?: string & number;
   Code?: string;
   Type?: string;
@@ -183,7 +184,7 @@ export class SalesMasterPriceTableModel {
   Details?: (SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[];
 }
 
-export class SalesMasterPriceTableDetailModel {
+export class SalesMasterPriceTableDetailModel extends Model  {
   [key: string]: any;
   Id?: string | number;
   No?: string | number;

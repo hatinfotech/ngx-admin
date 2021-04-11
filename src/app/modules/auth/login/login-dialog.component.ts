@@ -16,6 +16,7 @@ import { environment } from '../../../../environments/environment';
 export class LoginDialogComponent extends NbLoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() onSuccess?: (redirect?: string) => void;
+  @Input() onAfterInit?: () => void;
   @Input() allowBack?: boolean = true;
 
   protected destroy$: Subject<void> = new Subject<void>();
@@ -96,7 +97,9 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.onAfterInit && this.onAfterInit();
+  }
 
   login() {
     this.errors = [];

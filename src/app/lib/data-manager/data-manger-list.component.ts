@@ -222,6 +222,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   async init(): Promise<boolean> {
     await this.loadCache();
+    this.onAfterInit && this.onAfterInit();
     return true;
   }
 
@@ -618,7 +619,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       // this.source['isLocalUpdate'] = false;
       try {
         this.commonService.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
-          context: {
+          context: {  
             inputMode: 'dialog',
             inputId: ids,
             onDialogSave: (newData: M[]) => {

@@ -89,7 +89,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   async init() {
     await this.loadCache();
-    return super.init();
+    return super.init().then(rs => {
+      this.onAfterInit && this.onAfterInit();
+      return rs;
+    });
   }
 
   abstract close(): void;

@@ -20,6 +20,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() onDialogClose?: () => void;
   @Input() onDialogHide?: () => void;
+  @Input() onAfterInit?: () => void;
 
   favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   @Input() title?: string;

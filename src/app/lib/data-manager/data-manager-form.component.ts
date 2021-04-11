@@ -24,7 +24,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Main form */
   form = this.formBuilder.group({
     array: this.formBuilder.array([
-      this.makeNewFormGroup(),
+      // this.makeNewFormGroup(),
     ]),
   });
 
@@ -249,17 +249,17 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     });
     await new Promise<boolean>(resolve => {
       this.getRequestId(id => {
-        if (id) {
+        if (id && id.length > 0) {
           this.id = id;
-          if (this.id.length > 0) {
+          // if (this.id.length > 0) {
             this.formLoad().then(() => {
               resolve(true);
             });
-          } else {
+          // } else {
             // this.formLoading = false;
-            resolve(true);
-            this.onProcessed();
-          }
+            // resolve(true);
+            // this.onProcessed();
+          // }
         } else {
           this.array.clear();
           this.addFormGroup();
@@ -269,7 +269,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         }
       });
     });
-
+    this.onAfterInit && this.onAfterInit();
     return true;
     // this.activeRoute.params.subscribe(params => {
     //   // this.id = params['id']; // (+) converts string 'id' to a number

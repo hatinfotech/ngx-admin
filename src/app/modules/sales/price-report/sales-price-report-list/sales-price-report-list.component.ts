@@ -14,6 +14,7 @@ import { UserGroupModel } from '../../../../models/user-group.model';
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 
 @Component({
   selector: 'ngx-sales-price-report-list',
@@ -131,7 +132,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
           instance.icon = 'copy';
-          instance.label = this.commonService.translateText('Common.copy');
+          // instance.label = this.commonService.translateText('Common.copy');
           instance.display = true;
           instance.status = 'warning';
           instance.valueChange.subscribe(value => {
@@ -188,6 +189,44 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
               this.preview(rs);
             });
+          });
+        },
+      },
+      Permission: {
+        title: this.commonService.translateText('Common.permission'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'shield';
+          instance.display = true;
+          instance.status = 'danger';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
+
+            this.commonService.openDialog(ResourcePermissionEditComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [rowData.Code],
+                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                resourceName: this.commonService.translateText('Sales.PriceReport.title', {action: '', definition: ''}) + ` ${rowData.Title || ''}`,
+                // resrouce: rowData,
+                apiPath: '/sales/price-reports',
+              }
+            });
+
+            // this.getFormData([rowData.Code]).then(rs => {
+            //   this.preview(rs);
+            // });
           });
         },
       },

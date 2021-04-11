@@ -1,0 +1,111 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="popup">
+    <div formArrayName="array">
+        <div *ngFor="let formItem of array.controls; let i = index">
+            <nb-card class="small-header popup">
+                <nb-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('System.Resource.grantPermissionTitle' | translate:{resource: ''} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+                </nb-card-header>
+                <nb-card-body>
+                    <div [formGroup]="formItem">
+                        <div class="row">
+                            <input *ngFor="let key of idKeys" type="hidden" formControlName="{{key}}">
+                            <div class="col-sm-12">{{'System.Resource.permissionGrant' | translate: {resource: this.resourceName} | headtitlecase}}</div>
+                        </div>
+
+                        <!-- <hr> -->
+                        <label class="label">{{'Common.permission' | translate | headtitlecase}}</label>
+                        <div class="row fit-row form-detail-header">
+                            <div class="fit-fist-col label column">Stt</div>
+                            <div class="row fit-content-column">
+                                <div class="col-sm-6 label column">{{'Common.user' | translate | headtitlecase}}</div>
+                                <div class="col-sm-6 label column">{{'Common.permission' | translate | headtitlecase}}</div>
+                            </div>
+                            <div class="fit-last-col column">
+                                <button class="fit-control-button" nbButton status="success" (click)="addDetailFormGroup(i)" size="medium" hero>
+                                    <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div formArrayName="Permission" class="form-details">
+                            <div class="form-detail-item" *ngFor="let detail of getPermission(i).controls; let ir=index" [formGroup]="detail">
+                                <div class="row fit-row">
+                                    <div class="fit-fist-col label">
+                                        <div class="form-group">
+                                            <label class="label">Stt</label>
+                                            <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ ir + 1 }}">
+                                            <!-- <input type="hidden" formControlName="Id"> -->
+                                        </div>
+                                    </div>
+                                    <div class="row fit-content-column">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <ngx-form-group [formGroup]="detail" name="User" label="Common.user" [array]="getPermission(i)" [index]="ir" [allowCopy]="false" [required]="false">
+                                                        <ngx-select2 formControlName="User" [select2Option]="select2OptionForUser"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <ngx-form-group [formGroup]="detail" name="Permissions" label="Common.permission" [array]="getPermission(i)" [index]="ir" [allowCopy]="true" [required]="true">
+                                                        <ngx-select2 formControlName="Permissions" [select2Option]="select2OptionForPms" [data]="pmsList"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="fit-last-col">
+                                        <div class="form-group" style="text-align: right;">
+                                            <label class="label">CM</label>
+                                            <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeDetail(i, ir)">
+                                                <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+
+                            <!-- <div class="form-detail-item">
+                                <div class="row fit-row form-detail-footer">
+                                    <div class="fit-fist-col label">
+
+                                    </div>
+                                    <div class="row fit-content-column">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+
+                                                </div>
+                                                <div class="col-sm-6" style="text-align: right; font-weight: bold;">Tổng cộng:</div>
+                                                <div class="col-sm-2" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">
+                                                    {{formItem.get('_total').value | currency:'VND'}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="fit-last-col">
+                                        <div class="form-group" style="text-align: right;">
+                                            <label class="label">CM</label>
+                                            <button class="fit-control-button" nbButton status="success" (click)="addDetailFormGroup(i)" size="medium" hero>
+                                                <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+
+                    </div>
+                </nb-card-body>
+                <nb-card-footer>
+                    <i>{{note}}</i>
+                    <!-- <div class="buttons-row" style="text-align: right;">
+                        <button nbButton status="warning" (click)="addFormGroup($event)" hero style="float: left;">Thêm cái nữa</button>
+                        <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+                        <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+                    </div> -->
+                </nb-card-footer>
+            </nb-card>
+        </div>
+    </div>
+</form>
