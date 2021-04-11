@@ -56,9 +56,10 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   editing = {};
   rows = [];
 
-  stateDic = { 
-    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'primary' }, 
-    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success' } };
+  stateDic = {
+    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'primary' },
+    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success' },
+  };
 
   settings = this.configSetting({
     mode: 'external',
@@ -218,7 +219,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
                 inputMode: 'dialog',
                 inputId: [rowData.Code],
                 note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                resourceName: this.commonService.translateText('Sales.PriceReport.title', {action: '', definition: ''}) + ` ${rowData.Title || ''}`,
+                resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                 // resrouce: rowData,
                 apiPath: '/sales/price-reports',
               }

@@ -12,7 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PromotionActionModel } from '../../../../models/promotion.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
-import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
+import { SalesVoucherModel, SalesVoucherDetailModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 // import localeVi from '@angular/common/locales/vi';
@@ -79,6 +79,36 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
   };
 
+  select2SalesPriceReportOption = {
+    placeholder: 'Chọn bảng giá...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Title',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Title'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -124,13 +154,16 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
-          results: data
+          results: data.map(product => {
+            product['text'] = `${product['text']} - ${product['id']}`;
+            return product;
+          })
         };
       },
     },
@@ -254,6 +287,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       DateOfDelivery: [''],
       DeliveryAddress: [''],
       Title: [''],
+      PriceTable: [''],
       Note: [''],
       DateOfSale: [''],
       _total: [''],
@@ -307,10 +341,14 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
     if (data) {
       newForm.patchValue(data);
-      if (!data['Type']) {
-        data["Type"] = 'PRODUCT';
-      }
       this.toMoney(parentFormGroup, newForm);
+      if (data.Product.Units && data.Product.Units.length > 0) {
+        newForm['unitList'] = data.Product.Units;
+      } else {
+        newForm['unitList'] = this.commonService.unitList;
+      }
+    } else {
+      newForm['unitList'] = this.commonService.unitList;
     }
     return newForm;
   }
@@ -395,13 +433,48 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     }
   }
 
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+  /** Choose product event */
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
-    if (selectedData) {
-      detail.get('ProductName').setValue(selectedData.Name);
+    const priceTable = this.commonService.getObjectId(parentForm.get('PriceTable').value);
+    detail.get('ProductName').setValue(selectedData.Name);
+    if (selectedData && selectedData.Units && selectedData.Units.length > 0 && priceTable) {
+      this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+        priceTable: priceTable,
+        product: this.commonService.getObjectId(selectedData),
+        includeUnit: true,
+      }).then(rs => {
+        console.log(rs);
+        detail['unitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
+        // if (selectedData.Units) {
+        const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
+        if (detaultUnit) {
+          const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
+          detail.get('Unit').setValue('');
+          setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
+          setTimeout(() => {
+            detail.get('Price').setValue(choosed.Price);
+            this.toMoney(parentForm, detail);
+          }, 0);
+        }
+        // } else {
+        //   detail['unitList'] = this.commonService.unitList;
+        // }
+      });
     } else {
       detail.get('ProductName').setValue('');
       detail.get('Unit').setValue('');
+    }
+    return false;
+  }
+
+  /** Choose unit event */
+  onSelectUnit(detail: FormGroup, selectedData: UnitModel, formItem: FormGroup) {
+    if (selectedData && selectedData.Price !== null) {
+      if (selectedData.Price >= 0) {
+        detail.get('Price').setValue(selectedData.Price);
+        this.toMoney(formItem, detail);
+      }
     }
     return false;
   }

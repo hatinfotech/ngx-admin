@@ -449,6 +449,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     }
   }
 
+  /** Choose product event */
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
     if (selectedData) {
@@ -466,7 +467,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
             const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
             detail.get('Unit').setValue('');
             setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
-            // detail.get('Price').setValue('');
             setTimeout(() => {
               detail.get('Price').setValue(choosed.Price);
               this.toMoney(parentForm, detail);
@@ -480,36 +480,15 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
     }
-
-    // if (selectedData.Units) {
-    // detail['unitList'] = selectedData.Units;
-    // const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
-    // if (detaultUnit) {
-    //   detail.get('Unit').setValue('');
-    //   setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
-    // }
-    // } else {
-    //   detail['unitList'] = this.commonService.unitList;
-    // }
-
     return false;
   }
 
+  /** Choose unit event */
   onSelectUnit(detail: FormGroup, selectedData: UnitModel, formItem: FormGroup) {
     if (selectedData && selectedData.Price !== null) {
       detail.get('Price').setValue(selectedData.Price);
       this.toMoney(formItem, detail);
     }
-    // const product = this.commonService.getObjectId(detail.get('Product').value);
-    // const unit = this.commonService.getObjectId(selectedData);
-    // if(unit && product) {
-    //   this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-    //     priceTable: '',
-    //     product: product,
-    //   }).then(rs => {
-
-    //   });
-    // }
     return false;
   }
 

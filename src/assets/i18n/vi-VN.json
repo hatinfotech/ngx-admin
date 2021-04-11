@@ -203,11 +203,14 @@
         "approvedSuccess": "{{object}} đã được duyệt !",
         "approved": "đã duyệt",
         "notJustApproved": "chưa duyệt",
-        "completed": "hoàn tất",
+        "completed": "đã hoàn tất",
+        "complete": "hoàn tất",
         "show": "xem",
         "current": "hiện tại",
         "productOrService": "hàng hoá/dịch vụ",
-        "chooseSomething": "chọn {{something}}"
+        "chooseSomething": "chọn {{something}}",
+        "notice": "thông báo",
+        "completedNotice": "{{resource}} đã hoàn tất rồi !"
     },
     "Contact": {
         "name": "tên liên hệ",

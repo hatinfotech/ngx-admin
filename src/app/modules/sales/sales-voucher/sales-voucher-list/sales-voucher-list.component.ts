@@ -6,10 +6,12 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SimpleSalesVoucherFormComponent } from '../simple-sales-voucher-form/simple-sales-voucher-form.component';
 import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-sales-voucher-list',
@@ -43,6 +45,11 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
 
   editing = {};
   rows = [];
+
+  stateDic = {
+    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'primary', outline: true },
+    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success', outline: true },
+  };
 
   settings = this.configSetting({
     mode: 'external',
@@ -79,48 +86,101 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
           // instance.format$.next('medium');
         },
       },
-      IsApprove: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
-        type: 'string',
-        width: '15%',
+      State: {
+        title: this.commonService.translateText('Common.approve'),
+        type: 'custom',
+        width: '5%',
+        // class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'checkmark-circle';
+          instance.display = true;
+          instance.status = 'success';
+          // instance.style = 'text-align: right';
+          // instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.approved');
+          instance.label = this.commonService.translateText('Common.approved');
+          instance.valueChange.subscribe(value => {
+            instance.label = this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
+            instance.status = this.stateDic[value]?.status || 'danger';
+            instance.outline = this.stateDic[value]?.outline || false;
+            instance.disable = (value === 'APPROVE');
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
+            this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview(rs);
+            });
+          });
+        },
       },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: SalesVoucherModel) => {
+      Permission: {
+        title: this.commonService.translateText('Common.permission'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'shield';
+          instance.display = true;
+          instance.status = 'danger';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
 
-      //         this.commonService.openDialog(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: SalesVoucherModel[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
+            this.commonService.openDialog(ResourcePermissionEditComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [rowData.Code],
+                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                resourceName: this.commonService.translateText('Sales.SalesVoucher.title', {action: '', definition: ''}) + ` ${rowData.Title || ''}`,
+                // resrouce: rowData,
+                apiPath: '/sales/sales-vouchers',
+              }
+            });
 
-      //       });
-      //     },
-      //   },
+            // this.getFormData([rowData.Code]).then(rs => {
+            //   this.preview(rs);
+            // });
+          });
+        },
+      },
+      Preview: {
+        title: this.commonService.translateText('Common.show'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'external-link-outline';
+          instance.display = true;
+          instance.status = 'primary';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
+            this.getFormData([rowData.Code]).then(rs => {
+              this.preview(rs);
+            });
+          });
+        },
+      }
     },
   });
 

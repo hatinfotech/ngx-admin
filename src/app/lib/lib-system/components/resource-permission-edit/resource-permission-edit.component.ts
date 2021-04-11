@@ -231,7 +231,9 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
     formGroupDefinition['Permission'] = this.formBuilder.array([]);
     const newForm = this.formBuilder.group(formGroupDefinition);
     if (data) {
-      // data[this.idKey + '_old'] = data['Code'];
+      if(!data['Permission']) {
+        data['Permission'] = [];
+      }
       newForm.patchValue(data);
     }
     return newForm;

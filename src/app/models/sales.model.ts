@@ -38,7 +38,7 @@ export class SalesVoucherModel extends Model {
   Invoice?: string;
   Creator?: string;
 
-  Details: SalesVoucherDetailModel[];
+  Details?: SalesVoucherDetailModel[];
 }
 
 export class SalesVoucherDetailModel extends Model  {

@@ -1,0 +1,11 @@
+[name="ToMoney"] [formcontrolname="ToMoney"],
+[name="ProductName"] [formcontrolname="ProductName"]{
+    border-right: 4px solid var(--secondary);
+}
+
+[name="Note"] .scrollable-container {
+    height: 10rem;
+}
+[name="ProductName"] .scrollable-container {
+    height: 2.5rem;
+}
