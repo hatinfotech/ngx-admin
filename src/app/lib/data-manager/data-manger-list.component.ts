@@ -620,6 +620,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       try {
         this.commonService.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
           context: {  
+            showLoadinng: true,
             inputMode: 'dialog',
             inputId: ids,
             onDialogSave: (newData: M[]) => {

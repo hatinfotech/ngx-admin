@@ -443,6 +443,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     // });
     this.commonService.openDialog(PurchaseVoucherPrintComponent, {
       context: {
+        showLoadinng: true,
         title: 'Xem trước',
         data: [data],
         idKey: ['Code'],

@@ -317,6 +317,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   preview(data: SalesPriceReportModel[]) {
     this.commonService.openDialog(SalesPriceReportPrintComponent, {
       context: {
+        showLoadinng: true,
         title: 'Xem trước',
         data: data,
         idKey: ['Code'],

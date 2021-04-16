@@ -16,6 +16,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   protected subcriptions: Subscription[] = [];
   protected destroy$: Subject<void> = new Subject<void>();
   public reuseDialog = false;
+  public showLoadinng = true;
 
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() onDialogClose?: () => void;

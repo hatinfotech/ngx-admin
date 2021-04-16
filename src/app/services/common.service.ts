@@ -94,7 +94,7 @@ export class CommonService {
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
 
   public locale$ = new BehaviorSubject<{ locale: string, skipUpdate?: boolean }>(null);
-  public theme$= new BehaviorSubject<{ theme: string, skipUpdate?: boolean }>(null);
+  public theme$ = new BehaviorSubject<{ theme: string, skipUpdate?: boolean }>(null);
   public timezone$: BehaviorSubject<{ timezone: string, skipUpdate?: boolean }> = new BehaviorSubject<{ timezone: string, skipUpdate?: boolean }>(null);
   public configReady$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -162,7 +162,7 @@ export class CommonService {
         translate.use(info.locale);
         localStorage.setItem('configuration.locale', info.locale);
         if (!info.skipUpdate) {
-          this.apiService.putPromise<LocaleConfigModel[]> ('/system/user-configs', {}, [{ LocaleCode: info.locale }]).then(rs => {
+          this.apiService.putPromise<LocaleConfigModel[]>('/system/user-configs', {}, [{ LocaleCode: info.locale }]).then(rs => {
             console.log('Update locale success');
           });
         }
@@ -174,7 +174,7 @@ export class CommonService {
         localStorage.setItem('configuration.theme', info.theme);
         this.themeService.changeTheme(info.theme);
         if (!info.skipUpdate) {
-          this.apiService.putPromise<LocaleConfigModel[]> ('/system/user-configs', {}, [{ Theme: info.theme }]).then(rs => {
+          this.apiService.putPromise<LocaleConfigModel[]>('/system/user-configs', {}, [{ Theme: info.theme }]).then(rs => {
             console.log('Update theme success');
           });
         }
@@ -331,8 +331,8 @@ export class CommonService {
         // Store socket service id
         this.mainSocket.socketServerId$.next(rs2.socketServerId);
         return this.mainSocket;
-      }).catch((err: {socketServerId: string}) => {
-        if(err && err.socketServerId) {
+      }).catch((err: { socketServerId: string }) => {
+        if (err && err.socketServerId) {
           // Store socket service id
           this.mainSocket.socketServerId$.next(err.socketServerId);
         }
@@ -447,28 +447,31 @@ export class CommonService {
       // tslint:disable-next-line: ban
       $('html').css({ top: 0 });
     }, 50);
-    const dialogLoading = $('\
-    <div class="cube" style="left: 50%; right: initial; bottom:initial; top: 50%">\
-      <div class="sides">\
-        <div class="top"></div>\
-        <div class="right"></div>\
-        <div class="bottom"></div>\
-        <div class="left"></div>\
-        <div class="front"></div>\
-        <div class="back"></div>\
-      </div>\
-    </div>');
+    let dialogLoading = null;
     userConfig.context['onAfterInit'] = () => {
       setTimeout(() => {
         dialogLoading.fadeOut(300);
       }, 300);
     };
     const dialogRef = this.dialogService.open<T>(content, userConfig);
-    if(dialogRef['overlayRef'] && dialogRef['overlayRef']['_pane']) {
+    if (dialogRef['overlayRef'] && dialogRef['overlayRef']['_pane'] && userConfig.context['showLoadinng']) {
+
       const panel = $(dialogRef['overlayRef']['_pane']);
+      dialogLoading = $('\
+        <div class="cube" style="left: 50%; right: initial; bottom:initial; top: 50%">\
+          <div class="sides">\
+            <div class="top"></div>\
+            <div class="right"></div>\
+            <div class="bottom"></div>\
+            <div class="left"></div>\
+            <div class="front"></div>\
+            <div class="back"></div>\
+          </div>\
+        </div>');
+      
       panel.find('nb-dialog-container').append(dialogLoading);
     }
-    
+
     return dialogRef;
   }
 

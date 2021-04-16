@@ -105,6 +105,7 @@ export class PurchaseOrderVoucherListComponent extends DataManagerListComponent<
   preview(data: PurchaseOrderVoucherModel[]) {
     this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
       context: {
+        showLoadinng: true,
         title: 'Xem trước',
         data: data,
         idKey: ['Code'],

@@ -181,6 +181,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
   preview(data: CashVoucherModel[]) {
     this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
       context: {
+        showLoadinng: true,
         title: 'Xem trước',
         data: data,
         idKey: ['Code'],

@@ -182,6 +182,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
         data[0].Details = rs;
         this.commonService.openDialog(MasterPriceTablePrintComponent, {
           context: {
+            showLoadinng: true,
             title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
             data: data,
             onSaveAndClose: (rs: SalesMasterPriceTableModel) => {

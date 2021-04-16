@@ -189,6 +189,7 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
   openImportForm() {
     this.commonService.openDialog(PurchasePriceTableImportComponent, {
       context: {
+        showLoadinng: true,
         inputMode: 'dialog',
         inputId: [],
         onDialogSave: (newData: PurchasePriceTableModel[]) => {

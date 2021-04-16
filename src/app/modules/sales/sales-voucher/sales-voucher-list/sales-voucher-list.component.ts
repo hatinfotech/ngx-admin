@@ -253,6 +253,7 @@ export class SalesVoucherListComponent extends DataManagerListComponent<SalesVou
   preview(data: SalesVoucherModel[]) {
     this.commonService.openDialog(SalesVoucherPrintComponent, {
       context: {
+        showLoadinng: true,
         title: 'Xem trước',
         data: data,
         idKey: ['Code'],
