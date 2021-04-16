@@ -110,16 +110,16 @@ export const MY_MOMENT_FORMATS = {
     PurchaseSimpleVoucherFormComponent,
     PurchaseVoucherPrintComponent,
   ],
-  providers: [
-    CurrencyPipe,
-    // {
-    //   provide: OWL_DATE_TIME_LOCALE,
-    //   useClass: DynamicLocaleId,
-    //   deps: [TranslateService],
+  // providers: [
+  //   CurrencyPipe,
+  //   // {
+  //   //   provide: OWL_DATE_TIME_LOCALE,
+  //   //   useClass: DynamicLocaleId,
+  //   //   deps: [TranslateService],
 
-    // },
-    // {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
-    // {provide: OWL_DATE_TIME_FORMATS, useValue: MY_MOMENT_FORMATS},
-  ],
+  //   // },
+  //   // {provide: OWL_DATE_TIME_LOCALE, useValue: 'vi'},
+  //   // {provide: OWL_DATE_TIME_FORMATS, useValue: MY_MOMENT_FORMATS},
+  // ],
 })
 export class PurchaseModule { }

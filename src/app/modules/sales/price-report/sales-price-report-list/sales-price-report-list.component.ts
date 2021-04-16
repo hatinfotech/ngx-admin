@@ -100,6 +100,18 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
         type: 'string',
         width: '10%',
       },
+      Creator: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+        type: 'string',
+        width: '10%',
+        // filter: {
+        //   type: 'custom',
+        //   component: SmartTableDateTimeRangeFilterComponent,
+        // },
+        valuePrepareFunction: (cell: string, row?: any) => {
+          return this.commonService.getObjectText(cell);
+        },
+      },
       Created: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
         type: 'custom',
@@ -274,7 +286,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
-      // params['includeParent'] = true;
+      params['includeCreator'] = true;
       params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';
       return params;

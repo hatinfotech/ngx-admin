@@ -28,6 +28,7 @@ import { ActionControlListOption } from '../../../../lib/custom-element/action-c
   selector: 'ngx-purchase-price-table-import',
   templateUrl: './purchase-price-table-import.component.html',
   styleUrls: ['./purchase-price-table-import.component.scss'],
+  providers: [CurrencyPipe],
 })
 export class PurchasePriceTableImportComponent extends DataManagerFormComponent<PurchasePriceTableModel> implements OnInit {
 
@@ -165,6 +166,14 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         // pinned: 'left',
         editable: true,
         cellStyle: { whiteSpace: 'normal' },
+      },
+      {
+        headerName: 'Unit',
+        field: 'Unit',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        pinned: 'right',
+        autoHeight: true,
       },
       {
         headerName: 'Giá mua (Price)',

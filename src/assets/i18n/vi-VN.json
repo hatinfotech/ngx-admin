@@ -210,7 +210,9 @@
         "productOrService": "hàng hoá/dịch vụ",
         "chooseSomething": "chọn {{something}}",
         "notice": "thông báo",
-        "completedNotice": "{{resource}} đã hoàn tất rồi !"
+        "completedNotice": "{{resource}} đã hoàn tất rồi !",
+        "addGoodsOrService": "thêm hàng hóa/dịch vụ",
+        "creator": "người tạo"
     },
     "Contact": {
         "name": "tên liên hệ",

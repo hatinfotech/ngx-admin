@@ -15,8 +15,6 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { SalesVoucherFormComponent } from '../../../sales/sales-voucher/sales-voucher-form/sales-voucher-form.component';
-import { PurchaseVoucherPrintComponent } from '../../voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 
 @Component({
@@ -248,14 +246,14 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       ObjectAddress: [''],
       Recipient: [''],
       ObjectTaxCode: [''],
-      DirectReceiverName: [''],
+      DirectReceiver: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
       DateOfReceived: [''],
       DeliveryAddress: [''],
       Title: [''],
       Note: [''],
-      DateOfPurchase: [''],
+      DateOfOrder: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -306,11 +304,16 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     });
 
     if (data) {
+      if(!data['Type']) data['Type'] = 'PRODUCT';
       newForm.patchValue(data);
-      if (!data['Type']) {
-        data["Type"] = 'PRODUCT';
-      }
       this.toMoney(parentFormGroup, newForm);
+      if (data.Product.Units && data.Product.Units.length > 0) {
+        newForm['unitList'] = data.Product.Units;
+      } else {
+        newForm['unitList'] = this.commonService.unitList;
+      }
+    } else {
+      newForm['unitList'] = this.commonService.unitList;
     }
     return newForm;
   }
