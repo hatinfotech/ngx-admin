@@ -52,7 +52,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // multiple: true,
-    tags: true,
+    // tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -300,16 +300,23 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
-      Recipient: [''],
-      ObjectTaxCode: [''],
-      DirectReceiverName: [''],
+      ObjectIdentifiedNumber: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
+      Contact: [''],
+      ContactName: [''],
+      ContactPhone: [''],
+      ContactEmail: [''],
+      ContactAddress: [''],
+      ContactIdentifiedNumber: [''],
+      // ObjectTaxCode: [''],
+      // DirectReceiverName: [''],
       // PaymentStep: [''],
       PriceTable: [''],
       DeliveryAddress: [''],
       Title: [''],
       Note: [''],
+      SubNote: [''],
       Reported: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
@@ -441,9 +448,29 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
           formGroup.get('ObjectPhone').setValue(selectedData.Phone);
           formGroup.get('ObjectEmail').setValue(selectedData.Email);
           formGroup.get('ObjectAddress').setValue(selectedData.Address);
-          formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          formGroup.get('ObjectIdentifiedNumber').setValue(selectedData.TaxCode);
           formGroup.get('ObjectBankName').setValue(selectedData.BankName);
           formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
+  }
+
+  onContactChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('ContactName').setValue(selectedData.Name);
+          formGroup.get('ContactPhone').setValue(selectedData.Phone);
+          formGroup.get('ContactEmail').setValue(selectedData.Email);
+          formGroup.get('ContactAddress').setValue(selectedData.Address);
+          formGroup.get('ContactIdentifiedNumber').setValue(selectedData.TaxCode);
+          // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
         }
       }
     }

@@ -212,7 +212,12 @@
         "notice": "thông báo",
         "completedNotice": "{{resource}} đã hoàn tất rồi !",
         "addGoodsOrService": "thêm hàng hóa/dịch vụ",
-        "creator": "người tạo"
+        "creator": "người tạo",
+        "identifiedNumber": "số định danh",
+        "mainInfo": "thông tin chính",
+        "deliveryAndPayment": "giao hàng và thanh toán",
+        "contactInfo": "thông tin liên hệ",
+        "subNote": "ghi chú 2"
     },
     "Contact": {
         "name": "tên liên hệ",

@@ -6,6 +6,24 @@
 [name="Note"] .scrollable-container {
     height: 10rem;
 }
+[name="SubNote"] .scrollable-container {
+    height: 5rem;
+}
 [name="Description"] .scrollable-container {
     height: 2.5rem;
+}
+
+.dashed-radius-border {
+    border: #ccc 1px dashed;
+    border-radius: 0.4rem;
+    margin-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.label-with-border-below {
+    line-height: 0;
+}
+nb-card nb-tabset nb-tab {
+    padding-left: 9px !important;
+    padding-right: 9px !important;
 }
