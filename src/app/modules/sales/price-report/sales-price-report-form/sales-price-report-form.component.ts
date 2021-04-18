@@ -324,6 +324,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     if (data) {
       // data['Code_old'] = data['Code'];
       newForm.patchValue(data);
+      // this.toMoney(newForm);
     } else {
       // this.addDetailFormGroup(newForm);
     }
@@ -392,6 +393,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
     this.getDetails(parentFormGroup).removeAt(index);
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
+    this.calulateTotal(parentFormGroup);
     return false;
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
@@ -535,13 +537,25 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     detail.get('ToMoney').setValue(this.calculatToMoney(detail));
 
     // Call culate total
-    const details = this.getDetails(formItem);
-    let total = 0;
-    for (let i = 0; i < details.controls.length; i++) {
-      total += this.calculatToMoney(details.controls[i] as FormGroup);
-    }
-    formItem.get('_total').setValue(total);
+    // const details = this.getDetails(formItem);
+    // let total = 0;
+    // for (let i = 0; i < details.controls.length; i++) {
+    //   total += this.calculatToMoney(details.controls[i] as FormGroup);
+    // }
+    // formItem.get('_total').setValue(total);
+    this.calulateTotal(formItem);
     return false;
+  }
+
+  calulateTotal(formItem: FormGroup) {
+    this.commonService.takeUntil('calulcate_sales_price_report', 300).then(rs => {
+      let total = 0;
+      const details = this.getDetails(formItem);
+      for (let i = 0; i < details.controls.length; i++) {
+        total += this.calculatToMoney(details.controls[i] as FormGroup);
+      }
+      formItem.get('_total').setValue(total);
+    });
   }
 
 

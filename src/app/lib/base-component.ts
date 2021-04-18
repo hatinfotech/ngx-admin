@@ -17,6 +17,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   protected destroy$: Subject<void> = new Subject<void>();
   public reuseDialog = false;
   public showLoadinng = true;
+  public sourceOfDialog: string = null;
 
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() onDialogClose?: () => void;

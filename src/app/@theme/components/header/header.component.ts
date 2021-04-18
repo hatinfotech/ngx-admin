@@ -11,6 +11,7 @@ import { ActionControl } from '../../../lib/custom-element/action-control-list/a
 import { VirtualPhoneService } from '../../../modules/virtual-phone/virtual-phone.service';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-header',
@@ -78,6 +79,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     public commonService: CommonService,
     private virtualPhoneService: VirtualPhoneService,
     public translate: TranslateService,
+    public router: Router,
   ) {
     // translate.addLangs(['en', 'vi']);
     // translate.setDefaultLang('en');
@@ -241,7 +243,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateHome() {
-    this.menuService.navigateHome();
+    // this.menuService.navigateHome();
+    this.router.navigate(['/']);
     return false;
   }
 

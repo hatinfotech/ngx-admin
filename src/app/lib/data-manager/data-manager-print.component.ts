@@ -15,6 +15,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   @Input() onSaveAndClose?: (data: M) => void;
   @Input() onSaveAndPrint?: (data: M) => void;
   @Input() onClose?: (data: M) => void;
+  @Input() onChange?: (data: M) => void;
 
   favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
   @Input() idKey?: string[];

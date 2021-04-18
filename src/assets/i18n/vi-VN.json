@@ -199,8 +199,11 @@
         "online": "online",
         "offline": "offline",
         "contact": "liên hệ",
-        "approvedConfirm": "Bạn có chắc là muốn duyệt {{object}}?",
+        "approvedConfirm": "bạn có chắc là muốn duyệt {{object}}?",
         "approvedSuccess": "{{object}} đã được duyệt !",
+        "implementSuccess": "{{object}} đã được chuyển sang trạng thái triển khai !",
+        "completeRequestSuccess": "{{object}} đã được chuyển sang trạng thái yêu cầu nghiệm thu !",
+        "completeSuccess": "{{object}} đã được chuyển sang trạng thái hoàn tất !",
         "approved": "đã duyệt",
         "notJustApproved": "chưa duyệt",
         "completed": "đã hoàn tất",
@@ -217,7 +220,12 @@
         "mainInfo": "thông tin chính",
         "deliveryAndPayment": "giao hàng và thanh toán",
         "contactInfo": "thông tin liên hệ",
-        "subNote": "ghi chú 2"
+        "subNote": "ghi chú 2",
+        "implement": "triển khai",
+        "completeRequest": "y/c nghiệm thu",
+        "implementConfirm": "bạn có chắc là muốn chuyển sang trạng thái triển khai cho {{object}}?",
+        "completeRequestConfirm": "bạn có chắc là muốn chuyển sang trạng thái yêu cầu nghiệm thu cho {{object}}?",
+        "comppleteConform": "bạn có chắc là muốn chuyển sang trạng thái hoàn tất cho {{object}}?"
     },
     "Contact": {
         "name": "tên liên hệ",

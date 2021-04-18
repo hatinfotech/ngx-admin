@@ -57,8 +57,11 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   rows = [];
 
   stateDic = {
-    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'primary' },
-    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success' },
+    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'success', outline: false },
+    IMPLEMENT: { label: this.commonService.translateText('Common.implement'), status: 'warning', outline: false },
+    COMPLETEREQUEST: { label: this.commonService.translateText('Common.completeRequest'), status: 'primary', outline: false },
+    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success', outline: true },
+    CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
   };
 
   settings = this.configSetting({
@@ -176,7 +179,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
         },
       },
       State: {
-        title: this.commonService.translateText('Common.approve'),
+        title: this.commonService.translateText('Common.state'),
         type: 'custom',
         width: '5%',
         // class: 'align-right',
@@ -193,6 +196,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           instance.valueChange.subscribe(value => {
             instance.label = this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
             instance.status = this.stateDic[value]?.status || 'danger';
+            instance.outline = this.stateDic[value]?.outline || false;
             instance.disable = (value === 'APPROVE');
             // instance.icon = value ? 'unlock' : 'lock';
             // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -264,7 +268,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           });
           instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
             this.getFormData([rowData.Code]).then(rs => {
-              this.preview(rs);
+              this.preview(rs, 'list');
             });
           });
         },
@@ -314,17 +318,21 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     });
   }
 
-  preview(data: SalesPriceReportModel[]) {
+  preview(data: SalesPriceReportModel[], source?: string) {
     this.commonService.openDialog(SalesPriceReportPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',
         data: data,
+        sourceOfDialog: source,
         idKey: ['Code'],
         // approvedConfirm: true,
-        onClose: (data: SalesPriceReportModel) => {
+        onChange: (data: SalesPriceReportModel) => {
           this.refresh();
         },
+        // onSaveAndClose: () => {
+        //   this.refresh();
+        // },
       },
     });
     return false;

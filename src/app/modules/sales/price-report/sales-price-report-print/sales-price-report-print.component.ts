@@ -72,7 +72,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   //     return data['Id'];
   //   }
   // }
-  
+
   renderTitle(data: SalesPriceReportModel) {
     return `PhieuBaoGia_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
   }
@@ -156,7 +156,44 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   }
 
   approvedConfirm(data: SalesPriceReportModel) {
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText('Common.approvedConfirm', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    if (['COMPLETE'].indexOf(data.State) > -1) {
+      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+        {
+          label: this.commonService.translateText('Common.close'),
+          status: 'success',
+          action: () => {
+            this.onClose(data);
+          },
+        },
+      ]);
+      return;
+    }
+    const params = { id: [data.Code] };
+    let confirmText = '';
+    let responseText = '';
+    switch (data.State) {
+      case 'APPROVE':
+        params['changeState'] = 'IMPLEMENT';
+        confirmText = 'Common.implementConfirm';
+        responseText = 'Common.implementSuccess';
+        break;
+      case 'IMPLEMENT':
+        params['changeState'] = 'COMPLETEREQUEST';
+        confirmText = 'Common.completeRequestConfirm';
+        responseText = 'Common.completeRequestSuccess';
+        break;
+      case 'COMPLETEREQUEST':
+        params['changeState'] = 'COMPLETE';
+        confirmText = 'Common.comppleteConform';
+        responseText = 'Common.completeSuccess';
+        break;
+      default:
+        params['changeState'] = 'APPROVE';
+        confirmText = 'Common.approvedConfirm';
+        responseText = 'Common.approvedSuccess';
+        break;
+    }
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -165,16 +202,33 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         },
       },
       {
-        label: this.commonService.translateText('Common.approve'),
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.implement' : (data.State == 'IMPLEMENT' ? 'Common.completeRequest' : (data.State == 'COMPLETEREQUEST' ? 'Common.complete' : (data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))),
         status: 'danger',
         action: () => {
-          this.apiService.putPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [data.Code], approve: true }, [{ Code: data.Code }]).then(rs => {
-            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.approvedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+          // const params = { id: [data.Code] };
+          // switch (data.State) {
+          //   case 'APPROVE':
+          //     params['changeState'] = 'IMPLEMENT';
+          //     break;
+          //   case 'IMPLEMENT':
+          //     params['changeState'] = 'COMPLETEREQUEST';
+          //     break;
+          //   case 'COMPLETEREQUEST':
+          //     params['changeState'] = 'COMPLETE';
+          //     break;
+          //   default:
+          //     params['changeState'] = 'APPROVE';
+          //     break;
+          // }
+          this.apiService.putPromise<SalesPriceReportModel[]>('/sales/price-reports', params, [{ Code: data.Code }]).then(rs => {
+            this.onChange && this.onChange(data);
+            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
                 label: this.commonService.translateText('Common.close'),
                 status: 'success',
                 action: () => {
-                  this.onClose(data);
+                  this.onClose && this.onClose(data);
+                  this.close();
                 },
               },
             ]);
