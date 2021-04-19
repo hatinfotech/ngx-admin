@@ -261,18 +261,18 @@ export class CommonService {
         });
 
         // tax cache
-        // this.takeUntil('load_tax_unit_list', 3000).then(async rs => {
-        //   this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
-        //     tax['id'] = tax.Code;
-        //     tax['text'] = tax.Name;
-        //     return tax;
-        //   });
-        //   this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
-        //     tax['id'] = tax.Code;
-        //     tax['text'] = tax.Name;
-        //     return tax;
-        //   });
-        // });
+        this.takeUntil('load_tax_unit_list', 3000).then(async rs => {
+          this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+            tax['id'] = tax.Code;
+            tax['text'] = tax.Name;
+            return tax;
+          });
+          this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+            tax['id'] = tax.Code;
+            tax['text'] = tax.Name;
+            return tax;
+          });
+        });
       } else {
         // this.loginInfoSubject.next(new LoginInfoModel());
         this.clearCache();
