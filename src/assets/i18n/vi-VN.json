@@ -225,7 +225,8 @@
         "completeRequest": "y/c nghiệm thu",
         "implementConfirm": "bạn có chắc là muốn chuyển sang trạng thái triển khai cho {{object}}?",
         "completeRequestConfirm": "bạn có chắc là muốn chuyển sang trạng thái yêu cầu nghiệm thu cho {{object}}?",
-        "comppleteConform": "bạn có chắc là muốn chuyển sang trạng thái hoàn tất cho {{object}}?"
+        "comppleteConform": "bạn có chắc là muốn chuyển sang trạng thái hoàn tất cho {{object}}?",
+        "setFeaturePicture": "làm hình đại diện"
     },
     "Contact": {
         "name": "tên liên hệ",

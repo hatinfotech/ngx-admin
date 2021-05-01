@@ -594,10 +594,13 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     delete: this.configDeleteButton(),
     pager: this.configPaging(),
     columns: {
-      FeaturePictureThumbnail: {
+      FeaturePicture: {
         title: 'Hình',
         type: 'custom',
         width: '5%',
+        valuePrepareFunction: (value: string, product: ProductModel) => {
+          return product['FeaturePicture']['Thumbnail'];
+        },
         renderComponent: SmartTableThumbnailComponent,
         onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
           instance.valueChange.subscribe(value => {

@@ -1,5 +1,5 @@
 import { FileModel, FileStoreModel } from './../../../../models/file.model';
-import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChanges, Input, ViewChild, ElementRef, forwardRef } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChanges, Input, ViewChild, ElementRef, forwardRef, Output } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { ApiService } from '../../../../services/api.service';
@@ -34,11 +34,18 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
   value?: FileModel[];
   fileStoreList: FileStoreModel[];
 
-  @Input() config?: { style?: any };
+  @Input() config?: {
+    style?: any,
+    thumbnailStype?: any,
+    colSize?: number,
+    onThumbnailClick?: (file: FileModel) => void,
+  };
+  @Output() onThumbnailClick = new EventEmitter<FileModel>();
   @ViewChild('uploadButton') uploadButton: ElementRef;
 
   apiPath = '/file/files';
   style?: any = {};
+  thumbnailStyle?: any = {};
 
   onChange: (item: any) => void;
 
@@ -60,6 +67,11 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
   ngAfterViewInit(): void {
     // throw new Error('Method not implemented.');
     this.style = { ...this.style, ...this.config.style };
+    this.thumbnailStyle = { ...this.thumbnailStyle, ...this.config.thumbnailStype };
+  }
+
+  buildThumbnailStyle(image: FileModel) {
+    return { ...this.thumbnailStyle, backgroundImage: 'url(' + (image?.Thumbnail) + ')' }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -108,13 +120,13 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight, limit: 1 }).then(fileStores => {
           const event: UploadInput = {
             type: 'uploadAll',
-            url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', {token: fileStores[0]['UploadToken']}),
+            url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', { token: fileStores[0]['UploadToken'] }),
             method: 'POST',
             data: { foo: 'bar' },
           };
           this.uploadInput.emit(event);
         });
-        
+
         break;
       case 'addedToQueue':
         if (typeof output.file !== 'undefined') {
@@ -145,7 +157,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         console.log('Upload complete', output);
         const respFile: FileModel = output.file.response[0];
         if (respFile) {
-          if(!this.value) this.value = [];
+          if (!this.value) this.value = [];
           this.value.push(respFile);
         }
         // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
@@ -191,8 +203,13 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
     return false;
   }
 
-  preview(file: FileModel) {
-    window.open(file.OriginImage, '_blank');
+  onFileClick(file: FileModel) {
+    // if(this.config.onThumbnailClick) {
+    //   this.config.onThumbnailClick(file);
+    //   return;
+    // }
+    // window.open(file.OriginImage, '_blank');
+    this.onThumbnailClick.emit(file);
     return false;
   }
 

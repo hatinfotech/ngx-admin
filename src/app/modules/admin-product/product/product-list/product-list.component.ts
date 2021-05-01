@@ -98,7 +98,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         type: 'custom',
         width: '5%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['FeaturePictureThumbnail'] ? product['FeaturePictureThumbnail'] + '?token=' + this.apiService.getAccessToken() : '';
+          return product['FeaturePicture']['Thumbnail'];
         },
         renderComponent: SmartTableThumbnailComponent,
         onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
@@ -213,7 +213,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
       params['includeWarehouseUnit'] = true;
-      params['includeFeaturePicture'] = true;
+      // params['includeFeaturePicture'] = true;
       params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
       return params;

@@ -1,3 +1,4 @@
+import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductGroupModel } from './../../../../models/product.model';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -135,15 +136,15 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Conditions form load
-      if (itemFormData.Pictures) {
-        itemFormData.Pictures.forEach(picture => {
-          picture['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-          const newPictureFormGroup = this.makeNewPictureFormGroup(picture);
-          this.getPictures(index).push(newPictureFormGroup);
-          const comIndex = this.getPictures(index).length - 1;
-          this.onAddPictureFormGroup(index, comIndex, newPictureFormGroup);
-        });
-      }
+      // if (itemFormData.Pictures) {
+      //   itemFormData.Pictures.forEach(picture => {
+      //     picture['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+      //     const newPictureFormGroup = this.makeNewPictureFormGroup(picture);
+      //     this.getPictures(index).push(newPictureFormGroup);
+      //     const comIndex = this.getPictures(index).length - 1;
+      //     this.onAddPictureFormGroup(index, comIndex, newPictureFormGroup);
+      //   });
+      // }
 
       if (itemFormData.UnitConversions) {
         itemFormData.UnitConversions.forEach(unitConversion => {
@@ -185,7 +186,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Technical: [''],
       Categories: [''],
       Groups: [''],
-      Pictures: this.formBuilder.array([]),
+      Pictures: [''],
       UnitConversions: this.formBuilder.array([]),
     });
     if (data) {
@@ -431,5 +432,37 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     } else {
       super.copyFormControlValueToOthers(array, i, formControlName);
     }
+  }
+
+  onThumbnailPcitureClick(file: FileModel, form: FormGroup) {
+    console.log(file);
+    this.commonService.openDialog(ShowcaseDialogComponent, {
+      context: {
+        title: this.commonService.translateText('Common.action'),
+        actions: [
+          {
+            label: this.commonService.translateText('Common.close'),
+            status: 'danger',
+            action: () => {
+              
+            },
+          },
+          {
+            label: this.commonService.translateText('Common.preview'),
+            status: 'success',
+            action: () => {
+              window.open(file.OriginImage, '_blank');
+            },
+          },
+          {
+            label: this.commonService.translateText('Common.setFeaturePicture'),
+            status: 'primary',
+            action: () => {
+              form.get('FeaturePicture').setValue(file);
+            },
+          },
+        ],
+      }
+    });
   }
 }
