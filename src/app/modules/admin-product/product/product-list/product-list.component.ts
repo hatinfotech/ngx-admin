@@ -97,9 +97,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         title: 'Hình',
         type: 'custom',
         width: '5%',
-        valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['FeaturePicture']['Thumbnail'];
-        },
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product['FeaturePicture']['Thumbnail'];
+          },
         renderComponent: SmartTableThumbnailComponent,
         onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
           instance.valueChange.subscribe(value => {
