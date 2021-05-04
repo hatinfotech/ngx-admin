@@ -12,7 +12,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { Select2Option, Select2Component } from '../../../../lib/custom-element/select2/select2.component';
-import { Select2SelectionObject } from '../../../../../vendor/ng2-select2/lib/ng2-select2.interface';
+import { Select2SelectionObject } from '../../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { ProductModel } from '../../../../models/product.model';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';

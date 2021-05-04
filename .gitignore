@@ -39,4 +39,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-src/vendor/ng2-select2
+src/vendor/ng2select2

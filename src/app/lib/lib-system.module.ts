@@ -6,7 +6,7 @@ import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelect
 import { TranslateModule } from "@ngx-translate/core";
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from "ng-pick-datetime";
 import { CurrencyMaskModule } from "ng2-currency-mask";
-import { Select2Module } from "../../vendor/ng2-select2/lib/ng2-select2";
+import { Select2Module } from "../../vendor/ng2select2/lib/ng2-select2";
 import { NgxUploaderModule } from "../../vendor/ngx-uploader/src/public_api";
 import { CustomElementModule } from "./custom-element/custom-element.module";
 import { ResourcePermissionEditComponent } from "./lib-system/components/resource-permission-edit/resource-permission-edit.component";

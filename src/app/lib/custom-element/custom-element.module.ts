@@ -12,7 +12,7 @@ import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterCompone
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
-import { Select2Module } from '../../../vendor/ng2-select2/lib/ng2-select2';
+import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
 import { CardHeaderComponent } from './card-header/card-header.component';
 import { CardHeaderCustomComponent } from './card-header/card-header-custom.component';
 import { DatetimPickerComponent } from './datetime-picker/datetime-picker.component';

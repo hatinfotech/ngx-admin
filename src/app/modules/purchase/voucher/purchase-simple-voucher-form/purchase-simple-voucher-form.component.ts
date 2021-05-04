@@ -18,7 +18,7 @@ import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchase-voucher-print.component';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
-import { Select2SelectionObject } from '../../../../../vendor/ng2-select2/lib/ng2-select2.interface';
+import { Select2SelectionObject } from '../../../../../vendor/ng2select2/lib/ng2-select2.interface';
 
 @Component({
   selector: 'ngx-purchase-simple-voucher-form',
