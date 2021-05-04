@@ -371,7 +371,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     if (data) {
       newForm.patchValue(data);
       this.toMoney(parentFormGroup, newForm);
-      if (data.Product.Units && data.Product.Units.length > 0) {
+      if (data.Product && data.Product.Units && data.Product.Units.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
         newForm['unitList'] = this.commonService.unitList;
