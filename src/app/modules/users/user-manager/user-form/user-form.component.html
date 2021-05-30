@@ -29,41 +29,34 @@
             <div class="row">
               <input type="hidden" formControlName="Code_old">
               <div class="col-sm-3">
-                <div class="form-group">
-                  <label class="label">Mã người dùng</label>
+                <ngx-form-group [formGroup]="formItem" name="Code" label="Mã người dùng" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" readonly nbInput fullWidth formControlName="Code" placeholder="Mã người dùng">
-                </div>
+                </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <div class="form-group">
-                  <label class="label">Tên</label>
+                <ngx-form-group [formGroup]="formItem" name="Name" label="Tên" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
-                </div>
+                </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <div class="form-group">
-                  <label class="label">Tên đăng nhập</label>
+                <ngx-form-group [formGroup]="formItem" name="Username" label="Tên đăng nhập" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
                   <input type="text" nbInput fullWidth formControlName="Username" placeholder="Tên đăng nhập">
-                </div>
+                </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <div class="form-group">
-                  <label class="label">Số điện thoại</label>
+                <ngx-form-group [formGroup]="formItem" name="Phone" label="Số điện thoại" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="Phone" placeholder="Số điện thoại">
-                </div>
+                </ngx-form-group>
               </div>
               <div class="col-sm-9">
-                <div class="form-group">
-                  <label class="label">Thuộc nhóm</label>
-                  <ngx-select2 [data]="groupList" formControlName="Groups" [select2Option]="select2OptionForGroups">
-                  </ngx-select2>
-                </div>
+                <ngx-form-group [formGroup]="formItem" name="Groups" label="Nhóm" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 [data]="groupList" formControlName="Groups" [select2Option]="select2OptionForGroups"></ngx-select2>
+                </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Password'), 'warning')">
-                  <label class="label"><span class="valid">Mật khẩu (*)</span><span class="invalid">Mật khẩu</span></label>
+                <ngx-form-group [formGroup]="formItem" name="Password" label="Mật khẩu" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
                   <input type="password" nbInput fullWidth formControlName="Password" placeholder="Mật khẩu" autocomplete="new-password">
-                </div>
+                </ngx-form-group>
               </div>
             </div>
           </div>
