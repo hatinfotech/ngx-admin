@@ -125,7 +125,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'notification/:id',
+    path: 'notification',
     resolve: {
       configuration: RoutingResolve,
     },

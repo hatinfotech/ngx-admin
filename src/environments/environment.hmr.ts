@@ -13,6 +13,7 @@ export const environment = {
   version: '2.0.5.15.dev',
   // 2.0.1.0.dev : Develop helpdesl manager module
   production: false,
+  bundleId: 'com.namsoftware.probox-web-gui',
   hmr: true,
   basePath: 'probox-core',
   register: {

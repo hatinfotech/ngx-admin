@@ -19,14 +19,18 @@ export class FrameSocket {
     protected seq = 0;
     protected emitCallbackSubject = new BehaviorSubject<FrameSocketData<any>>(null);
     public emitCallback$ = this.emitCallbackSubject.asObservable();
+    public isReady$ = new BehaviorSubject<boolean>(false);
 
     protected receiverSubject = new BehaviorSubject<FrameSocketData<any>>(null);
     public receiver$ = this.receiverSubject.asObservable();
+
+    static _frameSockets: FrameSocket[] = [];
 
     constructor(
         protected connection: Window,
         public id: string,
     ) {
+        FrameSocket._frameSockets.push(this);
         this.on<FrameSocketData<any>>('callback').subscribe((result) => {
             console.debug('On Callback : ', result);
             this.emitCallbackSubject.next(result.data);
@@ -49,6 +53,10 @@ export class FrameSocket {
         this.emit('ready', true).then(rspData => {
             console.debug(rspData);
         });
+        this.on('ready').subscribe(request => {
+            console.log('FrameSocket ready:', request);
+            this.isReady$.next(true);
+        });
         return true;
     }
 
@@ -60,6 +68,12 @@ export class FrameSocket {
             throw Error(result.data);
         }
         return result.data;
+    }
+
+    static async broadcast(event: string, data: any) {
+        return Promise.all(FrameSocket._frameSockets.map(frameSocket => {
+            return frameSocket.emit(event, data);
+        }))
     }
 
     on<T>(event: string): Observable<IFrameSocketResult<T>> {

@@ -55,18 +55,20 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
   logout(strategy: string): void {
     // super.logout(strategy);
     try {
-      this.apiService.deletePromise('/user/login', null).then(status => {
-        this.tokenService.clear();
-        this.apiService.clearToken();
-        // this.commonService.pushLoggedIn(false);
-        this.commonService.clearCache();
-        this.commonService.setPreviousUrl('/');
-        return true;
-      }).finally(() => {
-        this.commonService.router.navigate(['/auth/login']);
-      }).catch(err => {
-        console.error(err);
-        this.commonService.router.navigate(['/auth/login']);
+      this.commonService.unregisterDevice().then(rs => {
+        this.apiService.deletePromise('/user/login', null).then(status => {
+          this.tokenService.clear();
+          this.apiService.clearToken();
+          // this.commonService.pushLoggedIn(false);
+          this.commonService.clearCache();
+          this.commonService.setPreviousUrl('/');
+          return true;
+        }).finally(() => {
+          this.commonService.router.navigate(['/auth/login']);
+        }).catch(err => {
+          console.error(err);
+          this.commonService.router.navigate(['/auth/login']);
+        });
       });
     } catch (err) {
       console.error(err);

@@ -6,7 +6,7 @@ import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
 import {
   NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
-  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries, NbThemeService,
+  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries, NbThemeService, NbGlobalPhysicalPosition,
 } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location, getCurrencySymbol, CurrencyPipe, DatePipe } from '@angular/common';
@@ -22,6 +22,10 @@ import { MySocket } from '../lib/nam-socket/my-socket';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { filter, take } from 'rxjs/operators';
 import { UnitModel } from '../models/unit.model';
+import { DeviceModel } from '../models/device.model';
+import { v4 as uuidv4 } from 'uuid';
+import { MessagingService } from './messaging.service';
+import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
 
 @Injectable({
   providedIn: 'root',
@@ -133,6 +137,8 @@ export class CommonService {
 
   // localStorageAvailable$: BehaviorSubject<WindowLocalStorage> = new BehaviorSubject<WindowLocalStorage>(null);
 
+  notificationMessage: BehaviorSubject<any>;
+
   constructor(
     public authService: NbAuthService,
     public apiService: ApiService,
@@ -146,6 +152,9 @@ export class CommonService {
     public iconsLibrary: NbIconLibraries,
     public datePipe: DatePipe,
     private themeService: NbThemeService,
+    public messagingService: MessagingService,
+    private toastrService: NbToastrService,
+    private mobileService: MobileAppService,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
@@ -258,6 +267,14 @@ export class CommonService {
             console.log('Main socket registerd');
             console.log(rs2);
           });
+
+          // Request notification permission and register firebase messaging
+          console.log('request notifications permission');
+          this.messagingService.requestPermission().then(token => {
+            //Register device
+            this.registerDevice({ pushRegId: token });
+          });
+
         });
 
         // tax cache
@@ -275,11 +292,49 @@ export class CommonService {
         });
       } else {
         // this.loginInfoSubject.next(new LoginInfoModel());
+        // this.unregisterDevice();
         this.clearCache();
       }
     });
 
 
+    // Firebase messaging event
+    console.log('receive message');
+    this.messagingService.receiveMessage().subscribe(
+      (payload: any) => {
+        console.log("new message received. ", payload);
+        // this.currentMessage.next(payload);
+        const toastr: any = this.toastrService.show(payload?.data?.body, payload?.data?.title, {
+          status: 'success',
+          hasIcon: true,
+          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          toastClass: 'room-' + payload?.data?.room,
+        });
+        console.log(toastr);
+        $(toastr.toastContainer?.containerRef?.location?.nativeElement).find('.' + 'room-' + payload?.data?.room).click(() => {
+          this.openMobileSidebar();
+          this.mobileService.openChatRoom({ ChatRoom: payload?.data?.room });
+        });
+      });
+    console.log('register messages observer');
+    this.notificationMessage = this.messagingService.currentMessage;
+
+    // Listen service worker events
+    navigator.serviceWorker.addEventListener('message', event => {
+      console.log(event?.data?.msg, event.data?.payload);
+      if (event.data?.payload && event.data?.payload?.room) {
+        this.openMobileSidebar();
+        this.mobileService.openChatRoom({
+          ChatRoom: event.data?.payload?.room,
+        });
+      }
+      // this.toastrService.show(event.data?.payload['message'], event.data?.payload['title'], {
+      //   status: 'success',
+      //   hasIcon: true,
+      //   position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      //   // duration: 5000,
+      // });
+    });
 
     // Subcribe authorized event
     this.apiService.unauthorizied$.subscribe(info => {
@@ -381,6 +436,10 @@ export class CommonService {
       this.router.navigate(['/']);
     }
 
+  }
+
+  navigate(path: string) {
+    this.router.navigate([path]);
   }
 
   getRouteParams(id: number): { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] } {
@@ -661,6 +720,54 @@ export class CommonService {
 
   currencyTransform(value: any, currencyCode?: string, display?: 'code' | 'symbol' | 'symbol-narrow' | string | boolean, digitsInfo?: string, locale?: string): string | null {
     return this.currencyPipe.transform(value, currencyCode, display, digitsInfo, locale);
+  }
+
+  async registerDevice(option?: { pushRegId?: string }) {
+    return this.apiService.postPromise<DeviceModel>('/device/devices/', { registerDevice: true }, {
+      RegisterId: option && option.pushRegId || undefined,
+      Uuid: this.getDeviceUuid() + this.env.bundleId,
+      Name: 'browser',
+      Platform: 'browser',
+      Version: '1.0',
+      SenderIdentification: this.env.firebase.messagingSenderId,
+      Owner: this.loginInfo?.user?.Name,
+      Mode: this.env.production ? 'Production' : 'Development',
+      BundleId: this.env.bundleId,
+      AppVersion: this.env.version,
+    }).then(rs => {
+      console.info('Device register success', rs);
+      return rs;
+    }).catch(err => {
+      console.error('Device register error', err);
+      return Promise.reject(err);
+    });
+  }
+
+  async unregisterDevice() {
+    return this.messagingService.getToken().then(token => {
+      return this.apiService.putPromise<DeviceModel>('/device/devices/', { unregisterDevice: true }, {
+        Uuid: this.getDeviceUuid() + this.env.bundleId,
+      }).then(rs => {
+        console.info('Device unregister success', rs);
+        this.messagingService.deleteToken(token);
+        return rs;
+      }).catch(err => {
+        console.error('Device unregister error', err);
+        return Promise.reject(err);
+      });
+    });
+    
+  }
+
+  /** Auto generate device uuid */
+  getDeviceUuid() {
+    let deviceUuid = localStorage.getItem('device_uuid');
+    if (deviceUuid) {
+      return deviceUuid;
+    }
+    deviceUuid = uuidv4();
+    localStorage.setItem('device_uuid', deviceUuid);
+    return deviceUuid;
   }
 
 }

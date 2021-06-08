@@ -50,6 +50,7 @@ export const environment = {
   // 1.0.3.26: Demo import purchase price table
   // 1.0 : First release
   production: true,
+  bundleId: 'com.namsoftware.probox-web-gui',
   hmr: false,
   basePath: 'probox-core',
   register: {

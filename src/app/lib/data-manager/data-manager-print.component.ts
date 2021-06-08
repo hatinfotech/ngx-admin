@@ -1,12 +1,11 @@
 import { ActionControlListOption } from './../custom-element/action-control-list/action-control.interface';
 import { environment } from './../../../environments/environment';
-import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewChild, ViewContainerRef, AfterViewInit, ViewChildren, QueryList } from '@angular/core'; import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../models/sales.model'; import { CommonService } from '../../services/common.service'; import { Router } from '@angular/router'; import { ApiService } from '../../services/api.service';
+import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewChild, ViewContainerRef, AfterViewInit, ViewChildren, QueryList, Component, Injectable } from '@angular/core'; import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../models/sales.model'; import { CommonService } from '../../services/common.service'; import { Router } from '@angular/router'; import { ApiService } from '../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { Icon } from '../custom-element/card-header/card-header.component';
 import { NgModel } from '@angular/forms';
 
 declare var $: JQueryStatic;
-
 export abstract class DataManagerPrintComponent<M> extends BaseComponent implements OnInit, AfterViewInit {
 
   // title: string = 'Xem trước';

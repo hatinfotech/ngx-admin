@@ -14,6 +14,7 @@ export const environment = {
   production: false,
   hmr: false,
   basePath: 'probox-core',
+  bundleId: 'com.namsoftware.probox-web-gui',
   register: {
     logo: {
       voucher: 'assets/images/logo/logo-dang-ky-nhan-hieu-probox.png',

@@ -1,5 +1,5 @@
 import { filter, take } from 'rxjs/operators';
-import { OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { ReuseComponent } from '../reuse-component';
 import { DataManagerListComponent } from './data-manger-list.component';
 import { CommonService } from '../../services/common.service';

@@ -159,7 +159,7 @@ export class DynamicLocaleId extends String {
     }),
     // ServiceWorkerModule.register('/probox-core/firebase-messaging-sw.js', { enabled: true || environment.production, registrationStrategy: 'registerImmediately' }),
     AngularFireMessagingModule,
-    AngularFireModule.initializeApp(environment.firebase, {scope: 'probox-core'}),
+    AngularFireModule.initializeApp(environment.firebase),
   ],
   entryComponents: [
     ShowcaseDialogComponent,

@@ -32,13 +32,13 @@ messaging.onNotificationClick(payload => {
 });
 messaging.setBackgroundMessageHandler(payload => {
   console.log(payload);
-  return self.registration.showNotification(payload.data.title, {body: payload.data.message, data: payload.data});
+  return self.registration.showNotification(payload.data && payload.data.title, {body: payload.data && payload.data.body, data: payload.data});
 });
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
-  // console.log(event);
-  let navigateUrl = '/probox-core/dashboard?room=' + event.notification['data']['chr'];
+  console.log(event);
+  let navigateUrl = '/probox-core/notification?'+(new URLSearchParams(event.notification.data).toString());
 
   // go to target
   event.waitUntil(clients.matchAll({includeUncontrolled: true, type: 'window'}).then(clientList => {
@@ -46,8 +46,12 @@ self.addEventListener('notificationclick', function (event) {
     // Find inactive tab and focus
     for (var i = 0; i < clientList.length; i++) {
       var client = clientList[i];
-      // console.log('client: ', client);
       if (new URL(client.url).origin == self.origin && 'focus' in client) {
+        console.log('matched client: ', client);
+        client.postMessage({
+          msg: "Hey I just got a fetch from you!",
+          payload: event.notification.data,
+        });
         return client.focus();
       }
     }

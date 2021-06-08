@@ -31,8 +31,6 @@ export class AppComponent implements OnInit {
     },
   ];
 
-  message: BehaviorSubject<any>;
-
   constructor(
     private analytics: AnalyticsService,
     private seoService: SeoService,
@@ -40,7 +38,6 @@ export class AppComponent implements OnInit {
     public commonService: CommonService,
     public authService: NbAuthService,
     public translate: TranslateService,
-    public messagingService: MessagingService,
   ) {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.commonService.configReady$.subscribe(ready => {
@@ -89,11 +86,5 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.analytics.trackPageViews();
     this.seoService.trackCanonicalChanges();
-    console.log('request notifications permission');
-    this.messagingService.requestPermission();
-    console.log('receive message');
-    this.messagingService.receiveMessage();
-    console.log('register messages observer');
-    this.message = this.messagingService.currentMessage;
   }
 }
