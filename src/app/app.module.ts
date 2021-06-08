@@ -1,3 +1,4 @@
+import { ServiceWorkerModule } from '@angular/service-worker';
 /**
  * @license
  * Copyright Akveo. All Rights Reserved.
@@ -48,6 +49,8 @@ import localeVi from '@angular/common/locales/vi';
 import localeViExtra from '@angular/common/locales/extra/vi';
 import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { AngularFireModule } from '@angular/fire';
 registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -154,6 +157,9 @@ export class DynamicLocaleId extends String {
       ],
       forms: {},
     }),
+    // ServiceWorkerModule.register('/probox-core/firebase-messaging-sw.js', { enabled: true || environment.production, registrationStrategy: 'registerImmediately' }),
+    AngularFireMessagingModule,
+    AngularFireModule.initializeApp(environment.firebase, {scope: 'probox-core'}),
   ],
   entryComponents: [
     ShowcaseDialogComponent,

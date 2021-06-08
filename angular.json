@@ -28,7 +28,9 @@
                                 "glob": "**/*",
                                 "input": "node_modules/leaflet/dist/images",
                                 "output": "/assets/img/markers"
-                            }
+                            },
+                            "src/firebase-messaging-sw.js",
+                            "src/manifest.webmanifest"
                         ],
                         "styles": [
                             "node_modules/bootstrap/dist/css/bootstrap.css",
@@ -77,7 +79,9 @@
                             "fileReplacements": [{
                                 "replace": "src/environments/environment.ts",
                                 "with": "src/environments/environment.prod.ts"
-                            }]
+                            }],
+                            "serviceWorker": true,
+                            "ngswConfigPath": "ngsw-config.json"
                         },
                         "hmr": {
                             "fileReplacements": [{
@@ -146,7 +150,8 @@
                                 "glob": "**/*",
                                 "input": "node_modules/leaflet/dist/images",
                                 "output": "/assets/img/markers"
-                            }
+                            },
+                            "src/manifest.webmanifest"
                         ]
                     }
                 },

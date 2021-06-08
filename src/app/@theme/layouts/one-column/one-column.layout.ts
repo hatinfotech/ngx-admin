@@ -23,7 +23,7 @@ import { CommonService } from '../../../services/common.service';
       </nb-layout-column>
 
       <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed">
-        <ngx-smart-bot id="small-smart-bot"></ngx-smart-bot>
+        <!-- <ngx-smart-bot id="small-smart-bot"></ngx-smart-bot> -->
       </nb-sidebar>
 
       <nb-layout-footer fixed>
