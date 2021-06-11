@@ -52,8 +52,10 @@ self.addEventListener('notificationclick', function (event) {
           msg: "Hey I just got a fetch from you!",
           payload: event.notification.data,
         });
-        return client.focus();
       }
+    }
+    if(clientList && clientList.length > 0) {
+      return clientList[0].focus();
     }
     // If web app not opened => open it
     if (clients.openWindow) {

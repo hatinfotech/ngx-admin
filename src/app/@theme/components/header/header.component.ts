@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService, NbSidebarComponent } from '@nebular/theme';
+import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService, NbSidebarComponent, NbMenuItem } from '@nebular/theme';
 
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
@@ -49,6 +49,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userMenu = [
     { title: 'Profile', link: '/users/profile/change-password' },
     { title: 'Log out', link: '/auth/logout' }];
+
+  notifications$ = new Subject<{ name: string, title: string, link: string, picture?: string }[]>();
+
   mennuBarExpand = true;
   chatBarExpand = true;
   sidebars: NbSidebarComponent[];
@@ -173,6 +176,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // this.ivoipService.getDomainList(domainList => {
     //   this.domainList = domainList;
     // });
+
+    this.commonService.loginInfo$.subscribe(loginInfo => {
+      this.notifications$.next([
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
+        { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
+      ]);
+    });
 
   }
 

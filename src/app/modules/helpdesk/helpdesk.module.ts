@@ -94,13 +94,7 @@ import { HelpdeskProcedureFormComponent } from './procedure/helpdesk-procedure-f
     NbProgressBarModule,
     AgGridModule,
 
-    NbUserModule,
-    NbButtonModule,
-    NbTabsetModule,
-    NbSelectModule,
-    NbListModule,
     ChartModule,
-    NbProgressBarModule,
     NgxEchartsModule,
     NgxChartsModule,
     LeafletModule,

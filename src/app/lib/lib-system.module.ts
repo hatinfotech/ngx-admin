@@ -2,7 +2,7 @@ import { AgGridModule } from "@ag-grid-community/angular";
 import { CommonModule, CurrencyPipe, DecimalPipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbCardModule } from "@nebular/theme";
+import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbCardModule, NbMenuModule, NbListModule, NbUserModule } from "@nebular/theme";
 import { TranslateModule } from "@ngx-translate/core";
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from "ng-pick-datetime";
 import { CurrencyMaskModule } from "ng2-currency-mask";
@@ -35,6 +35,9 @@ import { ResourcePermissionEditComponent } from "./lib-system/components/resourc
     NgxUploaderModule,
     NbCardModule,
     CustomElementModule,
+    NbMenuModule,
+    NbListModule,
+    NbUserModule,
   ],
   exports: [
     ResourcePermissionEditComponent,

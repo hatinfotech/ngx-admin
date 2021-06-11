@@ -1,3 +1,5 @@
+import { LibSystemModule } from './../lib/lib-system.module';
+import { GeneralModule } from './../modules/general/general.module';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -43,6 +45,7 @@ import { VirtualPhoneModule } from '../modules/virtual-phone/virtual-phone.modul
 import { MobileAppModule } from '../modules/mobile-app/mobile-app.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartBotModule } from '../modules/smart-bot/smart-bot.module';
+import { HeaderNotificationContextDirective } from '../modules/general/header/header-notification-context/header-notification-context.directive';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -62,6 +65,8 @@ const NB_MODULES = [
   MobileAppModule,
   TranslateModule,
   SmartBotModule,
+  GeneralModule,
+  LibSystemModule,
 ];
 const COMPONENTS = [
   HeaderComponent,
