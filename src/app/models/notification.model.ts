@@ -1,5 +1,5 @@
 export interface NotificationModel {
-    Id?: string;
+    Id?: number;
     TypeId?: string;
     Title?: string;
     Content?: string;
@@ -14,4 +14,5 @@ export interface NotificationModel {
     Receivers?: string;
     Sender?: {id: string, text: string, avatar: string};
     Data?: any;
+    Picture?: string,
 }

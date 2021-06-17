@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { MessagingService } from './services/messaging.service';
+import { NotificationService } from './services/notification.service';
 /**
  * @license
  * Copyright Akveo. All Rights Reserved.
@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
     public commonService: CommonService,
     public authService: NbAuthService,
     public translate: TranslateService,
+    public notificatinoSerivce: NotificationService,
   ) {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.commonService.configReady$.subscribe(ready => {
@@ -69,6 +70,8 @@ export class AppComponent implements OnInit {
         ];
       }
     });
+    this.notificatinoSerivce.active();
+    
   }
 
   translateMenu(menuTree: NbMenuItem[]) {

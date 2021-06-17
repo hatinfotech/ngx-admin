@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NbListModule, NbCardModule, NbUserModule } from '@nebular/theme';
+import { NbListModule, NbCardModule, NbUserModule, NbBadgeModule } from '@nebular/theme';
 import { HeaderNotificationContextDirective } from './header/header-notification-context/header-notification-context.directive';
 import { HeaderNotificationContextComponent } from './header/header-notification-context/header-notification-context.component';
 
@@ -17,6 +17,7 @@ import { HeaderNotificationContextComponent } from './header/header-notification
     NbCardModule,
     NbListModule,
     NbUserModule,
+    NbBadgeModule,
   ],
   exports: [
     HeaderNotificationContextDirective,

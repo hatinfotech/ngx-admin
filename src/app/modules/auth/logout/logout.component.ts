@@ -1,3 +1,4 @@
+import { NotificationService } from './../../../services/notification.service';
 import { Component, OnInit, Inject } from '@angular/core';
 import { NbAuthService, NbLogoutComponent, NbTokenService, NB_AUTH_OPTIONS } from '@nebular/auth';
 import { Router } from '@angular/router';
@@ -24,6 +25,7 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
     public tokenService: NbTokenService,
     public apiService: ApiService,
     public commonService: CommonService,
+    public notificationService: NotificationService,
   ) {
     super(service, options, router);
   }
@@ -55,7 +57,8 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
   logout(strategy: string): void {
     // super.logout(strategy);
     try {
-      this.commonService.unregisterDevice().then(rs => {
+      this.commonService.unregisterDevice().then(async rs => {
+        await this.notificationService.deleteToken();
         this.apiService.deletePromise('/user/login', null).then(status => {
           this.tokenService.clear();
           this.apiService.clearToken();

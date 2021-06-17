@@ -24,7 +24,7 @@ import { filter, take } from 'rxjs/operators';
 import { UnitModel } from '../models/unit.model';
 import { DeviceModel } from '../models/device.model';
 import { v4 as uuidv4 } from 'uuid';
-import { MessagingService } from './messaging.service';
+import { NotificationService } from './notification.service';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
 
 @Injectable({
@@ -152,7 +152,7 @@ export class CommonService {
     public iconsLibrary: NbIconLibraries,
     public datePipe: DatePipe,
     private themeService: NbThemeService,
-    public messagingService: MessagingService,
+    // public messagingService: NotificationService,
     private toastrService: NbToastrService,
     private mobileService: MobileAppService,
   ) {
@@ -268,13 +268,6 @@ export class CommonService {
             console.log(rs2);
           });
 
-          // Request notification permission and register firebase messaging
-          console.log('request notifications permission');
-          this.messagingService.requestPermission().then(token => {
-            //Register device
-            this.registerDevice({ pushRegId: token });
-          });
-
         });
 
         // tax cache
@@ -295,45 +288,6 @@ export class CommonService {
         // this.unregisterDevice();
         this.clearCache();
       }
-    });
-
-
-    // Firebase messaging event
-    console.log('receive message');
-    this.messagingService.receiveMessage().subscribe(
-      (payload: any) => {
-        console.log("new message received. ", payload);
-        // this.currentMessage.next(payload);
-        const toastr: any = this.toastrService.show(payload?.data?.body, payload?.data?.title, {
-          status: 'success',
-          hasIcon: true,
-          position: NbGlobalPhysicalPosition.TOP_RIGHT,
-          toastClass: 'room-' + payload?.data?.room,
-        });
-        console.log(toastr);
-        $(toastr.toastContainer?.containerRef?.location?.nativeElement).find('.' + 'room-' + payload?.data?.room).click(() => {
-          this.openMobileSidebar();
-          this.mobileService.openChatRoom({ ChatRoom: payload?.data?.room });
-        });
-      });
-    console.log('register messages observer');
-    this.notificationMessage = this.messagingService.currentMessage;
-
-    // Listen service worker events
-    navigator.serviceWorker.addEventListener('message', event => {
-      console.log(event?.data?.msg, event.data?.payload);
-      if (event.data?.payload && event.data?.payload?.room) {
-        this.openMobileSidebar();
-        this.mobileService.openChatRoom({
-          ChatRoom: event.data?.payload?.room,
-        });
-      }
-      // this.toastrService.show(event.data?.payload['message'], event.data?.payload['title'], {
-      //   status: 'success',
-      //   hasIcon: true,
-      //   position: NbGlobalPhysicalPosition.TOP_RIGHT,
-      //   // duration: 5000,
-      // });
     });
 
     // Subcribe authorized event
@@ -743,20 +697,20 @@ export class CommonService {
     });
   }
 
-  async unregisterDevice() {
-    return this.messagingService.getToken().then(token => {
-      return this.apiService.putPromise<DeviceModel>('/device/devices/', { unregisterDevice: true }, {
-        Uuid: this.getDeviceUuid() + this.env.bundleId,
-      }).then(rs => {
-        console.info('Device unregister success', rs);
-        this.messagingService.deleteToken(token);
-        return rs;
-      }).catch(err => {
-        console.error('Device unregister error', err);
-        return Promise.reject(err);
-      });
+  async unregisterDevice(option?: { pushRegId?: string }) {
+    // return this.messagingService.getToken().then(token => {
+    return this.apiService.putPromise<DeviceModel>('/device/devices/', { unregisterDevice: true }, {
+      Uuid: this.getDeviceUuid() + this.env.bundleId,
+    }).then(rs => {
+      console.info('Device unregister success', rs);
+      //   this.messagingService.deleteToken(token);
+      return rs;
+    }).catch(err => {
+      console.error('Device unregister error', err);
+      return Promise.reject(err);
+      // });
     });
-    
+
   }
 
   /** Auto generate device uuid */

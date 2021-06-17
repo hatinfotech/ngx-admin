@@ -1,11 +1,12 @@
-<nb-card class="list-card" size="small">
-    <nb-list class="scrollable-container">
-        <nb-list-item *ngFor="let item of items" (click)="onClickNotification(item)">
+<nb-card class="list-card notification-area" size="small">
+    <nb-list class="scrollable-container" nbInfiniteList [threshold]="500" (bottomThreshold)="loadNext()">
+        <nb-list-item *ngFor="let item of items" (click)="onClickNotification(item)" [ngClass]="{'read': item.State === 'READ', 'new': item.State === 'NEW', 'active': item.State === 'ACTIVE'}">
             <!-- <nb-user [name]="item.Sender?.text" [title]="item.Content" [picture]="item.Sender?.avatar" [onlyPicture]="false"></nb-user> -->
             <user class="size-medium">
                 <div class="user-container">
-                    <div class="user-picture image" [ngStyle]="{backgroundImage: 'url('+item.Sender?.avatar+')'}">
-                        <!-- <nb-badge *ngIf="badgeText" [text]="badgeText" [status]="badgeStatus" [position]="badgePosition"></nb-badge> -->
+                    <div class="user-picture image" [ngStyle]="{backgroundImage: 'url('+item.Picture+')'}">
+                        <nb-badge *ngIf="item.State === 'NEW'" [text]="'new'" [status]="'danger'" [position]="'bottom left'"></nb-badge>
+                        <nb-badge *ngIf="item.State === 'READ'" [text]="'read'" [status]="'success'" [position]="'bottom left'"></nb-badge>
                     </div>
                     <!-- <div *ngIf="!imageBackgroundStyle" class="user-picture initials" [style.background-color]="color">
                     <ng-container *ngIf="showInitials">
@@ -15,12 +16,27 @@
                 </div> -->
 
                     <div class="info-container">
-                        <div class="user-name">{{ item.Sender?.text }}</div>
-                        <div class="user-title">{{ item.Content }}</div>
+                        <!-- <div class="user-name">{{ item.Sender?.text }}</div> -->
+                        <div class="user-title" [innerHTML]="item.Content"></div>
                         <div class="user-title" style="font-size: 11px;">{{ item.DateOfCreate | date: 'short' }}</div>
                     </div>
                 </div>
             </user>
+        </nb-list-item>
+        <nb-list-item *ngFor="let _ of placeholders">
+            <user class="size-medium">
+                <div class="user-container">
+                    <div class="user-picture image" [ngStyle]="{backgroundImage: 'url(/assets/images/logo/logo_full.png)'}">
+                    </div>
+                    <div class="info-container">
+                        <div class="user-title">đang tải thông báo mới...</div>
+                        <div class="user-title" style="font-size: 11px;">--:--:--</div>
+                    </div>
+                </div>
+            </user>
+        </nb-list-item>
+        <nb-list-item *ngIf="isEnd">
+            <div style="width: 100%; text-align: center; color: #ccc;">end</div>
         </nb-list-item>
     </nb-list>
 </nb-card>

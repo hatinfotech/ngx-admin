@@ -49,7 +49,7 @@ self.addEventListener('notificationclick', function (event) {
       if (new URL(client.url).origin == self.origin && 'focus' in client) {
         console.log('matched client: ', client);
         client.postMessage({
-          msg: "Hey I just got a fetch from you!",
+          name: 'notificationclick',
           payload: event.notification.data,
         });
       }

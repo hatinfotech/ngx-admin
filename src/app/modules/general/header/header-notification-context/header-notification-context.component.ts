@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { ApiService } from './../../../../services/api.service';
 import { CommonService } from './../../../../services/common.service';
@@ -6,6 +7,7 @@ import { NbMenuItem, NbPositionedContainer, NbRenderableContainer } from '@nebul
 import { NotificationModel } from '../../../../models/notification.model';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { IHeaderNotificationContext } from './header-notification-context.directive';
+import { NotificationService } from '../../../../services/notification.service';
 
 
 /**
@@ -41,6 +43,8 @@ import { IHeaderNotificationContext } from './header-notification-context.direct
 export class HeaderNotificationContextComponent extends NbPositionedContainer implements NbRenderableContainer {
 
   items: NotificationModel[] = [];
+  numOfUnread = 0;
+
   @Input() tag: string;
 
   @Input()
@@ -51,25 +55,119 @@ export class HeaderNotificationContextComponent extends NbPositionedContainer im
    * The method is empty since we don't need to do anything additionally
    * render is handled by change detection
    */
-  renderContent() {}
+  renderContent() { }
+
+  placeholders = [];
+  pageSize = 10;
+  static _pageToLoadNext = 1;
+  get pageToLoadNext() { return HeaderNotificationContextComponent._pageToLoadNext; }
+  set pageToLoadNext(number: number) { HeaderNotificationContextComponent._pageToLoadNext = number; }
+  loading = false;
+  static _isEnd = false;
+  get isEnd() {
+    return HeaderNotificationContextComponent._isEnd;
+  }
+  set isEnd(status: boolean) {
+    HeaderNotificationContextComponent._isEnd = status;
+  }
 
   constructor(
     private apiService: ApiService,
     private commonService: CommonService,
     private mobileAppService: MobileAppService,
+    private notificationService: NotificationService,
     private datePipe: DatePipe,
   ) {
     super();
-    this.apiService.getPromise<NotificationModel[]>('/notification/notifications/byCurrentUser', { limit: 100 }).then(notifications => {
-      this.items = notifications;
-    }).catch(err => {
-      console.error(err);
+    // this.apiService.getPromise<NotificationModel[]>('/notification/notifications/byCurrentUser', { limit: 100 }).then(notifications => {
+    //   this.items = notifications;
+    // }).catch(err => {
+    //   console.error(err);
+    // });
+    // this.notificationService.notifications$.subscribe(notifications => {
+    //   this.items = notifications;
+    // });
+
+    this.items = this.notificationService.notifications;
+    this.placeholders = new Array(1);
+    // this.numOfUnread = this.notificationService.numOfUnread;
+    // this.notificationService.reloadEvent.subscribe(status => {
+    //   this.isEnd = false;
+    // });
+
+    this.notificationService.requestNewestNotificaitons().then(newNotifications => {
+      if (newNotifications.length > 0) {
+        this.prepareForUpdateNotificaitonState(newNotifications);
+      }
     });
   }
 
-  onClickNotification(item: NotificationModel) {
+  onClickNotification(notification: NotificationModel) {
     this.commonService.openMobileSidebar();
-    this.mobileAppService.openChatRoom({ChatRoom: item.Data?.room});
+    this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room });
     this.context.onItemClick.next(true);
+
+    this.notificationService.updateReceiverState([notification.Id], 'ACTIVE').then(rs => {
+      console.log('update notifications state to active');
+      this.items.find(f => f.Id == notification.Id).State = 'ACTIVE';
+      this.items = [...this.items];
+      // this.prepareForUpdateNotificaitonState();
+      // this.notificationService.updateReceiverState([...this.notificaitonUpdateQueue].map(item => item.Id), 'ACTIVE').then(rs => {
+      //   console.log('update notifications state to read');
+      //   for (const notification of this.notificaitonUpdateQueue) {
+      //     notification.State = 'READ';
+      //   }
+      //   this.items = [...this.items];
+      // });
+    });
+  }
+
+
+
+  loadNext() {
+    if (this.isEnd || this.loading) { return }
+
+    this.loading = true;
+    this.placeholders = new Array(5);
+    this.notificationService.loadNotifications({ limit: this.pageSize, offset: (this.pageToLoadNext - 1) * this.pageSize, sort_Id: 'desc', silent: true })
+      .then(async notifications => {
+        this.placeholders = [];
+        this.items.push(...notifications);
+        this.pageToLoadNext++;
+
+        // Update to read
+        // setTimeout(() => {
+        const updateNotifications = notifications.filter(f => f.State === 'NEW' || !f.State);
+        if (updateNotifications.length > 0) {
+
+          this.prepareForUpdateNotificaitonState(updateNotifications);
+
+        }
+        // }, 10000);
+        this.loading = false;
+      }).catch(err => {
+        this.placeholders = [];
+        this.isEnd = true;
+      });
+  }
+
+  notificaitonUpdateQueue = [];
+  prepareForUpdateNotificaitonState(notifications: NotificationModel[]) {
+    // for(let n of notifications) {
+    //   this.notificaitonUpdateQueue.push(n);
+    // }
+    this.notificaitonUpdateQueue.push(...notifications);
+    this.commonService.takeUntil('update_notifications_state', 10000).then(rs => {
+      this.notificationService.updateReceiverState(this.notificaitonUpdateQueue.map(item => item.Id), 'READ').then(rs => {
+        console.log('update notifications state to read');
+        for (const notification of this.notificaitonUpdateQueue) {
+          if (notification.State == 'NEW' || !notification.State) {
+            notification.State = 'READ';
+          }
+        }
+        this.items = [...this.items];
+        this.notificaitonUpdateQueue = [];
+      });
+    });
   }
 }
