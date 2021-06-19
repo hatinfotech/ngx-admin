@@ -1,1 +1,11 @@
-<p>activity-notification works!</p>
+<div class="action-list" *ngIf="activity" >
+    <div class="buttons-row">
+        <button nbButton type="button" class="action-list-item" (click)="onActivityClick($event)"
+          [status]="activity?.Status" hero [size]="'small'"
+          [title]="'Title title'">
+          <nb-icon [pack]="'eva'" [icon]="activity?.Icon"></nb-icon>
+          <span>{{activity.Content}}</span>
+        </button>
+    </div>
+  </div>
+  

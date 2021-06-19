@@ -1,6 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()"
   (keydown.shift.enter)="onControlEnter($event)"
   (keydown.enter)="onControlEnter($event)"
+  class="popup"
   >
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">

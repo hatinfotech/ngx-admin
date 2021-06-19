@@ -3,7 +3,7 @@ import { HelpdeskTicketModel } from '../../../../models/helpdesk.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -28,6 +28,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   baseFormUrl = '/helpdesk/ticket/form';
 
   @Input('ticketCode') ticketCode: string;
+  @Input('uuidIndex') uuidIndex?: string;
   @Input('index') index: string;
   @Input('phoneNumber') phoneNumber: string;
   @Output() onClose = new EventEmitter<string>();
@@ -180,7 +181,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   ];
 
   chatRoom: string;
-  f7ChatRoom: F7Component & {sendMessage?: (message: any) => void};
+  f7ChatRoom: F7Component & { sendMessage?: (message: any) => void };
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -192,8 +193,9 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     public commonService: CommonService,
     public elRef: ElementRef,
     public mobileAppService: MobileAppService,
+    public ref?: NbDialogRef<QuickTicketFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
     this.silent = true;
     if (this.ticketCode) {
       this.id = [this.ticketCode];
@@ -206,8 +208,12 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     // if (this.inputId) {
     //   this.mode = 'dialog';
     // }
-    this.array.controls[0].get('CallSessionId').setValue(this.index);
+    this.array?.controls[0]?.get('CallSessionId').setValue(this.index);
     this.onInit.emit(this);
+
+    if(this.inputMode === 'dialog' && this.uuidIndex) {
+      this.loadByCallSessionId(this.uuidIndex);
+    }
   }
 
   async loadByCallSessionId(callSessionId?: string): Promise<HelpdeskTicketModel> {
@@ -352,7 +358,11 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
             status: 'success',
             action: () => {
               this.save();
-              this.onClose.emit(this.index);
+              if (this.inputMode === 'inline') {
+                this.onClose.emit(this.index);
+              } else {
+                this.close();
+              }
             },
           },
           {
@@ -360,7 +370,11 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
             icon: 'close',
             status: 'danger',
             action: () => {
-              this.onClose.emit(this.index);
+              if (this.inputMode === 'inline') {
+                this.onClose.emit(this.index);
+              } else {
+                this.close();
+              }
             },
           },
         ],
@@ -429,7 +443,14 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   }
 
   saveAndClose() {
-    this.save().then(rs => this.onClose.emit(this.index));
+    this.save().then(rs => {
+      // this.onClose.emit(this.index);
+      if (this.inputMode === 'inline') {
+        this.onClose.emit(this.index);
+      } else {
+        this.close();
+      }
+    });
     return false;
   }
 

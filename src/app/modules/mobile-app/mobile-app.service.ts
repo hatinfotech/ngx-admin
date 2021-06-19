@@ -72,13 +72,24 @@ export class MobileAppService {
     throw Error('Mobile app was not registered !!!');
   }
 
-  async openChatRoom(params: { ChatRoom: string, [key: string]: any }) {
+  async openChatRoom(params: { ChatRoom: string, [key: string]: any }, target?: string) {
     // if(!this.frameSocket) {
     //   throw new Error('Frame socket was not init');
     // }
-    FrameSocket.broadcast('open-chat-room', { chatRoom: params.ChatRoom }).then(rsp => {
-      console.debug(rsp);
-    });
+    if (target) {
+      const targetSocket = FrameSocket._frameSockets.find(f => f.id === target);
+      if (targetSocket) {
+        targetSocket.isReady$.pipe(filter(f => f), take(1)).toPromise().then(rs => {
+          targetSocket.emit('open-chat-room', { chatRoom: params.ChatRoom }).then(rsp => {
+            console.debug(rsp);
+          });
+        });
+      }
+    } else {
+      FrameSocket.broadcast('open-chat-room', { chatRoom: params.ChatRoom }).then(rsp => {
+        console.debug(rsp);
+      });
+    }
     return true;
     // if (this.mobileApp) {
     // return this.mobileApp.openChatRoom(params);

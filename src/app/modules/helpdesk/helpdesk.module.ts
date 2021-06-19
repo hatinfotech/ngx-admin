@@ -108,6 +108,9 @@ import { HelpdeskProcedureFormComponent } from './procedure/helpdesk-procedure-f
       animation: 200,
     }),
   ],
+  exports: [
+    QuickTicketFormComponent,
+  ],
   entryComponents: [
     SmartTableCheckboxComponent,
     ActionControlListComponent,

@@ -25,7 +25,8 @@ export const environment = {
   },
   api: {
     // baseUrl: '/v1', // prod
-    baseUrl: 'http://local.namsoftware.com/v1',
+    // baseUrl: 'http://local.namsoftware.com/v1',
+    baseUrl: '/v1',
   },
   number: {
     // replace by system locale

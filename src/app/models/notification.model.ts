@@ -1,8 +1,13 @@
 export interface NotificationModel {
     Id?: number;
+    Time?: number;
     TypeId?: string;
     Title?: string;
     Content?: string;
+    Action?: string,
+    Status?: string,
+    Icon?: string;
+    IconPack?: string;
     ActionLink?: string;
     ImageId?: string;
     State?: string;

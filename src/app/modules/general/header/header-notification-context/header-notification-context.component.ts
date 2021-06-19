@@ -103,23 +103,34 @@ export class HeaderNotificationContextComponent extends NbPositionedContainer im
   }
 
   onClickNotification(notification: NotificationModel) {
-    this.commonService.openMobileSidebar();
-    this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room });
-    this.context.onItemClick.next(true);
-
-    this.notificationService.updateReceiverState([notification.Id], 'ACTIVE').then(rs => {
-      console.log('update notifications state to active');
-      this.items.find(f => f.Id == notification.Id).State = 'ACTIVE';
-      this.items = [...this.items];
-      // this.prepareForUpdateNotificaitonState();
-      // this.notificationService.updateReceiverState([...this.notificaitonUpdateQueue].map(item => item.Id), 'ACTIVE').then(rs => {
-      //   console.log('update notifications state to read');
-      //   for (const notification of this.notificaitonUpdateQueue) {
-      //     notification.State = 'READ';
-      //   }
-      //   this.items = [...this.items];
-      // });
+    this.notificationService.openNotification(notification).then(rs => {
+      this.context.onItemClick.next(true);
     });
+    // this.commonService.openMobileSidebar();
+    // if (notification.Type === 'CHATROOM') {
+    //   this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room });
+    //   this.context.onItemClick.next(true);
+    // }
+
+    // if (notification.Type === 'ACTIVITY') {
+
+    // }
+
+    // this.notificationService.updateReceiverState([notification.Id], 'ACTIVE').then(rs => {
+    //   console.log('update notifications state to active');
+      
+    //   // this.items.find(f => f.Id == notification.Id).State = 'ACTIVE';
+    //   // this.items = [...this.items];
+
+    //   // this.prepareForUpdateNotificaitonState();
+    //   // this.notificationService.updateReceiverState([...this.notificaitonUpdateQueue].map(item => item.Id), 'ACTIVE').then(rs => {
+    //   //   console.log('update notifications state to read');
+    //   //   for (const notification of this.notificaitonUpdateQueue) {
+    //   //     notification.State = 'READ';
+    //   //   }
+    //   //   this.items = [...this.items];
+    //   // });
+    // });
   }
 
 

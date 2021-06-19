@@ -1,3 +1,4 @@
+import { NotificationService } from './../../services/notification.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -26,6 +27,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
     public commonService: CommonService,
     private route: ActivatedRoute,
     private mobileService: MobileAppService,
+    private notificationService: NotificationService,
   ) { }
 
   ngOnInit() {
@@ -34,16 +36,26 @@ export class NotificationComponent implements OnInit, OnDestroy {
       // this.urlParameters = window.location.search;
       this.route.queryParams.subscribe(params => {
         // this.urlParameters = JSON.stringify(params);
-        this.mobileService.allReady().then(rs => {
-          setTimeout(() => {
-            this.commonService.openMobileSidebar();
-            this.mobileService.openChatRoom({
-              ChatRoom: params?.room,
-            });
-            this.commonService.navigate('/');
-            
-          }, 3000);
-        })
+        const notification = this.notificationService.prepareNotificaitonInfo({ Data: params });
+        this.commonService.navigate('/');
+        setTimeout(() => {
+          this.notificationService.openNotification(notification);
+        }, 3000);
+        // if (params?.type === 'CHATROOM') {
+        // this.mobileService.allReady().then(rs => {
+        //   setTimeout(() => {
+        //     this.commonService.openMobileSidebar();
+        //     this.mobileService.openChatRoom({
+        //       ChatRoom: params?.room,
+        //     });
+        //     this.commonService.navigate('/');
+
+        //   }, 3000);
+        // });
+        // }
+        // if (params?.type === 'CHATROOM') {
+
+        // }
       });
       if (param) {
         if (param.type) this.type = param.type;

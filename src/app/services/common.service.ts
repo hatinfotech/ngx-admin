@@ -1,3 +1,4 @@
+import { HelpdeskTicketModel } from './../models/helpdesk.model';
 import { TaxModel } from './../models/tax.model';
 import { Injectable, Type, TemplateRef } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
@@ -26,6 +27,7 @@ import { DeviceModel } from '../models/device.model';
 import { v4 as uuidv4 } from 'uuid';
 import { NotificationService } from './notification.service';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
+import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 
 @Injectable({
   providedIn: 'root',
@@ -722,6 +724,23 @@ export class CommonService {
     deviceUuid = uuidv4();
     localStorage.setItem('device_uuid', deviceUuid);
     return deviceUuid;
+  }
+
+  openTicketForm(id: {Code?: string, UuidIndex?: string}) {
+    this.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
+      context: {  
+        showLoadinng: true,
+        inputMode: 'dialog',
+        ticketCode: id.Code,
+        uuidIndex: id.UuidIndex,
+        onDialogSave: (newData: HelpdeskTicketModel[]) => {
+        },
+        onDialogClose: () => {
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
+    });
   }
 
 }
