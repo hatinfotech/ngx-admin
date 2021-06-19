@@ -182,11 +182,12 @@ export class NotificationService {
           console.log(toastr);
           this.increamentUnreadCount();
           $(toastr.toastContainer?.containerRef?.location?.nativeElement).find('.' + 'room-' + payload?.data?.room).click(() => {
-            this.commonService.openMobileSidebar();
-            this.mobileAppService.openChatRoom({ ChatRoom: payload?.data?.room });
-            this.updateReceiverState([payload?.data?.id], 'ACTIVE').then(rs => {
-              this.updateUnreadCount();
-            });
+            // this.commonService.openMobileSidebar();
+            // this.mobileAppService.openChatRoom({ ChatRoom: payload?.data?.room });
+            // this.updateReceiverState([payload?.data?.id], 'ACTIVE').then(rs => {
+            //   this.updateUnreadCount();
+            // });
+            this.openNotification(this.prepareNotificaitonInfo(newNotification));
           });
         } else {
           this.activityNotifications$.next([newNotification]);

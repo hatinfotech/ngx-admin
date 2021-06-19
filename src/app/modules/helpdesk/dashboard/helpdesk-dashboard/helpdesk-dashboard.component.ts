@@ -679,6 +679,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   async openChatRoom(chatRoomId: string, silient?: boolean) {
+    this.commonService.openMobileSidebar();
     return this.mobileAppService.openChatRoom({ ChatRoom: chatRoomId, silient: silient || false });
   }
 
