@@ -67,13 +67,13 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     {
       type: 'button',
       name: 'recall',
-      status: 'primary',
+      status: 'danger',
       label: 'Gọi lại',
       icon: 'phone-call',
       title: 'Gọi lại cho khách hàng',
       size: 'medium',
       disabled: (option) => {
-        return !this.array.controls[0].get('ObjectPhone').value;
+        return !this.array.controls[0].get('ObjectPhone')['placeholder'];
         // return false;
       },
       click: () => {
@@ -211,7 +211,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     this.array?.controls[0]?.get('CallSessionId').setValue(this.index);
     this.onInit.emit(this);
 
-    if(this.inputMode === 'dialog' && this.uuidIndex) {
+    if (this.inputMode === 'dialog' && this.uuidIndex) {
       this.loadByCallSessionId(this.uuidIndex);
     }
   }
@@ -281,6 +281,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   /** Execute api get */
   executeGet(params: any, success: (resources: HelpdeskTicketModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeObject'] = true;
+    params['includeInfosAsKeyValue'] = 'Description';
     super.executeGet(params, success, error);
   }
 
@@ -311,6 +312,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       ObjectPhone: [''],
       ObjectEmail: [''],
       ObjectAddress: [''],
+      Infos: [''],
       // State: [''],
       // Service: [''],
     });
@@ -323,7 +325,14 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       // } else {
       //   formData = data;
       // }
+      newForm.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
+      newForm.get('ObjectEmail')['placeholder'] = data['ObjectEmail'];
+      newForm.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+      data['ObjectPhone'] = null;
+      data['ObjectEmail'] = null;
+      data['ObjectAddress'] = null;
       newForm.patchValue(data);
+      // newForm['Infos'] = data.Infos;
     }
     return newForm;
   }
@@ -348,7 +357,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
         actions: [
           {
             label: 'Tiếp tục',
-            icon: 'back',
+            // icon: 'back',
             status: 'warning',
             action: () => { },
           },
@@ -423,10 +432,31 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   }
 
   recall() {
-    const phoneNumber = this.array.controls[0].get('ObjectPhone').value;
-    const name = this.array.controls[0].get('ObjectName').value;
+    const phoneNumber = this.array.controls[0].get('ObjectPhone')['placeholder'];
+    // const name = this.array.controls[0].get('ObjectName').value;
+    const ticketCode = this.array.controls[0].get('Code').value;
     if (phoneNumber) {
-      this.mobileAppService.phoneCall(phoneNumber, name ? name : phoneNumber);
+      // this.mobileAppService.phoneCall(phoneNumber, name ? name : phoneNumber);
+      this.commonService.showDiaplog(this.commonService.translateText('Click2Call'), this.commonService.translateText('Gọi lại khách hàng, hệ thống sẽ kết nối tới số SIP của bạn trước vì vậy hãy online số SIP của bạn trước khi thưc hiên click2call !'), [
+        {
+          label: this.commonService.translateText('Common.cancel'),
+          status: 'danger',
+          action: () => {
+          },
+        },
+        {
+          icon: 'phone-call',
+          status: 'success',
+          label: this.commonService.translateText('Gọi'),
+          action: () => {
+            this.toastrService.show('Đang kết nối tới số SIP của bạn...');
+            this.apiService.putPromise('/helpdesk/tickets/' + ticketCode, { click2call: true }, []).then(rs => {
+              this.toastrService.show('Đang kết nối tới khách hàng...');
+              console.log(rs);
+            });
+          },
+        },
+      ]);
     }
   }
 

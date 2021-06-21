@@ -37,4 +37,14 @@ export const environment = {
     enabled: false,
     url: 'http://localhost:8100',
   },
+  firebase: {
+    apiKey: "AIzaSyCqLj9QQ0KUuLackTP-GTBrKL6byBaCz54",
+    authDomain: "smart-bot-7e8ca.firebaseapp.com",
+    databaseURL: "https://smart-bot-7e8ca.firebaseio.com",
+    projectId: "smart-bot-7e8ca",
+    storageBucket: "smart-bot-7e8ca.appspot.com",
+    messagingSenderId: "316262946834",
+    appId: "1:316262946834:web:f8e595eb803da324ce20cb",
+    measurementId: "G-1KP1VJ8804"
+  },
 };

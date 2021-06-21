@@ -24,11 +24,11 @@ export class ActivityNotificationComponent implements OnInit {
 
     // Load last new activity notification
 
-    this.notificationService.activityNotifications$.subscribe(newestActivityNotifications => {
-      if (newestActivityNotifications.length > 0) {
-        this.activity = newestActivityNotifications[0];
-      }
-    });
+    // this.notificationService.activityNotifications$.subscribe(newestActivityNotifications => {
+    //   if (newestActivityNotifications.length > 0) {
+    //     this.activity = newestActivityNotifications[0];
+    //   }
+    // });
 
     this.notificationService.activityUpdate$.pipe(filter(f => f?.Type === 'ACTIVITY')).subscribe(newNotification => {
 

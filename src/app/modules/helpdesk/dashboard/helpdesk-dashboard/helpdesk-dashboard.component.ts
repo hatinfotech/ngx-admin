@@ -1,3 +1,5 @@
+import { NotificationService } from './../../../../services/notification.service';
+import { HeldpeskServiceService } from './../../heldpesk-service.service';
 import { Component, OnInit, OnDestroy, AfterViewInit, Renderer2, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../../../lib/base-component';
 import { CommonService } from '../../../../services/common.service';
@@ -5,7 +7,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { takeWhile, takeUntil } from 'rxjs/operators';
 import { UserActive, UserActivityData } from '../../../../@core/data/user-activity';
-import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService } from '@nebular/theme';
+import { NbThemeService, NbIconLibraries, NbLayoutScrollService, NbDialogService, NbToastrService } from '@nebular/theme';
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-chart';
 import { HelpdeskTicketModel, HelpdeskTicketCallingSessionModel } from '../../../../models/helpdesk.model';
@@ -91,41 +93,41 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         return false;
       },
     },
-    {
-      type: 'button',
-      name: 'create',
-      status: 'warning',
-      label: 'Tạo',
-      icon: 'file-add',
-      title: 'Tạo TICKET mới',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.createNewItem();
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'getLostTicket',
-      status: 'danger',
-      label: 'Lấy yêu cầu nhỡ',
-      icon: 'download',
-      title: 'Lấy các yêu cầu từ cuộc gọi nhỡ',
-      size: 'medium',
-      disabled: () => {
-        return this.processing;
-      },
-      click: () => {
-        this.processing = true;
-        this.fetchLostTicketByCallLogs().then(rs => {
-          this.processing = false;
-        });
-        return false;
-      },
-    },
+    // {
+    //   type: 'button',
+    //   name: 'create',
+    //   status: 'warning',
+    //   label: 'Tạo',
+    //   icon: 'file-add',
+    //   title: 'Tạo TICKET mới',
+    //   size: 'medium',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     this.createNewItem();
+    //     return false;
+    //   },
+    // },
+    // {
+    //   type: 'button',
+    //   name: 'getLostTicket',
+    //   status: 'danger',
+    //   label: 'Lấy yêu cầu nhỡ',
+    //   icon: 'download',
+    //   title: 'Lấy các yêu cầu từ cuộc gọi nhỡ',
+    //   size: 'medium',
+    //   disabled: () => {
+    //     return this.processing;
+    //   },
+    //   click: () => {
+    //     this.processing = true;
+    //     this.fetchLostTicketByCallLogs().then(rs => {
+    //       this.processing = false;
+    //     });
+    //     return false;
+    //   },
+    // },
     {
       type: 'button',
       name: 'refresh',
@@ -182,6 +184,8 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     public dialogService: NbDialogService,
     public mobileAppService: MobileAppService,
     public datePipe: DatePipe,
+    public toastrService: NbToastrService,
+    public notificationService: NotificationService,
   ) {
     super(commonService, router, apiService);
 
@@ -300,6 +304,13 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   ngOnInit() {
     this.commonService.openMobileSidebar();
+    this.notificationService.activityUpdate$.subscribe(status => {
+      this.commonService.takeUntil('helpdesk-dashboard-auto-update-tickets', 500).then(status => {
+        if(status) {
+          this.refresh();
+        }
+      });
+    });
   }
 
   async monitorAndMapCallLog(callState, formComponent) {
@@ -451,41 +462,56 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   async createNewItem(phoneNumber?: string, tracking?: string) {
     // this.openFormDialplog();
-    const existsQuickForm = this.quickTicketFormList.filter(f => f.index === tracking)[0];
-    if (!tracking || !existsQuickForm) {
-      this.showQuickForm = true;
-      const quickForm = { index: tracking ? tracking : ('new_' + Date.now()), phoneNumber: phoneNumber };
-      this.quickTicketFormList.unshift(quickForm);
+    // const existsQuickForm = this.quickTicketFormList.filter(f => f.index === tracking)[0];
+    // if (!tracking || !existsQuickForm) {
+    //   this.showQuickForm = true;
+    //   const quickForm = { index: tracking ? tracking : ('new_' + Date.now()), phoneNumber: phoneNumber };
+    //   this.quickTicketFormList.unshift(quickForm);
 
-      return new Promise<{ index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }>(resolve => {
-        this.quickFormOnInit$.pipe(takeUntil(this.destroy$)).subscribe(trk => {
-          if (tracking === trk) {
-            const depForm = this.quickTicketFormList.filter(f => f.index === trk)[0];
-            if (depForm) {
-              depForm.form.description = 'Yêu cầu mới từ khách hàng có số điện thoại ' + phoneNumber + ' vào ' + (new Date().toString());
-            }
-            if (phoneNumber) {
-              this.apiService.putPromise('/helpdesk/relativeCallLogs/checkpoint', {}, []);
-            }
-            resolve(depForm);
-          }
-        });
-        this.layoutScrollService.scrollTo(0, 0);
-      });
+    //   return new Promise<{ index: string, ticketCode?: string, phoneNumber?: string, form?: QuickTicketFormComponent }>(resolve => {
+    //     this.quickFormOnInit$.pipe(takeUntil(this.destroy$)).subscribe(trk => {
+    //       if (tracking === trk) {
+    //         const depForm = this.quickTicketFormList.filter(f => f.index === trk)[0];
+    //         if (depForm) {
+    //           depForm.form.description = 'Yêu cầu mới từ khách hàng có số điện thoại ' + phoneNumber + ' vào ' + (new Date().toString());
+    //         }
+    //         if (phoneNumber) {
+    //           this.apiService.putPromise('/helpdesk/relativeCallLogs/checkpoint', {}, []);
+    //         }
+    //         resolve(depForm);
+    //       }
+    //     });
+    //     this.layoutScrollService.scrollTo(0, 0);
+    //   });
 
-    } else {
-      // Scroll to center
-      if (existsQuickForm.form && existsQuickForm.form.elRef && existsQuickForm.form.elRef.nativeElement) {
-        const offsetTop = existsQuickForm.form.elRef.nativeElement.offsetTop;
-        this.layoutScrollService.scrollTo(0, offsetTop - 55);
-      }
-      // this.layoutScrollService.onScroll().subscribe(p => console.info(p));
-    }
-    // Load tiket list by phone
-    if (phoneNumber) {
-      this.keyword = phoneNumber;
-      this.refresh();
-    }
+    // } else {
+    //   // Scroll to center
+    //   if (existsQuickForm.form && existsQuickForm.form.elRef && existsQuickForm.form.elRef.nativeElement) {
+    //     const offsetTop = existsQuickForm.form.elRef.nativeElement.offsetTop;
+    //     this.layoutScrollService.scrollTo(0, offsetTop - 55);
+    //   }
+    //   // this.layoutScrollService.onScroll().subscribe(p => console.info(p));
+    // }
+    // // Load tiket list by phone
+    // if (phoneNumber) {
+    //   this.keyword = phoneNumber;
+    //   this.refresh();
+    // }
+
+    this.commonService.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
+      context: {
+        showLoadinng: true,
+        inputMode: 'dialog',
+        // ticketCode: id.Code,
+        // uuidIndex: id.UuidIndex,
+        onDialogSave: (newData: HelpdeskTicketModel[]) => {
+        },
+        onDialogClose: () => {
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
+    });
 
     return false;
   }
@@ -495,6 +521,20 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     const quickForm = { index: id, ticketCode: id };
     this.quickTicketFormList.unshift(quickForm);
     this.layoutScrollService.scrollTo(0, 0);
+    // this.commonService.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
+    //   context: {  
+    //     showLoadinng: true,
+    //     inputMode: 'dialog',
+    //     ticketCode: id,
+    //     // uuidIndex: id.UuidIndex,
+    //     onDialogSave: (newData: HelpdeskTicketModel[]) => {
+    //     },
+    //     onDialogClose: () => {
+    //     },
+    //   },
+    //   closeOnEsc: false,
+    //   closeOnBackdropClick: false,
+    // });
     return false;
   }
 
@@ -657,21 +697,45 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     return false;
   }
 
-  async phoneCall(ticket: HelpdeskTicketModel, phone: string, name: string) {
-    if (ticket && ticket.Code) {
-      this.mobileAppService.phoneCall(phone, name).then(callSessionId => {
-        // callSession.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(state => {
-        this.commonService.takeUntil('add_call_sessin_to_ticket', 3000).then(() => {
-          if (callSessionId) {
-            this.apiService.postPromise<HelpdeskTicketCallingSessionModel[]>('/helpdesk/ticketCallingSessions', {}, [{ Ticket: ticket.Code, CallSession: callSessionId, State: 'CALLOUT' }]).then(rs => {
+  async phoneCall(ticket: HelpdeskTicketModel, phone?: string, name?: string) {
+    if (ticket && ticket.Code && ticket.ObjectPhone) {
+
+
+      this.commonService.showDiaplog(this.commonService.translateText('Click2Call'), this.commonService.translateText('Gọi lại khách hàng, hệ thống sẽ kết nối tới số SIP của bạn trước vì vậy hãy online số SIP của bạn trước khi thưc hiên click2call !'), [
+        {
+          label: this.commonService.translateText('Common.cancel'),
+          status: 'danger',
+          action: () => {
+          },
+        },
+        {
+          icon: 'phone-call',
+          status: 'success',
+          label: this.commonService.translateText('Gọi'),
+          action: () => {
+            this.toastrService.show('Đang kết nối tới số SIP của bạn...');
+            this.apiService.putPromise('/helpdesk/tickets/' + ticket.Code, { click2call: true }, []).then(rs => {
+              this.toastrService.show('Đang kết nối tới khách hàng...');
               console.log(rs);
             });
-          }
-        });
-        // });
-      }).catch(e => {
-        console.error(e);
-      });
+          },
+        },
+      ]);
+
+
+      // this.mobileAppService.phoneCall(phone, name).then(callSessionId => {
+      //   // callSession.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(state => {
+      //   this.commonService.takeUntil('add_call_sessin_to_ticket', 3000).then(() => {
+      //     if (callSessionId) {
+      //       this.apiService.postPromise<HelpdeskTicketCallingSessionModel[]>('/helpdesk/ticketCallingSessions', {}, [{ Ticket: ticket.Code, CallSession: callSessionId, State: 'CALLOUT' }]).then(rs => {
+      //         console.log(rs);
+      //       });
+      //     }
+      //   });
+      //   // });
+      // }).catch(e => {
+      //   console.error(e);
+      // });
     } else {
       console.error('Ticket was not provided');
     }

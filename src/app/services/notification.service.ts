@@ -190,7 +190,7 @@ export class NotificationService {
             this.openNotification(this.prepareNotificaitonInfo(newNotification));
           });
         } else {
-          this.activityNotifications$.next([newNotification]);
+          // this.activityNotifications$.next([newNotification]);
         }
       });
 
@@ -243,7 +243,12 @@ export class NotificationService {
   async requestNewestActivityNotifications() {
     // Update activity notifications
     return this.loadNotifications({ sort_Id: 'desc', limit: 1, offset: 0, silent: true, eq_Type: 'ACTIVITY', eq_ReceiverState: 'NEW' }).then(notifications => {
-      this.activityNotifications$.next(notifications);
+      // this.activityNotifications$.next(notifications);
+      if (notifications && notifications.length > 0) {
+        if (this.activityUpdate$.value && this.activityUpdate$.value.Id != notifications[0].Id) {
+          this.activityUpdate$.next(notifications[0]);
+        }
+      }
       return notifications;
     });
   }
