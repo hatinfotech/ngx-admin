@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HelpdeskComponent } from './helpdesk.component';
-import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
+import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule, NbSpinnerModule } from '@nebular/theme';
 import { HelpdeskRoutingModule } from './helpdesk-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
@@ -101,6 +101,7 @@ import { HelpdeskProcedureFormComponent } from './procedure/helpdesk-procedure-f
     CKEditorModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    NbSpinnerModule,
 
     TranslateModule,
     NbDialogModule.forChild(),

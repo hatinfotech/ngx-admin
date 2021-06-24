@@ -252,13 +252,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         if (id && id.length > 0) {
           this.id = id;
           // if (this.id.length > 0) {
-            this.formLoad().then(() => {
-              resolve(true);
-            });
+          this.formLoad().then(() => {
+            resolve(true);
+          });
           // } else {
-            // this.formLoading = false;
-            // resolve(true);
-            // this.onProcessed();
+          // this.formLoading = false;
+          // resolve(true);
+          // this.onProcessed();
           // }
         } else {
           this.array.clear();
@@ -289,6 +289,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     //   }
     // });
   }
+
+  patchFormGroupValue: (newForm: FormGroup, data: M) => boolean;
 
   getRequestId(callback: (id?: string[]) => void) {
     if (this.mode === 'page') {
@@ -332,28 +334,54 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
           });
         }
       })(async (data: M[]) => {
-        this.array.clear();
-        for (let i = 0; i < data.length; i++) {
-          // data.forEach(item => {
-          const item = data[i];
-          const newForm = this.makeNewFormGroup(item);
-          this.array.push(newForm);
-          this.onAddFormGroup(this.array.length - 1, newForm, item);
-          if (formItemLoadCallback) {
-            await formItemLoadCallback(this.array.length - 1, newForm, item);
+        if (this.patchFormGroupValue) {
+          this.array.clear();
+          for (let i = 0; i < data.length; i++) {
+            // data.forEach(item => {
+            const item = data[i];
+            const newForm = this.makeNewFormGroup(item);
+            this.array.push(newForm);
+            this.onAddFormGroup(this.array.length - 1, newForm, item);
+            if (formItemLoadCallback) {
+              await formItemLoadCallback(this.array.length - 1, newForm, item);
+            }
+            // });
           }
-          // });
-        }
 
-        resovle(true);
-        // setTimeout(() => {
+          resovle(true);
+          // setTimeout(() => {
           // this.formLoading = false;
           // const aPastFormData = {formData: this.form.value.array, meta: null};
           // this.onUpdatePastFormData(aPastFormData);
           // this.pastFormData.push(aPastFormData);
           // this.pushPastFormData(this.form.value.array);
           this.onProcessed();
-        // }, 1000);
+          // }, 1000);
+        } else {
+
+          // this.array.clear();
+          for (let i = 0; i < data.length; i++) {
+            const item = data[i];
+            if (!this.array.controls[i]) {
+              const newForm = this.makeNewFormGroup(item);
+              this.array.push(newForm);
+              this.onAddFormGroup(this.array.length - 1, newForm, item);
+              if (formItemLoadCallback) {
+                await formItemLoadCallback(this.array.length - 1, newForm, item);
+              }
+            } else {
+              this.patchFormGroupValue(this.array.controls[i] as FormGroup, item);
+            }
+          }
+
+          // remove dirty form group
+          if (data.length < this.array.controls.length) {
+            this.array.controls.splice(data.length, this.array.controls.length - data.length);
+          }
+
+          resovle(true);
+          this.onProcessed();
+        }
       });
     });
   }
@@ -684,7 +712,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   refresh() {
-    this.array.clear();
+    // this.array.clear();
     this.formLoad();
   }
 

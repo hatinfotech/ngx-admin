@@ -1,3 +1,4 @@
+import { HelpdeskTicketModel } from './../../models/helpdesk.model';
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 
@@ -6,5 +7,6 @@ import { Injectable } from '@angular/core';
 })
 export class HeldpeskServiceService {
 
+  onUpdateTickets$ = new BehaviorSubject<HelpdeskTicketModel[]>(null);
   constructor() { }
 }

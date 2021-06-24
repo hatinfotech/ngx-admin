@@ -167,7 +167,7 @@ export class NotificationService {
           Picture: payload?.data?.picture,
           Data: payload?.data,
         };
-        this.activityUpdate$.next(newNotification);
+        if(newNotification.Type === 'ACTIVITY') this.activityUpdate$.next(newNotification);
         this.notifications.unshift(newNotification);
         // this.notifications$.next(notifications);
 
@@ -413,6 +413,7 @@ export class NotificationService {
     if (!notification.Title && notification?.Data?.title) notification.Title = notification?.Data?.title;
     if (!notification.Content && notification?.Data?.content) notification.Content = notification?.Data?.content;
     if (!notification.Type && notification?.Data?.type) notification.Type = notification?.Data?.type;
+    if (!notification.Action && notification?.Data?.action) notification.Action = notification?.Data?.action;
     if (notification?.Data?.time) notification.Time = notification?.Data?.time;
     if (notification?.Data?.action) notification.Action = notification?.Data?.action;
     if (notification?.Data?.status) notification.Status = notification?.Data?.status;

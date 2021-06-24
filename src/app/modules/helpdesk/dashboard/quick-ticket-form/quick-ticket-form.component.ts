@@ -13,6 +13,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { ContactModel } from '../../../../models/contact.model';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { Component as F7Component } from 'framework7';
+import { HeldpeskServiceService } from '../../heldpesk-service.service';
 
 @Component({
   selector: 'ngx-quick-ticket-form',
@@ -26,6 +27,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   idKey = 'Code';
   apiPath = '/helpdesk/tickets';
   baseFormUrl = '/helpdesk/ticket/form';
+  loading = false;
 
   @Input('ticketCode') ticketCode: string;
   @Input('uuidIndex') uuidIndex?: string;
@@ -110,7 +112,10 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
         // return false;
       },
       click: () => {
-        return this.save();
+        return this.save().then(results => {
+          this.refresh();
+          return results;
+        });
       },
     },
     {
@@ -133,7 +138,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       type: 'button',
       name: 'reset',
       status: 'warning',
-      label: 'Tải lại',
+      // label: 'Tải lại',
       icon: 'refresh',
       title: 'Tải lại',
       size: 'medium',
@@ -194,6 +199,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     public elRef: ElementRef,
     public mobileAppService: MobileAppService,
     public ref?: NbDialogRef<QuickTicketFormComponent>,
+    public helpdeskService?: HeldpeskServiceService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
     this.silent = true;
@@ -218,12 +224,18 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
 
   async loadByCallSessionId(callSessionId?: string): Promise<HelpdeskTicketModel> {
     if (!this.ticketCode && callSessionId) {
-      const ticket = (await this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { getByCallSessionId: callSessionId ? callSessionId : this.index }))[0];
-      if (ticket) {
-        this.id = [ticket.Code];
-        this.formLoad([ticket]);
+      this.loading = true;
+      while (true) {
+        const ticket = (await this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { getByCallSessionId: callSessionId ? callSessionId : this.index }))[0];
+        if (ticket) {
+          this.id = [ticket.Code];
+          this.formLoad([ticket]);
+          this.loading = false;
+          return ticket;
+        } else {
+          await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+        }
       }
-      return ticket;
     }
     return null;
   }
@@ -264,10 +276,11 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
 
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (item['Code']) {
-          this.array.controls[formIndex].get('ObjectName').setValue(item['Name']);
-          this.array.controls[formIndex].get('ObjectPhone').setValue(item['Phone']);
-          this.array.controls[formIndex].get('ObjectEmail').setValue(item['Email']);
-          this.array.controls[formIndex].get('ObjectAddress').setValue(item['Address']);
+          const formItem = this.array.controls[formIndex];
+          formItem.get('ObjectName').setValue(item['Name']);
+          if (item['Phone'] && item['Phone']['restricted']) formItem.get('ObjectPhone')['placeholder'] = item['Phone']['placeholder']; else formItem.get('ObjectPhone').setValue(item['Phone']);
+          if (item['Email'] && item['Email']['restricted']) formItem.get('ObjectEmail')['placeholder'] = item['Email']['placeholder']; else formItem.get('ObjectEmail').setValue(item['Email']);
+          if (item['Address'] && item['Address']['restricted']) formItem.get('ObjectAddress')['placeholder'] = item['Address']['placeholder']; else formItem.get('ObjectAddress').setValue(item['Address']);
         }
       }
     }
@@ -325,17 +338,32 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       // } else {
       //   formData = data;
       // }
-      newForm.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
-      newForm.get('ObjectEmail')['placeholder'] = data['ObjectEmail'];
-      newForm.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
-      data['ObjectPhone'] = null;
-      data['ObjectEmail'] = null;
-      data['ObjectAddress'] = null;
-      newForm.patchValue(data);
+      // newForm.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
+      // newForm.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+      // data['ObjectPhone'] = null;
+      // data['ObjectAddress'] = null;
+      // if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
+      //   (data.Infos?.Description as any).pop();
+      // }
+      // newForm.patchValue(data);
+      this.patchFormGroupValue(newForm, data);
       // newForm['Infos'] = data.Infos;
     }
     return newForm;
   }
+
+  patchFormGroupValue = (formGroup: FormGroup, data: HelpdeskTicketModel) => {
+    formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
+      formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+      data['ObjectPhone'] = null;
+      data['ObjectAddress'] = null;
+      if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
+        (data.Infos?.Description as any).pop();
+      }
+      formGroup.patchValue(data);
+    return true;
+  }
+
   onAddFormGroup(index: number, newForm: FormGroup, formData?: HelpdeskTicketModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
@@ -480,8 +508,13 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       } else {
         this.close();
       }
+      this.helpdeskService.onUpdateTickets$.next(rs);
     });
     return false;
+  }
+
+  isShowOldDescription(description: any) {
+    return Array.isArray(description);
   }
 
 }

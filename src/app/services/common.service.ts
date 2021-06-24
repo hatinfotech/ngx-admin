@@ -449,7 +449,7 @@ export class CommonService {
 
   /** Dialog */
   showDiaplog(title: string, content: string, buttons: { label: string, icon?: string, status?: string, action?: () => void }[]) {
-    this.dialogService.open(ShowcaseDialogComponent, {
+    return this.dialogService.open(ShowcaseDialogComponent, {
       context: {
         title: title,
         content: content,
@@ -466,7 +466,7 @@ export class CommonService {
     let dialogLoading = null;
     userConfig.context['onAfterInit'] = () => {
       setTimeout(() => {
-        dialogLoading.fadeOut(300);
+        dialogLoading && dialogLoading.fadeOut(300);
       }, 300);
     };
     const dialogRef = this.dialogService.open<T>(content, userConfig);
@@ -729,7 +729,7 @@ export class CommonService {
   openTicketForm(id: {Code?: string, UuidIndex?: string}) {
     this.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
       context: {  
-        showLoadinng: true,
+        showLoadinng: false,
         inputMode: 'dialog',
         ticketCode: id.Code,
         uuidIndex: id.UuidIndex,
