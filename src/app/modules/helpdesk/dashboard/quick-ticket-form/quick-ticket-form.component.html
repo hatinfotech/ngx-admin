@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup" [nbSpinner]="loading">
+      <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Helpdesk.Ticket.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
@@ -10,7 +10,7 @@
             <ngx-action-control-list style="float: right;" [list]="actionControlList" [option]="{formIndex: i, form: formItem}"></ngx-action-control-list>
           </nav> -->
         </nb-card-header>
-        <nb-card-body>
+        <nb-card-body [nbSpinner]="loading">
           <div [formGroup]="formItem">
             <div class="row">
               <input type="hidden" formControlName="Code">

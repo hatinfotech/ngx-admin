@@ -226,15 +226,22 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     if (!this.ticketCode && callSessionId) {
       this.loading = true;
       while (true) {
-        const ticket = (await this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { getByCallSessionId: callSessionId ? callSessionId : this.index }))[0];
-        if (ticket) {
-          this.id = [ticket.Code];
-          this.formLoad([ticket]);
-          this.loading = false;
-          return ticket;
-        } else {
-          await new Promise(resolve => setTimeout(() => resolve(true), 1000));
-        }
+        const stop = await new Promise(resolve => {
+          this.executeGet({ getByCallSessionId: callSessionId ? callSessionId : this.index }, resources => {
+            // const ticket = resources[0]; 
+            if (resources && resources.length > 0) {
+              this.id = resources.map(m => m.Code);
+              this.formLoad(resources);
+              this.loading = false;
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          });
+        });
+        if (stop) break;
+        await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+        // const ticket = (await this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { getByCallSessionId: callSessionId ? callSessionId : this.index }))[0];
       }
     }
     return null;
@@ -354,13 +361,13 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
 
   patchFormGroupValue = (formGroup: FormGroup, data: HelpdeskTicketModel) => {
     formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
-      formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
-      data['ObjectPhone'] = null;
-      data['ObjectAddress'] = null;
-      if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
-        (data.Infos?.Description as any).pop();
-      }
-      formGroup.patchValue(data);
+    formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+    data['ObjectPhone'] = null;
+    data['ObjectAddress'] = null;
+    if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
+      (data.Infos?.Description as any).pop();
+    }
+    formGroup.patchValue(data);
     return true;
   }
 

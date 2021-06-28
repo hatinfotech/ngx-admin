@@ -334,7 +334,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
           });
         }
       })(async (data: M[]) => {
-        if (this.patchFormGroupValue) {
+        if (!this.patchFormGroupValue) {
           this.array.clear();
           for (let i = 0; i < data.length; i++) {
             // data.forEach(item => {
