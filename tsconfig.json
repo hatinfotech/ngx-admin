@@ -20,5 +20,9 @@
     "plugins": [
       { "name": "tslint-language-service"}
     ]
+  },
+  "angularCompilerOptions": {
+    "enableIvy": true,
+    "fullTemplateTypeCheck": false
   }
 }

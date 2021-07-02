@@ -32,6 +32,13 @@
                     <div class="value" *ngIf="item?.LastMessage">
                         <nb-icon icon="chatbox-working" pack="ion"></nb-icon> <span class="text">Tin nhắn: {{ item.LastMessage }}</span>
                     </div>
+                    <div class="caption">Kênh tương tác</div>
+                    <div class="value nowrap" *ngIf="item.ZaloOaName">
+                        <nb-icon icon="android-share-alt" pack="ion"></nb-icon>Zalo OA:&nbsp;<a href="#" (click)="openChatRoom(item.ChatRoom)" class="text {{item.ZaloConnectStatus ? 'connected' : ''}}">{{ item.ZaloOaName }}</a>
+                    </div>
+                    <div class="value nowrap" *ngIf="item.Infos?.Pbx_Delegate_Phone_Number">
+                        <nb-icon icon="android-share-alt" pack="ion"></nb-icon>Voice:&nbsp;<span href="#" class="text connected">{{ item?.Infos?.Pbx_Delegate_Phone_Number }}</span>
+                    </div>
                 </div>
                 <div class="col-md-2 m-list-item-property">
                     <div class="caption">Người yêu cầu</div>

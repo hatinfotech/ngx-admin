@@ -365,8 +365,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       offset: (cardData.pageToLoadNext - 1) * this.pageSize,
       includeState: true,
       includeLastMessage: true,
-      includeInfosAsKeyValue: true,
+      includeInfosAsKeyValue: 'Pbx_Delegate_Phone_Number,Completed_User,Accepted_User',
       includeProcedure: true,
+      includeZaloConnect: true,
     }, nextList => {
       // this.dataList = list.map(item => {
       //   item['selected'] = false;

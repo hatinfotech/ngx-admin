@@ -74,6 +74,9 @@
       &nb-icon {
         font-size: 1rem;
       }
+      .text.connected {
+        color: nb-theme(color-success-500);
+      }
       &.state-OPEN {
           color: nb-theme(text-warning-color);
       }
