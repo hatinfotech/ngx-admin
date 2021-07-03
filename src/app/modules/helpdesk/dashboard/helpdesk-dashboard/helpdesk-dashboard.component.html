@@ -11,6 +11,10 @@
             <div class="row m-list-item state-{{item?.State?.id}}" [class.active]="item.selected" *ngFor="let item of infiniteLoadModel.tickets" [style.color]="item.TicketStateColor" (click)="selectOne($event, item)">
                 <div class="col-md-3 m-list-item-property">
                     <div class="caption">Nội dung yêu cầu</div>
+                    <div class="value nowrap">
+                        <nb-icon icon="ios-paper" pack="ion"></nb-icon> <span class="text">Định danh:
+                            {{ item.Code | objectstext }}</span>
+                    </div>
                     <div class="value nowrap" *ngIf="item.Infos?.Request_Source">
                         <nb-icon icon="android-exit" pack="ion"></nb-icon> <span class="text">Nguồn thông tin:
                             {{ item.Infos.Request_Source | objectstext }}</span>
@@ -34,10 +38,10 @@
                     </div>
                     <div class="caption">Kênh tương tác</div>
                     <div class="value nowrap" *ngIf="item.ZaloOaName">
-                        <nb-icon icon="android-share-alt" pack="ion"></nb-icon>Zalo OA:&nbsp;<a href="#" (click)="openChatRoom(item.ChatRoom)" class="text {{item.ZaloConnectStatus ? 'connected' : ''}}">{{ item.ZaloOaName }}</a>
+                        <nb-icon icon="chevron-right" pack="ion"></nb-icon>Zalo OA:&nbsp;<a href="#" (click)="openChatRoom(item.ChatRoom)" class="text {{item.ZaloConnectStatus ? 'connected' : ''}}">{{ item.ZaloOaName }}</a>
                     </div>
-                    <div class="value nowrap" *ngIf="item.Infos?.Pbx_Delegate_Phone_Number">
-                        <nb-icon icon="android-share-alt" pack="ion"></nb-icon>Voice:&nbsp;<span href="#" class="text connected">{{ item?.Infos?.Pbx_Delegate_Phone_Number }}</span>
+                    <div class="value nowrap" *ngIf="item.Infos?.Pbx_Request_Caller_Destination">
+                        <nb-icon icon="chevron-right" pack="ion"></nb-icon>Voice:&nbsp;<span href="#" class="text connected">{{ item?.Infos?.Pbx_Request_Caller_Destination }}</span>
                     </div>
                 </div>
                 <div class="col-md-2 m-list-item-property">
