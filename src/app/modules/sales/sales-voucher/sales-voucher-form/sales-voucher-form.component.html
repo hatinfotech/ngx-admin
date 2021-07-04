@@ -81,9 +81,14 @@
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="PriceTable" label="Sales.priceTable" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <ngx-select2 formControlName="PriceTable" [select2Option]="select2SalesPriceReportOption" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                    <ngx-select2 formControlName="PriceTable" [select2Option]="select2SalesPriceReportOption" (selectChange)="onPriceTableChange(formItem, $event, i)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-2">
+                                <ngx-form-group [formGroup]="formItem" name="PriceReportVoucher" label="Sales.priceReport" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="PriceReportVoucher" [select2Option]="select2PriceReportOption" (selectChange)="onPriceReportVoucherChange(formItem, $event, i)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">

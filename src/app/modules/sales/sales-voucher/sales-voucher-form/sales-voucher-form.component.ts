@@ -1,3 +1,5 @@
+import { SalesMasterPriceTableModel } from './../../../../models/sales.model';
+import { PriceReportModel } from './../../../../models/price-report.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { environment } from '../../../../../environments/environment';
@@ -94,6 +96,36 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     ajax: {
       url: params => {
         return this.apiService.buildApiUrl('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Title'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
+  select2PriceReportOption = {
+    placeholder: 'Chọn bảng giá...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Title',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/sales/price-reports', { filter_Title: params['term'] ? params['term'] : '', eq_State: 'IMPLEMENT', limit: 20 });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -288,6 +320,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       DeliveryAddress: [''],
       Title: [''],
       PriceTable: [''],
+      PriceReportVoucher: [''],
       Note: [''],
       DateOfSale: [''],
       _total: [''],
@@ -342,7 +375,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     if (data) {
       newForm.patchValue(data);
       this.toMoney(parentFormGroup, newForm);
-      if (data.Product.Units && data.Product.Units.length > 0) {
+      if (data.Product?.Units && data.Product?.Units?.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
         newForm['unitList'] = this.commonService.unitList;
@@ -428,6 +461,68 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
           formGroup.get('ObjectBankName').setValue(selectedData.BankName);
           formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
+  }
+
+  onPriceTableChange(formGroup: FormGroup, selectedData: SalesMasterPriceTableModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          // formGroup.get('ObjectName').setValue(selectedData.Name);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+          // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
+  }
+
+  onPriceReportVoucherChange(formGroup: FormGroup, selectedData: PriceReportModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+
+          this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + selectedData.Code, {
+            includeContact: true,
+            includeDetails: true,
+            includeProductUnitList: true,
+            includeProductPrice: true,
+          }).then(rs => {
+
+            if (rs && rs.length > 0) {
+              const salesVoucher: SalesVoucherModel = { ...rs[0] };
+              salesVoucher.PriceReportVoucher = selectedData.Code;
+              delete salesVoucher.Code;
+              delete salesVoucher.Id;
+              for (const detail of salesVoucher.Details) {
+                delete detail['Id'];
+                delete detail['Voucher'];
+                detail.ProductName = detail['Description'];
+              }
+              this.formLoad([salesVoucher]);
+            }
+          });
+
+          // formGroup.get('ObjectName').setValue(selectedData.Name);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+          // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
         }
       }
     }

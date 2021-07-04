@@ -51,7 +51,7 @@
               </tr>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
-                  <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
+                  <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.ProductName)"></td>
                 </tr>
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <td>{{detail.No}}</td>
