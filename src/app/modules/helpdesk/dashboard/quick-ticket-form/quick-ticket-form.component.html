@@ -15,55 +15,77 @@
             <div class="row">
               <input type="hidden" formControlName="Code">
               <input type="hidden" formControlName="CallSessionId">
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
-                  <label class="label"><span class="valid">Liên hệ</span><span class="invalid">Liên hệ là bắt buộc
-                      (*)</span></label>
-                  <ngx-select2 formControlName="Object" [select2Option]="select2Option" (selectChange)="onObjectChange($event, i)"></ngx-select2>
+              <div class="col-7">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group" [attr.state]="formControlValidate(formItem.get('Procedure'), 'warning')">
+                      <label class="label"><span class="valid">Qui trình hỗ trợ</span><span class="invalid">Qui trình hỗ trợ
+                          (*)</span></label>
+                      <ngx-select2 formControlName="Procedure" [select2Option]="helpdeskProcedureSelect2" (selectChange)="onProcedureChange($event, formItem)"></ngx-select2>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group" [attr.state]="formControlValidate(formItem.get('ProcedureDescription'), 'warning')">
+                      <label class="label"><span class="valid">Nội dung qui trình</span><span class="invalid">Nội dung qui trình</span></label>
+                      <div class="input-full-width size-medium status-basic shape-rectangle nb-transition" nbInput fullWidth [innerHTML]="formItem.get('ProcedureDescription')?.value"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col-sm-9">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectName'), 'warning')">
-                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên liên hệ
-                      là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="Tên liên hệ">
+              <div class="col-5">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group" [attr.state]="formControlValidate(formItem.get('Object'), 'warning')">
+                      <label class="label"><span class="valid">Liên hệ</span><span class="invalid">Liên hệ là bắt buộc
+                          (*)</span></label>
+                      <ngx-select2 formControlName="Object" [select2Option]="select2Option" (selectChange)="onObjectChange($event, i)"></ngx-select2>
+                    </div>
+                  </div>
+                  <div class="col-sm-8">
+                    <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectName'), 'warning')">
+                      <label class="label"><span class="valid">Tên</span><span class="invalid">Tên liên hệ
+                          là bắt buộc (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="Tên liên hệ">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
+                      <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại là
+                          bắt buộc
+                          (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || 'Số điện thoại'}}">
+                    </div>
+                  </div>
+                  <div class="col-sm-8">
+                    <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectEmail'), 'warning')">
+                      <label class="label"><span class="valid">Email</span><span class="invalid">Email là
+                          bắt
+                          buộc
+                          (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="Email">
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectAddress'), 'warning')">
+                      <label class="label"><span class="valid">Địa chỉ</span><span class="invalid">Địa chỉ
+                          là bắt
+                          buộc
+                          (*)</span></label>
+                      <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{formItem.get('ObjectAddress').placeholder || 'Địa chỉ'}}">
+                    </div>
+                  </div>
+                  <div class="col-sm-12" ngif>
+                    <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
+                      <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả yêu cầu là bắt buộc (*)</span></label>
+                      <ng-container *ngIf="isShowOldDescription(formItem.get('Infos')?.value?.Description)">
+                        <textarea *ngFor="let description of formItem.get('Infos')?.value?.Description" nbInput fullWidth rows="1" placeholder="Mô tả" disabled>{{description}}</textarea>
+                      </ng-container>
+                      <textarea nbInput fullWidth rows="5" formControlName="Description" placeholder="Mô tả"></textarea>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectPhone'), 'warning')">
-                  <label class="label"><span class="valid">Số điện thoại</span><span class="invalid">Số điện thoại là
-                      bắt buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || 'Số điện thoại'}}">
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectEmail'), 'warning')">
-                  <label class="label"><span class="valid">Email</span><span class="invalid">Email là
-                      bắt
-                      buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="Email">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ObjectAddress'), 'warning')">
-                  <label class="label"><span class="valid">Địa chỉ</span><span class="invalid">Địa chỉ
-                      là bắt
-                      buộc
-                      (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{formItem.get('ObjectAddress').placeholder || 'Địa chỉ'}}">
-                </div>
-              </div>
-              <div class="col-sm-12" ngif>
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
-                  <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả yêu cầu là bắt buộc (*)</span></label>
-                  <ng-container *ngIf="isShowOldDescription(formItem.get('Infos')?.value?.Description)">
-                    <textarea *ngFor="let description of formItem.get('Infos')?.value?.Description" nbInput fullWidth rows="1" placeholder="Mô tả" disabled>{{description}}</textarea>
-                  </ng-container>
-                  <textarea nbInput fullWidth rows="5" formControlName="Description" placeholder="Mô tả"></textarea>
-                </div>
-              </div>
+
             </div>
           </div>
         </nb-card-body>

@@ -936,6 +936,10 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   }
 
+  convertToHtml(text: string) {
+    return text.replace(/\n/g, '<br>');
+  }
+
   async updateItemsByCode(ticketCode: string) {
     const promise = this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', {
       id: [ticketCode],

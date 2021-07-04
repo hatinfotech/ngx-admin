@@ -65,6 +65,35 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     },
   };
 
+  helpdeskProcedureSelect2 = {
+    placeholder: 'Chọn qui trình...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return environment.api.baseUrl + '/helpdesk/procedures?token='
+          + localStorage.getItem('api_access_token') + '&filter_Name=' + (params['term'] || '');
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Name'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
   actionButtonList: ActionControl[] = [
     {
       type: 'button',
@@ -294,6 +323,26 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
 
   }
 
+  onProcedureChange(item, formGroup: FormGroup) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (item && !item['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (item['Code']) {
+          formGroup.get('ProcedureDescription').setValue(item['Description']);
+          // const formItem = this.array.controls[formIndex];
+          // formItem.get('ObjectName').setValue(item['Name']);
+          // if (item['Phone'] && item['Phone']['restricted']) formItem.get('ObjectPhone')['placeholder'] = item['Phone']['placeholder']; else formItem.get('ObjectPhone').setValue(item['Phone']);
+          // if (item['Email'] && item['Email']['restricted']) formItem.get('ObjectEmail')['placeholder'] = item['Email']['placeholder']; else formItem.get('ObjectEmail').setValue(item['Email']);
+          // if (item['Address'] && item['Address']['restricted']) formItem.get('ObjectAddress')['placeholder'] = item['Address']['placeholder']; else formItem.get('ObjectAddress').setValue(item['Address']);
+        }
+      }
+    }
+
+  }
+
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.ticketCode ? [this.ticketCode] : null);
   }
@@ -301,6 +350,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   /** Execute api get */
   executeGet(params: any, success: (resources: HelpdeskTicketModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeObject'] = true;
+    params['includeProcedure'] = true;
     params['includeInfosAsKeyValue'] = 'Description';
     super.executeGet(params, success, error);
   }
@@ -308,6 +358,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   /** Execute api post */
   executePost(params: any, data: HelpdeskTicketModel[], success: (data: HelpdeskTicketModel[]) => void, error: (e: any) => void) {
     params['autoCreateChatRoom'] = true;
+    params['includeProcedure'] = true;
     super.executePost(params, data, (rs) => {
       this.chatRoom = rs[0].ChatRoom;
       if (success) success(rs);
@@ -332,6 +383,8 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       ObjectPhone: [''],
       ObjectEmail: [''],
       ObjectAddress: [''],
+      Procedure: [''],
+      ProcedureDescription: [''],
       Infos: [''],
       // State: [''],
       // Service: [''],
@@ -522,6 +575,10 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
 
   isShowOldDescription(description: any) {
     return Array.isArray(description);
+  }
+
+  convertToHtml(text: string) {
+    return text.replace(/\n/g, '<br>');
   }
 
 }

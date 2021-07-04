@@ -556,6 +556,22 @@ export class ApiService {
         },
       });
     }
+    if (e.status === 422) {
+      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
+        context: {
+          title: 'Yêu cầu chưa được xử lý',
+          content: this.joinLogs(e),
+          actions: [
+            {
+              label: 'Trở về',
+              icon: 'back',
+              status: 'info',
+              action: () => { },
+            },
+          ],
+        },
+      });
+    }
     let errorMessage = '';
     if (e.error instanceof ErrorEvent) {
       // client-side error
