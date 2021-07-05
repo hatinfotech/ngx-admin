@@ -178,14 +178,14 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         responseText = 'Common.implementSuccess';
         break;
       case 'IMPLEMENT':
-        params['changeState'] = 'COMPLETEREQUEST';
-        confirmText = 'Common.completeRequestConfirm';
-        responseText = 'Common.completeRequestSuccess';
+        params['changeState'] = 'ACCEPTANCEREQUEST';
+        confirmText = 'Common.acceptanceRequestConfirm';
+        responseText = 'Common.acceptanceRequestSuccess';
         break;
-      case 'COMPLETEREQUEST':
-        params['changeState'] = 'COMPLETE';
-        confirmText = 'Common.comppleteConform';
-        responseText = 'Common.completeSuccess';
+      case 'ACCEPTANCEREQUEST':
+        params['changeState'] = 'ACCEPTANCE';
+        confirmText = 'Common.acceptanceConfirm';
+        responseText = 'Common.acceptanceSuccess';
         break;
       default:
         params['changeState'] = 'APPROVE';
@@ -202,7 +202,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.implement' : (data.State == 'IMPLEMENT' ? 'Common.completeRequest' : (data.State == 'COMPLETEREQUEST' ? 'Common.complete' : (data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))),
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.implement' : (data.State == 'IMPLEMENT' ? 'Common.completeRequest' : (data.State == 'ACCEPTANCEREQUEST' ? 'Common.complete' : (data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))),
         status: 'danger',
         action: () => {
           // const params = { id: [data.Code] };
@@ -211,9 +211,9 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
           //     params['changeState'] = 'IMPLEMENT';
           //     break;
           //   case 'IMPLEMENT':
-          //     params['changeState'] = 'COMPLETEREQUEST';
+          //     params['changeState'] = 'ACCEPTANCEREQUEST';
           //     break;
-          //   case 'COMPLETEREQUEST':
+          //   case 'ACCEPTANCEREQUEST':
           //     params['changeState'] = 'COMPLETE';
           //     break;
           //   default:

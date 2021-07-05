@@ -59,7 +59,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   stateDic = {
     APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'success', outline: false },
     IMPLEMENT: { label: this.commonService.translateText('Common.implement'), status: 'warning', outline: false },
-    COMPLETEREQUEST: { label: this.commonService.translateText('Common.completeRequest'), status: 'primary', outline: false },
+    ACCEPTANCEREQUEST: { label: this.commonService.translateText('Common.completeRequest'), status: 'primary', outline: false },
     COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success', outline: true },
     CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
   };
