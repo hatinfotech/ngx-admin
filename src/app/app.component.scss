@@ -1601,12 +1601,13 @@ body [nbButton].appearance-hero.size-medium {
   }
 }
 
-.nb-theme-dark, .nb-theme-cosmic {
+.nb-theme-dark,
+.nb-theme-cosmic {
   .notification-area {
     nb-list-item {
       color: #b0b3b8;
     }
-    
+
     nb-list-item:hover {
       background-color: #7d7d7d21;
     }
@@ -1632,17 +1633,17 @@ body [nbButton].appearance-hero.size-medium {
   }
 }
 
+.nb-theme-default,
+.nb-theme-corporate {
+  .notification-area {
+    nb-list-item {
+      color: #6c757d;
+    }
 
-.nb-theme-default, .nb-theme-corporate {
-    .notification-area {
-      nb-list-item {
-        color: #6c757d;
-      }
-      
-      nb-list-item:hover {
-        background-color: #7d7d7d21;
-      }
-  
+    nb-list-item:hover {
+      background-color: #7d7d7d21;
+    }
+
     //   nb-list-item.new {
     //     // color: #fff;
     //     // background-color: #3bb8e8d6;
@@ -1664,6 +1665,9 @@ body [nbButton].appearance-hero.size-medium {
     //   nb-list-item.active:hover  {
     //     // background-color: #7373733b;
     //   }
-    }
   }
-  
+}
+
+.procedure-area img {
+  max-width: 100%;
+}
