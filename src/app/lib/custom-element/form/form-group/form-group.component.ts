@@ -2,6 +2,13 @@ import { FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonService } from '../../../../services/common.service';
 
+export interface CustomIcon {
+  pack?: string;
+  icon: string;
+  title?: string;
+  status: string;
+  action: (formGroup: FormGroup, array: FormArray, index: number, option: any) => void;
+};
 @Component({
   selector: 'ngx-form-group',
   templateUrl: './form-group.component.html',
@@ -9,6 +16,7 @@ import { CommonService } from '../../../../services/common.service';
 })
 export class FormGroupComponent implements OnInit {
 
+  @Input() option?: any;
   @Input() formGroup: FormGroup;
   @Input() name: string;
   @Input() allowCopy?: boolean;
@@ -18,6 +26,11 @@ export class FormGroupComponent implements OnInit {
   @Input() hideLabel: boolean = false;
   @Input() required?: boolean;
   @Input() align = 'left';
+  @Input() customIcons?: CustomIcon[];
+  @Input() customIconPack?: string = 'eva';
+  @Input() customIconTitle?: string;
+  @Input() customIconSttaus?: string;
+  @Input() customIconAction?: string;
   constructor(
     public commonService: CommonService,
   ) { }

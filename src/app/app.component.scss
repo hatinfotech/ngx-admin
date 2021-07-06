@@ -1045,7 +1045,7 @@ body .form-group[state="warning"] textarea:focus {
   margin-bottom: 0.5rem;
 }
 
-.form-group .copy-btn {
+.form-group .float-icon-area {
   position: absolute;
   // z-index: 1;
   // right: -14px;
@@ -1053,6 +1053,11 @@ body .form-group[state="warning"] textarea:focus {
   right: 0;
   top: -7px;
   color: #7d7d7da6;
+  z-index: 1;
+
+  nb-icon {
+    cursor: pointer;
+  }
 }
 
 .dialog-wrap {
@@ -1067,12 +1072,12 @@ body .form-group[state="warning"] textarea:focus {
 // .cdk-overlay-pane:has(ngx-showcase-dialog) {
 //   width: 100%;
 // }
-.copy-btn {
-  position: absolute;
-  z-index: 1;
-  right: -14px;
-  top: -14px;
-}
+// .copy-btn {
+//   // position: absolute;
+//   z-index: 1;
+//   right: -14px;
+//   top: -14px;
+// }
 
 .fit-fist-col,
 .fit-last-col {

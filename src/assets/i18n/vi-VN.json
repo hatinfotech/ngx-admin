@@ -50,6 +50,17 @@
         "wholesale": "bán sỉ",
         "priceTable": "bảng giá"
     },
+    "Deployment": {
+        "Voucher": {
+            "title": "{{definition}}{{action}} phiếu triển khai",
+            "List": {
+                "Title": ""
+            },
+            "Form": {
+                "title": "{{action}} triển khai"
+            }
+        }
+    },
     "Common": {
         "Pms": {
             "list": "xem danh sách",

@@ -2,7 +2,8 @@ import { UnitModel } from './unit.model';
 
 export class ProductModel {
   [key: string]: any;
-  id?: StaticRange; text?: string;
+  id?: string; 
+  text?: string;
 
   Code?: string;
   Sku?: string;

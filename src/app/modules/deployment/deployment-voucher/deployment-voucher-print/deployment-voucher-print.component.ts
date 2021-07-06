@@ -1,27 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonService } from '../../../../services/common.service';
-import { Router } from '@angular/router';
-import { ApiService } from '../../../../services/api.service';
-import { NbDialogRef } from '@nebular/theme';
-import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
-import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { environment } from '../../../../../environments/environment';
 import { DatePipe } from '@angular/common';
-import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
-import { TaxModel } from '../../../../models/tax.model';
-import { UnitModel } from '../../../../models/unit.model';
-
-declare var $: JQueryStatic;
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NbDialogRef } from '@nebular/theme';
+import { environment } from '../../../../../environments/environment';
+import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
+import { DeploymentVoucherModel, DeploymentVoucherDetailModel } from '../../../../models/deployment.model';
+import { ApiService } from '../../../../services/api.service';
+import { CommonService } from '../../../../services/common.service';
+import { DeploymentVoucherFormComponent } from '../deployment-voucher-form/deployment-voucher-form.component';
 
 @Component({
-  selector: 'ngx-sales-price-report-print',
-  templateUrl: './sales-price-report-print.component.html',
-  styleUrls: ['./sales-price-report-print.component.scss'],
+  selector: 'ngx-deployment-voucher-print',
+  templateUrl: './deployment-voucher-print.component.html',
+  styleUrls: ['./deployment-voucher-print.component.scss']
 })
-export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<SalesPriceReportModel> implements OnInit {
+export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<DeploymentVoucherModel> implements OnInit {
 
   /** Component name */
-  componentName = 'SalesPriceReportPrintComponent';
+  componentName = 'DeploymentVoucherPrintComponent';
   title: string = 'Xem trước phiếu báo giá';
   env = environment;
 
@@ -29,7 +25,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<SalesPriceReportPrintComponent>,
+    public ref: NbDialogRef<DeploymentVoucherPrintComponent>,
     private datePipe: DatePipe,
   ) {
     super(commonService, router, apiService, ref);
@@ -65,7 +61,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return result;
   }
 
-  // getIdentified(data: SalesPriceReportModel): string[] {
+  // getIdentified(data: DeploymentVoucherModel): string[] {
   //   if (this.idKey && this.idKey.length > 0) {
   //     return this.idKey.map(key => data[key]);
   //   } else {
@@ -73,8 +69,8 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   //   }
   // }
 
-  renderTitle(data: SalesPriceReportModel) {
-    return `PhieuBaoGia_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
+  renderTitle(data: DeploymentVoucherModel) {
+    return `Phieu_Trien_Khai_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
   }
 
   close() {
@@ -89,7 +85,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return (html && html?.placeholder || html || '').replace(/\n/g, '<br>');
   }
 
-  toMoney(detail: SalesPriceReportDetailModel) {
+  toMoney(detail: DeploymentVoucherDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
       if (detail.Tax) {
@@ -103,7 +99,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return 0;
   }
 
-  getTotal(data: SalesPriceReportModel) {
+  getTotal(data: DeploymentVoucherModel) {
     let total = 0;
     const details = data.Details;
     let no = 1;
@@ -117,7 +113,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return total;
   }
 
-  saveAndClose(data: SalesPriceReportModel) {
+  saveAndClose(data: DeploymentVoucherModel) {
     if (this.onSaveAndClose) {
       this.onSaveAndClose(data);
     }
@@ -135,14 +131,14 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return '';
   }
 
-  prepareCopy(data: SalesPriceReportModel) {
+  prepareCopy(data: DeploymentVoucherModel) {
     this.close();
-    this.commonService.openDialog(SalesPriceReportFormComponent, {
+    this.commonService.openDialog(DeploymentVoucherFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [data.Code],
         isDuplicate: true,
-        onDialogSave: (newData: SalesPriceReportModel[]) => {
+        onDialogSave: (newData: DeploymentVoucherModel[]) => {
           // if (onDialogSave) onDialogSave(row);
           this.onClose(newData[0]);
         },
@@ -155,7 +151,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     });
   }
 
-  approvedConfirm(data: SalesPriceReportModel) {
+  approvedConfirm(data: DeploymentVoucherModel) {
     if (['COMPLETE'].indexOf(data.State) > -1) {
       this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
@@ -220,7 +216,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
           //     params['changeState'] = 'APPROVE';
           //     break;
           // }
-          this.apiService.putPromise<SalesPriceReportModel[]>('/sales/price-reports', params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<DeploymentVoucherModel[]>('/sales/price-reports', params, [{ Code: data.Code }]).then(rs => {
             this.onChange && this.onChange(data);
             this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {

@@ -1,6 +1,8 @@
 <div class="form-group" [attr.state]="formControlValidate(formGroup.get(name), 'warning')">
-  <nb-icon *ngIf="allowCopy" class="copy-btn" (click)="copyFormControlValueToOthers(array, index, name)" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline">
-  </nb-icon>
+  <div class="float-icon-area">
+    <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" title="{{customIcon.title || ''}}"></nb-icon>
+    <nb-icon *ngIf="allowCopy" class="copy-btn" (click)="copyFormControlValueToOthers(array, index, name)" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon>
+  </div>
   <label class="label" *ngIf="!hideLabel">
     <span class="valid" [ngStyle]="{'text-align': align && align || 'left', 'margin-right': align && align === 'right' && allowCopy ? '25px' : '0'}">{{label | translate | headtitlecase}}</span>
     <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant(label)} | headtitlecase }}</span>

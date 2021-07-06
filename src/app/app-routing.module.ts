@@ -155,6 +155,16 @@ const routes: Routes = [
     loadChildren: () => import('./modules/sales/sales.module')
       .then(m => m.SalesModule),
   },
+  // Deployment
+  {
+    path: 'deployment',
+    resolve: {
+      configuration: RoutingResolve,
+    },
+    // canActivate: [AuthGuardService],
+    loadChildren: () => import('./modules/deployment/deployment.module')
+      .then(m => m.DeploymentModule),
+  },
   // Purchase
   {
     path: 'purchase',
