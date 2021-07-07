@@ -87,8 +87,8 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="PriceReportVoucher" label="Sales.priceReport" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <ngx-select2 formControlName="PriceReportVoucher" [select2Option]="select2PriceReportOption" (selectChange)="onPriceReportVoucherChange(formItem, $event, i)"></ngx-select2>
+                                <ngx-form-group [formGroup]="formItem" name="SalesTask" label="Sales.salesTask" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="SalesTask" [select2Option]="select2PriceReportOption" (selectChange)="onSalestTaskChange(formItem, $event, i)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
