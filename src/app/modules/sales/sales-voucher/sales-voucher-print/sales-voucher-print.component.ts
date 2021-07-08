@@ -22,6 +22,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   componentName = 'SalesPriceReportPrintComponent';
   title: string = '';
   env = environment;
+  apiPath = '/sales/sales-vouchers';
 
   constructor(
     public commonService: CommonService,
@@ -132,8 +133,69 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   approvedConfirm(data: SalesVoucherModel) {
+    if (['COMPLETE'].indexOf(data.State) > -1) {
+      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+        {
+          label: this.commonService.translateText('Common.close'),
+          status: 'success',
+          action: () => {
+            this.onClose(data);
+          },
+        },
+      ]);
+      return;
+    }
+    const params = { id: [data.Code] };
+    let confirmText = '';
+    let responseText = '';
+    switch (data.State) {
+      case 'APPROVE':
+        params['changeState'] = 'COMPLETE';
+        confirmText = 'Common.completeConfirm';
+        responseText = 'Common.completeSuccess';
+        break;
+      default:
+        params['changeState'] = 'APPROVE';
+        confirmText = 'Common.approvedConfirm';
+        responseText = 'Common.approvedSuccess';
+        break;
+    }
+
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      {
+        label: this.commonService.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.implement' : (data.State == 'IMPLEMENT' ? 'Common.acceptance' : (data.State == 'ACCEPTANCEREQUEST' ? 'Common.complete' : (data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))),
+        status: 'danger',
+        action: () => {
+          this.apiService.putPromise<SalesVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            this.onChange && this.onChange(data);
+            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+              {
+                label: this.commonService.translateText('Common.close'),
+                status: 'success',
+                action: () => {
+                  this.onClose && this.onClose(data);
+                  this.close();
+                },
+              },
+            ]);
+          }).catch(err => {
+
+          });
+        },
+      },
+    ]);
+  }
+
+  approvedConfirmX(data: SalesVoucherModel) {
     if (data.State === 'COMPLETE') {
-      this.commonService.showDiaplog(this.commonService.translateText('Common.notice'), this.commonService.translateText('Common.completedNotice', {resource: this.commonService.translateText('Sales.SalesVoucher.title', {action: '', definition: ''})}), [
+      this.commonService.showDiaplog(this.commonService.translateText('Common.notice'), this.commonService.translateText('Common.completedNotice', { resource: this.commonService.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
         {
           label: this.commonService.translateText('Common.ok'),
           status: 'success',

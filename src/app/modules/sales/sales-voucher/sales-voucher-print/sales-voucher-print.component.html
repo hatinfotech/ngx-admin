@@ -51,7 +51,7 @@
               </tr>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
-                  <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.ProductName)"></td>
+                  <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
                 </tr>
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <td>{{detail.No}}</td>
@@ -94,14 +94,13 @@
     </nb-card-body>
     <nb-card-footer>
       <div class="buttons-row">
-        <!-- <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier"><nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}</button> -->
-        <button nbButton hero [status]="!this.data.State ? 'danger' : (this.data.State==='APPROVE' ? 'primary' : 'success')" [outline]="this.data.State === 'COMPLETE'" (click)="approvedConfirm(data);">{{(this.data.State == 'APPROVE' ? 'Common.complete' : (this.data?.State === 'COMPLETE' ? 'Common.completed' : 'Common.approve')) | translate | headtitlecase}}</button>
-        <button nbButton hero status="success" (click)="saveAndClose(data);">
+        <button nbButton hero status="warning" (click)="prepareCopy(data);">
+          <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+        </button>
+        <button nbButton hero status="danger" [disabled]="['COMPLETE'].indexOf(this.data.State) > -1" (click)="approvedConfirm(data);">{{(this.data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
+        <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
           <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
         </button>
-        <!-- <button nbButton hero status="info" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
-              <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button> -->
-        <button nbButton hero status="warning" (click)="prepareCopy(data);">{{'Common.copy' | translate | headtitlecase}}</button>
       </div>
     </nb-card-footer>
   </nb-card>

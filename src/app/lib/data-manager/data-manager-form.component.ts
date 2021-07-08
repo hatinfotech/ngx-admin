@@ -362,15 +362,17 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
           // this.array.clear();
           for (let i = 0; i < data.length; i++) {
             const item = data[i];
+            let formGroup: FormGroup;
             if (!this.array.controls[i]) {
-              const newForm = this.makeNewFormGroup(item);
-              this.array.push(newForm);
-              this.onAddFormGroup(this.array.length - 1, newForm, item);
-              if (formItemLoadCallback) {
-                await formItemLoadCallback(this.array.length - 1, newForm, item);
-              }
+              formGroup = this.makeNewFormGroup(item);
+              this.array.push(formGroup);
+              this.onAddFormGroup(this.array.length - 1, formGroup, item);
             } else {
-              this.patchFormGroupValue(this.array.controls[i] as FormGroup, item);
+              formGroup = this.array.controls[i] as FormGroup;
+              this.patchFormGroupValue(formGroup, item);
+            }
+            if (formItemLoadCallback) {
+              await formItemLoadCallback(this.array.length - 1, formGroup, item);
             }
           }
 

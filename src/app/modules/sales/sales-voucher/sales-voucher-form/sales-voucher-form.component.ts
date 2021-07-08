@@ -1,3 +1,5 @@
+import { ChatRoomModel } from './../../../../models/chat-room.model';
+import { ChatRoom } from './../../../../lib/nam-chat/chat-room';
 import { SalesMasterPriceTableModel } from './../../../../models/sales.model';
 import { PriceReportModel } from './../../../../models/price-report.model';
 import { Component, OnInit } from '@angular/core';
@@ -111,8 +113,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     },
   };
 
-  select2PriceReportOption = {
-    placeholder: 'Chọn bảng giá...',
+  select2SalesTaskOption = {
+    placeholder: this.commonService.translateText('Sales.salesTask') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -121,11 +123,11 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     // tags: true,
     keyMap: {
       id: 'Code',
-      text: 'Title',
+      text: 'Description',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/sales/price-reports', { filter_Title: params['term'] ? params['term'] : '', eq_State: 'IMPLEMENT', limit: 20 });
+        return this.apiService.buildApiUrl('/chat/rooms', { filter_Description: params['term'] ? params['term'] : '', limit: 20, eq_Type: 'SALES', eq_State: '[ACCEPT,OPEN]', includePriceReports: true });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -133,7 +135,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
-            item['text'] = item['Title'];
+            item['text'] = item['Description'];
             return item;
           }),
         };
@@ -167,6 +169,19 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         this.preview(option.form);
       },
     });
+    // this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+    //   name: 'print',
+    //   status: 'info',
+    //   label: this.commonService.textTransform(this.commonService.translate.instant('Common.task'), 'head-title'),
+    //   icon: 'link-2',
+    //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.task'), 'head-title'),
+    //   size: 'medium',
+    //   disabled: () => this.isProcessing,
+    //   hidden: () => false,
+    //   click: (event: any, option: ActionControlListOption) => {
+    //     this.preview(option.form);
+    //   },
+    // });
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -286,9 +301,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
       // Details form load
       if (itemFormData.Details) {
+        const details = this.getDetails(newForm);
+        details.clear();
         itemFormData.Details.forEach(detail => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
-          const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
@@ -311,29 +327,55 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
+      ObjectIdentifiedNumber: [''],
       Recipient: [''],
       ObjectTaxCode: [''],
       DirectReceiverName: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
+      Contact: [''],
+      ContactName: [''],
+      ContactPhone: [''],
+      ContactEmail: [''],
+      ContactAddress: [''],
+      ContactIdentifiedNumber: [''],
       DateOfDelivery: [''],
       DeliveryAddress: [''],
-      Title: [''],
       PriceTable: [''],
-      PriceReportVoucher: [''],
+      // PriceReportVoucher: [''],
+      SalesTask: [''],
+      Title: [''],
       Note: [''],
+      SubNote: [''],
       DateOfSale: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
     if (data) {
       // data['Code_old'] = data['Code'];
-      newForm.patchValue(data);
+      this.patchFormGroupValue(newForm, data);
     } else {
       // this.addDetailFormGroup(newForm);
     }
     return newForm;
   }
+
+  patchFormGroupValue = (formGroup: FormGroup, data: SalesVoucherModel) => {
+
+    formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
+    formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+    data['ObjectPhone'] = null;
+    data['ObjectAddress'] = null;
+
+    formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
+    formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
+    data['ContactPhone'] = null;
+    data['ContactAddress'] = null;
+
+    formGroup.patchValue(data);
+    return true;
+  }
+
   onAddFormGroup(index: number, newForm: FormGroup, formData?: SalesVoucherModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
@@ -362,7 +404,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       No: [''],
       Type: ['PRODUCT'],
       Product: [''],
-      ProductName: [''],
+      Description: [''],
       Quantity: [1],
       Price: [0],
       Unit: [''],
@@ -466,6 +508,24 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     }
   }
 
+  onContactChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('ContactName').setValue(selectedData.Name);
+          if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('ContactPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('ContactPhone').setValue(selectedData['Phone']);
+          if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('ContactEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('ContactEmail').setValue(selectedData['Email']);
+          if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('ContactAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('ContactAddress').setValue(selectedData['Address']);
+          formGroup.get('ContactIdentifiedNumber').setValue(selectedData.TaxCode);
+        }
+      }
+    }
+  }
+
   onPriceTableChange(formGroup: FormGroup, selectedData: SalesMasterPriceTableModel, formIndex?: number) {
     // console.info(item);
 
@@ -510,7 +570,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
               for (const detail of salesVoucher.Details) {
                 delete detail['Id'];
                 delete detail['Voucher'];
-                detail.ProductName = detail['Description'];
+                detail.Description = detail['Description'];
               }
               this.formLoad([salesVoucher]);
             }
@@ -528,11 +588,58 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     }
   }
 
+  onSalestTaskChange(formGroup: FormGroup, selectedData: ChatRoomModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+
+          // Get first price report => prototype
+          const firstPriceReport = selectedData['PriceReports'] && selectedData['PriceReports'][0];
+          if (firstPriceReport?.Code) {
+            this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + firstPriceReport?.Code, {
+              includeContact: true,
+              includeDetails: true,
+              includeProductUnitList: true,
+              includeProductPrice: true,
+            }).then(rs => {
+
+              if (rs && rs.length > 0) {
+                const salesVoucher: SalesVoucherModel = { ...rs[0] };
+                // salesVoucher.PriceReportVoucher = selectedData.Code;
+                delete salesVoucher.Code;
+                delete salesVoucher.Id;
+                salesVoucher['SalesTask'] = { id: selectedData.Code, text: selectedData?.Description, Code: selectedData.Code, Description: selectedData.Description };
+                for (const detail of salesVoucher.Details) {
+                  delete detail['Id'];
+                  delete detail['Voucher'];
+                  detail.Description = detail['Description'];
+                }
+                this.formLoad([salesVoucher]);
+              }
+            });
+
+            // formGroup.get('ObjectName').setValue(selectedData.Name);
+            // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+            // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+            // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+            // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+            // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+            // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+          }
+        }
+      }
+    }
+  }
+
   /** Choose product event */
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
     const priceTable = this.commonService.getObjectId(parentForm.get('PriceTable').value);
-    detail.get('ProductName').setValue(selectedData.Name);
+    detail.get('Description').setValue(selectedData.Name);
     if (selectedData && selectedData.Units && selectedData.Units.length > 0 && priceTable) {
       this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
         priceTable: priceTable,
@@ -557,7 +664,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         // }
       });
     } else {
-      detail.get('ProductName').setValue('');
+      detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
     }
     return false;

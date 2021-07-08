@@ -58,8 +58,12 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
   rows = [];
 
   stateDic = {
-    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'primary', outline: true },
+    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'success', outline: false },
+    IMPLEMENT: { label: this.commonService.translateText('Common.implement'), status: 'warning', outline: false },
+    // ACCEPTANCEREQUEST: { label: this.commonService.translateText('Common.completeRequest'), status: 'primary', outline: false },
+    ACCEPTANCE: { label: this.commonService.translateText('Common.acceptance'), status: 'info', outline: false },
     COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success', outline: true },
+    CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
   };
 
   settings = this.configSetting({

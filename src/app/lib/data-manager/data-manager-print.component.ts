@@ -21,6 +21,8 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   @Input() title?: string;
   @Input() size?: string = 'medium';
 
+  apiPath?: string;
+
   constructor(
     public commonService: CommonService,
     public router: Router,

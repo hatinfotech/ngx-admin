@@ -59,7 +59,8 @@
             "Form": {
                 "title": "{{action}} triển khai"
             }
-        }
+        },
+        "deploymentTask": "task triển khai"
     },
     "Common": {
         "Pms": {
@@ -237,11 +238,13 @@
         "contactInfo": "thông tin liên hệ",
         "subNote": "ghi chú 2",
         "implement": "triển khai",
+        "acceptance": "nghiệm thu",
         "completeRequest": "y/c nghiệm thu",
         "implementConfirm": "bạn có chắc là muốn chuyển sang trạng thái triển khai cho {{object}}?",
         "completeRequestConfirm": "bạn có chắc là muốn chuyển sang trạng thái yêu cầu nghiệm thu cho {{object}}?",
         "comppleteConform": "bạn có chắc là muốn chuyển sang trạng thái hoàn tất cho {{object}}?",
-        "setFeaturePicture": "làm hình đại diện"
+        "setFeaturePicture": "làm hình đại diện",
+        "task": "task"
     },
     "Contact": {
         "name": "tên liên hệ",

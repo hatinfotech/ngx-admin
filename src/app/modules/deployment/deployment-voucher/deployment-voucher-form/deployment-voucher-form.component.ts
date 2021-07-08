@@ -76,8 +76,8 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     },
   };
 
-  select2SalesPriceReportOption = {
-    placeholder: 'Chọn bảng giá...',
+  select2DeploymentTaskOption = {
+    placeholder: this.commonService.translateText('Deployment.deploymentTask') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -86,11 +86,11 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     // tags: true,
     keyMap: {
       id: 'Code',
-      text: 'Title',
+      text: 'Description',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+        return this.apiService.buildApiUrl('/chat/rooms', { filter_Description: params['term'] ? params['term'] : '', limit: 20, eq_Type: 'DEPLOYMENT', eq_State: '[ACCEPT,OPEN]' });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -98,7 +98,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
-            item['text'] = item['Title'];
+            item['text'] = item['Description'];
             return item;
           }),
         };
@@ -270,7 +270,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     params['useBaseTimezone'] = true;
     super.executeGet(params, success, error);
   }
-
+  
   async formLoad(formData: DeploymentVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: DeploymentVoucherModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
@@ -313,7 +313,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       // ObjectTaxCode: [''],
       // DirectReceiverName: [''],
       // PaymentStep: [''],
-      PriceTable: [''],
+      DeploymentTask: [''],
       DeliveryAddress: [''],
       Title: [''],
       Note: [''],
@@ -334,13 +334,21 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   }
 
   patchFormGroupValue = (formGroup: FormGroup, data: DeploymentVoucherModel) => {
+
     formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
     formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
     data['ObjectPhone'] = null;
     data['ObjectAddress'] = null;
+
+    formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
+    formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
+    data['ContactPhone'] = null;
+    data['ContactAddress'] = null;
+
     if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
       (data.Infos?.Description as any).pop();
     }
+
     formGroup.patchValue(data);
     return true;
   }

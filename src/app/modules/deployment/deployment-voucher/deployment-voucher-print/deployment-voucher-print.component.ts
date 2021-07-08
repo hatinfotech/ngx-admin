@@ -20,6 +20,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   componentName = 'DeploymentVoucherPrintComponent';
   title: string = 'Xem trước phiếu báo giá';
   env = environment;
+  apiPath = '/deployment/vouchers';
 
   constructor(
     public commonService: CommonService,
@@ -169,19 +170,24 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
     let responseText = '';
     switch (data.State) {
       case 'APPROVE':
-        params['changeState'] = 'IMPLEMENT';
+        params['changeState'] = 'DEPLOYMENT';
         confirmText = 'Common.implementConfirm';
         responseText = 'Common.implementSuccess';
         break;
-      case 'IMPLEMENT':
-        params['changeState'] = 'ACCEPTANCEREQUEST';
-        confirmText = 'Common.acceptanceRequestConfirm';
-        responseText = 'Common.acceptanceRequestSuccess';
-        break;
-      case 'ACCEPTANCEREQUEST':
+      case 'DEPLOYMENT':
         params['changeState'] = 'ACCEPTANCE';
         confirmText = 'Common.acceptanceConfirm';
         responseText = 'Common.acceptanceSuccess';
+        break;
+      // case 'ACCEPTANCEREQUEST':
+      //   params['changeState'] = 'ACCEPTANCE';
+      //   confirmText = 'Common.acceptanceConfirm';
+      //   responseText = 'Common.acceptanceSuccess';
+      //   break;
+      case 'ACCEPTANCE':
+        params['changeState'] = 'COMPLETE';
+        confirmText = 'Common.completeConfirm';
+        responseText = 'Common.completeSuccess';
         break;
       default:
         params['changeState'] = 'APPROVE';
@@ -198,7 +204,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.implement' : (data.State == 'IMPLEMENT' ? 'Common.completeRequest' : (data.State == 'ACCEPTANCEREQUEST' ? 'Common.complete' : (data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))),
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.implement' : (data.State == 'DEPLOYMENT' ? 'Common.completeRequest' : (data.State == 'ACCEPTANCEREQUEST' ? 'Common.complete' : (data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))),
         status: 'danger',
         action: () => {
           // const params = { id: [data.Code] };
@@ -216,9 +222,9 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
           //     params['changeState'] = 'APPROVE';
           //     break;
           // }
-          this.apiService.putPromise<DeploymentVoucherModel[]>('/sales/price-reports', params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<DeploymentVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
             this.onChange && this.onChange(data);
-            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
                 label: this.commonService.translateText('Common.close'),
                 status: 'success',

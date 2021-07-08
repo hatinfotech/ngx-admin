@@ -104,7 +104,7 @@
                 <button nbButton hero status="warning" (click)="prepareCopy(data);"><nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}</button>
                 <!-- <button nbButton hero status="info" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
                     <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button> -->
-                <button nbButton hero status="danger" [disabled]="['COMPLETE'].indexOf(this.data.State) > -1" (click)="approvedConfirm(data);">{{(this.data.State == 'APPROVE' ? 'Common.implement' : (this.data.State == 'IMPLEMENT' ? 'Common.completeRequest' : (this.data.State == 'ACCEPTANCEREQUEST' ? 'Common.complete' : (this.data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))) | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
+                <button nbButton hero status="danger" [disabled]="['COMPLETE'].indexOf(this.data.State) > -1" (click)="approvedConfirm(data);">{{(this.data.State == 'APPROVE' ? 'Common.implement' : (this.data.State == 'DEPLOYMENT' ? 'Common.acceptance' : (this.data.State == 'ACCEPTANCE' ? 'Common.complete' : (this.data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))) | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
                 <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
                     <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
                 </button>

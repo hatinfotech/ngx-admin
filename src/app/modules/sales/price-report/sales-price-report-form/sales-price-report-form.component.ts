@@ -335,13 +335,20 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   patchFormGroupValue = (formGroup: FormGroup, data: SalesPriceReportModel) => {
+    
     formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
     formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
     data['ObjectPhone'] = null;
     data['ObjectAddress'] = null;
-    if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
-      (data.Infos?.Description as any).pop();
-    }
+
+    formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
+    formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
+    data['ContactPhone'] = null;
+    data['ContactAddress'] = null;
+
+    // if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
+    //   (data.Infos?.Description as any).pop();
+    // }
     formGroup.patchValue(data);
     return true;
   }
