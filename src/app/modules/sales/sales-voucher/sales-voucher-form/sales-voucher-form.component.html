@@ -124,16 +124,16 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-3">
+                            <!-- <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="Employee" label="Common.employee" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
                                     <ngx-select2 formControlName="Employee" [select2Option]="selectEmployeeOption"></ngx-select2>
                                 </ngx-form-group>
-                            </div>
+                            </div> -->
 
                             <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Note" label="Common.note" [array]="array" [index]="i" [allowCopy]="false" [required]="false">

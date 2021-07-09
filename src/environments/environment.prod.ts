@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.3.0.5',
+  version: '2.3.0.6',
   // 2.2.1.1: Develop notificaiton service
   // 2.2.0.17: Fix price price report form error detail Product null
   // 2.2.0.16: Update product picture support for price report

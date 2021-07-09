@@ -375,7 +375,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       PriceTable: [''],
       // PriceReportVoucher: [''],
       PriceReport: [''],
-      Employee: [''],
+      // Employee: [''],
       Title: [''],
       Note: [''],
       SubNote: [''],
