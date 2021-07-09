@@ -183,7 +183,32 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
               if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
                 this.commonService.openMobileSidebar();
                 this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
+              } else {
+                this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+                  {
+                    label: this.commonService.translateText('Common.goback'),
+                    status: 'danger',
+                    icon: 'arrow-ios-back',
+                  },
+                  {
+                    label: this.commonService.translateText('Common.create'),
+                    status: 'success',
+                    icon: 'message-circle-outline',
+                    action: () => {
+                      this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
+                        if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
+                          this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
+                            this.commonService.translateText('Common.notification'), {
+                            status: 'success',
+                          });
+                        this.commonService.openMobileSidebar();
+                        this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
+                      });
+                    }
+                  },
+                ]);
               }
+
             }).catch(err => {
               return Promise.reject(err);
             });

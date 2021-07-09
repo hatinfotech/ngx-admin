@@ -168,9 +168,34 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
                 this.commonService.openMobileSidebar();
                 this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
               } else {
-                this.commonService.toastService.show(this.commonService.translateText('chưa có liên kết với nhiệm vụ nào'), this.commonService.translateText('Thông báo'), {
-                  status: 'warning',
-                })
+
+                this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+                  {
+                    label: this.commonService.translateText('Common.goback'),
+                    status: 'danger',
+                    icon: 'arrow-ios-back',
+                  },
+                  {
+                    label: this.commonService.translateText('Common.create'),
+                    status: 'success',
+                    icon: 'message-circle-outline',
+                    action: () => {
+                      this.apiService.putPromise<DeploymentVoucherModel[]>('/deployment/vouchers', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
+                        if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
+                          this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho phiếu triển khai'),
+                            this.commonService.translateText('Common.notification'), {
+                            status: 'success',
+                          });
+                        this.commonService.openMobileSidebar();
+                        this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
+                      });
+                    }
+                  },
+                ]);
+
+                // this.commonService.toastService.show(this.commonService.translateText('chưa có liên kết với nhiệm vụ nào'), this.commonService.translateText('Thông báo'), {
+                //   status: 'warning',
+                // })
               }
             }).catch(err => {
               return Promise.reject(err);

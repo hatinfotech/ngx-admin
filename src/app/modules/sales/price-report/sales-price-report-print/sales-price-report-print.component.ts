@@ -9,8 +9,7 @@ import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-man
 import { environment } from '../../../../../environments/environment';
 import { DatePipe } from '@angular/common';
 import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
-import { TaxModel } from '../../../../models/tax.model';
-import { UnitModel } from '../../../../models/unit.model';
+import { ProcessMap } from '../../../../models/process-map.model';
 
 declare var $: JQueryStatic;
 
@@ -25,6 +24,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   componentName = 'SalesPriceReportPrintComponent';
   title: string = 'Xem trước phiếu báo giá';
   env = environment;
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -44,7 +44,8 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   async init() {
     const result = await super.init();
     // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
-    for (const data of this.data) {
+    for (const i in this.data) {
+      const data = this.data[i];
       data['Total'] = 0;
       data['Title'] = this.renderTitle(data);
       const taxMap = this.commonService.taxList.reduce(function (map, obj) {
@@ -62,6 +63,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
           data['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
+      this.processMapList[i] = SalesModule.processMaps.priceReport[data.State || ''];
     }
     return result;
   }
@@ -156,7 +158,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     });
   }
 
-  approvedConfirm(data: SalesPriceReportModel) {
+  approvedConfirm(data: SalesPriceReportModel, index: number) {
     if (['COMPLETE'].indexOf(data.State) > -1) {
       this.commonService.showDiaplog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
@@ -170,8 +172,8 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
       return;
     }
     const params = { id: [data.Code] };
-    const processMap = SalesModule.processMaps.priceReport[data.State || ''];
-    params['changeState'] = processMap?.nextState;
+    // const processMap = SalesModule.processMaps.priceReport[data.State || ''];
+    params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
     // let responseText = '';
     // switch (data.State) {
@@ -201,7 +203,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     //     responseText = 'Common.approvedSuccess';
     //     break;
     // }
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(this.processMapList[index]?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -210,7 +212,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         },
       },
       {
-        label: this.commonService.translateText(processMap.nextStateLabel),
+        label: this.commonService.translateText(this.processMapList[index]?.nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -219,7 +221,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
             this.onChange && this.onChange(data);
             this.close();
             this.onClose && this.onClose(data);
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.commonService.toastService.show(this.commonService.translateText(this.processMapList[index]?.restponseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(this.processMapList[index]?.responseTitle), {
               status: 'success',
             });
             // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [

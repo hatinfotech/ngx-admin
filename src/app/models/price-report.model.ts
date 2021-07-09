@@ -1,19 +1,19 @@
 export class PriceReportModel {
 
-  Code: string;
-  Object: string;
-  ObjectName: string;
-  ObjectAddress: string;
-  ObjectPhone: string;
-  ObjectEmail: string;
-  Recipient: string;
-  ObjectTaxCode: string;
-  ObjectBankCode: string;
-  ObjectBankName: string;
-  Title: string;
-  Note: string;
+  Code?: string;
+  Object?: string;
+  ObjectName?: string;
+  ObjectAddress?: string;
+  ObjectPhone?: string;
+  ObjectEmail?: string;
+  Recipient?: string;
+  ObjectTaxCode?: string;
+  ObjectBankCode?: string;
+  ObjectBankName?: string;
+  Title?: string;
+  Note?: string;
 
-  details: PriceReportDetail[];
+  details?: PriceReportDetail[];
 
   constructor() { }
 
@@ -21,10 +21,10 @@ export class PriceReportModel {
 
 export class PriceReportDetail {
   Product?: string;
-  Description: string;
-  Quantity: number;
-  Price: number;
-  Unit: string;
+  Description?: string;
+  Quantity?: number;
+  Price?: number;
+  Unit?: string;
   Tax?: string;
   Image?: string;
   Reason?: string;

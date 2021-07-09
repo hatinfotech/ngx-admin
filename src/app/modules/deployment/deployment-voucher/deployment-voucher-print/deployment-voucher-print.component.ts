@@ -1,3 +1,4 @@
+import { ProcessMap } from './../../../../models/process-map.model';
 import { DeploymentModule } from './../../deployment.module';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -22,6 +23,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   title: string = 'Xem trước phiếu báo giá';
   env = environment;
   apiPath = '/deployment/vouchers';
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -41,7 +43,8 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   async init() {
     const result = await super.init();
     // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
-    for (const data of this.data) {
+    for (const i in this.data) {
+      const data = this.data[i];
       data['Total'] = 0;
       data['Title'] = this.renderTitle(data);
       const taxMap = this.commonService.taxList.reduce(function (map, obj) {
@@ -59,6 +62,8 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
           data['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
+
+      this.processMapList[i] = DeploymentModule.processMaps.deploymentVoucher[data.State || ''];
     }
     return result;
   }
@@ -153,7 +158,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
     });
   }
 
-  approvedConfirm(data: DeploymentVoucherModel) {
+  approvedConfirm(data: DeploymentVoucherModel, index: number) {
 
     if (['COMPLETE'].indexOf(data.State) > -1) {
       this.commonService.showDiaplog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
@@ -169,7 +174,6 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
     }
 
     const params = { id: [data.Code] };
-    const processMap = DeploymentModule.processMaps.deploymentVoucher[data.State || ''];
     // let confirmText = processMap.confirmText;
     // let responseTitle = processMap.responseTitle;
     // let responseText = processMap.responseTitle;
@@ -205,7 +209,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
     //     responseText = 'Common.approvedSuccess';
     //     break;
     // }
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(this.processMapList[index]?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -214,10 +218,10 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
         },
       },
       {
-        label: this.commonService.translateText(processMap?.nextStateLabel),
+        label: this.commonService.translateText(this.processMapList[index]?.nextStateLabel),
         status: 'danger',
         action: () => {
-          params['changeState'] = processMap?.nextState;
+          params['changeState'] = this.processMapList[index]?.nextState;
           // const params = { id: [data.Code] };
           // switch (data.State) {
           //   case 'APPROVE':
@@ -239,7 +243,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
             this.loading = false;
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.commonService.toastService.show(this.commonService.translateText(this.processMapList[index]?.restponseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(this.processMapList[index]?.responseTitle), {
               status: 'success',
             });
             // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [

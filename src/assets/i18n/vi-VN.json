@@ -250,7 +250,9 @@
         "deploymented": "đã triển khai",
         "deploymentSuccess": "triển khai thành công",
         "acceptanced": "đã nghiệm thu",
-        "priceReport": "báo giá"
+        "priceReport": "báo giá",
+        "warning": "cảnh báo",
+        "notification": "thông báo"
     },
     "Contact": {
         "name": "tên liên hệ",

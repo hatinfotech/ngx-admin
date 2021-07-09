@@ -127,4 +127,19 @@ export class SystemActionFormComponent extends DataManagerFormComponent<SystemAc
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+  makeNewChildFormGroup(childName: string, data?: any) {
+    const newFormGroup = super.makeNewChildFormGroup(childName, data);
+    if (childName === 'Main.Params') {
+      newFormGroup.get('Type').valueChanges.subscribe(value => {
+        if (!this.isProcessing && this.commonService.getObjectId(value) == 'ENV_PARAM') {
+          newFormGroup.get('RemoteDataSource').setValue('/system/params');
+          newFormGroup.get('RemoteDataResource').setValue('System_Resource_Params');
+        } else {
+          newFormGroup.get('RemoteDataSource').setValue('');
+          newFormGroup.get('RemoteDataResource').setValue('');
+        }
+      });
+    }
+    return newFormGroup;
+  }
 }
