@@ -53,11 +53,6 @@ export class SystemRouteListComponent extends ServerDataManagerListComponent<Sys
         type: 'string',
         width: '10%',
       },
-      Type: {
-        title: 'Type',
-        type: 'string',
-        width: '10%',
-      },
       Name: {
         title: 'Tên',
         type: 'string',
@@ -68,16 +63,6 @@ export class SystemRouteListComponent extends ServerDataManagerListComponent<Sys
         type: 'string',
         width: '30%',
       },
-      MaxUse: {
-        title: 'Max Use',
-        type: 'string',
-        width: '10%',
-      },
-      State: {
-        title: 'Trạng thái',
-        type: 'string',
-        width: '10%',
-      },
       Priority: {
         title: 'Ưu tiên',
         type: 'string',
@@ -85,7 +70,7 @@ export class SystemRouteListComponent extends ServerDataManagerListComponent<Sys
       },
       Enable: {
         title: 'Kích hoạt',
-        type: 'string',
+        type: 'boolean',
         width: '10%',
       },
       Copy: {

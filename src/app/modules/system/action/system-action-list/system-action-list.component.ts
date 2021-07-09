@@ -49,12 +49,17 @@ export class SystemActionListComponent extends DataManagerListComponent<SystemAc
       Name: {
         title: 'Tên',
         type: 'string',
-        width: '40%',
+        width: '30%',
+      },
+      ActionFunction: {
+        title: 'Hàm',
+        type: 'string',
+        width: '30%',
       },
       Description: {
         title: 'Mô tả',
         type: 'string',
-        width: '50%',
+        width: '40%',
       },
     },
   });
