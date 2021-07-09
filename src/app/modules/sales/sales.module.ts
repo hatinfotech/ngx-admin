@@ -3,7 +3,7 @@ import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { SalesComponent } from './sales.component';
 import { SalesPriceReportListComponent } from './price-report/sales-price-report-list/sales-price-report-list.component';
 import { SalesPriceReportFormComponent } from './price-report/sales-price-report-form/sales-price-report-form.component';
-import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
+import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule, NbSpinnerModule } from '@nebular/theme';
 import { SalesRoutingModule } from './sales-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
@@ -34,6 +34,7 @@ import { MasterPriceTableFormComponent } from './master-price-table/master-price
 import { MasterPriceTablePrintComponent } from './master-price-table/master-price-table-print/master-price-table-print.component';
 import { ProductFormComponent } from '../admin-product/product/product-form/product-form.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
+import { ProcessMap } from '../../models/process-map.model';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -80,6 +81,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     TranslateModule,
     AdminProductModule,
     NgxUploaderModule,
+    NbSpinnerModule,
   ],
   entryComponents: [
     SalesPriceReportFormComponent,
@@ -106,4 +108,108 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     { provide: DecimalPipe, useValue: {} },
   ],
 })
-export class SalesModule { }
+export class SalesModule {
+
+  static processMaps: {
+    salesVoucher?: {
+      [key: string]: ProcessMap
+    },
+    priceReport?: {
+      [key: string]: ProcessMap
+    },
+  } = {
+      priceReport: {
+        "APPROVE": {
+          state: 'APPROVE',
+          label: 'Common.approved',
+          status: 'success',
+          outline: false,
+          nextState: 'DEPLOYMENT',
+          nextStateLabel: 'Common.deployment',
+          confirmText: 'Common.implementConfirm',
+          responseTitle: 'Common.deploymented',
+          restponseText: 'Common.deploymentSuccess',
+        },
+        "DEPLOYMENT": {
+          state: 'DEPLOYMENT',
+          label: 'Common.implement',
+          status: 'warning',
+          outline: false,
+          nextState: 'ACCEPTANCE',
+          nextStateLabel: 'Common.acceptance',
+          confirmText: 'Common.acceptanceConfirm',
+          responseTitle: 'Common.acceptanced',
+          restponseText: 'Common.acceptanceSuccess',
+        },
+        "ACCEPTANCE": {
+          state: 'ACCEPTANCE',
+          label: 'Common.acceptance',
+          status: 'info',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "COMPLETE": {
+          state: 'COMPLETE',
+          label: 'Common.completed',
+          status: 'success',
+          outline: true,
+          nextState: '',
+          nextStateLabel: '',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "": {
+          state: 'NOTJUSTAPPROVE',
+          label: 'Common.notJustApproved',
+          status: 'danger',
+          outline: false,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+      },
+      salesVoucher: {
+        "APPROVE": {
+          state: 'APPROVE',
+          label: 'Common.approved',
+          status: 'success',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "COMPLETE": {
+          state: 'COMPLETE',
+          label: 'Common.completed',
+          status: 'success',
+          outline: true,
+          nextState: '',
+          nextStateLabel: '',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "": {
+          state: 'NOTJUSTAPPROVE',
+          label: 'Common.notJustApproved',
+          status: 'danger',
+          outline: false,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+      },
+    };
+
+}

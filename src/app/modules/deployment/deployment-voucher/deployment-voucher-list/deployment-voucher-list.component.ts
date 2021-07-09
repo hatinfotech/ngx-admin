@@ -1,3 +1,5 @@
+import { MobileAppService } from './../../../mobile-app/mobile-app.service';
+import { DeploymentModule } from './../../deployment.module';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -43,6 +45,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<DeploymentVoucherListComponent>,
+    public mobileAppService: MobileAppService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -139,17 +142,17 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
       //     instance.style = 'text-align: right';
       //   },
       // },
-      Copy: {
-        title: 'Copy',
+      Task: {
+        title: 'Task',
         type: 'custom',
         width: '10%',
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
-          instance.icon = 'copy';
+          instance.icon = 'message-circle';
           // instance.label = this.commonService.translateText('Common.copy');
           instance.display = true;
-          instance.status = 'warning';
+          instance.status = 'info';
           instance.valueChange.subscribe(value => {
             // if (value) {
             //   instance.disabled = false;
@@ -159,24 +162,76 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           });
           instance.click.subscribe(async (row: DeploymentVoucherModel) => {
 
-            this.commonService.openDialog(DeploymentVoucherFormComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [row.Code],
-                isDuplicate: true,
-                onDialogSave: (newData: DeploymentVoucherModel[]) => {
-                  // if (onDialogSave) onDialogSave(row);
-                },
-                onDialogClose: () => {
-                  // if (onDialogClose) onDialogClose();
-                  this.refresh();
-                },
-              },
+            this.apiService.getPromise<DeploymentVoucherModel[]>('/deployment/vouchers/' + row.Code, { includeRelatedTasks: true }).then(rs => {
+              const priceReport = rs[0];
+              if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
+                this.commonService.openMobileSidebar();
+                this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
+              } else {
+                this.commonService.toastService.show(this.commonService.translateText('chưa có liên kết với nhiệm vụ nào'), this.commonService.translateText('Thông báo'), {
+                  status: 'warning',
+                })
+              }
+            }).catch(err => {
+              return Promise.reject(err);
             });
+
+            // this.commonService.openDialog(DeploymentVoucherFormComponent, {
+            //   context: {
+            //     inputMode: 'dialog',
+            //     inputId: [row.Code],
+            //     isDuplicate: true,
+            //     onDialogSave: (newData: DeploymentVoucherModel[]) => {
+            //       // if (onDialogSave) onDialogSave(row);
+            //     },
+            //     onDialogClose: () => {
+            //       // if (onDialogClose) onDialogClose();
+            //       this.refresh();
+            //     },
+            //   },
+            // });
 
           });
         },
       },
+      // Copy: {
+      //   title: 'Copy',
+      //   type: 'custom',
+      //   width: '10%',
+      //   renderComponent: SmartTableButtonComponent,
+      //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+      //     instance.iconPack = 'eva';
+      //     instance.icon = 'copy';
+      //     // instance.label = this.commonService.translateText('Common.copy');
+      //     instance.display = true;
+      //     instance.status = 'warning';
+      //     instance.valueChange.subscribe(value => {
+      //       // if (value) {
+      //       //   instance.disabled = false;
+      //       // } else {
+      //       //   instance.disabled = true;
+      //       // }
+      //     });
+      //     instance.click.subscribe(async (row: DeploymentVoucherModel) => {
+
+      //       this.commonService.openDialog(DeploymentVoucherFormComponent, {
+      //         context: {
+      //           inputMode: 'dialog',
+      //           inputId: [row.Code],
+      //           isDuplicate: true,
+      //           onDialogSave: (newData: DeploymentVoucherModel[]) => {
+      //             // if (onDialogSave) onDialogSave(row);
+      //           },
+      //           onDialogClose: () => {
+      //             // if (onDialogClose) onDialogClose();
+      //             this.refresh();
+      //           },
+      //         },
+      //       });
+
+      //     });
+      //   },
+      // },
       State: {
         title: this.commonService.translateText('Common.state'),
         type: 'custom',
@@ -193,10 +248,11 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            instance.label = this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
-            instance.status = this.stateDic[value]?.status || 'danger';
-            instance.outline = this.stateDic[value]?.outline || false;
-            instance.disable = (value === 'APPROVE');
+            const processMap = DeploymentModule.processMaps.deploymentVoucher[value || ''];
+            instance.label = this.commonService.translateText(processMap?.label);// this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
+            instance.status = processMap?.status;//this.stateDic[value]?.status || 'danger';
+            instance.outline = processMap.outline;//this.stateDic[value]?.outline || false;
+            // instance.disabled = (value === 'APPROVE');
             // instance.icon = value ? 'unlock' : 'lock';
             // instance.status = value === 'REQUEST' ? 'warning' : 'success';
             // instance.disabled = value !== 'REQUEST';

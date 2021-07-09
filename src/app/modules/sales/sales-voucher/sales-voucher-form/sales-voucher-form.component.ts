@@ -113,8 +113,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     },
   };
 
-  select2SalesTaskOption = {
-    placeholder: this.commonService.translateText('Sales.salesTask') + '...',
+  selectPriceReportOption = {
+    placeholder: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -123,11 +123,11 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     // tags: true,
     keyMap: {
       id: 'Code',
-      text: 'Description',
+      text: 'Title',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/chat/rooms', { filter_Description: params['term'] ? params['term'] : '', limit: 20, eq_Type: 'SALES', eq_State: '[ACCEPT,OPEN]', includePriceReports: true });
+        return this.apiService.buildApiUrl('/sales/price-reports', { filter_Title: params['term'] ? params['term'] : '', sort_Created: 'desc', limit: 20, eq_State: '[ACCEPTANCE,COMPLETE]' });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -135,7 +135,37 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
-            item['text'] = item['Description'];
+            item['text'] = item['Title'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
+  selectEmployeeOption = {
+    placeholder: this.commonService.translateText('Common.employee') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '', sort_Name: 'asc', limit: 20, eq_Group: '[EMPLOYEE]' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['id'] || item['Code'];
+            item['text'] = item['text'] || item['Name'];
             return item;
           }),
         };
@@ -293,6 +323,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     params['includeContact'] = true;
     params['includeDetails'] = true;
     params['useBaseTimezone'] = true;
+    params['includeEmployee'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -343,7 +374,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       DeliveryAddress: [''],
       PriceTable: [''],
       // PriceReportVoucher: [''],
-      SalesTask: [''],
+      PriceReport: [''],
+      Employee: [''],
       Title: [''],
       Note: [''],
       SubNote: [''],
@@ -588,7 +620,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     }
   }
 
-  onSalestTaskChange(formGroup: FormGroup, selectedData: ChatRoomModel, formIndex?: number) {
+  onSalectPriceReport(formGroup: FormGroup, selectedData: ChatRoomModel, formIndex?: number) {
     // console.info(item);
 
     if (!this.isProcessing) {
@@ -598,38 +630,36 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         if (selectedData.Code) {
 
           // Get first price report => prototype
-          const firstPriceReport = selectedData['PriceReports'] && selectedData['PriceReports'][0];
-          if (firstPriceReport?.Code) {
-            this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + firstPriceReport?.Code, {
-              includeContact: true,
-              includeDetails: true,
-              includeProductUnitList: true,
-              includeProductPrice: true,
-            }).then(rs => {
+          // const firstPriceReport = selectedData['PriceReports'] && selectedData['PriceReports'][0];
+          this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + this.commonService.getObjectId(selectedData), {
+            includeContact: true,
+            includeDetails: true,
+            includeProductUnitList: true,
+            includeProductPrice: true,
+          }).then(rs => {
 
-              if (rs && rs.length > 0) {
-                const salesVoucher: SalesVoucherModel = { ...rs[0] };
-                // salesVoucher.PriceReportVoucher = selectedData.Code;
-                delete salesVoucher.Code;
-                delete salesVoucher.Id;
-                salesVoucher['SalesTask'] = { id: selectedData.Code, text: selectedData?.Description, Code: selectedData.Code, Description: selectedData.Description };
-                for (const detail of salesVoucher.Details) {
-                  delete detail['Id'];
-                  delete detail['Voucher'];
-                  detail.Description = detail['Description'];
-                }
-                this.formLoad([salesVoucher]);
+            if (rs && rs.length > 0) {
+              const salesVoucher: SalesVoucherModel = { ...rs[0] };
+              // salesVoucher.PriceReportVoucher = selectedData.Code;
+              delete salesVoucher.Code;
+              delete salesVoucher.Id;
+              salesVoucher['SalesTask'] = { id: selectedData.Code, text: selectedData?.Description, Code: selectedData.Code, Description: selectedData.Description };
+              for (const detail of salesVoucher.Details) {
+                delete detail['Id'];
+                delete detail['Voucher'];
+                detail.Description = detail['Description'];
               }
-            });
+              this.formLoad([salesVoucher]);
+            }
+          });
 
-            // formGroup.get('ObjectName').setValue(selectedData.Name);
-            // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-            // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-            // formGroup.get('ObjectAddress').setValue(selectedData.Address);
-            // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-            // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-            // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
-          }
+          // formGroup.get('ObjectName').setValue(selectedData.Name);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+          // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
         }
       }
     }

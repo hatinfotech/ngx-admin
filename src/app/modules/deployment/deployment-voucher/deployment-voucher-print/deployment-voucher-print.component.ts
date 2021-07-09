@@ -1,3 +1,4 @@
+import { DeploymentModule } from './../../deployment.module';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -153,8 +154,9 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   }
 
   approvedConfirm(data: DeploymentVoucherModel) {
+
     if (['COMPLETE'].indexOf(data.State) > -1) {
-      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.commonService.showDiaplog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
           label: this.commonService.translateText('Common.close'),
           status: 'success',
@@ -165,37 +167,45 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
       ]);
       return;
     }
+
     const params = { id: [data.Code] };
-    let confirmText = '';
-    let responseText = '';
-    switch (data.State) {
-      case 'APPROVE':
-        params['changeState'] = 'DEPLOYMENT';
-        confirmText = 'Common.implementConfirm';
-        responseText = 'Common.implementSuccess';
-        break;
-      case 'DEPLOYMENT':
-        params['changeState'] = 'ACCEPTANCE';
-        confirmText = 'Common.acceptanceConfirm';
-        responseText = 'Common.acceptanceSuccess';
-        break;
-      // case 'ACCEPTANCEREQUEST':
-      //   params['changeState'] = 'ACCEPTANCE';
-      //   confirmText = 'Common.acceptanceConfirm';
-      //   responseText = 'Common.acceptanceSuccess';
-      //   break;
-      case 'ACCEPTANCE':
-        params['changeState'] = 'COMPLETE';
-        confirmText = 'Common.completeConfirm';
-        responseText = 'Common.completeSuccess';
-        break;
-      default:
-        params['changeState'] = 'APPROVE';
-        confirmText = 'Common.approvedConfirm';
-        responseText = 'Common.approvedSuccess';
-        break;
-    }
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    const processMap = DeploymentModule.processMaps.deploymentVoucher[data.State || ''];
+    // let confirmText = processMap.confirmText;
+    // let responseTitle = processMap.responseTitle;
+    // let responseText = processMap.responseTitle;
+
+    // switch (data.State) {
+    //   case 'APPROVE':
+    //     params['changeState'] = 'DEPLOYMENT';
+    //     confirmText = 'Common.implementConfirm';
+    //     responseTitle = 'Common.implemented';
+    //     responseText = 'Common.implementSuccess';
+    //     break;
+    //   case 'DEPLOYMENT':
+    //     params['changeState'] = 'ACCEPTANCE';
+    //     confirmText = 'Common.acceptanceConfirm';
+    //     responseTitle = 'Common.acceptanced';
+    //     responseText = 'Common.acceptanceSuccess';
+    //     break;
+    //   // case 'ACCEPTANCEREQUEST':
+    //   //   params['changeState'] = 'ACCEPTANCE';
+    //   //   confirmText = 'Common.acceptanceConfirm';
+    //   //   responseText = 'Common.acceptanceSuccess';
+    //   //   break;
+    //   case 'ACCEPTANCE':
+    //     params['changeState'] = 'COMPLETE';
+    //     confirmText = 'Common.completeConfirm';
+    //     responseTitle = 'Common.completed';
+    //     responseText = 'Common.completeSuccess';
+    //     break;
+    //   default:
+    //     params['changeState'] = 'APPROVE';
+    //     confirmText = 'Common.approvedConfirm';
+    //     responseTitle = 'Common.approved';
+    //     responseText = 'Common.approvedSuccess';
+    //     break;
+    // }
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -204,9 +214,10 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.implement' : (data.State == 'DEPLOYMENT' ? 'Common.completeRequest' : (data.State == 'ACCEPTANCEREQUEST' ? 'Common.complete' : (data.State == 'COMPLETE' ? 'Common.completed' : 'Common.approve')))),
+        label: this.commonService.translateText(processMap?.nextStateLabel),
         status: 'danger',
         action: () => {
+          params['changeState'] = processMap?.nextState;
           // const params = { id: [data.Code] };
           // switch (data.State) {
           //   case 'APPROVE':
@@ -222,20 +233,25 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
           //     params['changeState'] = 'APPROVE';
           //     break;
           // }
+          this.loading = true;
           this.apiService.putPromise<DeploymentVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
             this.onChange && this.onChange(data);
-            this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-              {
-                label: this.commonService.translateText('Common.close'),
-                status: 'success',
-                action: () => {
-                  this.onClose && this.onClose(data);
-                  this.close();
-                },
-              },
-            ]);
+            this.loading = false;
+            this.onClose && this.onClose(data);
+            this.close();
+            this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              status: 'success',
+            });
+            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            //   {
+            //     label: this.commonService.translateText('Common.close'),
+            //     status: 'success',
+            //     action: () => {
+            //     },
+            //   },
+            // ]);
           }).catch(err => {
-
+            this.loading = false;
           });
         },
       },

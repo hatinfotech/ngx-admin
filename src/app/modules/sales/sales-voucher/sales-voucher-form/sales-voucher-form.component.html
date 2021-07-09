@@ -117,18 +117,24 @@
                                         </ngx-form-group>
                                     </div>
                                     <div class="col-sm-6">
-                                        <ngx-form-group [formGroup]="formItem" name="SalesTask" label="Common.task" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                            <ngx-select2 formControlName="SalesTask" [select2Option]="select2SalesTaskOption" (selectChange)="onSalestTaskChange(formItem, $event, i)"></ngx-select2>
+                                        <ngx-form-group [formGroup]="formItem" name="PriceReport" label="Common.priceReport" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                            <ngx-select2 formControlName="PriceReport" [select2Option]="selectPriceReportOption" (selectChange)="onSalectPriceReport(formItem, $event, i)"></ngx-select2>
                                         </ngx-form-group>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-sm-12">
+                            <div class="col-sm-9">
                                 <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Employee" label="Common.employee" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                                    <ngx-select2 formControlName="Employee" [select2Option]="selectEmployeeOption"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+
                             <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Note" label="Common.note" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <textarea class="scrollable-container" nbInput fullWidth formControlName="Note" placeholder="{{'Common.note' | translate | headtitlecase}}" rows="4"></textarea>

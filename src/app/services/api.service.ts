@@ -7,12 +7,13 @@ import { NbAuthService, NbAuthToken } from '@nebular/auth';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { map, retry, catchError, switchMap, take, filter } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { NbDialogService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { environment } from '../../environments/environment';
 import { EmployeeModel } from '../models/employee.model';
 import { LoginDialogComponent } from '../modules/auth/login/login-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { ToasterService } from 'angular2-toaster';
 export class ApiToken {
   access_token?: string;
   refresh_token?: string;
@@ -44,6 +45,7 @@ export class ApiService {
     public router: Router,
     public dialogService: NbDialogService,
     public translate: TranslateService,
+    public toastService: NbToastrService,
     // private commonService: CommonService,
     // private activatedRoute: ActivatedRouteSnapshot,
   ) {
@@ -106,7 +108,7 @@ export class ApiService {
   }
 
   buildApiUrl(path: string, params?: Object) {
-    this.refreshToken(() => {});
+    this.refreshToken(() => { });
     const token = (params && params['token']) || this.getAccessToken();
     let paramsStr = '';
 
@@ -135,8 +137,8 @@ export class ApiService {
     if (token) {
       paramsStr += (paramsStr ? '&' : '') + 'token=' + token;
     }
-    if(/^http/i.test(path)) {
-        return `${path}?${paramsStr}`;
+    if (/^http/i.test(path)) {
+      return `${path}?${paramsStr}`;
     }
     return `${this.baseApiUrl}${path}?${paramsStr}`;
   }
@@ -396,7 +398,7 @@ export class ApiService {
 
   deletePromise(enpoint: string, id: string | string[] | { [key: string]: string }) {
     let apiUrl = '';
-    if(id === null) {
+    if (id === null) {
       id = [];
     }
     if (Array.isArray(id)) {
@@ -485,20 +487,25 @@ export class ApiService {
       this.onUnauthorizied();
     }
     if (e.status === 405) {
-      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-        context: {
-          title: 'Yêu cầu quyền truy cập',
-          content: this.joinLogs(e),
-          actions: [
-            {
-              label: 'Trở về',
-              icon: 'back',
-              status: 'info',
-              action: () => { },
-            },
-          ],
-        },
-      });
+      // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
+      //   context: {
+      //     title: 'Yêu cầu quyền truy cập',
+      //     content: this.joinLogs(e),
+      //     actions: [
+      //       {
+      //         label: 'Trở về',
+      //         icon: 'back',
+      //         status: 'info',
+      //         action: () => { },
+      //       },
+      //     ],
+      //   },
+      // });
+      if (!silent) {
+        this.toastService.show(this.joinLogs(e), 'Yêu cầu quyền truy cập', {
+          status: 'danger',
+        });
+      }
     }
     if (e.status === 406) {
       if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
@@ -510,7 +517,7 @@ export class ApiService {
               label: 'Đăng nhập lại',
               icon: 'back',
               status: 'info',
-              action: () => { 
+              action: () => {
                 this.unauthoriziedSubject.next({
                   previousUrl: this.router.url,
                 });
@@ -525,52 +532,67 @@ export class ApiService {
       });
     }
     if (e.status === 400) {
-      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-        context: {
-          title: 'Yêu cầu không thể thực thi',
-          content: this.joinLogs(e),
-          actions: [
-            {
-              label: 'Trở về',
-              icon: 'back',
-              status: 'info',
-              action: () => { },
-            },
-          ],
-        },
-      });
+      // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
+      //   context: {
+      //     title: 'Yêu cầu không thể thực thi',
+      //     content: this.joinLogs(e),
+      //     actions: [
+      //       {
+      //         label: 'Trở về',
+      //         icon: 'back',
+      //         status: 'info',
+      //         action: () => { },
+      //       },
+      //     ],
+      //   },
+      // });
+      if (!silent) {
+        this.toastService.show(this.joinLogs(e), 'Yêu cầu không thể thực thi', {
+          status: 'warning',
+        });
+      }
     }
     if (e.status === 403) {
-      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-        context: {
-          title: 'Yêu cầu không có quyền',
-          content: this.joinLogs(e),
-          actions: [
-            {
-              label: 'Trở về',
-              icon: 'back',
-              status: 'info',
-              action: () => { },
-            },
-          ],
-        },
-      });
+      // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
+      //   context: {
+      //     title: 'Yêu cầu không có quyền',
+      //     content: this.joinLogs(e),
+      //     actions: [
+      //       {
+      //         label: 'Trở về',
+      //         icon: 'back',
+      //         status: 'info',
+      //         action: () => { },
+      //       },
+      //     ],
+      //   },
+      // });
+      if (!silent) {
+        this.toastService.show(this.joinLogs(e), 'Yêu cầu không có quyền', {
+          status: 'warning',
+        });
+      }
     }
     if (e.status === 422) {
-      if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-        context: {
-          title: 'Yêu cầu chưa được xử lý',
-          content: this.joinLogs(e),
-          actions: [
-            {
-              label: 'Trở về',
-              icon: 'back',
-              status: 'info',
-              action: () => { },
-            },
-          ],
-        },
-      });
+      // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
+      //   context: {
+      //     title: 'Yêu cầu chưa được xử lý',
+      //     content: this.joinLogs(e),
+      //     actions: [
+      //       {
+      //         label: 'Trở về',
+      //         icon: 'back',
+      //         status: 'info',
+      //         action: () => { },
+      //       },
+      //     ],
+      //   },
+      // });
+      if (!silent) {
+        this.toastService.show(this.joinLogs(e), 'Yêu cầu chưa được xử lý', {
+          status: 'warning',
+        });
+      }
     }
     let errorMessage = '';
     if (e.error instanceof ErrorEvent) {

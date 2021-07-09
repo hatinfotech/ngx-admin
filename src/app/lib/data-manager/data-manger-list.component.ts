@@ -406,13 +406,13 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         actions: [
           {
             label: 'Trở về',
-            icon: 'back',
+            icon: 'arrow-ios-back',
             status: 'info',
             action: () => { },
           },
           {
             label: 'Xoá',
-            icon: 'delete',
+            icon: 'trash-2',
             status: 'danger',
             action: () => {
               // this.apiService.delete(this.apiPath, ids, result => {
@@ -556,7 +556,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         column.type = 'custom';
         column.renderComponent = SmartTableCheckboxComponent;
         column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             if (column.onChange) {
               column.onChange(value, instance.rowData, instance);
@@ -569,7 +569,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         column.type = 'custom';
         column.renderComponent = SmartTableCheckboxComponent;
         column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             if (column.onChange) {
               column.onChange(value, instance.rowData, instance);
@@ -582,7 +582,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         column.type = 'custom';
         column.renderComponent = SmartTableDateTimeComponent;
         column.onComponentInitFunction = (instance: SmartTableDateTimeComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             if (column.onChange) {
               column.onChange(value, instance.rowData, instance);

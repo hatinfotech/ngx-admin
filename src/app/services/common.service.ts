@@ -594,9 +594,9 @@ export class CommonService {
     }
   }
 
-  openMenuSidebar() {
+  // openMenuSidebar() {
 
-  }
+  // }
 
   getBaseUrl() {
     return `${window.location.origin}/${environment.basePath}`;

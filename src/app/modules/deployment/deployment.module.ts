@@ -1,3 +1,4 @@
+import { ProcessMap } from './../../models/process-map.model';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DeploymentVoucherListComponent } from './deployment-voucher/deployment-voucher-list/deployment-voucher-list.component';
@@ -65,4 +66,70 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NgxUploaderModule,
   ]
 })
-export class DeploymentModule { }
+export class DeploymentModule {
+
+  static processMaps: {
+    deploymentVoucher?: {
+      [key: string]: ProcessMap
+    }
+  } = {
+      deploymentVoucher: {
+        "APPROVE": {
+          state: 'APPROVE',
+          label: 'Common.approved',
+          status: 'success',
+          outline: false,
+          nextState: 'DEPLOYMENT',
+          nextStateLabel: 'Common.deployment',
+          confirmText: 'Common.implementConfirm',
+          responseTitle: 'Common.deploymented',
+          restponseText: 'Common.deploymentSuccess',
+        },
+        "DEPLOYMENT": {
+          state: 'DEPLOYMENT',
+          label: 'Common.implement',
+          status: 'warning',
+          outline: false,
+          nextState: 'ACCEPTANCE',
+          nextStateLabel: 'Common.acceptance',
+          confirmText: 'Common.acceptanceConfirm',
+          responseTitle: 'Common.acceptanced',
+          restponseText: 'Common.acceptanceSuccess',
+        },
+        "ACCEPTANCE": {
+          state: 'ACCEPTANCE',
+          label: 'Common.acceptance',
+          status: 'info',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "COMPLETE": {
+          state: 'COMPLETE',
+          label: 'Common.completed',
+          status: 'success',
+          outline: true,
+          nextState: '',
+          nextStateLabel: '',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "": {
+          state: 'NOTJUSTAPPROVE',
+          label: 'Common.notJustApproved',
+          status: 'danger',
+          outline: false,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+      },
+    };
+
+}

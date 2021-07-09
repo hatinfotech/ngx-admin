@@ -745,7 +745,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         column.type = 'custom';
         column.renderComponent = SmartTableCheckboxComponent;
         column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             // console.info(value);
             if (column.onChange) {
@@ -759,7 +759,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         column.type = 'custom';
         column.renderComponent = SmartTableCurrencyEditableComponent;
         column.onComponentInitFunction = (instance: SmartTableCurrencyEditableComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.placeholder = column.title;
           instance.name = key;
           if (column.delay) {

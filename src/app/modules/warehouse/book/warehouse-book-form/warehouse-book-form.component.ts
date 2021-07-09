@@ -448,7 +448,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         column.type = 'custom';
         column.renderComponent = SmartTableCheckboxComponent;
         column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             // console.info(value);
             if (column.onChange) {
@@ -462,7 +462,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         column.type = 'custom';
         column.renderComponent = SmartTableCurrencyEditableComponent;
         column.onComponentInitFunction = (instance: SmartTableCurrencyEditableComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.placeholder = column.title;
           instance.name = key;
           if (column.delay) {
@@ -480,7 +480,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         column.type = 'custom';
         column.renderComponent = SmartTableNumberEditableComponent;
         column.onComponentInitFunction = (instance: SmartTableNumberEditableComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.placeholder = column.title;
           instance.name = key;
           if (column.delay) {
@@ -498,7 +498,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         column.type = 'custom';
         column.renderComponent = SmartTableTextEditableComponent;
         column.onComponentInitFunction = (instance: SmartTableTextEditableComponent) => {
-          instance.disable = !column.editable;
+          instance.disabled = !column.editable;
           instance.placeholder = column.title;
           instance.name = key;
           if (column.delay) {

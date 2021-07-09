@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { SalesModule } from './../../sales.module';
+import { ProcessMap } from './../../../../models/process-map.model';
+import { MobileAppService } from './../../../mobile-app/mobile-app.service';
+import { PriceReportModel } from './../../../../models/price-report.model';
+import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { SalesPriceReportDetailModel, SalesPriceReportModel, SalesVoucherModel } from '../../../../models/sales.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -45,6 +49,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<SalesPriceReportListComponent>,
+    public mobileAppService: MobileAppService
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -141,17 +146,17 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
       //     instance.style = 'text-align: right';
       //   },
       // },
-      Copy: {
-        title: 'Copy',
+      Task: {
+        title: 'Task',
         type: 'custom',
         width: '10%',
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
-          instance.icon = 'copy';
+          instance.icon = 'message-circle';
           // instance.label = this.commonService.translateText('Common.copy');
           instance.display = true;
-          instance.status = 'warning';
+          instance.status = 'info';
           instance.valueChange.subscribe(value => {
             // if (value) {
             //   instance.disabled = false;
@@ -159,26 +164,86 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             //   instance.disabled = true;
             // }
           });
+
+          // instance.valueChange.subscribe(rowData => {
+
+          //   if (instance.rowData?.Code === 'PBG09721100') {
+          //     setInterval(() => {
+          //       console.log(instance.disabled);
+          //       // this.disabled = !this.disabled;
+          //     }, 1000);
+          //   }
+          // });
+
+
           instance.click.subscribe(async (row: SalesPriceReportModel) => {
 
-            this.commonService.openDialog(SalesPriceReportFormComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [row.Code],
-                isDuplicate: true,
-                onDialogSave: (newData: SalesPriceReportModel[]) => {
-                  // if (onDialogSave) onDialogSave(row);
-                },
-                onDialogClose: () => {
-                  // if (onDialogClose) onDialogClose();
-                  this.refresh();
-                },
-              },
+            this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
+              const priceReport = rs[0];
+              if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
+                this.commonService.openMobileSidebar();
+                this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
+              }
+            }).catch(err => {
+              return Promise.reject(err);
             });
+
+            // this.commonService.openDialog(SalesPriceReportFormComponent, {
+            //   context: {
+            //     inputMode: 'dialog',
+            //     inputId: [row.Code],
+            //     isDuplicate: true,
+            //     onDialogSave: (newData: SalesPriceReportModel[]) => {
+            //       // if (onDialogSave) onDialogSave(row);
+            //     },
+            //     onDialogClose: () => {
+            //       // if (onDialogClose) onDialogClose();
+            //       this.refresh();
+            //     },
+            //   },
+            // });
 
           });
         },
       },
+      // Copy: {
+      //   title: 'Copy',
+      //   type: 'custom',
+      //   width: '10%',
+      //   renderComponent: SmartTableButtonComponent,
+      //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+      //     instance.iconPack = 'eva';
+      //     instance.icon = 'copy';
+      //     // instance.label = this.commonService.translateText('Common.copy');
+      //     instance.display = true;
+      //     instance.status = 'warning';
+      //     instance.valueChange.subscribe(value => {
+      //       // if (value) {
+      //       //   instance.disabled = false;
+      //       // } else {
+      //       //   instance.disabled = true;
+      //       // }
+      //     });
+      //     instance.click.subscribe(async (row: SalesPriceReportModel) => {
+
+      //       this.commonService.openDialog(SalesPriceReportFormComponent, {
+      //         context: {
+      //           inputMode: 'dialog',
+      //           inputId: [row.Code],
+      //           isDuplicate: true,
+      //           onDialogSave: (newData: SalesPriceReportModel[]) => {
+      //             // if (onDialogSave) onDialogSave(row);
+      //           },
+      //           onDialogClose: () => {
+      //             // if (onDialogClose) onDialogClose();
+      //             this.refresh();
+      //           },
+      //         },
+      //       });
+
+      //     });
+      //   },
+      // },
       State: {
         title: this.commonService.translateText('Common.state'),
         type: 'custom',
@@ -195,10 +260,11 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            instance.label = this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
-            instance.status = this.stateDic[value]?.status || 'danger';
-            instance.outline = this.stateDic[value]?.outline || false;
-            instance.disable = (value === 'APPROVE');
+            const processMap = SalesModule.processMaps.priceReport[value || ''];
+            instance.label = this.commonService.translateText(processMap?.label);
+            instance.status = processMap?.status;
+            instance.outline = processMap.outline;
+            // instance.disabled = (value === 'APPROVE');
             // instance.icon = value ? 'unlock' : 'lock';
             // instance.status = value === 'REQUEST' ? 'warning' : 'success';
             // instance.disabled = value !== 'REQUEST';

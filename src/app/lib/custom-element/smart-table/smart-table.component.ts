@@ -15,7 +15,7 @@ import { ViewCell } from 'ng2-smart-table';
 export class SmartTableBaseComponent implements ViewCell, OnInit {
 
   // renderValue: any;
-  disable: boolean = false;
+  disabled: boolean = false;
   style: string;
   class: string;
 
@@ -39,13 +39,13 @@ export class SmartTableBaseComponent implements ViewCell, OnInit {
 
 @Component({
   template: `
-    <div [style]="style" [class]="class"><nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox></div>
+    <div [style]="style" [class]="class"><nb-checkbox [disabled]="disabled" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox></div>
   `,
 })
 export class SmartTableCheckboxComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
   renderValue: boolean;
-  disable: boolean = false;
+  // disabled: boolean = false;
 
   @Input() value: string | number;
   @Input() rowData: any;
@@ -79,7 +79,7 @@ export class SmartTableButtonComponent extends SmartTableBaseComponent implement
   label: string = null;
   status: string = 'success';
   display: boolean = false;
-  disabled: boolean = false;
+  // disabled: boolean = false;
   outline: boolean = false;
   title?: string;
 
@@ -114,7 +114,7 @@ export class SmartTableIconComponent extends SmartTableBaseComponent implements 
   label: string = '';
   status: string = 'success';
   display: boolean = false;
-  disabled: boolean = false;
+  // disabled: boolean = false;
 
   @Input() value: string | number;
   @Input() rowData: any;
@@ -174,7 +174,7 @@ export class SmartTableThumbnailComponent extends SmartTableBaseComponent implem
   label: string = '';
   status: string = 'success';
   display: boolean = false;
-  disabled: boolean = false;
+  // disabled: boolean = false;
   title = '';
 
   @Input() value: string | number;
@@ -208,7 +208,7 @@ export class SmartTableThumbnailComponent extends SmartTableBaseComponent implem
 export class SmartTableDateTimeComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
   // renderValue: string;
-  disable: boolean = false;
+  // disabled: boolean = false;
   format$ = new BehaviorSubject('short');
 
   @Input() value: string;
@@ -233,7 +233,7 @@ export class SmartTableDateTimeComponent extends SmartTableBaseComponent impleme
 export class SmartTableCurrencyComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
   // renderValue: string;
-  disable: boolean = false;
+  // disabled: boolean = false;
   // format$ = new BehaviorSubject('short');
 
   @Input() value: string;
@@ -275,7 +275,7 @@ export class SmartTableCurrencyEditableComponent extends SmartTableBaseComponent
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
 
   renderValue: boolean;
-  disable: boolean = false;
+  // disabled: boolean = false;
   placeholder: string = '';
   delay: number = 1000;
   name: string = '';
@@ -356,7 +356,7 @@ export class SmartTableNumberEditableComponent extends SmartTableBaseComponent i
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
   renderValue: boolean;
-  disable: boolean = false;
+  // disabled: boolean = false;
   placeholder: string = '';
   delay: number = 1000;
   name: string = '';
@@ -434,7 +434,7 @@ export class SmartTableTextEditableComponent extends SmartTableBaseComponent imp
   inputControl = new FormControl;
 
   renderValue: boolean;
-  disable: boolean = false;
+  // disabled: boolean = false;
   placeholder: string = '';
   delay: number = 1000;
   name: string = '';

@@ -1,3 +1,4 @@
+import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { SalesVoucherModel } from '../../../../models/sales.model';
@@ -196,10 +197,11 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            instance.label = this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
-            instance.status = this.stateDic[value]?.status || 'danger';
-            instance.outline = this.stateDic[value]?.outline || false;
-            instance.disable = (value === 'APPROVE');
+            const processMap = SalesModule.processMaps.salesVoucher[value || ''];
+            instance.label = this.commonService.translateText(processMap?.label);
+            instance.status = processMap?.status;
+            instance.outline = processMap?.outline;
+            // instance.disabled = (value === 'APPROVE');
             // instance.icon = value ? 'unlock' : 'lock';
             // instance.status = value === 'REQUEST' ? 'warning' : 'success';
             // instance.disabled = value !== 'REQUEST';

@@ -212,6 +212,7 @@
         "offline": "offline",
         "contact": "liên hệ",
         "approvedConfirm": "bạn có chắc là muốn duyệt {{object}}?",
+        "completeConfirm": "bạn có chắc là muốn hoàn tất {{object}}?",
         "approvedSuccess": "{{object}} đã được duyệt !",
         "acceptanceRequestConfirm": "bạn có chắc là muốn gửi yêu cầu nghiệm thu {{object}}?",
         "acceptanceRequestSuccess": "{{object}} đã được gửi yêu cầu nghiệm thu !",
@@ -244,7 +245,12 @@
         "completeRequestConfirm": "bạn có chắc là muốn chuyển sang trạng thái yêu cầu nghiệm thu cho {{object}}?",
         "comppleteConform": "bạn có chắc là muốn chuyển sang trạng thái hoàn tất cho {{object}}?",
         "setFeaturePicture": "làm hình đại diện",
-        "task": "task"
+        "task": "task",
+        "deployment": "triển khai",
+        "deploymented": "đã triển khai",
+        "deploymentSuccess": "triển khai thành công",
+        "acceptanced": "đã nghiệm thu",
+        "priceReport": "báo giá"
     },
     "Contact": {
         "name": "tên liên hệ",
