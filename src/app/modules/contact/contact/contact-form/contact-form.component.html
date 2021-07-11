@@ -163,7 +163,7 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <ngx-form-group [formGroup]="outsideReference" name="State" label="Contact.state" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
-                                                        <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'FOLLOW', text: this.commonService.translateText('Common.follow')}, {id: 'UNFOLLOW', text: this.commonService.translateText('Common.unfollow')}]"></ngx-select2>
+                                                        <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'FOLLOW', text: this.commonService.translateText('Common.follow')}, {id: 'UNFOLLOW', text: this.commonService.translateText('Common.unfollow')}, {id: 'ZNSREQUEST', text: this.commonService.translateText('Common.znsRequest')}]"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                             </div>

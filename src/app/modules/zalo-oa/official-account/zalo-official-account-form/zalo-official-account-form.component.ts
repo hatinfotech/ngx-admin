@@ -79,16 +79,18 @@ export class ZaloOfficialAccountFormComponent extends DataManagerFormComponent<Z
   }
 
   makeNewFormGroup(data?: ZaloOaOfficialAccountModel): FormGroup {
+    const curentUrl = new URL(window.location.href);curentUrl.origin
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: ['', Validators.required],
       Name: ['', Validators.required],
       Description: [''],
       AppId: ['', Validators.required],
-      AppSecret: ['', Validators.required],
+      // AppSecret: [''],
       OaId: ['', Validators.required],
-      CallbackUrl: ['', Validators.required],
-      ApiUrl: ['', Validators.required],
-      Status: [true],
+      CallbackUrl: [`${curentUrl.origin}/v1/zalo-oa/callbacks`, Validators.required],
+      ApiUrl: ['https://openapi.zalo.me/v2.0', Validators.required],
+      IsEnabled: [true],
+      IsDefault: [false],
     });
     if (data) {
       newForm.patchValue(data);
@@ -119,7 +121,7 @@ export class ZaloOfficialAccountFormComponent extends DataManagerFormComponent<Z
     // this.minierpService.reloadCache();
   }
   onAfterUpdateSubmit(newFormData: ZaloOaOfficialAccountModel[]) {
-    super.onAfterUpdateSubmit(newFormData);
+    return super.onAfterUpdateSubmit(newFormData);
     // this.minierpService.reloadCache();
   }
 

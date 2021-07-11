@@ -252,7 +252,9 @@
         "acceptanced": "đã nghiệm thu",
         "priceReport": "báo giá",
         "warning": "cảnh báo",
-        "notification": "thông báo"
+        "notification": "thông báo",
+        "default": "mặc định",
+        "expired": "hết hạn"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -561,7 +563,8 @@
                 "follower": "khách đang quan tâm"
             }
         },
-        "appid": "Zalo App ID",
+        "oaid": "Zalo OA ID",
+        "appId": "Zalo App ID",
         "callbackUrl": "url nhận token",
         "apiUrl": "api url"
     },

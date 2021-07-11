@@ -42,6 +42,28 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
     public ref: NbDialogRef<ZaloOaFollowerListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
+    this.actionButtonList.unshift({
+      name: 'zalooa',
+      status: 'primary',
+      label: 'Zalo OA',
+      icon: 'external-link',
+      title: 'Mở trang quản lý zalo oa',
+      size: 'medium',
+      click: () => {
+        window.open('https://developers.zalo.me/apps', '__blank');
+      },
+    });
+    this.actionButtonList.unshift({
+      name: 'zalodev',
+      status: 'primary',
+      label: 'Zalo Develop',
+      icon: 'external-link',
+      title: 'Mở trang dành cho nhà phát triển',
+      size: 'medium',
+      click: () => {
+        window.open('https://developers.zalo.me/apps', '__blank');
+      },
+    });
   }
 
   async init() {
@@ -68,15 +90,31 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
       Description: {
         title: this.commonService.translateText('Common.description'),
         type: 'string',
-        width: '35%',
-      },
-      Expired: {
-        title: this.commonService.translateText('Common.expried'),
-        type: 'string',
         width: '20%',
       },
-      Status: {
-        title: this.commonService.translateText('Common.status'),
+      AppId: {
+        title: this.commonService.translateText('Common.appId'),
+        type: 'string',
+        width: '15%',
+      },
+      WebhookUserTokenExpired: {
+        title: this.commonService.translateText('Common.expired'),
+        type: 'datetime',
+        width: '20%',
+      },
+      Type: {
+        title: this.commonService.translateText('Common.type'),
+        type: 'string',
+        width: '10%',
+        // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      },
+      IsEnabled: {
+        title: this.commonService.translateText('Common.enable'),
+        type: 'boolean',
+        width: '5%',
+      },
+      IsDefault: {
+        title: this.commonService.translateText('Common.default'),
         type: 'boolean',
         width: '5%',
       },
@@ -91,7 +129,13 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
           instance.display = true;
           instance.status = 'success';
           instance.title = this.commonService.translateText('Common.refreshToken');
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((officialAccount: ZaloOaOfficialAccountModel) => {
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (officialAccount: ZaloOaOfficialAccountModel) => {
+            // const token = await this.apiService.getPromise<ZaloOaOfficialAccountModel[]>('/zalo-oa/official-accounts', { 'generateWebhookToken': true, id: [officialAccount.Code] }).then(token => token[0]?.WebhookToken);
+            // if (!token) {
+            //   this.toastService.show('Cảnh báo', 'Không lấy đượng token !', { status: 'warning' });
+            //   return;
+            // }
+            const token = this.apiService.token?.access_token;
             this.commonService.openDialog(ShowcaseDialogComponent, {
               context: {
                 title: this.commonService.translateText('ZaloOa.OfficialAccount.title', { action: this.commonService.translateText('Common.confirm'), definition: '' }),
@@ -101,7 +145,7 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
                     label: this.commonService.translateText('Common.refreshToken'),
                     status: 'success',
                     action: () => {
-                      window.open(`https://oauth.zaloapp.com/v3/oa/permission?app_id=${officialAccount.AppId}&redirect_uri=${encodeURIComponent(officialAccount.CallbackUrl)}`, '_blank');
+                      window.open(`https://oauth.zaloapp.com/v3/oa/permission?app_id=${officialAccount.AppId}&redirect_uri=${encodeURIComponent(officialAccount.CallbackUrl + '/' + officialAccount?.AppId + '?token=' + token)}`, '_blank');
                     },
                   },
                   {

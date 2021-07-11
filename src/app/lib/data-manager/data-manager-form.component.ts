@@ -485,7 +485,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         // duration: 5000,
       });
     }
-    this.id = newFormData.map(item => item[this.idKey]);
+    this.id = newFormData?.map(item => item[this.idKey]);
     if (this.mode === 'page') {
       this.commonService.location.go(this.generateUrlByIds(this.id));
     }
