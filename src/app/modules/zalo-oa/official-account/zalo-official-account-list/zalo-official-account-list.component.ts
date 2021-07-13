@@ -84,13 +84,13 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
       Name: {
         title: this.commonService.translateText('Common.name'),
         type: 'string',
-        width: '20%',
+        width: '15%',
         // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Description: {
         title: this.commonService.translateText('Common.description'),
         type: 'string',
-        width: '20%',
+        width: '15%',
       },
       AppId: {
         title: this.commonService.translateText('Common.appId'),
@@ -100,13 +100,18 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
       WebhookUserTokenExpired: {
         title: this.commonService.translateText('Common.expired'),
         type: 'datetime',
-        width: '20%',
+        width: '15%',
       },
       Type: {
         title: this.commonService.translateText('Common.type'),
         type: 'string',
         width: '10%',
         // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      },
+      Forward: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.Forward'), 'head-title'),
+        type: 'string',
+        width: '15%',
       },
       IsEnabled: {
         title: this.commonService.translateText('Common.enable'),

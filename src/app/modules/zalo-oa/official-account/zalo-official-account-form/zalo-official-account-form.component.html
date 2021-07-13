@@ -38,6 +38,16 @@
                   <input type="text" nbInput fullWidth formControlName="ApiUrl" placeholder="{{'ZaloOa.apiUrl' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Forward" label="Common.forward" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Forward" placeholder="{{'Common.forward' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="ForwardUserToken" label="Common.forwardUserToken" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="ForwardUserToken" placeholder="{{'Common.forwardUserToken' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
               <div class="col-sm-9">
                 <ngx-form-group [formGroup]="formItem" name="Description" label="Common.description" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">

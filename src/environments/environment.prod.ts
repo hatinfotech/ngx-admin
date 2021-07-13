@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.3.1.4',
+  version: '2.3.2.2',
+  // 2.3.2: Zalo Connect with Parallel App
   // 2.3.1: Zalo OA Config GUI
   // 2.3.0: Commerical process
   // 2.2.1.1: Develop notificaiton service

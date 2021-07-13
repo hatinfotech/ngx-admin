@@ -79,7 +79,7 @@ export class ZaloOfficialAccountFormComponent extends DataManagerFormComponent<Z
   }
 
   makeNewFormGroup(data?: ZaloOaOfficialAccountModel): FormGroup {
-    const curentUrl = new URL(window.location.href);curentUrl.origin
+    const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
       Code: ['', Validators.required],
       Name: ['', Validators.required],
@@ -89,6 +89,8 @@ export class ZaloOfficialAccountFormComponent extends DataManagerFormComponent<Z
       OaId: ['', Validators.required],
       CallbackUrl: [`${curentUrl.origin}/v1/zalo-oa/callbacks`, Validators.required],
       ApiUrl: ['https://openapi.zalo.me/v2.0', Validators.required],
+      Forward: [''],
+      ForwardUserToken: [''],
       IsEnabled: [true],
       IsDefault: [false],
     });
