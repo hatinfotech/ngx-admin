@@ -1,3 +1,4 @@
+import { ZaloOaTemplateListComponent } from './template/zalo-oa-template-list/zalo-oa-template-list.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from '../../services/auth-guard.service';
@@ -6,6 +7,7 @@ import { ZaloOfficialAccountListComponent } from './official-account/zalo-offici
 import { ZaloOfficialAccountFormComponent } from './official-account/zalo-official-account-form/zalo-official-account-form.component';
 import { ZaloOaFollowerListComponent } from './follower/zalo-oa-follower-list/zalo-oa-follower-list.component';
 import { ZaloOaFollowerFormComponent } from './follower/zalo-oa-follower-form/zalo-oa-follower-form.component';
+import { ZaloOaTemplateFormComponent } from './template/zalo-oa-template-form/zalo-oa-template-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -48,6 +50,25 @@ const routes: Routes = [{
       path: 'follower/form/:id',
       canActivate: [AuthGuardService],
       component: ZaloOaFollowerFormComponent,
+    },
+    //Template
+    {
+      path: 'template/list',
+      canActivate: [AuthGuardService],
+      component: ZaloOaTemplateListComponent,
+      data: {
+        reuse: true,
+      },
+    },
+    {
+      path: 'template/form',
+      canActivate: [AuthGuardService],
+      component: ZaloOaTemplateFormComponent,
+    },
+    {
+      path: 'template/form/:id',
+      canActivate: [AuthGuardService],
+      component: ZaloOaTemplateFormComponent,
     },
   ],
 }];

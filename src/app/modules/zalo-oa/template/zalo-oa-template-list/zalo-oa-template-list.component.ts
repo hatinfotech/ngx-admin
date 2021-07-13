@@ -2,31 +2,32 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
-import { CashVoucherModel } from '../../../../../models/accounting.model';
-import { UserGroupModel } from '../../../../../models/user-group.model';
-import { ApiService } from '../../../../../services/api.service';
-import { CommonService } from '../../../../../services/common.service';
-import { CashReceiptVoucherFormComponent } from '../cash-receipt-voucher-form/cash-receipt-voucher-form.component';
-import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+import { SmartTableDateTimeComponent, SmartTableCurrencyComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { UserGroupModel } from '../../../../models/user-group.model';
+import { ZaloOaTemplateModel } from '../../../../models/zalo-oa.model';
+import { ApiService } from '../../../../services/api.service';
+import { CommonService } from '../../../../services/common.service';
+import { CashReceiptVoucherPrintComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ZaloOaTemplateFormComponent } from '../zalo-oa-template-form/zalo-oa-template-form.component';
 
 @Component({
-  selector: 'ngx-cash-receipt-voucher-list',
-  templateUrl: './cash-receipt-voucher-list.component.html',
-  styleUrls: ['./cash-receipt-voucher-list.component.scss']
+  selector: 'ngx-zalo-oa-template-list',
+  templateUrl: './zalo-oa-template-list.component.html',
+  styleUrls: ['./zalo-oa-template-list.component.scss']
 })
-export class CashReceiptVoucherListComponent extends ServerDataManagerListComponent<CashVoucherModel> implements OnInit {
+export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<ZaloOaTemplateModel> implements OnInit {
 
-  componentName: string = 'CashReceiptVoucherListComponent';
-  formPath = '/accounting/cash-receipt-voucher/form';
-  apiPath = '/accounting/cash-vouchers';
+  componentName: string = 'ZaloOaTemplateListComponent';
+  formPath = '/zalo-oa/template/form';
+  apiPath = '/zalo-oa/templates';
   idKey = 'Code';
-  formDialog = CashReceiptVoucherFormComponent;
+  formDialog = ZaloOaTemplateFormComponent;
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<CashReceiptVoucherListComponent>;
+  static _dialog: NbDialogRef<ZaloOaTemplateListComponent>;
 
   // Smart table
   static filterConfig: any;
@@ -40,7 +41,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<CashReceiptVoucherListComponent>,
+    public ref: NbDialogRef<ZaloOaTemplateListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -75,8 +76,8 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         width: '5%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
-      ObjectName: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+      Name: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
         type: 'string',
         width: '20%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
@@ -87,40 +88,24 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         width: '20%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
-      RelationVoucher: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+      TemplateId: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('ZaloOa.Tempalte.id'), 'head-title'),
         type: 'string',
         width: '20%',
       },
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+      ZaloOa: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('ZaloOa.Oa.name'), 'head-title'),
         type: 'string',
         width: '10%',
-      },
-      Created: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
-        type: 'custom',
-        width: '10%',
-        filter: {
-          type: 'custom',
-          component: SmartTableDateTimeRangeFilterComponent,
-        },
         renderComponent: SmartTableDateTimeComponent,
         onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
           // instance.format$.next('medium');
         },
       },
-      Amount: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
-        type: 'custom',
-        class: 'align-right',
+      Code: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+        type: 'string',
         width: '10%',
-        position: 'right',
-        renderComponent: SmartTableCurrencyComponent,
-        onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-          // instance.format$.next('medium');
-          instance.style = 'text-align: right';
-        },
       },
     },
   });
@@ -145,9 +130,9 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
-      params['includeParent'] = true;
-      params['sort_Created'] = 'desc';
-      params['eq_Type'] = 'RECEIPT';
+      // params['includeParent'] = true;
+      // params['sort_Created'] = 'desc';
+      // params['eq_Type'] = 'RECEIPT';
       return params;
     };
 
@@ -174,10 +159,10 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: ids, includeContact: true, includeDetails: true, eq_Type: 'RECEIPT' });
+    return this.apiService.getPromise<ZaloOaTemplateModel[]>(this.apiPath, { id: ids });
   }
 
-  preview(data: CashVoucherModel[]) {
+  preview(data: ZaloOaTemplateModel[]) {
     this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
       context: {
         showLoadinng: true,
@@ -185,7 +170,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         data: data,
         idKey: ['Code'],
         // approvedConfirm: true,
-        onClose: (data: CashVoucherModel) => {
+        onClose: (data: ZaloOaTemplateModel) => {
           this.refresh();
         },
       },

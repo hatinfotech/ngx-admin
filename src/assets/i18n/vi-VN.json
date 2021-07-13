@@ -563,6 +563,13 @@
                 "follower": "khách đang quan tâm"
             }
         },
+        "Oa": {
+            "id": "Zalo OA ID"
+        },
+        "Template": {
+            "id": "Template ID",
+            "title": "Mẫu tin nhắn ZNS"
+        },
         "oaid": "Zalo OA ID",
         "appId": "Zalo App ID",
         "callbackUrl": "url nhận token",

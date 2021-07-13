@@ -50,7 +50,7 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
       title: 'Mở trang quản lý zalo oa',
       size: 'medium',
       click: () => {
-        window.open('https://developers.zalo.me/apps', '__blank');
+        window.open('https://oa.zalo.me/manage/oa', '__blank');
       },
     });
     this.actionButtonList.unshift({

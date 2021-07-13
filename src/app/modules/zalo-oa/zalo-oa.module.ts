@@ -21,13 +21,15 @@ import { ZaloOaFollowerListComponent } from './follower/zalo-oa-follower-list/za
 import { ZaloOaFollowerFormComponent } from './follower/zalo-oa-follower-form/zalo-oa-follower-form.component';
 import { ZaloOfficialAccountListComponent } from './official-account/zalo-official-account-list/zalo-official-account-list.component';
 import { ZaloOfficialAccountFormComponent } from './official-account/zalo-official-account-form/zalo-official-account-form.component';
+import { ZaloOaTemplateListComponent } from './template/zalo-oa-template-list/zalo-oa-template-list.component';
+import { ZaloOaTemplateFormComponent } from './template/zalo-oa-template-form/zalo-oa-template-form.component';
 
 
 
 @NgModule({
   declarations: [ZaloOaComponent, ZaloOaConversationComponent,
     ZaloOaFollowerListComponent, ZaloOaFollowerFormComponent,
-    ZaloOfficialAccountListComponent, ZaloOfficialAccountFormComponent],
+    ZaloOfficialAccountListComponent, ZaloOfficialAccountFormComponent, ZaloOaTemplateListComponent, ZaloOaTemplateFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -78,6 +80,7 @@ import { ZaloOfficialAccountFormComponent } from './official-account/zalo-offici
   entryComponents: [
     ZaloOfficialAccountFormComponent,
     ZaloOaFollowerFormComponent,
+    ZaloOaTemplateFormComponent,
   ],
 })
 export class ZaloOaModule { }
