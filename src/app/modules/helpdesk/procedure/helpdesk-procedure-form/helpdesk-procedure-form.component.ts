@@ -54,10 +54,12 @@ export class HelpdeskProcedureFormComponent extends DataManagerFormComponent<Hel
 
       // Options form load
       if (itemFormData.Steps) {
+        const children = this.getSteps(index);
+        children.clear();
         itemFormData.Steps.forEach(step => {
           const newOptionFormGroup = this.makeNewStepFormGroup(step);
-          this.getSteps(index).push(newOptionFormGroup);
-          const comIndex = this.getSteps(index).length - 1;
+          children.push(newOptionFormGroup);
+          const comIndex = children.length - 1;
           this.onAddStepFormGroup(index, comIndex, newOptionFormGroup);
         });
       }

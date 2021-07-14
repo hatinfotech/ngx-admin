@@ -53,10 +53,11 @@ export class HelpdeskParamFormComponent extends DataManagerFormComponent<Helpdes
 
       // Options form load
       if (itemFormData.Options) {
+        const details = this.getOptions(index);
         itemFormData.Options.forEach(condition => {
           const newOptionFormGroup = this.makeNewOptionFormGroup(condition);
-          this.getOptions(index).push(newOptionFormGroup);
-          const comIndex = this.getOptions(index).length - 1;
+          details.push(newOptionFormGroup);
+          const comIndex = details.length - 1;
           this.onAddOptionFormGroup(index, comIndex, newOptionFormGroup);
         });
       }

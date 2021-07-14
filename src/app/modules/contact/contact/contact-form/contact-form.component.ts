@@ -183,10 +183,12 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       if (itemFormData.Details) {
+        const details = this.getDetails(newForm);
+        details.clear();
         itemFormData.Details.forEach(detail => {
           const newUnitConversionFormGroup = this.makeNewDetailFormGroup(detail);
-          this.getDetails(newForm).push(newUnitConversionFormGroup);
-          const comIndex = this.getDetails(newForm).length - 1;
+          details.push(newUnitConversionFormGroup);
+          const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, comIndex, newUnitConversionFormGroup);
         });
       }

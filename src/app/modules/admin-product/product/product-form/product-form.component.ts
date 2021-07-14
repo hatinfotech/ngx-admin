@@ -147,11 +147,13 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       // }
 
       if (itemFormData.UnitConversions) {
+        const details = this.getUnitConversions(newForm);
+        details.clear();
         itemFormData.UnitConversions.forEach(unitConversion => {
           // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
           const newUnitConversionFormGroup = this.makeNewUnitConversionFormGroup(unitConversion);
-          this.getUnitConversions(newForm).push(newUnitConversionFormGroup);
-          const comIndex = this.getUnitConversions(newForm).length - 1;
+          details.push(newUnitConversionFormGroup);
+          const comIndex = details.length - 1;
           this.onAddUnitConversionFormGroup(newForm, comIndex, newUnitConversionFormGroup);
         });
       }

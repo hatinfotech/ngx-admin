@@ -775,4 +775,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     return this.commonService.getObjectId(value);
   }
 
+  prepareRestrictedData(formGroup: FormGroup, data: M) {
+    for (const propName in data) {
+      const prop = data[propName];
+      if (prop && prop['restricted']) {
+        formGroup.get(propName)['placeholder'] = data[propName]['placeholder']
+        delete (data[propName]);
+      }
+    }
+  }
+
 }

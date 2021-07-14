@@ -192,10 +192,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
       // Resources form load
       if (itemFormData.Details) {
+        const details = this.getDetails(index);
+        details.clear();
         itemFormData.Details.forEach(detail => {
           const newResourceFormGroup = this.makeNewDetailFormGroup(newForm, detail);
-          this.getDetails(index).push(newResourceFormGroup);
-          const comIndex = this.getDetails(index).length - 1;
+          details.push(newResourceFormGroup);
+          const comIndex = details.length - 1;
           this.onAddDetailFormGroup(index, comIndex, newResourceFormGroup);
         });
       }

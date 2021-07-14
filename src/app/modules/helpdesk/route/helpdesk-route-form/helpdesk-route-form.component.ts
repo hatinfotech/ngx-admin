@@ -175,10 +175,12 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
 
       // Conditions form load
       if (itemFormData.Conditions) {
+        const children = this.getConditions(index);
+        children.clear();
         itemFormData.Conditions.forEach(condition => {
           const newConditionFormGroup = this.makeNewConditionFormGroup(condition);
-          this.getConditions(index).push(newConditionFormGroup);
-          const comIndex = this.getConditions(index).length - 1;
+          children.push(newConditionFormGroup);
+          const comIndex = children.length - 1;
           this.onAddConditionFormGroup(index, comIndex, newConditionFormGroup);
         });
       }

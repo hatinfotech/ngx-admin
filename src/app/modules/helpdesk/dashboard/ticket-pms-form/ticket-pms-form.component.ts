@@ -176,10 +176,12 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
 
       // Conditions form load
       if (itemFormData.Permissions) {
+        const details = this.getPermissions(newForm);
+        details.clear();
         itemFormData.Permissions.forEach(permission => {
           const newPermissionFormGroup = this.makeNewPermissionFormGroup(permission);
-          this.getPermissions(newForm).push(newPermissionFormGroup);
-          const comIndex = this.getPermissions(newForm).length - 1;
+          details.push(newPermissionFormGroup);
+          const comIndex = details.length - 1;
           this.onAddPermissionFormGroup(newForm, comIndex, newPermissionFormGroup);
         });
       }

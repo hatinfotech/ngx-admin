@@ -276,9 +276,10 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
       // Details form load
       if (itemFormData.Details) {
+        const details = this.getDetails(newForm);
+        details.clear();
         itemFormData.Details.forEach(condition => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
-          const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);

@@ -127,10 +127,12 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
 
       // Resources form load
       if (itemFormData.Permission) {
+        const details = this.getPermission(index);
+        details.clear();
         itemFormData.Permission.forEach(detail => {
           const newResourceFormGroup = this.makeNewDetailFormGroup(newForm, detail);
-          this.getPermission(index).push(newResourceFormGroup);
-          const comIndex = this.getPermission(index).length - 1;
+          details.push(newResourceFormGroup);
+          const comIndex = details.length - 1;
           this.onAddDetailFormGroup(index, comIndex, newResourceFormGroup);
         });
       }

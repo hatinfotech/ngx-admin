@@ -277,9 +277,10 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
       // Details form load
       if (itemFormData.Details) {
+        const details = this.getDetails(newForm);
+        details.clear();
         itemFormData.Details.forEach(condition => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
-          const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
@@ -335,16 +336,29 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   patchFormGroupValue = (formGroup: FormGroup, data: SalesPriceReportModel) => {
-    
-    formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
-    formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
-    data['ObjectPhone'] = null;
-    data['ObjectAddress'] = null;
 
-    formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
-    formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
-    data['ContactPhone'] = null;
-    data['ContactAddress'] = null;
+    for (const propName in data) {
+      const prop = data[propName];
+      if (prop && prop.restricted) {
+        formGroup.get(propName)['placeholder'] = data[propName]['placeholder']
+        delete (data[propName]);
+      }
+      // if (data['ObjectPhone'] && data['ObjectPhone']['restricted']) formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone']['placeholder']; else formGroup.get('ObjectPhone').patchValue(data['ObjectPhone']);
+    }
+
+    this.prepareRestrictedData(formGroup, data);
+    // if (data['ObjectAddress'] && data['ObjectAddress']['restricted']) formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress']['placeholder']; else formGroup.get('ObjectAddress').patchValue(data['ObjectAddress']);
+    // if (data['ObjectEmail'] && data['ObjectEmail']['restricted']) formGroup.get('ObjectEmail')['placeholder'] = data['ObjectEmail']['placeholder']; else formGroup.get('ObjectEmail').patchValue(data['ObjectEmail']);
+    // if (data['ObjectIdentifiedNumber'] && data['ObjectIdentifiedNumber']['restricted']) formGroup.get('ObjectIdentifiedNumber')['placeholder'] = data['ObjectIdentifiedNumber']['placeholder']; else formGroup.get('ObjectIdentifiedNumber').patchValue(data['ObjectAddress']);
+    // // formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+    // // data['ObjectPhone'] = null;
+    // // data['ObjectAddress'] = null;
+
+    // if (data['ObjectPhone'] && data['ObjectPhone']['restricted']) formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone']['placeholder']; else formGroup.get('ObjectPhone').patchValue(data['ObjectPhone']);
+    // formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
+    // formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
+    // data['ContactPhone'] = null;
+    // data['ContactAddress'] = null;
 
     // if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
     //   (data.Infos?.Description as any).pop();

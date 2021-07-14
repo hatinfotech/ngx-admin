@@ -78,10 +78,12 @@ export class HelpdeskActionFormComponent extends DataManagerFormComponent<Helpde
 
       // Options form load
       if (itemFormData.Params) {
+        this.getChildFormArray('Main.Params', newForm).clear();
         itemFormData.Params.forEach((param, paramIndex: number) => {
           const paramFormGroup = this.addChildFormGroup('Main.Params', newForm, index, param);
 
           if (param.Options) {
+            this.getChildFormArray('Main.Params.Options', paramFormGroup).clear();
             param.Options.forEach(option => {
               this.addChildFormGroup('Main.Params.Options', paramFormGroup, paramIndex, option);
             });
