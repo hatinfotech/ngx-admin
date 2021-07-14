@@ -337,14 +337,14 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   patchFormGroupValue = (formGroup: FormGroup, data: SalesPriceReportModel) => {
 
-    for (const propName in data) {
-      const prop = data[propName];
-      if (prop && prop.restricted) {
-        formGroup.get(propName)['placeholder'] = data[propName]['placeholder']
-        delete (data[propName]);
-      }
-      // if (data['ObjectPhone'] && data['ObjectPhone']['restricted']) formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone']['placeholder']; else formGroup.get('ObjectPhone').patchValue(data['ObjectPhone']);
-    }
+    // for (const propName in data) {
+    //   const prop = data[propName];
+    //   if (prop && prop.restricted) {
+    //     formGroup.get(propName)['placeholder'] = data[propName]['placeholder']
+    //     delete (data[propName]);
+    //   }
+    //   // if (data['ObjectPhone'] && data['ObjectPhone']['restricted']) formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone']['placeholder']; else formGroup.get('ObjectPhone').patchValue(data['ObjectPhone']);
+    // }
 
     this.prepareRestrictedData(formGroup, data);
     // if (data['ObjectAddress'] && data['ObjectAddress']['restricted']) formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress']['placeholder']; else formGroup.get('ObjectAddress').patchValue(data['ObjectAddress']);
