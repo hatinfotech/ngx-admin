@@ -727,13 +727,25 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     detail.get('ToMoney').setValue(this.calculatToMoney(detail));
 
     // Call culate total
-    const details = this.getDetails(formItem);
-    let total = 0;
-    for (let i = 0; i < details.controls.length; i++) {
-      total += this.calculatToMoney(details.controls[i] as FormGroup);
-    }
-    formItem.get('_total').setValue(total);
+    // const details = this.getDetails(formItem);
+    // let total = 0;
+    // for (let i = 0; i < details.controls.length; i++) {
+    //   total += this.calculatToMoney(details.controls[i] as FormGroup);
+    // }
+    // formItem.get('_total').setValue(total);
+    this.calulateTotal(formItem);
     return false;
+  }
+
+  calulateTotal(formItem: FormGroup) {
+    this.commonService.takeUntil('calulcate_sales_voucher', 300).then(rs => {
+      let total = 0;
+      const details = this.getDetails(formItem);
+      for (let i = 0; i < details.controls.length; i++) {
+        total += this.calculatToMoney(details.controls[i] as FormGroup);
+      }
+      formItem.get('_total').setValue(total);
+    });
   }
 
 
