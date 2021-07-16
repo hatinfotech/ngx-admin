@@ -87,7 +87,15 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   @Input('value') value: string | string[];
   // @Input('disabled') disabled: string | string[];
   _select2Option: Select2Options;
-  @Input('select2Option') select2Option: Select2Options;
+  @Input('select2Option') set select2Option(option: Select2Options){
+    option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
+      if (object?.id === object?.text) {
+        $(container).addClass('new');
+      }
+      return object?.text;
+    };
+    this._select2Option = option;
+  }
   @Output() selectChange = new EventEmitter<Object>();
   @Input() status?: string;
   @ViewChild('controls') controls: ElementRef;
@@ -102,18 +110,21 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   }
 
   ngOnInit() {
-    this.select2Option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
-      if (object?.id === object?.text) {
-        $(container).addClass('new');
-      }
-      return object?.text;
-    };
-
-    this._select2Option = this.select2Option;
   }
 
   ngAfterViewInit() {
     // $(this.controls.nativeElement).prop('status', this.status);
+    // (async () => {
+    //   while (!this.select2Option) await new Promise(resolve => setTimeout(() => resolve(true), 50));
+      // this.select2Option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
+      //   if (object?.id === object?.text) {
+      //     $(container).addClass('new');
+      //   }
+      //   return object?.text;
+      // };
+    //   this._select2Option = this.select2Option;
+    // })();
+
   }
 
   select2Value = '';
@@ -153,8 +164,8 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
 
   writeValue(value: any) {
     if (value) {
-      const keyMap = this.select2Option['keyMap'];
-      if (this.select2Option['ajax']) {
+      const keyMap = this._select2Option['keyMap'];
+      if (this._select2Option['ajax']) {
         if (value instanceof Array) {
           // value = value.map(i => ({...i, id: i[keyMap['id']], text: i[keyMap['text']]}));
           const tmpVal = [];
@@ -245,11 +256,11 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   }
 
   protected getItemId(item: any) {
-    return item['id'] ? item['id'] : item[this.select2Option['keyMap']['id']];
+    return item['id'] ? item['id'] : item[this._select2Option['keyMap']['id']];
   }
 
   protected getItemText(item: any) {
-    return item['text'] ? item['text'] : item[this.select2Option['keyMap']['text']];
+    return item['text'] ? item['text'] : item[this._select2Option['keyMap']['text']];
   }
 
   registerOnChange(fn: (item: any) => void) {
@@ -275,12 +286,12 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     //   }
     // }
     // const changedValue = this.select2Option.multiple ? dataChanged : dataChanged[0];
-    const changedValue = this.select2Option.multiple ? e.data : e.data[0];
+    const changedValue = this._select2Option.multiple ? e.data : e.data[0];
     // if (this.onChange) this.onChange(Array.isArray(changedValue) ? changedValue.map(v => v.id) : changedValue.id);
-    if (this.onChange) this.onChange(this.select2Option.multiple ? (changedValue ? changedValue : []) : (changedValue ? changedValue : null));
-    Object.keys(this.select2Option['keyMap']).forEach(k => {
+    if (this.onChange) this.onChange(this._select2Option.multiple ? (changedValue ? changedValue : []) : (changedValue ? changedValue : null));
+    Object.keys(this._select2Option['keyMap']).forEach(k => {
       e.data.forEach((i: any) => {
-        i[this.select2Option['keyMap'][k]] = i[k];
+        i[this._select2Option['keyMap'][k]] = i[k];
       });
     });
     this.selectChange.emit(changedValue);
