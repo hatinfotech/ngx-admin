@@ -418,6 +418,19 @@ ngx-header ngx-action-control-list {
     .select2-search__field {
       outline: 0;
     }
+
+    // &.is_tags {
+    .select2-results {
+      .select2-results__options {
+        .select2-results__option.new {
+          color: #00d68f;
+          &::after {
+            content: " - new";
+          }
+        }
+      }
+    }
+    // }
   }
 }
 
@@ -452,7 +465,6 @@ ngx-header ngx-action-control-list {
     border-top: 0 !important;
   }
 }
-
 .select2-results {
   background: #f7f9fc;
   .select2-results__options {
@@ -1676,3 +1688,14 @@ body [nbButton].appearance-hero.size-medium {
 .procedure-area img {
   max-width: 100%;
 }
+
+// @include nb-install-component() {
+//   .select2-results {
+//     .select2-results__option:not([id]) {
+//       color: nb-theme(color-success-transparent-focus-border);
+//       &::after {
+//         content: " - new";
+//       }
+//     }
+//   }
+// }
