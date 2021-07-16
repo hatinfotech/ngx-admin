@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 import { Select2Options, Select2AjaxOptions, Select2QueryOptions, Select2SelectionObject, IdTextPair } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import * as _ from 'lodash';
@@ -77,7 +77,7 @@ export interface Select2Option {
     },
   ],
 })
-export class Select2Component implements ControlValueAccessor, Validator, OnChanges, AfterViewInit {
+export class Select2Component implements ControlValueAccessor, Validator, OnChanges, AfterViewInit, OnInit {
 
   private provinceData: { id: number, name: string, type: 'central' | 'province' };
   onChange: (item: any) => void;
@@ -86,6 +86,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   @Input('data') data: any[];
   @Input('value') value: string | string[];
   // @Input('disabled') disabled: string | string[];
+  _select2Option: Select2Options;
   @Input('select2Option') select2Option: Select2Options;
   @Output() selectChange = new EventEmitter<Object>();
   @Input() status?: string;
@@ -98,6 +99,17 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
       //   text: this.select2Option.placeholder,
       // });
     }
+  }
+
+  ngOnInit() {
+    this.select2Option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
+      if (object?.id === object?.text) {
+        $(container).addClass('new');
+      }
+      return object?.text;
+    };
+
+    this._select2Option = this.select2Option;
   }
 
   ngAfterViewInit() {
@@ -194,8 +206,8 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
         this.value = value.map(i => (this.getItemId(i) || i));
       } else {
         let vl = null;
-        if(!(value instanceof Object)) {
-          vl = {id: value, text: value};
+        if (!(value instanceof Object)) {
+          vl = { id: value, text: value };
         } else {
           vl = value;
         }
@@ -212,7 +224,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
           this.value = vl;
         }
       }
-    } 
+    }
     else {
       // note: Fix for init NULL value for ajax type
       // if (this.select2Option['ajax']) {
