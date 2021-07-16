@@ -12,7 +12,6 @@ import { ContactModel } from '../../../../models/contact.model';
 import { DeploymentVoucherDetailModel, DeploymentVoucherModel } from '../../../../models/deployment.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';

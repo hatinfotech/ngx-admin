@@ -1,3 +1,4 @@
+import { AccountModel, BusinessModel } from './../../../../../models/accounting.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -11,6 +12,7 @@ import { ContactModel } from '../../../../../models/contact.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { CashPaymentVoucherPrintComponent } from '../cash-payment-voucher-print/cash-payment-voucher-print.component';
+import { Select2SelectionObject } from '../../../../../../vendor/ng2select2/lib/ng2-select2.interface';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-form',
@@ -29,6 +31,8 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   locale = this.commonService.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+
+  accountingBusinessList: BusinessModel[] = [];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -122,36 +126,37 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   };
 
   // Accounting Business Option
-  select2DataForAccountingBusiness = [
-    {
-      id: 'PURCHASEPAYMENT',
-      text: 'Trả tiền nhập hàng',
-    },
-    {
-      id: 'DEBTPAYMENT',
-      text: 'Trả tiền công nợ',
-    },
-    {
-      id: 'CONTRACTPAYMENT',
-      text: 'Trả tiền hợp đồng',
-    },
-    {
-      id: 'SALARYPAYMENT',
-      text: 'Trả tiền lương nhân viên',
-    },
-    {
-      id: 'ADVANCES2EMPLOYEES',
-      text: 'Tạm ứng cho nhân viên',
-    },
-  ];
+  // select2DataForAccountingBusiness = [
+  //   {
+  //     id: 'PURCHASEPAYMENT',
+  //     text: 'Trả tiền nhập hàng',
+  //   },
+  //   {
+  //     id: 'DEBTPAYMENT',
+  //     text: 'Trả tiền công nợ',
+  //   },
+  //   {
+  //     id: 'CONTRACTPAYMENT',
+  //     text: 'Trả tiền hợp đồng',
+  //   },
+  //   {
+  //     id: 'SALARYPAYMENT',
+  //     text: 'Trả tiền lương nhân viên',
+  //   },
+  //   {
+  //     id: 'ADVANCES2EMPLOYEES',
+  //     text: 'Tạm ứng cho nhân viên',
+  //   },
+  // ];
   select2OptionForAccountingBusiness = {
     placeholder: 'Nghiệp vụ kế toán...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
     // multiple: true,
-    // tags: true,
+    tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -180,7 +185,32 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       text: 'text',
     },
   };
+  select2ForAccount = {
+    placeholder: 'Tài khản...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+  select2ForReciprocalAccount = {
+    placeholder: 'Tài khản đối ứng...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
+  accountList: AccountModel[] = [];
 
   ngOnInit() {
     this.restrict();
@@ -213,11 +243,21 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   async init() {
+    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {}).then(rs => rs.map(account => {
+      account['id'] = account.Code;
+      account['text'] = account.Code + ' - ' + account.Name;
+      return account;
+    }));
+    this.accountingBusinessList = await this.apiService.getPromise<AccountModel[]>('/accounting/business', { eq_Type: 'PAYMENT' }).then(rs => rs.map(accBusiness => {
+      accBusiness['id'] = accBusiness.Code;
+      accBusiness['text'] = accBusiness.Name;
+      return accBusiness;
+    }));
     return super.init().then(rs => {
       this.getRequestId(id => {
         if (!id || id.length === 0) {
           this.addDetailFormGroup(0);
-        } 
+        }
         // else {
         //   for (const mainForm of this.array.controls) {
         //     this.toMoney(mainForm as FormGroup);
@@ -294,6 +334,8 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       AccountingBusiness: [''],
       Description: ['', Validators.required],
       RelateCode: [''],
+      DebitAccount: ['', Validators.required],
+      CreditAccount: ['', Validators.required],
       Amount: ['', Validators.required],
     });
 
@@ -400,6 +442,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       },
     });
     return false;
+  }
+
+  onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
+    detail.get('DebitAccount').setValue(business.DebitAccount);
+    detail.get('CreditAccount').setValue(business.CreditAccount);
+    detail.get('Description').setValue(business.Description);
   }
 
 }
