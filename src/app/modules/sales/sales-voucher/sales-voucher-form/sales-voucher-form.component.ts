@@ -315,7 +315,21 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     } else {
       this.taxList = SalesVoucherFormComponent._taxList;
     }
-    return super.init();
+    return super.init().then(status => {
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
+          this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
+            // Clear id
+            conditonFormGroup.get('Id').setValue('');
+          });
+        });
+      }
+      return status;
+    });
   }
 
   /** Execute api get */
@@ -334,18 +348,21 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         details.clear();
-        itemFormData.Details.forEach(detail => {
-          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
+        for (const detailData of itemFormData.Details) {
+          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
-        });
+        }
+        // itemFormData.Details.forEach(detail => {
+        // });
       }
 
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
       }
+      return;
     });
 
   }

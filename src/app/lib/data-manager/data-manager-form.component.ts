@@ -120,73 +120,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   protected silent = false;
   protected autosave = false;
 
-  // actionControlList: ActionControl[] = [
-
-  //   {
-  //     type: 'button',
-  //     name: 'goback',
-  //     status: 'info',
-  //     label: 'Trở về',
-  //     icon: 'arrow-back',
-  //     title: 'Trở về',
-  //     size: 'tiny',
-  //     disabled: () => {
-  //       return !this.isProcessing;
-  //     },
-  //     click: () => {
-  //       this.goback();
-  //       return false;
-  //     },
-  //   },
-  //   {
-  //     type: 'button',
-  //     name: 'undo',
-  //     status: 'warning',
-  //     label: 'Hoàn tác',
-  //     icon: 'undo',
-  //     title: 'Hoàn tác',
-  //     size: 'tiny',
-  //     disabled: () => {
-  //       return !this.canUndo || this.isProcessing;
-  //     },
-  //     click: () => {
-  //       this.onFormUndo();
-  //       return false;
-  //     },
-  //   },
-  //   {
-  //     type: 'button',
-  //     name: 'reload',
-  //     status: 'success',
-  //     label: 'Tải lại',
-  //     icon: 'refresh',
-  //     title: 'Tải lại',
-  //     size: 'tiny',
-  //     disabled: () => {
-  //       return this.isProcessing;
-  //     },
-  //     click: () => {
-  //       this.formLoad();
-  //       return false;
-  //     },
-  //   },
-  //   {
-  //     type: 'button',
-  //     name: 'remove',
-  //     status: 'danger',
-  //     label: 'Xem',
-  //     icon: 'close-circle',
-  //     title: 'Xem thông tin TICKET',
-  //     size: 'tiny',
-  //     disabled: () => {
-  //       return this.isProcessing;
-  //     },
-  //     click: (event, option: { formIndex: number }) => {
-  //       this.removeFormGroup(option['formIndex']);
-  //       return false;
-  //     },
-  //   },
-  // ];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -202,34 +135,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     // this.formLoading = true;
     this.onProcessing();
     this.formUniqueId = Date.now().toString();
-    // this.form = this.formBuilder.group({
-    //   array: this.formBuilder.array([
-    //     this.makeNewFormGroup(),
-    //   ]),
-    // });
-
-    // this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(formData => {
-    //   if (!this.isProcessing) {
-    //     this.commonService.takeUntil(this.formUniqueId, 1000, () => {
-    //       this.pushPastFormData(formData.array);
-    //     });
-    //   }
-    // });
 
   }
-
-  // ngAfterViewInit(): void {
-  //   // const nativeEle = this;
-  //   // Fix dialog scroll
-  //   if (this.ref) {
-  //     const dialog: NbDialogRef<DataManagerFormComponent<M>> = this.ref;
-  //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
-  //       const nativeEle = dialog.componentRef.location.nativeElement;
-  //       // tslint:disable-next-line: ban
-  //       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
-  //     }
-  //   }
-  // }
 
   /** Make new form group sctructure */
   abstract makeNewFormGroup(data?: M): FormGroup;
@@ -239,6 +146,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     super.ngOnInit();
   }
 
+  /** Form init */
   async init(): Promise<boolean> {
     await this.loadCache();
     if (this.inputMode) {
@@ -251,19 +159,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       this.getRequestId(id => {
         if (id && id.length > 0) {
           this.id = id;
-          // if (this.id.length > 0) {
-          this.formLoad().then(() => {
+          this.formLoad().then(async () => {
+            // wait for dom loaded
+            while (this.array.controls.length === 0) await new Promise(resolve => setTimeout(() => resolve(null), 100));
             resolve(true);
           });
-          // } else {
-          // this.formLoading = false;
-          // resolve(true);
-          // this.onProcessed();
-          // }
         } else {
           this.array.clear();
           this.addFormGroup();
-          // this.formLoading = false;
           this.onProcessed();
           resolve(true);
         }
@@ -271,23 +174,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     });
     this.onAfterInit && this.onAfterInit();
     return true;
-    // this.activeRoute.params.subscribe(params => {
-    //   // this.id = params['id']; // (+) converts string 'id' to a number
-    //   if (params['id']) {
-    //     this.id = decodeURIComponent(params['id']).split('&');
-    //     if (this.id.length > 0) {
-    //       this.formLoad();
-    //     } else {
-    //       // this.formLoading = false;
-    //       this.onProcessed();
-    //     }
-    //   } else {
-    //     this.array.clear();
-    //     this.addFormGroup();
-    //     // this.formLoading = false;
-    //     this.onProcessed();
-    //   }
-    // });
   }
 
   patchFormGroupValue: (newForm: FormGroup, data: M) => boolean;
@@ -304,11 +190,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Get form data by id from api */
   getFormData(callback: (data: M[]) => void) {
-    // const ids: { [key: string]: string } = {};
-    // this.id.forEach((element, index) => {
-    //   ids['id' + index] = element;
-    // });
-    // this.apiService.get<M[]>(this.apiPath, { id: this.id, multi: true }, data => callback(data), e => this.onError(e));
     if (this.id && this.id.length > 0) {
       this.executeGet({ id: this.id }, data => callback(data));
     } else {
@@ -318,8 +199,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Get data from api and patch data for form */
   async formLoad(formData?: M[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: M) => Promise<void>) {
-    // this.formLoading = true;
-    // this.form.disable();
     this.onProcessing();
 
     /** If has formData input, use formData for patch */
@@ -343,7 +222,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         if (!this.patchFormGroupValue) {
           this.array.clear();
           for (let i = 0; i < data.length; i++) {
-            // data.forEach(item => {
             const item = data[i];
             const newForm = this.makeNewFormGroup(item);
             this.array.push(newForm);
@@ -351,18 +229,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
             if (formItemLoadCallback) {
               await formItemLoadCallback(this.array.length - 1, newForm, item);
             }
-            // });
           }
 
           resovle(true);
-          // setTimeout(() => {
-          // this.formLoading = false;
-          // const aPastFormData = {formData: this.form.value.array, meta: null};
-          // this.onUpdatePastFormData(aPastFormData);
-          // this.pastFormData.push(aPastFormData);
-          // this.pushPastFormData(this.form.value.array);
           this.onProcessed();
-          // }, 1000);
         } else {
 
           // this.array.clear();
@@ -684,12 +554,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   protected convertOptionList(list: any[], idKey: string, labelKey: string) {
     return this.commonService.convertOptionList(list, idKey, labelKey);
-    // return list.map(item => {
-    //   item['id'] = item[idKey] = item[idKey] ? item[idKey] : 'undefined';
-    //   item['text'] = item[labelKey] = item[labelKey] ? item[labelKey] : 'undefined';
-
-    //   return item;
-    // });
   }
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
