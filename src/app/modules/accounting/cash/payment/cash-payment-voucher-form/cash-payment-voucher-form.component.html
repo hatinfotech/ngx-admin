@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="popup">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup">
     <div formArrayName="array">
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
@@ -51,9 +51,23 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="RelationVoucher" label="Common.relationVoucher" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="RelationVoucher" placeholder="{{'Common.relationVoucher' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="RelativeVouchers" label="Common.relationVoucher" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <button class="fit-control-button" [outline]="true" nbButton status="primary" fullWidth (click)="openRelativeVoucherChoosedDialog(formItem)" size="medium" hero>
+                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>Thêm chứng từ liên quan
+                                    </button>
                                 </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="label"><span class="valid">{{'Common.relativeVoucher' | translate | headtitlecase}}: </span></label>
+                                    <div>
+                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" title="{{relationVoucher | objectstext}}">
+                                            <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
+                                            <nb-icon pack="eva" icon="close-outline" class="close-btn" (click)="removeRelativeVoucher(formItem, relationVoucher)"></nb-icon>
+                                        </span>
+                                    </div>
+                                    <div class="break"></div>
+                                </div>
                             </div>
                         </div>
 
@@ -67,7 +81,7 @@
                             <div class="row fit-content-column">
                                 <div class="col-sm-3 label column">{{'Common.accountingBusiness' | translate | headtitlecase}}</div>
                                 <div class="col-sm-2 label column">{{'Accounting.debitAccount' | translate | headtitlecase}}</div>
-                                <div class="col-sm-2 label column">{{'Common.creditAccount' | translate | headtitlecase}}</div>
+                                <div class="col-sm-2 label column">{{'Accounting.creditAccount' | translate | headtitlecase}}</div>
                                 <div class="col-sm-3 label column">{{'Common.description' | translate | headtitlecase}}</div>
                                 <div class="col-sm-2 label column" style="text-align: right;">{{'Common.numOfMoney' | translate | headtitlecase}}</div>
                             </div>
@@ -99,12 +113,12 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <ngx-form-group [formGroup]="detail" name="DebitAccount" label="Accounting.debitAccount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
-                                                        <ngx-select2 formControlName="DebitAccount" [select2Option]="select2ForAccount" [data]="accountList"></ngx-select2>
+                                                        <ngx-select2 formControlName="DebitAccount" [select2Option]="select2ForAccount" [data]="accountDebitList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <ngx-form-group [formGroup]="detail" name="CreditAccount" label="Accounting.creditAccount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
-                                                        <ngx-select2 formControlName="CreditAccount" [select2Option]="select2ForReciprocalAccount" [data]="accountList"></ngx-select2>
+                                                        <ngx-select2 formControlName="CreditAccount" [select2Option]="select2ForReciprocalAccount" [data]="accountCreditList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-3">

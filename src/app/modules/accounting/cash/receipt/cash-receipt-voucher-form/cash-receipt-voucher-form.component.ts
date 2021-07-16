@@ -1,3 +1,7 @@
+import { filter } from 'rxjs/operators';
+import { SalesVoucherPrintComponent } from './../../../../sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
+import { SalesVoucherModel } from './../../../../../models/sales.model';
+import { SalesVoucherListComponent } from './../../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -10,7 +14,6 @@ import { AccountModel, BusinessModel, CashVoucherDetailModel, CashVoucherModel }
 import { ContactModel } from '../../../../../models/contact.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
-import { SalesPriceReportPrintComponent } from '../../../../sales/price-report/sales-price-report-print/sales-price-report-print.component';
 import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 
 @Component({
@@ -31,6 +34,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
+  accountDebitList: AccountModel[] = [];
+  accountCreditList: AccountModel[] = [];
   accountList: AccountModel[] = [];
   accountingBusinessList: BusinessModel[] = [];
 
@@ -240,6 +245,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       account['text'] = account.Code + ' - ' + account.Name;
       return account;
     }));
+    this.accountDebitList = this.accountList.filter(f => f.Group == 'CASH');
+    this.accountCreditList = this.accountList.filter(f => f.Group != 'CASH');
     this.accountingBusinessList = await this.apiService.getPromise<AccountModel[]>('/accounting/business', { eq_Type: 'RECEIPT' }).then(rs => rs.map(accBusiness => {
       accBusiness['id'] = accBusiness.Code;
       accBusiness['text'] = accBusiness.Name;
@@ -282,7 +289,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       ObjectAddress: [''],
       ObjectTaxCode: [''],
       Currency: ['VND', Validators.required],
-      RelationVoucher: [''],
+      RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
@@ -451,6 +458,55 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       detail.get('CreditAccount').setValue(business.CreditAccount);
       detail.get('Description').setValue(business.Description);
     }
+  }
+
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.commonService.openDialog(SalesVoucherListComponent, {
+      context: {
+        inputMode: 'dialog',
+        onDialogChoose: (chooseItems: SalesVoucherModel[]) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          for (let i = 0; i < chooseItems.length; i++) {
+            const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+            if (index < 0) {
+              insertList.push(chooseItems[i]);
+            }
+          }
+          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+        },
+        onDialogClose: () => {
+        },
+      }
+    })
+    return false;
+  }
+
+  openRelativeVoucher(relativeVocher: any) {
+    if (relativeVocher && relativeVocher.type == 'SALES') {
+      this.commonService.openDialog(SalesVoucherPrintComponent, {
+        context: {
+          showLoadinng: true,
+          title: 'Xem trước',
+          id: [this.commonService.getObjectId(relativeVocher)],
+          // data: data,
+          idKey: ['Code'],
+          // approvedConfirm: true,
+          onClose: (data: SalesVoucherModel) => {
+            this.refresh();
+          },
+        },
+      });
+    }
+    return false;
+  }
+
+  removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
+    const relationVoucher = formGroup.get('RelativeVouchers');
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    return false;
   }
 
 }

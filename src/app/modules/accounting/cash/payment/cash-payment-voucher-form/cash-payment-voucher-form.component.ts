@@ -13,6 +13,9 @@ import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { CashPaymentVoucherPrintComponent } from '../cash-payment-voucher-print/cash-payment-voucher-print.component';
 import { Select2SelectionObject } from '../../../../../../vendor/ng2select2/lib/ng2-select2.interface';
+import { PurchaseVoucherListComponent } from '../../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
+import { PurchaseVoucherModel } from '../../../../../models/purchase.model';
+import { PurchaseVoucherPrintComponent } from '../../../../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-form',
@@ -211,6 +214,8 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   };
 
   accountList: AccountModel[] = [];
+  accountDebitList: AccountModel[] = [];
+  accountCreditList: AccountModel[] = [];
 
   ngOnInit() {
     this.restrict();
@@ -248,6 +253,10 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       account['text'] = account.Code + ' - ' + account.Name;
       return account;
     }));
+
+    this.accountDebitList = this.accountList.filter(f => f.Group != 'CASH');
+    this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
+
     this.accountingBusinessList = await this.apiService.getPromise<AccountModel[]>('/accounting/business', { eq_Type: 'PAYMENT' }).then(rs => rs.map(accBusiness => {
       accBusiness['id'] = accBusiness.Code;
       accBusiness['text'] = accBusiness.Name;
@@ -290,7 +299,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       ObjectAddress: [''],
       ObjectTaxCode: [''],
       Currency: ['VND', Validators.required],
-      RelationVoucher: [''],
+      RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
@@ -465,6 +474,55 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       detail.get('CreditAccount').setValue(business.CreditAccount);
       detail.get('Description').setValue(business.Description);
     }
+  }
+
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.commonService.openDialog(PurchaseVoucherListComponent, {
+      context: {
+        inputMode: 'dialog',
+        onDialogChoose: (chooseItems: PurchaseVoucherModel[]) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          for (let i = 0; i < chooseItems.length; i++) {
+            const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+            if (index < 0) {
+              insertList.push(chooseItems[i]);
+            }
+          }
+          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+        },
+        onDialogClose: () => {
+        },
+      }
+    })
+    return false;
+  }
+
+  openRelativeVoucher(relativeVocher: any) {
+    if (relativeVocher && relativeVocher.type == 'PURCHASE') {
+      this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+        context: {
+          showLoadinng: true,
+          title: 'Xem trước',
+          id: [this.commonService.getObjectId(relativeVocher)],
+          // data: data,
+          idKey: ['Code'],
+          // approvedConfirm: true,
+          onClose: (data: PurchaseVoucherModel) => {
+            this.refresh();
+          },
+        },
+      });
+    }
+    return false;
+  }
+
+  removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
+    const relationVoucher = formGroup.get('RelativeVouchers');
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    return false;
   }
 
 }

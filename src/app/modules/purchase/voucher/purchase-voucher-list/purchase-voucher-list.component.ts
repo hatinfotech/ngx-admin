@@ -4,19 +4,20 @@ import { PurchaseVoucherModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { PurchaseSimpleVoucherFormComponent } from '../purchase-simple-voucher-form/purchase-simple-voucher-form.component';
 import { PurchaseVoucherFormComponent } from '../purchase-voucher-form/purchase-voucher-form.component';
 import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchase-voucher-print.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-list',
   templateUrl: './purchase-voucher-list.component.html',
   styleUrls: ['./purchase-voucher-list.component.scss'],
 })
-export class PurchaseVoucherListComponent extends DataManagerListComponent<PurchaseVoucherModel> implements OnInit {
+export class PurchaseVoucherListComponent extends ServerDataManagerListComponent<PurchaseVoucherModel> implements OnInit {
 
   componentName: string = 'PurchaseVoucherListComponent';
   formPath = '/purchase/voucher/form';
@@ -24,6 +25,8 @@ export class PurchaseVoucherListComponent extends DataManagerListComponent<Purch
   idKey = 'Code';
 
   formDialog = PurchaseVoucherFormComponent;
+  reuseDialog = true;
+  static _dialog: NbDialogRef<PurchaseVoucherListComponent>;
 
   constructor(
     public apiService: ApiService,
@@ -32,8 +35,13 @@ export class PurchaseVoucherListComponent extends DataManagerListComponent<Purch
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
+    public ref: NbDialogRef<PurchaseVoucherListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService, ref);
+  }
+
+  async init() {
+    return super.init();
   }
 
   /** Api get funciton */
@@ -99,8 +107,22 @@ export class PurchaseVoucherListComponent extends DataManagerListComponent<Purch
     });
   }
 
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['includeCreator'] = true;
+      params['sort_Id'] = 'desc';
+      // params['eq_Type'] = 'PAYMENT';
+      return params;
+    };
+
+    return source;
+  }
+
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers', { id: ids, includeContact: true, includeDetails: true });
+    return this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
   preview(data: PurchaseVoucherModel[]) {

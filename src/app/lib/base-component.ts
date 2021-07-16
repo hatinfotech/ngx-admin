@@ -20,6 +20,10 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   public sourceOfDialog: string = null;
   public loading = false;
 
+  public overlayWraper: JQuery;
+  public overlayBackdrop: JQuery;
+
+
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() onDialogClose?: () => void;
   @Input() onDialogHide?: () => void;
@@ -130,14 +134,17 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         const nativeEle = dialog.componentRef.location.nativeElement;
         // tslint:disable-next-line: ban
         const compoentNativeEle = $(nativeEle);
-        const overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
-        overlayWraper.addClass('scrollable-container');
-        const overlayBackdrop = overlayWraper.prev();
+        this.overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
+        this.overlayWraper.addClass('scrollable-container');
+        this.overlayBackdrop = this.overlayWraper.prev();
 
         // Hide dialog
         this.ref.hide = () => {
-          overlayWraper.fadeOut(100);
-          overlayBackdrop.fadeOut(100);
+          this.overlayWraper.fadeOut(100);
+          this.overlayBackdrop.fadeOut(100);
+          setTimeout(() => {
+            dialog.close();
+          }, 100);
           if (this.onDialogHide) this.onDialogHide();
         };
 
@@ -149,10 +156,10 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
             });
           }
           const lastBackdrop = $('.cdk-global-overlay-wrapper:last');
-          lastBackdrop.after(overlayBackdrop);
-          overlayBackdrop.after(overlayWraper);
-          overlayWraper.fadeIn(100);
-          overlayBackdrop.fadeIn(100);
+          lastBackdrop.after(this.overlayBackdrop);
+          this.overlayBackdrop.after(this.overlayWraper);
+          this.overlayWraper.fadeIn(100);
+          this.overlayBackdrop.fadeIn(100);
           if (this.onDialogHide) this.onDialogHide();
         };
 

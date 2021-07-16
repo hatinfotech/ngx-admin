@@ -8,7 +8,7 @@ import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable } 
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableCheckboxComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
@@ -600,6 +600,37 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
     });
 
+    if (this.ref && Object.keys(this.ref).length > 0) {
+      settings.columns['Choose'] = {
+        title: this.commonService.translateText('Common.choose'),
+        type: 'custom',
+        width: '10%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'checkmark-square';
+          instance.label = this.commonService.translateText('Common.choose');
+          instance.display = true;
+          instance.status = 'success';
+          instance.valueChange.subscribe(value => {
+            // if (value) {
+            //   instance.disabled = false;
+            // } else {
+            //   instance.disabled = true;
+            // }
+          });
+          instance.click.subscribe(async (row: M) => {
+
+            if (this.onDialogChoose) {
+              this.onDialogChoose([row]);
+            }
+            this.close();
+
+          });
+        },
+      };
+    }
+
     return settings;
   }
 
@@ -619,7 +650,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       // this.source['isLocalUpdate'] = false;
       try {
         this.commonService.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
-          context: {  
+          context: {
             showLoadinng: true,
             inputMode: 'dialog',
             inputId: ids,

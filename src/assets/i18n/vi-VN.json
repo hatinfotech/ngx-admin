@@ -254,7 +254,9 @@
         "warning": "cảnh báo",
         "notification": "thông báo",
         "default": "mặc định",
-        "expired": "hết hạn"
+        "expired": "hết hạn",
+        "relativeVoucher": "chứng từ liên quan",
+        "accountingBusiness": "nghiệp vụ kế toán"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -581,7 +583,9 @@
         },
         "CashPaymentVoucher": {
             "title": "phiếu chi"
-        }
+        },
+        "debitAccount": "tài khoản nợ",
+        "creditAccount": "tài khoản có"
     },
     "Print": {
         "listTemplate": "mẫu danh sách",

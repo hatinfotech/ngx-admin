@@ -6,9 +6,8 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SimpleSalesVoucherFormComponent } from '../simple-sales-voucher-form/simple-sales-voucher-form.component';
 import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -16,7 +15,6 @@ import { takeUntil } from 'rxjs/operators';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
-import { SalesPriceReportPrintComponent } from '../../price-report/sales-price-report-print/sales-price-report-print.component';
 
 @Component({
   selector: 'ngx-sales-voucher-list',

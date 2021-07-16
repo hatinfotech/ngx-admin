@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="popup" style="width: 90%; margin: 0 auto;">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup" style="width: 90%; margin: 0 auto;">
     <div formArrayName="array">
       <div *ngFor="let formItem of array.controls; let i = index">
         <nb-card class="small-header popup">

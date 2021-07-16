@@ -1,5 +1,5 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
-  (keydown.enter)="onControlEnter($event)" class="popup">
+  (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="medium-header popup">

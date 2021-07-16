@@ -19,6 +19,7 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
   componentName = 'PurchaseVoucherPrintComponent';
   title: string = '';
   env = environment;
+  apiPath = '/purchase/vouchers';
 
   constructor(
     public commonService: CommonService,
@@ -105,6 +106,10 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
   get identifier() {
     // return this.data.Code;
     return '';
+  }
+  
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
 }

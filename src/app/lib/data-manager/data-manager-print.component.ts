@@ -10,6 +10,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   // title: string = 'Xem trước';
   @Input() data: M[];
+  @Input() id?: string[];
   @ViewChildren('printContent', { read: ViewContainerRef }) printContent: QueryList<ViewContainerRef>;
   @Input() onSaveAndClose?: (data: M) => void;
   @Input() onSaveAndPrint?: (data: M) => void;
@@ -91,7 +92,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   async init() {
     await this.loadCache();
-    return super.init().then(rs => {
+    return super.init().then(async rs => {
+      if((!this.data || this.data.length === 0) && this.id) {
+        this.data = await this.getFormData(this.id);
+      }
       this.onAfterInit && this.onAfterInit();
       return rs;
     });
@@ -190,4 +194,8 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   }
 
   abstract get identifier(): any
+
+  async getFormData(ids: string[]) {
+    return [];
+  }
 }

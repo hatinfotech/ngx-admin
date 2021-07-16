@@ -44,11 +44,13 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     const result = await super.init();
     // this.title = `SalesVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
 
-    for (const data of this.data) {
-      data['Total'] = 0;
-      data['Title'] = this.renderTitle(data);
-      for (const detail of data.Details) {
-        data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+    if (this.data && this.data.length > 0) {
+      for (const data of this.data) {
+        data['Total'] = 0;
+        data['Title'] = this.renderTitle(data);
+        for (const detail of data.Details) {
+          data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+        }
       }
     }
 
@@ -246,6 +248,10 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
         },
       },
     ]);
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
   }
 
 }

@@ -82,20 +82,41 @@ body .logo-container {
 }
 
 .tag {
-  background: #8f9bb3;
+  // background: #8f9bb3;
   margin: 2px;
   padding: 2px 7px;
-  color: #fff;
-  border-radius: 0.2rem;
+  // color: #fff;
+  // border-radius: 0.2rem;
   line-height: 1rem;
   padding-top: 2px;
   float: left;
   margin-bottom: 2px;
-  font-size: 12px;
+  // font-size: 12px;
+
+  background-color: #6b6b6b40;
+  border-radius: 3px;
+  // color: #ffffff;
+  color: #8f9bb3;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .tag nb-icon {
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.tag .label {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.tag .label:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tag .close-btn {
+  cursor: pointer;
 }
 
 hr {
@@ -744,6 +765,41 @@ body nb-layout .layout .layout-container nb-sidebar .main-container-fixed {
   width: 100% !important;
 }
 
+.cdk-global-overlay-wrapper.dialog {
+  padding-bottom: 1rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(4) {
+  padding-top: 2.3rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(6) {
+  padding-top: 4.6rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(8) {
+  padding-top: 6.9rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(10) {
+  padding-top: 8.2rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(12) {
+  padding-top: 10.5rem;
+}
+
+.cdk-global-overlay-wrapper.dialog:nth-child(5) {
+  padding-top: 2.3rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(7) {
+  padding-top: 4.6rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(9) {
+  padding-top: 6.9rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(11) {
+  padding-top: 8.2rem;
+}
+.cdk-global-overlay-wrapper.dialog:nth-child(13) {
+  padding-top: 10.5rem;
+}
+
 body nb-progress-bar.status-danger .progress-value {
   white-space: nowrap;
 }
@@ -1072,9 +1128,14 @@ body .form-group[state="warning"] textarea:focus {
   }
 }
 
-.dialog-wrap {
+.dialog-wrap {   
   // max-width: 90%;
   margin: auto;
+}
+
+.dialog-wrap.dialog,
+.dialog-wrap.popup {
+  padding-bottom: 2rem;
 }
 
 // .cdk-global-overlay-wrapper,
@@ -1564,12 +1625,6 @@ body [nbButton].appearance-hero.size-medium {
 /** End NB Input */
 
 /** Common */
-
-.tag {
-  background-color: #dcdcdc;
-  border-radius: 3px;
-  color: #353535;
-}
 
 /** End Common */
 

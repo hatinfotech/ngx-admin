@@ -88,10 +88,13 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
         width: '20%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
-      RelationVoucher: {
+      RelativeVouchers: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        type: 'string',
+        type: 'html',
         width: '20%',
+        valuePrepareFunction: (cell: any, row?: any) => {
+          return cell?.map(m => `<div class="tag" title="${m?.text}  "><nb-icon icon="pricetags-outline" pack="ion"></nb-icon> ${m?.id}</div></div>`).join('');
+        }
       },
       Code: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),

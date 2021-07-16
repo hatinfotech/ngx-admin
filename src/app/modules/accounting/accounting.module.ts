@@ -1,3 +1,4 @@
+import { GeneralModule } from './../general/general.module';
 import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { AccountingComponent } from './accounting.component';
@@ -26,6 +27,7 @@ import { AccAccountListComponent } from './acc-account/acc-account-list/acc-acco
 import { AccAccountFormComponent } from './acc-account/acc-account-form/acc-account-form.component';
 import { AccBusinessListComponent } from './acc-business/acc-business-list/acc-business-list.component';
 import { AccBusinessFormComponent } from './acc-business/acc-business-form/acc-business-form.component';
+import { RelativeVoucherComponent } from '../general/voucher/relative-voucher/relative-voucher.component';
 
 @NgModule({
   declarations: [AccountingComponent, CashReceiptVoucherListComponent, CashReceiptVoucherFormComponent, CashPaymentVoucherListComponent, CashPaymentVoucherFormComponent, CashReceiptVoucherFormComponent, CashReceiptVoucherListComponent, CashReceiptVoucherPrintComponent, CashPaymentVoucherPrintComponent, AccAccountListComponent, AccAccountFormComponent, AccBusinessListComponent, AccBusinessFormComponent],
@@ -66,12 +68,14 @@ import { AccBusinessFormComponent } from './acc-business/acc-business-form/acc-b
     SortablejsModule.forRoot({
       animation: 200,
     }),
+    // GeneralModule,
   ],
   entryComponents: [
     SmartTableCurrencyEditableComponent,
     SmartTableCurrencyComponent,
     AccAccountFormComponent,
     AccBusinessFormComponent,
+    RelativeVoucherComponent,
   ],
   providers: [
     { provide: CurrencyPipe, useValue: {} },

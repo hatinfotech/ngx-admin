@@ -1,3 +1,4 @@
+import { SalesModule } from './modules/sales/sales.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 /**
  * @license
@@ -51,6 +52,7 @@ import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
+import { PurchaseModule } from './modules/purchase/purchase.module';
 registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -84,6 +86,8 @@ export class DynamicLocaleId extends String {
     NbCardModule,
     DialogModule,
     IvoipModule,
+    SalesModule,
+    PurchaseModule,
     HttpClientModule,
     AuthModule,
     CurrencyMaskModule,

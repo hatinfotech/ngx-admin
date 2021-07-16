@@ -491,6 +491,17 @@ export class CommonService {
     return dialogRef;
   }
 
+  /** Dialog */
+  // openRelativeVoucherDiaplog(title: string, content: string, buttons: { label: string, icon?: string, status?: string, action?: () => void }[]) {
+  //   return this.dialogService.open(ShowcaseDialogComponent, {
+  //     context: {
+  //       title: title,
+  //       content: content,
+  //       actions: buttons,
+  //     },
+  //   });
+  // }
+
   resumeDialog(dialogRef: NbDialogRef<BaseComponent> | any, config?: { events: { onDialogClose?: () => void, onDialogChoose?: (selectItems: any[]) => void } }): boolean {
     if (dialogRef.show) {
       dialogRef.show(config);
