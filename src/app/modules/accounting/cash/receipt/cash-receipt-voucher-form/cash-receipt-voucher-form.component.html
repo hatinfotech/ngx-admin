@@ -22,22 +22,22 @@
                             </div>
                             <div class="col-sm-4">
                                 <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.Object.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{'Common.Object.phone' | translate | headtitlecase}}">
+                                    <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.Object.phone' | translate | headtitlecase)}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-8">
                                 <ngx-form-group [formGroup]="formItem" name="ObjectAddress" label="Common.Object.address" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{'Common.Object.address' | translate | headtitlecase}}">
+                                    <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{formItem.get('ObjectAddress').placeholder || ('Common.Object.address' | translate | headtitlecase)}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="ObjectEmail" label="Common.Object.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="{{'Common.Object.email' | translate | headtitlecase}}">
+                                    <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="{{formItem.get('ObjectEmail').placeholder || ('Common.Object.email' | translate | headtitlecase)}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="ObjectTaxCode" label="Common.Object.taxCode" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="{{'Common.Object.taxCode' | translate | headtitlecase}}">
+                                    <input type="text" nbInput fullWidth formControlName="ObjectTaxCode" placeholder="{{formItem.get('ObjectTaxCode').placeholder || ('Common.Object.taxCode' | translate | headtitlecase)}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-8">
@@ -65,14 +65,16 @@
                             <!-- <div class="row"> -->
                             <!-- <div class="col-sm-12"> -->
                             <div class="row fit-content-column">
-                                <div class="col-sm-4 label column">{{'Common.accountingBusiness' | translate | headtitlecase}}</div>
-                                <div class="col-sm-6 label column">{{'Common.description' | translate | headtitlecase}}</div>
+                                <div class="col-sm-3 label column">{{'Common.accountingBusiness' | translate | headtitlecase}}</div>
+                                <div class="col-sm-2 label column">{{'Accounting.debitAccount' | translate | headtitlecase}}</div>
+                                <div class="col-sm-2 label column">{{'Common.creditAccount' | translate | headtitlecase}}</div>
+                                <div class="col-sm-3 label column">{{'Common.description' | translate | headtitlecase}}</div>
                                 <div class="col-sm-2 label column" style="text-align: right;">{{'Common.numOfMoney' | translate | headtitlecase}}</div>
                             </div>
                             <!-- </div> -->
                             <!-- </div> -->
                             <div class="fit-last-col column">
-                                <button class="fit-control-button" nbButton status="success" (click)="addDetailFormGroup(i)" size="medium" hero>
+                                <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addDetailFormGroup(i)" size="medium" hero>
                                     <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                                 </button>
                             </div>
@@ -90,12 +92,22 @@
                                     <div class="row fit-content-column">
                                         <div class="col-sm-12">
                                             <div class="row">
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <ngx-form-group [formGroup]="detail" name="AccountingBusiness" label="Common.accountingBusiness" [array]="getDetails(i)" [index]="ir" [allowCopy]="true" [required]="false">
-                                                        <ngx-select2 formControlName="AccountingBusiness" [select2Option]="select2OptionForAccountingBusiness" [data]="select2DataForAccountingBusiness"></ngx-select2>
+                                                        <ngx-select2 formControlName="AccountingBusiness" [select2Option]="select2OptionForAccountingBusiness" [data]="accountingBusinessList" (selectChange)="onAccBusinessChange(detail, $event, ir)"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [formGroup]="detail" name="DebitAccount" label="Accounting.debitAccount" [array]="getDetails(i)" [index]="ir" [allowCopy]="true" [required]="false">
+                                                        <ngx-select2 formControlName="DebitAccount" [select2Option]="select2ForDebitAccount" [data]="accountList"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [formGroup]="detail" name="CreditAccount" label="Accounting.creditAccount" [array]="getDetails(i)" [index]="ir" [allowCopy]="true" [required]="false">
+                                                        <ngx-select2 formControlName="CreditAccount" [select2Option]="select2ForCreditAccount" [data]="accountList"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-3">
                                                     <ngx-form-group [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(i)" [index]="ir" [allowCopy]="true" [required]="true">
                                                         <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
                                                     </ngx-form-group>
@@ -139,7 +151,7 @@
                                     <div class="fit-last-col">
                                         <div class="form-group" style="text-align: right;">
                                             <label class="label">CM</label>
-                                            <button class="fit-control-button" nbButton status="success" (click)="addDetailFormGroup(i)" size="medium" hero>
+                                            <button class="fit-control-button" [outline]="true" nbButton status="success" (click)="addDetailFormGroup(i)" size="medium" hero>
                                                 <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                                             </button>
                                         </div>

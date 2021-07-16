@@ -6,7 +6,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../../lib/custom-element/action-control-list/action-control.interface';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
-import { CashVoucherDetailModel, CashVoucherModel } from '../../../../../models/accounting.model';
+import { AccountModel, BusinessModel, CashVoucherDetailModel, CashVoucherModel } from '../../../../../models/accounting.model';
 import { ContactModel } from '../../../../../models/contact.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
@@ -30,6 +30,9 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   locale = this.commonService.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+
+  accountList: AccountModel[] = [];
+  accountingBusinessList: BusinessModel[] = [];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -123,20 +126,20 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   };
 
   // Accounting Business Option
-  select2DataForAccountingBusiness = [
-    {
-      id: 'SALESRECEIPT',
-      text: 'Thu tiền bán hàng',
-    },
-    {
-      id: 'DEBTRECEIPT',
-      text: 'Thu tiền công nợ',
-    },
-    {
-      id: 'CONTRACTRECEIPT',
-      text: 'Thu tiền hợp đồng',
-    },
-  ];
+  // select2DataForAccountingBusiness = [
+  //   {
+  //     id: 'SALESRECEIPT',
+  //     text: 'Thu tiền bán hàng',
+  //   },
+  //   {
+  //     id: 'DEBTRECEIPT',
+  //     text: 'Thu tiền công nợ',
+  //   },
+  //   {
+  //     id: 'CONTRACTRECEIPT',
+  //     text: 'Thu tiền hợp đồng',
+  //   },
+  // ];
   select2OptionForAccountingBusiness = {
     placeholder: 'Nghiệp vụ kế toán...',
     allowClear: true,
@@ -168,6 +171,32 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     multiple: true,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  select2ForDebitAccount = {
+    placeholder: 'Tài khản nợ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+  select2ForCreditAccount = {
+    placeholder: 'Tài khản có...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
     keyMap: {
       id: 'id',
       text: 'text',
@@ -206,11 +235,21 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   async init() {
+    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {}).then(rs => rs.map(account => {
+      account['id'] = account.Code;
+      account['text'] = account.Code + ' - ' + account.Name;
+      return account;
+    }));
+    this.accountingBusinessList = await this.apiService.getPromise<AccountModel[]>('/accounting/business', { eq_Type: 'RECEIPT' }).then(rs => rs.map(accBusiness => {
+      accBusiness['id'] = accBusiness.Code;
+      accBusiness['text'] = accBusiness.Name;
+      return accBusiness;
+    }));
     return super.init().then(rs => {
       this.getRequestId(id => {
         if (!id || id.length === 0) {
           this.addDetailFormGroup(0);
-        } 
+        }
         // else {
         //   for (const mainForm of this.array.controls) {
         //     this.toMoney(mainForm as FormGroup);
@@ -249,6 +288,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     });
     if (data) {
       data[this.idKey + '_old'] = data.Code;
+      this.prepareRestrictedData(newForm, data);
       newForm.patchValue(data);
     }
     return newForm;
@@ -287,6 +327,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       AccountingBusiness: [''],
       Description: ['', Validators.required],
       RelateCode: [''],
+      DebitAccount: ['', Validators.required],
+      CreditAccount: ['', Validators.required],
       Amount: ['', Validators.required],
     });
 
@@ -340,13 +382,22 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
-          formGroup.get('ObjectName').setValue(selectedData.Name);
-          formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-          formGroup.get('ObjectEmail').setValue(selectedData.Email);
-          formGroup.get('ObjectAddress').setValue(selectedData.Address);
-          formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-          formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-          formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+          const data = {
+            ObjectName: selectedData.Name,
+            ObjectPhone: selectedData.Phone,
+            ObjectEmail: selectedData.Email,
+            ObjectAddress: selectedData.Address,
+            ObjectTaxCode: selectedData.TaxCode,
+            // ObjectBankName: selectedData.BankName,
+            // ObjectBankCode: selectedData.BankAcc,
+          };
+
+          this.prepareRestrictedData(formGroup, data);
+          formGroup.patchValue(data);
+        } else {
+          formGroup.patchValue({
+            ObjectName: selectedData['text'],
+          });
         }
       }
     }
@@ -389,6 +440,14 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       },
     });
     return false;
+  }
+
+  onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
+    if (!this.isProcessing) {
+      detail.get('DebitAccount').setValue(business.DebitAccount);
+      detail.get('CreditAccount').setValue(business.CreditAccount);
+      detail.get('Description').setValue(business.Description);
+    }
   }
 
 }

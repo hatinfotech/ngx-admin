@@ -296,6 +296,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     });
     if (data) {
       data[this.idKey + '_old'] = data.Code;
+      this.prepareRestrictedData(newForm, data);
       newForm.patchValue(data);
     }
     return newForm;
@@ -389,14 +390,25 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
-          formGroup.get('ObjectName').setValue(selectedData.Name);
-          formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-          formGroup.get('ObjectEmail').setValue(selectedData.Email);
-          formGroup.get('ObjectAddress').setValue(selectedData.Address);
-          formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-          formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-          formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+          const data = {
+            ObjectName: selectedData.Name,
+            ObjectPhone: selectedData.Phone,
+            ObjectEmail: selectedData.Email,
+            ObjectAddress: selectedData.Address,
+            ObjectTaxCode: selectedData.TaxCode,
+            // ObjectBankName: selectedData.BankName,
+            // ObjectBankCode: selectedData.BankAcc,
+          };
+
+          this.prepareRestrictedData(formGroup, data);
+          formGroup.patchValue(data);
+        } else {
+          formGroup.patchValue({
+            ObjectName: selectedData['text'],
+          });
         }
+
+
       }
     }
   }
