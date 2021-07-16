@@ -1,3 +1,27 @@
+export class AccountModel {
+    [id: string]: any;
+    Id?: string;
+    Parent?: string;
+    Code?: string;
+    Name?: string;
+    Description?: string;
+    Currency?: string;
+    Property?: string;
+    Level?: string;
+    Type?: string;
+    Group?: string;
+}
+
+export class BusinessModel {
+    [id: string]: any;
+    Id?: string;
+    Type?: string;
+    Code?: string;
+    Name?: string;
+    Description?: string;
+    DebitAccount?: string;
+    CreditAccount?: string;
+}
 export interface CashVoucherModel {
     Id?: string;
     Cashbook?: string;
