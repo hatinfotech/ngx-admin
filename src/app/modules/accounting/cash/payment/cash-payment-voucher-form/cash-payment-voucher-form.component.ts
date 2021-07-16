@@ -460,9 +460,11 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
-    detail.get('DebitAccount').setValue(business.DebitAccount);
-    detail.get('CreditAccount').setValue(business.CreditAccount);
-    detail.get('Description').setValue(business.Description);
+    if (!this.isProcessing) {
+      detail.get('DebitAccount').setValue(business.DebitAccount);
+      detail.get('CreditAccount').setValue(business.CreditAccount);
+      detail.get('Description').setValue(business.Description);
+    }
   }
 
 }
