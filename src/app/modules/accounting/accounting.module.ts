@@ -22,11 +22,13 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { SmartTableCurrencyComponent, SmartTableCurrencyEditableComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { CashReceiptVoucherPrintComponent } from './cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 import { CashPaymentVoucherPrintComponent } from './cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
-
-
+import { AccAccountListComponent } from './acc-account/acc-account-list/acc-account-list.component';
+import { AccAccountFormComponent } from './acc-account/acc-account-form/acc-account-form.component';
+import { AccBusinessListComponent } from './acc-business/acc-business-list/acc-business-list.component';
+import { AccBusinessFormComponent } from './acc-business/acc-business-form/acc-business-form.component';
 
 @NgModule({
-  declarations: [AccountingComponent, CashReceiptVoucherListComponent, CashReceiptVoucherFormComponent, CashPaymentVoucherListComponent, CashPaymentVoucherFormComponent, CashReceiptVoucherFormComponent, CashReceiptVoucherListComponent, CashReceiptVoucherPrintComponent, CashPaymentVoucherPrintComponent],
+  declarations: [AccountingComponent, CashReceiptVoucherListComponent, CashReceiptVoucherFormComponent, CashPaymentVoucherListComponent, CashPaymentVoucherFormComponent, CashReceiptVoucherFormComponent, CashReceiptVoucherListComponent, CashReceiptVoucherPrintComponent, CashPaymentVoucherPrintComponent, AccAccountListComponent, AccAccountFormComponent, AccBusinessListComponent, AccBusinessFormComponent],
   imports: [
     CommonModule,
     NbTabsetModule,
@@ -68,6 +70,8 @@ import { CashPaymentVoucherPrintComponent } from './cash/payment/cash-payment-vo
   entryComponents: [
     SmartTableCurrencyEditableComponent,
     SmartTableCurrencyComponent,
+    AccAccountFormComponent,
+    AccBusinessFormComponent,
   ],
   providers: [
     { provide: CurrencyPipe, useValue: {} },
