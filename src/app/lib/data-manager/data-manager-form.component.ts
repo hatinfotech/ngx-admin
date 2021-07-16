@@ -328,8 +328,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         if (formData) {
           callback(formData);
         } else {
-          this.getFormData((data: M[]) => {
-            callback(data);
+          this.getRequestId(id => {
+            if (id && id.length > 0) {
+              this.getFormData((data: M[]) => {
+                callback(data);
+              })
+            } else {
+              callback([null]);
+            }
             resovle(true);
           });
         }

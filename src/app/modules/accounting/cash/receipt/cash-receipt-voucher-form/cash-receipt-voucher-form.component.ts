@@ -213,14 +213,14 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Resources form load
-      if (itemFormData.Details) {
-        const details = this.getDetails(index);
+      if (itemFormData?.Details) {
+        const details = this.getDetails(newForm);
         details.clear();
         itemFormData.Details.forEach(detail => {
           const newResourceFormGroup = this.makeNewDetailFormGroup(newForm, detail);
           details.push(newResourceFormGroup);
           const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(index, comIndex, newResourceFormGroup);
+          this.onAddDetailFormGroup(newForm, comIndex, newResourceFormGroup);
         });
       }
 
@@ -246,16 +246,16 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       return accBusiness;
     }));
     return super.init().then(rs => {
-      this.getRequestId(id => {
-        if (!id || id.length === 0) {
-          this.addDetailFormGroup(0);
-        }
-        // else {
-        //   for (const mainForm of this.array.controls) {
-        //     this.toMoney(mainForm as FormGroup);
-        //   }
-        // }
-      });
+      // this.getRequestId(id => {
+      //   if (!id || id.length === 0) {
+      //     this.addDetailFormGroup(0);
+      //   }
+      //   // else {
+      //   //   for (const mainForm of this.array.controls) {
+      //   //     this.toMoney(mainForm as FormGroup);
+      //   //   }
+      //   // }
+      // });
       return rs;
     });
   }
@@ -290,6 +290,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       data[this.idKey + '_old'] = data.Code;
       this.prepareRestrictedData(newForm, data);
       newForm.patchValue(data);
+    } else {
+      this.addDetailFormGroup(newForm);
     }
     return newForm;
   }
@@ -327,7 +329,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       AccountingBusiness: [''],
       Description: ['', Validators.required],
       RelateCode: [''],
-      DebitAccount: ['', Validators.required],
+      DebitAccount: ['1111', Validators.required],
       CreditAccount: ['', Validators.required],
       Amount: ['', Validators.required],
     });
@@ -339,30 +341,31 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     return newForm;
   }
 
-  getDetails(formGroupIndex: number) {
-    return this.array.controls[formGroupIndex].get('Details') as FormArray;
+  getDetails(parentFormGroup: FormGroup) {
+    return parentFormGroup.get('Details') as FormArray;
   }
 
-  addDetailFormGroup(formGroupIndex: number) {
-    const newFormGroup = this.makeNewDetailFormGroup(this.array.controls[formGroupIndex] as FormGroup);
-    this.getDetails(formGroupIndex).push(newFormGroup);
-    this.onAddDetailFormGroup(formGroupIndex, this.getDetails(formGroupIndex).length - 1, newFormGroup);
+  addDetailFormGroup(parentFormGroup: FormGroup) {
+    const newFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
+    const details = this.getDetails(parentFormGroup);
+    details.push(newFormGroup);
+    this.onAddDetailFormGroup(parentFormGroup, details.length - 1, newFormGroup);
     return false;
   }
 
-  onAddDetailFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+  onAddDetailFormGroup(parentFormGroup: FormGroup, index: number, newFormGroup: FormGroup) {
   }
 
-  removeDetail(formGroupIndex: number, index: number) {
-    this.getDetails(formGroupIndex).removeAt(index);
+  removeDetail(parentFormGroup: FormGroup, index: number) {
+    this.getDetails(parentFormGroup).removeAt(index);
     // this.componentList[formGroupIndex].splice(index, 1);
-    this.onRemoveDetailFormGroup(formGroupIndex, index);
+    this.onRemoveDetailFormGroup(parentFormGroup, index);
     return false;
   }
 
-  onRemoveDetailFormGroup(mainIndex: number, index: number) {
+  onRemoveDetailFormGroup(parentFormGroup: FormGroup, index: number) {
     // this.resourceList[mainIndex].splice(index, 1);
-    this.toMoney(this.array.controls[mainIndex] as FormGroup);
+    this.toMoney(parentFormGroup);
   }
 
   // Orverride

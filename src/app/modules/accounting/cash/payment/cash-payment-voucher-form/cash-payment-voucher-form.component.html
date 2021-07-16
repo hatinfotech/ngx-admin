@@ -80,7 +80,7 @@
                             </div>
                         </div>
                         <div formArrayName="Details" class="form-details">
-                            <div class="form-detail-item" *ngFor="let detail of getDetails(i).controls; let ir=index" [formGroup]="detail">
+                            <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ir=index" [formGroup]="detail">
                                 <div class="row fit-row">
                                     <div class="fit-fist-col label">
                                         <div class="form-group">
@@ -93,27 +93,27 @@
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-3">
-                                                    <ngx-form-group [formGroup]="detail" name="AccountingBusiness" label="Common.accountingBusiness" [array]="getDetails(i)" [index]="ir" [allowCopy]="true" [required]="false">
+                                                    <ngx-form-group [formGroup]="detail" name="AccountingBusiness" label="Common.accountingBusiness" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
                                                         <ngx-select2 formControlName="AccountingBusiness" [select2Option]="select2OptionForAccountingBusiness" [data]="accountingBusinessList" (selectChange)="onAccBusinessChange(detail, $event, ir)"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [formGroup]="detail" name="DebitAccount" label="Accounting.debitAccount" [array]="getDetails(i)" [index]="ir" [allowCopy]="true" [required]="false">
+                                                    <ngx-form-group [formGroup]="detail" name="DebitAccount" label="Accounting.debitAccount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
                                                         <ngx-select2 formControlName="DebitAccount" [select2Option]="select2ForAccount" [data]="accountList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [formGroup]="detail" name="CreditAccount" label="Accounting.creditAccount" [array]="getDetails(i)" [index]="ir" [allowCopy]="true" [required]="false">
+                                                    <ngx-form-group [formGroup]="detail" name="CreditAccount" label="Accounting.creditAccount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
                                                         <ngx-select2 formControlName="CreditAccount" [select2Option]="select2ForReciprocalAccount" [data]="accountList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <ngx-form-group [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(i)" [index]="ir" [allowCopy]="true" [required]="true">
+                                                    <ngx-form-group [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="true">
                                                         <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [formGroup]="detail" name="Amount" label="Common.amount" [array]="getDetails(i)" [index]="ir" [allowCopy]="false" [align]="'rignt'" [required]="true">
+                                                    <ngx-form-group [formGroup]="detail" name="Amount" label="Common.amount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="false" [align]="'rignt'" [required]="true">
                                                         <input type="text" (keyup)="toMoney(formItem)" nbInput fullWidth formControlName="Amount" placeholder="{{'Common.amount' | translate | headtitlecase}}" currencyMask [options]="curencyFormat" style="text-align: right;">
                                                     </ngx-form-group>
                                                 </div>
@@ -123,7 +123,7 @@
                                     <div class="fit-last-col">
                                         <div class="form-group" style="text-align: right;">
                                             <label class="label">CM</label>
-                                            <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeDetail(i, ir)">
+                                            <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeDetail(formItem, ir)">
                                                 <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                                             </button>
                                         </div>
@@ -164,7 +164,7 @@
                 </nb-card-body>
                 <nb-card-footer>
                     <div class="buttons-row" style="text-align: right;">
-                        <button nbButton status="warning" (click)="addFormGroup($event)" hero style="float: left;">Thêm cái nữa</button>
+                        <button nbButton status="warning" (click)="addFormGroup()" hero style="float: left;">Thêm cái nữa</button>
                         <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
                         <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
                     </div>
