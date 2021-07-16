@@ -89,7 +89,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       RelativeVouchers: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relativeVoucher'), 'head-title'),
         type: 'html',
         width: '20%',
         valuePrepareFunction: (cell: any, row?: any) => {

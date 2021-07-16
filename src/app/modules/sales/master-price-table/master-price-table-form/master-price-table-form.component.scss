@@ -1,6 +1,15 @@
-@media (min-width: 768px) {
-  .popup {
-    max-width: 99%;
-    margin: auto;
+@import "../../../../@theme/styles/themes";
+@include nb-install-component() {
+  @media (min-width: 768px) {
+    .popup {
+      max-width: 99%;
+      margin: auto;
+    }
+  }
+
+  .ng2-smart-table-wrap {
+    border: nb-theme(divider-color) 1px solid;
+    border-radius: 0.25rem;
+    overflow: hidden;
   }
 }
