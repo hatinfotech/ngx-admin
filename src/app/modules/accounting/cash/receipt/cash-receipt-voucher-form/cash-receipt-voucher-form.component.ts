@@ -152,7 +152,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // multiple: true,
-    // tags: true,
+    tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',

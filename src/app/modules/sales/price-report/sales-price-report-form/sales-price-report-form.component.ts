@@ -317,7 +317,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       // PaymentStep: [''],
       PriceTable: [''],
       DeliveryAddress: [''],
-      Title: [''],
+      Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
       Reported: [''],

@@ -104,8 +104,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         // console.info(data, params);
         return {
           results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Title'];
+            item['id'] = item['id'] || item['Code'];
+            item['text'] = item['text'] || item['Title'];
             return item;
           }),
         };
@@ -134,8 +134,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         // console.info(data, params);
         return {
           results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Title'];
+            item['id'] = item['id'] || item['Code'];
+            item['text'] = item['Code'] + ': ' + (item['text'] || item['Title'] || item['ObjectName']) + ' (' + this.commonService.datePipe.transform(item['Reported'], 'short') +')';
             return item;
           }),
         };

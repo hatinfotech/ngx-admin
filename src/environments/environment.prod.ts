@@ -4,8 +4,9 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 export const environment = {
-  // Version structure s.m.f.b.e: Upgrade system . Add module . Add feature . Build of upgrade/update . Environment
-  version: '2.3.3.2',
+  // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
+  version: '2.3.4.1',
+  // 2.3.4: Update accouting module
   // 2.3.3.2: Fix price report dubble load details
   // 2.3.3: Update price report: restricted field
   // 2.3.2: Zalo Connect with Parallel App
@@ -16,7 +17,7 @@ export const environment = {
   // 2.2.0.16: Update product picture support for price report
   // 2.2.0.15: Dev slaes price report voucher: add sub contact info
   // 2.2.0.0: Begin develop for commerce modules
-  // 2.1.1.1: add feature: Ivoip - include extension registrations 
+  // 2.1.1.1: add feature: Ivoip - include extension registrations
   // 2.1.0.3: change logo 
   // 2.1.0.2: Fix scan2login 
   // 2.1.0.1: Dev simple contact list
