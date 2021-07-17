@@ -841,6 +841,11 @@ body nb-layout .layout .layout-container nb-sidebar .main-container-fixed {
   padding-top: 10.5rem;
 }
 
+.toastr-overlay-container,
+.cdk-global-overlay-wrapper {
+  overflow-x: hidden !important;
+}
+
 body nb-progress-bar.status-danger .progress-value {
   white-space: nowrap;
 }
