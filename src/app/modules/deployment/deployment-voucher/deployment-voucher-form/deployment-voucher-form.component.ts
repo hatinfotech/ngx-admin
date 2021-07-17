@@ -328,7 +328,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       this.patchFormGroupValue(newForm, data);
       // this.toMoney(newForm);
     } else {
-      // this.addDetailFormGroup(newForm);
+      this.addDetailFormGroup(newForm);
     }
     return newForm;
   }

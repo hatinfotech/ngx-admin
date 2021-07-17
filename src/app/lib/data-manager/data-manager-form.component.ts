@@ -334,7 +334,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         status: 'success',
         hasIcon: true,
         position: NbGlobalPhysicalPosition.TOP_RIGHT,
-        // duration: 5000,
+        duration: 3000,
       });
     }
     this.id = newFormData.map(item => item[this.idKey]);
@@ -358,7 +358,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         status: 'success',
         hasIcon: true,
         position: NbGlobalPhysicalPosition.TOP_RIGHT,
-        // duration: 5000,
+        duration: 3000,
       });
     }
     this.id = newFormData?.map(item => item[this.idKey]);

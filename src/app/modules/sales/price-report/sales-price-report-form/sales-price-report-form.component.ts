@@ -330,7 +330,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       this.patchFormGroupValue(newForm, data);
       // this.toMoney(newForm);
     } else {
-      // this.addDetailFormGroup(newForm);
+      this.addDetailFormGroup(newForm);
     }
     return newForm;
   }

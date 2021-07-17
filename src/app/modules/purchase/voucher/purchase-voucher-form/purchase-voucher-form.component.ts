@@ -262,7 +262,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       // data['Code_old'] = data['Code'];
       newForm.patchValue(data);
     } else {
-      // this.addDetailFormGroup(newForm);
+      this.addDetailFormGroup(newForm);
     }
     return newForm;
   }
