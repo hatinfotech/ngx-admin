@@ -209,6 +209,10 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
     //   return;
     // }
     // window.open(file.OriginImage, '_blank');
+
+    // Open photo browser
+    
+
     this.onThumbnailClick.emit(file);
     return false;
   }

@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '2.3.4.2',
+  version: '2.3.4.3',
   // 2.3.4: Update accouting module
   // 2.3.3.2: Fix price report dubble load details
   // 2.3.3: Update price report: restricted field
@@ -63,9 +63,9 @@ export const environment = {
   register: {
     logo: {
       voucher: 'assets/images/logo/logo-dang-ky-nhan-hieu-probox.png',
-      login: 'assets/images/logo/logo_probox_one_full.png',
-      main: 'assets/images/logo/logo_probox_one_full.png',
-      header: 'assets/images/logo/logo_probox_one_full.png',
+      login: 'assets/images/logo/logo_probox_one.png',
+      main: 'assets/images/logo/logo_probox_one.png',
+      header: 'assets/images/logo/logo_probox_one.png',
     },
   },
   api: {

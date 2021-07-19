@@ -1,6 +1,4 @@
-<div class="thumbnail input-full-width size-medium status-basic shape-rectangle scrollable-container" ngFileDrop
-  (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }"
-  [ngStyle]="style" fullWidth nbInput>
+<div class="thumbnail input-full-width size-medium status-basic shape-rectangle scrollable-container" ngFileDrop (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }" [ngStyle]="style" fullWidth nbInput>
   <div class="row">
     <div ngClass="col-md-{{config.colSize || 6}}" *ngFor="let image of value; let i=index">
       <div class="image" [ngStyle]="buildThumbnailStyle(image)" (click)="onFileClick(image)">
@@ -12,5 +10,4 @@
     </div>
   </div>
 </div>
-<input #uploadButton nbIn style="display: none;" type="file" ngFileSelect [options]="options"
-  (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple>
+<input #uploadButton nbIn style="display: none;" type="file" ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple>

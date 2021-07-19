@@ -737,9 +737,9 @@ export class CommonService {
     return deviceUuid;
   }
 
-  openTicketForm(id: {Code?: string, UuidIndex?: string}) {
+  openTicketForm(id: { Code?: string, UuidIndex?: string }) {
     this.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
-      context: {  
+      context: {
         showLoadinng: false,
         inputMode: 'dialog',
         ticketCode: id.Code,
