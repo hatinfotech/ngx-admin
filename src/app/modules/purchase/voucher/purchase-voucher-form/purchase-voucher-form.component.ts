@@ -493,7 +493,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     this.commonService.openDialog(PurchaseOrderVoucherListComponent, {
       context: {
         inputMode: 'dialog',
-        onDialogChoose: (chooseItems: PurchaseVoucherModel[]) => {
+        onDialogChoose: async (chooseItems: PurchaseVoucherModel[]) => {
           console.log(chooseItems);
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
@@ -501,7 +501,37 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
           for (let i = 0; i < chooseItems.length; i++) {
             const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
             if (index < 0) {
+              const details = this.getDetails(formGroup);
+              // get purchase order
+              const purchaseOrder = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                if (this.commonService.getObjectId(purchaseOrder.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong đơn đặt mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+              } else {
+                delete purchaseOrder.Id;
+                formGroup.patchValue({ ...purchaseOrder, Code: null, Details: [] });
+                details.clear();
+              }
+              if (this.commonService.getObjectId(purchaseOrder.State) != 'APPROVE') {
+                this.commonService.toastService.show(this.commonService.translateText('Đơn đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                continue;
+              }
               insertList.push(chooseItems[i]);
+
+              // Insert order details into voucher details
+              if (purchaseOrder?.Details) {
+                details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseOrder.Code + ' - ' + purchaseOrder.Title }));
+                for (const orderDetail of purchaseOrder.Details) {
+                  delete orderDetail.Id;
+                  delete orderDetail.Voucher;
+                  delete orderDetail.No;
+                  const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, orderDetail);
+                  details.push(newDtailFormGroup);
+                }
+              }
+
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);

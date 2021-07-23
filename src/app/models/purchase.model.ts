@@ -57,6 +57,7 @@ export class PurchaseVoucherModel {
   ObjectName?: string;
   ObjectAddress?: string;
   ObjectPhone?: string;
+  ObjectEmail?: string;
   PurchaseStaff?: string;
   DateOfPurchase?: string;
   Invoice?: string;
@@ -91,9 +92,11 @@ export class PurchaseVoucherModel {
 export class PurchaseVoucherDetailModel {
   Id?: string | number;
   Type?: string;
+  No?: number;
   Voucher?: PurchaseVoucherModel & string;
   Product?: ProductModel & string;
   ProductName?: string;
+  Description?: string;
   Quantity?: number;
   Unit?: UnitModel & string;
   Tax?: TaxModel & string;

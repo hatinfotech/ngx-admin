@@ -381,6 +381,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Error event */
   onError(e: HttpErrorResponse) {
     if (e && e.error && e.error.logs) {
+      if (e.error === 500) {
+        this.close();
+      }
       this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Thông báo lỗi',
@@ -388,7 +391,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
           actions: [
             {
               label: 'Trở về',
-              icon: 'back',
+              icon: 'arrow-ios-back-outline',
               status: 'info',
             },
           ],

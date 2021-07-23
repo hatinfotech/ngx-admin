@@ -184,7 +184,7 @@
                         </div>
   
                         <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
-                            <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail">
+                            <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail" [ngClass]="{'category': getFieldValue(detail, 'Type') == 'CATEGORY'}">
                                 <hr>
                                 <div class="row">
                                     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">

@@ -27,7 +27,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   componentName: string = 'PurchaseOrderVoucherFormComponent';
   idKey = 'Code';
   apiPath = '/purchase/order-vouchers';
-  baseFormUrl = '/purchase/vouchers/form';
+  baseFormUrl = '/purchase/order-voucher/form';
 
   env = environment;
 
