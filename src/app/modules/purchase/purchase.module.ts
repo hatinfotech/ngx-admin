@@ -29,6 +29,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { PurchaseOrderVoucherListComponent } from './order/purchase-order-voucher-list/purchase-order-voucher-list.component';
 import { PurchaseOrderVoucherFormComponent } from './order/purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { PurchaseOrderVoucherPrintComponent } from './order/purchase-order-voucher-print/purchase-order-voucher-print.component';
+import { ProcessMap } from '../../models/process-map.model';
 
 
 export class DynamicLocaleId extends String {
@@ -41,13 +42,13 @@ export class DynamicLocaleId extends String {
   }
 }
 export const MY_MOMENT_FORMATS = {
-    parseInput: 'l LT',
-    fullPickerInput: 'l LT',
-    datePickerInput: 'l',
-    timePickerInput: 'LT',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
+  parseInput: 'l LT',
+  fullPickerInput: 'l LT',
+  datePickerInput: 'l',
+  timePickerInput: 'LT',
+  monthYearLabel: 'MMM YYYY',
+  dateA11yLabel: 'LL',
+  monthYearA11yLabel: 'MMMM YYYY',
 };
 @NgModule({
   declarations: [
@@ -109,6 +110,7 @@ export const MY_MOMENT_FORMATS = {
     PurchaseVoucherFormComponent,
     PurchaseSimpleVoucherFormComponent,
     PurchaseVoucherPrintComponent,
+    PurchaseOrderVoucherPrintComponent,
   ],
   // providers: [
   //   CurrencyPipe,
@@ -122,4 +124,86 @@ export const MY_MOMENT_FORMATS = {
   //   // {provide: OWL_DATE_TIME_FORMATS, useValue: MY_MOMENT_FORMATS},
   // ],
 })
-export class PurchaseModule { }
+export class PurchaseModule {
+
+  static processMaps: {
+    purchaseVoucher?: {
+      [key: string]: ProcessMap
+    },
+    purchaseOrder?: {
+      [key: string]: ProcessMap
+    },
+  } = {
+      purchaseVoucher: {
+        "APPROVE": {
+          state: 'APPROVE',
+          label: 'Common.approved',
+          status: 'success',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "COMPLETE": {
+          state: 'COMPLETE',
+          label: 'Common.completed',
+          status: 'success',
+          outline: true,
+          nextState: '',
+          nextStateLabel: '',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "": {
+          state: 'NOTJUSTAPPROVE',
+          label: 'Common.notJustApproved',
+          status: 'danger',
+          outline: false,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+      },
+      purchaseOrder: {
+        "APPROVE": {
+          state: 'APPROVE',
+          label: 'Common.approved',
+          status: 'success',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "COMPLETE": {
+          state: 'COMPLETE',
+          label: 'Common.completed',
+          status: 'success',
+          outline: true,
+          nextState: '',
+          nextStateLabel: '',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "": {
+          state: 'NOTJUSTAPPROVE',
+          label: 'Common.notJustApproved',
+          status: 'danger',
+          outline: false,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+      },
+    };
+
+}

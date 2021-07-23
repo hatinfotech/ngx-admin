@@ -47,6 +47,7 @@ export class SmartTableSetting {
       type: string,
       editable?: boolean,
       width?: string,
+      exclude?: boolean,
       filterFunction?: (value: string, query: string) => boolean,
       valuePrepareFunction?: (cell: string, row?: any) => string,
       renderComponent?: any,
@@ -521,32 +522,37 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   /** Config for stmart table setttings */
   protected configSetting(settings: SmartTableSetting) {
 
-    if (!settings.add) {
+    if (typeof settings.add === 'undefined') {
       settings.add = this.configAddButton();
     }
-    if (!settings.edit) {
+    if (typeof settings.edit === 'undefined') {
       settings.edit = this.configEditButton();
     }
-    if (!settings.delete) {
+    if (typeof settings.delete === 'undefined') {
       settings.delete = this.configDeleteButton();
     }
-    if (!settings.pager) {
+    if (typeof settings.pager === 'undefined') {
       settings.pager = this.configPaging();
     }
-    if (!settings.mode) {
+    if (typeof settings.mode === 'undefined') {
       settings.mode = 'external';
     }
-    if (!settings.selectMode) {
+    if (typeof settings.selectMode === 'undefined') {
       settings.selectMode = 'multi';
     }
-    if (!settings.actions) {
+    if (typeof settings.actions === 'undefined') {
       settings.actions = {
         position: 'right',
       };
     }
 
     // Set default filter function
-    Object.keys(settings.columns).forEach(key => {
+    // Object.keys(settings.columns).forEach(key => {
+    for (const key of Object.keys(settings.columns)) {
+      if (settings.columns[key]?.exclude) {
+        delete settings.columns[key];
+        continue;
+      }
       const column = settings.columns[key];
       if (!settings.columns[key]['filterFunction']) {
         settings.columns[key]['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
@@ -598,7 +604,8 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         };
       }
 
-    });
+      // });
+    }
 
     if (this.ref && Object.keys(this.ref).length > 0) {
       settings.columns['Choose'] = {

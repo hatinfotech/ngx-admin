@@ -1,4 +1,4 @@
-<div class="dialog-wrap" #dialogWrap>
+<div class="dialog-wrap {{inputMode}}" #dialogWrap>
   <nb-card *ngFor="let data of this.data; let i=index;" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
     <nb-card-header>
       <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Purchase.Voucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
@@ -7,12 +7,12 @@
       <div id="print-area">
         <ngx-print-header></ngx-print-header>
         <div>
-          <div class="print-title">{{ 'Purchase.Voucher.title' | translate:{action: '', definition: ''} | uppercase }}
+          <div class="print-title">{{ 'Purchase.Order.title' | translate:{action: '', definition: ''} | uppercase }}
           </div>
-          <div class="under-title">{{ data.Code }} - {{ data.DateOfPurchase | date:'short' }}</div>
+          <div class="under-title">{{ data.Code }} - {{ data.DateOfOrder | date:'short' }}</div>
         </div>
         <div>
-          <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+          <div class="under-line">{{'Voucher.dearSupplier' | translate | headtitlecase}} :
             {{renderValue(data.ObjectName)}}
           </div>
           <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}
@@ -92,17 +92,15 @@
     </nb-card-body>
     <nb-card-footer>
       <div class="buttons-row">
-        <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
-          <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+        <!-- <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier"><nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}</button> -->
+        <button nbButton hero status="warning" (click)="prepareCopy(data);"><nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}</button>
+        <!-- <button nbButton hero status="info" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
+            <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button> -->
+        <button nbButton hero status="danger" [disabled]="['COMPLETE'].indexOf(data.State) > -1" (click)="approvedConfirm(data, i);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
+        <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
+            <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
         </button>
-        <button nbButton hero status="danger" (click)="saveAndClose();">
-          <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
-        </button>
-        <button nbButton hero status="warning"
-          (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
-        <button nbButton hero status="info"
-          (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button>
-      </div>
+    </div>
     </nb-card-footer>
   </nb-card>
 </div>

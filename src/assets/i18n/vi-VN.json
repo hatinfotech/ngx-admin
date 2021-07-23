@@ -256,7 +256,8 @@
         "default": "mặc định",
         "expired": "hết hạn",
         "relativeVoucher": "chứng từ liên quan",
-        "accountingBusiness": "nghiệp vụ kế toán"
+        "accountingBusiness": "nghiệp vụ kế toán",
+        "receivedAndPayment": "nhận hàng và thanh toán"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -290,6 +291,7 @@
         "tax": "thuế",
         "toMoney": "thành tiền",
         "dearCustomer": "Kính gửi quý khách hàng",
+        "dearSupplier": "Gửi nhà cung cấp",
         "total": "tổng cộng"
     },
     "Form": {
@@ -408,7 +410,11 @@
             "title": "{{definition}}{{action}} phiếu mua hàng",
             "suggestedSalesPrice": "gợi ý giá bán"
         },
-        "dateOfPurchase": "ngày mua hàng"
+        "Order": {
+            "title": "{{definition}}{{action}} phiếu đặt mua hàng"
+        },
+        "dateOfPurchase": "ngày mua hàng",
+        "deliveryPerson": "người giao hàng"
     },
     "Warehouse": {
         "GoodsReceiptNote": {

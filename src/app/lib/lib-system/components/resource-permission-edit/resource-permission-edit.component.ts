@@ -184,7 +184,7 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
     // tags: true,
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/user/users', {includeGroups: true, filter_Name: params['term'], select: 'id=>Code,text=>Name' });
+        return this.apiService.buildApiUrl('/user/users', {filter_Name: params['term'], onlyIdText: true });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

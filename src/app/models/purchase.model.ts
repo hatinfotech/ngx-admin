@@ -70,7 +70,9 @@ export class PurchaseVoucherModel {
   OrderVoucher?: string;
   RelativeDeliveryVoucher?: string;
   Creator?: string;
+  Title?: string;
   Note?: string;
+  SubNote?: string;
   PriceTable?: string;
   PurchaseCost?: string;
 
@@ -119,7 +121,9 @@ export class PurchaseOrderVoucherModel {
   OrderVoucher?: string;
   RelativeDeliveryVoucher?: string;
   Creator?: string;
+  Title?: string;
   Note?: string;
+  SubNote?: string;
   PriceTable?: string;
   PurchaseCost?: string;
 
@@ -134,6 +138,7 @@ export class PurchaseOrderVoucherDetailModel {
   Voucher?: PurchaseVoucherModel & string;
   Product?: ProductModel & string;
   ProductName?: string;
+  Description?: string;
   Quantity?: number;
   Unit?: UnitModel & string;
   Tax?: TaxModel & string;

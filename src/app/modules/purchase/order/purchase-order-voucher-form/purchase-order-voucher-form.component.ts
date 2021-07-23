@@ -27,7 +27,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   componentName: string = 'PurchaseOrderVoucherFormComponent';
   idKey = 'Code';
   apiPath = '/purchase/order-vouchers';
-  baseFormUrl = '/purchase/order-vouchers/form';
+  baseFormUrl = '/purchase/vouchers/form';
 
   env = environment;
 
@@ -203,7 +203,21 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     } else {
       this.taxList = PurchaseOrderVoucherFormComponent._taxList;
     }
-    return super.init();
+    return super.init().then(status => {
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
+          this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
+            // Clear id
+            conditonFormGroup.get('Id').setValue('');
+          });
+        });
+      }
+      return status;
+    });
   }
 
   /** Execute api get */
@@ -244,16 +258,27 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
+      ObjectIdentifiedNumber: [''],
       Recipient: [''],
       ObjectTaxCode: [''],
-      DirectReceiver: [''],
+      // DirectReceiverName: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
+
+      Contact: [],
+      ContactName: [],
+      ContactPhone: [],
+      ContactEmail: [],
+      ContactAddress: [],
+      ContactIdentifiedNumber: [],
+
       DateOfReceived: [''],
       DeliveryAddress: [''],
       Title: [''],
       Note: [''],
-      DateOfOrder: [''],
+      SubNote: [''],
+      DateOfPurchase: [''],
+      // RelativeVouchers: [],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -293,7 +318,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       No: [''],
       Type: ['PRODUCT'],
       Product: [''],
-      ProductName: [''],
+      Description: [''],
       Quantity: [1],
       Price: [0],
       Unit: [''],
@@ -304,16 +329,11 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     });
 
     if (data) {
-      if(!data['Type']) data['Type'] = 'PRODUCT';
       newForm.patchValue(data);
-      this.toMoney(parentFormGroup, newForm);
-      if (data.Product.Units && data.Product.Units.length > 0) {
-        newForm['unitList'] = data.Product.Units;
-      } else {
-        newForm['unitList'] = this.commonService.unitList;
+      if (!data['Type']) {
+        data["Type"] = 'PRODUCT';
       }
-    } else {
-      newForm['unitList'] = this.commonService.unitList;
+      this.toMoney(parentFormGroup, newForm);
     }
     return newForm;
   }
@@ -401,9 +421,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
     if (selectedData) {
-      detail.get('ProductName').setValue(selectedData.Name);
+      detail.get('Description').setValue(selectedData.Name);
     } else {
-      detail.get('ProductName').setValue('');
+      detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
     }
     return false;
@@ -437,19 +457,20 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   preview(formItem: FormGroup) {
     const data: PurchaseOrderVoucherModel = formItem.value;
-    data.Details.forEach(detail => {
-      if (typeof detail['Tax'] === 'string') {
-        detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-        if (this.unitList) {
-          detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-        }
-      }
-    });
+    // data.Details.forEach(detail => {
+    //   if (typeof detail['Tax'] === 'string') {
+    //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+    //     if (this.unitList) {
+    //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
+    //     }
+    //   }
+    // });
     this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',
         data: [data],
+        idKey: ['Code'],
         onSaveAndClose: (priceReport: PurchaseOrderVoucherModel) => {
           this.saveAndClose();
         },

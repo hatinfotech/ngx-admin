@@ -6,11 +6,14 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { PurchaseSimpleVoucherFormComponent } from '../purchase-simple-voucher-form/purchase-simple-voucher-form.component';
 import { PurchaseVoucherFormComponent } from '../purchase-voucher-form/purchase-voucher-form.component';
 import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchase-voucher-print.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { takeUntil } from 'rxjs/operators';
+import { PurchaseModule } from '../../purchase.module';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-list',
@@ -74,8 +77,8 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
         type: 'string',
         width: '20%',
       },
-      Note: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+      Title: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
         width: '30%',
       },
@@ -88,11 +91,152 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
           // instance.format$.next('medium');
         },
       },
-      IsApprove: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
+      Creator: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
         type: 'string',
-        width: '15%',
+        width: '10%',
+        // filter: {
+        //   type: 'custom',
+        //   component: SmartTableDateTimeRangeFilterComponent,
+        // },
+        valuePrepareFunction: (cell: string, row?: any) => {
+          return this.commonService.getObjectText(cell);
+        },
       },
+      Copy: {
+        title: 'Copy',
+        type: 'custom',
+        width: '5%',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'copy';
+          // instance.label = this.commonService.translateText('Common.copy');
+          instance.display = true;
+          instance.status = 'warning';
+          instance.valueChange.subscribe(value => {
+            // if (value) {
+            //   instance.disabled = false;
+            // } else {
+            //   instance.disabled = true;
+            // }
+          });
+          instance.click.subscribe(async (row: PurchaseVoucherModel) => {
+
+            this.commonService.openDialog(PurchaseVoucherFormComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [row.Code],
+                isDuplicate: true,
+                onDialogSave: (newData: PurchaseVoucherModel[]) => {
+                  // if (onDialogSave) onDialogSave(row);
+                },
+                onDialogClose: () => {
+                  // if (onDialogClose) onDialogClose();
+                  this.refresh();
+                },
+              },
+            });
+
+          });
+        },
+      },
+      State: {
+        title: this.commonService.translateText('Common.approve'),
+        type: 'custom',
+        width: '5%',
+        // class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'checkmark-circle';
+          instance.display = true;
+          instance.status = 'success';
+          // instance.style = 'text-align: right';
+          // instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.approved');
+          instance.label = this.commonService.translateText('Common.approved');
+          instance.valueChange.subscribe(value => {
+            const processMap = PurchaseModule.processMaps.purchaseVoucher[value || ''];
+            instance.label = this.commonService.translateText(processMap?.label);
+            instance.status = processMap?.status;
+            instance.outline = processMap?.outline;
+            // instance.disabled = (value === 'APPROVE');
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
+            this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview(rs);
+            });
+          });
+        },
+      },
+      Permission: {
+        title: this.commonService.translateText('Common.permission'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'shield';
+          instance.display = true;
+          instance.status = 'danger';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
+
+            this.commonService.openDialog(ResourcePermissionEditComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [rowData.Code],
+                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                resourceName: this.commonService.translateText('Purchase.PurchaseVoucher  .title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                // resrouce: rowData,
+                apiPath: this.apiPath,
+              }
+            });
+
+            // this.getFormData([rowData.Code]).then(rs => {
+            //   this.preview(rs);
+            // });
+          });
+        },
+      },
+      Preview: {
+        title: this.commonService.translateText('Common.show'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'external-link-outline';
+          instance.display = true;
+          instance.status = 'primary';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
+            this.getFormData([rowData.Code]).then(rs => {
+              this.preview(rs);
+            });
+          });
+        },
+      }
     },
   });
 

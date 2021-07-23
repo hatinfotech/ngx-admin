@@ -105,6 +105,13 @@
                     placeholder="{{'Common.note' | translate | headtitlecase}}" rows="4"></textarea>
                 </ngx-form-group>
               </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="SubNote" label="Common.subNote" [array]="array" [index]="i"
+                  [allowCopy]="false" [required]="false">
+                  <textarea nbInput fullWidth formControlName="SubNote"
+                    placeholder="{{'Common.subNote' | translate | headtitlecase}}" rows="4"></textarea>
+                </ngx-form-group>
+              </div>
             </div>
 
             <!-- Detail form -->

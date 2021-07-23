@@ -4,9 +4,11 @@ import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { environment } from '../../../../../environments/environment';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
+import { ProcessMap } from '../../../../models/process-map.model';
 import { PurchaseOrderVoucherModel, PurchaseVoucherDetailModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { PurchaseModule } from '../../purchase.module';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-print',
@@ -19,6 +21,8 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   componentName = 'PurchaseOrderVoucherPrintComponent';
   title: string = '';
   env = environment;
+  apiPath = '/purchase/order-vouchers';
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -39,19 +43,21 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     const result = await super.init();
     // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
-    for (const data of this.data) {
+    for (const i in this.data) {
+      const data = this.data[i];
       data['Total'] = 0;
       data['Title'] = this.renderTitle(data);
       for (const detail of data.Details) {
         data['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
+      this.processMapList[i] = PurchaseModule.processMaps.purchaseOrder[data.State || ''];
     }
 
     return result;
   }
 
   renderTitle(data: PurchaseOrderVoucherModel) {
-    return `DonDatMuaHang_${this.getIdentified(data).join('-')}` + (data.DateOfPurchase ? ('_' + this.datePipe.transform(data.DateOfPurchase, 'short')) : '');
+    return `PhieuDatHangNCC_${this.getIdentified(data).join('-')}` + (data.DateOfPurchase ? ('_' + this.datePipe.transform(data.DateOfPurchase, 'short')) : '');
   }
 
   close() {
@@ -80,18 +86,18 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     return 0;
   }
 
-  getTotal(data: PurchaseOrderVoucherModel) {
+  getTotal() {
     let total = 0;
-    const details = data.Details;
-    for (let i = 0; i < details.length; i++) {
-      total += this.toMoney(details[i]);
-    }
+    // const details = this.data.Details;
+    // for (let i = 0; i < details.length; i++) {
+    //   total += this.toMoney(details[i]);
+    // }
     return total;
   }
 
-  saveAndClose(data: PurchaseOrderVoucherModel) {
+  saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(data);
+      // this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
@@ -105,6 +111,80 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   get identifier() {
     // return this.data.Code;
     return '';
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<PurchaseOrderVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
+  }
+
+
+
+  approvedConfirm(data: PurchaseOrderVoucherModel, index: number) {
+    if (['COMPLETE'].indexOf(data.State) > -1) {
+      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+        {
+          label: this.commonService.translateText('Common.close'),
+          status: 'success',
+          action: () => {
+            this.onClose(data);
+          },
+        },
+      ]);
+      return;
+    }
+    const params = { id: [data.Code] };
+    const processMap = PurchaseModule.processMaps.purchaseVoucher[data.State || ''];
+    params['changeState'] = this.processMapList[index]?.nextState;
+    // let confirmText = '';
+    // let responseText = '';
+    // switch (data.State) {
+    //   case 'APPROVE':
+    //     params['changeState'] = 'COMPLETE';
+    //     confirmText = 'Common.completeConfirm';
+    //     responseText = 'Common.completeSuccess';
+    //     break;
+    //   default:
+    //     params['changeState'] = 'APPROVE';
+    //     confirmText = 'Common.approvedConfirm';
+    //     responseText = 'Common.approvedSuccess';
+    //     break;
+    // }
+
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      {
+        label: this.commonService.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        status: 'danger',
+        action: () => {
+          this.loading = true;
+          this.apiService.putPromise<PurchaseOrderVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            this.loading = false;
+            this.onChange && this.onChange(data);
+            this.onClose && this.onClose(data);
+            this.close();
+            this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              status: 'success',
+            });
+            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            //   {
+            //     label: this.commonService.translateText('Common.close'),
+            //     status: 'success',
+            //     action: () => {
+            //     },
+            //   },
+            // ]);
+          }).catch(err => {
+            this.loading = false;
+          });
+        },
+      },
+    ]);
   }
 
 }

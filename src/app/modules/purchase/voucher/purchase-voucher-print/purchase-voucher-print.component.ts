@@ -1,3 +1,4 @@
+import { PurchaseModule } from './../../purchase.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { PurchaseVoucherModel, PurchaseVoucherDetailModel } from '../../../../models/purchase.model';
@@ -7,6 +8,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
+import { ProcessMap } from '../../../../models/process-map.model';
 
 @Component({
   selector: 'ngx-purchase-voucher-print',
@@ -20,6 +22,7 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
   title: string = '';
   env = environment;
   apiPath = '/purchase/vouchers';
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -40,12 +43,14 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
     const result = await super.init();
     // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
-    for (const data of this.data) {
+    for (const i in this.data) {
+      const data = this.data[i];
       data['Total'] = 0;
       data['Title'] = this.renderTitle(data);
       for (const detail of data.Details) {
         data['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
+      this.processMapList[i] = PurchaseModule.processMaps.purchaseVoucher[data.State || ''];
     }
 
     return result;
@@ -110,6 +115,76 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
   
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
+  }
+
+
+
+  approvedConfirm(data: PurchaseVoucherModel, index: number) {
+    if (['COMPLETE'].indexOf(data.State) > -1) {
+      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+        {
+          label: this.commonService.translateText('Common.close'),
+          status: 'success',
+          action: () => {
+            this.onClose(data);
+          },
+        },
+      ]);
+      return;
+    }
+    const params = { id: [data.Code] };
+    const processMap = PurchaseModule.processMaps.purchaseVoucher[data.State || ''];
+    params['changeState'] = this.processMapList[index]?.nextState;
+    // let confirmText = '';
+    // let responseText = '';
+    // switch (data.State) {
+    //   case 'APPROVE':
+    //     params['changeState'] = 'COMPLETE';
+    //     confirmText = 'Common.completeConfirm';
+    //     responseText = 'Common.completeSuccess';
+    //     break;
+    //   default:
+    //     params['changeState'] = 'APPROVE';
+    //     confirmText = 'Common.approvedConfirm';
+    //     responseText = 'Common.approvedSuccess';
+    //     break;
+    // }
+
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      {
+        label: this.commonService.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        status: 'danger',
+        action: () => {
+          this.loading = true;
+          this.apiService.putPromise<PurchaseVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            this.loading = false;
+            this.onChange && this.onChange(data);
+            this.onClose && this.onClose(data);
+            this.close();
+            this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              status: 'success',
+            });
+            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            //   {
+            //     label: this.commonService.translateText('Common.close'),
+            //     status: 'success',
+            //     action: () => {
+            //     },
+            //   },
+            // ]);
+          }).catch(err => {
+            this.loading = false;
+          });
+        },
+      },
+    ]);
   }
 
 }

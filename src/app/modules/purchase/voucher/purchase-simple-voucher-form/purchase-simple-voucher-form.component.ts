@@ -268,6 +268,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
       Title: [''],
       DateOfPurchase: [new Date()],
       Note: [''],
+      SubNote: [''],
       PriceTable: [''],
       IsPayment: ['0'],
       InvoiceStatus: [''],

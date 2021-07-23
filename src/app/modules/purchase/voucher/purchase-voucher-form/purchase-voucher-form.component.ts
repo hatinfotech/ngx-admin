@@ -17,6 +17,8 @@ import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { SalesVoucherFormComponent } from '../../../sales/sales-voucher/sales-voucher-form/sales-voucher-form.component';
+import { PurchaseOrderVoucherListComponent } from '../../order/purchase-order-voucher-list/purchase-order-voucher-list.component';
+import { PurchaseOrderVoucherPrintComponent } from '../../order/purchase-order-voucher-print/purchase-order-voucher-print.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-form',
@@ -86,7 +88,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<SalesVoucherFormComponent>,
+    public ref: NbDialogRef<PurchaseVoucherFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -204,7 +206,21 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     } else {
       this.taxList = SalesVoucherFormComponent._taxList;
     }
-    return super.init();
+    return super.init().then(status => {
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
+          this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
+            // Clear id
+            conditonFormGroup.get('Id').setValue('');
+          });
+        });
+      }
+      return status;
+    });
   }
 
   /** Execute api get */
@@ -245,16 +261,27 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
+      ObjectIdentifiedNumber: [''],
       Recipient: [''],
       ObjectTaxCode: [''],
-      DirectReceiverName: [''],
+      // DirectReceiverName: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
+
+      Contact: [],
+      ContactName: [],
+      ContactPhone: [],
+      ContactEmail: [],
+      ContactAddress: [],
+      ContactIdentifiedNumber: [],
+
       DateOfReceived: [''],
       DeliveryAddress: [''],
       Title: [''],
       Note: [''],
+      SubNote: [''],
       DateOfPurchase: [''],
+      RelativeVouchers: [],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -294,7 +321,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       No: [''],
       Type: ['PRODUCT'],
       Product: [''],
-      ProductName: [''],
+      Description: [''],
       Quantity: [1],
       Price: [0],
       Unit: [''],
@@ -397,9 +424,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
     if (selectedData) {
-      detail.get('ProductName').setValue(selectedData.Name);
+      detail.get('Description').setValue(selectedData.Name);
     } else {
-      detail.get('ProductName').setValue('');
+      detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
     }
     return false;
@@ -460,6 +487,55 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   getRawFormData() {
     return super.getRawFormData();
+  }
+
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.commonService.openDialog(PurchaseOrderVoucherListComponent, {
+      context: {
+        inputMode: 'dialog',
+        onDialogChoose: (chooseItems: PurchaseVoucherModel[]) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          for (let i = 0; i < chooseItems.length; i++) {
+            const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+            if (index < 0) {
+              insertList.push(chooseItems[i]);
+            }
+          }
+          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);
+        },
+        onDialogClose: () => {
+        },
+      }
+    })
+    return false;
+  }
+
+  openRelativeVoucher(relativeVocher: any) {
+    if (relativeVocher && relativeVocher.type == 'PURCHASEORDER') {
+      this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
+        context: {
+          showLoadinng: true,
+          title: 'Xem trước',
+          id: [this.commonService.getObjectId(relativeVocher)],
+          // data: data,
+          idKey: ['Code'],
+          // approvedConfirm: true,
+          onClose: (data: PurchaseVoucherModel) => {
+            this.refresh();
+          },
+        },
+      });
+    }
+    return false;
+  }
+
+  removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
+    const relationVoucher = formGroup.get('RelativeVouchers');
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    return false;
   }
 
 }
