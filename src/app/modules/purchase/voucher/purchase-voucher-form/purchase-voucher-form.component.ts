@@ -504,6 +504,11 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
               const details = this.getDetails(formGroup);
               // get purchase order
               const purchaseOrder = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+
+              if (this.commonService.getObjectId(purchaseOrder.State) != 'APPROVE') {
+                this.commonService.toastService.show(this.commonService.translateText('Đơn đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                continue;
+              }
               if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                 if (this.commonService.getObjectId(purchaseOrder.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
                   this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong đơn đặt mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
@@ -513,10 +518,6 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                 delete purchaseOrder.Id;
                 formGroup.patchValue({ ...purchaseOrder, Code: null, Details: [] });
                 details.clear();
-              }
-              if (this.commonService.getObjectId(purchaseOrder.State) != 'APPROVE') {
-                this.commonService.toastService.show(this.commonService.translateText('Đơn đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-                continue;
               }
               insertList.push(chooseItems[i]);
 
