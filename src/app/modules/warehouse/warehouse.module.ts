@@ -39,6 +39,7 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { AssignContainerFormComponent } from './goods/assign-containers-form/assign-containers-form.component';
 import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from './goods-delivery-note/warehouse-simple-goods-delivery-note-form/warehouse-simple-goods-delivery-note-form.component';
 import { WarehouseBookCommitComponent } from './book/warehouse-book-commit/warehouse-book-commit.component';
+import { ProcessMap } from '../../models/process-map.model';
 
 
 
@@ -115,9 +116,91 @@ import { WarehouseBookCommitComponent } from './book/warehouse-book-commit/wareh
     WarehouseSimpleGoodsDeliveryNoteFormComponent,
     WarehouseGoodsDeliveryNotePrintComponent,
     WarehouseBookCommitComponent,
+    WarehouseGoodsDeliveryNoteFormComponent,
   ],
   providers: [
     CurrencyPipe,
   ],
 })
-export class WarehouseModule { }
+export class WarehouseModule { static processMaps: {
+  
+  purchaseVoucher?: {
+    [key: string]: ProcessMap
+  },
+  purchaseOrder?: {
+    [key: string]: ProcessMap
+  },
+} = {
+    purchaseVoucher: {
+      "APPROVE": {
+        state: 'APPROVE',
+        label: 'Common.approved',
+        status: 'success',
+        outline: false,
+        nextState: 'COMPLETE',
+        nextStateLabel: 'Common.complete',
+        confirmText: 'Common.completeConfirm',
+        responseTitle: 'Common.completed',
+        restponseText: 'Common.completeSuccess',
+      },
+      "COMPLETE": {
+        state: 'COMPLETE',
+        label: 'Common.completed',
+        status: 'success',
+        outline: true,
+        nextState: '',
+        nextStateLabel: '',
+        confirmText: 'Common.completeConfirm',
+        responseTitle: 'Common.completed',
+        restponseText: 'Common.completeSuccess',
+      },
+      "": {
+        state: 'NOTJUSTAPPROVE',
+        label: 'Common.notJustApproved',
+        status: 'danger',
+        outline: false,
+        nextState: 'APPROVE',
+        nextStateLabel: 'Common.approve',
+        confirmText: 'Common.approveConfirm',
+        responseTitle: 'Common.approved',
+        restponseText: 'Common.approveSuccess',
+      },
+    },
+    purchaseOrder: {
+      "APPROVE": {
+        state: 'APPROVE',
+        label: 'Common.approved',
+        status: 'success',
+        outline: false,
+        nextState: 'COMPLETE',
+        nextStateLabel: 'Common.complete',
+        confirmText: 'Common.completeConfirm',
+        responseTitle: 'Common.completed',
+        restponseText: 'Common.completeSuccess',
+      },
+      "COMPLETE": {
+        state: 'COMPLETE',
+        label: 'Common.completed',
+        status: 'success',
+        outline: true,
+        nextState: '',
+        nextStateLabel: '',
+        confirmText: 'Common.completeConfirm',
+        responseTitle: 'Common.completed',
+        restponseText: 'Common.completeSuccess',
+      },
+      "": {
+        state: 'NOTJUSTAPPROVE',
+        label: 'Common.notJustApproved',
+        status: 'danger',
+        outline: false,
+        nextState: 'APPROVE',
+        nextStateLabel: 'Common.approve',
+        confirmText: 'Common.approveConfirm',
+        responseTitle: 'Common.approved',
+        restponseText: 'Common.approveSuccess',
+      },
+    },
+  };
+
+}

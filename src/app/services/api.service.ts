@@ -482,7 +482,7 @@ export class ApiService {
 
   handleError(e: HttpErrorResponse, silent?: boolean) {
     if (e.status === 401) {
-      console.warn('You were not logged in');
+      console.warn('API: Bạn chưa đăng nhập');
       // this.router.navigate(['/auth/login']);
       this.onUnauthorizied();
     }
@@ -502,7 +502,7 @@ export class ApiService {
       //   },
       // });
       if (!silent) {
-        this.toastService.show(this.joinLogs(e), 'Yêu cầu quyền truy cập', {
+        this.toastService.show(this.joinLogs(e), 'API: Yêu cầu quyền truy cập', {
           status: 'danger',
         });
       }
@@ -510,7 +510,7 @@ export class ApiService {
     if (e.status === 406) {
       if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
         context: {
-          title: 'Truy cập không tin cậy',
+          title: 'API: Truy cập không tin cậy',
           content: this.joinLogs(e),
           actions: [
             {
@@ -547,7 +547,7 @@ export class ApiService {
       //   },
       // });
       if (!silent) {
-        this.toastService.show(this.joinLogs(e), 'Yêu cầu không thể thực thi', {
+        this.toastService.show(this.joinLogs(e), 'API: Yêu cầu không thể thực thi', {
           status: 'warning',
         });
       }
@@ -568,7 +568,7 @@ export class ApiService {
       //   },
       // });
       if (!silent) {
-        this.toastService.show(this.joinLogs(e), 'Yêu cầu không có quyền', {
+        this.toastService.show(this.joinLogs(e), 'API: Yêu cầu không có quyền', {
           status: 'warning',
         });
       }
@@ -589,7 +589,7 @@ export class ApiService {
       //   },
       // });
       if (!silent) {
-        this.toastService.show(this.joinLogs(e), 'Yêu cầu chưa được xử lý', {
+        this.toastService.show(this.joinLogs(e), 'API: Yêu cầu chưa được xử lý', {
           status: 'warning',
         });
       }

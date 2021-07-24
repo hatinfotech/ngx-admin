@@ -93,7 +93,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   async init() {
     await this.loadCache();
     return super.init().then(async rs => {
-      if((!this.data || this.data.length === 0) && this.id) {
+      if ((!this.data || this.data.length === 0) && this.id) {
         this.data = await this.getFormData(this.id);
       }
       this.onAfterInit && this.onAfterInit();
@@ -141,7 +141,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     if (index !== undefined) {
       printContent += printContentEles[index].element.nativeElement.innerHTML;
       const data = this.data[index];
-      if(data) {
+      if (data) {
         title += ' - ' + data['Title'];
       }
     } else {
@@ -197,5 +197,14 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   async getFormData(ids: string[]) {
     return [];
+  }
+
+  setDetailsNo(details: any[], condition: (detail: any) => boolean) {
+    let no = 1;
+    for (const detail of details) {
+      if (condition(detail)) {
+        detail.No = no++;
+      }
+    }
   }
 }

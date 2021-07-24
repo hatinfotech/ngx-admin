@@ -1,3 +1,4 @@
+import { TaxModel } from './tax.model';
 import { ContactModel } from './contact.model';
 import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
@@ -20,11 +21,20 @@ export class WarehouseGoodsReceiptNoteModel {
   Code?: string;
   Title?: string;
   Description?: string;
+  Note?: string;
+  SubNote?: string;
   Object?: string & ContactModel;
   ObjectName?: string;
   ObjectPhone?: string;
   ObjectEmail?: string;
   ObjectAddress?: string;
+  ObjectIdentifiedNumber?: string;
+  Contact?: string & ContactModel;
+  ContactName?: string;
+  ContactPhone?: string;
+  ContactEmail?: string;
+  ContactAddress?: string;
+  ContactIdentifiedNumber?: string;
   DateOfCreated?: string;
   DateOfReceipted?: string;
   Creator?: string & UserModel;
@@ -32,6 +42,7 @@ export class WarehouseGoodsReceiptNoteModel {
   RelateVoucher?: string;
   Warehouse?: string;
   Branch?: string;
+  State?: string;
 
   Bookkeeping?: boolean;
 
@@ -40,14 +51,21 @@ export class WarehouseGoodsReceiptNoteModel {
 
 export class WarehouseGoodsReceiptNoteDetailModel {
   Id?: string | number;
+  No?: number;
   Voucher?: string & WarehouseGoodsReceiptNoteModel;
+  Type?: string;
   Product?: string & ProductModel;
   ProductName?: string;
+  Description?: string;
   Unit?: string & UnitModel;
   Quantity?: string & number;
   PriceOfReceipted?: string;
   Location?: string;
   ImageThumbnail?: string;
+  Business?: string;
+  DebitAccount?: number;
+  CreaditAccount?: number;
+  Tax?: string & TaxModel;
 }
 
 
@@ -56,11 +74,20 @@ export class WarehouseGoodsDeliveryNoteModel {
   Code?: string;
   Title?: string;
   Description?: string;
+  Note?: string;
+  SubNote?: string;
   Object?: string & ContactModel;
   ObjectName?: string;
   ObjectPhone?: string;
   ObjectEmail?: string;
   ObjectAddress?: string;
+  ObjectIdentifiedNumber?: string;
+  Contact?: string & ContactModel;
+  ContactName?: string;
+  ContactPhone?: string;
+  ContactEmail?: string;
+  ContactAddress?: string;
+  ContactIdentifiedNumber?: string;
   DateOfCreated?: string;
   DateOfDelivered?: string;
   Creator?: string & UserModel;
@@ -68,6 +95,7 @@ export class WarehouseGoodsDeliveryNoteModel {
   RelateVoucher?: string;
   Warehouse?: string;
   Branch?: string;
+  State?: string;
 
   Bookkeeping?: boolean;
 
@@ -76,14 +104,21 @@ export class WarehouseGoodsDeliveryNoteModel {
 
 export class WarehouseGoodsDeliveryNoteDetailModel {
   Id?: string | number;
+  No?: number;
   Voucher?: string & WarehouseGoodsReceiptNoteModel;
+  Type?: string;
   Product?: string & ProductModel;
   ProductName?: string;
+  Description?: string;
   Unit?: string & UnitModel;
   Quantity?: string & number;
-  PriceOfDelivered?: string;
+  PriceOfDelivered?: number;
   Location?: string;
   ImageThumbnail?: string;
+  Business?: string;
+  DebitAccount?: number;
+  CreaditAccount?: number;
+  Tax?: string & TaxModel;
 }
 
 export class WarehouseGoodsContainerModel {

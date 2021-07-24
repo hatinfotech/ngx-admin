@@ -68,7 +68,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
   settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
-    actions: {
+    actions: this.ref && Object.keys(this.ref).length > 0 ? false : {
       position: 'right',
     },
     add: this.configAddButton(),
@@ -145,6 +145,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
         title: 'Copy',
         type: 'custom',
         width: '10%',
+        exclude: this.ref && Object.keys(this.ref).length > 0,
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
@@ -190,6 +191,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           instance.icon = 'checkmark-circle';
           instance.display = true;
           instance.status = 'success';
+          instance.disabled = this.ref && Object.keys(this.ref).length > 0;
           // instance.style = 'text-align: right';
           // instance.class = 'align-right';
           instance.title = this.commonService.translateText('Common.approved');
@@ -216,6 +218,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
         type: 'custom',
         width: '5%',
         class: 'align-right',
+        exclude: this.ref && Object.keys(this.ref).length > 0,
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';

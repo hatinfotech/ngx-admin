@@ -380,13 +380,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Error event */
   onError(e: HttpErrorResponse) {
+    // console.log(e);
+    if (e?.status === 500) {
+      this.close();
+    }
     if (e && e.error && e.error.logs) {
-      if (e.error === 500) {
-        this.close();
-      }
       this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
-          title: 'Thông báo lỗi',
+          title: 'Form: Thông báo lỗi',
           content: e.error.logs.join('\n'),
           actions: [
             {
@@ -656,6 +657,25 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         delete (data[propName]);
       }
     }
+  }
+
+  setNoForArray(details: FormGroup[], condition: (formGroup: FormGroup) => boolean, fieldNo?: string) {
+    let no = 1;
+    for (const detail of details) {
+      if (condition(detail)) {
+        detail.get(fieldNo || 'No').patchValue(no++);
+      }
+    }
+  }
+  
+  sortablejsInit(sortable: any, details: FormGroup[]) {
+    console.log(sortable);
+    const parentOnUpdate = sortable.options.onUpdate;
+    sortable.options.onUpdate = (event: any) => {
+      if (parentOnUpdate) parentOnUpdate(event);
+      console.log('sort udpate: ', event);
+      this.setNoForArray(details, (detail) => detail.get('Type').value === 'PRODUCT');
+    };
   }
 
 }
