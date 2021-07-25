@@ -59,7 +59,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
   settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
-    actions: {
+    actions: this.isChoosedMode ? false : {
       position: 'right',
     },
     add: this.configAddButton(),
@@ -107,6 +107,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
         title: 'Copy',
         type: 'custom',
         width: '5%',
+        exclude: this.isChoosedMode,
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
@@ -152,6 +153,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
           instance.icon = 'checkmark-circle';
           instance.display = true;
           instance.status = 'success';
+          instance.disabled = this.isChoosedMode;
           // instance.style = 'text-align: right';
           // instance.class = 'align-right';
           instance.title = this.commonService.translateText('Common.approved');
@@ -178,6 +180,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
         type: 'custom',
         width: '5%',
         class: 'align-right',
+        exclude: this.isChoosedMode,
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';

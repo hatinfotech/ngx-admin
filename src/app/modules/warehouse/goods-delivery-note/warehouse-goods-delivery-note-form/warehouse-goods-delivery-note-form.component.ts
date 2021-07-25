@@ -477,7 +477,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               }
               if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                 if (this.commonService.getObjectId(salesVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong đơn đặt mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu bán hàng không giống với phiếu xuất kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
               } else {

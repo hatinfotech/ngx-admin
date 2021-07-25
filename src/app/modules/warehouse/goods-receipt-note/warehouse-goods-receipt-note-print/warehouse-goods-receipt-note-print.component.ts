@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { WarehouseGoodsReceiptNoteModel } from '../../../../models/warehouse.model';
+import { WarehouseGoodsReceiptNoteDetailModel, WarehouseGoodsReceiptNoteModel } from '../../../../models/warehouse.model';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
+import { ProcessMap } from '../../../../models/process-map.model';
+import { WarehouseModule } from '../../warehouse.module';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-print',
@@ -19,6 +21,8 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   componentName = 'WarehouseGoodsReceiptNotePrintComponent';
   title: string = '';
   env = environment;
+  apiPath = '/warehouse/goods-receipt-notes';
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -37,8 +41,24 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
 
   async init() {
     const result = await super.init();
-    // this.title = `GoodsReceiptNote_${this.identifier}` + (this.data.DateOfReceipted ? ('_' + this.datePipe.transform(this.data.DateOfReceipted, 'short')) : '');
+    // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
+
+    for (const i in this.data) {
+      const data = this.data[i];
+      this.setDetailsNo(data?.Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
+      data['Total'] = 0;
+      data['Title'] = this.renderTitle(data);
+      for (const detail of data.Details) {
+        data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      }
+      this.processMapList[i] = WarehouseModule.processMaps.purchaseOrder[data.State || ''];
+    }
+
     return result;
+  }
+
+  renderTitle(data: WarehouseGoodsReceiptNoteModel) {
+    return `Phieu_Xuat_Kho_${this.getIdentified(data).join('-')}` + (data.DateOfReceipted ? ('_' + this.datePipe.transform(data.DateOfReceipted, 'short')) : '');
   }
 
   close() {
@@ -52,9 +72,33 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
     return value;
   }
 
-  saveAndClose(data: WarehouseGoodsReceiptNoteModel) {
+  toMoney(detail: WarehouseGoodsReceiptNoteDetailModel) {
+    if (detail.Type === 'PRODUCT') {
+      let toMoney = detail['Quantity'] * detail['Price'];
+      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      if (detail.Tax) {
+        if (typeof detail.Tax.Tax == 'undefined') {
+          throw Error('tax not as tax model');
+        }
+        toMoney += toMoney * detail.Tax.Tax / 100;
+      }
+      return toMoney;
+    }
+    return 0;
+  }
+
+  getTotal() {
+    let total = 0;
+    // const details = this.data.Details;
+    // for (let i = 0; i < details.length; i++) {
+    //   total += this.toMoney(details[i]);
+    // }
+    return total;
+  }
+
+  saveAndClose() {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(data);
+      // this.onSaveAndClose(this.data.Code);
     }
     this.close();
     return false;
@@ -68,6 +112,89 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   get identifier() {
     // return this.data.Code;
     return '';
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(rs => {
+      if (rs[0] && rs[0].Details) {
+        this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
+        // let no = 1;
+        // for (const detail of rs[0].Details) {
+        //   if (detail.Type === 'PRODUCT') {
+        //     detail.No = no++;
+        //   }
+        // }
+      }
+      return rs;
+    });
+  }
+
+  approvedConfirm(data: WarehouseGoodsReceiptNoteModel, index: number) {
+    if (['COMPLETE'].indexOf(data.State) > -1) {
+      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+        {
+          label: this.commonService.translateText('Common.close'),
+          status: 'success',
+          action: () => {
+            this.onClose(data);
+          },
+        },
+      ]);
+      return;
+    }
+    const params = { id: [data.Code] };
+    const processMap = WarehouseModule.processMaps.purchaseVoucher[data.State || ''];
+    params['changeState'] = this.processMapList[index]?.nextState;
+    // let confirmText = '';
+    // let responseText = '';
+    // switch (data.State) {
+    //   case 'APPROVE':
+    //     params['changeState'] = 'COMPLETE';
+    //     confirmText = 'Common.completeConfirm';
+    //     responseText = 'Common.completeSuccess';
+    //     break;
+    //   default:
+    //     params['changeState'] = 'APPROVE';
+    //     confirmText = 'Common.approvedConfirm';
+    //     responseText = 'Common.approvedSuccess';
+    //     break;
+    // }
+
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      {
+        label: this.commonService.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        status: 'danger',
+        action: () => {
+          this.loading = true;
+          this.apiService.putPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            this.loading = false;
+            this.onChange && this.onChange(data);
+            this.onClose && this.onClose(data);
+            this.close();
+            this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              status: 'success',
+            });
+            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            //   {
+            //     label: this.commonService.translateText('Common.close'),
+            //     status: 'success',
+            //     action: () => {
+            //     },
+            //   },
+            // ]);
+          }).catch(err => {
+            this.loading = false;
+          });
+        },
+      },
+    ]);
   }
 
 }

@@ -40,6 +40,8 @@ import { AssignContainerFormComponent } from './goods/assign-containers-form/ass
 import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from './goods-delivery-note/warehouse-simple-goods-delivery-note-form/warehouse-simple-goods-delivery-note-form.component';
 import { WarehouseBookCommitComponent } from './book/warehouse-book-commit/warehouse-book-commit.component';
 import { ProcessMap } from '../../models/process-map.model';
+import { PurchaseVoucherListComponent } from '../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
+import { PurchaseVoucherPrintComponent } from '../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 
 
 
@@ -117,6 +119,9 @@ import { ProcessMap } from '../../models/process-map.model';
     WarehouseGoodsDeliveryNotePrintComponent,
     WarehouseBookCommitComponent,
     WarehouseGoodsDeliveryNoteFormComponent,
+    WarehouseGoodsReceiptNoteFormComponent,
+    PurchaseVoucherListComponent,
+    PurchaseVoucherPrintComponent,
   ],
   providers: [
     CurrencyPipe,

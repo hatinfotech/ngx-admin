@@ -765,4 +765,8 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     this.source.reset();
     return false;
   }
+
+  get isChoosedMode() {
+    return this.ref && Object.keys(this.ref).length > 0;
+  }
 }

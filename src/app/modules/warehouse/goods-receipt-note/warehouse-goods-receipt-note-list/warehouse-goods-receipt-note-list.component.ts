@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { WarehouseGoodsReceiptNoteModel, WarehouseModel } from '../../../../models/warehouse.model';
+import { WarehouseGoodsReceiptNoteModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { WarehouseSimpleGoodsReceiptNoteFormComponent } from '../warehouse-simple-goods-receipt-note-form/warehouse-simple-goods-receipt-note-form.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { WarehouseGoodsReceiptNoteFormComponent } from '../warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
+import { takeUntil } from 'rxjs/operators';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { WarehouseModule } from '../../warehouse.module';
+import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-list',
@@ -21,7 +25,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
   apiPath = '/warehouse/goods-receipt-notes';
   idKey = 'Code';
 
-  formDialog = WarehouseSimpleGoodsReceiptNoteFormComponent;
+  formDialog = WarehouseGoodsReceiptNoteFormComponent;
 
   constructor(
     public apiService: ApiService,
@@ -30,8 +34,21 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
+    public ref: NbDialogRef<WarehouseGoodsReceiptNoteListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, commonService, dialogService, toastService, ref);
+
+    if (this.ref && Object.keys(this.ref).length > 0) {
+      for (const actionButton of this.actionButtonList) {
+        if (['add', 'delete', 'edit'].indexOf(actionButton.name) > -1) {
+          actionButton.hidden = () => true;
+        }
+      }
+    }
+  }
+
+  async init() {
+    return super.init();
   }
 
   /** Api get funciton */
@@ -40,36 +57,13 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
     super.executeGet(params, success, error, complete);
   }
 
-  initDataSource() {
-    const source = super.initDataSource();
-
-    // Set DataSource: prepareData
-    source.prepareData = (data: WarehouseGoodsReceiptNoteModel[]) => {
-      // data.map((product: WarehouseGoodsReceiptNoteModel) => {
-
-      //   return product;
-      // });
-      return data;
-    };
-
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      params['includeBookkeeping'] = true;
-      params['includeWarehouse'] = true;
-      params['sort_Id'] = 'desc';
-      return params;
-    };
-
-    return source;
-  }
-
   editing = {};
   rows = [];
 
   settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
-    actions: {
+    actions: this.ref && Object.keys(this.ref).length > 0 ? false : {
       position: 'right',
     },
     add: this.configAddButton(),
@@ -83,25 +77,17 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
         width: '10%',
       },
       ObjectName: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.object'), 'head-title'),
         type: 'string',
         width: '20%',
       },
-      Note: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+      Title: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
         width: '30%',
       },
-      Warehouse: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.warehouse'), 'head-title'),
-        type: 'string',
-        width: '15%',
-        valuePrepareFunction: (value) => {
-          return this.commonService.getObjectText(value);
-        },
-      },
-      DateOfReceipted: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfReceipted'), 'head-title'),
+      DateOfCreated: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
         type: 'custom',
         width: '15%',
         renderComponent: SmartTableDateTimeComponent,
@@ -109,27 +95,164 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           // instance.format$.next('medium');
         },
       },
-      Bookkeeping: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.bookkeeping'), 'head-title'),
-        type: 'boolean',
+      DateOfDelivered: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfDelivered'), 'head-title'),
+        type: 'custom',
+        width: '15%',
+        renderComponent: SmartTableDateTimeComponent,
+        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+          // instance.format$.next('medium');
+        },
+      },
+      Creator: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+        type: 'string',
+        width: '10%',
+        // filter: {
+        //   type: 'custom',
+        //   component: SmartTableDateTimeRangeFilterComponent,
+        // },
+        valuePrepareFunction: (cell: string, row?: any) => {
+          return this.commonService.getObjectText(cell);
+        },
+      },
+      Copy: {
+        title: 'Copy',
+        type: 'custom',
         width: '5%',
-        editable: true,
-        onChange: (value, rowData: WarehouseGoodsReceiptNoteModel, instance) => {
-          this.apiService.putPromise<WarehouseModel[]>('/warehouse/warehouses', { id: [this.commonService.getObjectId(rowData.Warehouse)], bookkeeping: value, voucher: rowData.Code }, [{
-            Code: this.commonService.getObjectId(rowData.Warehouse),
-          }]).then(rs => {
-            // console.log(rs);
-            // this.refresh();
-            this.commonService.toastService.show(value ? this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook') : this.commonService.translateText('Warehouse.Book.voucherWasUnwroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'), {
-              status: value ? 'success' : 'warning',
+        exclude: this.ref && Object.keys(this.ref).length > 0,
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'copy';
+          // instance.label = this.commonService.translateText('Common.copy');
+          instance.display = true;
+          instance.status = 'warning';
+          instance.valueChange.subscribe(value => {
+            // if (value) {
+            //   instance.disabled = false;
+            // } else {
+            //   instance.disabled = true;
+            // }
+          });
+          instance.click.subscribe(async (row: WarehouseGoodsReceiptNoteModel) => {
+
+            this.commonService.openDialog(WarehouseGoodsReceiptNoteFormComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [row.Code],
+                isDuplicate: true,
+                onDialogSave: (newData: WarehouseGoodsReceiptNoteModel[]) => {
+                  // if (onDialogSave) onDialogSave(row);
+                },
+                onDialogClose: () => {
+                  // if (onDialogClose) onDialogClose();
+                  this.refresh();
+                },
+              },
             });
-          }).catch(e => {
-            this.commonService.toastService.show(this.commonService.translateText('Warehouse.Book.voucherWasWroteInToWahouseBook'), this.commonService.translateText('Common.warehouse'), {
-              status: 'danger',
+
+          });
+        },
+      },
+      State: {
+        title: this.commonService.translateText('Common.state'),
+        type: 'custom',
+        width: '5%',
+        // class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'checkmark-circle';
+          instance.display = true;
+          instance.status = 'success';
+          instance.disabled = this.ref && Object.keys(this.ref).length > 0;
+          // instance.style = 'text-align: right';
+          // instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.approved');
+          instance.label = this.commonService.translateText('Common.approved');
+          instance.valueChange.subscribe(value => {
+            const processMap = WarehouseModule.processMaps.purchaseOrder[value || ''];
+            instance.label = this.commonService.translateText(processMap?.label);
+            instance.status = processMap?.status;
+            instance.outline = processMap?.outline;
+            // instance.disabled = (value === 'APPROVE');
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsReceiptNoteModel) => {
+            this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview(rs);
             });
           });
         },
       },
+      Permission: {
+        title: this.commonService.translateText('Common.permission'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        exclude: this.ref && Object.keys(this.ref).length > 0,
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'shield';
+          instance.display = true;
+          instance.status = 'danger';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsReceiptNoteModel) => {
+
+            this.commonService.openDialog(ResourcePermissionEditComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [rowData.Code],
+                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                resourceName: this.commonService.translateText('Purchase.Order.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                // resrouce: rowData,
+                apiPath: this.apiPath,
+              }
+            });
+
+            // this.getFormData([rowData.Code]).then(rs => {
+            //   this.preview(rs);
+            // });
+          });
+        },
+      },
+      Preview: {
+        title: this.commonService.translateText('Common.show'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'external-link-outline';
+          instance.display = true;
+          instance.status = 'primary';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsReceiptNoteModel) => {
+            this.getFormData([rowData.Code]).then(rs => {
+              this.preview(rs);
+            });
+          });
+        },
+      }
     },
   });
 
@@ -142,6 +265,40 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
     super.getList((rs) => {
       if (callback) callback(rs);
     });
+  }
+
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['includeCreator'] = true;
+      params['sort_Id'] = 'desc';
+      // params['eq_Type'] = 'PAYMENT';
+      return params;
+    };
+
+    return source;
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
+  }
+
+  preview(data: WarehouseGoodsReceiptNoteModel[]) {
+    this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
+      context: {
+        showLoadinng: true,
+        title: 'Xem trước',
+        data: data,
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onClose: (data: WarehouseGoodsReceiptNoteModel) => {
+          this.refresh();
+        },
+      },
+    });
+    return false;
   }
 
 }
