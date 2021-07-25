@@ -230,8 +230,7 @@
                   <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
                       (*)</span></label>
                   <textarea *ngIf="array.controls.length > 1" formControlName="Description" nbInput fullWidth placeholder="Mô tả"></textarea>
-                  <ckeditor *ngIf="array.controls.length === 1" formControlName="Description" [config]="{ extraPlugins: 'divarea', height: '200' }">
-                  </ckeditor>
+                  <ckeditor *ngIf="array.controls.length === 1" formControlName="Description" [config]="{ extraPlugins: 'divarea', height: '200' }"></ckeditor>
                 </div>
               </div>
               <div class="col-sm-12">
@@ -240,8 +239,7 @@
                       kỹ thuật là bắt buộc
                       (*)</span></label>
                   <textarea *ngIf="array.controls.length > 1" formControlName="Technical" nbInput fullWidth placeholder="Mô tả"></textarea>
-                  <ckeditor *ngIf="array.controls.length === 1" formControlName="Technical" [config]="{ extraPlugins: 'divarea', height: '200' }">
-                  </ckeditor>
+                  <ckeditor *ngIf="array.controls.length === 1" formControlName="Technical" [config]="{ extraPlugins: 'divarea', height: '200' }"></ckeditor>
                 </div>
               </div>
             </div>

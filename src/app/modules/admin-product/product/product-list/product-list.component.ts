@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
-import { ProductModel, ProductCategoryModel, ProductUnitConversoinModel } from '../../../../models/product.model';
+import { ProductModel, ProductCategoryModel, ProductUnitConversoinModel, ProductGroupModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -38,6 +38,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
 
   // Category list for filter
   categoryList: ProductCategoryModel[] = [];
+  groupList: ProductGroupModel[] = [];
   unitList: UnitModel[] = [];
 
   constructor(
@@ -71,6 +72,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   async loadCache() {
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true }));
   }
 
@@ -169,6 +171,44 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           },
         },
       },
+      Groups: {
+        title: 'Nhóm',
+        type: 'html',
+        width: '25%',
+        valuePrepareFunction: (value: string, product: ProductModel) => {
+          return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+        },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: 'Chọn nhóm...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
+        },
+      },
       WarehouseUnit: {
         title: 'ĐVT',
         type: 'html',
@@ -212,6 +252,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
+      params['includeGroups'] = true;
       params['includeWarehouseUnit'] = true;
       // params['includeFeaturePicture'] = true;
       params['includeUnitConversions'] = true;

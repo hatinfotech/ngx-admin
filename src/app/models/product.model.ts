@@ -26,6 +26,7 @@ export class ProductModel {
 }
 
 export class ProductCategoryModel {
+  [key: string]: any;
   id?: StaticRange; text?: string;
   Code?: string | number;
   Name?: string;
@@ -61,6 +62,10 @@ export class ProductUnitConversoinModel {
   IsDefaultPrchase?: boolean;
 }
 export class ProductGroupModel {
+  [key: string]: any;
+  id?: string; 
+  text?: string;
+
   Id?: string & number;
   Code?: string;
   Name?: string;

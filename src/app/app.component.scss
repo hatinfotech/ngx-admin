@@ -586,6 +586,11 @@ ngx-header ngx-action-control-list {
         border: 1px solid #111526 !important;
         background: transparent !important;
         color: #fff !important;
+
+        &::placeholder {
+          color: #818ca4 !important;
+          font-weight: normal !important;
+        }
       }
       &.select2-dropdown--above {
         box-shadow: 0px -12px 0 0.375rem #2e3a59;
@@ -597,6 +602,11 @@ ngx-header ngx-action-control-list {
     .select2-search__field {
       background: transparent !important;
       color: #fff !important;
+
+      &::placeholder {
+        color: #818ca4 !important;
+        font-weight: normal !important;
+      }
     }
   }
   .select2-results {
