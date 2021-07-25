@@ -33,7 +33,7 @@ import { UserExtensionFormComponent } from './user-extensions/user-extension-for
 import { TicketPmsFormComponent } from './dashboard/ticket-pms-form/ticket-pms-form.component';
 import { HelpdeskRouteListComponent } from './route/helpdesk-route-list/helpdesk-route-list.component';
 import { HelpdeskRouteFormComponent } from './route/helpdesk-route-form/helpdesk-route-form.component';
-import { CKEditorModule } from 'ng2-ckeditor';
+// import { CKEditorModule } from 'ng2-ckeditor';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { HelpdeskParamListComponent } from './param/helpdesk-param-list/helpdesk-param-list.component';
 import { HelpdeskParamFormComponent } from './param/helpdesk-param-form/helpdesk-param-form.component';
@@ -98,7 +98,7 @@ import { HelpdeskProcedureFormComponent } from './procedure/helpdesk-procedure-f
     NgxEchartsModule,
     NgxChartsModule,
     LeafletModule,
-    CKEditorModule,
+    // CKEditorModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     NbSpinnerModule,

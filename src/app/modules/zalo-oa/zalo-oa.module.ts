@@ -12,7 +12,7 @@ import { ChartModule } from 'angular2-chartjs';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { CKEditorModule } from 'ng2-ckeditor';
+// import { CKEditorModule } from 'ng2-ckeditor';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { TranslateModule } from '@ngx-translate/core';
 import { SortablejsModule } from 'ngx-sortablejs';
@@ -67,7 +67,7 @@ import { ZaloOaTemplateFormComponent } from './template/zalo-oa-template-form/za
     NgxEchartsModule,
     NgxChartsModule,
     LeafletModule,
-    CKEditorModule,
+    // CKEditorModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
 

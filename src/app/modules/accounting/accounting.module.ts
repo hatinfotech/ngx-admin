@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
 import { TranslateModule } from '@ngx-translate/core';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { CKEditorModule } from 'ng2-ckeditor';
+// import { CKEditorModule } from 'ng2-ckeditor';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
@@ -60,7 +60,7 @@ import { RelativeVoucherComponent } from '../general/voucher/relative-voucher/re
     AgGridModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    CKEditorModule,
+    // CKEditorModule,
     CurrencyMaskModule,
     NgxUploaderModule,
     TranslateModule,

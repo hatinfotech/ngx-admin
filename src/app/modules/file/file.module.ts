@@ -13,7 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
-import { CKEditorModule } from 'ng2-ckeditor';
+// import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { FileStoreListComponent } from './store/file-store-list/file-store-list.component';
 import { FileStoreFormComponent } from './store/file-store-form/file-store-form.component';
@@ -54,7 +54,7 @@ import { TranslateModule } from '@ngx-translate/core';
     AgGridModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    CKEditorModule,
+    // CKEditorModule,
     NgxUploaderModule,
     TranslateModule,
     NbDialogModule.forChild(),

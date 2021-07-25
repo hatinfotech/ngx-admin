@@ -14,7 +14,7 @@ import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { CKEditorModule } from 'ng2-ckeditor';
+// import { CKEditorModule } from 'ng2-ckeditor';
 import { ProductCategoryListComponent } from './category/product-category-list/product-category-list.component';
 import { ProductCategoryFormComponent } from './category/product-category-form/product-category-form.component';
 import { ProductUnitListComponent } from './unit/product-unit-list/product-unit-list.component';
@@ -23,16 +23,17 @@ import { SmartTableThumbnailComponent } from '../../lib/custom-element/smart-tab
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { TranslateModule } from '@ngx-translate/core';
 import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
-import { ProductFormDialogComponent } from './product/product-form-dialog/product-form-dialog.component';
+// import { ProductFormDialogComponent } from './product/product-form-dialog/product-form-dialog.component';
 import { AssignCategoriesFormComponent } from './product/assign-categories-form/assign-categories-form.component';
 import { ProductGroupListComponent } from './product-group/product-group-list/product-group-list.component';
 import { ProductGroupFormComponent } from './product-group/product-group-form/product-group-form.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
   declarations: [AdminProductComponent, ProductListComponent, ProductFormComponent,
     ProductCategoryListComponent, ProductCategoryFormComponent, ProductUnitListComponent,
     ProductUnitFormComponent,
-    ProductFormDialogComponent,
+    // ProductFormDialogComponent,
     AssignCategoriesFormComponent,
     ProductGroupListComponent,
     ProductGroupFormComponent],
@@ -65,6 +66,7 @@ import { ProductGroupFormComponent } from './product-group/product-group-form/pr
     AgGridModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    // CKEditorModule,
     CKEditorModule,
     NgxUploaderModule,
     TranslateModule,
@@ -80,7 +82,7 @@ import { ProductGroupFormComponent } from './product-group/product-group-form/pr
     ProductFormComponent,
     ProductCategoryFormComponent,
     ProductUnitFormComponent,
-    ProductFormDialogComponent,
+    // ProductFormDialogComponent,
     SmartTableThumbnailComponent,
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,

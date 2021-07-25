@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { CKEditorModule } from 'ng2-ckeditor';
+// import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { NgxMaskModule } from 'ngx-mask';
 import { options } from '../sales/sales.module';
@@ -100,7 +100,7 @@ import { PurchaseVoucherPrintComponent } from '../purchase/voucher/purchase-vouc
     AgGridModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    CKEditorModule,
+    // CKEditorModule,
     NgxUploaderModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({

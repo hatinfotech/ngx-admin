@@ -21,7 +21,7 @@ import { SortablejsModule } from 'ngx-sortablejs';
 import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { EmailGatewayListComponent } from './email-gateway/email-gateway-list/email-gateway-list.component';
 import { EmailGatewayFormComponent } from './email-gateway/email-gateway-form/email-gateway-form.component';
-import { CKEditorModule } from 'ng2-ckeditor';
+// import { CKEditorModule } from 'ng2-ckeditor';
 import { EmailAddressListComponent } from './address/email-address-list/email-address-list.component';
 import { EmailAddressFormComponent } from './address/email-address-form/email-address-form.component';
 import { DialogFormComponent } from '../dialog/dialog-form/dialog-form.component';
@@ -65,7 +65,7 @@ import { TranslateModule } from '@ngx-translate/core';
     DialogModule,
     NbProgressBarModule,
     AgGridModule,
-    CKEditorModule,
+    // CKEditorModule,
     NgxUploaderModule,
     TranslateModule,
     NbDialogModule.forChild(),

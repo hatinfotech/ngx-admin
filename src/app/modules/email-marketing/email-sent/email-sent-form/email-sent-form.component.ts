@@ -9,8 +9,8 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import './ckeditor.loader';
-import 'ckeditor';
+// import './ckeditor.loader';
+// import 'ckeditor';
 import { takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 

@@ -1,42 +1,42 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
-import { NbDialogRef } from '@nebular/theme';
+// import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+// import { NbDialogRef } from '@nebular/theme';
 
-@Component({
-  selector: 'ngx-product-form-dialog',
-  templateUrl: './product-form-dialog.component.html',
-  styleUrls: ['./product-form-dialog.component.scss'],
-})
-export class ProductFormDialogComponent<M> implements OnInit, AfterViewInit {
+// @Component({
+//   selector: 'ngx-product-form-dialog',
+//   templateUrl: './product-form-dialog.component.html',
+//   styleUrls: ['./product-form-dialog.component.scss'],
+// })
+// export class ProductFormDialogComponent<M> implements OnInit, AfterViewInit {
 
-  @Input() inputMode: 'dialog' | 'page' | 'inline';
-  @Input() inputId: string[];
-  @Input() onDialogSave: (newData: M[]) => void;
-  @Input() onDialogClose: () => void;
+//   @Input() inputMode: 'dialog' | 'page' | 'inline';
+//   @Input() inputId: string[];
+//   @Input() onDialogSave: (newData: M[]) => void;
+//   @Input() onDialogClose: () => void;
 
-  constructor(
-    public ref?: NbDialogRef<ProductFormDialogComponent<M>>,
-  ) { }
+//   constructor(
+//     public ref?: NbDialogRef<ProductFormDialogComponent<M>>,
+//   ) { }
 
-  ngOnInit() {
-  }
+//   ngOnInit() {
+//   }
 
-  onSave (newData: M[]) {
-    this.onDialogSave(newData);
-  }
+//   onSave (newData: M[]) {
+//     this.onDialogSave(newData);
+//   }
 
-  onClose () {
-    this.onDialogClose();
-    this.ref.close();
-  }
+//   onClose () {
+//     this.onDialogClose();
+//     this.ref.close();
+//   }
 
 
-  ngAfterViewInit(): void {
-    // const nativeEle = this;
-    if (this.ref) {
-      const dialog: NbDialogRef<ProductFormDialogComponent<M>> = this.ref;
-      const nativeEle = dialog.componentRef.location.nativeElement;
-      // tslint:disable-next-line: ban
-      $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
-    }
-  }
-}
+//   ngAfterViewInit(): void {
+//     // const nativeEle = this;
+//     if (this.ref) {
+//       const dialog: NbDialogRef<ProductFormDialogComponent<M>> = this.ref;
+//       const nativeEle = dialog.componentRef.location.nativeElement;
+//       // tslint:disable-next-line: ban
+//       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+//     }
+//   }
+// }

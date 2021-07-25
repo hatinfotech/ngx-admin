@@ -53,6 +53,9 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { PurchaseModule } from './modules/purchase/purchase.module';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+
+
 registerLocaleData(localeVi, 'vi', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -91,6 +94,7 @@ export class DynamicLocaleId extends String {
     HttpClientModule,
     AuthModule,
     CurrencyMaskModule,
+    CKEditorModule,
     TreeModule.forRoot(),
     ThemeModule.forRoot(),
     NbSidebarModule.forRoot(),

@@ -13,7 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { CKEditorModule } from 'ng2-ckeditor';
+// import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SalesPriceReportPrintComponent } from './price-report/sales-price-report-print/sales-price-report-print.component';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
@@ -72,7 +72,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     AgGridModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    CKEditorModule,
+    // CKEditorModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,

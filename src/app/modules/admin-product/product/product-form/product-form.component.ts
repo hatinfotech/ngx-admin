@@ -9,11 +9,14 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import '../../../../lib/ckeditor.loader';
-import 'ckeditor';
+// import '../../../../lib/ckeditor.loader';
+// import 'ckeditor';
+// import * as ckeditor from "ckeditor"
 import { FileModel } from '../../../../models/file.model';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic';
+
 
 @Component({
   selector: 'ngx-product-form',
@@ -34,6 +37,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   // Group list for select2
   groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
 
+  public Editor = ClassicEditorBuild;
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -53,6 +58,9 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     this.humanizeBytes = humanizeBytes;
     /** End ngx-uploader */
 
+
+    // Config editor
+    // this.Editor;
   }
 
   async loadCache() {
@@ -446,7 +454,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
             label: this.commonService.translateText('Common.close'),
             status: 'danger',
             action: () => {
-              
+
             },
           },
           {
@@ -466,5 +474,9 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         ],
       }
     });
+  }
+
+  onCkeditorReady(editor: any) {
+    console.log(editor);
   }
 }
