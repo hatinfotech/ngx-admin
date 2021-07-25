@@ -1,14 +1,10 @@
 :root {
-  .nb-theme-dark {
-
+  .nb-theme-dark,
+  .nb-theme-cosmic {
     /* override variables*/
     --ck-color-base-background: #192038;
     --ck-color-base-border: #101426;
     // --ck-custom-background: #222b45;
-
-
-
-
 
     /* Overrides the border radius setting in the theme. */
     --ck-border-radius: 4px;
@@ -120,9 +116,16 @@
     --ck-color-link-default: hsl(190, 100%, 75%);
 
     .ck-editor {
-        table {
-            color: var(--ck-color-text);
-        }
+      table {
+        color: var(--ck-color-text);
+      }
     }
+  }
+
+  .nb-theme-cosmic {
+    /* override variables*/
+    --ck-color-base-background: #252547;
+    --ck-custom-background: hsl(240deg 31% 21%);
+    --ck-custom-border: hsl(229deg 41% 11%);
   }
 }
