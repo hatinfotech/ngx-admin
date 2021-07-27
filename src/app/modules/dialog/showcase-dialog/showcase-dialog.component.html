@@ -11,7 +11,7 @@
     <nb-card-body class="table-content" *ngIf="tableContent">
       <ngx-my-table [content]="tableContent"></ngx-my-table>
     </nb-card-body>
-    <nb-card-footer>
+    <nb-card-footer *ngIf="footerContent || actions?.length > 0">
       <span *ngIf="footerContent" [innerHTML]="footerContent"></span>
       <div class="buttons-row">
         <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="dismiss(); item?.action()"><nb-icon *ngIf="item?.icon" [pack]="'eva'" [icon]="item.icon"></nb-icon>{{ item.label }}</button>

@@ -8,7 +8,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ProductCategoryModel, ProductUnitConversoinModel } from '../../../../models/product.model';
+import { ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { SmartTableThumbnailComponent, SmartTableCurrencyEditableComponent, SmartTableCheckboxComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
@@ -74,6 +74,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
     WarehouseBookFormComponent._warehouseList = null;
     // WarehouseBookFormComponent._goodsContainerList = null;
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
     this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true }));
     return super.clearCache();
@@ -97,10 +98,10 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
   makeNewFormGroup(data?: WarehouseBookModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [{ disabled: true, value: '' }],
-      PreviousBook: [''],
-      Warehouse: [''],
+      // PreviousBook: [''],
+      // Warehouse: [''],
       Note: [''],
-      Branch: ['MAINBRANCH'],
+      // Branch: ['MAINBRANCH'],
     });
     if (data) {
       newForm.patchValue(data);
@@ -157,6 +158,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
 
   // Category list for filter
   categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+  groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
   containerList: WarehouseGoodsContainerModel[] = [];
   unitList: UnitModel[] = [];
   // async loadCache() {
@@ -186,7 +188,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       Name: {
         title: 'Tên',
         type: 'string',
-        width: '20%',
+        width: '15%',
         // filter: {
         //   type: 'custom',
         //   component: SmartTableFilterComponent,
@@ -197,8 +199,11 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       },
       Categories: {
         title: 'Danh mục',
-        type: 'string',
+        type: 'html',
         width: '15%',
+        valuePrepareFunction: (value: string, product: GoodsModel) => {
+          return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+        },
         // valuePrepareFunction: (value: string, product: GoodsModel) => {
         //   return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
         // },
@@ -234,10 +239,49 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
           },
         },
       },
+      Groups: {
+        title: 'Nhóm',
+        type: 'html',
+        width: '15%',
+        valuePrepareFunction: (value: string, product: GoodsModel) => {
+          return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+        },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: 'Chọn nhóm...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              // code template: smart-table fiter with data update
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
+        },
+      },
       Container: {
         title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
         type: 'html',
-        width: '15%',
+        width: '10%',
         valuePrepareFunction: (value: string, product: GoodsModel) => {
           return this.commonService.getObjectText(value);
           // try {
@@ -329,7 +373,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       },
       Inventory: {
         title: this.commonService.translateText('Warehouse.inventory'),
-        width: '10%',
+        width: '8%',
         type: 'number-editable',
         editable: true,
         delay: 3000,
@@ -379,7 +423,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       },
       UnitPrice: {
         title: this.commonService.translateText('Warehouse.warehousePrice'),
-        width: '10%',
+        width: '12%',
         type: 'number-editable',
         editable: true,
         delay: 3000,
@@ -604,9 +648,9 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         if (product['WarehouseUnit']) {
           product['UnitLabel'] = product['WarehouseUnit']['Name'];
         }
-        if (product['Categories']) {
-          product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
-        }
+        // if (product['Categories']) {
+        //   product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
+        // }
         if (product['FeaturePictureThumbnail']) {
           product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
         } else {
@@ -621,11 +665,12 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
     this.source.prepareParams = (params: any) => {
       params['masterPriceTable'] = this.array.controls[0].get('Code').value;
       params['includeCategories'] = true;
+      params['includeGroups'] = true;
       params['includeUnit'] = true;
       params['includeContainer'] = true;
       params['includeFeaturePicture'] = true;
       params['includeHeadBookEntry'] = true;
-      params['filter_Warehouse'] = this.commonService.getObjectId(this.array.controls[0].get('Warehouse').value);
+      // params['filter_Warehouse'] = this.commonService.getObjectId(this.array.controls[0].get('Warehouse').value);
       params['sort_Id'] = 'desc';
       return params;
     };

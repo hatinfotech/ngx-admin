@@ -129,81 +129,81 @@ import { PurchaseVoucherPrintComponent } from '../purchase/voucher/purchase-vouc
 })
 export class WarehouseModule { static processMaps: {
   
-  purchaseVoucher?: {
+  warehouseReceiptGoodsNote?: {
     [key: string]: ProcessMap
   },
-  purchaseOrder?: {
+  warehouseDeliveryGoodsNote?: {
     [key: string]: ProcessMap
   },
 } = {
-    purchaseVoucher: {
-      "APPROVE": {
-        state: 'APPROVE',
-        label: 'Common.approved',
-        status: 'success',
-        outline: false,
-        nextState: 'COMPLETE',
-        nextStateLabel: 'Common.complete',
-        confirmText: 'Common.completeConfirm',
-        responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
-      },
-      "COMPLETE": {
-        state: 'COMPLETE',
-        label: 'Common.completed',
+    warehouseReceiptGoodsNote: {
+      "BOOKKEEPING": {
+        state: 'BOOKKEEPING',
+        label: 'Common.bookkeeped',
         status: 'success',
         outline: true,
-        nextState: '',
-        nextStateLabel: '',
-        confirmText: 'Common.completeConfirm',
-        responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        nextState: 'UNBOOKKEEPING',
+        nextStateLabel: 'Common.unbookkeeping',
+        confirmText: 'Common.unbookkeepingConfirm',
+        responseTitle: 'Common.unbookkeeped',
+        restponseText: 'Common.unbookkeepingSuccess',
       },
-      "": {
-        state: 'NOTJUSTAPPROVE',
-        label: 'Common.notJustApproved',
+      "UNBOOKKEEPING": {
+        state: 'UNBOOKKEEPING',
+        label: 'Common.notJustBookkeeping',
         status: 'danger',
         outline: false,
-        nextState: 'APPROVE',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approveConfirm',
-        responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        nextState: 'BOOKKEEPING',
+        nextStateLabel: 'Common.bookkeeping',
+        confirmText: 'Common.bookkeepingConfirm',
+        responseTitle: 'Common.bookkeeping',
+        restponseText: 'Common.bookkeepingSuccess',
+      },
+      "": {
+        state: 'NOTJUSTBOOKKEEPING',
+        label: 'Common.notJustBookkeeping',
+        status: 'danger',
+        outline: false,
+        nextState: 'BOOKKEEPING',
+        nextStateLabel: 'Common.bookkeeping',
+        confirmText: 'Common.bookkeepingConfirm',
+        responseTitle: 'Common.bookkeeping',
+        restponseText: 'Common.bookkeepingSuccess',
       },
     },
-    purchaseOrder: {
-      "APPROVE": {
-        state: 'APPROVE',
-        label: 'Common.approved',
-        status: 'success',
-        outline: false,
-        nextState: 'COMPLETE',
-        nextStateLabel: 'Common.complete',
-        confirmText: 'Common.completeConfirm',
-        responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
-      },
-      "COMPLETE": {
-        state: 'COMPLETE',
-        label: 'Common.completed',
+    warehouseDeliveryGoodsNote: {
+      "BOOKKEEPING": {
+        state: 'BOOKKEEPING',
+        label: 'Common.bookkeeped',
         status: 'success',
         outline: true,
-        nextState: '',
-        nextStateLabel: '',
-        confirmText: 'Common.completeConfirm',
-        responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        nextState: 'UNBOOKKEEPING',
+        nextStateLabel: 'Common.unbookkeeping',
+        confirmText: 'Common.unbookkeepingConfirm',
+        responseTitle: 'Common.unbookkeeped',
+        restponseText: 'Common.unbookkeepingSuccess',
       },
-      "": {
-        state: 'NOTJUSTAPPROVE',
-        label: 'Common.notJustApproved',
+      "UNBOOKKEEPING": {
+        state: 'UNBOOKKEEPING',
+        label: 'Common.notJustBookkeeping',
         status: 'danger',
         outline: false,
-        nextState: 'APPROVE',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approveConfirm',
-        responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        nextState: 'BOOKKEEPING',
+        nextStateLabel: 'Common.bookkeeping',
+        confirmText: 'Common.bookkeepingConfirm',
+        responseTitle: 'Common.bookkeeping',
+        restponseText: 'Common.bookkeepingSuccess',
+      },
+      "": {
+        state: 'NOTJUSTBOOKKEEPING',
+        label: 'Common.notJustBookkeeping',
+        status: 'danger',
+        outline: false,
+        nextState: 'BOOKKEEPING',
+        nextStateLabel: 'Common.bookkeeping',
+        confirmText: 'Common.bookkeepingConfirm',
+        responseTitle: 'Common.bookkeeping',
+        restponseText: 'Common.bookkeepingSuccess',
       },
     },
   };

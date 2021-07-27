@@ -31,9 +31,9 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    matcher: (term, text, option) => {
-      return this.commonService.smartFilter(text, term);
-    },
+    // matcher: (term, text, option) => {
+    //   return this.commonService.smartFilter(text, term);
+    // },
     keyMap: {
       id: 'id',
       text: 'text',

@@ -15,7 +15,7 @@ import { SalesPriceReportFormComponent } from '../../price-report/sales-price-re
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntil } from 'rxjs/operators';
 import { ContactModel } from '../../../../models/contact.model';
-import { ProductModel, ProductCategoryModel } from '../../../../models/product.model';
+import { ProductModel, ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
 import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
@@ -574,10 +574,12 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   // Category list for filter
   categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+  groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
 
   async loadCache() {
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/groups', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
   }
 
   editing = {};
@@ -612,7 +614,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       Name: {
         title: 'Tên',
         type: 'string',
-        width: '20%',
+        width: '12%',
         // filter: {
         //   type: 'custom',
         //   component: SmartTableFilterComponent,
@@ -623,11 +625,14 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       },
       Categories: {
         title: 'Danh mục',
-        type: 'string',
-        width: '25%',
+        type: 'html',
+        width: '20%',
         // valuePrepareFunction: (value: string, product: ProductModel) => {
         //   return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
         // },
+        valuePrepareFunction: (value: string, product: ProductModel) => {
+          return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+        },
         filter: {
           type: 'custom',
           component: SmartTableSelect2FilterComponent,
@@ -660,20 +665,62 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
           },
         },
       },
+      Groups: {
+        title: 'Nhóm',
+        type: 'html',
+        width: '20%',
+        valuePrepareFunction: (value: string, product: ProductModel) => {
+          return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+        },
+        // valuePrepareFunction: (value: string, product: ProductModel) => {
+        //   return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
+        // },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: 'Chọn nhóm...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              // code template: smart-table fiter with data update
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
+        },
+      },
       UnitLabel: {
         title: 'ĐVT',
         type: 'string',
-        width: '10%',
+        width: '8%',
       },
       Code: {
         title: 'Code',
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
       Sku: {
         title: 'Sku',
         type: 'string',
-        width: '10%',
+        width: '8%',
       },
       Price: {
         title: 'Price',
@@ -865,9 +912,9 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         if (product['WarehouseUnit']) {
           product['UnitLabel'] = product['WarehouseUnit']['Name'];
         }
-        if (product['Categories']) {
-          product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
-        }
+        // if (product['Categories']) {
+        //   product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
+        // }
         if (product['FeaturePictureThumbnail']) {
           product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
         } else {
@@ -882,6 +929,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     this.source.prepareParams = (params: any) => {
       params['masterPriceTable'] = this.array.controls[0].get('Code').value;
       params['includeCategories'] = true;
+      params['includeGroups'] = true;
       params['includeUnit'] = true;
       params['includeFeaturePicture'] = true;
       params['sort_Id'] = 'desc';

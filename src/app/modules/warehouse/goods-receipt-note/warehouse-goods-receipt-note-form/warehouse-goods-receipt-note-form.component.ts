@@ -1,6 +1,7 @@
+import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validator, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
@@ -49,6 +50,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: (UnitModel & { id?: string, text?: string })[];
+
+  warehouseContainerList = [];
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -153,15 +156,15 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     },
   };
 
-  select2OptionForTax = {
-    placeholder: 'Chọn thuế...',
+  select2OptionForContainer = {
+    placeholder: 'Chọn kho/ngăn/kệ...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
   };
 
@@ -190,15 +193,15 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   async init(): Promise<boolean> {
 
     /** Load and cache tax list */
-    if (!PurchaseOrderVoucherFormComponent._taxList) {
-      this.taxList = PurchaseOrderVoucherFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = PurchaseOrderVoucherFormComponent._taxList;
-    }
+    // if (!PurchaseOrderVoucherFormComponent._taxList) {
+    //   this.taxList = PurchaseOrderVoucherFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+    //     tax['id'] = tax.Code;
+    //     tax['text'] = tax.Name;
+    //     return tax;
+    //   });
+    // } else {
+    //   this.taxList = PurchaseOrderVoucherFormComponent._taxList;
+    // }
 
     /** Load and cache unit list */
     if (!PurchaseOrderVoucherFormComponent._unitList) {
@@ -208,8 +211,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         return tax;
       });
     } else {
-      this.taxList = PurchaseOrderVoucherFormComponent._taxList;
+      this.unitList = PurchaseOrderVoucherFormComponent._unitList;
     }
+    this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path'});
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -223,6 +227,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
           });
         });
       }
+
       return status;
     });
   }
@@ -324,16 +329,16 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     const newForm = this.formBuilder.group({
       Id: [''],
       No: [''],
-      Type: ['PRODUCT'],
+      Type: ['PRODUCT', Validators.required],
       Product: [''],
-      Description: [''],
+      Description: ['', Validators.required],
       Quantity: [1],
-      Price: [0],
+      // Price: [0],
       Unit: [''],
-      Tax: ['VAT10'],
-      ToMoney: [0],
+      // Tax: ['VAT10'],
+      // ToMoney: [0],
       Image: [[]],
-      Reason: [''],
+      Container: [''],
     });
 
     if (data) {
@@ -402,27 +407,28 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   calculatToMoney(detail: FormGroup) {
-    let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
-    }
-    return toMoney;
+    // let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+    // let tax = detail.get('Tax').value;
+    // if (tax) {
+    //   if (typeof tax === 'string') {
+    //     tax = this.taxList.filter(t => t.Code === tax)[0];
+    //   }
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
+    // return toMoney;
+    return 0;
   }
 
   toMoney(formItem: FormGroup, detail: FormGroup) {
-    detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+    // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
 
-    // Call culate total
-    const details = this.getDetails(formItem);
-    let total = 0;
-    for (let i = 0; i < details.controls.length; i++) {
-      total += this.calculatToMoney(details.controls[i] as FormGroup);
-    }
-    formItem.get('_total').setValue(total);
+    // // Call culate total
+    // const details = this.getDetails(formItem);
+    // let total = 0;
+    // for (let i = 0; i < details.controls.length; i++) {
+    //   total += this.calculatToMoney(details.controls[i] as FormGroup);
+    // }
+    // formItem.get('_total').setValue(total);
     return false;
   }
 

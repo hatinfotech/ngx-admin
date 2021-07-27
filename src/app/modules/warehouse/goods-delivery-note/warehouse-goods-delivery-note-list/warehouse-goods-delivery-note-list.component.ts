@@ -174,7 +174,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = WarehouseModule.processMaps.purchaseOrder[value || ''];
+            const processMap = WarehouseModule.processMaps.warehouseDeliveryGoodsNote[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap?.outline;

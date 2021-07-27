@@ -257,7 +257,15 @@
         "expired": "hết hạn",
         "relativeVoucher": "chứng từ liên quan",
         "accountingBusiness": "nghiệp vụ kế toán",
-        "receivedAndPayment": "nhận hàng và thanh toán"
+        "receivedAndPayment": "nhận hàng và thanh toán",
+        "notJustBookkeeping": "chưa ghi sổ",
+        "bookkeeped": "đã ghi sổ",
+        "bookkeepingConfirm": "bạn có chắc là muốn ghi sổ",
+        "bookkeepingSuccess": "ghi sổ thành công",
+        "unbookkeeping": "bỏ ghi",
+        "unbookkeepingConfirm": "bạn có chắc là muốn bỏ ghi",
+        "unbookkeeped": "bỏ ghi",
+        "unbookkeepingSuccess": "bỏ ghi thành công"
     },
     "Contact": {
         "name": "tên liên hệ",

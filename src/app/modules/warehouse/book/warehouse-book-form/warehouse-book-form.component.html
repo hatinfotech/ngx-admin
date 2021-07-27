@@ -11,22 +11,22 @@
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <div class="col-sm-6">
+              <!-- <div class="col-sm-6">
                 <ngx-form-group [formGroup]="formItem" name="Warehouse" label="Common.warehouse" [array]="array"
                   [index]="i" [allowCopy]="false" [required]="false">
                   <ngx-select2 formControlName="Warehouse" [select2Option]="select2OptionForWarehouse"
                     [data]="warehouseList">
                   </ngx-select2>
                 </ngx-form-group>
-              </div>
-              <div class="col-sm-3">
+              </div> -->
+              <!-- <div class="col-sm-3">
                 <ngx-form-group [formGroup]="formItem" name="PreviousBook" label="Warehouse.previousBook"
                   [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="PreviousBook"
                     placeholder="{{'Warehouse.previousBook' | translate | headtitlecase}}">
                 </ngx-form-group>
-              </div>
-              <div class="col-sm-3">
+              </div> -->
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i"
                   [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="Code"
@@ -52,7 +52,7 @@
                 <label class="label"><span class="valid">Bảng cập nhật tồn đầu</span></label>
               </div>
             </div>
-            <div class="ng2-smart-table-wrap" style="border: #ccc 1px solid; border-radius: 3px; overflow-y: hidden; overflow-x: auto;">
+            <div class="ng2-smart-table-wrap solid-radius-border">
               <div class="ng2-smart-table-wrap">
                 <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
                   (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)"

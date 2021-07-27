@@ -51,14 +51,14 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
       for (const detail of data.Details) {
         data['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = WarehouseModule.processMaps.purchaseOrder[data.State || ''];
+      this.processMapList[i] = WarehouseModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
     }
 
     return result;
   }
 
   renderTitle(data: WarehouseGoodsReceiptNoteModel) {
-    return `Phieu_Xuat_Kho_${this.getIdentified(data).join('-')}` + (data.DateOfReceipted ? ('_' + this.datePipe.transform(data.DateOfReceipted, 'short')) : '');
+    return `Phieu_Nhap_Kho_${this.getIdentified(data).join('-')}` + (data.DateOfReceipted ? ('_' + this.datePipe.transform(data.DateOfReceipted, 'short')) : '');
   }
 
   close() {
@@ -130,20 +130,20 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   }
 
   approvedConfirm(data: WarehouseGoodsReceiptNoteModel, index: number) {
-    if (['COMPLETE'].indexOf(data.State) > -1) {
-      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-        {
-          label: this.commonService.translateText('Common.close'),
-          status: 'success',
-          action: () => {
-            this.onClose(data);
-          },
-        },
-      ]);
-      return;
-    }
+    // if (['BOOKKEEPING'].indexOf(data.State) > -1) {
+    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //     {
+    //       label: this.commonService.translateText('Common.close'),
+    //       status: 'success',
+    //       action: () => {
+    //         this.onClose(data);
+    //       },
+    //     },
+    //   ]);
+    //   return;
+    // }
     const params = { id: [data.Code] };
-    const processMap = WarehouseModule.processMaps.purchaseVoucher[data.State || ''];
+    const processMap = WarehouseModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
     params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
     // let responseText = '';
@@ -169,7 +169,7 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        label: this.commonService.translateText(this.processMapList[index].nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;

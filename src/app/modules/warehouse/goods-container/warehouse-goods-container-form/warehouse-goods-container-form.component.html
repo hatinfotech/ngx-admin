@@ -26,16 +26,16 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="Parent" label="Common.parent" [array]="array" [index]="i"
-                  [allowCopy]="true" [required]="false">
-                  <ngx-select2 formControlName="Parent" [select2Option]="select2OptionForParent" (click)="onParentClick($event, formItem)" >
+                <ngx-form-group [formGroup]="formItem" name="Warehouse" label="Common.warehouse" [array]="array"
+                  [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Warehouse" [select2Option]="select2OptionForWarehouse" [data]="warehouseList">
                   </ngx-select2>
                 </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="Warehouse" label="Common.warehouse" [array]="array"
-                  [index]="i" [allowCopy]="true" [required]="false">
-                  <ngx-select2 formControlName="Warehouse" [select2Option]="select2OptionForWarehouse" [data]="warehouseList">
+                <ngx-form-group [formGroup]="formItem" name="Parent" label="Common.parent" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Parent" [select2Option]="select2OptionForParent" (click)="onParentClick($event, formItem)" >
                   </ngx-select2>
                 </ngx-form-group>
               </div>

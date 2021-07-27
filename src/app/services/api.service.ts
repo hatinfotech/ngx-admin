@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http';
 import { NbAuthService, NbAuthToken } from '@nebular/auth';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { map, retry, catchError, switchMap, take, filter } from 'rxjs/operators';
+import { map, retry, catchError, switchMap, take, filter, delay } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
@@ -502,8 +502,9 @@ export class ApiService {
       //   },
       // });
       if (!silent) {
-        this.toastService.show(this.joinLogs(e), 'API: Yêu cầu quyền truy cập', {
+        this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu quyền truy cập', {
           status: 'danger',
+          duration: 10000,
         });
       }
     }
@@ -547,8 +548,9 @@ export class ApiService {
       //   },
       // });
       if (!silent) {
-        this.toastService.show(this.joinLogs(e), 'API: Yêu cầu không thể thực thi', {
-          status: 'warning',
+        this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không thể thực thi', {
+          status: 'danger',
+          duration: 10000,
         });
       }
     }
@@ -568,8 +570,9 @@ export class ApiService {
       //   },
       // });
       if (!silent) {
-        this.toastService.show(this.joinLogs(e), 'API: Yêu cầu không có quyền', {
-          status: 'warning',
+        this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không có quyền', {
+          status: 'danger',
+          duration: 10000,
         });
       }
     }
@@ -589,8 +592,9 @@ export class ApiService {
       //   },
       // });
       if (!silent) {
-        this.toastService.show(this.joinLogs(e), 'API: Yêu cầu chưa được xử lý', {
-          status: 'warning',
+        this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu chưa được xử lý', {
+          status: 'danger',
+          duration: 10000,
         });
       }
     }
@@ -611,10 +615,14 @@ export class ApiService {
     return throwError(errorMessage);
   }
 
-  joinLogs(e: HttpErrorResponse): string {
+  joinLogs(e: HttpErrorResponse, mode?: string): string {
     if (e.error['logs']) {
       if (e.error['logs'].length > 1) {
-        return '<ul><li>' + e.error['logs'].map((log: string) => this.textTransform(log, 'head-title')).join('</li><li>') + '</li></ul>';
+        if (!mode || mode === 'dialog') {
+          return e.error['logs']?.length > 1 ? ('<ol><li>' + e.error['logs'].map((log: string) => this.textTransform(log, 'head-title')).join('</li><li>') + '</li></ol>') : e.error['logs'][0];
+        } else {
+          return e.error['logs']?.length > 1 ? (e.error['logs'].map((log: string) => this.textTransform(log, 'head-title')).join(", ")) : e.error['logs'][0];
+        }
       }
       if (e.error['logs'].length === 1) {
         return e.error['logs'].map((log: string) => this.textTransform(log, 'head-title'))[0];

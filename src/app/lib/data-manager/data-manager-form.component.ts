@@ -388,14 +388,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Form: Thông báo lỗi',
-          content: e.error.logs.join('\n'),
-          actions: [
-            {
-              label: 'Trở về',
-              icon: 'arrow-ios-back-outline',
-              status: 'info',
-            },
-          ],
+          content: e.error.logs?.length > 1 ? `<ol ><li>${e.error.logs.join('</li><li>')}</li></ol>` : e.error.logs[0],
+          // actions: [
+          //   {
+          //     label: 'Trở về',
+          //     icon: 'arrow-ios-back-outline',
+          //     status: 'info',
+          //   },
+          // ],
         },
       });
     }

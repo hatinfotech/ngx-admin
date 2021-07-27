@@ -31,8 +31,8 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     keyMap: {
-      id: 'ProductCategory',
-      text: 'ProductCategoryName',
+      id: 'Code',
+      text: 'Name',
     },
     multiple: false,
     ajax: {
@@ -41,7 +41,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
         if (this.activeFormGroup) {
           const warehouseFormControl = this.activeFormGroup.get('Warehouse');
           if (warehouseFormControl) {
-            option.filter_Warehouse = this.commonService.getObjectId(warehouseFormControl.value);
+            option.eq_Warehouse = this.commonService.getObjectId(warehouseFormControl.value);
           }
         }
         return this.apiService.buildApiUrl('/warehouse/goods-containers', option);
@@ -126,7 +126,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
       Parent: [''],
       Name: ['', Validators.required],
       FindOrder: [999],
-      Warehouse: [''],
+      Warehouse: ['', Validators.required],
       Description: [''],
       X: [''],
       Y: [''],
