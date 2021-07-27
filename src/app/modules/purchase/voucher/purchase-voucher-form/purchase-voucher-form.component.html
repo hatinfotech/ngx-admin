@@ -159,7 +159,12 @@
                         <div class="row">
                             <div class="col-sm-2 label">
                                 {{'Common.noNumber' | translate | headtitlecase}}/{{'Common.photo' | translate | headtitlecase}}</div>
-                            <div class="col-sm-3 label">{{'Voucher.productOrService' | translate | headtitlecase}}</div>
+                            <div class="col-sm-3 label">
+                                <div class="row">
+                                    <div class="col-sm-4 label">{{'Common.type' | translate | headtitlecase}}</div>
+                                    <div class="col-sm-8 label">{{'Common.goodsOrService' | translate | headtitlecase}}</div>
+                                </div>
+                            </div>
                             <div class="col-sm-7 label">
                                 <div class="row">
                                     <div class="col-sm-2 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
@@ -203,14 +208,19 @@
                                     </div>
                                     <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12">
                                         <div class="row">
-                                            <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
+                                            <div class="col-md-4 col-sm-12 col-xs-12">
+                                                <ngx-form-group [formGroup]="detail" name="Type" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <ngx-select2 [data]="select2DataForType" formControlName="Type" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForType"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-md-8 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-12 col-sm-12 col-xs-12">
-                                                <ngx-form-group [formGroup]="detail" name="Type" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-select2 [data]="select2DataForType" formControlName="Type" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForType"></ngx-select2>
+                                                <ngx-form-group [formGroup]="detail" name="Business" label="Common.business" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <ngx-select2 [data]="accountingBusinessList" formControlName="Business" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForAccountingBusiness"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                         </div>

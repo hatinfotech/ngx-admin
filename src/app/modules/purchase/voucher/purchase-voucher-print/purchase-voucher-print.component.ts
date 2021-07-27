@@ -120,18 +120,18 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
 
 
   approvedConfirm(data: PurchaseVoucherModel, index: number) {
-    if (['COMPLETE'].indexOf(data.State) > -1) {
-      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-        {
-          label: this.commonService.translateText('Common.close'),
-          status: 'success',
-          action: () => {
-            this.onClose(data);
-          },
-        },
-      ]);
-      return;
-    }
+    // if (['COMPLETE'].indexOf(data.State) > -1) {
+    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //     {
+    //       label: this.commonService.translateText('Common.close'),
+    //       status: 'success',
+    //       action: () => {
+    //         this.onClose(data);
+    //       },
+    //     },
+    //   ]);
+    //   return;
+    // }
     const params = { id: [data.Code] };
     const processMap = PurchaseModule.processMaps.purchaseVoucher[data.State || ''];
     params['changeState'] = this.processMapList[index]?.nextState;

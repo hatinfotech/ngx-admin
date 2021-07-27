@@ -19,6 +19,7 @@ import { CommonService } from '../../../../services/common.service';
 import { SalesVoucherFormComponent } from '../../../sales/sales-voucher/sales-voucher-form/sales-voucher-form.component';
 import { PurchaseOrderVoucherListComponent } from '../../order/purchase-order-voucher-list/purchase-order-voucher-list.component';
 import { PurchaseOrderVoucherPrintComponent } from '../../order/purchase-order-voucher-print/purchase-order-voucher-print.component';
+import { BusinessModel } from '../../../../models/accounting.model';
 
 @Component({
   selector: 'ngx-purchase-voucher-form',
@@ -76,9 +77,26 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     },
   };
 
+  select2OptionForAccountingBusiness = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    // multiple: true,
+    tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
   uploadConfig = {
 
   };
+
+  accountingBusinessList: BusinessModel[] = [];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -206,6 +224,13 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     } else {
       this.taxList = SalesVoucherFormComponent._taxList;
     }
+    
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PURCHASE' }).then(rs => rs.map(accBusiness => {
+      accBusiness['id'] = accBusiness.Code;
+      accBusiness['text'] = accBusiness.Name;
+      return accBusiness;
+    }));
+
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -280,7 +305,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       Title: [''],
       Note: [''],
       SubNote: [''],
-      DateOfPurchase: [''],
+      DateOfPurchase: [new Date()],
       RelativeVouchers: [],
       _total: [''],
       Details: this.formBuilder.array([]),
@@ -328,7 +353,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
-      Reason: [''],
+      Business: ['PURCHASEWAREHOUSE'],
     });
 
     if (data) {

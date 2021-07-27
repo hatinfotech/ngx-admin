@@ -257,7 +257,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     this.accountDebitList = this.accountList.filter(f => f.Group != 'CASH');
     this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
 
-    this.accountingBusinessList = await this.apiService.getPromise<AccountModel[]>('/accounting/business', { eq_Type: 'PAYMENT' }).then(rs => rs.map(accBusiness => {
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PAYMENT' }).then(rs => rs.map(accBusiness => {
       accBusiness['id'] = accBusiness.Code;
       accBusiness['text'] = accBusiness.Name;
       return accBusiness;

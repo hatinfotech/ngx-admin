@@ -576,6 +576,14 @@ export class ApiService {
         });
       }
     }
+    if (e.status === 404) {
+      if (!silent) {
+        this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không thể thực thi', {
+          status: 'danger',
+          duration: 10000,
+        });
+      }
+    }
     if (e.status === 422) {
       // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
       //   context: {
