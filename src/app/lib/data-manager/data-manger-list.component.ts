@@ -8,7 +8,7 @@ import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable } 
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
@@ -581,6 +581,16 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
               column.onChange(value, instance.rowData, instance);
             }
           });
+        };
+      }
+
+      if (column.type === 'currency') {
+        column.type = 'custom';
+        column.class = 'align-right';
+        column.position = 'right';
+        column.renderComponent = SmartTableCurrencyComponent;
+        column.onComponentInitFunction = (instance: SmartTableCurrencyComponent) => {
+          instance.style = 'text-align: right';
         };
       }
 

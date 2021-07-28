@@ -1,7 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { SmartTableCurrencyComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
@@ -13,7 +15,7 @@ import { AccAccountFormComponent } from '../acc-account-form/acc-account-form.co
   templateUrl: './acc-account-list.component.html',
   styleUrls: ['./acc-account-list.component.scss']
 })
-export class AccAccountListComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
+export class AccAccountListComponent extends DataManagerListComponent<AccountModel> implements OnInit {
 
   componentName: string = 'AccAccountListComponent';
   formPath = '/accounting/account/form';
@@ -27,6 +29,8 @@ export class AccAccountListComponent extends ServerDataManagerListComponent<Acco
   static filterConfig: any;
   static sortConf: any;
   static pagingConf = { page: 1, perPage: 40 };
+
+  totalBalance: {Debit: number, Credit: number} = null;
 
   constructor(
     public apiService: ApiService,
@@ -42,7 +46,10 @@ export class AccAccountListComponent extends ServerDataManagerListComponent<Acco
 
   async init() {
     // await this.loadCache();
-    return super.init();
+    return super.init().then(rs => {
+      this.apiService.getPromise<any>(this.apiPath, {getTotalBalance: true}).then(balances => this.totalBalance = balances);
+      return rs;
+    });
   }
 
   editing = {};
@@ -53,12 +60,12 @@ export class AccAccountListComponent extends ServerDataManagerListComponent<Acco
       Code: {
         title: this.commonService.translateText('Common.code'),
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
       Name: {
         title: this.commonService.translateText('Common.name'),
         type: 'string',
-        width: '15%',
+        width: '20%',
         // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Description: {
@@ -66,31 +73,41 @@ export class AccAccountListComponent extends ServerDataManagerListComponent<Acco
         type: 'string',
         width: '20%',
       },
+      Debit: {
+        title: this.commonService.translateText('Common.debit'),
+        type: 'currency',
+        width: '8%',
+      },
+      Credit: {
+        title: this.commonService.translateText('Common.credit'),
+        type: 'currency',
+        width: '8%',
+      },
       Currency: {
         title: this.commonService.translateText('Common.currency'),
         type: 'string',
-        width: '15%',
+        width: '8%',
       },
       Property: {
         title: this.commonService.translateText('Common.property'),
         type: 'string',
-        width: '15%',
+        width: '8%',
       },
       Type: {
         title: this.commonService.translateText('Common.type'),
         type: 'string',
-        width: '10%',
+        width: '5%',
         // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       Level: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.level'), 'head-title'),
         type: 'string',
-        width: '15%',
+        width: '5%',
       },
       Group: {
         title: this.commonService.translateText('Common.group'),
         type: 'string',
-        width: '5%',
+        width: '8%',
       },
     },
   });
@@ -100,16 +117,41 @@ export class AccAccountListComponent extends ServerDataManagerListComponent<Acco
     super.ngOnInit();
   }
 
-  initDataSource() {
-    const source = super.initDataSource();
+  // initDataSource() {
+  //   const source = super.initDataSource();
 
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      params['includeParent'] = true;
-      return params;
+  //   // Set DataSource: prepareParams
+  //   source.prepareParams = (params: any) => {
+  //     params['includeParent'] = true;
+  //     params['includeAmount'] = true;
+  //     return params;
+  //   };
+
+  //   return source;
+  // }
+
+  /** Api get funciton */
+  executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
+    // params['includeParent'] = true;
+    params['includeAmount'] = true;
+    super.executeGet(params, success, error, complete);
+  }
+
+  getList(callback: (list: AccountModel[]) => void) {
+    super.getList((rs) => {
+      // rs.forEach(item => {
+      //   item.Content = item.Content.substring(0, 256) + '...';
+      // });
+      if (callback) callback(rs);
+    });
+  }
+
+  /** Config for paging */
+  protected configPaging() {
+    return {
+      display: true,
+      perPage: 99999,
     };
-
-    return source;
   }
 
 }

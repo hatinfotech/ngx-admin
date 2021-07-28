@@ -232,21 +232,21 @@ export class SmartTableDateTimeComponent extends SmartTableBaseComponent impleme
 })
 export class SmartTableCurrencyComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
-  // renderValue: string;
+  // renderValue: number = 0;
   // disabled: boolean = false;
   // format$ = new BehaviorSubject('short');
 
-  @Input() value: string;
+  @Input() value: number;
   @Input() rowData: any;
 
-  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+  // @Output() valueChange: EventEmitter<any> = new EventEmitter();
   // curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
 
-  constructor(
-    public commonService: CommonService,
-  ) {
-    super();
-  }
+  // constructor(
+  //   public commonService: CommonService,
+  // ) {
+  //   super();
+  // }
 
   ngOnInit() {
     // this.renderValue = this.value;
