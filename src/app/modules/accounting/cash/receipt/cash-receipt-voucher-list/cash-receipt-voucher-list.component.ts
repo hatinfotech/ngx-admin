@@ -2,13 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
+import { takeUntil } from 'rxjs/operators';
+import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
+import { ResourcePermissionEditComponent } from '../../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { CashVoucherModel } from '../../../../../models/accounting.model';
 import { UserGroupModel } from '../../../../../models/user-group.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { AccountingModule } from '../../../accounting.module';
 import { CashReceiptVoucherFormComponent } from '../cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 
@@ -125,6 +128,98 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
           instance.style = 'text-align: right';
         },
       },
+      State: {
+        title: this.commonService.translateText('Common.approve'),
+        type: 'custom',
+        width: '5%',
+        // class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'checkmark-circle';
+          instance.display = true;
+          instance.status = 'success';
+          instance.disabled = this.isChoosedMode;
+          instance.title = this.commonService.translateText('Common.approved');
+          instance.label = this.commonService.translateText('Common.approved');
+          instance.valueChange.subscribe(value => {
+            const processMap = AccountingModule.processMaps.cashVoucher[value || ''];
+            instance.label = this.commonService.translateText(processMap?.label);
+            instance.status = processMap?.status;
+            instance.outline = processMap?.outline;
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview(rs);
+            });
+          });
+        },
+      },
+      Permission: {
+        title: this.commonService.translateText('Common.permission'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        exclude: this.isChoosedMode,
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'shield';
+          instance.display = true;
+          instance.status = 'danger';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+
+            this.commonService.openDialog(ResourcePermissionEditComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [rowData.Code],
+                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                resourceName: this.commonService.translateText('Accounting.PaymentVoucher.title', { action: '', definition: '' }) + ` ${rowData.Description || ''}`,
+                // resrouce: rowData,
+                apiPath: this.apiPath,
+              }
+            });
+
+            // this.getFormData([rowData.Code]).then(rs => {
+            //   this.preview(rs);
+            // });
+          });
+        },
+      },
+      Preview: {
+        title: this.commonService.translateText('Common.show'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'external-link-outline';
+          instance.display = true;
+          instance.status = 'primary';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            this.getFormData([rowData.Code]).then(rs => {
+              this.preview(rs);
+            });
+          });
+        },
+      }
     },
   });
 

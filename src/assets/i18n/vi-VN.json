@@ -600,7 +600,9 @@
             "title": "phiếu chi"
         },
         "debitAccount": "tài khoản nợ",
-        "creditAccount": "tài khoản có"
+        "creditAccount": "tài khoản có",
+        "dateOfPayment": "ngày thanh toán",
+        "dateOfReceipt": "ngày thu tiền"
     },
     "Print": {
         "listTemplate": "mẫu danh sách",

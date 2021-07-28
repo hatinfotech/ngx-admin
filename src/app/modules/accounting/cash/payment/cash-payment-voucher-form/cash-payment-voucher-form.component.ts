@@ -300,7 +300,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       ObjectAddress: [''],
       ObjectTaxCode: [''],
       // Currency: ['VND', Validators.required],
-      DateOfPayment: [new Date()],
+      DateOfVoucher: [new Date()],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
       _total: [''],

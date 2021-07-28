@@ -5,9 +5,11 @@ import { NbDialogRef } from '@nebular/theme';
 import { environment } from '../../../../../../environments/environment';
 import { DataManagerPrintComponent } from '../../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherDetailModel, CashVoucherModel } from '../../../../../models/accounting.model';
+import { ProcessMap } from '../../../../../models/process-map.model';
 import { SalesPriceReportDetailModel } from '../../../../../models/sales.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { AccountingModule } from '../../../accounting.module';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-print',
@@ -19,7 +21,9 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
   /** Component name */
   componentName = 'CashReceiptVoucherPrintComponent';
   title: string = 'Xem trước phiếu thu';
+  apiPath = '/accounting/cash-vouchers';
   env = environment;
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -40,12 +44,13 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
     const result = await super.init();
     // this.title = `PhieuThu_${this.identifier}` + (this.data.DateOfImplement ? ('_' + this.datePipe.transform(this.data.DateOfImplement, 'short')) : '');
 
-    for (const data of this.data) {
-      data['Total'] = 0;
+    for (const i in this.data) {
+      const data = this.data[i];
       data['Title'] = this.renderTitle(data);
       for (const detail of data.Details) {
         data['Total'] += parseFloat(detail['Amount'] as any);
       }
+      this.processMapList[i] = AccountingModule.processMaps.cashVoucher[data.State || ''];
     }
 
     return result;
@@ -101,5 +106,74 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
     // return this.data.Code;
     return '';
   }
+  
+  approvedConfirm(data: CashVoucherModel) {
+    // if (['COMPLETE'].indexOf(data.State) > -1) {
+    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //     {
+    //       label: this.commonService.translateText('Common.close'),
+    //       status: 'success',
+    //       action: () => {
+    //         this.onClose(data);
+    //       },
+    //     },
+    //   ]);
+    //   return;
+    // }
+    const params = { id: [data.Code] };
+    const processMap = AccountingModule.processMaps.cashVoucher[data.State || ''];
+    params['changeState'] = processMap?.nextState;
+    // let confirmText = '';
+    // let responseText = '';
+    // switch (data.State) {
+    //   case 'APPROVE':
+    //     params['changeState'] = 'COMPLETE';
+    //     confirmText = 'Common.completeConfirm';
+    //     responseText = 'Common.completeSuccess';
+    //     break;
+    //   default:
+    //     params['changeState'] = 'APPROVE';
+    //     confirmText = 'Common.approvedConfirm';
+    //     responseText = 'Common.approvedSuccess';
+    //     break;
+    // }
+
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+      {
+        label: this.commonService.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        status: 'danger',
+        action: () => {
+          this.loading = true;
+          this.apiService.putPromise<CashVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            this.loading = false;
+            this.onChange && this.onChange(data);
+            this.onClose && this.onClose(data);
+            this.close();
+            this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              status: 'success',
+            });
+            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            //   {
+            //     label: this.commonService.translateText('Common.close'),
+            //     status: 'success',
+            //     action: () => {
+            //     },
+            //   },
+            // ]);
+          }).catch(err => {
+            this.loading = false;
+          });
+        },
+      },
+    ]);
+  }
+
 
 }

@@ -15,6 +15,7 @@ import { ContactModel } from '../../../../../models/contact.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+import { TaxModel } from '../../../../../models/tax.model';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-form',
@@ -288,7 +289,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       ObjectEmail: [''],
       ObjectAddress: [''],
       ObjectTaxCode: [''],
-      Currency: ['VND', Validators.required],
+      // Currency: ['VND', Validators.required],
+      DateOfVoucher: [new Date()],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
       _total: [''],
@@ -464,7 +466,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     this.commonService.openDialog(SalesVoucherListComponent, {
       context: {
         inputMode: 'dialog',
-        onDialogChoose: (chooseItems: SalesVoucherModel[]) => {
+        onDialogChoose: async (chooseItems: SalesVoucherModel[]) => {
           console.log(chooseItems);
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
@@ -472,7 +474,48 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
           for (let i = 0; i < chooseItems.length; i++) {
             const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
             if (index < 0) {
+              const details = this.getDetails(formGroup);
+              // get purchase order
+              const purchaseVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+
+              if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVE') {
+                this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                continue;
+              }
+              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+              } else {
+                delete purchaseVoucher.Id;
+                formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
+                formGroup.get('Description').patchValue('Thu tiền cho ' + purchaseVoucher.Title);
+                details.clear();
+              }
+
               insertList.push(chooseItems[i]);
+
+              // Insert order details into voucher details
+              if (purchaseVoucher?.Details) {
+                // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
+                let totalMoney = 0;
+                const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
+                for (const voucherDetail of purchaseVoucher.Details) {
+                  if (voucherDetail.Type === 'PRODUCT') {
+                    const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
+                    totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
+                  }
+                }
+                const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+                  AccountingBusiness: 'RECEIPTCUSTOMERDEBT',
+                  Description: purchaseVoucher.Title,
+                  DebitAccount: '1111',
+                  CreditAccount: '131',
+                  Amount: totalMoney,
+                });
+                details.push(newDtailFormGroup);
+              }
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);

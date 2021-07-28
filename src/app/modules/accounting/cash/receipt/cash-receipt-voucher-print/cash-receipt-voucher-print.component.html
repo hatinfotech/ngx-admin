@@ -62,7 +62,7 @@
             </div>
         </nb-card-body>
         <nb-card-footer>
-            <div class="buttons-row">
+            <!-- <div class="buttons-row">
                 <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
                     <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
                 </button>
@@ -71,6 +71,15 @@
                 </button>
                 <button nbButton hero status="warning" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
                 <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button>
+            </div> -->
+            <div class="buttons-row">
+                <button nbButton hero status="warning" (click)="prepareCopy(data);">
+                    <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+                </button>
+                <button nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
+                <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
+                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+                </button>
             </div>
         </nb-card-footer>
     </nb-card>

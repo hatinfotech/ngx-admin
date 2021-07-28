@@ -45,8 +45,9 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="Currency" label="Common.currency" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <ngx-select2 [data]="currencyList" formControlName="Currency" [select2Option]="select2OptionForCurrencyList" (selectChange)="onChangeCurrency(formItem, $event, i)"></ngx-select2>
+                                <ngx-form-group [formGroup]="formItem" name="DateOfVoucher" label="Accounting.dateOfReceipt" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" [owlDateTime]="DateOfVoucher" [owlDateTimeTrigger]="DateOfVoucher" nbInput fullWidth formControlName="DateOfVoucher" placeholder="{{'Common.dateOfReceipt' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfVoucher></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">

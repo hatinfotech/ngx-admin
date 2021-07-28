@@ -46,9 +46,9 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfPayment" label="Purchase.dateOfPayment" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" [owlDateTime]="DateOfPayment" [owlDateTimeTrigger]="DateOfPayment" nbInput fullWidth formControlName="DateOfPayment" placeholder="{{'Common.dateOfPayment' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfPayment></owl-date-time>
+                                <ngx-form-group [formGroup]="formItem" name="DateOfVoucher" label="Accounting.dateOfPayment" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" [owlDateTime]="DateOfVoucher" [owlDateTimeTrigger]="DateOfVoucher" nbInput fullWidth formControlName="DateOfVoucher" placeholder="{{'Accounting.dateOfPayment' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfVoucher></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
