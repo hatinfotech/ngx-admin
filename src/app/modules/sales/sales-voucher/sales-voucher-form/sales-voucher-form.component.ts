@@ -22,6 +22,7 @@ import { CurrencyMaskConfig } from 'ng2-currency-mask';
 // import localeVi from '@angular/common/locales/vi';
 // import localeViExtra from '@angular/common/locales/extra/vi';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { BusinessModel } from '../../../../models/accounting.model';
 
 @Component({
   selector: 'ngx-sales-voucher-form',
@@ -135,7 +136,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         return {
           results: data.map(item => {
             item['id'] = item['id'] || item['Code'];
-            item['text'] = item['Code'] + ': ' + (item['text'] || item['Title'] || item['ObjectName']) + ' (' + this.commonService.datePipe.transform(item['Reported'], 'short') +')';
+            item['text'] = item['Code'] + ': ' + (item['text'] || item['Title'] || item['ObjectName']) + ' (' + this.commonService.datePipe.transform(item['Reported'], 'short') + ')';
             return item;
           }),
         };
@@ -170,6 +171,22 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           }),
         };
       },
+    },
+  };
+
+  accountingBusinessList: BusinessModel[] = [];
+  select2OptionForAccountingBusiness = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
     },
   };
 
@@ -315,6 +332,16 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     } else {
       this.taxList = SalesVoucherFormComponent._taxList;
     }
+
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' })
+      // .then(rs => rs.map(accBusiness => {
+      //   accBusiness['id'] = accBusiness.Code;
+      //   accBusiness['type'] = accBusiness.Type;
+      //   accBusiness['text'] = accBusiness.Name;
+      //   return accBusiness;
+      // }))
+      ;
+
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -345,7 +372,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
-      if (itemFormData.Details) {
+      if (itemFormData?.Details) {
         const details = this.getDetails(newForm);
         details.clear();
         for (const detailData of itemFormData.Details) {
@@ -404,24 +431,26 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       // data['Code_old'] = data['Code'];
       this.patchFormGroupValue(newForm, data);
     } else {
-      // this.addDetailFormGroup(newForm);
+      this.addDetailFormGroup(newForm);
     }
     return newForm;
   }
 
   patchFormGroupValue = (formGroup: FormGroup, data: SalesVoucherModel) => {
 
-    formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
-    formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
-    data['ObjectPhone'] = null;
-    data['ObjectAddress'] = null;
+    if (data) {
+      formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
+      formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+      data['ObjectPhone'] = null;
+      data['ObjectAddress'] = null;
 
-    formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
-    formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
-    data['ContactPhone'] = null;
-    data['ContactAddress'] = null;
+      formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
+      formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
+      data['ContactPhone'] = null;
+      data['ContactAddress'] = null;
 
-    formGroup.patchValue(data);
+      formGroup.patchValue(data);
+    }
     return true;
   }
 
@@ -461,6 +490,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
+      Business: { value: this.accountingBusinessList.filter(f => f.id === 'SALESWAREHOUSE' || f.id === 'NETREVENUE'), disabled: true },
     });
 
     if (data) {
@@ -496,6 +526,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     return false;
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
+    this.updateInitialFormPropertiesCache(newChildFormGroup);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -711,7 +742,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         // }
       });
     } else {
-      detail.get('Description').setValue('');
+      // detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
     }
     return false;

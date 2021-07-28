@@ -265,7 +265,8 @@
         "unbookkeeping": "bỏ ghi",
         "unbookkeepingConfirm": "bạn có chắc là muốn bỏ ghi",
         "unbookkeeped": "bỏ ghi",
-        "unbookkeepingSuccess": "bỏ ghi thành công"
+        "unbookkeepingSuccess": "bỏ ghi thành công",
+        "goodsOrService": "Hàng hóa/dịch vụ"
     },
     "Contact": {
         "name": "tên liên hệ",

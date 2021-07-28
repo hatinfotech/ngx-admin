@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
+import { ProcessMap } from '../../../../models/process-map.model';
 
 @Component({
   selector: 'ngx-sales-voucher-print',
@@ -24,6 +25,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   title: string = '';
   env = environment;
   apiPath = '/sales/sales-vouchers';
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -45,12 +47,14 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     // this.title = `SalesVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
 
     if (this.data && this.data.length > 0) {
-      for (const data of this.data) {
+      for (const i in this.data) {
+        const data = this.data[i];
         data['Total'] = 0;
         data['Title'] = this.renderTitle(data);
         for (const detail of data.Details) {
           data['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
+        this.processMapList[i] = SalesModule.processMaps.salesVoucher[data.State || ''];
       }
     }
 
@@ -136,18 +140,18 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   approvedConfirm(data: SalesVoucherModel) {
-    if (['COMPLETE'].indexOf(data.State) > -1) {
-      this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-        {
-          label: this.commonService.translateText('Common.close'),
-          status: 'success',
-          action: () => {
-            this.onClose(data);
-          },
-        },
-      ]);
-      return;
-    }
+    // if (['COMPLETE'].indexOf(data.State) > -1) {
+    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //     {
+    //       label: this.commonService.translateText('Common.close'),
+    //       status: 'success',
+    //       action: () => {
+    //         this.onClose(data);
+    //       },
+    //     },
+    //   ]);
+    //   return;
+    // }
     const params = { id: [data.Code] };
     const processMap = SalesModule.processMaps.salesVoucher[data.State || ''];
     params['changeState'] = processMap.nextState;
@@ -175,7 +179,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        label: this.commonService.translateText(processMap?.nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;

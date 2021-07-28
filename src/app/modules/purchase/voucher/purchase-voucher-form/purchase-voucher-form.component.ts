@@ -83,9 +83,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    dropdownCssClass: 'is_tags',
-    // multiple: true,
-    tags: true,
+    // dropdownCssClass: 'is_tags',
+    multiple: true,
+    // tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -353,7 +353,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
-      Business: ['PURCHASEWAREHOUSE'],
+      Business: { value: this.accountingBusinessList.filter(f => f.id === 'PURCHASEWAREHOUSE' || f.id === 'NETREVENUE'), disabled: true },
     });
 
     if (data) {

@@ -532,28 +532,28 @@ export class ApiService {
         },
       });
     }
-    if (e.status === 400) {
-      // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-      //   context: {
-      //     title: 'Yêu cầu không thể thực thi',
-      //     content: this.joinLogs(e),
-      //     actions: [
-      //       {
-      //         label: 'Trở về',
-      //         icon: 'back',
-      //         status: 'info',
-      //         action: () => { },
-      //       },
-      //     ],
-      //   },
-      // });
-      if (!silent) {
-        this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không thể thực thi', {
-          status: 'danger',
-          duration: 10000,
-        });
-      }
-    }
+    // if (e.status === 400) {
+    //   // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
+    //   //   context: {
+    //   //     title: 'Yêu cầu không thể thực thi',
+    //   //     content: this.joinLogs(e),
+    //   //     actions: [
+    //   //       {
+    //   //         label: 'Trở về',
+    //   //         icon: 'back',
+    //   //         status: 'info',
+    //   //         action: () => { },
+    //   //       },
+    //   //     ],
+    //   //   },
+    //   // });
+    //   if (!silent) {
+    //     this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không thể thực thi', {
+    //       status: 'danger',
+    //       duration: 10000,
+    //     });
+    //   }
+    // }
     if (e.status === 403) {
       // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
       //   context: {
@@ -576,7 +576,8 @@ export class ApiService {
         });
       }
     }
-    if (e.status === 404) {
+    // if (e.status === 404) {
+    if ([601, 404, 400].indexOf(e.status) > -1) {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không thể thực thi', {
           status: 'danger',
@@ -584,21 +585,7 @@ export class ApiService {
         });
       }
     }
-    if (e.status === 422) {
-      // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-      //   context: {
-      //     title: 'Yêu cầu chưa được xử lý',
-      //     content: this.joinLogs(e),
-      //     actions: [
-      //       {
-      //         label: 'Trở về',
-      //         icon: 'back',
-      //         status: 'info',
-      //         action: () => { },
-      //       },
-      //     ],
-      //   },
-      // });
+    if ([422].indexOf(e.status) > -1) {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu chưa được xử lý', {
           status: 'danger',
