@@ -5,8 +5,10 @@ import { NbDialogRef } from '@nebular/theme';
 import { environment } from '../../../../../../environments/environment';
 import { DataManagerPrintComponent } from '../../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherModel, CashVoucherDetailModel } from '../../../../../models/accounting.model';
+import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { AccountingModule } from '../../../accounting.module';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-print',
@@ -18,8 +20,10 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   /** Component name */
   componentName = 'CashPaymentVoucherPrintComponent';
   title: string = 'Xem trước phiếu thu';
-  approvedConfirm?: boolean;
+  apiPath = '/accounting/cash-vouchers';
+  // approvedConfirm?: boolean;
   env = environment;
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -39,19 +43,21 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   async init() {
     const result = await super.init();
     // this.title = `PhieuChi_${this.identifier}` + (this.data.DateOfImplement ? ('_' + this.datePipe.transform(this.data.DateOfImplement, 'short')) : '');
-    for (const data of this.data) {
+    for (const i in this.data) {
+      const data = this.data[i];
       data['Total'] = 0;
       data['Title'] = this.renderTitle(data);
       for (const detail of data.Details) {
-        data['Total'] += detail['Amount'] =  parseFloat(detail['Amount'] as any);
+        data['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);
       }
+      this.processMapList[i] = AccountingModule.processMaps.cashVoucher[data.State || ''];
     }
 
     return result;
   }
 
   renderTitle(data: CashVoucherModel) {
-    return `PhieuThu_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
+    return `Phieu_Thu_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
   }
 
   close() {
@@ -63,7 +69,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
     if (v && value['text']) {
       v = value['text'] || "";
     }
-    if(type === 'html') {
+    if (type === 'html') {
       return v.replace(/\n/g, '<br>');
     }
     return v;
@@ -125,6 +131,74 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
     //     this.close();
     //   });
     // }
+  }
+  
+  approvedConfirm(data: CashVoucherModel) {
+    // if (['COMPLETE'].indexOf(data.State) > -1) {
+    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //     {
+    //       label: this.commonService.translateText('Common.close'),
+    //       status: 'success',
+    //       action: () => {
+    //         this.onClose(data);
+    //       },
+    //     },
+    //   ]);
+    //   return;
+    // }
+    const params = { id: [data.Code] };
+    const processMap = AccountingModule.processMaps.cashVoucher[data.State || ''];
+    params['changeState'] = processMap?.nextState;
+    // let confirmText = '';
+    // let responseText = '';
+    // switch (data.State) {
+    //   case 'APPROVE':
+    //     params['changeState'] = 'COMPLETE';
+    //     confirmText = 'Common.completeConfirm';
+    //     responseText = 'Common.completeSuccess';
+    //     break;
+    //   default:
+    //     params['changeState'] = 'APPROVE';
+    //     confirmText = 'Common.approvedConfirm';
+    //     responseText = 'Common.approvedSuccess';
+    //     break;
+    // }
+
+    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+      {
+        label: this.commonService.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        status: 'danger',
+        action: () => {
+          this.loading = true;
+          this.apiService.putPromise<CashVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            this.loading = false;
+            this.onChange && this.onChange(data);
+            this.onClose && this.onClose(data);
+            this.close();
+            this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              status: 'success',
+            });
+            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            //   {
+            //     label: this.commonService.translateText('Common.close'),
+            //     status: 'success',
+            //     action: () => {
+            //     },
+            //   },
+            // ]);
+          }).catch(err => {
+            this.loading = false;
+          });
+        },
+      },
+    ]);
   }
 
 }

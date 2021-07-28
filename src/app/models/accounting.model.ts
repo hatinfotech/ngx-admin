@@ -46,6 +46,8 @@ export interface CashVoucherModel {
     Currency?: string;
     RelationVoucher?: string;
     Details?: CashVoucherDetailModel[];
+    State?: string;
+    Permission?: string;
 }
 
 export interface CashVoucherDetailModel {

@@ -154,8 +154,6 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
           instance.display = true;
           instance.status = 'success';
           instance.disabled = this.isChoosedMode;
-          // instance.style = 'text-align: right';
-          // instance.class = 'align-right';
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
@@ -163,10 +161,6 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap?.outline;
-            // instance.disabled = (value === 'APPROVE');
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
           });
           instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
             this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {

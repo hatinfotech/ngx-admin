@@ -6,10 +6,12 @@ import { takeUntil } from 'rxjs/operators';
 import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
+import { ResourcePermissionEditComponent } from '../../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { CashVoucherModel } from '../../../../../models/accounting.model';
 import { UserGroupModel } from '../../../../../models/user-group.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { AccountingModule } from '../../../accounting.module';
 import { CashPaymentVoucherFormComponent } from '../cash-payment-voucher-form/cash-payment-voucher-form.component';
 import { CashPaymentVoucherPrintComponent } from '../cash-payment-voucher-print/cash-payment-voucher-print.component';
 
@@ -85,7 +87,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
       Description: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
         type: 'string',
-        width: '20%',
+        width: '25%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       RelativeVouchers: {
@@ -130,52 +132,144 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
         title: this.commonService.translateText('Common.approve'),
         type: 'custom',
         width: '5%',
-        class: 'align-right',
+        // class: 'align-right',
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
           instance.icon = 'checkmark-circle';
           instance.display = true;
-          instance.status = 'warning';
+          instance.status = 'success';
+          instance.disabled = this.isChoosedMode;
+          instance.title = this.commonService.translateText('Common.approved');
+          instance.label = this.commonService.translateText('Common.approved');
+          instance.valueChange.subscribe(value => {
+            const processMap = AccountingModule.processMaps.cashVoucher[value || ''];
+            instance.label = this.commonService.translateText(processMap?.label);
+            instance.status = processMap?.status;
+            instance.outline = processMap?.outline;
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview(rs);
+            });
+          });
+        },
+      },
+      Permission: {
+        title: this.commonService.translateText('Common.permission'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        exclude: this.isChoosedMode,
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'shield';
+          instance.display = true;
+          instance.status = 'danger';
           instance.style = 'text-align: right';
           instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.approve');
+          instance.title = this.commonService.translateText('Common.preview');
           instance.valueChange.subscribe(value => {
             // instance.icon = value ? 'unlock' : 'lock';
             // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            instance.disabled = value !== 'REQUEST';
+            // instance.disabled = value !== 'REQUEST';
           });
           instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-            // this.commonService.openDialog(ShowcaseDialogComponent, {
-            //   context: {
-            //     title: this.commonService.translateText('Common.confirm'),
-            //     content: 'Accounting.CashPayment.approveConfirmText',
-            //     actions: [
-            //       {
-            //         label: this.commonService.translateText('Common.close'),
-            //         status: 'primary',
-            //       },
-            //       {
-            //         label: this.commonService.translateText('Common.approve'),
-            //         status: 'danger',
-            //         action: () => {
-            //           this.apiService.putPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: [rowData.Code], approve: true }, [{ Code: rowData.Code }]).then(rs => {
-            //             this.refresh();
-            //           });
-            //         }
-            //       },
-            //     ],
-            //   },
-            // });
 
-            this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
-              this.preview(rs[0]);
+            this.commonService.openDialog(ResourcePermissionEditComponent, {
+              context: {
+                inputMode: 'dialog',
+                inputId: [rowData.Code],
+                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                resourceName: this.commonService.translateText('Purchase.PurchaseVoucher  .title', { action: '', definition: '' }) + ` ${rowData.Description || ''}`,
+                // resrouce: rowData,
+                apiPath: this.apiPath,
+              }
             });
 
-
+            // this.getFormData([rowData.Code]).then(rs => {
+            //   this.preview(rs);
+            // });
+          });
+        },
+      },
+      Preview: {
+        title: this.commonService.translateText('Common.show'),
+        type: 'custom',
+        width: '5%',
+        class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'external-link-outline';
+          instance.display = true;
+          instance.status = 'primary';
+          instance.style = 'text-align: right';
+          instance.class = 'align-right';
+          instance.title = this.commonService.translateText('Common.preview');
+          instance.valueChange.subscribe(value => {
+            // instance.icon = value ? 'unlock' : 'lock';
+            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+            // instance.disabled = value !== 'REQUEST';
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            this.getFormData([rowData.Code]).then(rs => {
+              this.preview(rs);
+            });
           });
         },
       }
+      //   State: {
+      //     title: this.commonService.translateText('Common.approve'),
+      //     type: 'custom',
+      //     width: '5%',
+      //     class: 'align-right',
+      //     renderComponent: SmartTableButtonComponent,
+      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+      //       instance.iconPack = 'eva';
+      //       instance.icon = 'checkmark-circle';
+      //       instance.display = true;
+      //       instance.status = 'warning';
+      //       instance.style = 'text-align: right';
+      //       instance.class = 'align-right';
+      //       instance.title = this.commonService.translateText('Common.approve');
+      //       instance.valueChange.subscribe(value => {
+      //         // instance.icon = value ? 'unlock' : 'lock';
+      //         // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+      //         instance.disabled = value !== 'REQUEST';
+      //       });
+      //       instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+      //         // this.commonService.openDialog(ShowcaseDialogComponent, {
+      //         //   context: {
+      //         //     title: this.commonService.translateText('Common.confirm'),
+      //         //     content: 'Accounting.CashPayment.approveConfirmText',
+      //         //     actions: [
+      //         //       {
+      //         //         label: this.commonService.translateText('Common.close'),
+      //         //         status: 'primary',
+      //         //       },
+      //         //       {
+      //         //         label: this.commonService.translateText('Common.approve'),
+      //         //         status: 'danger',
+      //         //         action: () => {
+      //         //           this.apiService.putPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: [rowData.Code], approve: true }, [{ Code: rowData.Code }]).then(rs => {
+      //         //             this.refresh();
+      //         //           });
+      //         //         }
+      //         //       },
+      //         //     ],
+      //         //   },
+      //         // });
+
+      //         this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
+      //           this.preview(rs[0]);
+      //         });
+
+
+      //       });
+      //     },
+      //   }
     },
   });
 

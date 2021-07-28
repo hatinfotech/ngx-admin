@@ -28,6 +28,7 @@ import { AccAccountFormComponent } from './acc-account/acc-account-form/acc-acco
 import { AccBusinessListComponent } from './acc-business/acc-business-list/acc-business-list.component';
 import { AccBusinessFormComponent } from './acc-business/acc-business-form/acc-business-form.component';
 import { RelativeVoucherComponent } from '../general/voucher/relative-voucher/relative-voucher.component';
+import { ProcessMap } from '../../models/process-map.model';
 
 @NgModule({
   declarations: [AccountingComponent, CashReceiptVoucherListComponent, CashReceiptVoucherFormComponent, CashPaymentVoucherListComponent, CashPaymentVoucherFormComponent, CashReceiptVoucherFormComponent, CashReceiptVoucherListComponent, CashReceiptVoucherPrintComponent, CashPaymentVoucherPrintComponent, AccAccountListComponent, AccAccountFormComponent, AccBusinessListComponent, AccBusinessFormComponent],
@@ -82,4 +83,97 @@ import { RelativeVoucherComponent } from '../general/voucher/relative-voucher/re
     { provide: DecimalPipe, useValue: {} },
   ],
 })
-export class AccountingModule { }
+export class AccountingModule { 
+
+  static processMaps: {
+    cashVoucher?: {
+      [key: string]: ProcessMap
+    },
+    purchaseOrder?: {
+      [key: string]: ProcessMap
+    },
+  } = {
+      cashVoucher: {
+        "APPROVE": {
+          state: 'APPROVE',
+          label: 'Common.approved',
+          status: 'success',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "COMPLETE": {
+          state: 'COMPLETE',
+          label: 'Common.completed',
+          status: 'success',
+          outline: true,
+          nextState: 'UNBOOKKEEPING',
+          nextStateLabel: 'Common.unbookkeeping',
+          confirmText: 'Common.unbookkeepingConfirm',
+          responseTitle: 'Common.unbookkeeping',
+          restponseText: 'Common.unbookkeepingSuccess',
+        },
+        "UNBOOKKEEPING": {
+          state: 'UNBOOKKEEPING',
+          label: 'Common.unbookkeeped',
+          status: 'warning',
+          outline: true,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+        "": {
+          state: 'NOTJUSTAPPROVE',
+          label: 'Common.notJustApproved',
+          status: 'danger',
+          outline: false,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+      },
+      purchaseOrder: {
+        "APPROVE": {
+          state: 'APPROVE',
+          label: 'Common.approved',
+          status: 'success',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "COMPLETE": {
+          state: 'COMPLETE',
+          label: 'Common.completed',
+          status: 'success',
+          outline: true,
+          nextState: '',
+          nextStateLabel: '',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "": {
+          state: 'NOTJUSTAPPROVE',
+          label: 'Common.notJustApproved',
+          status: 'danger',
+          outline: false,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+      },
+    };
+
+}
