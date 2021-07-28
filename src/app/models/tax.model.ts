@@ -1,5 +1,6 @@
 export class TaxModel {
 
+  [key: string]: any;
   No: string;
   Code: string;
   Name: string;

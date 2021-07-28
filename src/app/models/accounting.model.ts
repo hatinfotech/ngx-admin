@@ -56,4 +56,6 @@ export interface CashVoucherDetailModel {
     Amount?: number;
     Currency?: string;
     AccountingBusiness?: string;
+    DebitAccount?: string;
+    CreditAccount?: string;
 }

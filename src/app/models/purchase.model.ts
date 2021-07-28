@@ -138,6 +138,7 @@ export class PurchaseOrderVoucherModel {
 
 export class PurchaseOrderVoucherDetailModel {
   Id?: string | number;
+  No?: number;
   Voucher?: PurchaseVoucherModel & string;
   Product?: ProductModel & string;
   ProductName?: string;

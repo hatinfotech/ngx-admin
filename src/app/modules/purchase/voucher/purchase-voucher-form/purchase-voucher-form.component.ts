@@ -11,7 +11,7 @@ import { DataManagerFormComponent } from '../../../../lib/data-manager/data-mana
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { PurchaseVoucherDetailModel, PurchaseVoucherModel } from '../../../../models/purchase.model';
+import { PurchaseOrderVoucherModel, PurchaseVoucherDetailModel, PurchaseVoucherModel } from '../../../../models/purchase.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
@@ -528,7 +528,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
             if (index < 0) {
               const details = this.getDetails(formGroup);
               // get purchase order
-              const purchaseOrder = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+              const purchaseOrder = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
               if (this.commonService.getObjectId(purchaseOrder.State) != 'APPROVE') {
                 this.commonService.toastService.show(this.commonService.translateText('Đơn đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
