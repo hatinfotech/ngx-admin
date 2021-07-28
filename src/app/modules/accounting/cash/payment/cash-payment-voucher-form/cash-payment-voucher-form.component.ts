@@ -354,7 +354,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
     if (data) {
       newForm.patchValue(data);
-      // this.toMoney(parentFormGroup, newForm);
+      this.toMoney(parentFormGroup);
     }
     return newForm;
   }
@@ -434,7 +434,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
     this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
-      const details = formItem.get('Details') as FormArray;
+      const details = this.getDetails(formItem);
       let total = 0;
       for (const detail of details.controls) {
         // total += this.calculatToMoney(details.controls[i] as FormGroup);
@@ -505,7 +505,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
               } else {
                 delete purchaseVoucher.Id;
                 formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
-                formGroup.get('Description').patchValue(purchaseVoucher.Title);
+                formGroup.get('Description').patchValue('Thanh toán cho ' + purchaseVoucher.Title);
                 details.clear();
               }
 
