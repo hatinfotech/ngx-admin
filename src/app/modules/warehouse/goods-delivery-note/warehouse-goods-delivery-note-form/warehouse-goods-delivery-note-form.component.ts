@@ -7,6 +7,7 @@ import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { BusinessModel } from '../../../../models/accounting.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { SalesVoucherModel } from '../../../../models/sales.model';
@@ -82,6 +83,22 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   };
 
   warehouseContainerList = [];
+
+  accountingBusinessList: BusinessModel[] = [];
+  select2OptionForAccountingBusiness = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -209,7 +226,10 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     } else {
       this.unitList = PurchaseOrderVoucherFormComponent._unitList;
     }
-    this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path'});
+
+    this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path' });
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSEDELIVERY', select: 'id=>Code,text=>Name,type=>Type' });
+
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -334,6 +354,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       // ToMoney: [0],
       Image: [[]],
       Container: [''],
+      Business: { value: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), disabled: true },
     });
 
     if (data) {
@@ -494,12 +515,14 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               // Insert order details into voucher details
               if (salesVoucher?.Details) {
                 details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + salesVoucher.Code + ' - ' + salesVoucher.Title }));
-                for (const orderDetail of salesVoucher.Details) {
-                  delete orderDetail.Id;
-                  delete orderDetail.Voucher;
-                  delete orderDetail.No;
-                  const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, orderDetail);
-                  details.push(newDtailFormGroup);
+                for (const voucherDetail of salesVoucher.Details) {
+                  if (voucherDetail.Type === 'PRODUCT') {
+                    delete voucherDetail.Id;
+                    delete voucherDetail.Voucher;
+                    delete voucherDetail.No;
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {...voucherDetail, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY')});
+                    details.push(newDtailFormGroup);
+                  }
                 }
               }
 

@@ -333,14 +333,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       this.taxList = SalesVoucherFormComponent._taxList;
     }
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' })
-      // .then(rs => rs.map(accBusiness => {
-      //   accBusiness['id'] = accBusiness.Code;
-      //   accBusiness['type'] = accBusiness.Type;
-      //   accBusiness['text'] = accBusiness.Name;
-      //   return accBusiness;
-      // }))
-      ;
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
 
     return super.init().then(status => {
       if (this.isDuplicate) {
@@ -490,7 +483,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
-      Business: { value: this.accountingBusinessList.filter(f => f.id === 'SALESWAREHOUSE' || f.id === 'NETREVENUE'), disabled: true },
+      Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
     });
 
     if (data) {

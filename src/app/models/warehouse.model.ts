@@ -3,6 +3,7 @@ import { ContactModel } from './contact.model';
 import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
 import { UnitModel } from './unit.model';
+import { BusinessModel } from './accounting.model';
 
 export class WarehouseModel {
   Id?: string | number;
@@ -115,7 +116,7 @@ export class WarehouseGoodsDeliveryNoteDetailModel {
   PriceOfDelivered?: number;
   Location?: string;
   ImageThumbnail?: string;
-  Business?: string;
+  Business?: BusinessModel[] | string;
   DebitAccount?: number;
   CreaditAccount?: number;
   Tax?: string & TaxModel;
