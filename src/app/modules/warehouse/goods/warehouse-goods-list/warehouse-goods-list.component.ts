@@ -213,7 +213,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         type: 'string',
         width: '5%',
       },
-      CostGoodsSold: {
+      CostOfGoodsSold: {
         title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
         type: 'currency',
         width: '10%',
@@ -223,7 +223,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         type: 'currency',
         width: '12%',
         valuePrepareFunction: (value: string, goods: GoodsModel) => {
-          return (goods['Inventory'] * goods['CostGoodsSold']).toString();
+          return (goods['Inventory'] * goods['CostOfGoodsSold']).toString();
         },
       },
     },
@@ -251,16 +251,16 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       return button;
     });
     this.actionButtonList.unshift({
-      name: 'calculateCostGoodsSold',
+      name: 'calculateCostOfGoodsSold',
       status: 'danger',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostGoodsSold'), 'head-title'),
+      label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
       icon: 'checkmark-square',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostGoodsSold'), 'head-title'),
+      title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
       size: 'medium',
       disabled: () => false,
       hidden: () => this.isChoosedMode,
       click: () => {
-        this.calculateCostGoodsSold();
+        this.calculateCostOfGoodsSold();
         return false;
       },
     });
@@ -325,8 +325,8 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     }
   }
 
-  async calculateCostGoodsSold() {
-    this.commonService.showDiaplog(this.commonService.translateText('Warehouse.calculateCostGoodsSold'), this.commonService.translateText('Warehouse.calculateCostGoodsSoldConfirm'), [
+  async calculateCostOfGoodsSold() {
+    this.commonService.showDiaplog(this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), this.commonService.translateText('Warehouse.calculateCostOfGoodsSoldConfirm'), [
       {
         label: this.commonService.translateText('Common.goback'),
         status: 'primary',
@@ -335,20 +335,20 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         }
       },
       {
-        label: this.commonService.translateText('Warehouse.calculateCostGoodsSold'),
+        label: this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'),
         status: 'danger',
         action: () => {
           this.toastService.show(
             this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
-            this.commonService.translateText('Warehouse.calculateCostGoodsSold'), {
+            this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), {
             status: 'warning',
             duration: 15000
           })
-          this.apiService.putPromise(this.apiPath, { calculateCostGoodsSold: true }, []).then(rs => {
+          this.apiService.putPromise(this.apiPath, { calculateCostOfGoodsSold: true }, []).then(rs => {
             this.refresh();
             this.toastService.show(
               this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
-              this.commonService.translateText('Warehouse.calculateCostGoodsSold'), {
+              this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), {
               status: 'success',
               duration: 5000
             })
