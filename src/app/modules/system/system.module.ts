@@ -12,8 +12,8 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 // import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { NgxMaskModule } from 'ngx-mask';
-import { options } from '../sales/sales.module';
+import { IConfig, NgxMaskModule } from 'ngx-mask';
+// import { options } from '../sales/sales.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SystemRoutingModule } from './system-routing.module';
 import { SystemParameterListComponent } from './parameter/system-parameter-list/system-parameter-list.component';
@@ -35,7 +35,7 @@ import { ThemeConfigBoardComponent } from './configuration/theme-config-board/th
 import { ThemeConfigComponent } from './configuration/theme-config-board/theme-config/theme-config.component';
 
 
-
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [SystemComponent, SystemParameterListComponent, SystemParameterFormComponent,

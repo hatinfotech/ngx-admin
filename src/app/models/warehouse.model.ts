@@ -51,6 +51,7 @@ export class WarehouseGoodsReceiptNoteModel {
 }
 
 export class WarehouseGoodsReceiptNoteDetailModel {
+  [key: string]: any;
   Id?: string | number;
   No?: number;
   Voucher?: string & WarehouseGoodsReceiptNoteModel;
@@ -63,7 +64,7 @@ export class WarehouseGoodsReceiptNoteDetailModel {
   PriceOfReceipted?: string;
   Location?: string;
   ImageThumbnail?: string;
-  Business?: string;
+  Business?: BusinessModel[] | string;
   DebitAccount?: number;
   CreaditAccount?: number;
   Tax?: string & TaxModel;

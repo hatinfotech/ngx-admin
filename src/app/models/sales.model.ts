@@ -42,7 +42,7 @@ export class SalesVoucherModel extends Model {
 }
 
 export class SalesVoucherDetailModel extends Model  {
-  Id?: string & number;
+  Id?: string | number;
   Type?: string;
   Voucher?: string;
   PriceTableDetail?: string;

@@ -83,7 +83,7 @@ import { ProcessMap } from '../../models/process-map.model';
     { provide: DecimalPipe, useValue: {} },
   ],
 })
-export class AccountingModule { 
+export class AccountingModule {
 
   static processMaps: {
     cashVoucher?: {

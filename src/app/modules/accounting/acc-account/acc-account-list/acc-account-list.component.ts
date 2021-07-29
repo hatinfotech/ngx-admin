@@ -154,4 +154,9 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
     };
   }
 
+  refresh() {
+    super.refresh();
+    this.apiService.getPromise<any>(this.apiPath, {getTotalBalance: true}).then(balances => this.totalBalance = balances);
+  }
+
 }

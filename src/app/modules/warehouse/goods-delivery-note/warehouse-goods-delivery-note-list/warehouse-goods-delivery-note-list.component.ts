@@ -12,7 +12,7 @@ import { CommonService } from "../../../../services/common.service";
 import { WarehouseModule } from "../../warehouse.module";
 import { WarehouseGoodsDeliveryNoteFormComponent } from "../warehouse-goods-delivery-note-form/warehouse-goods-delivery-note-form.component";
 import { WarehouseGoodsDeliveryNotePrintComponent } from "../warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component";
-import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from "../warehouse-simple-goods-delivery-note-form/warehouse-simple-goods-delivery-note-form.component";
+// import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from "../warehouse-simple-goods-delivery-note-form/warehouse-simple-goods-delivery-note-form.component";
 
 
 @Component({
