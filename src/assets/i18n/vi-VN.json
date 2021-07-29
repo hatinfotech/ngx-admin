@@ -435,6 +435,9 @@
         "GoodsContainer": {
             "title": "{{definition}}{{action}} chỗ chứa hàng hóa"
         },
+        "Goods": {
+            "title": "{{definition}}{{action}} hàng hóa"
+        },
         "Book": {
             "title": "{{definition}}{{action}} sổ kho",
             "voucherWasWroteInToWahouseBook": "phiếu đã được ghi vào sổ kho",
@@ -457,7 +460,11 @@
         "assign/unassignContainer": "gán/gở vị trí",
         "inventory": "tồn kho",
         "account": "tài khoản kho",
-        "warehousePrice": "giá kho"
+        "warehousePrice": "giá kho",
+        "costOfGoodsSold" : "giá kho",
+        "inventoryCost" : "tổng giá trị tồn",
+        "calculateCostGoodsSold": "tính giá vốn hàng hóa",
+        "calculateCostGoodsSoldConfirm": "bạn có chắc là muốn tính giá vốn hàng hóa trong kho?, lệnh này sẽ tính toán dựa trên phương pháp tính giá vốn trong cài đặt."
     },
     "AdminProduct": {
         "chooseProducts": "chọn sản phẩm",

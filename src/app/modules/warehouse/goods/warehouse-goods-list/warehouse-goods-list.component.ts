@@ -80,7 +80,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       Categories: {
         title: 'Danh mục',
         type: 'html',
-        width: '20%',
+        width: '15%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
           return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
         },
@@ -120,7 +120,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         type: 'html',
         width: '15%',
         valuePrepareFunction: (value: string, product: GoodsModel) => {
-          return  this.commonService.getObjectText(value);
+          return this.commonService.getObjectText(value);
           // try {
           //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
           // } catch (e) {
@@ -133,7 +133,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           config: {
             delay: 0,
             select2Option: {
-              placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', {action: this.commonService.translateText('Common.choose'), definition: ''}),
+              placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
               allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
@@ -162,7 +162,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       ConversionUnit: {
         title: 'ĐVT',
         type: 'html',
-        width: '10%',
+        width: '7%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
           return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
         },
@@ -172,7 +172,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           config: {
             delay: 0,
             select2Option: {
-              placeholder: this.commonService.translateText('AdminProduct.Unit.title', {action: this.commonService.translateText('Common.choose'), definition: ''}),
+              placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
               allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
@@ -211,7 +211,20 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       Inventory: {
         title: this.commonService.translateText('Warehouse.inventory'),
         type: 'string',
+        width: '5%',
+      },
+      CostGoodsSold: {
+        title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
+        type: 'currency',
         width: '10%',
+      },
+      InventoryCost: {
+        title: this.commonService.translateText('Warehouse.inventoryCost'),
+        type: 'currency',
+        width: '12%',
+        valuePrepareFunction: (value: string, goods: GoodsModel) => {
+          return (goods['Inventory'] * goods['CostGoodsSold']).toString();
+        },
       },
     },
   });
@@ -236,6 +249,20 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         };
       }
       return button;
+    });
+    this.actionButtonList.unshift({
+      name: 'calculateCostGoodsSold',
+      status: 'danger',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostGoodsSold'), 'head-title'),
+      icon: 'checkmark-square',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostGoodsSold'), 'head-title'),
+      size: 'medium',
+      disabled: () => false,
+      hidden: () => this.isChoosedMode,
+      click: () => {
+        this.calculateCostGoodsSold();
+        return false;
+      },
     });
   }
 
@@ -296,5 +323,38 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         closeOnBackdropClick: false,
       });
     }
+  }
+
+  async calculateCostGoodsSold() {
+    this.commonService.showDiaplog(this.commonService.translateText('Warehouse.calculateCostGoodsSold'), this.commonService.translateText('Warehouse.calculateCostGoodsSoldConfirm'), [
+      {
+        label: this.commonService.translateText('Common.goback'),
+        status: 'primary',
+        action: () => {
+
+        }
+      },
+      {
+        label: this.commonService.translateText('Warehouse.calculateCostGoodsSold'),
+        status: 'danger',
+        action: () => {
+          this.toastService.show(
+            this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
+            this.commonService.translateText('Warehouse.calculateCostGoodsSold'), {
+            status: 'warning',
+            duration: 15000
+          })
+          this.apiService.putPromise(this.apiPath, { calculateCostGoodsSold: true }, []).then(rs => {
+            this.refresh();
+            this.toastService.show(
+              this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
+              this.commonService.translateText('Warehouse.calculateCostGoodsSold'), {
+              status: 'success',
+              duration: 5000
+            })
+          });
+        }
+      },
+    ])
   }
 }
