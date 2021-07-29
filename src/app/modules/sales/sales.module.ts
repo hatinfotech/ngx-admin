@@ -1,3 +1,4 @@
+import { WarehouseModel } from './../../models/warehouse.model';
 import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { SalesComponent } from './sales.component';
@@ -36,6 +37,8 @@ import { ProductFormComponent } from '../admin-product/product/product-form/prod
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { ProcessMap } from '../../models/process-map.model';
 import { WarehouseGoodsDeliveryNotePrintComponent } from '../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
+import { WarehouseGoodsDeliveryNoteListComponent } from '../warehouse/goods-delivery-note/warehouse-goods-delivery-note-list/warehouse-goods-delivery-note-list.component';
+import { WarehouseModule } from '../warehouse/warehouse.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -54,7 +57,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NbIconModule,
     NbInputModule,
     NbCheckboxModule,
-    // IvoipDashboardModule,
     NbRouteTabsetModule,
     NbStepperModule,
     NbButtonModule,
@@ -73,7 +75,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     AgGridModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    // CKEditorModule,
     NbDialogModule.forChild(),
     SortablejsModule.forRoot({
       animation: 200,
@@ -101,7 +102,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     SmartTableCurrencyEditableComponent,
     // ProductFormComponent,
     SmartTableButtonComponent,
-    // WarehouseGoodsDeliveryNotePrintComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },

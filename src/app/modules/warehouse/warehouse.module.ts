@@ -116,85 +116,86 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     CurrencyPipe,
   ],
 })
-export class WarehouseModule { static processMaps: {
-  
-  warehouseReceiptGoodsNote?: {
-    [key: string]: ProcessMap
-  },
-  warehouseDeliveryGoodsNote?: {
-    [key: string]: ProcessMap
-  },
-} = {
-    warehouseReceiptGoodsNote: {
-      "BOOKKEEPING": {
-        state: 'BOOKKEEPING',
-        label: 'Common.bookkeeped',
-        status: 'success',
-        outline: true,
-        nextState: 'UNBOOKKEEPING',
-        nextStateLabel: 'Common.unbookkeeping',
-        confirmText: 'Common.unbookkeepingConfirm',
-        responseTitle: 'Common.unbookkeeped',
-        restponseText: 'Common.unbookkeepingSuccess',
+export class WarehouseModule {
+    static processMaps: {
+
+      warehouseReceiptGoodsNote?: {
+        [key: string]: ProcessMap
       },
-      "UNBOOKKEEPING": {
-        state: 'UNBOOKKEEPING',
-        label: 'Common.notJustBookkeeping',
-        status: 'danger',
-        outline: false,
-        nextState: 'BOOKKEEPING',
-        nextStateLabel: 'Common.bookkeeping',
-        confirmText: 'Common.bookkeepingConfirm',
-        responseTitle: 'Common.bookkeeping',
-        restponseText: 'Common.bookkeepingSuccess',
+      warehouseDeliveryGoodsNote?: {
+        [key: string]: ProcessMap
       },
-      "": {
-        state: 'NOTJUSTBOOKKEEPING',
-        label: 'Common.notJustBookkeeping',
-        status: 'danger',
-        outline: false,
-        nextState: 'BOOKKEEPING',
-        nextStateLabel: 'Common.bookkeeping',
-        confirmText: 'Common.bookkeepingConfirm',
-        responseTitle: 'Common.bookkeeping',
-        restponseText: 'Common.bookkeepingSuccess',
-      },
-    },
-    warehouseDeliveryGoodsNote: {
-      "BOOKKEEPING": {
-        state: 'BOOKKEEPING',
-        label: 'Common.bookkeeped',
-        status: 'success',
-        outline: true,
-        nextState: 'UNBOOKKEEPING',
-        nextStateLabel: 'Common.unbookkeeping',
-        confirmText: 'Common.unbookkeepingConfirm',
-        responseTitle: 'Common.unbookkeeped',
-        restponseText: 'Common.unbookkeepingSuccess',
-      },
-      "UNBOOKKEEPING": {
-        state: 'UNBOOKKEEPING',
-        label: 'Common.notJustBookkeeping',
-        status: 'danger',
-        outline: false,
-        nextState: 'BOOKKEEPING',
-        nextStateLabel: 'Common.bookkeeping',
-        confirmText: 'Common.bookkeepingConfirm',
-        responseTitle: 'Common.bookkeeping',
-        restponseText: 'Common.bookkeepingSuccess',
-      },
-      "": {
-        state: 'NOTJUSTBOOKKEEPING',
-        label: 'Common.notJustBookkeeping',
-        status: 'danger',
-        outline: false,
-        nextState: 'BOOKKEEPING',
-        nextStateLabel: 'Common.bookkeeping',
-        confirmText: 'Common.bookkeepingConfirm',
-        responseTitle: 'Common.bookkeeping',
-        restponseText: 'Common.bookkeepingSuccess',
-      },
-    },
-  };
+    } = {
+        warehouseReceiptGoodsNote: {
+          "BOOKKEEPING": {
+            state: 'BOOKKEEPING',
+            label: 'Common.bookkeeped',
+            status: 'success',
+            outline: true,
+            nextState: 'UNBOOKKEEPING',
+            nextStateLabel: 'Common.unbookkeeping',
+            confirmText: 'Common.unbookkeepingConfirm',
+            responseTitle: 'Common.unbookkeeped',
+            restponseText: 'Common.unbookkeepingSuccess',
+          },
+          "UNBOOKKEEPING": {
+            state: 'UNBOOKKEEPING',
+            label: 'Common.notJustBookkeeping',
+            status: 'danger',
+            outline: false,
+            nextState: 'BOOKKEEPING',
+            nextStateLabel: 'Common.bookkeeping',
+            confirmText: 'Common.bookkeepingConfirm',
+            responseTitle: 'Common.bookkeeping',
+            restponseText: 'Common.bookkeepingSuccess',
+          },
+          "": {
+            state: 'NOTJUSTBOOKKEEPING',
+            label: 'Common.notJustBookkeeping',
+            status: 'danger',
+            outline: false,
+            nextState: 'BOOKKEEPING',
+            nextStateLabel: 'Common.bookkeeping',
+            confirmText: 'Common.bookkeepingConfirm',
+            responseTitle: 'Common.bookkeeping',
+            restponseText: 'Common.bookkeepingSuccess',
+          },
+        },
+        warehouseDeliveryGoodsNote: {
+          "BOOKKEEPING": {
+            state: 'BOOKKEEPING',
+            label: 'Common.bookkeeped',
+            status: 'success',
+            outline: true,
+            nextState: 'UNBOOKKEEPING',
+            nextStateLabel: 'Common.unbookkeeping',
+            confirmText: 'Common.unbookkeepingConfirm',
+            responseTitle: 'Common.unbookkeeped',
+            restponseText: 'Common.unbookkeepingSuccess',
+          },
+          "UNBOOKKEEPING": {
+            state: 'UNBOOKKEEPING',
+            label: 'Common.notJustBookkeeping',
+            status: 'danger',
+            outline: false,
+            nextState: 'BOOKKEEPING',
+            nextStateLabel: 'Common.bookkeeping',
+            confirmText: 'Common.bookkeepingConfirm',
+            responseTitle: 'Common.bookkeeping',
+            restponseText: 'Common.bookkeepingSuccess',
+          },
+          "": {
+            state: 'NOTJUSTBOOKKEEPING',
+            label: 'Common.notJustBookkeeping',
+            status: 'danger',
+            outline: false,
+            nextState: 'BOOKKEEPING',
+            nextStateLabel: 'Common.bookkeeping',
+            confirmText: 'Common.bookkeepingConfirm',
+            responseTitle: 'Common.bookkeeping',
+            restponseText: 'Common.bookkeepingSuccess',
+          },
+        },
+      };
 
 }
