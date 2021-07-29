@@ -295,7 +295,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             // instance.disabled = value !== 'REQUEST';
           });
           instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
-            this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+            this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
               this.preview(rs);
             });
           });
@@ -359,9 +359,12 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             // instance.disabled = value !== 'REQUEST';
           });
           instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
-            this.getFormData([rowData.Code]).then(rs => {
-              this.preview(rs, 'list');
+            this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
+              this.preview(rs);
             });
+            // this.getFormData([rowData.Code]).then(rs => {
+            //   this.preview(rs, 'list');
+            // });
           });
         },
       }

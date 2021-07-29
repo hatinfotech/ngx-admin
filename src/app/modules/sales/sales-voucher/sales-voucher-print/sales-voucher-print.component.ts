@@ -74,7 +74,12 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     if (value && value['text']) {
       html = value['text'];
     }
-    return (html || '').replace(/\n/g, '<br>');
+    try {
+      return (html && html?.placeholder || html || '').toString().replace(/\n/g, '<br>');
+    } catch (e) {
+      console.error(e);
+      return '';
+    }
   }
 
   toMoney(detail: SalesVoucherDetailModel) {

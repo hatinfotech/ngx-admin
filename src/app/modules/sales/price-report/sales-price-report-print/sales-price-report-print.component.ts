@@ -89,7 +89,12 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     if (value && value['text']) {
       html = value['text'];
     }
-    return (html && html?.placeholder || html || '').replace(/\n/g, '<br>');
+    try {
+      return (html && html?.placeholder || html || '').toString().replace(/\n/g, '<br>');
+    } catch (e) {
+      console.error(e);
+      return '';
+    }
   }
 
   toMoney(detail: SalesPriceReportDetailModel) {
