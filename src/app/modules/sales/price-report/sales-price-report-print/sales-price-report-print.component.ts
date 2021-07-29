@@ -1,4 +1,4 @@
-import { SalesModule } from './../../sales.module';
+// import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { environment } from '../../../../../environments/environment';
 import { DatePipe } from '@angular/common';
 import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
+import { AppModule } from '../../../../app.module';
 
 declare var $: JQueryStatic;
 
@@ -63,7 +64,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
           data['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
-      this.processMapList[i] = SalesModule.processMaps.priceReport[data.State || ''];
+      this.processMapList[i] = AppModule.processMaps.priceReport[data.State || ''];
     }
     return result;
   }

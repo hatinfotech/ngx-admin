@@ -3,12 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { environment } from '../../../../../../environments/environment';
+import { AppModule } from '../../../../../app.module';
 import { DataManagerPrintComponent } from '../../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherModel, CashVoucherDetailModel } from '../../../../../models/accounting.model';
 import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
-import { AccountingModule } from '../../../accounting.module';
+// import { AccountingModule } from '../../../accounting.module';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-print',
@@ -50,7 +51,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
       for (const detail of data.Details) {
         data['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);
       }
-      this.processMapList[i] = AccountingModule.processMaps.cashVoucher[data.State || ''];
+      this.processMapList[i] = AppModule.processMaps.cashVoucher[data.State || ''];
     }
 
     return result;
@@ -147,7 +148,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
     //   return;
     // }
     const params = { id: [data.Code] };
-    const processMap = AccountingModule.processMaps.cashVoucher[data.State || ''];
+    const processMap = AppModule.processMaps.cashVoucher[data.State || ''];
     params['changeState'] = processMap?.nextState;
     // let confirmText = '';
     // let responseText = '';

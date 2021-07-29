@@ -1,4 +1,4 @@
-import { SalesModule } from './../../sales.module';
+// import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { SalesVoucherModel } from '../../../../models/sales.model';
@@ -15,6 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
+import { AppModule } from '../../../../app.module';
 
 @Component({
   selector: 'ngx-sales-voucher-list',
@@ -197,7 +198,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = SalesModule.processMaps.salesVoucher[value || ''];
+            const processMap = AppModule.processMaps.salesVoucher[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap?.outline;

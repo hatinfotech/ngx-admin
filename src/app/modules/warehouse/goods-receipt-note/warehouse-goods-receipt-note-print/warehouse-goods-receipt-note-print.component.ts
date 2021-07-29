@@ -8,7 +8,8 @@ import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
 import { ProcessMap } from '../../../../models/process-map.model';
-import { WarehouseModule } from '../../warehouse.module';
+import { AppModule } from '../../../../app.module';
+// import { AppModule } from '../../warehouse.module';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-print',
@@ -51,7 +52,7 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
       for (const detail of data.Details) {
         data['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = WarehouseModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
+      this.processMapList[i] = AppModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
     }
 
     return result;
@@ -143,7 +144,7 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
     //   return;
     // }
     const params = { id: [data.Code] };
-    const processMap = WarehouseModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
+    const processMap = AppModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
     params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
     // let responseText = '';

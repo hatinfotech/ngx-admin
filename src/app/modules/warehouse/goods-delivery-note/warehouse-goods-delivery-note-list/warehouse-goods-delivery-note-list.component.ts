@@ -3,13 +3,14 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { NbDialogService, NbToastrService, NbDialogRef } from "@nebular/theme";
 import { takeUntil } from "rxjs/operators";
+import { AppModule } from "../../../../app.module";
 import { SmartTableDateTimeComponent, SmartTableButtonComponent } from "../../../../lib/custom-element/smart-table/smart-table.component";
 import { ServerDataManagerListComponent } from "../../../../lib/data-manager/server-data-manger-list.component";
 import { ResourcePermissionEditComponent } from "../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component";
 import { WarehouseGoodsDeliveryNoteModel } from "../../../../models/warehouse.model";
 import { ApiService } from "../../../../services/api.service";
 import { CommonService } from "../../../../services/common.service";
-import { WarehouseModule } from "../../warehouse.module";
+// import { AppModule } from "../../warehouse.module";
 import { WarehouseGoodsDeliveryNoteFormComponent } from "../warehouse-goods-delivery-note-form/warehouse-goods-delivery-note-form.component";
 import { WarehouseGoodsDeliveryNotePrintComponent } from "../warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component";
 // import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from "../warehouse-simple-goods-delivery-note-form/warehouse-simple-goods-delivery-note-form.component";
@@ -174,7 +175,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = WarehouseModule.processMaps.warehouseDeliveryGoodsNote[value || ''];
+            const processMap = AppModule.processMaps.warehouseDeliveryGoodsNote[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap?.outline;

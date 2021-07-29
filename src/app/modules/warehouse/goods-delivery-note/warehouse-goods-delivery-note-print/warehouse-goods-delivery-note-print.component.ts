@@ -8,7 +8,8 @@ import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
 import { ProcessMap } from '../../../../models/process-map.model';
-import { WarehouseModule } from '../../warehouse.module';
+import { AppModule } from '../../../../app.module';
+// import { AppModule } from '../../warehouse.module';
 
 @Component({
   selector: 'ngx-warehouse-goods-delivery-note-print',
@@ -51,7 +52,7 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
       for (const detail of data.Details) {
         data['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = WarehouseModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
+      this.processMapList[i] = AppModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
     }
 
     return result;
@@ -143,7 +144,7 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
     //   return;
     // }
     const params = { id: [data.Code] };
-    const processMap = WarehouseModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
+    const processMap = AppModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
     params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
     // let responseText = '';

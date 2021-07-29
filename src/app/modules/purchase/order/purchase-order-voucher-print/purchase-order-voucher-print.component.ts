@@ -3,12 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { environment } from '../../../../../environments/environment';
+import { AppModule } from '../../../../app.module';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { PurchaseOrderVoucherModel, PurchaseVoucherDetailModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { PurchaseModule } from '../../purchase.module';
+// import { PurchaseModule } from '../../purchase.module';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-print',
@@ -50,7 +51,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
       for (const detail of data.Details) {
         data['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = PurchaseModule.processMaps.purchaseOrder[data.State || ''];
+      this.processMapList[i] = AppModule.processMaps.purchaseOrder[data.State || ''];
     }
 
     return result;
@@ -133,7 +134,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
       return;
     }
     const params = { id: [data.Code] };
-    const processMap = PurchaseModule.processMaps.purchaseVoucher[data.State || ''];
+    const processMap = AppModule.processMaps.purchaseVoucher[data.State || ''];
     params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
     // let responseText = '';

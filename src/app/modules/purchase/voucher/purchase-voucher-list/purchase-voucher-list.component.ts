@@ -12,8 +12,9 @@ import { PurchaseVoucherFormComponent } from '../purchase-voucher-form/purchase-
 import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchase-voucher-print.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { takeUntil } from 'rxjs/operators';
-import { PurchaseModule } from '../../purchase.module';
+// import { PurchaseModule } from '../../purchase.module';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { AppModule } from '../../../../app.module';
 
 @Component({
   selector: 'ngx-purchase-voucher-list',
@@ -157,7 +158,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = PurchaseModule.processMaps.purchaseVoucher[value || ''];
+            const processMap = AppModule.processMaps.purchaseVoucher[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap?.outline;

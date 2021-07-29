@@ -1,4 +1,4 @@
-import { SalesModule } from './../../sales.module';
+// import { SalesModule } from './../../sales.module';
 import { ProcessMap } from './../../../../models/process-map.model';
 import { MobileAppService } from './../../../mobile-app/mobile-app.service';
 import { PriceReportModel } from './../../../../models/price-report.model';
@@ -19,6 +19,7 @@ import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sale
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { AppModule } from '../../../../app.module';
 
 @Component({
   selector: 'ngx-sales-price-report-list',
@@ -285,7 +286,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = SalesModule.processMaps.priceReport[value || ''];
+            const processMap = AppModule.processMaps.priceReport[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap.outline;

@@ -23,6 +23,7 @@ import { PurchaseVoucherPrintComponent } from '../../../purchase/voucher/purchas
 import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { SalesVoucherPrintComponent } from '../../../sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
+import { BusinessModel } from '../../../../models/accounting.model';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-form',
@@ -85,6 +86,22 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   uploadConfig = {
 
+  };
+
+  accountingBusinessList: BusinessModel[] = [];
+  select2OptionForAccountingBusiness = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
   };
 
   constructor(
@@ -213,7 +230,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     // } else {
     //   this.unitList = PurchaseOrderVoucherFormComponent._unitList;
     // }
-    this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path'});
+
+    this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path' });
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSERECEIPT', select: 'id=>Code,text=>Name,type=>Type' });
+
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -339,6 +359,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       // ToMoney: [0],
       Image: [[]],
       Container: [''],
+      RelateDetail: [''],
+      Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSRECEIPT')],
     });
 
     if (data) {
@@ -464,79 +486,82 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     return super.getRawFormData();
   }
 
-  // openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-  //   this.commonService.openDialog(PurchaseVoucherListComponent, {
-  //     context: {
-  //       inputMode: 'dialog',
-  //       onDialogChoose: async (chooseItems: PurchaseVoucherModel[]) => {
-  //         console.log(chooseItems);
-  //         const relationVoucher = formGroup.get('RelativeVouchers');
-  //         const relationVoucherValue: any[] = (relationVoucher.value || []);
-  //         const insertList = [];
-  //         for (let i = 0; i < chooseItems.length; i++) {
-  //           const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
-  //           if (index < 0) {
-  //             const details = this.getDetails(formGroup);
-  //             // get purchase order
-  //             const salesVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.commonService.openDialog(PurchaseVoucherListComponent, {
+      context: {
+        inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: PurchaseVoucherModel[]) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          for (let i = 0; i < chooseItems.length; i++) {
+            const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+            if (index < 0) {
+              const details = this.getDetails(formGroup);
+              // get purchase order
+              const salesVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-  //             if (this.commonService.getObjectId(salesVoucher.State) != 'APPROVE') {
-  //               this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-  //               continue;
-  //             }
-  //             if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-  //               if (this.commonService.getObjectId(salesVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-  //                 this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-  //                 continue;
-  //               }
-  //             } else {
-  //               delete salesVoucher.Id;
-  //               formGroup.patchValue({ ...salesVoucher, Code: null, Details: [] });
-  //               details.clear();
-  //             }
-  //             insertList.push(chooseItems[i]);
+              if (this.commonService.getObjectId(salesVoucher.State) != 'APPROVE') {
+                this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                continue;
+              }
+              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                if (this.commonService.getObjectId(salesVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+              } else {
+                delete salesVoucher.Id;
+                formGroup.patchValue({ ...salesVoucher, Code: null, Details: [] });
+                details.clear();
+              }
+              insertList.push(chooseItems[i]);
 
-  //             // Insert order details into voucher details
-  //             if (salesVoucher?.Details) {
-  //               details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + salesVoucher.Code + ' - ' + salesVoucher.Title }));
-  //               for (const orderDetail of salesVoucher.Details) {
-  //                 delete orderDetail.Id;
-  //                 delete orderDetail.Voucher;
-  //                 delete orderDetail.No;
-  //                 const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, orderDetail);
-  //                 details.push(newDtailFormGroup);
-  //               }
-  //             }
+              // Insert order details into voucher details
+              if (salesVoucher?.Details) {
+                details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + salesVoucher.Code + ' - ' + salesVoucher.Title }));
+                for (const voucherDetail of salesVoucher.Details) {
+                  if (voucherDetail.Type === 'PRODUCT') {
+                    // delete orderDetail.Id;
+                    // delete orderDetail.Voucher;
+                    // delete orderDetail.No;
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null });
+                    newDtailFormGroup.get('Business').disable();
+                    details.push(newDtailFormGroup);
+                  }
+                }
+              }
 
-  //           }
-  //         }
-  //         relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
-  //       },
-  //       onDialogClose: () => {
-  //       },
-  //     }
-  //   })
-  //   return false;
-  // }
+            }
+          }
+          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+        },
+        onDialogClose: () => {
+        },
+      }
+    })
+    return false;
+  }
 
-  // openRelativeVoucher(relativeVocher: any) {
-  //   if (relativeVocher && relativeVocher.type == 'PURCHASE') {
-  //     this.commonService.openDialog(PurchaseVoucherPrintComponent, {
-  //       context: {
-  //         showLoadinng: true,
-  //         title: 'Xem trước',
-  //         id: [this.commonService.getObjectId(relativeVocher)],
-  //         // data: data,
-  //         idKey: ['Code'],
-  //         // approvedConfirm: true,
-  //         onClose: (data: SalesVoucherModel) => {
-  //           this.refresh();
-  //         },
-  //       },
-  //     });
-  //   }
-  //   return false;
-  // }
+  openRelativeVoucher(relativeVocher: any) {
+    if (relativeVocher && relativeVocher.type == 'PURCHASE') {
+      this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+        context: {
+          showLoadinng: true,
+          title: 'Xem trước',
+          id: [this.commonService.getObjectId(relativeVocher)],
+          // data: data,
+          idKey: ['Code'],
+          // approvedConfirm: true,
+          onClose: (data: SalesVoucherModel) => {
+            this.refresh();
+          },
+        },
+      });
+    }
+    return false;
+  }
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');

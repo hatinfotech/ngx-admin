@@ -10,8 +10,8 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { WarehouseGoodsReceiptNoteFormComponent } from '../warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
 import { takeUntil } from 'rxjs/operators';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { WarehouseModule } from '../../warehouse.module';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
+import { AppModule } from '../../../../app.module';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-list',
@@ -172,7 +172,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = WarehouseModule.processMaps.warehouseDeliveryGoodsNote[value || ''];
+            const processMap = AppModule.processMaps.warehouseDeliveryGoodsNote[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap?.outline;

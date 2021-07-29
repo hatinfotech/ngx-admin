@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
+import { AppModule } from '../../../../../app.module';
 import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
@@ -11,7 +12,7 @@ import { CashVoucherModel } from '../../../../../models/accounting.model';
 import { UserGroupModel } from '../../../../../models/user-group.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
-import { AccountingModule } from '../../../accounting.module';
+// import { AccountingModule } from '../../../accounting.module';
 import { CashReceiptVoucherFormComponent } from '../cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 
@@ -143,7 +144,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = AccountingModule.processMaps.cashVoucher[value || ''];
+            const processMap = AppModule.processMaps.cashVoucher[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap?.outline;

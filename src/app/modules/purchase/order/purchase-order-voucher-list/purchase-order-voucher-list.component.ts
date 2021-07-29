@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
+import { AppModule } from '../../../../app.module';
 import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -10,7 +11,7 @@ import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/comp
 import { PurchaseOrderVoucherModel, PurchaseVoucherModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { PurchaseModule } from '../../purchase.module';
+// import { PurchaseModule } from '../../purchase.module';
 import { PurchaseOrderVoucherFormComponent } from '../purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 
@@ -166,7 +167,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = PurchaseModule.processMaps.purchaseOrder[value || ''];
+            const processMap = AppModule.processMaps.purchaseOrder[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);
             instance.status = processMap?.status;
             instance.outline = processMap?.outline;
