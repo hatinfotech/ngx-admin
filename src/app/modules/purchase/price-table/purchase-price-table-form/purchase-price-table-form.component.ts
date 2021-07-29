@@ -9,11 +9,11 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
+// import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
-import { PurchasePriceTablePrintComponent } from '../purchase-price-table-print/purchase-price-table-print.component';
+// import { PurchasePriceTablePrintComponent } from '../purchase-price-table-print/purchase-price-table-print.component';
 import * as XLSX from 'xlsx';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 
@@ -183,26 +183,26 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
   async init(): Promise<boolean> {
 
     /** Load and cache tax list */
-    if (!SalesPriceReportFormComponent._taxList) {
-      this.taxList = SalesPriceReportFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = SalesPriceReportFormComponent._taxList;
-    }
+    this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!SalesPriceReportFormComponent._taxList) {
+    // } else {
+    //   this.taxList = SalesPriceReportFormComponent._taxList;
+    // }
 
     /** Load and cache unit list */
-    if (!SalesPriceReportFormComponent._unitList) {
-      this.unitList = SalesPriceReportFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = SalesPriceReportFormComponent._taxList;
-    }
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!SalesPriceReportFormComponent._unitList) {
+    // } else {
+    //   this.taxList = SalesPriceReportFormComponent._taxList;
+    // }
     return super.init();
   }
 

@@ -16,7 +16,7 @@ import { UnitModel } from '../../../../models/unit.model';
 import { WarehouseGoodsContainerModel, WarehouseGoodsDeliveryNoteDetailModel, WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { PurchaseOrderVoucherFormComponent } from '../../../purchase/order/purchase-order-voucher-form/purchase-order-voucher-form.component';
+// import { PurchaseOrderVoucherFormComponent } from '../../../purchase/order/purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { SalesVoucherPrintComponent } from '../../../sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { WarehouseGoodsDeliveryNotePrintComponent } from '../warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
@@ -217,15 +217,15 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     // }
 
     /** Load and cache unit list */
-    if (!PurchaseOrderVoucherFormComponent._unitList) {
-      this.unitList = PurchaseOrderVoucherFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.unitList = PurchaseOrderVoucherFormComponent._unitList;
-    }
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!PurchaseOrderVoucherFormComponent._unitList) {
+    // } else {
+    //   this.unitList = PurchaseOrderVoucherFormComponent._unitList;
+    // }
 
     this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path' });
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSEDELIVERY', select: 'id=>Code,text=>Name,type=>Type' });

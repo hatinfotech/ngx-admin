@@ -5,16 +5,13 @@ import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxMo
 import { WarehouseRoutingModule } from './warehouse-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
-import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-// import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { NgxMaskModule } from 'ngx-mask';
-import { options } from '../sales/sales.module';
+import { IConfig, NgxMaskModule } from 'ngx-mask';
 import { TranslateModule } from '@ngx-translate/core';
 import { WarehouseGoodsReceiptNoteListComponent } from './goods-receipt-note/warehouse-goods-receipt-note-list/warehouse-goods-receipt-note-list.component';
 import { WarehouseGoodsReceiptNoteFormComponent } from './goods-receipt-note/warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
@@ -22,7 +19,6 @@ import { WarehouseGoodsReceiptNotePrintComponent } from './goods-receipt-note/wa
 import { WarehouseGoodsDeliveryNoteListComponent } from './goods-delivery-note/warehouse-goods-delivery-note-list/warehouse-goods-delivery-note-list.component';
 import { WarehouseGoodsDeliveryNoteFormComponent } from './goods-delivery-note/warehouse-goods-delivery-note-form/warehouse-goods-delivery-note-form.component';
 import { WarehouseGoodsDeliveryNotePrintComponent } from './goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
-import { WarehouseSimpleGoodsReceiptNoteFormComponent } from './goods-receipt-note/warehouse-simple-goods-receipt-note-form/warehouse-simple-goods-receipt-note-form.component';
 import { WarehouseGoodsContainerListComponent } from './goods-container/warehouse-goods-container-list/warehouse-goods-container-list.component';
 import { WarehouseGoodsContainerFormComponent } from './goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { WarehouseGoodsContainerPrintComponent } from './goods-container/warehouse-goods-container-print/warehouse-goods-container-print.component';
@@ -37,13 +33,10 @@ import { WarehouseGoodsFormComponent } from './goods/warehouse-goods-form/wareho
 import { WarehouseGoodsPrintComponent } from './goods/warehouse-goods-print/warehouse-goods-print.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { AssignContainerFormComponent } from './goods/assign-containers-form/assign-containers-form.component';
-import { WarehouseSimpleGoodsDeliveryNoteFormComponent } from './goods-delivery-note/warehouse-simple-goods-delivery-note-form/warehouse-simple-goods-delivery-note-form.component';
 import { WarehouseBookCommitComponent } from './book/warehouse-book-commit/warehouse-book-commit.component';
 import { ProcessMap } from '../../models/process-map.model';
-import { PurchaseVoucherListComponent } from '../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
-import { PurchaseVoucherPrintComponent } from '../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 
-
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [
@@ -54,7 +47,6 @@ import { PurchaseVoucherPrintComponent } from '../purchase/voucher/purchase-vouc
     WarehouseGoodsDeliveryNoteListComponent,
     WarehouseGoodsDeliveryNoteFormComponent,
     WarehouseGoodsDeliveryNotePrintComponent,
-    WarehouseSimpleGoodsReceiptNoteFormComponent,
     WarehouseGoodsContainerListComponent,
     WarehouseGoodsContainerFormComponent,
     WarehouseGoodsContainerPrintComponent,
@@ -68,7 +60,6 @@ import { PurchaseVoucherPrintComponent } from '../purchase/voucher/purchase-vouc
     WarehouseGoodsFormComponent,
     WarehouseGoodsPrintComponent,
     AssignContainerFormComponent,
-    WarehouseSimpleGoodsDeliveryNoteFormComponent,
     WarehouseBookCommitComponent,
   ],
   imports: [
@@ -81,7 +72,7 @@ import { PurchaseVoucherPrintComponent } from '../purchase/voucher/purchase-vouc
     NbIconModule,
     NbInputModule,
     NbCheckboxModule,
-    IvoipDashboardModule,
+    // IvoipDashboardModule,
     NbRouteTabsetModule,
     NbStepperModule,
     NbButtonModule,
@@ -110,18 +101,16 @@ import { PurchaseVoucherPrintComponent } from '../purchase/voucher/purchase-vouc
     TranslateModule,
   ],
   entryComponents: [
-    WarehouseSimpleGoodsReceiptNoteFormComponent,
     WarehouseGoodsContainerFormComponent,
     WarehouseBookFormComponent,
     WarehouseGoodsFormComponent,
-    AssignContainerFormComponent,
-    WarehouseSimpleGoodsDeliveryNoteFormComponent,
+    // AssignContainerFormComponent,
     WarehouseGoodsDeliveryNotePrintComponent,
     WarehouseBookCommitComponent,
     WarehouseGoodsDeliveryNoteFormComponent,
     WarehouseGoodsReceiptNoteFormComponent,
-    PurchaseVoucherListComponent,
-    PurchaseVoucherPrintComponent,
+    // PurchaseVoucherListComponent,
+    // PurchaseVoucherPrintComponent,
   ],
   providers: [
     CurrencyPipe,

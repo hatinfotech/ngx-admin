@@ -16,7 +16,7 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { SalesVoucherFormComponent } from '../../../sales/sales-voucher/sales-voucher-form/sales-voucher-form.component';
+// import { SalesVoucherFormComponent } from '../../../sales/sales-voucher/sales-voucher-form/sales-voucher-form.component';
 import { PurchaseOrderVoucherListComponent } from '../../order/purchase-order-voucher-list/purchase-order-voucher-list.component';
 import { PurchaseOrderVoucherPrintComponent } from '../../order/purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { BusinessModel } from '../../../../models/accounting.model';
@@ -204,27 +204,27 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   async init(): Promise<boolean> {
 
     /** Load and cache tax list */
-    if (!SalesVoucherFormComponent._taxList) {
-      this.taxList = SalesVoucherFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = SalesVoucherFormComponent._taxList;
-    }
+    this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!SalesVoucherFormComponent._taxList) {
+    // } else {
+    //   this.taxList = SalesVoucherFormComponent._taxList;
+    // }
 
     /** Load and cache unit list */
-    if (!SalesVoucherFormComponent._unitList) {
-      this.unitList = SalesVoucherFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = SalesVoucherFormComponent._taxList;
-    }
-    
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!SalesVoucherFormComponent._unitList) {
+    // } else {
+    //   this.taxList = SalesVoucherFormComponent._taxList;
+    // }
+
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PURCHASE' }).then(rs => rs.map(accBusiness => {
       accBusiness['id'] = accBusiness.Code;
       accBusiness['text'] = accBusiness.Name;

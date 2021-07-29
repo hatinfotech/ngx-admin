@@ -183,26 +183,26 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   async init(): Promise<boolean> {
 
     /** Load and cache tax list */
-    if (!PurchaseOrderVoucherFormComponent._taxList) {
-      this.taxList = PurchaseOrderVoucherFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = PurchaseOrderVoucherFormComponent._taxList;
-    }
+    this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!PurchaseOrderVoucherFormComponent._taxList) {
+    // } else {
+    //   this.taxList = PurchaseOrderVoucherFormComponent._taxList;
+    // }
 
     /** Load and cache unit list */
-    if (!PurchaseOrderVoucherFormComponent._unitList) {
-      this.unitList = PurchaseOrderVoucherFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = PurchaseOrderVoucherFormComponent._taxList;
-    }
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!PurchaseOrderVoucherFormComponent._unitList) {
+    // } else {
+    //   this.taxList = PurchaseOrderVoucherFormComponent._taxList;
+    // }
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id

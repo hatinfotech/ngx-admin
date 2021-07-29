@@ -316,26 +316,26 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   async init(): Promise<boolean> {
 
     /** Load and cache tax list */
-    if (!SalesVoucherFormComponent._taxList) {
-      this.taxList = SalesVoucherFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = SalesVoucherFormComponent._taxList;
-    }
+    this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!SalesVoucherFormComponent._taxList) {
+    // } else {
+    //   this.taxList = SalesVoucherFormComponent._taxList;
+    // }
 
     /** Load and cache unit list */
-    if (!SalesVoucherFormComponent._unitList) {
-      this.unitList = SalesVoucherFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = SalesVoucherFormComponent._taxList;
-    }
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!SalesVoucherFormComponent._unitList) {
+    // } else {
+    //   this.taxList = SalesVoucherFormComponent._taxList;
+    // }
 
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
 
@@ -883,24 +883,24 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   //   return false;
   // }
 
-  // openRelativeVoucher(relativeVocher: any) {
-  //   if (relativeVocher && relativeVocher.type == 'GOODSDELIVERY') {
-  //     this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
-  //       context: {
-  //         showLoadinng: true,
-  //         title: 'Xem trước',
-  //         id: [this.commonService.getObjectId(relativeVocher)],
-  //         // data: data,
-  //         idKey: ['Code'],
-  //         // approvedConfirm: true,
-  //         onClose: (data: SalesVoucherModel) => {
-  //           this.refresh();
-  //         },
-  //       },
-  //     });
-  //   }
-  //   return false;
-  // }
+  openRelativeVoucher(relativeVocher: any) {
+    // if (relativeVocher && relativeVocher.type == 'GOODSDELIVERY') {
+    //   this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
+    //     context: {
+    //       showLoadinng: true,
+    //       title: 'Xem trước',
+    //       id: [this.commonService.getObjectId(relativeVocher)],
+    //       // data: data,
+    //       idKey: ['Code'],
+    //       // approvedConfirm: true,
+    //       onClose: (data: SalesVoucherModel) => {
+    //         this.refresh();
+    //       },
+    //     },
+    //   });
+    // }
+    return false;
+  }
 
   // removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
   //   const relationVoucher = formGroup.get('RelativeVouchers');

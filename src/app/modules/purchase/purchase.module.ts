@@ -15,8 +15,8 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 // import { CKEditorModule } from 'ng2-ckeditor';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { NgxMaskModule } from 'ngx-mask';
-import { options } from '../sales/sales.module';
+import { IConfig, NgxMaskModule } from 'ngx-mask';
+// import { options } from '../sales/sales.module';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PurchaseComponent } from './purchase.component';
 import { PurchasePriceTableImportComponent } from './price-table/purchase-price-table-import/purchase-price-table-import.component';
@@ -31,7 +31,7 @@ import { PurchaseOrderVoucherFormComponent } from './order/purchase-order-vouche
 import { PurchaseOrderVoucherPrintComponent } from './order/purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { ProcessMap } from '../../models/process-map.model';
 
-
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 export class DynamicLocaleId extends String {
   constructor(public translate: TranslateService) {
     super();

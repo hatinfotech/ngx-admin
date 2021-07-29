@@ -6,7 +6,7 @@ import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { IvoipService } from '../../../modules/ivoip/ivoip-service';
+// import { IvoipService } from '../../../modules/ivoip/ivoip-service';
 import { CommonService } from '../../../services/common.service';
 import { ActionControl } from '../../../lib/custom-element/action-control-list/action-control.interface';
 import { VirtualPhoneService } from '../../../modules/virtual-phone/virtual-phone.service';
@@ -80,7 +80,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private userService: UserData,
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
-    private ivoipService: IvoipService,
+    // private ivoipService: IvoipService,
     public commonService: CommonService,
     private virtualPhoneService: VirtualPhoneService,
     public translate: TranslateService,
@@ -212,7 +212,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   get activePbxDoamin() {
-    return this.ivoipService.getPbxActiveDomainUuid();
+    return null;
+    // todo: tmp remove for fix module circal error
+    // return this.ivoipService.getPbxActiveDomainUuid();
   }
 
   ngOnDestroy() {
@@ -284,7 +286,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onChangeDomain(event) {
-    this.ivoipService.onChangeDomain(event);
+    // todo: tmp remove for fix module circal error
+    // this.ivoipService.onChangeDomain(event);
   }
 
   changeLanguage(localeCode: any) {

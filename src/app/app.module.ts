@@ -1,3 +1,4 @@
+import { SalesVoucherListComponent } from './modules/sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { SalesModule } from './modules/sales/sales.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 /**
@@ -54,6 +55,8 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { PurchaseModule } from './modules/purchase/purchase.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { WarehouseModule } from './modules/warehouse/warehouse.module';
+import { WarehouseGoodsDeliveryNotePrintComponent } from './modules/warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 
 registerLocaleData(localeVi, 'vi', localeViExtra);
@@ -88,9 +91,10 @@ export class DynamicLocaleId extends String {
     AppRoutingModule,
     NbCardModule,
     DialogModule,
-    IvoipModule,
-    SalesModule,
-    PurchaseModule,
+    // IvoipModule,
+    // SalesModule,
+    // WarehouseModule,
+    // PurchaseModule,
     HttpClientModule,
     AuthModule,
     CurrencyMaskModule,
@@ -174,6 +178,8 @@ export class DynamicLocaleId extends String {
     PlayerDialogComponent,
     // PbxFormComponent,
     DialogFormComponent,
+    // WarehouseGoodsDeliveryNotePrintComponent,
+    // SalesVoucherListComponent,
   ],
   bootstrap: [AppComponent],
   providers: [

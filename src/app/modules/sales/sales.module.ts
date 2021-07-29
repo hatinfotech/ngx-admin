@@ -35,6 +35,7 @@ import { MasterPriceTablePrintComponent } from './master-price-table/master-pric
 import { ProductFormComponent } from '../admin-product/product/product-form/product-form.component';
 import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { ProcessMap } from '../../models/process-map.model';
+import { WarehouseGoodsDeliveryNotePrintComponent } from '../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -84,22 +85,23 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NbSpinnerModule,
   ],
   entryComponents: [
-    SalesPriceReportFormComponent,
-    SalesPriceReportPrintComponent,
+    // SalesPriceReportFormComponent,
+    // SalesPriceReportPrintComponent,
     SmartTableDateTimeComponent,
-    SalesPriceReportPrintComponent,
-    SalesVoucherFormComponent,
-    SalesVoucherPrintComponent,
-    PriceTableFormComponent,
-    PriceTablePrintComponent,
-    ProductListComponent,
-    PriceTablePrintAsListComponent,
-    SimpleSalesVoucherFormComponent,
-    MasterPriceTableFormComponent,
-    MasterPriceTablePrintComponent,
+    // SalesPriceReportPrintComponent,
+    // SalesVoucherFormComponent,
+    // SalesVoucherPrintComponent,
+    // PriceTableFormComponent,
+    // PriceTablePrintComponent,
+    // ProductListComponent,
+    // PriceTablePrintAsListComponent,
+    // SimpleSalesVoucherFormComponent,
+    // MasterPriceTableFormComponent,
+    // MasterPriceTablePrintComponent,
     SmartTableCurrencyEditableComponent,
-    ProductFormComponent,
+    // ProductFormComponent,
     SmartTableButtonComponent,
+    // WarehouseGoodsDeliveryNotePrintComponent,
   ],
   providers: [
     // { provide: LOCALE_ID, useValue: 'vi' },
