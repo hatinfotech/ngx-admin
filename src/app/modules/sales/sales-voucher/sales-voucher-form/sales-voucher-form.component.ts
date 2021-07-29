@@ -841,7 +841,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
               // get purchase order
               const goodsDeliveryNote = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-              if (this.commonService.getObjectId(goodsDeliveryNote.State) != 'APPROVE') {
+              if (this.commonService.getObjectId(goodsDeliveryNote.State) != 'BOOKKEEPING') {
                 this.commonService.toastService.show(this.commonService.translateText('Phiếu xuất kho chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                 continue;
               }
@@ -851,8 +851,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                   continue;
                 }
               } else {
-                delete goodsDeliveryNote.Id;
-                formGroup.patchValue({ ...goodsDeliveryNote, Code: null, Details: [] });
+                // delete goodsDeliveryNote.Id;
+                formGroup.patchValue({ ...goodsDeliveryNote, Object: { id: this.commonService.getObjectId(goodsDeliveryNote.Object), text: goodsDeliveryNote.ObjectName }, Id: null, Code: null, Details: [] });
                 details.clear();
               }
               insertList.push(chooseItems[i]);
@@ -865,7 +865,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                     // delete voucherDetail.Id;
                     // delete voucherDetail.Voucher;
                     // delete voucherDetail.No;
-                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: null });
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') });
                     newDtailFormGroup.get('Business').disable();
                     details.push(newDtailFormGroup);
                   }
