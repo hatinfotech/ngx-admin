@@ -295,6 +295,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeParent'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Created'] = 'desc';
       params['eq_Type'] = 'PAYMENT';
       return params;

@@ -280,7 +280,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
   /** Get form data by id from api */
   getFormData(callback: (data: CashVoucherModel[]) => void) {
-    this.apiService.get<CashVoucherModel[]>(this.apiPath, { id: this.id, multi: true, includeDetails: true, includeContact: true },
+    this.apiService.get<CashVoucherModel[]>(this.apiPath, { id: this.id, multi: true, includeDetails: true, includeContact: true, includeRelativeVouchers: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
@@ -339,6 +339,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   executeGet(params: any, success: (resources: CashVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeDetails'] = true;
     params['includeContact'] = true;
+    params['includeRelativeVouchers'] = true;
     return super.executeGet(params, success, error);
   }
 
@@ -488,7 +489,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
           for (let i = 0; i < chooseItems.length; i++) {
-            const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+            const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
             if (index < 0) {
               const details = this.getDetails(formGroup);
               // get purchase order
