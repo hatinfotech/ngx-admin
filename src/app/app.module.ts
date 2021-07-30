@@ -262,7 +262,7 @@ export class DynamicLocaleId extends String {
     }),
     NgxMaskModule.forRoot(options),
     TranslateModule,
-    AdminProductModule,
+    // AdminProductModule,
     NgxUploaderModule,
     NbSpinnerModule,
 

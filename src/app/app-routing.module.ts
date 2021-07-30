@@ -124,9 +124,28 @@ const routes: Routes = [
     resolve: {
       configuration: RoutingResolve,
     },
+    // component: ECommerceComponent,
+    // canActivate: [AuthGuardService],
+    // resolve: {
+    //   configuration: RoutingResolve,
+    // },
+    // data: {
+    //   reuse: true,
+    // },
   },
+  // {
+  //   path: '',
+  //   component: ECommerceComponent,
+  //   canActivate: [AuthGuardService],
+  //   resolve: {
+  //     configuration: RoutingResolve,
+  //   },
+  //   data: {
+  //     reuse: true,
+  //   },
+  // },
   {
-    path: 'dashboard',
+    path: 'dashboard', 
     component: ECommerceComponent,
     canActivate: [AuthGuardService],
     resolve: {

@@ -124,6 +124,7 @@ export class ActivityNotificationComponent implements OnInit {
   }
 
   onReceiveNotification(newNotification: NotificationModel) {
+    if(!newNotification) return;
     let timeout = null;
 
     if (this.activity && this.activity?.Time && this.activity?.Time >= newNotification?.Time) {
