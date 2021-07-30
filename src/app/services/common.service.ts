@@ -37,6 +37,7 @@ import { NotificationService } from './notification.service';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
 import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
+import { PurchaseVoucherPrintComponent } from '../modules/purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 
 @Injectable({
   providedIn: 'root',
@@ -765,7 +766,7 @@ export class CommonService {
 
   voucherPrintConponentTypeIndex = {
     'SALES': SalesVoucherPrintComponent,
-    'PURCHASE': PurchasePriceTablePrintComponent,
+    'PURCHASE': PurchaseVoucherPrintComponent,
     'PURCHASEORDER': PurchaseOrderVoucherPrintComponent,
     'GOODSDELIVERY': WarehouseGoodsDeliveryNotePrintComponent,
     'GOODSRECEIPT': WarehouseGoodsReceiptNotePrintComponent,
