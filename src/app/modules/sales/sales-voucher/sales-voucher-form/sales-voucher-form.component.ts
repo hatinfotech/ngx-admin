@@ -360,6 +360,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   executeGet(params: any, success: (resources: SalesVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
     params['includeDetails'] = true;
+    params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
     params['includeEmployee'] = true;
     super.executeGet(params, success, error);

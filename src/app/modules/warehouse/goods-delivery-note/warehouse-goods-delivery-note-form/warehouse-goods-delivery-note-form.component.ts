@@ -251,6 +251,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   executeGet(params: any, success: (resources: WarehouseGoodsDeliveryNoteModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
     params['includeDetails'] = true;
+    params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
     super.executeGet(params, success, error);
   }
@@ -520,7 +521,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                     delete voucherDetail.Id;
                     delete voucherDetail.Voucher;
                     delete voucherDetail.No;
-                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {...voucherDetail, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY')});
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY') });
                     details.push(newDtailFormGroup);
                   }
                 }
