@@ -1,0 +1,287 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
+  (keydown.enter)="onControlEnter($event)" class="popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup" ngFileDrop [options]="options"
+        (uploadOutput)="onUploadOutput($event, formItem, i)" [uploadInput]="uploadInput"
+        [ngClass]="{ 'is-drop-over': dragOver[i] }">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.Product.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Code_old">
+              <input type="hidden" formControlName="FeaturePicture">
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Name')" pack="eva"
+                      icon="copy-outline">
+                    </nb-icon>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
+                  <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt
+                      buộc
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Sku')" pack="eva"
+                      icon="copy-outline">
+                    </nb-icon>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Sku" placeholder="Sku">
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')">
+                  <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt
+                      buộc
+                      (*)</span>
+                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'WarehouseUnit')"
+                      pack="eva" icon="copy-outline">
+                    </nb-icon>
+                  </label>
+                  <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
+                  <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt
+                      buộc
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Code" maxlength="30"
+                    placeholder="Tự động tạo mã">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
+                  <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
+                      (*)</span>
+                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Categories')" pack="eva"
+                        icon="copy-outline">
+                      </nb-icon></label>
+                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories"
+                    [data]="categoryList">
+                  </ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
+                  <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
+                      (*)</span><nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Groups')" pack="eva"
+                      icon="copy-outline">
+                    </nb-icon></label>
+                  <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups" [data]="groupList">
+                  </ngx-select2>
+                </div>
+              </div>
+
+              <div class="col-sm-12">
+
+                <!-- Detail form -->
+                <!-- <hr> -->
+                <div class="row" style="align-items: flex-end;">
+                  <div class="col-sm-1 label">
+                    <div class="row" style="align-items: flex-end;">
+                      <div class="col-sm-12">{{'Common.noNumber' | translate | headtitlecase}}</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-5 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
+                  <div class="col-sm-6 label">
+                    <div class="row" style="align-items: flex-end;">
+                      <div class="col-sm-3 label">{{'AdminProduct.conversionRatio' | translate | headtitlecase}}</div>
+                      <div class="col-sm-4 label">{{'AdminProduct.defaultSales' | translate | headtitlecase}}</div>
+                      <div class="col-sm-4 label">{{'AdminProduct.defaultPurchase' | translate | headtitlecase}}</div>
+                      <div class="col-sm-1 label align-right">
+                        <button nbButton status="success" (click)="addUnitConversionFormGroup(formItem)" size="small"
+                          hero style="margin-bottom: 0.5rem;" [disabled]="isProcessing">
+                          <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div formArrayName="UnitConversions" class="form-details" [sortablejs]="getUnitConversions(formItem)"
+                  [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                  <!-- <div formArrayName="Details" class="form-details"> -->
+                  <hr>
+                  <div class="form-detail-item"
+                    *ngFor="let unitConversion of getUnitConversions(formItem).controls; let ic=index"
+                    [formGroup]="unitConversion">
+                    <input type="hidden" formControlName="Id">
+
+                    <div class="row">
+                      <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
+                        <div class="row">
+                          <div class="col-md-8 col-sm-3 col-xs-3">
+                            <div class="form-group">
+                              <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
+                              <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}"
+                                style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
+                              <input type="hidden" formControlName="Id">
+                            </div>
+                            <div class="form-group">
+                              <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                      <div class="col-lg-5 col-md-8 col-sm-12 col-xs-12">
+                        <div class="row">
+                          <div class="col-md-12 col-sm-4 col-xs-4">
+                            <div class="form-group">
+                              <label class="label">{{'AdminProduct.unit' | translate | headtitlecase}}</label>
+                              <ngx-select2 formControlName="Unit" [data]="unitList"
+                                [select2Option]="select2OptionForUnit">
+                              </ngx-select2>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                        <div class="row">
+                          <div class="col-md-3 col-sm-4 col-xs-4">
+                            <div class="form-group">
+                              <label
+                                class="label">{{'AdminProduct.conversionRatio' | translate | headtitlecase}}</label>
+                              <input type="text" nbInput fullWidth formControlName="ConversionRatio"
+                                placeholder="{{'Product.conversionRatio' | translate | headtitlecase}}">
+                            </div>
+                          </div>
+                          <div class="col-md-4 col-sm-4 col-xs-4">
+                            <div class="form-group">
+                              <nb-checkbox formControlName="IsDefaultSales">
+                                <label class="label"><span
+                                    class="valid">{{'AdminProduct.defaultSales' | translate | headtitlecase}}</span></label>
+                              </nb-checkbox>
+                            </div>
+                          </div>
+                          <div class="col-md-4 col-sm-4 col-xs-4">
+                            <div class="form-group">
+                              <nb-checkbox formControlName="IsDefaultPurchase">
+                                <label class="label"><span
+                                    class="valid">{{'AdminProduct.defaultPurchase' | translate | headtitlecase}}</span></label>
+                              </nb-checkbox>
+                            </div>
+                          </div>
+                          <div class="col-md-1 col-sm-1 col-xs-1">
+                            <div class="form-group">
+                              <label class="label align-right">Remove</label>
+                              <button nbButton status="danger" hero size="small"
+                                (click)="removeUnitConversionGroup(formItem, unitConversion, ic)">
+                                <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <hr> -->
+                </div>
+                <!-- <div class="row">
+                  <div class="col-sm-12" style="text-align: right;">
+
+                  </div>
+                </div> -->
+                <!-- End Detail form -->
+              </div>
+
+            </div>
+            <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="buttons-row" style="margin-bottom: 0.5rem !important;">
+                  <button type="button" nbButton status="primary" hero size="small" [disabled]="isProcessing"
+                    title="{{'Common.choosePcturesToUpload' | translate | headtitlecase}}" (click)="uploadBtn.click()">
+                    <nb-icon pack="eva" icon="image"></nb-icon>{{'Common.upload' | translate | headtitlecase}}
+                  </button>
+                  <button type="button" nbButton status="success" hero size="small" [disabled]="isProcessing"
+                    title="{{'Common.copy' | translate | headtitlecase}}"
+                    (click)="copyFormControlValueToOthers(array, i, 'Pictures')">
+                    <nb-icon pack="eva" icon="copy-outline"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+                  </button>
+                </div>
+                <input type="file" #uploadBtn ngFileSelect [options]="options"
+                  (uploadOutput)="onUploadOutput($event, formItem, i)" [uploadInput]="uploadInput" multiple
+                  style="display: none;">
+
+                <div formArrayName="Pictures" class="form-details">
+                  <div class="row">
+                    <div class="form-detail-item col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-6"
+                      *ngFor="let picture of getPictures(i).controls; let ic=index" [formGroup]="picture">
+                      <input type="hidden" formControlName="Id">
+                      <div class="imageFormControl"
+                        [ngStyle]="{'background-image': 'url(' + picture.get('Thumbnail').value + ')'}">
+                        <nb-progress-bar style="padding: 1rem;" *ngIf="picture.get('ProgressId').value != ''"
+                          [value]="filesIndex[picture.get('ProgressId').value]?.progress?.status == 1 ? filesIndex[picture.get('ProgressId').value]?.progress?.data?.percentage*90/100 : filesIndex[picture.get('ProgressId').value]?.progress?.data?.percentage"
+                          [status]="filesIndex[picture.get('ProgressId').value]?.progress?.status == 1 ? 'danger' : 'success'"
+                          size="medium">
+                          {{filesIndex[picture.get('ProgressId').value]?.progress?.data?.percentage + '%'}}
+                        </nb-progress-bar>
+
+                        <div class="buttons-row controls">
+                          <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
+                          <button nbButton status="primary" hero size="small" (click)="setAsFeaturePicture(i, picture)"
+                            title="Đặt làm hình chính"
+                            [disabled]="formItem.get('FeaturePicture').value == picture.get('Image').value">Chính</button>
+                          <button nbButton status="success" hero size="small"
+                            (click)="previewPicture(picture)">Xem</button>
+                          <button nbButton status="danger" hero size="small"
+                            (click)="removePictureGroup(i, ic)">Xoá</button>
+                        </div>
+
+                        <input type="hidden" nbInput fullWidth formControlName="Image" placeholder="Image">
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
+                  <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc
+                      (*)</span></label>
+                  <textarea *ngIf="array.controls.length > 1" formControlName="Description" nbInput fullWidth
+                    placeholder="Mô tả"></textarea>
+                  <!-- <ckeditor *ngIf="array.controls.length === 1" formControlName="Description"
+                    [config]="{ extraPlugins: 'divarea', height: '200' }">
+                  </ckeditor> -->
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Technical'), 'warning')">
+                  <label class="label"><span class="valid">Thông tin kỹ thuật (*)</span><span class="invalid">Thông tin
+                      kỹ thuật là bắt buộc
+                      (*)</span></label>
+                  <textarea *ngIf="array.controls.length > 1" formControlName="Technical" nbInput fullWidth
+                    placeholder="Mô tả"></textarea>
+                  <!-- <ckeditor *ngIf="array.controls.length === 1" formControlName="Technical"
+                    [config]="{ extraPlugins: 'divarea', height: '200' }">
+                  </ckeditor> -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm cái nữa</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero
+              (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

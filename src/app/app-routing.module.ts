@@ -1,3 +1,4 @@
+import { PurchaseGoodsListComponent } from './modules/purchase/goods/purchase-goods-list/purchase-goods-list.component';
 import { ExtraOptions, RouterModule, Routes, Resolve, ActivatedRouteSnapshot } from '@angular/router';
 import { NgModule, Injectable } from '@angular/core';
 import {
@@ -436,6 +437,15 @@ const routes: Routes = [
     path: 'purchase/order-voucher/form/:id',
     canActivate: [AuthGuardService],
     component: PurchaseOrderVoucherFormComponent,
+  },
+  // Goods list
+  {
+    path: 'purchase/goods/list',
+    canActivate: [AuthGuardService],
+    component: PurchaseGoodsListComponent,
+    data: {
+      reuse: true,
+    },
   },
 
   // Accounting routes

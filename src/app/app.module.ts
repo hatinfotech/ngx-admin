@@ -137,6 +137,9 @@ import { CashReceiptVoucherFormComponent } from './modules/accounting/cash/recei
 import { CashReceiptVoucherListComponent } from './modules/accounting/cash/receipt/cash-receipt-voucher-list/cash-receipt-voucher-list.component';
 import { CashReceiptVoucherPrintComponent } from './modules/accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 import { ProcessMap } from './models/process-map.model';
+import { PurchaseGoodsFormComponent } from './modules/purchase/goods/purchase-goods-form/warehouse-goods-form.component';
+import { PurchaseGoodsListComponent } from './modules/purchase/goods/purchase-goods-list/purchase-goods-list.component';
+import { PurchaseGoodsPrintComponent } from './modules/purchase/goods/purchase-goods-print/purchase-goods-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi', localeViExtra);
@@ -189,6 +192,9 @@ export class DynamicLocaleId extends String {
     PurchaseOrderVoucherListComponent,
     PurchaseOrderVoucherFormComponent,
     PurchaseOrderVoucherPrintComponent,
+    PurchaseGoodsFormComponent,
+    PurchaseGoodsListComponent,
+    PurchaseGoodsPrintComponent,
 
     // Warehouse components
     // WarehouseComponent,

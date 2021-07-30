@@ -5,8 +5,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
-import { WarehouseGoodsFormComponent } from '../warehouse-goods-form/warehouse-goods-form.component';
-import { AssignContainerFormComponent } from '../assign-containers-form/assign-containers-form.component';
+import { PurchaseGoodsFormComponent } from '../purchase-goods-form/warehouse-goods-form.component';
 import { ProductModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
@@ -15,23 +14,25 @@ import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/war
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
-  templateUrl: './warehouse-goods-list.component.html',
-  styleUrls: ['./warehouse-goods-list.component.scss'],
+  templateUrl: './purchase-goods-list.component.html',
+  styleUrls: ['./purchase-goods-list.component.scss'],
 })
-export class WarehouseGoodsListComponent extends ProductListComponent implements OnInit {
+export class PurchaseGoodsListComponent extends ProductListComponent implements OnInit {
 
-  componentName: string = 'WarehouseGoodsListComponent';
-  formPath = '/warehouse/goods/form';
-  apiPath = '/warehouse/goods';
+  componentName: string = 'PurchaseGoodsListComponent';
+  formPath = '/purchase/goods/form';
+  apiPath = '/purchase/goods';
   idKey: string | string[] = ['Code', 'WarehouseUnit'];
-  formDialog = WarehouseGoodsFormComponent;
+  formDialog = PurchaseGoodsFormComponent;
 
   containerList: WarehouseGoodsContainerModel[] = [];
 
   settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
-    actions: false,
+    actions: {
+      position: 'right',
+    },
     add: this.configAddButton(),
     edit: this.configEditButton(),
     delete: this.configDeleteButton(),
@@ -73,12 +74,12 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       Name: {
         title: 'Tên',
         type: 'string',
-        width: '20%',
+        width: '15%',
       },
       Categories: {
         title: 'Danh mục',
         type: 'html',
-        width: '20%',
+        width: '15%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
           return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
         },
@@ -199,7 +200,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       Code: {
         title: 'Code',
         type: 'string',
-        width: '8%',
+        width: '5%',
       },
       Sku: {
         title: 'Sku',
@@ -209,21 +210,21 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       Inventory: {
         title: this.commonService.translateText('Warehouse.inventory'),
         type: 'string',
+        width: '5%',
+      },
+      CostOfGoodsSold: {
+        title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
+        type: 'currency',
         width: '10%',
       },
-      // CostOfGoodsSold: {
-      //   title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
-      //   type: 'currency',
-      //   width: '10%',
-      // },
-      // InventoryCost: {
-      //   title: this.commonService.translateText('Warehouse.inventoryCost'),
-      //   type: 'currency',
-      //   width: '12%',
-      //   valuePrepareFunction: (value: string, goods: GoodsModel) => {
-      //     return (goods['Inventory'] * goods['CostOfGoodsSold']).toString();
-      //   },
-      // },
+      InventoryCost: {
+        title: this.commonService.translateText('Warehouse.inventoryCost'),
+        type: 'currency',
+        width: '12%',
+        valuePrepareFunction: (value: string, goods: GoodsModel) => {
+          return (goods['Inventory'] * goods['CostOfGoodsSold']).toString();
+        },
+      },
     },
   });
 
@@ -234,34 +235,34 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<WarehouseGoodsListComponent>,
+    public ref: NbDialogRef<PurchaseGoodsListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, _http, ref);
-    this.actionButtonList.map(button => {
-      if (button.name === 'assignCategories') {
-        button.name = 'assginContainer';
-        button.label = this.commonService.translateText('Warehouse.assign/unassignContainer');
-        button.title = this.commonService.translateText('Warehouse.assign/unassignContainer');
-        button.click = (event, option) => {
-          this.openAssignContainersDialog();
-        };
-      }
-      return button;
-    });
-    // this.actionButtonList.unshift({
-    //   name: 'calculateCostOfGoodsSold',
-    //   status: 'danger',
-    //   label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
-    //   icon: 'checkmark-square',
-    //   title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
-    //   size: 'medium',
-    //   disabled: () => false,
-    //   hidden: () => this.isChoosedMode,
-    //   click: () => {
-    //     this.calculateCostOfGoodsSold();
-    //     return false;
-    //   },
+    // this.actionButtonList.map(button => {
+    //   if (button.name === 'assignCategories') {
+    //     button.name = 'assginContainer';
+    //     button.label = this.commonService.translateText('Warehouse.assign/unassignContainer');
+    //     button.title = this.commonService.translateText('Warehouse.assign/unassignContainer');
+    //     button.click = (event, option) => {
+    //       this.openAssignContainersDialog();
+    //     };
+    //   }
+    //   return button;
     // });
+    this.actionButtonList.unshift({
+      name: 'calculateCostOfGoodsSold',
+      status: 'danger',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
+      icon: 'checkmark-square',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
+      size: 'medium',
+      disabled: () => false,
+      hidden: () => this.isChoosedMode,
+      click: () => {
+        this.calculateCostOfGoodsSold();
+        return false;
+      },
+    });
   }
 
   async init() {
@@ -303,25 +304,25 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
   }
 
   /** Implement required */
-  async openAssignContainersDialog() {
-    if (this.selectedIds.length > 0) {
-      const editedItems = await this.convertIdsToItems(this.selectedIds);
-      this.commonService.openDialog(AssignContainerFormComponent, {
-        context: {
-          inputMode: 'dialog',
-          inputGoodsList: this.selectedItems,
-          onDialogSave: (newData: ProductModel[]) => {
-            this.refresh();
-            // this.updateGridItems(editedItems, newData);
-          },
-          onDialogClose: () => {
-          },
-        },
-        closeOnEsc: false,
-        closeOnBackdropClick: false,
-      });
-    }
-  }
+  // async openAssignContainersDialog() {
+  //   if (this.selectedIds.length > 0) {
+  //     const editedItems = await this.convertIdsToItems(this.selectedIds);
+  //     this.commonService.openDialog(AssignContainerFormComponent, {
+  //       context: {
+  //         inputMode: 'dialog',
+  //         inputGoodsList: this.selectedItems,
+  //         onDialogSave: (newData: ProductModel[]) => {
+  //           this.refresh();
+  //           // this.updateGridItems(editedItems, newData);
+  //         },
+  //         onDialogClose: () => {
+  //         },
+  //       },
+  //       closeOnEsc: false,
+  //       closeOnBackdropClick: false,
+  //     });
+  //   }
+  // }
 
   async calculateCostOfGoodsSold() {
     this.commonService.showDiaplog(this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), this.commonService.translateText('Warehouse.calculateCostOfGoodsSoldConfirm'), [
