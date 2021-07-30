@@ -885,21 +885,22 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher && relativeVocher.type == 'GOODSDELIVERY') {
-      this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
-        context: {
-          showLoadinng: true,
-          title: 'Xem trước',
-          id: [this.commonService.getObjectId(relativeVocher)],
-          // data: data,
-          idKey: ['Code'],
-          // approvedConfirm: true,
-          onClose: (data: SalesVoucherModel) => {
-            this.refresh();
-          },
-        },
-      });
-    }
+    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    // if (relativeVocher && relativeVocher.type == 'GOODSDELIVERY') {
+    //   this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
+    //     context: {
+    //       showLoadinng: true,
+    //       title: 'Xem trước',
+    //       id: [this.commonService.getObjectId(relativeVocher)],
+    //       // data: data,
+    //       idKey: ['Code'],
+    //       // approvedConfirm: true,
+    //       onClose: (data: SalesVoucherModel) => {
+    //         this.refresh();
+    //       },
+    //     },
+    //   });
+    // }
     return false;
   }
 

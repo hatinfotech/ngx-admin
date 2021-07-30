@@ -58,7 +58,7 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
   }
 
   renderTitle(data: CashVoucherModel) {
-    return `PhieuThu_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
+    return `Phieu_Thu_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
   }
 
   close() {
@@ -174,6 +174,10 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
         },
       },
     ]);
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
 

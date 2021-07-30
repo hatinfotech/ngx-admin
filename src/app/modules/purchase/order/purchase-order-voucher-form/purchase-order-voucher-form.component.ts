@@ -490,23 +490,24 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) {
-      if (relativeVocher.type == 'PURCHASE') {
-        this.commonService.openDialog(PurchaseVoucherPrintComponent, {
-          context: {
-            showLoadinng: true,
-            title: 'Xem trước',
-            id: [this.commonService.getObjectId(relativeVocher)],
-            // data: data,
-            idKey: ['Code'],
-            // approvedConfirm: true,
-            onClose: (data: PurchaseVoucherModel) => {
-              this.refresh();
-            },
-          },
-        });
-      }
-    }
+    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    // if (relativeVocher) {
+    //   if (relativeVocher.type == 'PURCHASE') {
+    //     this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+    //       context: {
+    //         showLoadinng: true,
+    //         title: 'Xem trước',
+    //         id: [this.commonService.getObjectId(relativeVocher)],
+    //         // data: data,
+    //         idKey: ['Code'],
+    //         // approvedConfirm: true,
+    //         onClose: (data: PurchaseVoucherModel) => {
+    //           this.refresh();
+    //         },
+    //       },
+    //     });
+    //   }
+    // }
     return false;
   }
 

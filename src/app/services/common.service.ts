@@ -1,3 +1,11 @@
+import { DeploymentVoucherPrintComponent } from './../modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
+import { SalesPriceReportPrintComponent } from './../modules/sales/price-report/sales-price-report-print/sales-price-report-print.component';
+import { CashPaymentVoucherPrintComponent } from './../modules/accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
+import { CashReceiptVoucherPrintComponent } from './../modules/accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+import { WarehouseGoodsReceiptNotePrintComponent } from './../modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
+import { WarehouseGoodsDeliveryNotePrintComponent } from './../modules/warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
+import { PurchaseOrderVoucherPrintComponent } from './../modules/purchase/order/purchase-order-voucher-print/purchase-order-voucher-print.component';
+import { PurchasePriceTablePrintComponent } from './../modules/purchase/price-table/purchase-price-table-print/purchase-price-table-print.component';
 import { HelpdeskTicketModel } from './../models/helpdesk.model';
 import { TaxModel } from './../models/tax.model';
 import { Injectable, Type, TemplateRef } from '@angular/core';
@@ -28,6 +36,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { NotificationService } from './notification.service';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
 import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
+import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 
 @Injectable({
   providedIn: 'root',
@@ -751,6 +760,33 @@ export class CommonService {
       },
       closeOnEsc: false,
       closeOnBackdropClick: false,
+    });
+  }
+
+  voucherPrintConponentTypeIndex = {
+    'SALES': SalesVoucherPrintComponent,
+    'PURCHASE': PurchasePriceTablePrintComponent,
+    'PURCHASEORDER': PurchaseOrderVoucherPrintComponent,
+    'GOODSDELIVERY': WarehouseGoodsDeliveryNotePrintComponent,
+    'GOODSRECEIPT': WarehouseGoodsReceiptNotePrintComponent,
+    'RECEIPT': CashReceiptVoucherPrintComponent,
+    'PAYMENT': CashPaymentVoucherPrintComponent,
+    'PRICEREPORT': SalesPriceReportPrintComponent,
+    // 'DEPLOYMENT': DeploymentVoucherPrintComponent,
+  };
+  previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
+    this.openDialog(this.voucherPrintConponentTypeIndex[type], {
+      context: {
+        showLoadinng: true,
+        title: 'Xem trước',
+        id: [this.getObjectId(relativeVocher)],
+        // data: data,
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onClose: (data: M) => {
+          onClose && onClose(data);
+        },
+      },
     });
   }
 

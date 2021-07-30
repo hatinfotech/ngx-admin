@@ -573,38 +573,39 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) {
-      if (relativeVocher.type == 'PURCHASEORDER') {
-        this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
-          context: {
-            showLoadinng: true,
-            title: 'Xem trước',
-            id: [this.commonService.getObjectId(relativeVocher)],
-            // data: data,
-            idKey: ['Code'],
-            // approvedConfirm: true,
-            onClose: (data: PurchaseVoucherModel) => {
-              this.refresh();
-            },
-          },
-        });
-      }
-      if (relativeVocher.type == 'GOODSRECEIPT') {
-        this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
-          context: {
-            showLoadinng: true,
-            title: 'Xem trước',
-            id: [this.commonService.getObjectId(relativeVocher)],
-            // data: data,
-            idKey: ['Code'],
-            // approvedConfirm: true,
-            onClose: (data: WarehouseGoodsReceiptNoteModel) => {
-              this.refresh();
-            },
-          },
-        });
-      }
-    }
+    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    // if (relativeVocher) {
+    //   if (relativeVocher.type == 'PURCHASEORDER') {
+    //     this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
+    //       context: {
+    //         showLoadinng: true,
+    //         title: 'Xem trước',
+    //         id: [this.commonService.getObjectId(relativeVocher)],
+    //         // data: data,
+    //         idKey: ['Code'],
+    //         // approvedConfirm: true,
+    //         onClose: (data: PurchaseVoucherModel) => {
+    //           this.refresh();
+    //         },
+    //       },
+    //     });
+    //   }
+    //   if (relativeVocher.type == 'GOODSRECEIPT') {
+    //     this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
+    //       context: {
+    //         showLoadinng: true,
+    //         title: 'Xem trước',
+    //         id: [this.commonService.getObjectId(relativeVocher)],
+    //         // data: data,
+    //         idKey: ['Code'],
+    //         // approvedConfirm: true,
+    //         onClose: (data: WarehouseGoodsReceiptNoteModel) => {
+    //           this.refresh();
+    //         },
+    //       },
+    //     });
+    //   }
+    // }
     return false;
   }
 

@@ -529,21 +529,22 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher && relativeVocher.type == 'SALES') {
-      this.commonService.openDialog(SalesVoucherPrintComponent, {
-        context: {
-          showLoadinng: true,
-          title: 'Xem trước',
-          id: [this.commonService.getObjectId(relativeVocher)],
-          // data: data,
-          idKey: ['Code'],
-          // approvedConfirm: true,
-          onClose: (data: SalesVoucherModel) => {
-            this.refresh();
-          },
-        },
-      });
-    }
+    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    // if (relativeVocher && relativeVocher.type == 'SALES') {
+    //   this.commonService.openDialog(SalesVoucherPrintComponent, {
+    //     context: {
+    //       showLoadinng: true,
+    //       title: 'Xem trước',
+    //       id: [this.commonService.getObjectId(relativeVocher)],
+    //       // data: data,
+    //       idKey: ['Code'],
+    //       // approvedConfirm: true,
+    //       onClose: (data: SalesVoucherModel) => {
+    //         this.refresh();
+    //       },
+    //     },
+    //   });
+    // }
     return false;
   }
 

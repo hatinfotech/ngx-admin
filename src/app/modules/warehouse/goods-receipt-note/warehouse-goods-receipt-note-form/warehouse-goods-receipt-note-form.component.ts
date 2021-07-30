@@ -546,21 +546,22 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher && relativeVocher.type == 'PURCHASE') {
-      this.commonService.openDialog(PurchaseVoucherPrintComponent, {
-        context: {
-          showLoadinng: true,
-          title: 'Xem trước',
-          id: [this.commonService.getObjectId(relativeVocher)],
-          // data: data,
-          idKey: ['Code'],
-          // approvedConfirm: true,
-          onClose: (data: SalesVoucherModel) => {
-            this.refresh();
-          },
-        },
-      });
-    }
+    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    // if (relativeVocher && relativeVocher.type == 'PURCHASE') {
+    //   this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+    //     context: {
+    //       showLoadinng: true,
+    //       title: 'Xem trước',
+    //       id: [this.commonService.getObjectId(relativeVocher)],
+    //       // data: data,
+    //       idKey: ['Code'],
+    //       // approvedConfirm: true,
+    //       onClose: (data: SalesVoucherModel) => {
+    //         this.refresh();
+    //       },
+    //     },
+    //   });
+    // }
     return false;
   }
 
