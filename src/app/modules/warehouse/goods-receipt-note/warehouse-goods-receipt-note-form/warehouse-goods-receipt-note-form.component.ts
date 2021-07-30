@@ -256,6 +256,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   executeGet(params: any, success: (resources: WarehouseGoodsReceiptNoteModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
     params['includeDetails'] = true;
+    params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
     super.executeGet(params, success, error);
   }

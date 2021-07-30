@@ -1,3 +1,5 @@
+import { WarehouseGoodsReceiptNoteModel } from './../../../../models/warehouse.model';
+import { WarehouseGoodsReceiptNotePrintComponent } from './../../../warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { PurchaseVoucherPrintComponent } from './../purchase-voucher-print/purchase-voucher-print.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -252,6 +254,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   executeGet(params: any, success: (resources: PurchaseVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
     params['includeDetails'] = true;
+    params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
     super.executeGet(params, success, error);
   }
@@ -570,20 +573,37 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher && relativeVocher.type == 'PURCHASEORDER') {
-      this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
-        context: {
-          showLoadinng: true,
-          title: 'Xem trước',
-          id: [this.commonService.getObjectId(relativeVocher)],
-          // data: data,
-          idKey: ['Code'],
-          // approvedConfirm: true,
-          onClose: (data: PurchaseVoucherModel) => {
-            this.refresh();
+    if (relativeVocher) {
+      if (relativeVocher.type == 'PURCHASEORDER') {
+        this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
+          context: {
+            showLoadinng: true,
+            title: 'Xem trước',
+            id: [this.commonService.getObjectId(relativeVocher)],
+            // data: data,
+            idKey: ['Code'],
+            // approvedConfirm: true,
+            onClose: (data: PurchaseVoucherModel) => {
+              this.refresh();
+            },
           },
-        },
-      });
+        });
+      }
+      if (relativeVocher.type == 'GOODSRECEIPT') {
+        this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
+          context: {
+            showLoadinng: true,
+            title: 'Xem trước',
+            id: [this.commonService.getObjectId(relativeVocher)],
+            // data: data,
+            idKey: ['Code'],
+            // approvedConfirm: true,
+            onClose: (data: WarehouseGoodsReceiptNoteModel) => {
+              this.refresh();
+            },
+          },
+        });
+      }
     }
     return false;
   }

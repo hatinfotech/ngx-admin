@@ -10,11 +10,12 @@ import { DataManagerFormComponent } from '../../../../lib/data-manager/data-mana
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel } from '../../../../models/purchase.model';
+import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel, PurchaseVoucherModel } from '../../../../models/purchase.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { PurchaseVoucherPrintComponent } from '../../voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 
 @Component({
@@ -224,6 +225,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   executeGet(params: any, success: (resources: PurchaseOrderVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
     params['includeDetails'] = true;
+    params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
     super.executeGet(params, success, error);
   }
@@ -280,6 +282,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       DateOfPurchase: [''],
       // RelativeVouchers: [],
       _total: [''],
+      RelativeVouchers: [],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -484,6 +487,27 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   getRawFormData() {
     return super.getRawFormData();
+  }
+
+  openRelativeVoucher(relativeVocher: any) {
+    if (relativeVocher) {
+      if (relativeVocher.type == 'PURCHASE') {
+        this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+          context: {
+            showLoadinng: true,
+            title: 'Xem trước',
+            id: [this.commonService.getObjectId(relativeVocher)],
+            // data: data,
+            idKey: ['Code'],
+            // approvedConfirm: true,
+            onClose: (data: PurchaseVoucherModel) => {
+              this.refresh();
+            },
+          },
+        });
+      }
+    }
+    return false;
   }
 
 }

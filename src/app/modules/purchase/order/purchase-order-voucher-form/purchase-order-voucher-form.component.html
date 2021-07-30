@@ -105,6 +105,20 @@
                                     <owl-date-time #DateOfPurchase></owl-date-time>
                                 </ngx-form-group>
                             </div>
+                            
+                            <div class="col-sm-12" *ngIf="formItem.get('RelativeVouchers').value?.length > 0">
+                                <div class="form-group">
+                                    <label class="label"><span class="valid">{{'Common.relativeVoucher' | translate | headtitlecase}}: </span></label>
+                                    <div>
+                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" title="{{relationVoucher | objectstext}}">
+                                            <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
+                                            <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
+                                        </span>
+                                    </div>
+                                    <div class="break"></div>
+                                </div>
+                            </div>
+
                             <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
