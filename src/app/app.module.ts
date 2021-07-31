@@ -136,11 +136,15 @@ import { CashPaymentVoucherPrintComponent } from './modules/accounting/cash/paym
 import { CashReceiptVoucherFormComponent } from './modules/accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 import { CashReceiptVoucherListComponent } from './modules/accounting/cash/receipt/cash-receipt-voucher-list/cash-receipt-voucher-list.component';
 import { CashReceiptVoucherPrintComponent } from './modules/accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
-import { ProcessMap } from './models/process-map.model';
+// import { ProcessMap } from './models/process-map.model';
 import { PurchaseGoodsFormComponent } from './modules/purchase/goods/purchase-goods-form/warehouse-goods-form.component';
 import { PurchaseGoodsListComponent } from './modules/purchase/goods/purchase-goods-list/purchase-goods-list.component';
 import { PurchaseGoodsPrintComponent } from './modules/purchase/goods/purchase-goods-print/purchase-goods-print.component';
-import { TabDialogComponent } from './modules/dialog/tab-dialog/tab-dialog.component';
+import { ReferenceChoosingDialogComponent } from './modules/dialog/tab-dialog/reference-choosing-dialog.component';
+import { DeploymentVoucherFormComponent } from './modules/deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
+import { DeploymentVoucherListComponent } from './modules/deployment/deployment-voucher/deployment-voucher-list/deployment-voucher-list.component';
+import { DeploymentVoucherPrintComponent } from './modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
+// import { DeploymentComponent } from './modules/deployment/deployment.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi', localeViExtra);
@@ -167,7 +171,7 @@ export class DynamicLocaleId extends String {
     ShowcaseDialogComponent, 
     PlayerDialogComponent, 
     DialogFormComponent,
-    TabDialogComponent,
+    ReferenceChoosingDialogComponent,
 
     // Sales components
     // SalesComponent,
@@ -241,6 +245,11 @@ export class DynamicLocaleId extends String {
     AccAccountFormComponent,
     AccBusinessListComponent,
     AccBusinessFormComponent,
+
+    // Deployment components
+    DeploymentVoucherListComponent,
+    DeploymentVoucherFormComponent,
+    DeploymentVoucherPrintComponent,
   ],
   imports: [
 
@@ -744,5 +753,62 @@ export class AppModule {
       //     restponseText: 'Common.approveSuccess',
       //   },
       // },
+      deploymentVoucher: {
+        "APPROVE": {
+          state: 'APPROVE',
+          label: 'Common.approved',
+          status: 'success',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "DEPLOYMENT": {
+          state: 'DEPLOYMENT',
+          label: 'Common.implement',
+          status: 'warning',
+          outline: false,
+          nextState: 'ACCEPTANCE',
+          nextStateLabel: 'Common.acceptance',
+          confirmText: 'Common.acceptanceConfirm',
+          responseTitle: 'Common.acceptanced',
+          restponseText: 'Common.acceptanceSuccess',
+        },
+        "ACCEPTANCE": {
+          state: 'ACCEPTANCE',
+          label: 'Common.acceptance',
+          status: 'info',
+          outline: false,
+          nextState: 'COMPLETE',
+          nextStateLabel: 'Common.complete',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "COMPLETE": {
+          state: 'COMPLETE',
+          label: 'Common.completed',
+          status: 'success',
+          outline: true,
+          nextState: '',
+          nextStateLabel: '',
+          confirmText: 'Common.completeConfirm',
+          responseTitle: 'Common.completed',
+          restponseText: 'Common.completeSuccess',
+        },
+        "": {
+          state: 'NOTJUSTAPPROVE',
+          label: 'Common.notJustApproved',
+          status: 'danger',
+          outline: false,
+          nextState: 'APPROVE',
+          nextStateLabel: 'Common.approve',
+          confirmText: 'Common.approveConfirm',
+          responseTitle: 'Common.approved',
+          restponseText: 'Common.approveSuccess',
+        },
+      },
     };
 }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TabDialogComponent } from './tab-dialog.component';
+import { ReferenceChoosingDialogComponent } from './reference-choosing-dialog.component';
 
 describe('TabDialogComponent', () => {
-  let component: TabDialogComponent;
-  let fixture: ComponentFixture<TabDialogComponent>;
+  let component: ReferenceChoosingDialogComponent;
+  let fixture: ComponentFixture<ReferenceChoosingDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TabDialogComponent ]
+      declarations: [ ReferenceChoosingDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TabDialogComponent);
+    fixture = TestBed.createComponent(ReferenceChoosingDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

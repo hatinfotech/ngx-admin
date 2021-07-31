@@ -1,5 +1,5 @@
 import { MobileAppService } from './../../../mobile-app/mobile-app.service';
-import { DeploymentModule } from './../../deployment.module';
+// import { DeploymentModule } from './../../deployment.module';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { DeploymentVoucherFormComponent } from '../deployment-voucher-form/deployment-voucher-form.component';
 import { DeploymentVoucherPrintComponent } from '../deployment-voucher-print/deployment-voucher-print.component';
+import { AppModule } from '../../../../app.module';
 
 @Component({
   selector: 'ngx-deployment-voucher-list',
@@ -273,7 +274,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           instance.title = this.commonService.translateText('Common.approved');
           instance.label = this.commonService.translateText('Common.approved');
           instance.valueChange.subscribe(value => {
-            const processMap = DeploymentModule.processMaps.deploymentVoucher[value || ''];
+            const processMap = AppModule.processMaps.deploymentVoucher[value || ''];
             instance.label = this.commonService.translateText(processMap?.label);// this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
             instance.status = processMap?.status;//this.stateDic[value]?.status || 'danger';
             instance.outline = processMap.outline;//this.stateDic[value]?.outline || false;

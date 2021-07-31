@@ -1,5 +1,5 @@
 import { ProcessMap } from './../../../../models/process-map.model';
-import { DeploymentModule } from './../../deployment.module';
+// import { DeploymentModule } from './../../deployment.module';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { DeploymentVoucherModel, DeploymentVoucherDetailModel } from '../../../.
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { DeploymentVoucherFormComponent } from '../deployment-voucher-form/deployment-voucher-form.component';
+import { AppModule } from '../../../../app.module';
 
 @Component({
   selector: 'ngx-deployment-voucher-print',
@@ -63,7 +64,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
         }
       }
 
-      this.processMapList[i] = DeploymentModule.processMaps.deploymentVoucher[data.State || ''];
+      this.processMapList[i] = AppModule.processMaps.deploymentVoucher[data.State || ''];
     }
     return result;
   }
@@ -260,6 +261,15 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
         },
       },
     ]);
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(rs => {
+      if (rs[0] && rs[0].Details) {
+        this.setDetailsNo(rs[0].Details, (detail: DeploymentVoucherModel) => detail.Type === 'PRODUCT');
+      }
+      return rs;
+    });
   }
 
 }

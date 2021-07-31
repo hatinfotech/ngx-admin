@@ -778,7 +778,7 @@ export class CommonService {
     'RECEIPT': CashReceiptVoucherPrintComponent,
     'PAYMENT': CashPaymentVoucherPrintComponent,
     'PRICEREPORT': SalesPriceReportPrintComponent,
-    // 'DEPLOYMENT': DeploymentVoucherPrintComponent,
+    'DEPLOYMENT': DeploymentVoucherPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
     this.openDialog(this.voucherPrintConponentTypeIndex[type], {

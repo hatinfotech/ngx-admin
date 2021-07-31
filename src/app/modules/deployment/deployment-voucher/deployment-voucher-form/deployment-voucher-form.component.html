@@ -129,6 +129,19 @@
                                     <textarea class="scrollable-container" nbInput fullWidth formControlName="SubNote" placeholder="{{'Common.subNote' | translate | headtitlecase}}" rows="3"></textarea>
                                 </ngx-form-group>
                             </div>
+
+                            <div class="col-sm-12" *ngIf="formItem.get('RelativeVouchers').value?.length > 0">
+                                <div class="form-group">
+                                    <label class="label"><span class="valid">{{'Common.relativeVoucher' | translate | headtitlecase}}: </span></label>
+                                    <div>
+                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" title="{{relationVoucher | objectstext}}">
+                                            <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
+                                            <nb-icon pack="eva" icon="close-outline" class="close-btn" (click)="removeRelativeVoucher(formItem, relationVoucher)"></nb-icon>
+                                        </span>
+                                    </div>
+                                    <div class="break"></div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Detail form -->

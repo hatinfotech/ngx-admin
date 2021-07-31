@@ -267,6 +267,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     params['includeProductUnitList'] = true;
     params['includeProductPrice'] = true;
     params['useBaseTimezone'] = true;
+    params['includeRelativeVouchers'] = true;
     super.executeGet(params, success, error);
   }
   
@@ -320,6 +321,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       SubNote: [''],
       Reported: [''],
       _total: [''],
+      RelativeVouchers: [],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -656,6 +658,11 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
   openCreateNewProductForm(array: FormArray, index: number, name: string) {
 
+  }
+
+  openRelativeVoucher(relativeVocher: any) {
+    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    return false;
   }
 
 }

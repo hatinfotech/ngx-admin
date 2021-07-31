@@ -46,6 +46,8 @@ import { CashPaymentVoucherFormComponent } from './modules/accounting/cash/payme
 import { CashPaymentVoucherListComponent } from './modules/accounting/cash/payment/cash-payment-voucher-list/cash-payment-voucher-list.component';
 import { CashReceiptVoucherFormComponent } from './modules/accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 import { CashReceiptVoucherListComponent } from './modules/accounting/cash/receipt/cash-receipt-voucher-list/cash-receipt-voucher-list.component';
+import { DeploymentVoucherListComponent } from './modules/deployment/deployment-voucher/deployment-voucher-list/deployment-voucher-list.component';
+import { DeploymentVoucherFormComponent } from './modules/deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -146,7 +148,7 @@ const routes: Routes = [
   //   },
   // },
   {
-    path: 'dashboard', 
+    path: 'dashboard',
     component: ECommerceComponent,
     canActivate: [AuthGuardService],
     resolve: {
@@ -529,6 +531,29 @@ const routes: Routes = [
     component: AccBusinessFormComponent,
   },
 
+  // Deployment routes
+  {
+    path: 'deployment/voucher/list',
+    canActivate: [AuthGuardService],
+    component: DeploymentVoucherListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'deployment/voucher/form',
+    canActivate: [AuthGuardService],
+    component: DeploymentVoucherFormComponent,
+  },
+  {
+    path: 'deployment/voucher/form/:id',
+    canActivate: [AuthGuardService],
+    component: DeploymentVoucherFormComponent,
+  },
+
+
+
+
 
 
 
@@ -558,15 +583,15 @@ const routes: Routes = [
   //     .then(m => m.SalesModule),
   // },
   // Deployment
-  {
-    path: 'deployment',
-    resolve: {
-      configuration: RoutingResolve,
-    },
-    // canActivate: [AuthGuardService],
-    loadChildren: () => import('./modules/deployment/deployment.module')
-      .then(m => m.DeploymentModule),
-  },
+  // {
+  //   path: 'deployment',
+  //   resolve: {
+  //     configuration: RoutingResolve,
+  //   },
+  //   // canActivate: [AuthGuardService],
+  //   loadChildren: () => import('./modules/deployment/deployment.module')
+  //     .then(m => m.DeploymentModule),
+  // },
   // Purchase
   // {
   //   path: 'purchase',
