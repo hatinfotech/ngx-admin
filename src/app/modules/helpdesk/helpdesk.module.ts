@@ -7,7 +7,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 // import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from '../dialog/dialog.module';
+// import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SmartTableCheckboxComponent } from '../../lib/custom-element/smart-table/smart-table.component';
@@ -90,7 +90,7 @@ import { HelpdeskProcedureFormComponent } from './procedure/helpdesk-procedure-f
     // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule,
+    // DialogModule,
     NbProgressBarModule,
     AgGridModule,
 

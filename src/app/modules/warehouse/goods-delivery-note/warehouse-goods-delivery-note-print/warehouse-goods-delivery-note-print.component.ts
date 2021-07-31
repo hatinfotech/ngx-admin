@@ -119,12 +119,6 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
     return this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsDeliveryNoteDetailModel) => detail.Type === 'PRODUCT');
-        // let no = 1;
-        // for (const detail of rs[0].Details) {
-        //   if (detail.Type === 'PRODUCT') {
-        //     detail.No = no++;
-        //   }
-        // }
       }
       return rs;
     });

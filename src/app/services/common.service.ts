@@ -9,7 +9,7 @@ import { PurchasePriceTablePrintComponent } from './../modules/purchase/price-ta
 import { HelpdeskTicketModel } from './../models/helpdesk.model';
 import { TaxModel } from './../models/tax.model';
 import { Injectable, Type, TemplateRef } from '@angular/core';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
@@ -167,6 +167,7 @@ export class CommonService {
     // public messagingService: NotificationService,
     private toastrService: NbToastrService,
     private mobileService: MobileAppService,
+    public activeRoute: ActivatedRoute,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
@@ -474,11 +475,15 @@ export class CommonService {
       $('html').css({ top: 0 });
     }, 50);
     let dialogLoading = null;
-    userConfig.context['onAfterInit'] = () => {
-      setTimeout(() => {
-        dialogLoading && dialogLoading.fadeOut(300);
-      }, 300);
-    };
+    if (userConfig.context) {
+      const afterInit = userConfig.context['onAfterInit'];
+      userConfig.context['onAfterInit'] = (component?: BaseComponent, type?: string) => {
+        afterInit && afterInit(component, type);
+        setTimeout(() => {
+          dialogLoading && dialogLoading.fadeOut(300);
+        }, 300);
+      }
+    }
     const dialogRef = this.dialogService.open<T>(content, userConfig);
     if (dialogRef['overlayRef'] && dialogRef['overlayRef']['_pane'] && userConfig.context['showLoadinng']) {
 

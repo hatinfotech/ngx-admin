@@ -1,0 +1,14 @@
+<div class="dialog-wrap popup">
+    <nb-card class="small-header smart-table">
+        <nb-card-body>
+            <nb-tabset>
+                <nb-tab *ngIf="components['PRICEREPORT']" tabTitle="{{components['PRICEREPORT'].title}}">
+                    <ngx-sales-price-report-list (onItemsChoosed)="onDialogChoose($event, 'PRICEREPORT')"></ngx-sales-price-report-list>
+                </nb-tab>
+                <nb-tab *ngIf="components['GOODSDELIVERY']" tabTitle="{{components['GOODSDELIVERY'].title}}">
+                    <ngx-warehouse-goods-delivery-note-list (onItemsChoosed)="onDialogChoose($event, 'GOODSDELIVERY')"></ngx-warehouse-goods-delivery-note-list>
+                </nb-tab>
+            </nb-tabset>
+        </nb-card-body>
+    </nb-card>
+</div>

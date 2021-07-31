@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable } from '@angular/core';
+import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable, Output, EventEmitter } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -83,6 +83,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   protected refreshPendding = false;
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
+  @Output() onItemsChoosed = new EventEmitter<M[]>();
 
   favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   @Input() title?: string;
@@ -223,7 +224,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   async init(): Promise<boolean> {
     await this.loadCache();
-    this.onAfterInit && this.onAfterInit();
+    this.onAfterInit && this.onAfterInit(this);
     return true;
   }
 
@@ -641,6 +642,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
             if (this.onDialogChoose) {
               this.onDialogChoose([row]);
             }
+            this.onItemsChoosed.emit([row]);
             this.close();
 
           });

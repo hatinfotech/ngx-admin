@@ -10,7 +10,7 @@ import { CustomElementModule } from '../../lib/custom-element/custom-element.mod
 import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
 // import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from '../dialog/dialog.module';
+// import { DialogModule } from '../dialog/dialog.module';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { WebHostingRoutingModule } from './web-hosting-routing.module';
 import { WebsiteListComponent } from './websites/website-list/website-list.component';
@@ -62,7 +62,7 @@ import { TranslateModule } from '@ngx-translate/core';
     // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule,
+    // DialogModule,
     NbProgressBarModule,
     NbCardModule,
     TranslateModule,

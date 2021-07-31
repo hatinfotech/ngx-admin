@@ -11,7 +11,7 @@ import { CustomElementModule } from '../../lib/custom-element/custom-element.mod
 import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
 // import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from '../dialog/dialog.module';
+// import { DialogModule } from '../dialog/dialog.module';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableIconComponent } from '../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
@@ -45,7 +45,7 @@ import { TranslateModule } from '@ngx-translate/core';
     // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule,
+    // DialogModule,
     NbProgressBarModule,
     TranslateModule,
     SortablejsModule.forRoot({

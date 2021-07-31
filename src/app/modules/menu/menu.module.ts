@@ -14,7 +14,7 @@ import { CustomElementModule } from '../../lib/custom-element/custom-element.mod
 // import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { MenuListComponent } from './manager-menu/menu-list/menu-list.component';
 import { MenuFormComponent } from './manager-menu/menu-form/menu-form.component';
-import { DialogModule } from '../dialog/dialog.module';
+// import { DialogModule } from '../dialog/dialog.module';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -42,7 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
     Ng2SmartTableModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule,
+    // DialogModule,
     CommonModule,
     MenuRoutingModule,
     TranslateModule,

@@ -24,6 +24,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   /** Component name */
   componentName = 'SalesPriceReportPrintComponent';
   title: string = 'Xem trước phiếu báo giá';
+  apiPath = '/sales/price-reports';
   env = environment;
   processMapList: ProcessMap[] = [];
 
@@ -245,6 +246,15 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         },
       },
     ]);
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<SalesPriceReportModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(rs => {
+      if (rs[0] && rs[0].Details) {
+        this.setDetailsNo(rs[0].Details, (detail: SalesPriceReportDetailModel) => detail.Type === 'PRODUCT');
+      }
+      return rs;
+    });
   }
 
 }

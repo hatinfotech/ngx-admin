@@ -15,7 +15,7 @@ import { PbxFormComponent } from './pbx/pbx-form/pbx-form.component';
 import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';
 // import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from '../dialog/dialog.module';
+// import { DialogModule } from '../dialog/dialog.module';
 import { CallBlockListComponent } from './call-blocks/call-block-list/call-block-list.component';
 import { CallBlockFormComponent } from './call-blocks/call-block-form/call-block-form.component';
 import { ExtensionListComponent, ButtonViewComponent } from './extensions/extension-list/extension-list.component';
@@ -114,7 +114,7 @@ import { IvoipService } from './ivoip-service';
     // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule,
+    // DialogModule,
     NbProgressBarModule,
     TranslateModule,
     SortablejsModule.forRoot({

@@ -48,7 +48,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-stratery';
 import { ECommerceModule } from './modules/e-commerce/e-commerce.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-import { DialogModule } from './modules/dialog/dialog.module';
+// import { DialogModule } from './modules/dialog/dialog.module';
 import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showcase-dialog.component';
 import { TreeModule } from 'angular-tree-component';
 import { PlayerDialogComponent } from './modules/dialog/player-dialog/player-dialog.component';
@@ -140,6 +140,7 @@ import { ProcessMap } from './models/process-map.model';
 import { PurchaseGoodsFormComponent } from './modules/purchase/goods/purchase-goods-form/warehouse-goods-form.component';
 import { PurchaseGoodsListComponent } from './modules/purchase/goods/purchase-goods-list/purchase-goods-list.component';
 import { PurchaseGoodsPrintComponent } from './modules/purchase/goods/purchase-goods-print/purchase-goods-print.component';
+import { TabDialogComponent } from './modules/dialog/tab-dialog/tab-dialog.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi', localeViExtra);
@@ -161,6 +162,12 @@ export class DynamicLocaleId extends String {
 @NgModule({
   declarations: [
     AppComponent,
+
+    // Dialog components
+    ShowcaseDialogComponent, 
+    PlayerDialogComponent, 
+    DialogFormComponent,
+    TabDialogComponent,
 
     // Sales components
     // SalesComponent,
@@ -257,7 +264,7 @@ export class DynamicLocaleId extends String {
     CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule,
+    // DialogModule,
     NbProgressBarModule,
     AgGridModule,
     OwlDateTimeModule,
@@ -283,11 +290,6 @@ export class DynamicLocaleId extends String {
     HttpClientModule,
     AppRoutingModule,
     NbCardModule,
-    DialogModule,
-    // IvoipModule,
-    // SalesModule,
-    // WarehouseModule,
-    // PurchaseModule,
     HttpClientModule,
     AuthModule,
     CurrencyMaskModule,

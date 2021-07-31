@@ -6,7 +6,7 @@ import { ZaloOaRoutingModule } from './zalo-ao-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from '../dialog/dialog.module';
+// import { DialogModule } from '../dialog/dialog.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { ChartModule } from 'angular2-chartjs';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -53,7 +53,7 @@ import { ZaloOaTemplateFormComponent } from './template/zalo-oa-template-form/za
     // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule,
+    // DialogModule,
     NbProgressBarModule,
     AgGridModule,
 

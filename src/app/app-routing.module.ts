@@ -313,6 +313,15 @@ const routes: Routes = [
     },
   },
   {
+    path: 'sales/price-report/list/:mode',
+    canActivate: [AuthGuardService],
+    component: SalesPriceReportListComponent,
+    data: {
+      reuse: true,
+      routeStaticParam1: '123'
+    },
+  },
+  {
     path: 'sales/price-report/form',
     canActivate: [AuthGuardService],
     component: SalesPriceReportFormComponent,

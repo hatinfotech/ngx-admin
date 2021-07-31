@@ -1,3 +1,4 @@
+import { BusinessModel } from './accounting.model';
 import { TaxModel } from './tax.model';
 import { UnitModel } from './unit.model';
 import { ProductModel } from './product.model';
@@ -42,18 +43,21 @@ export class SalesVoucherModel extends Model {
 }
 
 export class SalesVoucherDetailModel extends Model  {
-  Id?: string | number;
-  Type?: string;
+  Id?: string & number;
   Voucher?: string;
-  PriceTableDetail?: string;
+  No?: number;
+  Type?: string;
   Product?: string & ProductModel;
-  ProductName?: string;
+  Description?: string;
   Quantity?: string & number;
   Price?: string & number;
   Tax?: string & TaxModel;
+  Image?: string;
   CurrencyType?: string;
   Unit?: string & UnitModel;
-
+  Business?: string | BusinessModel[];
+  ProductName?: string;
+  PriceTableDetail?: string;
 }
 
 export class SalesPriceReportModel extends Model  {
@@ -62,7 +66,7 @@ export class SalesPriceReportModel extends Model  {
   Code?: string;
   StoreId?: string;
   CustomerId?: string;
-  Object?: string;
+  Object?: string | ContactModel | any;
   ObjectName?: string;
   ObjectAddress?: string;
   ObjectPhone?: string;
@@ -101,6 +105,7 @@ export class SalesPriceReportModel extends Model  {
 
 export class SalesPriceReportDetailModel extends Model  {
   Id?: string & number;
+  Voucher?: string;
   No?: number;
   Type?: string;
   Product?: string & ProductModel;
@@ -111,6 +116,7 @@ export class SalesPriceReportDetailModel extends Model  {
   Tax?: string & TaxModel;
   Image?: string;
   Reason?: string;
+  Business?: string | BusinessModel[];
 }
 
 

@@ -29,6 +29,10 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   /** List init event */
   ngOnInit() {
     super.ngOnInit();
+    this.commonService.activeRoute.params.subscribe(params => {
+      // if (params['id']) callback(decodeURIComponent(params['id']).split('&')); else callback();
+      console.log(params);
+    });
   }
 
   /** Config for paging */
