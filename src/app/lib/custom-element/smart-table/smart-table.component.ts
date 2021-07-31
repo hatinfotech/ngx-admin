@@ -250,7 +250,7 @@ export class SmartTableCurrencyComponent extends SmartTableBaseComponent impleme
 
 @Component({
   template: `<div [style]="style" [class]="class">
-    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag" title="{{tag.text}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.id}}</a>
+    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" title="{{tag.text}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.id}}</a>
   </div>`,
 })
 export class SmartTableTagsComponent extends SmartTableBaseComponent implements ViewCell, OnInit {

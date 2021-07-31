@@ -60,28 +60,29 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
-    minimumInputLength: 0,
+    minimumInputLength: 1,
     // multiple: true,
     // tags: true,
     keyMap: {
-      id: 'id',
-      text: 'text',
+      id: 'Code',
+      text: 'Name',
     },
     ajax: {
       url: params => {
         return this.apiService.buildApiUrl('/contact/contacts', { onlyIdText: true, filter_Name: params['term'] ? params['term'] : '' });
       },
       delay: 300,
-      // processResults: (data: any, params: any) => {
-      //   // console.info(data, params);
-      //   return {
-      //     results: data.map(item => {
-      //       item['id'] = item['id'] || item['Code'];
-      //       item['text'] = item['text'] || item['Name'];
-      //       return item;
-      //     }),
-      //   };
-      // },
+      processResults: (data: any, params: any) => {
+        return { results: data };
+        //   // console.info(data, params);
+        //   return {
+        //     results: data.map(item => {
+        //       item['id'] = item['id'] || item['Code'];
+        //       item['text'] = item['text'] || item['Name'];
+        //       return item;
+        //     }),
+        //   };
+      },
     },
   };
 
