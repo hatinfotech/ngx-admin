@@ -6,6 +6,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WebHostingService } from '../../web-hosting-service';
 import { WhDatabaseUserModel } from '../../../../models/wh-database-user.model';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-database-user-list',
@@ -19,34 +20,36 @@ export class DatabaseUserListComponent extends WebHostingBaseListComponent<WhDat
   apiPath = '/web-hosting/database-users';
   idKey = 'database_user_id';
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      database_user: {
-        title: 'Domain name',
-        type: 'string',
-        width: '60%',
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'string',
+          width: '10%',
+        },
+        database_user: {
+          title: 'Domain name',
+          type: 'string',
+          width: '60%',
+        },
+        hosting: {
+          title: 'Hosting',
+          type: 'string',
+          width: '30%',
+        },
       },
-      hosting: {
-        title: 'Hosting',
-        type: 'string',
-        width: '30%',
-      },
-    },
-  });
+    });
+  }
 
   constructor(
     public apiService: ApiService,

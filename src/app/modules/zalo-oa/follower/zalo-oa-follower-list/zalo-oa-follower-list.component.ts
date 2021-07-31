@@ -10,6 +10,7 @@ import { ZaloOaFollowerFormComponent } from '../zalo-oa-follower-form/zalo-oa-fo
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-zalo-oa-follower-list',
@@ -68,61 +69,63 @@ export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'number',
-        width: '5%',
-        class: 'no',
-        filter: false,
-      },
-      Code: {
-        title: 'Mã',
-        type: 'string',
-        width: '10%',
-      },
-      Name: {
-        title: 'Name',
-        type: 'string',
-        width: '75%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Chat: {
-        title: this.commonService.translateText('Common.refreshToken'),
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'message-circle';
-          instance.display = true;
-          instance.status = 'primary';
-          instance.title = this.commonService.translateText('Common.refreshToken');
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((contact: ContactModel) => {
-            if (contact.Details && contact.Details.ZALO_CHAT_ROOM) {
-              this.mobileAppService.openChatRoom({ ChatRoom: contact.Details.ZALO_CHAT_ROOM }).then(f7MessageComponent => {
-                console.log(f7MessageComponent);
-              });
-            } else {
-              this.apiService.putPromise<ContactModel[]>('/zalo-oa/followers', { 'createZaloChatRoom': true }, [{
-                Code: contact.Code,
-                Name: contact.Name,
-                User: contact.User,
-                Details: contact.Details,
-              }]).then(updatedFollowers => {
-                if (updatedFollowers[0].Details.ZALO_CHAT_ROOM) {
-                  this.mobileAppService.openChatRoom({ ChatRoom: updatedFollowers[0].Details.ZALO_CHAT_ROOM }).then(f7MessageComponent => {
-                    console.log(f7MessageComponent);
-                  });
-                }
-              });
-            }
-          });
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'number',
+          width: '5%',
+          class: 'no',
+          filter: false,
+        },
+        Code: {
+          title: 'Mã',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Name',
+          type: 'string',
+          width: '75%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Chat: {
+          title: this.commonService.translateText('Common.refreshToken'),
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'message-circle';
+            instance.display = true;
+            instance.status = 'primary';
+            instance.title = this.commonService.translateText('Common.refreshToken');
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((contact: ContactModel) => {
+              if (contact.Details && contact.Details.ZALO_CHAT_ROOM) {
+                this.mobileAppService.openChatRoom({ ChatRoom: contact.Details.ZALO_CHAT_ROOM }).then(f7MessageComponent => {
+                  console.log(f7MessageComponent);
+                });
+              } else {
+                this.apiService.putPromise<ContactModel[]>('/zalo-oa/followers', { 'createZaloChatRoom': true }, [{
+                  Code: contact.Code,
+                  Name: contact.Name,
+                  User: contact.User,
+                  Details: contact.Details,
+                }]).then(updatedFollowers => {
+                  if (updatedFollowers[0].Details.ZALO_CHAT_ROOM) {
+                    this.mobileAppService.openChatRoom({ ChatRoom: updatedFollowers[0].Details.ZALO_CHAT_ROOM }).then(f7MessageComponent => {
+                      console.log(f7MessageComponent);
+                    });
+                  }
+                });
+              }
+            });
+          },
         },
       },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

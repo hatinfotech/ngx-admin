@@ -7,6 +7,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { RecordingFormComponent } from '../recording-form/recording-form.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-recording-list',
@@ -37,53 +38,55 @@ export class RecordingListComponent extends IvoipBaseListComponent<PbxRecordingM
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 99999,
-    // },
-    columns: {
-      recording_name: {
-        title: 'Tên',
-        type: 'string',
-        width: '30%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      recording_filename: {
-        title: 'Tên tệp',
-        type: 'string',
-        width: '30%',
+      // add: {
+      //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // edit: {
+      //   editButtonContent: '<i class="nb-edit"></i>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // delete: {
+      //   deleteButtonContent: '<i class="nb-trash"></i>',
+      //   confirmDelete: true,
+      // },
+      // pager: {
+      //   display: true,
+      //   perPage: 99999,
+      // },
+      columns: {
+        recording_name: {
+          title: 'Tên',
+          type: 'string',
+          width: '30%',
+        },
+        recording_filename: {
+          title: 'Tên tệp',
+          type: 'string',
+          width: '30%',
+        },
+        file_size: {
+          title: 'Kích thước',
+          type: 'string',
+          width: '10%',
+        },
+        recording_description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '30%',
+        },
       },
-      file_size: {
-        title: 'Kích thước',
-        type: 'string',
-        width: '10%',
-      },
-      recording_description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '30%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

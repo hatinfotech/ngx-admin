@@ -11,6 +11,7 @@ import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/sma
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -27,206 +28,208 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
 
   containerList: WarehouseGoodsContainerModel[] = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      FeaturePictureThumbnail: {
-        title: 'Hình',
-        type: 'custom',
-        width: '5%',
-        valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['FeaturePictureThumbnail'] ? product['FeaturePictureThumbnail'] + '?token=' + this.apiService.getAccessToken() : '';
-        },
-        renderComponent: SmartTableThumbnailComponent,
-        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
-          instance.valueChange.subscribe(value => {
-          });
-          instance.click.subscribe(async (row: ProductModel) => {
-            if (this.files.length === 0) {
-              this.uploadForProduct = row;
-              this.uploadBtn.nativeElement.click();
-            } else {
-              this.commonService.toastService.show(
-                this.commonService.translateText('Common.uploadInProcess'),
-                this.commonService.translateText('Common.upload'),
-                {
-                  status: 'warning',
-                });
-              // this.commonService.openDialog(ShowcaseDialogComponent, {
-              //   context: {
-              //     title: this.commonService.translateText('Common.upload'),
-              //     content: this.commonService.translateText('Common.uploadInProcess'),
-              //   },
-              // });
-            }
-          });
-          instance.title = this.commonService.translateText('click to change main product picture');
-        },
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '15%',
-      },
-      Categories: {
-        title: 'Danh mục',
-        type: 'html',
-        width: '15%',
-        valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
-        },
-        filter: {
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        FeaturePictureThumbnail: {
+          title: 'Hình',
           type: 'custom',
-          component: SmartTableSelect2FilterComponent,
-          config: {
-            delay: 0,
-            select2Option: {
-              placeholder: 'Chọn danh mục...',
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              multiple: true,
-              ajax: {
-                url: (params: any) => {
-                  return 'data:text/plan,[]';
+          width: '5%',
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product['FeaturePictureThumbnail'] ? product['FeaturePictureThumbnail'] + '?token=' + this.apiService.getAccessToken() : '';
+          },
+          renderComponent: SmartTableThumbnailComponent,
+          onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.subscribe(async (row: ProductModel) => {
+              if (this.files.length === 0) {
+                this.uploadForProduct = row;
+                this.uploadBtn.nativeElement.click();
+              } else {
+                this.commonService.toastService.show(
+                  this.commonService.translateText('Common.uploadInProcess'),
+                  this.commonService.translateText('Common.upload'),
+                  {
+                    status: 'warning',
+                  });
+                // this.commonService.openDialog(ShowcaseDialogComponent, {
+                //   context: {
+                //     title: this.commonService.translateText('Common.upload'),
+                //     content: this.commonService.translateText('Common.uploadInProcess'),
+                //   },
+                // });
+              }
+            });
+            instance.title = this.commonService.translateText('click to change main product picture');
+          },
+        },
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '15%',
+        },
+        Categories: {
+          title: 'Danh mục',
+          type: 'html',
+          width: '15%',
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              select2Option: {
+                placeholder: 'Chọn danh mục...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
                 },
-                delay: 0,
-                processResults: (data: any, params: any) => {
-                  return {
-                    results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-                  };
+                multiple: true,
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    };
+                  },
                 },
               },
             },
           },
         },
-      },
-      Container: {
-        title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
-        type: 'html',
-        width: '15%',
-        valuePrepareFunction: (value: string, product: GoodsModel) => {
-          return this.commonService.getObjectText(value);
-          // try {
-          //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
-          // } catch (e) {
-          //   return '';
-          // }
-        },
-        filter: {
-          type: 'custom',
-          component: SmartTableSelect2FilterComponent,
-          config: {
-            delay: 0,
-            select2Option: {
-              placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              multiple: true,
-              logic: 'OR',
-              ajax: {
-                url: (params: any) => {
-                  return 'data:text/plan,[]';
+        Container: {
+          title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
+          type: 'html',
+          width: '15%',
+          valuePrepareFunction: (value: string, product: GoodsModel) => {
+            return this.commonService.getObjectText(value);
+            // try {
+            //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
+            // } catch (e) {
+            //   return '';
+            // }
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              select2Option: {
+                placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
                 },
-                delay: 0,
-                processResults: (data: any, params: any) => {
-                  return {
-                    results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-                  };
+                multiple: true,
+                logic: 'OR',
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    };
+                  },
                 },
               },
             },
           },
         },
-      },
-      ConversionUnit: {
-        title: 'ĐVT',
-        type: 'html',
-        width: '7%',
-        valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
-        },
-        filter: {
-          type: 'custom',
-          component: SmartTableSelect2FilterComponent,
-          config: {
-            delay: 0,
-            select2Option: {
-              placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              multiple: true,
-              logic: 'OR',
-              ajax: {
-                url: (params: any) => {
-                  return 'data:text/plan,[]';
+        ConversionUnit: {
+          title: 'ĐVT',
+          type: 'html',
+          width: '7%',
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              select2Option: {
+                placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
                 },
-                delay: 0,
-                processResults: (data: any, params: any) => {
-                  return {
-                    results: this.unitList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-                  };
+                multiple: true,
+                logic: 'OR',
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.unitList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    };
+                  },
                 },
               },
             },
           },
         },
-      },
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '5%',
-      },
-      Sku: {
-        title: 'Sku',
-        type: 'string',
-        width: '10%',
-      },
-      Inventory: {
-        title: this.commonService.translateText('Warehouse.inventory'),
-        type: 'string',
-        width: '5%',
-      },
-      CostOfGoodsSold: {
-        title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
-        type: 'currency',
-        width: '10%',
-      },
-      InventoryCost: {
-        title: this.commonService.translateText('Warehouse.inventoryCost'),
-        type: 'currency',
-        width: '12%',
-        valuePrepareFunction: (value: string, goods: GoodsModel) => {
-          return (goods['Inventory'] * goods['CostOfGoodsSold']).toString();
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '5%',
+        },
+        Sku: {
+          title: 'Sku',
+          type: 'string',
+          width: '10%',
+        },
+        Inventory: {
+          title: this.commonService.translateText('Warehouse.inventory'),
+          type: 'string',
+          width: '5%',
+        },
+        CostOfGoodsSold: {
+          title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
+          type: 'currency',
+          width: '10%',
+        },
+        InventoryCost: {
+          title: this.commonService.translateText('Warehouse.inventoryCost'),
+          type: 'currency',
+          width: '12%',
+          valuePrepareFunction: (value: string, goods: GoodsModel) => {
+            return (goods['Inventory'] * goods['CostOfGoodsSold']).toString();
+          },
         },
       },
-    },
-  });
+    });
+  }
 
   constructor(
     public apiService: ApiService,

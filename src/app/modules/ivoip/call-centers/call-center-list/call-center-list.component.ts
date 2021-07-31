@@ -8,13 +8,14 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { CallCenterFormComponent } from '../call-center-form/call-center-form.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-call-center-list',
   templateUrl: './call-center-list.component.html',
   styleUrls: ['./call-center-list.component.scss'],
 })
-export class CallCenterListComponent  extends IvoipBaseListComponent<PbxCallCenterQueueModel> implements OnInit {
+export class CallCenterListComponent extends IvoipBaseListComponent<PbxCallCenterQueueModel> implements OnInit {
 
   componentName = 'CallCenterListComponent';
   formPath = '/ivoip/call-centers/form';
@@ -39,53 +40,55 @@ export class CallCenterListComponent  extends IvoipBaseListComponent<PbxCallCent
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 99999,
-    // },
-    columns: {
-      queue_name: {
-        title: 'Tên',
-        type: 'string',
-        width: '20%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      queue_extension: {
-        title: 'Số đại diện',
-        type: 'string',
-        width: '20%',
+      // add: {
+      //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // edit: {
+      //   editButtonContent: '<i class="nb-edit"></i>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // delete: {
+      //   deleteButtonContent: '<i class="nb-trash"></i>',
+      //   confirmDelete: true,
+      // },
+      // pager: {
+      //   display: true,
+      //   perPage: 99999,
+      // },
+      columns: {
+        queue_name: {
+          title: 'Tên',
+          type: 'string',
+          width: '20%',
+        },
+        queue_extension: {
+          title: 'Số đại diện',
+          type: 'string',
+          width: '20%',
+        },
+        queue_strategy: {
+          title: 'Thuật toán',
+          type: 'string',
+          width: '20%',
+        },
+        queue_description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '40%',
+        },
       },
-      queue_strategy: {
-        title: 'Thuật toán',
-        type: 'string',
-        width: '20%',
-      },
-      queue_description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '40%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

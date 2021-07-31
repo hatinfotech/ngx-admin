@@ -5,7 +5,7 @@
 
   <nb-card-body>
     <div class="ng2-smart-table-wrap">
-      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)">
+      <ng2-smart-table *ngIf="settings" [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)">
       </ng2-smart-table>
     </div>
   </nb-card-body>

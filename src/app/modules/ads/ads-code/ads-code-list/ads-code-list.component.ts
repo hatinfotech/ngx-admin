@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AdsCodeModel } from '../../../../models/ads.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -35,90 +35,92 @@ export class AdsCodeListComponent extends DataManagerListComponent<AdsCodeModel>
   editing = {};
   rows = [];
 
-  settings = {
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
-    columns: {
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Type: {
-        title: 'Type',
-        type: 'string',
-        width: '10%',
+      add: {
+        addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+        createButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      Site: {
-        title: 'Site',
-        type: 'string',
-        width: '40%',
+      edit: {
+        editButtonContent: '<i class="nb-edit"></i>',
+        saveButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      Area: {
-        title: 'Target',
-        type: 'string',
-        width: '30%',
+      delete: {
+        deleteButtonContent: '<i class="nb-trash"></i>',
+        confirmDelete: true,
       },
-    //   Copy: {
-    //     title: 'Copy',
-    //     type: 'custom',
-    //     width: '10%',
-    //     renderComponent: SmartTableButtonComponent,
-    //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-    //       instance.iconPack = 'eva';
-    //       instance.icon = 'copy';
-    //       instance.label = 'Copy nội dung sang site khác';
-    //       instance.display = true;
-    //       instance.status = 'success';
-    //       instance.valueChange.subscribe(value => {
-    //         // if (value) {
-    //         //   instance.disabled = false;
-    //         // } else {
-    //         //   instance.disabled = true;
-    //         // }
-    //       });
-    //       instance.click.subscribe(async (row: AdsCodeModel) => {
+      pager: {
+        display: true,
+        perPage: 99999,
+      },
+      columns: {
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '10%',
+        },
+        Type: {
+          title: 'Type',
+          type: 'string',
+          width: '10%',
+        },
+        Site: {
+          title: 'Site',
+          type: 'string',
+          width: '40%',
+        },
+        Area: {
+          title: 'Target',
+          type: 'string',
+          width: '30%',
+        },
+        //   Copy: {
+        //     title: 'Copy',
+        //     type: 'custom',
+        //     width: '10%',
+        //     renderComponent: SmartTableButtonComponent,
+        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //       instance.iconPack = 'eva';
+        //       instance.icon = 'copy';
+        //       instance.label = 'Copy nội dung sang site khác';
+        //       instance.display = true;
+        //       instance.status = 'success';
+        //       instance.valueChange.subscribe(value => {
+        //         // if (value) {
+        //         //   instance.disabled = false;
+        //         // } else {
+        //         //   instance.disabled = true;
+        //         // }
+        //       });
+        //       instance.click.subscribe(async (row: AdsCodeModel) => {
 
-    //         this.commonService.openDialog(SyncFormComponent, {
-    //           context: {
-    //             inputMode: 'dialog',
-    //             inputId: [row.Code],
-    //             onDialogSave: (newData: AdsCodeModel[]) => {
-    //               // if (onDialogSave) onDialogSave(row);
-    //             },
-    //             onDialogClose: () => {
-    //               // if (onDialogClose) onDialogClose();
-    //               this.refresh();
-    //             },
-    //           },
-    //         });
+        //         this.commonService.openDialog(SyncFormComponent, {
+        //           context: {
+        //             inputMode: 'dialog',
+        //             inputId: [row.Code],
+        //             onDialogSave: (newData: AdsCodeModel[]) => {
+        //               // if (onDialogSave) onDialogSave(row);
+        //             },
+        //             onDialogClose: () => {
+        //               // if (onDialogClose) onDialogClose();
+        //               this.refresh();
+        //             },
+        //           },
+        //         });
 
-    //       });
-    //     },
-    //   },
-    },
-  };
+        //       });
+        //     },
+        //   },
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { WarehouseModel } from '../../../../models/warehouse.model';
 import { WarehouseFormComponent } from '../warehouse-form/warehouse-form.component';
 import { ApiService } from '../../../../services/api.service';
@@ -35,44 +35,46 @@ export class WarehouseListComponent extends DataManagerListComponent<WarehouseMo
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: this.configAddButton(),
-    // edit: this.configEditButton(),
-    // delete: this.configDeleteButton(),
-    // pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: this.commonService.translateText('Common.name'),
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: this.commonService.translateText('Common.name'),
-        type: 'string',
-        width: '30%',
+      // add: this.configAddButton(),
+      // edit: this.configEditButton(),
+      // delete: this.configDeleteButton(),
+      // pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: this.commonService.translateText('Common.name'),
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: this.commonService.translateText('Common.name'),
+          type: 'string',
+          width: '30%',
+        },
+        Description: {
+          title: this.commonService.translateText('Common.description'),
+          type: 'string',
+          width: '20%',
+        },
+        Branch: {
+          title: this.commonService.translateText('Common.branch'),
+          type: 'string',
+          width: '20%',
+        },
+        AccAccount: {
+          title: this.commonService.translateText('Common.accounting account'),
+          type: 'string',
+          width: '10%',
+        },
       },
-      Description: {
-        title: this.commonService.translateText('Common.description'),
-        type: 'string',
-        width: '20%',
-      },
-      Branch: {
-        title: this.commonService.translateText('Common.branch'),
-        type: 'string',
-        width: '20%',
-      },
-      AccAccount: {
-        title: this.commonService.translateText('Common.accounting account'),
-        type: 'string',
-        width: '10%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

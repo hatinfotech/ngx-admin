@@ -10,6 +10,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { SmartTableThumbnailComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-file-list',
@@ -113,79 +114,81 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Thumbnail: {
-        title: 'Hình',
-        type: 'custom',
-        width: '5%',
-        renderComponent: SmartTableThumbnailComponent,
-        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
-          instance.valueChange.subscribe(value => {
-          });
-          instance.click.subscribe(async (row: FileModel) => {
-          });
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
+      },
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Thumbnail: {
+          title: 'Hình',
+          type: 'custom',
+          width: '5%',
+          renderComponent: SmartTableThumbnailComponent,
+          onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.subscribe(async (row: FileModel) => {
+            });
+          },
+        },
+        Name: {
+          title: 'Tên file',
+          type: 'string',
+          width: '25%',
+        },
+        Created: {
+          title: 'Ngày upload',
+          type: 'string',
+          width: '15%',
+        },
+        Update: {
+          title: 'Cập nhật',
+          type: 'string',
+          width: '15%',
+        },
+        Store: {
+          title: 'Kho lưu trữ',
+          type: 'string',
+          width: '10%',
+        },
+        Id: {
+          title: 'Id',
+          type: 'string',
+          width: '5%',
+        },
+        Protected: {
+          title: 'Bảo mật',
+          type: 'string',
+          width: '5%',
+        },
+        Download: {
+          title: 'Tải',
+          type: 'custom',
+          width: '5%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'download-outline';
+            instance.label = 'Tải về';
+            instance.display = true;
+            instance.status = 'success';
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.subscribe(async (row: FileModel) => {
+              window.open(row['DownloadLink'], '_blank');
+            });
+          },
         },
       },
-      Name: {
-        title: 'Tên file',
-        type: 'string',
-        width: '25%',
-      },
-      Created: {
-        title: 'Ngày upload',
-        type: 'string',
-        width: '15%',
-      },
-      Update: {
-        title: 'Cập nhật',
-        type: 'string',
-        width: '15%',
-      },
-      Store: {
-        title: 'Kho lưu trữ',
-        type: 'string',
-        width: '10%',
-      },
-      Id: {
-        title: 'Id',
-        type: 'string',
-        width: '5%',
-      },
-      Protected: {
-        title: 'Bảo mật',
-        type: 'string',
-        width: '5%',
-      },
-      Download: {
-        title: 'Tải',
-        type: 'custom',
-        width: '5%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'download-outline';
-          instance.label = 'Tải về';
-          instance.display = true;
-          instance.status = 'success';
-          instance.valueChange.subscribe(value => {
-          });
-          instance.click.subscribe(async (row: FileModel) => {
-            window.open(row['DownloadLink'], '_blank');
-          });
-        },
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

@@ -11,6 +11,7 @@ import { ExtensionFormComponent } from '../extension-form/extension-form.compone
 import { IvoipServerBaseListComponent } from '../../ivoip-server-base-list.component';
 import { IconViewComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-custom-view',
@@ -65,137 +66,139 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    columns: {
-      extension: {
-        title: 'Extension',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      description: {
-        title: 'Diễn giải',
-        type: 'string',
-        width: '30%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      call_group: {
-        title: 'Nhóm',
-        type: 'string',
-        width: '10%',
-      },
-      user_record: {
-        title: 'Ghi âm',
-        type: 'string',
-        width: '10%',
-      },
-      registrations: {
-        title: 'Trạng thái',
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'globe-outline';
-          instance.display = true;
-          instance.status = 'success';
-          instance.label = this.commonService.translateText('Common.offline');
-          instance.title = 'Không có thiết bị nào đăng ký cho extension này !';
-          instance.valueChange.subscribe((value: any[]) => {
-            if (!value || value.length == 0) {
-              instance.disabled = true;
-            } else {
-              instance.label = this.commonService.translateText('Common.online') + ' (' + value.length + ')';
-              instance.title = 'Có ' + value.length + ' thiết bị đăng ký cho extension này, bấm vào để kiểm tra !';
-            }
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PbxExtensionModel) => {
-            instance.disabled = true;
-            // Refresh list for get new include registration deveices
-            // this.refreshPromise().then(rs => {
-            // Get new row data after refresh
-            // const newRowData: PbxExtensionModel = this.source['data'].find(f => f.extension_uuid === rowData.extension_uuid);
-
-            if (rowData.registrations && rowData.registrations.length > 0) {
-              // Show table dialog
-              this.commonService.openDialog(ShowcaseDialogComponent, {
-                context: {
-                  title: this.commonService.translateText('Ivoip.deviceRegisterInfo'),
-                  tableContent: {
-                    header: [
-                      { name: '#', title: '#' },
-                      { name: 'agent', title: 'Loại thiết bị' },
-                      { name: 'network-ip', title: 'Public IP' },
-                      { name: 'lan-ip', title: 'Local IP' },
-                      { name: 'ping-time', title: 'Ping' },
-                    ],
-                    data: rowData.registrations.map((item, index) => {
-                      item['#'] = index + 1;
-                      return item;
-                    }),
-                  },
-                  footerContent: '<i>refresh lại danh sách để có kết quả chính xác !</i>'
-                },
-              });
-              instance.disabled = false;
-            } else {
-              this.commonService.openDialog(ShowcaseDialogComponent, {
-                context: {
-                  title: this.commonService.translateText('Ivoip.deviceRegisterInfo'),
-                  content: this.commonService.translateText('Ivoip.noRegisterDevices'),
-                },
-              });
-            }
-            // });
-          });
+      columns: {
+        extension: {
+          title: 'Extension',
+          type: 'string',
+          width: '10%',
         },
-      },
-      enabled: {
-        title: 'Kích hoạt',
-        type: 'boolean',
-        width: '5%',
-      },
-      qr_code: {
-        class: 'genrate-qrcode',
-        title: 'QR Code',
-        type: 'custom',
-        width: '5%',
-        renderComponent: ButtonViewComponent,
-        onComponentInitFunction: (instance: ButtonViewComponent) => {
-          instance.renderValue = 'fa fa-qrcode';
-          instance.click.subscribe((row: PbxExtensionModel) => {
-            this.showQrCode(row.extension_uuid, row.extension);
-          });
+        description: {
+          title: 'Diễn giải',
+          type: 'string',
+          width: '30%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-      },
-      sip_info: {
-        class: this.commonService.translateText('Ivoip.sipInfo'),
-        title: 'Sip Info',
-        type: 'custom',
-        width: '10%',
-        renderComponent: IconViewComponent,
-        onComponentInitFunction: (instance: IconViewComponent) => {
-          instance.renderValue = 'settings';
-          instance.type = 'nb';
-          instance.pack = 'eva';
-          instance.status = 'danger';
-          instance.click.subscribe((row: PbxExtensionModel) => {
-            this.commonService.openDialog(ShowcaseDialogComponent, {
-              context: {
-                title: this.commonService.translateText('Ivoip.sipInfo'),
-                content: '<div style="border-radius: 1rem; border: 1px solid #eee">' + row['sip_info'].replace(/\n/g, '<br>') + '</div>',
-              },
-              closeOnBackdropClick: true,
+        call_group: {
+          title: 'Nhóm',
+          type: 'string',
+          width: '10%',
+        },
+        user_record: {
+          title: 'Ghi âm',
+          type: 'string',
+          width: '10%',
+        },
+        registrations: {
+          title: 'Trạng thái',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'globe-outline';
+            instance.display = true;
+            instance.status = 'success';
+            instance.label = this.commonService.translateText('Common.offline');
+            instance.title = 'Không có thiết bị nào đăng ký cho extension này !';
+            instance.valueChange.subscribe((value: any[]) => {
+              if (!value || value.length == 0) {
+                instance.disabled = true;
+              } else {
+                instance.label = this.commonService.translateText('Common.online') + ' (' + value.length + ')';
+                instance.title = 'Có ' + value.length + ' thiết bị đăng ký cho extension này, bấm vào để kiểm tra !';
+              }
             });
-          });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PbxExtensionModel) => {
+              instance.disabled = true;
+              // Refresh list for get new include registration deveices
+              // this.refreshPromise().then(rs => {
+              // Get new row data after refresh
+              // const newRowData: PbxExtensionModel = this.source['data'].find(f => f.extension_uuid === rowData.extension_uuid);
+
+              if (rowData.registrations && rowData.registrations.length > 0) {
+                // Show table dialog
+                this.commonService.openDialog(ShowcaseDialogComponent, {
+                  context: {
+                    title: this.commonService.translateText('Ivoip.deviceRegisterInfo'),
+                    tableContent: {
+                      header: [
+                        { name: '#', title: '#' },
+                        { name: 'agent', title: 'Loại thiết bị' },
+                        { name: 'network-ip', title: 'Public IP' },
+                        { name: 'lan-ip', title: 'Local IP' },
+                        { name: 'ping-time', title: 'Ping' },
+                      ],
+                      data: rowData.registrations.map((item, index) => {
+                        item['#'] = index + 1;
+                        return item;
+                      }),
+                    },
+                    footerContent: '<i>refresh lại danh sách để có kết quả chính xác !</i>'
+                  },
+                });
+                instance.disabled = false;
+              } else {
+                this.commonService.openDialog(ShowcaseDialogComponent, {
+                  context: {
+                    title: this.commonService.translateText('Ivoip.deviceRegisterInfo'),
+                    content: this.commonService.translateText('Ivoip.noRegisterDevices'),
+                  },
+                });
+              }
+              // });
+            });
+          },
+        },
+        enabled: {
+          title: 'Kích hoạt',
+          type: 'boolean',
+          width: '5%',
+        },
+        qr_code: {
+          class: 'genrate-qrcode',
+          title: 'QR Code',
+          type: 'custom',
+          width: '5%',
+          renderComponent: ButtonViewComponent,
+          onComponentInitFunction: (instance: ButtonViewComponent) => {
+            instance.renderValue = 'fa fa-qrcode';
+            instance.click.subscribe((row: PbxExtensionModel) => {
+              this.showQrCode(row.extension_uuid, row.extension);
+            });
+          },
+        },
+        sip_info: {
+          class: this.commonService.translateText('Ivoip.sipInfo'),
+          title: 'Sip Info',
+          type: 'custom',
+          width: '10%',
+          renderComponent: IconViewComponent,
+          onComponentInitFunction: (instance: IconViewComponent) => {
+            instance.renderValue = 'settings';
+            instance.type = 'nb';
+            instance.pack = 'eva';
+            instance.status = 'danger';
+            instance.click.subscribe((row: PbxExtensionModel) => {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: this.commonService.translateText('Ivoip.sipInfo'),
+                  content: '<div style="border-radius: 1rem; border: 1px solid #eee">' + row['sip_info'].replace(/\n/g, '<br>') + '</div>',
+                },
+                closeOnBackdropClick: true,
+              });
+            });
+          },
         },
       },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

@@ -7,6 +7,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { CallRouteFormComponent } from '../call-route-form/call-route-form.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-call-route-list',
@@ -35,92 +36,94 @@ export class CallRouteListComponent extends IvoipBaseListComponent<PbxExtensionM
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-      // edit: false,
-      // custom: [
-      //   {
-      //     name: 'edit',
-      //     title: '<i class="fa fa-qr-code"></i>',
-      //   },
-      // ],
-    },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 99999,
-    // },
-    columns: {
-      extension: {
-        title: 'Extension',
-        type: 'string',
-        width: '20%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
+        // edit: false,
+        // custom: [
+        //   {
+        //     name: 'edit',
+        //     title: '<i class="fa fa-qr-code"></i>',
+        //   },
+        // ],
       },
-      description: {
-        title: 'Diễn giải',
-        type: 'string',
-        width: '30%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      // number_alias: {
-      //   title: 'Alias',
-      //   type: 'string',
+      // add: {
+      //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
       // },
-      // accountcode: {
-      //   title: 'Số Public',
-      //   type: 'string',
+      // edit: {
+      //   editButtonContent: '<i class="nb-edit"></i>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
       // },
-      call_group: {
-        title: 'Nhóm',
-        type: 'string',
-        width: '10%',
-      },
-      user_record: {
-        title: 'Ghi âm',
-        type: 'string',
-        width: '10%',
-      },
-      status: {
-        title: 'Trạng thái',
-        type: 'string',
-        width: '20%',
-      },
-      enabled: {
-        title: 'Kích hoạt',
-        type: 'string',
-        width: '10%',
-      },
-      // qr_code: {
-      //   class: 'genrate-qrcode',
-      //   title: 'QR Code',
-      //   type: 'custom',
-      //   width: '10%',
-      //   renderComponent: ButtonViewComponent,
-      //   onComponentInitFunction: (instance: ButtonViewComponent) => {
-      //     instance.renderValue = 'fa fa-qrcode';
-      //     instance.click.subscribe((row: PbxExtensionModel) => {
-      //       this.showQrCode(row.extension_uuid, row.extension);
-      //     });
-      //   },
+      // delete: {
+      //   deleteButtonContent: '<i class="nb-trash"></i>',
+      //   confirmDelete: true,
       // },
-    },
-  });
+      // pager: {
+      //   display: true,
+      //   perPage: 99999,
+      // },
+      columns: {
+        extension: {
+          title: 'Extension',
+          type: 'string',
+          width: '20%',
+        },
+        description: {
+          title: 'Diễn giải',
+          type: 'string',
+          width: '30%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        // number_alias: {
+        //   title: 'Alias',
+        //   type: 'string',
+        // },
+        // accountcode: {
+        //   title: 'Số Public',
+        //   type: 'string',
+        // },
+        call_group: {
+          title: 'Nhóm',
+          type: 'string',
+          width: '10%',
+        },
+        user_record: {
+          title: 'Ghi âm',
+          type: 'string',
+          width: '10%',
+        },
+        status: {
+          title: 'Trạng thái',
+          type: 'string',
+          width: '20%',
+        },
+        enabled: {
+          title: 'Kích hoạt',
+          type: 'string',
+          width: '10%',
+        },
+        // qr_code: {
+        //   class: 'genrate-qrcode',
+        //   title: 'QR Code',
+        //   type: 'custom',
+        //   width: '10%',
+        //   renderComponent: ButtonViewComponent,
+        //   onComponentInitFunction: (instance: ButtonViewComponent) => {
+        //     instance.renderValue = 'fa fa-qrcode';
+        //     instance.click.subscribe((row: PbxExtensionModel) => {
+        //       this.showQrCode(row.extension_uuid, row.extension);
+        //     });
+        //   },
+        // },
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

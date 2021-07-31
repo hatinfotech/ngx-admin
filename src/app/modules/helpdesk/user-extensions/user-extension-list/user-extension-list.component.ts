@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-user-extension-list',
@@ -48,33 +49,35 @@ export class UserExtensionListComponent extends ServerDataManagerListComponent<H
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'number',
-        width: '5%',
-        class: 'no',
-        filter: false,
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'number',
+          width: '5%',
+          class: 'no',
+          filter: false,
+        },
+        Code: {
+          title: 'Mã',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Name',
+          type: 'string',
+          width: '45%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Username: {
+          title: 'Username',
+          type: 'string',
+          width: '40%',
+        },
       },
-      Code: {
-        title: 'Mã',
-        type: 'string',
-        width: '10%',
-      },
-      Name: {
-        title: 'Name',
-        type: 'string',
-        width: '45%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Username: {
-        title: 'Username',
-        type: 'string',
-        width: '40%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

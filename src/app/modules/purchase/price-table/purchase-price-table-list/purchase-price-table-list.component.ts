@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { PurchasePriceTableModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -58,90 +58,92 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Description: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
-        type: 'string',
-        width: '30%',
-      },
-      Title: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
-        type: 'string',
-        width: '20%',
-      },
-      DateOfCreate: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '10%',
         },
-      },
-      SupplierName: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
-        type: 'string',
-        width: '20%',
-      },
-      IsApprove: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
-        type: 'string',
-        width: '10%',
-      },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: PurchasePriceTableModel) => {
+        Description: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          type: 'string',
+          width: '30%',
+        },
+        Title: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          type: 'string',
+          width: '20%',
+        },
+        DateOfCreate: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        SupplierName: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
+          type: 'string',
+          width: '20%',
+        },
+        IsApprove: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
+          type: 'string',
+          width: '10%',
+        },
+        //   Copy: {
+        //     title: 'Copy',
+        //     type: 'custom',
+        //     width: '10%',
+        //     renderComponent: SmartTableButtonComponent,
+        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //       instance.iconPack = 'eva';
+        //       instance.icon = 'copy';
+        //       instance.label = 'Copy nội dung sang site khác';
+        //       instance.display = true;
+        //       instance.status = 'success';
+        //       instance.valueChange.subscribe(value => {
+        //         // if (value) {
+        //         //   instance.disabled = false;
+        //         // } else {
+        //         //   instance.disabled = true;
+        //         // }
+        //       });
+        //       instance.click.subscribe(async (row: PurchasePriceTableModel) => {
 
-      //         this.commonService.openDialog(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: PurchasePriceTableModel[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
+        //         this.commonService.openDialog(SyncFormComponent, {
+        //           context: {
+        //             inputMode: 'dialog',
+        //             inputId: [row.Code],
+        //             onDialogSave: (newData: PurchasePriceTableModel[]) => {
+        //               // if (onDialogSave) onDialogSave(row);
+        //             },
+        //             onDialogClose: () => {
+        //               // if (onDialogClose) onDialogClose();
+        //               this.refresh();
+        //             },
+        //           },
+        //         });
 
-      //       });
-      //     },
-      //   },
-    },
-  });
+        //       });
+        //     },
+        //   },
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

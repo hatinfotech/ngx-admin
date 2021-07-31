@@ -109,7 +109,8 @@ export class CommonService {
   private previousUrl = null;
   private routeParams: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }[] = [];
 
-  public locale$ = new BehaviorSubject<{ locale: string, skipUpdate?: boolean }>(null);
+  public locale$ = new BehaviorSubject<{ locale: string, skipUpdate?: boolean }>({ locale: 'vi-VN', skipUpdate: true });
+  public languageLoaded$ = new BehaviorSubject<boolean>(false);
   public theme$ = new BehaviorSubject<{ theme: string, skipUpdate?: boolean }>(null);
   public timezone$: BehaviorSubject<{ timezone: string, skipUpdate?: boolean }> = new BehaviorSubject<{ timezone: string, skipUpdate?: boolean }>(null);
   public configReady$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -181,7 +182,8 @@ export class CommonService {
     // translate.setDefaultLang('vi-VN');
     this.locale$.subscribe(info => {
       if (info) {
-        translate.use(info.locale);
+        this.languageLoaded$.next(false);
+        translate.use(info.locale).pipe(take(1)).toPromise().then(() => setTimeout(() => this.languageLoaded$.next(true), 1000));
         localStorage.setItem('configuration.locale', info.locale);
         if (!info.skipUpdate) {
           this.apiService.putPromise<LocaleConfigModel[]>('/system/user-configs', {}, [{ LocaleCode: info.locale }]).then(rs => {

@@ -4,7 +4,7 @@ import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { EmailAdvertisementFormComponent } from '../email-advertisement-form/email-advertisement-form.component';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
@@ -45,166 +45,168 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Id: {
-        title: 'Id',
-        type: 'string',
-        width: '5%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Subject: {
-        title: 'Tiêu đề',
-        type: 'string',
-        width: '30%',
-      },
-      SentAlgorithm: {
-        title: 'Thuật toán',
-        type: 'string',
-        width: '10%',
-      },
-      Template: {
-        title: 'Email mẫu',
-        type: 'string',
-        width: '10%',
-      },
-      GatewayGroup: {
-        title: 'Nhóm Gateway',
-        type: 'string',
-        width: '10%',
-      },
-      SentCount: {
-        title: 'Đã gửi',
-        type: 'string',
-        width: '10%',
-      },
-      SendingDate: {
-        title: 'Lần gửi cuối',
-        type: 'string',
-        width: '15%',
-      },
-      // State: {
-      //   title: 'Trạng thái',
-      //   type: 'string',
-      //   width: '10%',
-      // },
-      Detail: {
-        title: 'Chi tết',
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'list-outline';
-          instance.label = 'Trạng thái đã gửi';
-          instance.display = true;
-          instance.status = 'success';
-          instance.valueChange.subscribe(value => {
-          });
-          instance.click.subscribe(async (row: EmailModel) => {
-            this.openSentStateList(row);
-          });
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Id: {
+          title: 'Id',
+          type: 'string',
+          width: '5%',
+        },
+        Subject: {
+          title: 'Tiêu đề',
+          type: 'string',
+          width: '30%',
+        },
+        SentAlgorithm: {
+          title: 'Thuật toán',
+          type: 'string',
+          width: '10%',
+        },
+        Template: {
+          title: 'Email mẫu',
+          type: 'string',
+          width: '10%',
+        },
+        GatewayGroup: {
+          title: 'Nhóm Gateway',
+          type: 'string',
+          width: '10%',
+        },
+        SentCount: {
+          title: 'Đã gửi',
+          type: 'string',
+          width: '10%',
+        },
+        SendingDate: {
+          title: 'Lần gửi cuối',
+          type: 'string',
+          width: '15%',
+        },
+        // State: {
+        //   title: 'Trạng thái',
+        //   type: 'string',
+        //   width: '10%',
+        // },
+        Detail: {
+          title: 'Chi tết',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'list-outline';
+            instance.label = 'Trạng thái đã gửi';
+            instance.display = true;
+            instance.status = 'success';
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.subscribe(async (row: EmailModel) => {
+              this.openSentStateList(row);
+            });
+          },
+        },
+        State: {
+          title: 'Trạng thái',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'play-circle';
+            instance.label = 'Start';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.valueChange.subscribe(value => {
+              if (value !== 'SENDING') {
+                instance.label = 'Start';
+                instance.icon = 'play-circle';
+                instance.status = 'danger';
+              } else {
+                instance.label = 'Stop';
+                instance.icon = 'stop-circle';
+                instance.status = 'warning';
+              }
+            });
+            instance.click.subscribe(async (row: EmailModel) => {
+              if (row.State !== 'SENDING') {
+                this.commonService.openDialog(ShowcaseDialogComponent, {
+                  context: {
+                    title: 'Xác nhận',
+                    content: 'Bạn có muốn bắt đầu tiến trình gửi mail ?',
+                    actions: [
+                      {
+                        label: 'Start',
+                        icon: 'start',
+                        status: 'danger',
+                        action: () => {
+                          this.apiService.putPromise<EmailModel[]>('/email-marketing/ads-emails', { id: [row['Id']], startSentMail: true }, [{ Id: row.Id }]).then(rs => {
+                            this.toastService.show('success', 'Tiến trình gửi mail đã bắt đầu chạy', {
+                              status: 'danger',
+                              hasIcon: true,
+                              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                              // duration: 5000,
+                            });
+                            this.refresh();
+                          });
+                        },
+                      },
+                      {
+                        label: 'Trở về',
+                        icon: 'back',
+                        status: 'success',
+                        action: () => { },
+                      },
+                    ],
+                  },
+                });
+              } else {
+                this.commonService.openDialog(ShowcaseDialogComponent, {
+                  context: {
+                    title: 'Xác nhận',
+                    content: 'Bạn có muốn dừng trình gửi mail ?',
+                    actions: [
+                      {
+                        label: 'Stop',
+                        icon: 'stop',
+                        status: 'warning',
+                        action: () => {
+                          this.apiService.putPromise<EmailModel[]>('/email-marketing/ads-emails', { id: [row['Id']], stopSentMail: true }, [{ Id: row.Id }]).then(rs => {
+                            this.toastService.show('success', 'Tiến trình gửi mail đã dừng', {
+                              status: 'warning',
+                              hasIcon: true,
+                              position: NbGlobalPhysicalPosition.TOP_RIGHT,
+                              // duration: 5000,
+                            });
+                            this.refresh();
+                          });
+                        },
+                      },
+                      {
+                        label: 'Trở về',
+                        icon: 'back',
+                        status: 'success',
+                        action: () => { },
+                      },
+                    ],
+                  },
+                });
+              }
+            });
+          },
         },
       },
-      State: {
-        title: 'Trạng thái',
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'play-circle';
-          instance.label = 'Start';
-          instance.display = true;
-          instance.status = 'danger';
-          instance.valueChange.subscribe(value => {
-            if (value !== 'SENDING') {
-              instance.label = 'Start';
-              instance.icon = 'play-circle';
-              instance.status = 'danger';
-            } else {
-              instance.label = 'Stop';
-              instance.icon = 'stop-circle';
-              instance.status = 'warning';
-            }
-          });
-          instance.click.subscribe(async (row: EmailModel) => {
-            if (row.State !== 'SENDING') {
-              this.commonService.openDialog(ShowcaseDialogComponent, {
-                context: {
-                  title: 'Xác nhận',
-                  content: 'Bạn có muốn bắt đầu tiến trình gửi mail ?',
-                  actions: [
-                    {
-                      label: 'Start',
-                      icon: 'start',
-                      status: 'danger',
-                      action: () => {
-                        this.apiService.putPromise<EmailModel[]>('/email-marketing/ads-emails', { id: [row['Id']], startSentMail: true }, [{ Id: row.Id }]).then(rs => {
-                          this.toastService.show('success', 'Tiến trình gửi mail đã bắt đầu chạy', {
-                            status: 'danger',
-                            hasIcon: true,
-                            position: NbGlobalPhysicalPosition.TOP_RIGHT,
-                            // duration: 5000,
-                          });
-                          this.refresh();
-                        });
-                      },
-                    },
-                    {
-                      label: 'Trở về',
-                      icon: 'back',
-                      status: 'success',
-                      action: () => { },
-                    },
-                  ],
-                },
-              });
-            } else {
-              this.commonService.openDialog(ShowcaseDialogComponent, {
-                context: {
-                  title: 'Xác nhận',
-                  content: 'Bạn có muốn dừng trình gửi mail ?',
-                  actions: [
-                    {
-                      label: 'Stop',
-                      icon: 'stop',
-                      status: 'warning',
-                      action: () => {
-                        this.apiService.putPromise<EmailModel[]>('/email-marketing/ads-emails', { id: [row['Id']], stopSentMail: true }, [{ Id: row.Id }]).then(rs => {
-                          this.toastService.show('success', 'Tiến trình gửi mail đã dừng', {
-                            status: 'warning',
-                            hasIcon: true,
-                            position: NbGlobalPhysicalPosition.TOP_RIGHT,
-                            // duration: 5000,
-                          });
-                          this.refresh();
-                        });
-                      },
-                    },
-                    {
-                      label: 'Trở về',
-                      icon: 'back',
-                      status: 'success',
-                      action: () => { },
-                    },
-                  ],
-                },
-              });
-            }
-          });
-        },
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

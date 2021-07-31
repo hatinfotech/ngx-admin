@@ -20,6 +20,7 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { AppModule } from '../../../../app.module';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-sales-price-report-list',
@@ -71,315 +72,315 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
   };
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      No: {
-        title: 'No.',
-        type: 'string',
-        width: '5%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      ObjectName: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
-        type: 'string',
-        width: '20%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Title: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
-        type: 'string',
-        width: '20%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      // RelationVoucher: {
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-      //   type: 'string',
-      //   width: '20%',
-      // },
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '10%',
-      },
-      Creator: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
-        type: 'string',
-        width: '10%',
-        // filter: {
-        //   type: 'custom',
-        //   component: SmartTableDateTimeRangeFilterComponent,
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: false,
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        No: {
+          title: 'No.',
+          type: 'string',
+          width: '5%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        ObjectName: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          type: 'string',
+          width: '20%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Title: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          type: 'string',
+          width: '20%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        // RelationVoucher: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        //   type: 'string',
+        //   width: '20%',
         // },
-        valuePrepareFunction: (cell: string, row?: any) => {
-          return this.commonService.getObjectText(cell);
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '10%',
         },
-      },
-      Created: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
-        type: 'custom',
-        width: '10%',
-        filter: {
+        Creator: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          type: 'string',
+          width: '10%',
+          // filter: {
+          //   type: 'custom',
+          //   component: SmartTableDateTimeRangeFilterComponent,
+          // },
+          valuePrepareFunction: (cell: string, row?: any) => {
+            return this.commonService.getObjectText(cell);
+          },
+        },
+        Created: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
           type: 'custom',
-          component: SmartTableDateTimeRangeFilterComponent,
+          width: '10%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateTimeRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
         },
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
+        // Amount: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+        //   type: 'custom',
+        //   class: 'align-right',
+        //   width: '10%',
+        //   position: 'right',
+        //   renderComponent: SmartTableCurrencyComponent,
+        //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+        //     // instance.format$.next('medium');
+        //     instance.style = 'text-align: right';
+        //   },
+        // },
+        RelativeVouchers: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+          },
+          width: '20%',
         },
-      },
-      // Amount: {
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
-      //   type: 'custom',
-      //   class: 'align-right',
-      //   width: '10%',
-      //   position: 'right',
-      //   renderComponent: SmartTableCurrencyComponent,
-      //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-      //     // instance.format$.next('medium');
-      //     instance.style = 'text-align: right';
-      //   },
-      // },
-      RelativeVouchers: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        type: 'custom',
-        renderComponent: SmartTableTagsComponent,
-        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-        },
-        width: '20%',
-      },
-      Task: {
-        title: 'Task',
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'message-circle';
-          // instance.label = this.commonService.translateText('Common.copy');
-          instance.display = true;
-          instance.status = 'info';
-          instance.valueChange.subscribe(value => {
-            // if (value) {
-            //   instance.disabled = false;
-            // } else {
-            //   instance.disabled = true;
-            // }
-          });
-
-          // instance.valueChange.subscribe(rowData => {
-
-          //   if (instance.rowData?.Code === 'PBG09721100') {
-          //     setInterval(() => {
-          //       console.log(instance.disabled);
-          //       // this.disabled = !this.disabled;
-          //     }, 1000);
-          //   }
-          // });
-
-
-          instance.click.subscribe(async (row: SalesPriceReportModel) => {
-
-            this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
-              const priceReport = rs[0];
-              if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
-                this.commonService.openMobileSidebar();
-                this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
-              } else {
-                this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
-                  {
-                    label: this.commonService.translateText('Common.goback'),
-                    status: 'danger',
-                    icon: 'arrow-ios-back',
-                  },
-                  {
-                    label: this.commonService.translateText('Common.create'),
-                    status: 'success',
-                    icon: 'message-circle-outline',
-                    action: () => {
-                      this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
-                        if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                          this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
-                            this.commonService.translateText('Common.notification'), {
-                            status: 'success',
-                          });
-                        this.commonService.openMobileSidebar();
-                        this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
-                      });
-                    }
-                  },
-                ]);
-              }
-
-            }).catch(err => {
-              return Promise.reject(err);
+        Task: {
+          title: 'Task',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'message-circle';
+            // instance.label = this.commonService.translateText('Common.copy');
+            instance.display = true;
+            instance.status = 'info';
+            instance.valueChange.subscribe(value => {
+              // if (value) {
+              //   instance.disabled = false;
+              // } else {
+              //   instance.disabled = true;
+              // }
             });
 
-            // this.commonService.openDialog(SalesPriceReportFormComponent, {
-            //   context: {
-            //     inputMode: 'dialog',
-            //     inputId: [row.Code],
-            //     isDuplicate: true,
-            //     onDialogSave: (newData: SalesPriceReportModel[]) => {
-            //       // if (onDialogSave) onDialogSave(row);
-            //     },
-            //     onDialogClose: () => {
-            //       // if (onDialogClose) onDialogClose();
-            //       this.refresh();
-            //     },
-            //   },
+            // instance.valueChange.subscribe(rowData => {
+
+            //   if (instance.rowData?.Code === 'PBG09721100') {
+            //     setInterval(() => {
+            //       console.log(instance.disabled);
+            //       // this.disabled = !this.disabled;
+            //     }, 1000);
+            //   }
             // });
 
-          });
-        },
-      },
-      // Copy: {
-      //   title: 'Copy',
-      //   type: 'custom',
-      //   width: '10%',
-      //   renderComponent: SmartTableButtonComponent,
-      //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //     instance.iconPack = 'eva';
-      //     instance.icon = 'copy';
-      //     // instance.label = this.commonService.translateText('Common.copy');
-      //     instance.display = true;
-      //     instance.status = 'warning';
-      //     instance.valueChange.subscribe(value => {
-      //       // if (value) {
-      //       //   instance.disabled = false;
-      //       // } else {
-      //       //   instance.disabled = true;
-      //       // }
-      //     });
-      //     instance.click.subscribe(async (row: SalesPriceReportModel) => {
 
-      //       this.commonService.openDialog(SalesPriceReportFormComponent, {
-      //         context: {
-      //           inputMode: 'dialog',
-      //           inputId: [row.Code],
-      //           isDuplicate: true,
-      //           onDialogSave: (newData: SalesPriceReportModel[]) => {
-      //             // if (onDialogSave) onDialogSave(row);
-      //           },
-      //           onDialogClose: () => {
-      //             // if (onDialogClose) onDialogClose();
-      //             this.refresh();
-      //           },
-      //         },
-      //       });
+            instance.click.subscribe(async (row: SalesPriceReportModel) => {
 
-      //     });
-      //   },
-      // },
-      State: {
-        title: this.commonService.translateText('Common.state'),
-        type: 'custom',
-        width: '5%',
-        // class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'checkmark-circle';
-          instance.display = true;
-          instance.status = 'success';
-          // instance.style = 'text-align: right';
-          // instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.approved');
-          instance.label = this.commonService.translateText('Common.approved');
-          instance.valueChange.subscribe(value => {
-            const processMap = AppModule.processMaps.priceReport[value || ''];
-            instance.label = this.commonService.translateText(processMap?.label);
-            instance.status = processMap?.status;
-            instance.outline = processMap.outline;
-            // instance.disabled = (value === 'APPROVE');
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
-            this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-              this.preview(rs);
+              this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
+                const priceReport = rs[0];
+                if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
+                  this.commonService.openMobileSidebar();
+                  this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
+                } else {
+                  this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+                    {
+                      label: this.commonService.translateText('Common.goback'),
+                      status: 'danger',
+                      icon: 'arrow-ios-back',
+                    },
+                    {
+                      label: this.commonService.translateText('Common.create'),
+                      status: 'success',
+                      icon: 'message-circle-outline',
+                      action: () => {
+                        this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
+                          if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
+                            this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
+                              this.commonService.translateText('Common.notification'), {
+                              status: 'success',
+                            });
+                          this.commonService.openMobileSidebar();
+                          this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
+                        });
+                      }
+                    },
+                  ]);
+                }
+
+              }).catch(err => {
+                return Promise.reject(err);
+              });
+
+              // this.commonService.openDialog(SalesPriceReportFormComponent, {
+              //   context: {
+              //     inputMode: 'dialog',
+              //     inputId: [row.Code],
+              //     isDuplicate: true,
+              //     onDialogSave: (newData: SalesPriceReportModel[]) => {
+              //       // if (onDialogSave) onDialogSave(row);
+              //     },
+              //     onDialogClose: () => {
+              //       // if (onDialogClose) onDialogClose();
+              //       this.refresh();
+              //     },
+              //   },
+              // });
+
             });
-          });
+          },
         },
-      },
-      Permission: {
-        title: this.commonService.translateText('Common.permission'),
-        type: 'custom',
-        width: '5%',
-        class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'shield';
-          instance.display = true;
-          instance.status = 'danger';
-          instance.style = 'text-align: right';
-          instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.preview');
-          instance.valueChange.subscribe(value => {
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
+        // Copy: {
+        //   title: 'Copy',
+        //   type: 'custom',
+        //   width: '10%',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'copy';
+        //     // instance.label = this.commonService.translateText('Common.copy');
+        //     instance.display = true;
+        //     instance.status = 'warning';
+        //     instance.valueChange.subscribe(value => {
+        //       // if (value) {
+        //       //   instance.disabled = false;
+        //       // } else {
+        //       //   instance.disabled = true;
+        //       // }
+        //     });
+        //     instance.click.subscribe(async (row: SalesPriceReportModel) => {
 
-            this.commonService.openDialog(ResourcePermissionEditComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [rowData.Code],
-                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
-                // resrouce: rowData,
-                apiPath: '/sales/price-reports',
-              }
-            });
+        //       this.commonService.openDialog(SalesPriceReportFormComponent, {
+        //         context: {
+        //           inputMode: 'dialog',
+        //           inputId: [row.Code],
+        //           isDuplicate: true,
+        //           onDialogSave: (newData: SalesPriceReportModel[]) => {
+        //             // if (onDialogSave) onDialogSave(row);
+        //           },
+        //           onDialogClose: () => {
+        //             // if (onDialogClose) onDialogClose();
+        //             this.refresh();
+        //           },
+        //         },
+        //       });
 
-            // this.getFormData([rowData.Code]).then(rs => {
-            //   this.preview(rs);
-            // });
-          });
-        },
-      },
-      Preview: {
-        title: this.commonService.translateText('Common.show'),
-        type: 'custom',
-        width: '5%',
-        class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'external-link-outline';
-          instance.display = true;
-          instance.status = 'primary';
-          instance.style = 'text-align: right';
-          instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.preview');
-          instance.valueChange.subscribe(value => {
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
-            this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-              this.preview(rs);
+        //     });
+        //   },
+        // },
+        State: {
+          title: this.commonService.translateText('Common.state'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'checkmark-circle';
+            instance.display = true;
+            instance.status = 'success';
+            // instance.style = 'text-align: right';
+            // instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.approved');
+            instance.label = this.commonService.translateText('Common.approved');
+            instance.valueChange.subscribe(value => {
+              const processMap = AppModule.processMaps.priceReport[value || ''];
+              instance.label = this.commonService.translateText(processMap?.label);
+              instance.status = processMap?.status;
+              instance.outline = processMap.outline;
+              // instance.disabled = (value === 'APPROVE');
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
             });
-            // this.getFormData([rowData.Code]).then(rs => {
-            //   this.preview(rs, 'list');
-            // });
-          });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
+              this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
+                this.preview(rs);
+              });
+            });
+          },
         },
-      }
-    },
-  });
+        Permission: {
+          title: this.commonService.translateText('Common.permission'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'shield';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
+
+              this.commonService.openDialog(ResourcePermissionEditComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [rowData.Code],
+                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  // resrouce: rowData,
+                  apiPath: '/sales/price-reports',
+                }
+              });
+
+              // this.getFormData([rowData.Code]).then(rs => {
+              //   this.preview(rs);
+              // });
+            });
+          },
+        },
+        Preview: {
+          title: this.commonService.translateText('Common.show'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'external-link-outline';
+            instance.display = true;
+            instance.status = 'primary';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
+              this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
+                this.preview(rs);
+              });
+              // this.getFormData([rowData.Code]).then(rs => {
+              //   this.preview(rs, 'list');
+              // });
+            });
+          },
+        }
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

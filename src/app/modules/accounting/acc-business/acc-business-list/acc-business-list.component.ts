@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { BusinessModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
@@ -50,80 +51,82 @@ export class AccBusinessListComponent extends ServerDataManagerListComponent<Bus
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    columns: {
-      Code: {
-        title: this.commonService.translateText('Common.code'),
-        type: 'string',
-        width: '10%',
-      },
-      Name: {
-        title: this.commonService.translateText('Common.name'),
-        type: 'string',
-        width: '15%',
-        // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Description: {
-        title: this.commonService.translateText('Common.description'),
-        type: 'string',
-        width: '20%',
-      },
-      DebitAccount: {
-        title: this.commonService.translateText('Common.currency'),
-        type: 'string',
-        width: '15%',
-      },
-      CreditAccount: {
-        title: this.commonService.translateText('Common.property'),
-        type: 'string',
-        width: '15%',
-      },
-      Type: {
-        title: this.commonService.translateText('Common.type'),
-        type: 'string',
-        width: '10%',
-        // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Copy: {
-        title: 'Copy',
-        type: 'custom',
-        width: '5%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'copy';
-          // instance.label = this.commonService.translateText('Common.copy');
-          instance.display = true;
-          instance.status = 'warning';
-          instance.valueChange.subscribe(value => {
-            // if (value) {
-            //   instance.disabled = false;
-            // } else {
-            //   instance.disabled = true;
-            // }
-          });
-          instance.click.subscribe(async (row: BusinessModel) => {
-
-            this.commonService.openDialog(AccBusinessFormComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [row.Code],
-                isDuplicate: true,
-                onDialogSave: (newData: BusinessModel[]) => {
-                  // if (onDialogSave) onDialogSave(row);
-                },
-                onDialogClose: () => {
-                  // if (onDialogClose) onDialogClose();
-                  this.refresh();
-                },
-              },
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      columns: {
+        Code: {
+          title: this.commonService.translateText('Common.code'),
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: this.commonService.translateText('Common.name'),
+          type: 'string',
+          width: '15%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Description: {
+          title: this.commonService.translateText('Common.description'),
+          type: 'string',
+          width: '20%',
+        },
+        DebitAccount: {
+          title: this.commonService.translateText('Common.currency'),
+          type: 'string',
+          width: '15%',
+        },
+        CreditAccount: {
+          title: this.commonService.translateText('Common.property'),
+          type: 'string',
+          width: '15%',
+        },
+        Type: {
+          title: this.commonService.translateText('Common.type'),
+          type: 'string',
+          width: '10%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Copy: {
+          title: 'Copy',
+          type: 'custom',
+          width: '5%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'copy';
+            // instance.label = this.commonService.translateText('Common.copy');
+            instance.display = true;
+            instance.status = 'warning';
+            instance.valueChange.subscribe(value => {
+              // if (value) {
+              //   instance.disabled = false;
+              // } else {
+              //   instance.disabled = true;
+              // }
             });
+            instance.click.subscribe(async (row: BusinessModel) => {
 
-          });
+              this.commonService.openDialog(AccBusinessFormComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [row.Code],
+                  isDuplicate: true,
+                  onDialogSave: (newData: BusinessModel[]) => {
+                    // if (onDialogSave) onDialogSave(row);
+                  },
+                  onDialogClose: () => {
+                    // if (onDialogClose) onDialogClose();
+                    this.refresh();
+                  },
+                },
+              });
+
+            });
+          },
         },
       },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

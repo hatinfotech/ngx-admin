@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ShortLinkModel } from '../../../../models/short-link.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -35,81 +35,83 @@ export class ShortLinkListComponent extends DataManagerListComponent<ShortLinkMo
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Hash: {
-        title: 'Code',
-        type: 'string',
-        width: '30%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Target: {
-        title: 'Target',
-        type: 'string',
-        width: '30%',
-      },
-      Owner: {
-        title: 'Owner',
-        type: 'string',
-        width: '10%',
-      },
-      Created: {
-        title: 'Created',
-        type: 'string',
-        width: '10%',
-      },
-      Active: {
-        title: 'Active',
-        type: 'boolean',
-        width: '10%',
-      },
-    //   Copy: {
-    //     title: 'Copy',
-    //     type: 'custom',
-    //     width: '10%',
-    //     renderComponent: SmartTableButtonComponent,
-    //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-    //       instance.iconPack = 'eva';
-    //       instance.icon = 'copy';
-    //       instance.label = 'Copy nội dung sang site khác';
-    //       instance.display = true;
-    //       instance.status = 'success';
-    //       instance.valueChange.subscribe(value => {
-    //         // if (value) {
-    //         //   instance.disabled = false;
-    //         // } else {
-    //         //   instance.disabled = true;
-    //         // }
-    //       });
-    //       instance.click.subscribe(async (row: ShortLinkModel) => {
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Hash: {
+          title: 'Code',
+          type: 'string',
+          width: '30%',
+        },
+        Target: {
+          title: 'Target',
+          type: 'string',
+          width: '30%',
+        },
+        Owner: {
+          title: 'Owner',
+          type: 'string',
+          width: '10%',
+        },
+        Created: {
+          title: 'Created',
+          type: 'string',
+          width: '10%',
+        },
+        Active: {
+          title: 'Active',
+          type: 'boolean',
+          width: '10%',
+        },
+        //   Copy: {
+        //     title: 'Copy',
+        //     type: 'custom',
+        //     width: '10%',
+        //     renderComponent: SmartTableButtonComponent,
+        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //       instance.iconPack = 'eva';
+        //       instance.icon = 'copy';
+        //       instance.label = 'Copy nội dung sang site khác';
+        //       instance.display = true;
+        //       instance.status = 'success';
+        //       instance.valueChange.subscribe(value => {
+        //         // if (value) {
+        //         //   instance.disabled = false;
+        //         // } else {
+        //         //   instance.disabled = true;
+        //         // }
+        //       });
+        //       instance.click.subscribe(async (row: ShortLinkModel) => {
 
-    //         this.commonService.openDialog(SyncFormComponent, {
-    //           context: {
-    //             inputMode: 'dialog',
-    //             inputId: [row.Code],
-    //             onDialogSave: (newData: ShortLinkModel[]) => {
-    //               // if (onDialogSave) onDialogSave(row);
-    //             },
-    //             onDialogClose: () => {
-    //               // if (onDialogClose) onDialogClose();
-    //               this.refresh();
-    //             },
-    //           },
-    //         });
+        //         this.commonService.openDialog(SyncFormComponent, {
+        //           context: {
+        //             inputMode: 'dialog',
+        //             inputId: [row.Code],
+        //             onDialogSave: (newData: ShortLinkModel[]) => {
+        //               // if (onDialogSave) onDialogSave(row);
+        //             },
+        //             onDialogClose: () => {
+        //               // if (onDialogClose) onDialogClose();
+        //               this.refresh();
+        //             },
+        //           },
+        //         });
 
-    //       });
-    //     },
-    //   },
-    },
-  });
+        //       });
+        //     },
+        //   },
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { SmartTableDateTimeComponent, SmartTableCurrencyComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ZaloOaTemplateModel } from '../../../../models/zalo-oa.model';
@@ -59,56 +60,58 @@ export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      No: {
-        title: 'No.',
-        type: 'string',
-        width: '5%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
-        type: 'string',
-        width: '20%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Description: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
-        type: 'string',
-        width: '20%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      TemplateId: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('ZaloOa.Tempalte.id'), 'head-title'),
-        type: 'string',
-        width: '20%',
-      },
-      ZaloOa: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('ZaloOa.Oa.name'), 'head-title'),
-        type: 'string',
-        width: '10%',
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        No: {
+          title: 'No.',
+          type: 'string',
+          width: '5%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Name: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
+          type: 'string',
+          width: '20%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Description: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          type: 'string',
+          width: '20%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        TemplateId: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('ZaloOa.Tempalte.id'), 'head-title'),
+          type: 'string',
+          width: '20%',
+        },
+        ZaloOa: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('ZaloOa.Oa.name'), 'head-title'),
+          type: 'string',
+          width: '10%',
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '10%',
         },
       },
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '10%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

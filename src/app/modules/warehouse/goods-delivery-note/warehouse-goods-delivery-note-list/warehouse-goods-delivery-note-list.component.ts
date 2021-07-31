@@ -5,6 +5,7 @@ import { NbDialogService, NbToastrService, NbDialogRef } from "@nebular/theme";
 import { takeUntil } from "rxjs/operators";
 import { AppModule } from "../../../../app.module";
 import { SmartTableDateTimeComponent, SmartTableButtonComponent, SmartTableTagsComponent } from "../../../../lib/custom-element/smart-table/smart-table.component";
+import { SmartTableSetting } from "../../../../lib/data-manager/data-manger-list.component";
 import { ServerDataManagerListComponent } from "../../../../lib/data-manager/server-data-manger-list.component";
 import { ResourcePermissionEditComponent } from "../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component";
 import { WarehouseGoodsDeliveryNoteModel } from "../../../../models/warehouse.model";
@@ -63,210 +64,212 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: this.ref && Object.keys(this.ref).length > 0 ? false : {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: this.ref && Object.keys(this.ref).length > 0 ? false : {
+        position: 'right',
       },
-      ObjectName: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.object'), 'head-title'),
-        type: 'string',
-        width: '15%',
-      },
-      Title: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
-        type: 'string',
-        width: '20%',
-      },
-      DateOfCreated: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
-        type: 'custom',
-        width: '15%',
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '10%',
         },
-      },
-      DateOfDelivered: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfDelivered'), 'head-title'),
-        type: 'custom',
-        width: '15%',
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
+        ObjectName: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.object'), 'head-title'),
+          type: 'string',
+          width: '15%',
         },
-      },
-      Creator: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
-        type: 'string',
-        width: '10%',
-        // filter: {
-        //   type: 'custom',
-        //   component: SmartTableDateTimeRangeFilterComponent,
-        // },
-        valuePrepareFunction: (cell: string, row?: any) => {
-          return this.commonService.getObjectText(cell);
+        Title: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          type: 'string',
+          width: '20%',
         },
-      },
-      RelativeVouchers: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        type: 'custom',
-        renderComponent: SmartTableTagsComponent,
-        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        DateOfCreated: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
+          type: 'custom',
+          width: '15%',
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
         },
-        width: '15%',
-      },
-      Copy: {
-        title: 'Copy',
-        type: 'custom',
-        width: '5%',
-        exclude: this.ref && Object.keys(this.ref).length > 0,
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'copy';
-          // instance.label = this.commonService.translateText('Common.copy');
-          instance.display = true;
-          instance.status = 'warning';
-          instance.valueChange.subscribe(value => {
-            // if (value) {
-            //   instance.disabled = false;
-            // } else {
-            //   instance.disabled = true;
-            // }
-          });
-          instance.click.subscribe(async (row: WarehouseGoodsDeliveryNoteModel) => {
+        DateOfDelivered: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfDelivered'), 'head-title'),
+          type: 'custom',
+          width: '15%',
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        Creator: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          type: 'string',
+          width: '10%',
+          // filter: {
+          //   type: 'custom',
+          //   component: SmartTableDateTimeRangeFilterComponent,
+          // },
+          valuePrepareFunction: (cell: string, row?: any) => {
+            return this.commonService.getObjectText(cell);
+          },
+        },
+        RelativeVouchers: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+          },
+          width: '15%',
+        },
+        Copy: {
+          title: 'Copy',
+          type: 'custom',
+          width: '5%',
+          exclude: this.ref && Object.keys(this.ref).length > 0,
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'copy';
+            // instance.label = this.commonService.translateText('Common.copy');
+            instance.display = true;
+            instance.status = 'warning';
+            instance.valueChange.subscribe(value => {
+              // if (value) {
+              //   instance.disabled = false;
+              // } else {
+              //   instance.disabled = true;
+              // }
+            });
+            instance.click.subscribe(async (row: WarehouseGoodsDeliveryNoteModel) => {
 
-            this.commonService.openDialog(WarehouseGoodsDeliveryNoteFormComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [row.Code],
-                isDuplicate: true,
-                onDialogSave: (newData: WarehouseGoodsDeliveryNoteModel[]) => {
-                  // if (onDialogSave) onDialogSave(row);
+              this.commonService.openDialog(WarehouseGoodsDeliveryNoteFormComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [row.Code],
+                  isDuplicate: true,
+                  onDialogSave: (newData: WarehouseGoodsDeliveryNoteModel[]) => {
+                    // if (onDialogSave) onDialogSave(row);
+                  },
+                  onDialogClose: () => {
+                    // if (onDialogClose) onDialogClose();
+                    this.refresh();
+                  },
                 },
-                onDialogClose: () => {
-                  // if (onDialogClose) onDialogClose();
-                  this.refresh();
-                },
-              },
-            });
+              });
 
-          });
-        },
-      },
-      State: {
-        title: this.commonService.translateText('Common.state'),
-        type: 'custom',
-        width: '5%',
-        // class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'checkmark-circle';
-          instance.display = true;
-          instance.status = 'success';
-          instance.disabled = this.ref && Object.keys(this.ref).length > 0;
-          // instance.style = 'text-align: right';
-          // instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.approved');
-          instance.label = this.commonService.translateText('Common.approved');
-          instance.valueChange.subscribe(value => {
-            const processMap = AppModule.processMaps.warehouseDeliveryGoodsNote[value || ''];
-            instance.label = this.commonService.translateText(processMap?.label);
-            instance.status = processMap?.status;
-            instance.outline = processMap?.outline;
-            // instance.disabled = (value === 'APPROVE');
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsDeliveryNoteModel) => {
-            this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-              this.preview(rs);
             });
-          });
+          },
         },
-      },
-      Permission: {
-        title: this.commonService.translateText('Common.permission'),
-        type: 'custom',
-        width: '5%',
-        class: 'align-right',
-        exclude: this.ref && Object.keys(this.ref).length > 0,
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'shield';
-          instance.display = true;
-          instance.status = 'danger';
-          instance.style = 'text-align: right';
-          instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.preview');
-          instance.valueChange.subscribe(value => {
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsDeliveryNoteModel) => {
+        State: {
+          title: this.commonService.translateText('Common.state'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'checkmark-circle';
+            instance.display = true;
+            instance.status = 'success';
+            instance.disabled = this.ref && Object.keys(this.ref).length > 0;
+            // instance.style = 'text-align: right';
+            // instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.approved');
+            instance.label = this.commonService.translateText('Common.approved');
+            instance.valueChange.subscribe(value => {
+              const processMap = AppModule.processMaps.warehouseDeliveryGoodsNote[value || ''];
+              instance.label = this.commonService.translateText(processMap?.label);
+              instance.status = processMap?.status;
+              instance.outline = processMap?.outline;
+              // instance.disabled = (value === 'APPROVE');
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsDeliveryNoteModel) => {
+              this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+                this.preview(rs);
+              });
+            });
+          },
+        },
+        Permission: {
+          title: this.commonService.translateText('Common.permission'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          exclude: this.ref && Object.keys(this.ref).length > 0,
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'shield';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsDeliveryNoteModel) => {
 
-            this.commonService.openDialog(ResourcePermissionEditComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [rowData.Code],
-                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                resourceName: this.commonService.translateText('Purchase.Order.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
-                // resrouce: rowData,
-                apiPath: this.apiPath,
-              }
-            });
+              this.commonService.openDialog(ResourcePermissionEditComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [rowData.Code],
+                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                  resourceName: this.commonService.translateText('Purchase.Order.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  // resrouce: rowData,
+                  apiPath: this.apiPath,
+                }
+              });
 
-            // this.getFormData([rowData.Code]).then(rs => {
-            //   this.preview(rs);
-            // });
-          });
-        },
-      },
-      Preview: {
-        title: this.commonService.translateText('Common.show'),
-        type: 'custom',
-        width: '5%',
-        class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'external-link-outline';
-          instance.display = true;
-          instance.status = 'primary';
-          instance.style = 'text-align: right';
-          instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.preview');
-          instance.valueChange.subscribe(value => {
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsDeliveryNoteModel) => {
-            this.getFormData([rowData.Code]).then(rs => {
-              this.preview(rs);
+              // this.getFormData([rowData.Code]).then(rs => {
+              //   this.preview(rs);
+              // });
             });
-          });
+          },
         },
-      }
-    },
-  });
+        Preview: {
+          title: this.commonService.translateText('Common.show'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'external-link-outline';
+            instance.display = true;
+            instance.status = 'primary';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsDeliveryNoteModel) => {
+              this.getFormData([rowData.Code]).then(rs => {
+                this.preview(rs);
+              });
+            });
+          },
+        }
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

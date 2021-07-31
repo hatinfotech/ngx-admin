@@ -16,6 +16,7 @@ import { CommonService } from '../../../../services/common.service';
 import { DeploymentVoucherFormComponent } from '../deployment-voucher-form/deployment-voucher-form.component';
 import { DeploymentVoucherPrintComponent } from '../deployment-voucher-print/deployment-voucher-print.component';
 import { AppModule } from '../../../../app.module';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-deployment-voucher-list',
@@ -67,307 +68,309 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
     CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
   };
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      No: {
-        title: 'No.',
-        type: 'string',
-        width: '5%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      ObjectName: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
-        type: 'string',
-        width: '20%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Title: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
-        type: 'string',
-        width: '40%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      // RelationVoucher: {
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-      //   type: 'string',
-      //   width: '20%',
-      // },
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '5%',
-      },
-      Creator: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
-        type: 'string',
-        width: '10%',
-        // filter: {
-        //   type: 'custom',
-        //   component: SmartTableDateTimeRangeFilterComponent,
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        No: {
+          title: 'No.',
+          type: 'string',
+          width: '5%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        ObjectName: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          type: 'string',
+          width: '20%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Title: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          type: 'string',
+          width: '40%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        // RelationVoucher: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        //   type: 'string',
+        //   width: '20%',
         // },
-        valuePrepareFunction: (cell: string, row?: any) => {
-          return this.commonService.getObjectText(cell);
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '5%',
         },
-      },
-      Created: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
-        type: 'custom',
-        width: '8%',
-        filter: {
+        Creator: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          type: 'string',
+          width: '10%',
+          // filter: {
+          //   type: 'custom',
+          //   component: SmartTableDateTimeRangeFilterComponent,
+          // },
+          valuePrepareFunction: (cell: string, row?: any) => {
+            return this.commonService.getObjectText(cell);
+          },
+        },
+        Created: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
           type: 'custom',
-          component: SmartTableDateTimeRangeFilterComponent,
+          width: '8%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateTimeRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
         },
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
+        // Amount: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+        //   type: 'custom',
+        //   class: 'align-right',
+        //   width: '10%',
+        //   position: 'right',
+        //   renderComponent: SmartTableCurrencyComponent,
+        //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+        //     // instance.format$.next('medium');
+        //     instance.style = 'text-align: right';
+        //   },
+        // },
+        RelativeVouchers: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+          },
+          width: '15%',
         },
-      },
-      // Amount: {
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
-      //   type: 'custom',
-      //   class: 'align-right',
-      //   width: '10%',
-      //   position: 'right',
-      //   renderComponent: SmartTableCurrencyComponent,
-      //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-      //     // instance.format$.next('medium');
-      //     instance.style = 'text-align: right';
-      //   },
-      // },
-      RelativeVouchers: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        type: 'custom',
-        renderComponent: SmartTableTagsComponent,
-        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-        },
-        width: '15%',
-      },
-      Task: {
-        title: 'Task',
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'message-circle';
-          // instance.label = this.commonService.translateText('Common.copy');
-          instance.display = true;
-          instance.status = 'info';
-          instance.valueChange.subscribe(value => {
-            // if (value) {
-            //   instance.disabled = false;
-            // } else {
-            //   instance.disabled = true;
-            // }
-          });
-          instance.click.subscribe(async (row: DeploymentVoucherModel) => {
-
-            this.apiService.getPromise<DeploymentVoucherModel[]>('/deployment/vouchers/' + row.Code, { includeRelatedTasks: true }).then(rs => {
-              const priceReport = rs[0];
-              if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
-                this.commonService.openMobileSidebar();
-                this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
-              } else {
-
-                this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
-                  {
-                    label: this.commonService.translateText('Common.goback'),
-                    status: 'danger',
-                    icon: 'arrow-ios-back',
-                  },
-                  {
-                    label: this.commonService.translateText('Common.create'),
-                    status: 'success',
-                    icon: 'message-circle-outline',
-                    action: () => {
-                      this.apiService.putPromise<DeploymentVoucherModel[]>('/deployment/vouchers', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
-                        if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                          this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho phiếu triển khai'),
-                            this.commonService.translateText('Common.notification'), {
-                            status: 'success',
-                          });
-                        this.commonService.openMobileSidebar();
-                        this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
-                      });
-                    }
-                  },
-                ]);
-
-                // this.commonService.toastService.show(this.commonService.translateText('chưa có liên kết với nhiệm vụ nào'), this.commonService.translateText('Thông báo'), {
-                //   status: 'warning',
-                // })
-              }
-            }).catch(err => {
-              return Promise.reject(err);
+        Task: {
+          title: 'Task',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'message-circle';
+            // instance.label = this.commonService.translateText('Common.copy');
+            instance.display = true;
+            instance.status = 'info';
+            instance.valueChange.subscribe(value => {
+              // if (value) {
+              //   instance.disabled = false;
+              // } else {
+              //   instance.disabled = true;
+              // }
             });
+            instance.click.subscribe(async (row: DeploymentVoucherModel) => {
 
-            // this.commonService.openDialog(DeploymentVoucherFormComponent, {
-            //   context: {
-            //     inputMode: 'dialog',
-            //     inputId: [row.Code],
-            //     isDuplicate: true,
-            //     onDialogSave: (newData: DeploymentVoucherModel[]) => {
-            //       // if (onDialogSave) onDialogSave(row);
-            //     },
-            //     onDialogClose: () => {
-            //       // if (onDialogClose) onDialogClose();
-            //       this.refresh();
-            //     },
-            //   },
-            // });
+              this.apiService.getPromise<DeploymentVoucherModel[]>('/deployment/vouchers/' + row.Code, { includeRelatedTasks: true }).then(rs => {
+                const priceReport = rs[0];
+                if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
+                  this.commonService.openMobileSidebar();
+                  this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
+                } else {
 
-          });
-        },
-      },
-      // Copy: {
-      //   title: 'Copy',
-      //   type: 'custom',
-      //   width: '10%',
-      //   renderComponent: SmartTableButtonComponent,
-      //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //     instance.iconPack = 'eva';
-      //     instance.icon = 'copy';
-      //     // instance.label = this.commonService.translateText('Common.copy');
-      //     instance.display = true;
-      //     instance.status = 'warning';
-      //     instance.valueChange.subscribe(value => {
-      //       // if (value) {
-      //       //   instance.disabled = false;
-      //       // } else {
-      //       //   instance.disabled = true;
-      //       // }
-      //     });
-      //     instance.click.subscribe(async (row: DeploymentVoucherModel) => {
+                  this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+                    {
+                      label: this.commonService.translateText('Common.goback'),
+                      status: 'danger',
+                      icon: 'arrow-ios-back',
+                    },
+                    {
+                      label: this.commonService.translateText('Common.create'),
+                      status: 'success',
+                      icon: 'message-circle-outline',
+                      action: () => {
+                        this.apiService.putPromise<DeploymentVoucherModel[]>('/deployment/vouchers', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
+                          if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
+                            this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho phiếu triển khai'),
+                              this.commonService.translateText('Common.notification'), {
+                              status: 'success',
+                            });
+                          this.commonService.openMobileSidebar();
+                          this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
+                        });
+                      }
+                    },
+                  ]);
 
-      //       this.commonService.openDialog(DeploymentVoucherFormComponent, {
-      //         context: {
-      //           inputMode: 'dialog',
-      //           inputId: [row.Code],
-      //           isDuplicate: true,
-      //           onDialogSave: (newData: DeploymentVoucherModel[]) => {
-      //             // if (onDialogSave) onDialogSave(row);
-      //           },
-      //           onDialogClose: () => {
-      //             // if (onDialogClose) onDialogClose();
-      //             this.refresh();
-      //           },
-      //         },
-      //       });
+                  // this.commonService.toastService.show(this.commonService.translateText('chưa có liên kết với nhiệm vụ nào'), this.commonService.translateText('Thông báo'), {
+                  //   status: 'warning',
+                  // })
+                }
+              }).catch(err => {
+                return Promise.reject(err);
+              });
 
-      //     });
-      //   },
-      // },
-      State: {
-        title: this.commonService.translateText('Common.state'),
-        type: 'custom',
-        width: '5%',
-        // class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'checkmark-circle';
-          instance.display = true;
-          instance.status = 'success';
-          // instance.style = 'text-align: right';
-          // instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.approved');
-          instance.label = this.commonService.translateText('Common.approved');
-          instance.valueChange.subscribe(value => {
-            const processMap = AppModule.processMaps.deploymentVoucher[value || ''];
-            instance.label = this.commonService.translateText(processMap?.label);// this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
-            instance.status = processMap?.status;//this.stateDic[value]?.status || 'danger';
-            instance.outline = processMap.outline;//this.stateDic[value]?.outline || false;
-            // instance.disabled = (value === 'APPROVE');
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
-            this.getFormData([rowData.Code]).then(rs => {
-              this.preview(rs, 'list');
+              // this.commonService.openDialog(DeploymentVoucherFormComponent, {
+              //   context: {
+              //     inputMode: 'dialog',
+              //     inputId: [row.Code],
+              //     isDuplicate: true,
+              //     onDialogSave: (newData: DeploymentVoucherModel[]) => {
+              //       // if (onDialogSave) onDialogSave(row);
+              //     },
+              //     onDialogClose: () => {
+              //       // if (onDialogClose) onDialogClose();
+              //       this.refresh();
+              //     },
+              //   },
+              // });
+
             });
-            // this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-            //   this.preview(rs);
-            // });
-          });
+          },
         },
-      },
-      Permission: {
-        title: this.commonService.translateText('Common.permission'),
-        type: 'custom',
-        width: '5%',
-        class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'shield';
-          instance.display = true;
-          instance.status = 'danger';
-          instance.style = 'text-align: right';
-          instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.preview');
-          instance.valueChange.subscribe(value => {
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
+        // Copy: {
+        //   title: 'Copy',
+        //   type: 'custom',
+        //   width: '10%',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'copy';
+        //     // instance.label = this.commonService.translateText('Common.copy');
+        //     instance.display = true;
+        //     instance.status = 'warning';
+        //     instance.valueChange.subscribe(value => {
+        //       // if (value) {
+        //       //   instance.disabled = false;
+        //       // } else {
+        //       //   instance.disabled = true;
+        //       // }
+        //     });
+        //     instance.click.subscribe(async (row: DeploymentVoucherModel) => {
 
-            this.commonService.openDialog(ResourcePermissionEditComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [rowData.Code],
-                note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                resourceName: this.commonService.translateText('Deployment.Voucher.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
-                // resrouce: rowData,
-                apiPath: this.apiPath,
-              }
-            });
+        //       this.commonService.openDialog(DeploymentVoucherFormComponent, {
+        //         context: {
+        //           inputMode: 'dialog',
+        //           inputId: [row.Code],
+        //           isDuplicate: true,
+        //           onDialogSave: (newData: DeploymentVoucherModel[]) => {
+        //             // if (onDialogSave) onDialogSave(row);
+        //           },
+        //           onDialogClose: () => {
+        //             // if (onDialogClose) onDialogClose();
+        //             this.refresh();
+        //           },
+        //         },
+        //       });
 
-            // this.getFormData([rowData.Code]).then(rs => {
-            //   this.preview(rs);
-            // });
-          });
-        },
-      },
-      Preview: {
-        title: this.commonService.translateText('Common.show'),
-        type: 'custom',
-        width: '5%',
-        class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'external-link-outline';
-          instance.display = true;
-          instance.status = 'primary';
-          instance.style = 'text-align: right';
-          instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.preview');
-          instance.valueChange.subscribe(value => {
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
-            this.getFormData([rowData.Code]).then(rs => {
-              this.preview(rs, 'list');
+        //     });
+        //   },
+        // },
+        State: {
+          title: this.commonService.translateText('Common.state'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'checkmark-circle';
+            instance.display = true;
+            instance.status = 'success';
+            // instance.style = 'text-align: right';
+            // instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.approved');
+            instance.label = this.commonService.translateText('Common.approved');
+            instance.valueChange.subscribe(value => {
+              const processMap = AppModule.processMaps.deploymentVoucher[value || ''];
+              instance.label = this.commonService.translateText(processMap?.label);// this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
+              instance.status = processMap?.status;//this.stateDic[value]?.status || 'danger';
+              instance.outline = processMap.outline;//this.stateDic[value]?.outline || false;
+              // instance.disabled = (value === 'APPROVE');
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
             });
-          });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
+              this.getFormData([rowData.Code]).then(rs => {
+                this.preview(rs, 'list');
+              });
+              // this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              //   this.preview(rs);
+              // });
+            });
+          },
         },
-      }
-    },
-  });
+        Permission: {
+          title: this.commonService.translateText('Common.permission'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'shield';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
+
+              this.commonService.openDialog(ResourcePermissionEditComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [rowData.Code],
+                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                  resourceName: this.commonService.translateText('Deployment.Voucher.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  // resrouce: rowData,
+                  apiPath: this.apiPath,
+                }
+              });
+
+              // this.getFormData([rowData.Code]).then(rs => {
+              //   this.preview(rs);
+              // });
+            });
+          },
+        },
+        Preview: {
+          title: this.commonService.translateText('Common.show'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'external-link-outline';
+            instance.display = true;
+            instance.status = 'primary';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
+              this.getFormData([rowData.Code]).then(rs => {
+                this.preview(rs, 'list');
+              });
+            });
+          },
+        }
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

@@ -8,6 +8,7 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { HttpClient } from '@angular/common/http';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-user-group-list',
@@ -55,47 +56,49 @@ export class UserGroupListComponent extends ServerDataManagerListComponent<UserG
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      No: {
-        title: 'No.',
-        type: 'string',
-        width: '5%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Name',
-        type: 'string',
-        width: '30%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        No: {
+          title: 'No.',
+          type: 'string',
+          width: '5%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Name: {
+          title: 'Name',
+          type: 'string',
+          width: '30%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Description: {
+          title: 'Description',
+          type: 'string',
+          width: '30%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        ParentDescription: {
+          title: 'Nhóm cha',
+          type: 'string',
+          width: '20%',
+        },
+        Code: {
+          title: 'Mã',
+          type: 'string',
+          width: '20%',
+        },
       },
-      Description: {
-        title: 'Description',
-        type: 'string',
-        width: '30%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      ParentDescription: {
-        title: 'Nhóm cha',
-        type: 'string',
-        width: '20%',
-      },
-      Code: {
-        title: 'Mã',
-        type: 'string',
-        width: '20%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

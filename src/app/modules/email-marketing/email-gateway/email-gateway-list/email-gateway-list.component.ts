@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { EmailGatewayModel } from '../../../../models/email.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -33,53 +33,55 @@ export class EmailGatewayListComponent extends DataManagerListComponent<EmailGat
   editing = {};
   rows = [];
 
-  settings = {
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
-    columns: {
-      Code: {
-        title: 'Mã',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '30%',
+      add: {
+        addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+        createButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      Description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '30%',
+      edit: {
+        editButtonContent: '<i class="nb-edit"></i>',
+        saveButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      ApiUrl: {
-        title: 'Api',
-        type: 'string',
-        width: '30%',
+      delete: {
+        deleteButtonContent: '<i class="nb-trash"></i>',
+        confirmDelete: true,
       },
-    },
-  };
+      pager: {
+        display: true,
+        perPage: 99999,
+      },
+      columns: {
+        Code: {
+          title: 'Mã',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '30%',
+        },
+        Description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '30%',
+        },
+        ApiUrl: {
+          title: 'Api',
+          type: 'string',
+          width: '30%',
+        },
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../../ivoip-service';
+import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-call-center-agent-list',
@@ -33,68 +34,70 @@ export class CallCenterAgentListComponent extends IvoipBaseListComponent<PbxCall
   editing = {};
   rows = [];
 
-  settings = {
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
-    columns: {
-      agent_name: {
-        title: 'Tên',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      agent_id: {
-        title: 'ID',
-        type: 'string',
-        width: '10%',
+      add: {
+        addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+        createButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      agent_type: {
-        title: 'Loại',
-        type: 'string',
-        width: '10%',
+      edit: {
+        editButtonContent: '<i class="nb-edit"></i>',
+        saveButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      agent_call_timeout: {
-        title: 'Thời gian ngắt',
-        type: 'string',
-        width: '10%',
+      delete: {
+        deleteButtonContent: '<i class="nb-trash"></i>',
+        confirmDelete: true,
       },
-      agent_contact: {
-        title: 'Liên hệ',
-        type: 'string',
-        width: '20%',
+      pager: {
+        display: true,
+        perPage: 99999,
       },
-      agent_max_no_answer: {
-        title: 'Số lần không nhấc máy tối đa',
-        type: 'string',
-        width: '20%',
+      columns: {
+        agent_name: {
+          title: 'Tên',
+          type: 'string',
+          width: '10%',
+        },
+        agent_id: {
+          title: 'ID',
+          type: 'string',
+          width: '10%',
+        },
+        agent_type: {
+          title: 'Loại',
+          type: 'string',
+          width: '10%',
+        },
+        agent_call_timeout: {
+          title: 'Thời gian ngắt',
+          type: 'string',
+          width: '10%',
+        },
+        agent_contact: {
+          title: 'Liên hệ',
+          type: 'string',
+          width: '20%',
+        },
+        agent_max_no_answer: {
+          title: 'Số lần không nhấc máy tối đa',
+          type: 'string',
+          width: '20%',
+        },
+        agent_status: {
+          title: 'Trạng thái mặc định',
+          type: 'string',
+          width: '20%',
+        },
       },
-      agent_status: {
-        title: 'Trạng thái mặc định',
-        type: 'string',
-        width: '20%',
-      },
-    },
-  };
+    });
+  }
 
   ngOnInit() {
     this.restrict();

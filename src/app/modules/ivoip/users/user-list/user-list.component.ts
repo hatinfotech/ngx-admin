@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-user-list',
@@ -33,58 +34,60 @@ export class UserListComponent extends IvoipBaseListComponent<PbxUserModel> impl
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 99999,
-    // },
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'string',
-        width: '5%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      domain_name: {
-        title: 'Domain',
-        type: 'string',
-        width: '30%',
+      // add: {
+      //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // edit: {
+      //   editButtonContent: '<i class="nb-edit"></i>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // delete: {
+      //   deleteButtonContent: '<i class="nb-trash"></i>',
+      //   confirmDelete: true,
+      // },
+      // pager: {
+      //   display: true,
+      //   perPage: 99999,
+      // },
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'string',
+          width: '5%',
+        },
+        domain_name: {
+          title: 'Domain',
+          type: 'string',
+          width: '30%',
+        },
+        username: {
+          title: 'Username',
+          type: 'string',
+          width: '30%',
+        },
+        groups: {
+          title: 'Nhóm',
+          type: 'string',
+          width: '20%',
+        },
+        user_enabled: {
+          title: 'K.hoạt',
+          type: 'string',
+          width: '15%',
+        },
       },
-      username: {
-        title: 'Username',
-        type: 'string',
-        width: '30%',
-      },
-      groups: {
-        title: 'Nhóm',
-        type: 'string',
-        width: '20%',
-      },
-      user_enabled: {
-        title: 'K.hoạt',
-        type: 'string',
-        width: '15%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

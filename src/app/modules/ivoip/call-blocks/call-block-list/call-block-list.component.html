@@ -30,7 +30,7 @@
 
   <nb-card-body>
     <div class="ng2-smart-table-wrap">
-      <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
+      <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
         (delete)="delete($event)" (edit)="onEditAction($event)" (create)="onSerialAction($event)"
         (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
       </ng2-smart-table>

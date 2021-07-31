@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { WarehouseBookModel } from '../../../../models/warehouse.model';
 import { WarehouseBookFormComponent } from '../warehouse-book-form/warehouse-book-form.component';
 import { ApiService } from '../../../../services/api.service';
@@ -45,7 +45,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
         button.icon = 'lock';
         button.label = this.commonService.translateText('Common.lockBook');
         button.title = this.commonService.translateText('Common.lockBook');
-        button.click = () => {};
+        button.click = () => { };
       }
       return button;
     });
@@ -79,39 +79,41 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: this.configAddButton(),
-    // edit: this.configEditButton(),
-    // delete: this.configDeleteButton(),
-    // pager: this.configPaging(),
-    columns: {
-      Warehouse: {
-        title: this.commonService.translateText('Common.warehouse'),
-        type: 'string',
-        width: '30%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Note: {
-        title: this.commonService.translateText('Common.note'),
-        type: 'string',
-        width: '30%',
+      // add: this.configAddButton(),
+      // edit: this.configEditButton(),
+      // delete: this.configDeleteButton(),
+      // pager: this.configPaging(),
+      columns: {
+        Warehouse: {
+          title: this.commonService.translateText('Common.warehouse'),
+          type: 'string',
+          width: '30%',
+        },
+        Note: {
+          title: this.commonService.translateText('Common.note'),
+          type: 'string',
+          width: '30%',
+        },
+        Commited: {
+          title: this.commonService.translateText('Warehouse.Book.commit'),
+          type: 'datetime',
+          width: '15%',
+        },
+        State: {
+          title: this.commonService.translateText('Common.state'),
+          type: 'string',
+          width: '15%',
+        },
       },
-      Commited: {
-        title: this.commonService.translateText('Warehouse.Book.commit'),
-        type: 'datetime',
-        width: '15%',
-      },
-      State: {
-        title: this.commonService.translateText('Common.state'),
-        type: 'string',
-        width: '15%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

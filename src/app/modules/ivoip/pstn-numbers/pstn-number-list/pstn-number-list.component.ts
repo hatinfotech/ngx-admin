@@ -7,6 +7,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { PbxPstnNumberModel } from '../../../../models/pbx-pstn-number.model';
 import { PstnNumberFormComponent } from '../pstn-number-form/pstn-number-form.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-pstn-number-list',
@@ -39,65 +40,67 @@ export class PstnNumberListComponent extends IvoipBaseListComponent<PbxPstnNumbe
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 50,
-    // },
-    columns: {
-      destination_type: {
-        title: 'Loại',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      destination_accountcode: {
-        title: 'Số đại diện',
-        type: 'string',
-        width: '20%',
+      // add: {
+      //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // edit: {
+      //   editButtonContent: '<i class="nb-edit"></i>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // delete: {
+      //   deleteButtonContent: '<i class="nb-trash"></i>',
+      //   confirmDelete: true,
+      // },
+      // pager: {
+      //   display: true,
+      //   perPage: 50,
+      // },
+      columns: {
+        destination_type: {
+          title: 'Loại',
+          type: 'string',
+          width: '10%',
+        },
+        destination_accountcode: {
+          title: 'Số đại diện',
+          type: 'string',
+          width: '20%',
+        },
+        destination_number: {
+          title: 'Mẫu nhận diện',
+          type: 'string',
+          width: '20%',
+        },
+        destination_description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '40%',
+        },
+        destination_enabled: {
+          title: 'Kích hoạt',
+          type: 'string',
+          width: '10%',
+        },
       },
-      destination_number: {
-        title: 'Mẫu nhận diện',
-        type: 'string',
-        width: '20%',
-      },
-      destination_description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '40%',
-      },
-      destination_enabled: {
-        title: 'Kích hoạt',
-        type: 'string',
-        width: '10%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();
     // this.ivoipService.loadDomainList(domains => {
     //   this.domainList = domains;
-      // this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
-      super.ngOnInit();
+    // this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
+    super.ngOnInit();
     // });
   }
 

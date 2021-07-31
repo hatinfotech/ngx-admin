@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { SmsPhoneNumberListModel } from '../../../../models/sms.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -35,71 +35,73 @@ export class SmsPhoneNumberListComponent extends DataManagerListComponent<SmsPho
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: this.configAddButton(),
-    // edit: this.configEditButton(),
-    // delete: this.configDeleteButton(),
-    // pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '30%',
-      },
-      Description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '50%',
-      },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: SmsPhoneNumberList) => {
+      // add: this.configAddButton(),
+      // edit: this.configEditButton(),
+      // delete: this.configDeleteButton(),
+      // pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '30%',
+        },
+        Description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '50%',
+        },
+        //   Copy: {
+        //     title: 'Copy',
+        //     type: 'custom',
+        //     width: '10%',
+        //     renderComponent: SmartTableButtonComponent,
+        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //       instance.iconPack = 'eva';
+        //       instance.icon = 'copy';
+        //       instance.label = 'Copy nội dung sang site khác';
+        //       instance.display = true;
+        //       instance.status = 'success';
+        //       instance.valueChange.subscribe(value => {
+        //         // if (value) {
+        //         //   instance.disabled = false;
+        //         // } else {
+        //         //   instance.disabled = true;
+        //         // }
+        //       });
+        //       instance.click.subscribe(async (row: SmsPhoneNumberList) => {
 
-      //         this.commonService.openDialog(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: SmsPhoneNumberList[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
+        //         this.commonService.openDialog(SyncFormComponent, {
+        //           context: {
+        //             inputMode: 'dialog',
+        //             inputId: [row.Code],
+        //             onDialogSave: (newData: SmsPhoneNumberList[]) => {
+        //               // if (onDialogSave) onDialogSave(row);
+        //             },
+        //             onDialogClose: () => {
+        //               // if (onDialogClose) onDialogClose();
+        //               this.refresh();
+        //             },
+        //           },
+        //         });
 
-      //       });
-      //     },
-      //   },
-    },
-  });
+        //       });
+        //     },
+        //   },
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

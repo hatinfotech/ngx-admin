@@ -8,6 +8,7 @@ import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { IvoipService } from '../../ivoip-service';
 import { PbxModel } from '../../../../models/pbx.model';
 import { DomainFormComponent } from '../domain-form/domain-form.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-domain-list',
@@ -49,56 +50,58 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
     // this.idKey = 'Code';
   }
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 9999999,
-    // },
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'text',
-        width: '5%',
-        class: 'no',
-        filter: false,
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      PbxDescription: {
-        title: 'Tổng đài',
-        type: 'string',
-        width: '30%',
+      // add: {
+      //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // edit: {
+      //   editButtonContent: '<i class="nb-edit"></i>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // delete: {
+      //   deleteButtonContent: '<i class="nb-trash"></i>',
+      //   confirmDelete: true,
+      // },
+      // pager: {
+      //   display: true,
+      //   perPage: 9999999,
+      // },
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'text',
+          width: '5%',
+          class: 'no',
+          filter: false,
+        },
+        PbxDescription: {
+          title: 'Tổng đài',
+          type: 'string',
+          width: '30%',
+        },
+        DomainName: {
+          title: 'Domain',
+          type: 'string',
+          width: '30%',
+        },
+        Description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '40%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
       },
-      DomainName: {
-        title: 'Domain',
-        type: 'string',
-        width: '30%',
-      },
-      Description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '40%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

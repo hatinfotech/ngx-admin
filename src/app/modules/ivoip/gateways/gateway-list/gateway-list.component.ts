@@ -7,6 +7,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../ivoip-service';
 import { GatewayFormComponent } from '../gateway-form/gateway-form.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-gateway-list',
@@ -35,69 +36,71 @@ export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 99999,
-    // },
-    columns: {
-      gateway: {
-        title: 'Gateway',
-        type: 'string',
-        width: '20%',
-        // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      context: {
-        title: 'Context',
-        type: 'string',
-        width: '10%',
+      // add: {
+      //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // edit: {
+      //   editButtonContent: '<i class="nb-edit"></i>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // delete: {
+      //   deleteButtonContent: '<i class="nb-trash"></i>',
+      //   confirmDelete: true,
+      // },
+      // pager: {
+      //   display: true,
+      //   perPage: 99999,
+      // },
+      columns: {
+        gateway: {
+          title: 'Gateway',
+          type: 'string',
+          width: '20%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        context: {
+          title: 'Context',
+          type: 'string',
+          width: '10%',
+        },
+        status: {
+          title: 'Trạng thái',
+          type: 'string',
+          width: '10%',
+        },
+        state: {
+          title: 'Đăng ký',
+          type: 'string',
+          width: '10%',
+        },
+        hostname: {
+          title: 'Hostname',
+          type: 'string',
+          width: '20%',
+        },
+        description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '30%',
+        },
+        enabled: {
+          title: 'Kích hoạt',
+          type: 'string',
+          width: '10%',
+        },
       },
-      status: {
-        title: 'Trạng thái',
-        type: 'string',
-        width: '10%',
-      },
-      state: {
-        title: 'Đăng ký',
-        type: 'string',
-        width: '10%',
-      },
-      hostname: {
-        title: 'Hostname',
-        type: 'string',
-        width: '20%',
-      },
-      description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '30%',
-      },
-      enabled: {
-        title: 'Kích hoạt',
-        type: 'string',
-        width: '10%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

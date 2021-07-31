@@ -9,7 +9,7 @@ import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
@@ -225,6 +225,11 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   async init(): Promise<boolean> {
     await this.loadCache();
     this.onAfterInit && this.onAfterInit(this);
+
+    // Wait for langluage service loaded
+    await this.commonService.languageLoaded$.pipe(filter(f => f), take(1)).toPromise();
+    this.settings = this.loadListSetting();
+
     return true;
   }
 
@@ -520,6 +525,8 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     };
   }
 
+  abstract loadListSetting(): SmartTableSetting;
+
   /** Config for stmart table setttings */
   protected configSetting(settings: SmartTableSetting) {
 
@@ -542,7 +549,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       settings.selectMode = 'multi';
     }
     if (typeof settings.actions === 'undefined') {
-      settings.actions = {
+      settings.actions = this.isChoosedMode ? false : {
         position: 'right',
       };
     }

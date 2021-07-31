@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { CrawlServerModel } from '../../../../models/crawl.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -38,90 +38,92 @@ export class CrawlServerListComponent extends DataManagerListComponent<CrawlServ
   editing = {};
   rows = [];
 
-  settings = {
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 99999,
-    },
-    columns: {
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '30%',
+      add: {
+        addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+        createButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      Description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '30%',
+      edit: {
+        editButtonContent: '<i class="nb-edit"></i>',
+        saveButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      ApiVersion: {
-        title: 'Api Version',
-        type: 'string',
-        width: '20%',
+      delete: {
+        deleteButtonContent: '<i class="nb-trash"></i>',
+        confirmDelete: true,
       },
-      Action: {
-        title: 'Action',
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'copy';
-          instance.label = 'Copy nội dung sang site khác';
-          instance.display = true;
-          instance.status = 'success';
-          instance.valueChange.subscribe(value => {
-            // if (value) {
-            //   instance.disabled = false;
-            // } else {
-            //   instance.disabled = true;
-            // }
-          });
-          instance.click.subscribe(async (row: CrawlServerModel) => {
-
-            this.commonService.openDialog(SyncFormComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [row.Code],
-                onDialogSave: (newData: CrawlServerModel[]) => {
-                  // if (onDialogSave) onDialogSave(row);
-                },
-                onDialogClose: () => {
-                  // if (onDialogClose) onDialogClose();
-                  this.refresh();
-                },
-              },
+      pager: {
+        display: true,
+        perPage: 99999,
+      },
+      columns: {
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '30%',
+        },
+        Description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '30%',
+        },
+        ApiVersion: {
+          title: 'Api Version',
+          type: 'string',
+          width: '20%',
+        },
+        Action: {
+          title: 'Action',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'copy';
+            instance.label = 'Copy nội dung sang site khác';
+            instance.display = true;
+            instance.status = 'success';
+            instance.valueChange.subscribe(value => {
+              // if (value) {
+              //   instance.disabled = false;
+              // } else {
+              //   instance.disabled = true;
+              // }
             });
+            instance.click.subscribe(async (row: CrawlServerModel) => {
 
-          });
+              this.commonService.openDialog(SyncFormComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [row.Code],
+                  onDialogSave: (newData: CrawlServerModel[]) => {
+                    // if (onDialogSave) onDialogSave(row);
+                  },
+                  onDialogClose: () => {
+                    // if (onDialogClose) onDialogClose();
+                    this.refresh();
+                  },
+                },
+              });
+
+            });
+          },
         },
       },
-    },
-  };
+    });
+  }
 
   ngOnInit() {
     this.restrict();

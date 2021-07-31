@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WebHostingService } from '../../web-hosting-service';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-hosting-list',
@@ -30,54 +31,56 @@ export class HostingListComponent extends WebHostingBaseListComponent<WhHostingM
     super(apiService, router, commonService, dialogService, toastService, webHostingService);
   }
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: 'Mã',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Host: {
-        title: 'Host',
-        type: 'string',
-        width: '20%',
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: 'Mã',
+          type: 'string',
+          width: '10%',
+        },
+        Host: {
+          title: 'Host',
+          type: 'string',
+          width: '20%',
+        },
+        HostIp: {
+          title: 'Host IP',
+          type: 'string',
+          width: '20%',
+        },
+        Username: {
+          title: 'Username',
+          type: 'string',
+          width: '10%',
+        },
+        ClientId: {
+          title: 'Client ID',
+          type: 'string',
+          width: '20%',
+        },
+        ApiVersion: {
+          title: 'Ngày khai báo',
+          type: 'string',
+          width: '10%',
+        },
+        Enabled: {
+          title: 'H.hoạt',
+          type: 'string',
+          width: '10%',
+        },
       },
-      HostIp: {
-        title: 'Host IP',
-        type: 'string',
-        width: '20%',
-      },
-      Username: {
-        title: 'Username',
-        type: 'string',
-        width: '10%',
-      },
-      ClientId: {
-        title: 'Client ID',
-        type: 'string',
-        width: '20%',
-      },
-      ApiVersion: {
-        title: 'Ngày khai báo',
-        type: 'string',
-        width: '10%',
-      },
-      Enabled: {
-        title: 'H.hoạt',
-        type: 'string',
-        width: '10%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

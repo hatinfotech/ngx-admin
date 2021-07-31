@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { NetworkProxyModel } from '../../../../models/network.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -36,98 +36,100 @@ export class ProxyListComponent extends DataManagerListComponent<NetworkProxyMod
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '20%',
-      },
-      Protocol: {
-        title: 'Protocol',
-        type: 'string',
-        width: '10%',
-      },
-      Host: {
-        title: 'Host',
-        type: 'string',
-        width: '20%',
-      },
-      Port: {
-        title: 'Port',
-        type: 'string',
-        width: '10%',
-      },
-      Status: {
-        title: 'Status',
-        type: 'string',
-        width: '10%',
-      },
-      Enabled: {
-        title: 'Enabled',
-        type: 'boolean',
-        editable: true,
-        width: '10%',
-        onChange: (value, rowData: NetworkProxyModel) => {
-          // rowData.AutoUpdate = value;
-          this.apiService.putPromise<NetworkProxyModel[]>('/network/proxies', {}, [{ Code: rowData.Code, Enabled: value }]).then(rs => {
-            console.info(rs);
-          });
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '10%',
         },
+        Description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '20%',
+        },
+        Protocol: {
+          title: 'Protocol',
+          type: 'string',
+          width: '10%',
+        },
+        Host: {
+          title: 'Host',
+          type: 'string',
+          width: '20%',
+        },
+        Port: {
+          title: 'Port',
+          type: 'string',
+          width: '10%',
+        },
+        Status: {
+          title: 'Status',
+          type: 'string',
+          width: '10%',
+        },
+        Enabled: {
+          title: 'Enabled',
+          type: 'boolean',
+          editable: true,
+          width: '10%',
+          onChange: (value, rowData: NetworkProxyModel) => {
+            // rowData.AutoUpdate = value;
+            this.apiService.putPromise<NetworkProxyModel[]>('/network/proxies', {}, [{ Code: rowData.Code, Enabled: value }]).then(rs => {
+              console.info(rs);
+            });
+          },
+        },
+        // Copy: {
+        //   title: 'Copy',
+        //   type: 'custom',
+        //   width: '10%',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'copy';
+        //     instance.label = 'Copy nội dung sang site khác';
+        //     instance.display = true;
+        //     instance.status = 'success';
+        //     instance.valueChange.subscribe(value => {
+        //       // if (value) {
+        //       //   instance.disabled = false;
+        //       // } else {
+        //       //   instance.disabled = true;
+        //       // }
+        //     });
+        //     instance.click.subscribe(async (row: NetworkProxyModel) => {
+
+        //       this.commonService.openDialog(SyncFormComponent, {
+        //         context: {
+        //           inputMode: 'dialog',
+        //           inputId: [row.Code],
+        //           onDialogSave: (newData: NetworkProxyModel[]) => {
+        //             // if (onDialogSave) onDialogSave(row);
+        //           },
+        //           onDialogClose: () => {
+        //             // if (onDialogClose) onDialogClose();
+        //             this.refresh();
+        //           },
+        //         },
+        //       });
+
+        //     });
+        //   },
+        // },
       },
-      // Copy: {
-      //   title: 'Copy',
-      //   type: 'custom',
-      //   width: '10%',
-      //   renderComponent: SmartTableButtonComponent,
-      //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //     instance.iconPack = 'eva';
-      //     instance.icon = 'copy';
-      //     instance.label = 'Copy nội dung sang site khác';
-      //     instance.display = true;
-      //     instance.status = 'success';
-      //     instance.valueChange.subscribe(value => {
-      //       // if (value) {
-      //       //   instance.disabled = false;
-      //       // } else {
-      //       //   instance.disabled = true;
-      //       // }
-      //     });
-      //     instance.click.subscribe(async (row: NetworkProxyModel) => {
-
-      //       this.commonService.openDialog(SyncFormComponent, {
-      //         context: {
-      //           inputMode: 'dialog',
-      //           inputId: [row.Code],
-      //           onDialogSave: (newData: NetworkProxyModel[]) => {
-      //             // if (onDialogSave) onDialogSave(row);
-      //           },
-      //           onDialogClose: () => {
-      //             // if (onDialogClose) onDialogClose();
-      //             this.refresh();
-      //           },
-      //         },
-      //       });
-
-      //     });
-      //   },
-      // },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

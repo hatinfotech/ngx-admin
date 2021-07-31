@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { MinierpService } from '../../minierp-service.service';
 import { SmartTableIconComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-minierp-list',
@@ -35,106 +36,108 @@ export class MinierpListComponent extends MinierpBaseListComponent<MiniErpModel>
     'PREPARE_UPDATE': 'PREPAREUPDATE',
   };
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: 'Mã',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '20%',
-      },
-      LastUpdate: {
-        title: 'Câp nhật lần cuối',
-        type: 'string',
-        width: '10%',
-      },
-      Version: {
-        title: 'Phiên bản',
-        type: 'string',
-        width: '10%',
-      },
-      LastLog: {
-        title: 'Nhật ký',
-        type: 'string',
-        width: '30%',
-      },
-      State: {
-        title: 'Trạng thái',
-        type: 'string',
-        width: '10%',
-      },
-      RequireUpdate: {
-        title: 'C.Nhật',
-        type: 'custom',
-        width: '5%',
-        renderComponent: SmartTableIconComponent,
-        onComponentInitFunction: (instance: SmartTableIconComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'arrow-circle-up';
-          instance.label = '';
-          // instance.display = true;
-          instance.status = 'warning';
-          instance.valueChange.subscribe((info: { value: any, row: any }) => {
-            const state = info.row['State'] ? this.stateMap[info.row['State']] : '';
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: 'Mã',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '20%',
+        },
+        LastUpdate: {
+          title: 'Câp nhật lần cuối',
+          type: 'string',
+          width: '10%',
+        },
+        Version: {
+          title: 'Phiên bản',
+          type: 'string',
+          width: '10%',
+        },
+        LastLog: {
+          title: 'Nhật ký',
+          type: 'string',
+          width: '30%',
+        },
+        State: {
+          title: 'Trạng thái',
+          type: 'string',
+          width: '10%',
+        },
+        RequireUpdate: {
+          title: 'C.Nhật',
+          type: 'custom',
+          width: '5%',
+          renderComponent: SmartTableIconComponent,
+          onComponentInitFunction: (instance: SmartTableIconComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'arrow-circle-up';
+            instance.label = '';
+            // instance.display = true;
+            instance.status = 'warning';
+            instance.valueChange.subscribe((info: { value: any, row: any }) => {
+              const state = info.row['State'] ? this.stateMap[info.row['State']] : '';
 
-            // if (!info.row['AutoUpdate']) {
-            //   instance.status = 'disabled';
-            //   instance.icon = 'close-circle';
-            // } else {
+              // if (!info.row['AutoUpdate']) {
+              //   instance.status = 'disabled';
+              //   instance.icon = 'close-circle';
+              // } else {
 
-            if (state === 'UPDATEERROR') {
-              instance.status = 'danger';
-              instance.icon = 'close-circle';
-            } else if (state === 'UPDATING') {
-              instance.status = 'danger';
-              instance.icon = 'arrow-circle-up';
-            } else if (state === 'PREPAREUPDATE') {
-              instance.status = 'primary';
-              instance.icon = 'clock';
-            } else {
-
-              if (info.value) {
-                instance.status = 'warning';
+              if (state === 'UPDATEERROR') {
+                instance.status = 'danger';
+                instance.icon = 'close-circle';
+              } else if (state === 'UPDATING') {
+                instance.status = 'danger';
                 instance.icon = 'arrow-circle-up';
+              } else if (state === 'PREPAREUPDATE') {
+                instance.status = 'primary';
+                instance.icon = 'clock';
               } else {
-                instance.status = 'success';
-                instance.icon = 'checkmark-circle-2';
-              }
 
-            }
-            // }
-          });
-          instance.click.subscribe(async (row: MiniErpModel) => {
-          });
+                if (info.value) {
+                  instance.status = 'warning';
+                  instance.icon = 'arrow-circle-up';
+                } else {
+                  instance.status = 'success';
+                  instance.icon = 'checkmark-circle-2';
+                }
+
+              }
+              // }
+            });
+            instance.click.subscribe(async (row: MiniErpModel) => {
+            });
+          },
+        },
+        AutoUpdate: {
+          title: 'KH',
+          type: 'boolean',
+          editable: true,
+          width: '5%',
+          onChange: (value, rowData: MiniErpModel) => {
+            // rowData.AutoUpdate = value;
+            this.apiService.putPromise<MiniErpModel[]>('/mini-erp/minierps', {}, [{ Code: rowData.Code, AutoUpdate: value }]).then(rs => {
+              console.info(rs);
+            });
+          },
         },
       },
-      AutoUpdate: {
-        title: 'KH',
-        type: 'boolean',
-        editable: true,
-        width: '5%',
-        onChange: (value, rowData: MiniErpModel) => {
-          // rowData.AutoUpdate = value;
-          this.apiService.putPromise<MiniErpModel[]>('/mini-erp/minierps', {}, [{ Code: rowData.Code, AutoUpdate: value }]).then(rs => {
-            console.info(rs);
-          });
-        },
-      },
-    },
-  });
+    });
+  }
 
   constructor(
     public apiService: ApiService,
@@ -186,7 +189,7 @@ export class MinierpListComponent extends MinierpBaseListComponent<MiniErpModel>
                 return { Code: i, AutoUpdate: false };
               });
               this.apiService.putPromise<MiniErpModel[]>('/mini-erp/minierps', {}, data).then(rs => this.refresh());
-             },
+            },
           },
         ],
       },

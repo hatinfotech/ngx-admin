@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ResourceModel } from '../../../../models/resource.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -19,51 +19,53 @@ export class ResourceListComponent extends DataManagerListComponent<ResourceMode
   idKey: string = 'Name';
 
   /** Table settings */
-  settings = {
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: {
-      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    pager: {
-      display: true,
-      perPage: 100,
-    },
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'number',
-        width: '5%',
-        class: 'no',
-        filter: false,
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Name',
-        type: 'string',
-        width: '45%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      add: {
+        addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+        createButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      Description: {
-        title: 'Diễn giải',
-        type: 'string',
-        width: '50%',
+      edit: {
+        editButtonContent: '<i class="nb-edit"></i>',
+        saveButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-    },
-  };
+      delete: {
+        deleteButtonContent: '<i class="nb-trash"></i>',
+        confirmDelete: true,
+      },
+      pager: {
+        display: true,
+        perPage: 100,
+      },
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'number',
+          width: '5%',
+          class: 'no',
+          filter: false,
+        },
+        Name: {
+          title: 'Name',
+          type: 'string',
+          width: '45%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Description: {
+          title: 'Diễn giải',
+          type: 'string',
+          width: '50%',
+        },
+      },
+    });
+  }
 
   constructor(
     public apiService: ApiService,

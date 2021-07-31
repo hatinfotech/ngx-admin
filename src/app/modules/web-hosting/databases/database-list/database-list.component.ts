@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WebHostingService } from '../../web-hosting-service';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-database-list',
@@ -19,39 +20,41 @@ export class DatabaseListComponent extends WebHostingBaseListComponent<WhDatabas
   apiPath = '/web-hosting/databases';
   idKey = 'database_id';
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      database_name: {
-        title: 'Database name',
-        type: 'string',
-        width: '60%',
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'string',
+          width: '10%',
+        },
+        database_name: {
+          title: 'Database name',
+          type: 'string',
+          width: '60%',
+        },
+        database_user_id: {
+          title: 'User',
+          type: 'string',
+          width: '30%',
+        },
+        hosting: {
+          title: 'Hosting',
+          type: 'string',
+          width: '30%',
+        },
       },
-      database_user_id: {
-        title: 'User',
-        type: 'string',
-        width: '30%',
-      },
-      hosting: {
-        title: 'Hosting',
-        type: 'string',
-        width: '30%',
-      },
-    },
-  });
+    });
+  }
 
   constructor(
     public apiService: ApiService,

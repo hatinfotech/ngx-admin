@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { FileStoreModel } from '../../../../models/file.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -28,101 +28,103 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '40%',
-      },
-      Host: {
-        title: 'Host',
-        type: 'string',
-        width: '40%',
-      },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: FileStoreModel) => {
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '40%',
+        },
+        Host: {
+          title: 'Host',
+          type: 'string',
+          width: '40%',
+        },
+        //   Copy: {
+        //     title: 'Copy',
+        //     type: 'custom',
+        //     width: '10%',
+        //     renderComponent: SmartTableButtonComponent,
+        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //       instance.iconPack = 'eva';
+        //       instance.icon = 'copy';
+        //       instance.label = 'Copy nội dung sang site khác';
+        //       instance.display = true;
+        //       instance.status = 'success';
+        //       instance.valueChange.subscribe(value => {
+        //         // if (value) {
+        //         //   instance.disabled = false;
+        //         // } else {
+        //         //   instance.disabled = true;
+        //         // }
+        //       });
+        //       instance.click.subscribe(async (row: FileStoreModel) => {
 
-      //         this.commonService.openDialog(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: FileStoreModel[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
+        //         this.commonService.openDialog(SyncFormComponent, {
+        //           context: {
+        //             inputMode: 'dialog',
+        //             inputId: [row.Code],
+        //             onDialogSave: (newData: FileStoreModel[]) => {
+        //               // if (onDialogSave) onDialogSave(row);
+        //             },
+        //             onDialogClose: () => {
+        //               // if (onDialogClose) onDialogClose();
+        //               this.refresh();
+        //             },
+        //           },
+        //         });
 
-      //       });
-      //     },
-      //   },
-      Token: {
-        title: this.commonService.translateText('Common.token'),
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.label = 'Tạo token';
-          instance.iconPack = 'eva';
-          instance.icon = 'unlock';
-          instance.display = true;
-          instance.status = 'danger';
-          instance.title = this.commonService.translateText('ZaloOa.Webhook.token');
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((fileStore: FileStoreModel) => {
-            this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { 'generateToken': true, id: [fileStore.Code] }).then(token => {
-              this.commonService.openDialog(ShowcaseDialogComponent, {
-                context: {
-                  title: this.commonService.translateText('File.FileStore.token'),
-                  content: token[0].Token,
-                  actions: [
-                    {
-                      label: this.commonService.translateText('Common.close'),
-                      status: 'danger',
-                    },
-                  ],
-                },
+        //       });
+        //     },
+        //   },
+        Token: {
+          title: this.commonService.translateText('Common.token'),
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.label = 'Tạo token';
+            instance.iconPack = 'eva';
+            instance.icon = 'unlock';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.title = this.commonService.translateText('ZaloOa.Webhook.token');
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((fileStore: FileStoreModel) => {
+              this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { 'generateToken': true, id: [fileStore.Code] }).then(token => {
+                this.commonService.openDialog(ShowcaseDialogComponent, {
+                  context: {
+                    title: this.commonService.translateText('File.FileStore.token'),
+                    content: token[0].Token,
+                    actions: [
+                      {
+                        label: this.commonService.translateText('Common.close'),
+                        status: 'danger',
+                      },
+                    ],
+                  },
+                });
               });
             });
-          });
+          },
         },
       },
-    },
-  });
+    });
+  }
 
   constructor(
     public apiService: ApiService,

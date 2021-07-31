@@ -7,6 +7,7 @@ import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { IvoipService } from '../../ivoip-service';
 import { CallBlockFormComponent } from '../call-block-form/call-block-form.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-call-block-list',
@@ -35,85 +36,87 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: {
-    //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
-    //   createButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // edit: {
-    //   editButtonContent: '<i class="nb-edit"></i>',
-    //   saveButtonContent: '<i class="nb-checkmark"></i>',
-    //   cancelButtonContent: '<i class="nb-close"></i>',
-    // },
-    // delete: {
-    //   deleteButtonContent: '<i class="nb-trash"></i>',
-    //   confirmDelete: true,
-    // },
-    // pager: {
-    //   display: true,
-    //   perPage: 99999,
-    // },
-    columns: {
-      call_block_number: {
-        title: 'Number',
-        type: 'string',
-        width: '30%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      call_block_name: {
-        title: 'Name',
-        type: 'string',
-        width: '20%',
-      },
-      call_block_count: {
-        title: 'Só lần chặn',
-        type: 'string',
-        width: '10%',
-      },
-      // accountcode: {
-      //   title: 'Số Public',
-      //   type: 'string',
-      //   width: '20%',
+      // add: {
+      //   addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
       // },
-      call_block_action: {
-        title: 'Hành động',
-        type: 'string',
-        width: '20%',
-      },
-      // date_added: {
-      //   title: 'Ngày khai báo',
-      //   type: 'string',
-      //   width: '10%',
+      // edit: {
+      //   editButtonContent: '<i class="nb-edit"></i>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
       // },
-      is_call_out: {
-        title: 'Gọi ra',
-        type: 'boolean',
-        width: '10%',
-        editable: true,
-        onChange: (value, rowData: PbxCallBlockModel) => {
-          this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', { domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid }, [{ call_block_uuid: rowData.call_block_uuid, is_call_out: value }]).then(rs => {
-            console.info(rs);
-          });
+      // delete: {
+      //   deleteButtonContent: '<i class="nb-trash"></i>',
+      //   confirmDelete: true,
+      // },
+      // pager: {
+      //   display: true,
+      //   perPage: 99999,
+      // },
+      columns: {
+        call_block_number: {
+          title: 'Number',
+          type: 'string',
+          width: '30%',
+        },
+        call_block_name: {
+          title: 'Name',
+          type: 'string',
+          width: '20%',
+        },
+        call_block_count: {
+          title: 'Só lần chặn',
+          type: 'string',
+          width: '10%',
+        },
+        // accountcode: {
+        //   title: 'Số Public',
+        //   type: 'string',
+        //   width: '20%',
+        // },
+        call_block_action: {
+          title: 'Hành động',
+          type: 'string',
+          width: '20%',
+        },
+        // date_added: {
+        //   title: 'Ngày khai báo',
+        //   type: 'string',
+        //   width: '10%',
+        // },
+        is_call_out: {
+          title: 'Gọi ra',
+          type: 'boolean',
+          width: '10%',
+          editable: true,
+          onChange: (value, rowData: PbxCallBlockModel) => {
+            this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', { domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid }, [{ call_block_uuid: rowData.call_block_uuid, is_call_out: value }]).then(rs => {
+              console.info(rs);
+            });
+          },
+        },
+        call_block_enabled: {
+          title: 'Đã chặn',
+          type: 'boolean',
+          width: '10%',
+          editable: true,
+          onChange: (value, rowData: PbxCallBlockModel) => {
+            this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', { domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid }, [{ call_block_uuid: rowData.call_block_uuid, call_block_enabled: value }]).then(rs => {
+              console.info(rs);
+            });
+          },
         },
       },
-      call_block_enabled: {
-        title: 'Đã chặn',
-        type: 'boolean',
-        width: '10%',
-        editable: true,
-        onChange: (value, rowData: PbxCallBlockModel) => {
-          this.apiService.putPromise<PbxCallBlockModel[]>('/ivoip/call-blocks', { domainId: this.ivoipService.getPbxActiveDomainUuid(), call_block_uuid: rowData.call_block_uuid }, [{ call_block_uuid: rowData.call_block_uuid, call_block_enabled: value }]).then(rs => {
-            console.info(rs);
-          });
-        },
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

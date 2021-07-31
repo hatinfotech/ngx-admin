@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { MenuItemModel } from '../../../../models/menu-item.model';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-menu-list',
@@ -18,58 +18,60 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
   apiPath = '/menu/menu-items';
   idKey = 'Code';
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'text',
-        width: '5%',
-        // class: 'no',
-        // filter: false,
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      ParentTitle: {
-        title: 'Menu cha',
-        type: 'string',
-        width: '20%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'text',
+          width: '5%',
+          // class: 'no',
+          // filter: false,
+        },
+        ParentTitle: {
+          title: 'Menu cha',
+          type: 'string',
+          width: '20%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Code: {
+          title: 'Mã',
+          type: 'string',
+          width: '10%',
+        },
+        Title: {
+          title: 'Tiêu đề',
+          type: 'string',
+          width: '25%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Link: {
+          title: 'Link',
+          type: 'string',
+          width: '20%',
+        },
+        Icon: {
+          title: 'Icon',
+          type: 'string',
+          width: '10%',
+        },
+        Group: {
+          title: 'Group',
+          type: 'boolean',
+          width: '10%',
+        },
       },
-      Code: {
-        title: 'Mã',
-        type: 'string',
-        width: '10%',
-      },
-      Title: {
-        title: 'Tiêu đề',
-        type: 'string',
-        width: '25%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Link: {
-        title: 'Link',
-        type: 'string',
-        width: '20%',
-      },
-      Icon: {
-        title: 'Icon',
-        type: 'string',
-        width: '10%',
-      },
-      Group: {
-        title: 'Group',
-        type: 'boolean',
-        width: '10%',
-      },
-    },
-  });
+    });
+  }
 
   constructor(
     public apiService: ApiService,

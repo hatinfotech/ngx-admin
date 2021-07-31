@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { WarehouseGoodsContainerFormComponent } from '../warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { ApiService } from '../../../../services/api.service';
@@ -35,44 +35,46 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    // add: this.configAddButton(),
-    // edit: this.configEditButton(),
-    // delete: this.configDeleteButton(),
-    // pager: this.configPaging(),
-    columns: {
-      Path: {
-        title: this.commonService.translateText('Common.path'),
-        type: 'string',
-        width: '40%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      // Name: {
-      //   title: this.commonService.translateText('Common.name'),
-      //   type: 'string',
-      //   width: '15%',
-      // },
-      Warehouse: {
-        title: this.commonService.translateText('Common.warehouse'),
-        type: 'string',
-        width: '30%',
+      // add: this.configAddButton(),
+      // edit: this.configEditButton(),
+      // delete: this.configDeleteButton(),
+      // pager: this.configPaging(),
+      columns: {
+        Path: {
+          title: this.commonService.translateText('Common.path'),
+          type: 'string',
+          width: '40%',
+        },
+        // Name: {
+        //   title: this.commonService.translateText('Common.name'),
+        //   type: 'string',
+        //   width: '15%',
+        // },
+        Warehouse: {
+          title: this.commonService.translateText('Common.warehouse'),
+          type: 'string',
+          width: '30%',
+        },
+        FindOrder: {
+          title: this.commonService.translateText('Common.findOrder'),
+          type: 'string',
+          width: '20%',
+        },
+        Code: {
+          title: this.commonService.translateText('Common.code'),
+          type: 'string',
+          width: '10%',
+        },
       },
-      FindOrder: {
-        title: this.commonService.translateText('Common.findOrder'),
-        type: 'string',
-        width: '20%',
-      },
-      Code: {
-        title: this.commonService.translateText('Common.code'),
-        type: 'string',
-        width: '10%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();
@@ -92,7 +94,7 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
       // rs.forEach(item => {
       //   item.Content = item.Content.substring(0, 256) + '...';
       // });
-      if (callback) callback(rs.map(item => ({...item, Warehouse: this.commonService.getObjectText(item.Warehouse)})));
+      if (callback) callback(rs.map(item => ({ ...item, Warehouse: this.commonService.getObjectText(item.Warehouse) })));
     });
   }
 

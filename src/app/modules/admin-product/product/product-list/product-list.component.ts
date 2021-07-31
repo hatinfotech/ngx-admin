@@ -14,6 +14,7 @@ import { FormGroup } from '@angular/forms';
 import { FileModel } from '../../../../models/file.model';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { UnitModel } from '../../../../models/unit.model';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-product-list',
@@ -84,151 +85,153 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      FeaturePictureThumbnail: {
-        title: 'Hình',
-        type: 'custom',
-        width: '5%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
+      },
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        FeaturePictureThumbnail: {
+          title: 'Hình',
+          type: 'custom',
+          width: '5%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['FeaturePicture']['Thumbnail'];
           },
-        renderComponent: SmartTableThumbnailComponent,
-        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
-          instance.valueChange.subscribe(value => {
-          });
-          instance.click.subscribe(async (row: ProductModel) => {
-            if (this.files.length === 0) {
-              this.uploadForProduct = row;
-              this.uploadBtn.nativeElement.click();
-            } else {
-              this.commonService.toastService.show(
-                this.commonService.translateText('Common.uploadInProcess'),
-                this.commonService.translateText('Common.upload'),
-                {
-                  status: 'warning',
-                });
-              // this.commonService.openDialog(ShowcaseDialogComponent, {
-              //   context: {
-              //     title: this.commonService.translateText('Common.upload'),
-              //     content: this.commonService.translateText('Common.uploadInProcess'),
-              //   },
-              // });
-            }
-          });
-          instance.title = this.commonService.translateText('click to change main product picture');
+          renderComponent: SmartTableThumbnailComponent,
+          onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.subscribe(async (row: ProductModel) => {
+              if (this.files.length === 0) {
+                this.uploadForProduct = row;
+                this.uploadBtn.nativeElement.click();
+              } else {
+                this.commonService.toastService.show(
+                  this.commonService.translateText('Common.uploadInProcess'),
+                  this.commonService.translateText('Common.upload'),
+                  {
+                    status: 'warning',
+                  });
+                // this.commonService.openDialog(ShowcaseDialogComponent, {
+                //   context: {
+                //     title: this.commonService.translateText('Common.upload'),
+                //     content: this.commonService.translateText('Common.uploadInProcess'),
+                //   },
+                // });
+              }
+            });
+            instance.title = this.commonService.translateText('click to change main product picture');
+          },
         },
-      },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '25%',
-      },
-      Categories: {
-        title: 'Danh mục',
-        type: 'html',
-        width: '25%',
-        valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '25%',
         },
-        filter: {
-          type: 'custom',
-          component: SmartTableSelect2FilterComponent,
-          config: {
-            delay: 0,
-            select2Option: {
-              placeholder: 'Chọn danh mục...',
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              multiple: true,
-              ajax: {
-                url: (params: any) => {
-                  return 'data:text/plan,[]';
+        Categories: {
+          title: 'Danh mục',
+          type: 'html',
+          width: '25%',
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              select2Option: {
+                placeholder: 'Chọn danh mục...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
                 },
-                delay: 0,
-                processResults: (data: any, params: any) => {
-                  return {
-                    results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-                  };
+                multiple: true,
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    };
+                  },
                 },
               },
             },
           },
         },
-      },
-      Groups: {
-        title: 'Nhóm',
-        type: 'html',
-        width: '25%',
-        valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
-        },
-        filter: {
-          type: 'custom',
-          component: SmartTableSelect2FilterComponent,
-          config: {
-            delay: 0,
-            select2Option: {
-              placeholder: 'Chọn nhóm...',
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              multiple: true,
-              ajax: {
-                url: (params: any) => {
-                  return 'data:text/plan,[]';
+        Groups: {
+          title: 'Nhóm',
+          type: 'html',
+          width: '25%',
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              select2Option: {
+                placeholder: 'Chọn nhóm...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
                 },
-                delay: 0,
-                processResults: (data: any, params: any) => {
-                  return {
-                    results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-                  };
+                multiple: true,
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    };
+                  },
                 },
               },
             },
           },
         },
-      },
-      WarehouseUnit: {
-        title: 'ĐVT',
-        type: 'html',
-        width: '10%',
-        valuePrepareFunction: (value: string, product: ProductModel) => {
-          return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+        WarehouseUnit: {
+          title: 'ĐVT',
+          type: 'html',
+          width: '10%',
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+          },
+        },
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '10%',
+        },
+        Sku: {
+          title: 'Sku',
+          type: 'string',
+          width: '15%',
         },
       },
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
-      },
-      Sku: {
-        title: 'Sku',
-        type: 'string',
-        width: '15%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

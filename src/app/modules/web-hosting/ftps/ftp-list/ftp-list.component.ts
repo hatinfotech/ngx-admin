@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WebHostingService } from '../../web-hosting-service';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-ftp-list',
@@ -19,39 +20,41 @@ export class FtpListComponent extends WebHostingBaseListComponent<WhFtpModel> im
   apiPath = '/web-hosting/ftps';
   idKey = 'ftp_user_id';
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      No: {
-        title: 'Stt',
-        type: 'string',
-        width: '5%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      username: {
-        title: 'Ftp Username',
-        type: 'string',
-        width: '30%',
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        No: {
+          title: 'Stt',
+          type: 'string',
+          width: '5%',
+        },
+        username: {
+          title: 'Ftp Username',
+          type: 'string',
+          width: '30%',
+        },
+        parent_domain_id: {
+          title: 'Website',
+          type: 'string',
+          width: '35%',
+        },
+        hosting: {
+          title: 'Hosting',
+          type: 'string',
+          width: '30%',
+        },
       },
-      parent_domain_id: {
-        title: 'Website',
-        type: 'string',
-        width: '35%',
-      },
-      hosting: {
-        title: 'Hosting',
-        type: 'string',
-        width: '30%',
-      },
-    },
-  });
+    });
+  }
 
   constructor(
     public apiService: ApiService,

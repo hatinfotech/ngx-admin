@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { SalesMasterPriceTableModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -45,85 +45,87 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Title: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
-        type: 'string',
-        width: '25%',
-      },
-      Description: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
-        type: 'string',
-        width: '25%',
-      },
-      DateOfCreated: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '10%',
+        },
+        Title: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          type: 'string',
+          width: '25%',
+        },
+        Description: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          type: 'string',
+          width: '25%',
+        },
+        DateOfCreated: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        DateOfApproved: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfapproved'), 'head-title'),
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        // Parent: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.parent'), 'head-title'),
+        //   type: 'string',
+        //   width: '15%',
+        // },
+        Approved: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.approve'), 'head-title'),
+          type: 'boolean',
+          width: '5%',
+        },
+        PreviewCommand: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
+          type: 'custom',
+          width: '5%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'external-link';
+            instance.label = this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title');
+            instance.display = true;
+            instance.status = 'primary';
+            instance.valueChange.subscribe(value => {
+              // if (value) {
+              //   instance.disabled = false;
+              // } else {
+              //   instance.disabled = true;
+              // }
+            });
+            instance.click.subscribe(async (row: SalesMasterPriceTableModel) => {
+              this.preview([row]);
+            });
+          },
         },
       },
-      DateOfApproved: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfapproved'), 'head-title'),
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
-        },
-      },
-      // Parent: {
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.parent'), 'head-title'),
-      //   type: 'string',
-      //   width: '15%',
-      // },
-      Approved: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.approve'), 'head-title'),
-        type: 'boolean',
-        width: '5%',
-      },
-      PreviewCommand: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
-        type: 'custom',
-        width: '5%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'external-link';
-          instance.label = this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title');
-          instance.display = true;
-          instance.status = 'primary';
-          instance.valueChange.subscribe(value => {
-            // if (value) {
-            //   instance.disabled = false;
-            // } else {
-            //   instance.disabled = true;
-            // }
-          });
-          instance.click.subscribe(async (row: SalesMasterPriceTableModel) => {
-            this.preview([row]);
-          });
-        },
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

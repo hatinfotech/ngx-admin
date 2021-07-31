@@ -10,7 +10,7 @@
 
   <nb-card-body>
     <div class="ng2-smart-table-wrap">
-      <ng2-smart-table [settings]="settings" [source]="source" (delete)="onDeleteConfirm($event)"
+      <ng2-smart-table *ngIf="settings" [settings]="settings" [source]="source" (delete)="onDeleteConfirm($event)"
         (edit)="onEditAction($event)" (create)="onCreateAction($event)">
       </ng2-smart-table>
     </div>

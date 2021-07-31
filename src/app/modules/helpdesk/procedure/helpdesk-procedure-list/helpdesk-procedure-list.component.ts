@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { HelpdeskProcedureModel } from '../../../../models/helpdesk.model';
 import { HelpdeskProcedureFormComponent } from '../helpdesk-procedure-form/helpdesk-procedure-form.component';
 import { ApiService } from '../../../../services/api.service';
@@ -35,34 +35,36 @@ export class HelpdeskProcedureListComponent extends DataManagerListComponent<Hel
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: this.commonService.translateText('Common.code'),
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: this.commonService.translateText('Common.name'),
-        type: 'string',
-        width: '40%',
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: this.commonService.translateText('Common.code'),
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: this.commonService.translateText('Common.name'),
+          type: 'string',
+          width: '40%',
+        },
+        Description: {
+          title: this.commonService.translateText('Common.decription'),
+          type: 'string',
+          width: '50%',
+        },
       },
-      Description: {
-        title: this.commonService.translateText('Common.decription'),
-        type: 'string',
-        width: '50%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { SmartTableCurrencyComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
@@ -30,7 +30,7 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
   static sortConf: any;
   static pagingConf = { page: 1, perPage: 40 };
 
-  totalBalance: {Debit: number, Credit: number} = null;
+  totalBalance: { Debit: number, Credit: number } = null;
 
   constructor(
     public apiService: ApiService,
@@ -47,7 +47,7 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
   async init() {
     // await this.loadCache();
     return super.init().then(rs => {
-      this.apiService.getPromise<any>(this.apiPath, {getTotalBalance: true}).then(balances => this.totalBalance = balances);
+      this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
       return rs;
     });
   }
@@ -55,62 +55,64 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    columns: {
-      Code: {
-        title: this.commonService.translateText('Common.code'),
-        type: 'string',
-        width: '5%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      columns: {
+        Code: {
+          title: this.commonService.translateText('Common.code'),
+          type: 'string',
+          width: '5%',
+        },
+        Name: {
+          title: this.commonService.translateText('Common.name'),
+          type: 'string',
+          width: '20%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Description: {
+          title: this.commonService.translateText('Common.description'),
+          type: 'string',
+          width: '20%',
+        },
+        Debit: {
+          title: this.commonService.translateText('Common.debit'),
+          type: 'currency',
+          width: '8%',
+        },
+        Credit: {
+          title: this.commonService.translateText('Common.credit'),
+          type: 'currency',
+          width: '8%',
+        },
+        Currency: {
+          title: this.commonService.translateText('Common.currency'),
+          type: 'string',
+          width: '8%',
+        },
+        Property: {
+          title: this.commonService.translateText('Common.property'),
+          type: 'string',
+          width: '8%',
+        },
+        Type: {
+          title: this.commonService.translateText('Common.type'),
+          type: 'string',
+          width: '5%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Level: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.level'), 'head-title'),
+          type: 'string',
+          width: '5%',
+        },
+        Group: {
+          title: this.commonService.translateText('Common.group'),
+          type: 'string',
+          width: '8%',
+        },
       },
-      Name: {
-        title: this.commonService.translateText('Common.name'),
-        type: 'string',
-        width: '20%',
-        // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Description: {
-        title: this.commonService.translateText('Common.description'),
-        type: 'string',
-        width: '20%',
-      },
-      Debit: {
-        title: this.commonService.translateText('Common.debit'),
-        type: 'currency',
-        width: '8%',
-      },
-      Credit: {
-        title: this.commonService.translateText('Common.credit'),
-        type: 'currency',
-        width: '8%',
-      },
-      Currency: {
-        title: this.commonService.translateText('Common.currency'),
-        type: 'string',
-        width: '8%',
-      },
-      Property: {
-        title: this.commonService.translateText('Common.property'),
-        type: 'string',
-        width: '8%',
-      },
-      Type: {
-        title: this.commonService.translateText('Common.type'),
-        type: 'string',
-        width: '5%',
-        // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Level: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.level'), 'head-title'),
-        type: 'string',
-        width: '5%',
-      },
-      Group: {
-        title: this.commonService.translateText('Common.group'),
-        type: 'string',
-        width: '8%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();
@@ -156,7 +158,7 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
 
   refresh() {
     super.refresh();
-    this.apiService.getPromise<any>(this.apiPath, {getTotalBalance: true}).then(balances => this.totalBalance = balances);
+    this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
   }
 
 }

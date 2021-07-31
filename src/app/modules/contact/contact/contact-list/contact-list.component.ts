@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { SmartTableBaseComponent, SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { CashVoucherModel } from '../../../../models/accounting.model';
 import { ContactModel } from '../../../../models/contact.model';
@@ -89,160 +90,162 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      AvatarUrl: {
-        title: 'Hình',
-        type: 'custom',
-        width: '5%',
-        valuePrepareFunction: (value: string, contact: ContactModel) => {
-          return contact.AvatarUrl;
-        },
-        renderComponent: SmartTableThumbnailComponent,
-        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
-          instance.valueChange.subscribe(value => {
-          });
-          instance.click.subscribe(async (row: ContactModel) => {
-            // if (this.files.length === 0) {
-            //   this.uploadForProduct = row;
-            //   this.uploadBtn.nativeElement.click();
-            // } else {
-            //   this.commonService.toastService.show(
-            //     this.commonService.translateText('Common.uploadInProcess'),
-            //     this.commonService.translateText('Common.upload'),
-            //     {
-            //       status: 'warning',
-            //     });
-            // }
-          });
-          instance.title = this.commonService.translateText('click to change main contact avatar');
-        },
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      // No: {
-      //   title: 'No.',
-      //   type: 'string',
-      //   width: '5%',
-      //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      // },
-      Name: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
-        type: 'string',
-        width: '20%',
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Groups: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.groups'), 'head-title'),
-        type: 'html',
-        width: '20%',
-        valuePrepareFunction: (cell: any) => {
-          return cell && cell.map(group => `<div class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> ${group.Name}</div></div>`).join('');
-        },
-        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      // Phone: {
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.phone'), 'head-title'),
-      //   type: 'string',
-      //   width: '20%',
-      //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      // },
-      Email: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.email'), 'head-title'),
-        type: 'string',
-        width: '20%',
-      },
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '10%',
-      },
-      Created: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
-        type: 'custom',
-        width: '10%',
-        filter: {
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        AvatarUrl: {
+          title: 'Hình',
           type: 'custom',
-          component: SmartTableDateTimeRangeFilterComponent,
-        },
-        renderComponent: SmartTableDateTimeComponent,
-        onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          // instance.format$.next('medium');
-        },
-      },
-      // Amount: {
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
-      //   type: 'custom',
-      //   class: 'align-right',
-      //   width: '10%',
-      //   position: 'right',
-      //   renderComponent: SmartTableCurrencyComponent,
-      //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-      //     // instance.format$.next('medium');
-      //     instance.style = 'text-align: right';
-      //   },
-      // },
-      Merge: {
-        title: this.commonService.translateText('Common.preview'),
-        type: 'custom',
-        width: '5%',
-        class: 'align-right',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'checkmark-circle';
-          instance.display = true;
-          instance.status = 'warning';
-          instance.style = 'text-align: right';
-          instance.class = 'align-right';
-          instance.title = this.commonService.translateText('Common.approve');
-          instance.valueChange.subscribe(value => {
-            // instance.icon = value ? 'unlock' : 'lock';
-            // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-            // instance.disabled = value !== 'REQUEST';
-          });
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-            this.commonService.openDialog(ShowcaseDialogComponent, {
-              context: {
-                title: this.commonService.translateText('Common.confirm'),
-                content: 'Contact.mergeConfirm',
-                actions: [
-                  {
-                    label: this.commonService.translateText('Common.close'),
-                    status: 'primary',
-                  },
-                  {
-                    label: this.commonService.translateText('Common.merge'),
-                    status: 'danger',
-                    action: () => {
-                      this.apiService.putPromise<ContactModel[]>('/contact/contacts', { id: [rowData.Code], mergeContact: true, fromContacts: this.selectedItems.map(item => item.Code).join(',') }, [rowData]).then(rs => {
-                        // this.reset();
-                        this.unselectAll();
-                        this.refresh();
-                      });
-                    }
-                  },
-                ],
-              },
+          width: '5%',
+          valuePrepareFunction: (value: string, contact: ContactModel) => {
+            return contact.AvatarUrl;
+          },
+          renderComponent: SmartTableThumbnailComponent,
+          onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+            instance.valueChange.subscribe(value => {
             });
-
-            // this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
-            //   this.preview(rs[0]);
-            // });
-
-
-          });
+            instance.click.subscribe(async (row: ContactModel) => {
+              // if (this.files.length === 0) {
+              //   this.uploadForProduct = row;
+              //   this.uploadBtn.nativeElement.click();
+              // } else {
+              //   this.commonService.toastService.show(
+              //     this.commonService.translateText('Common.uploadInProcess'),
+              //     this.commonService.translateText('Common.upload'),
+              //     {
+              //       status: 'warning',
+              //     });
+              // }
+            });
+            instance.title = this.commonService.translateText('click to change main contact avatar');
+          },
         },
-      }
-    },
-  });
+        // No: {
+        //   title: 'No.',
+        //   type: 'string',
+        //   width: '5%',
+        //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        // },
+        Name: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          type: 'string',
+          width: '20%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Groups: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.groups'), 'head-title'),
+          type: 'html',
+          width: '20%',
+          valuePrepareFunction: (cell: any) => {
+            return cell && cell.map(group => `<div class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> ${group.Name}</div></div>`).join('');
+          },
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        // Phone: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.phone'), 'head-title'),
+        //   type: 'string',
+        //   width: '20%',
+        //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        // },
+        Email: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.email'), 'head-title'),
+          type: 'string',
+          width: '20%',
+        },
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '10%',
+        },
+        Created: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+          type: 'custom',
+          width: '10%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateTimeRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        // Amount: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+        //   type: 'custom',
+        //   class: 'align-right',
+        //   width: '10%',
+        //   position: 'right',
+        //   renderComponent: SmartTableCurrencyComponent,
+        //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+        //     // instance.format$.next('medium');
+        //     instance.style = 'text-align: right';
+        //   },
+        // },
+        Merge: {
+          title: this.commonService.translateText('Common.preview'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'checkmark-circle';
+            instance.display = true;
+            instance.status = 'warning';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.approve');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: this.commonService.translateText('Common.confirm'),
+                  content: 'Contact.mergeConfirm',
+                  actions: [
+                    {
+                      label: this.commonService.translateText('Common.close'),
+                      status: 'primary',
+                    },
+                    {
+                      label: this.commonService.translateText('Common.merge'),
+                      status: 'danger',
+                      action: () => {
+                        this.apiService.putPromise<ContactModel[]>('/contact/contacts', { id: [rowData.Code], mergeContact: true, fromContacts: this.selectedItems.map(item => item.Code).join(',') }, [rowData]).then(rs => {
+                          // this.reset();
+                          this.unselectAll();
+                          this.refresh();
+                        });
+                      }
+                    },
+                  ],
+                },
+              });
+
+              // this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
+              //   this.preview(rs[0]);
+              // });
+
+
+            });
+          },
+        }
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();
@@ -323,7 +326,7 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
     if (!deletedItems || deletedItems.length === 0) {
       deletedItems = await this.convertIdsToItems(ids, this.prepareRemoveSource);
     }
-    this.apiService.delete(this.apiPath, {id: ids, permanent: (deletedItems[0] && deletedItems[0].IsDeleted)}, (resp) => {
+    this.apiService.delete(this.apiPath, { id: ids, permanent: (deletedItems[0] && deletedItems[0].IsDeleted) }, (resp) => {
       // this.removeGridItems(deletedItems);
       this.refresh();
       if (success) success(resp);

@@ -23,21 +23,21 @@
     <nb-tabset>
       <nb-tab tabTitle="Inbound routes">
         <div class="ng2-smart-table-wrap">
-          <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="inboundSource" (delete)="delete($event)" (edit)="onEditAction($event)"
+          <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="inboundSource" (delete)="delete($event)" (edit)="onEditAction($event)"
             (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
           </ng2-smart-table>
         </div>
       </nb-tab>
       <nb-tab tabTitle="Outbout rotues">
         <div class="ng2-smart-table-wrap">
-          <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="outboundSource" (delete)="delete($event)" (edit)="onEditAction($event)"
+          <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="outboundSource" (delete)="delete($event)" (edit)="onEditAction($event)"
             (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
           </ng2-smart-table>
         </div>
       </nb-tab>
       <nb-tab tabTitle="Dialplans">
         <div class="ng2-smart-table-wrap">
-          <ng2-smart-table [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
+          <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
             (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
           </ng2-smart-table>
         </div>

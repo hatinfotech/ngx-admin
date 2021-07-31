@@ -11,6 +11,7 @@ import { ZaloOfficialAccountFormComponent } from '../zalo-official-account-form/
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-zalo-official-account-list',
@@ -74,113 +75,86 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    columns: {
-      Code: {
-        title: this.commonService.translateText('Common.code'),
-        type: 'string',
-        width: '10%',
-      },
-      Name: {
-        title: this.commonService.translateText('Common.name'),
-        type: 'string',
-        width: '15%',
-        // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Description: {
-        title: this.commonService.translateText('Common.description'),
-        type: 'string',
-        width: '15%',
-      },
-      AppId: {
-        title: this.commonService.translateText('Common.appId'),
-        type: 'string',
-        width: '15%',
-      },
-      WebhookUserTokenExpired: {
-        title: this.commonService.translateText('Common.expired'),
-        type: 'datetime',
-        width: '15%',
-      },
-      Type: {
-        title: this.commonService.translateText('Common.type'),
-        type: 'string',
-        width: '10%',
-        // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-      },
-      Forward: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.Forward'), 'head-title'),
-        type: 'string',
-        width: '15%',
-      },
-      IsEnabled: {
-        title: this.commonService.translateText('Common.enable'),
-        type: 'boolean',
-        width: '5%',
-      },
-      IsDefault: {
-        title: this.commonService.translateText('Common.default'),
-        type: 'boolean',
-        width: '5%',
-      },
-      RefreshToken: {
-        title: this.commonService.translateText('Common.refreshToken'),
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'refresh';
-          instance.display = true;
-          instance.status = 'success';
-          instance.title = this.commonService.translateText('Common.refreshToken');
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (officialAccount: ZaloOaOfficialAccountModel) => {
-            // const token = await this.apiService.getPromise<ZaloOaOfficialAccountModel[]>('/zalo-oa/official-accounts', { 'generateWebhookToken': true, id: [officialAccount.Code] }).then(token => token[0]?.WebhookToken);
-            // if (!token) {
-            //   this.toastService.show('Cảnh báo', 'Không lấy đượng token !', { status: 'warning' });
-            //   return;
-            // }
-            const token = this.apiService.token?.access_token;
-            this.commonService.openDialog(ShowcaseDialogComponent, {
-              context: {
-                title: this.commonService.translateText('ZaloOa.OfficialAccount.title', { action: this.commonService.translateText('Common.confirm'), definition: '' }),
-                content: this.commonService.translateText('ZaloOa.OfficialAccount.confirmRefreshTokenMessage') + `<br><img style="width: 100%" src="assets/images/zalo-refresh-token.png">`,
-                actions: [
-                  {
-                    label: this.commonService.translateText('Common.refreshToken'),
-                    status: 'success',
-                    action: () => {
-                      window.open(`https://oauth.zaloapp.com/v3/oa/permission?app_id=${officialAccount.AppId}&redirect_uri=${encodeURIComponent(officialAccount.CallbackUrl + '/' + officialAccount?.AppId + '?token=' + token)}`, '_blank');
-                    },
-                  },
-                  {
-                    label: this.commonService.translateText('Common.close'),
-                    status: 'danger',
-                  },
-                ],
-              },
-            });
-          });
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      columns: {
+        Code: {
+          title: this.commonService.translateText('Common.code'),
+          type: 'string',
+          width: '10%',
         },
-      },
-      WebhookToken: {
-        title: this.commonService.translateText('ZaloOa.Webhook.token'),
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'unlock';
-          instance.display = true;
-          instance.status = 'danger';
-          instance.title = this.commonService.translateText('ZaloOa.Webhook.token');
-          instance.click.pipe(takeUntil(this.destroy$)).subscribe((officialAccount: ZaloOaOfficialAccountModel) => {
-            this.apiService.getPromise<ZaloOaOfficialAccountModel[]>('/zalo-oa/official-accounts', { 'generateWebhookToken': true, id: [officialAccount.Code] }).then(token => {
+        Name: {
+          title: this.commonService.translateText('Common.name'),
+          type: 'string',
+          width: '15%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Description: {
+          title: this.commonService.translateText('Common.description'),
+          type: 'string',
+          width: '15%',
+        },
+        AppId: {
+          title: this.commonService.translateText('Common.appId'),
+          type: 'string',
+          width: '15%',
+        },
+        WebhookUserTokenExpired: {
+          title: this.commonService.translateText('Common.expired'),
+          type: 'datetime',
+          width: '15%',
+        },
+        Type: {
+          title: this.commonService.translateText('Common.type'),
+          type: 'string',
+          width: '10%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Forward: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Forward'), 'head-title'),
+          type: 'string',
+          width: '15%',
+        },
+        IsEnabled: {
+          title: this.commonService.translateText('Common.enable'),
+          type: 'boolean',
+          width: '5%',
+        },
+        IsDefault: {
+          title: this.commonService.translateText('Common.default'),
+          type: 'boolean',
+          width: '5%',
+        },
+        RefreshToken: {
+          title: this.commonService.translateText('Common.refreshToken'),
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'refresh';
+            instance.display = true;
+            instance.status = 'success';
+            instance.title = this.commonService.translateText('Common.refreshToken');
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (officialAccount: ZaloOaOfficialAccountModel) => {
+              // const token = await this.apiService.getPromise<ZaloOaOfficialAccountModel[]>('/zalo-oa/official-accounts', { 'generateWebhookToken': true, id: [officialAccount.Code] }).then(token => token[0]?.WebhookToken);
+              // if (!token) {
+              //   this.toastService.show('Cảnh báo', 'Không lấy đượng token !', { status: 'warning' });
+              //   return;
+              // }
+              const token = this.apiService.token?.access_token;
               this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
-                  title: this.commonService.translateText('ZaloOa.Webhook.token'),
-                  content: token[0].WebhookToken,
+                  title: this.commonService.translateText('ZaloOa.OfficialAccount.title', { action: this.commonService.translateText('Common.confirm'), definition: '' }),
+                  content: this.commonService.translateText('ZaloOa.OfficialAccount.confirmRefreshTokenMessage') + `<br><img style="width: 100%" src="assets/images/zalo-refresh-token.png">`,
                   actions: [
+                    {
+                      label: this.commonService.translateText('Common.refreshToken'),
+                      status: 'success',
+                      action: () => {
+                        window.open(`https://oauth.zaloapp.com/v3/oa/permission?app_id=${officialAccount.AppId}&redirect_uri=${encodeURIComponent(officialAccount.CallbackUrl + '/' + officialAccount?.AppId + '?token=' + token)}`, '_blank');
+                      },
+                    },
                     {
                       label: this.commonService.translateText('Common.close'),
                       status: 'danger',
@@ -189,11 +163,40 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
                 },
               });
             });
-          });
+          },
+        },
+        WebhookToken: {
+          title: this.commonService.translateText('ZaloOa.Webhook.token'),
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'unlock';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.title = this.commonService.translateText('ZaloOa.Webhook.token');
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((officialAccount: ZaloOaOfficialAccountModel) => {
+              this.apiService.getPromise<ZaloOaOfficialAccountModel[]>('/zalo-oa/official-accounts', { 'generateWebhookToken': true, id: [officialAccount.Code] }).then(token => {
+                this.commonService.openDialog(ShowcaseDialogComponent, {
+                  context: {
+                    title: this.commonService.translateText('ZaloOa.Webhook.token'),
+                    content: token[0].WebhookToken,
+                    actions: [
+                      {
+                        label: this.commonService.translateText('Common.close'),
+                        status: 'danger',
+                      },
+                    ],
+                  },
+                });
+              });
+            });
+          },
         },
       },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

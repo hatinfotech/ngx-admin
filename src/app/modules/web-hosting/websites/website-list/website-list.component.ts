@@ -6,6 +6,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { WhWebsiteModel } from '../../../../models/wh-website.model';
 import { WebHostingService } from '../../web-hosting-service';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-website-list',
@@ -19,39 +20,41 @@ export class WebsiteListComponent extends WebHostingBaseListComponent<WhWebsiteM
   apiPath = '/web-hosting/websites';
   idKey = 'domain_id';
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      domain_id: {
-        title: 'Domain ID',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      domain: {
-        title: 'Domain name',
-        type: 'string',
-        width: '40%',
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        domain_id: {
+          title: 'Domain ID',
+          type: 'string',
+          width: '10%',
+        },
+        domain: {
+          title: 'Domain name',
+          type: 'string',
+          width: '40%',
+        },
+        hosting: {
+          title: 'Hosting',
+          type: 'string',
+          width: '30%',
+        },
+        ip_address: {
+          title: 'IP Address',
+          type: 'string',
+          width: '20%',
+        },
       },
-      hosting: {
-        title: 'Hosting',
-        type: 'string',
-        width: '30%',
-      },
-      ip_address: {
-        title: 'IP Address',
-        type: 'string',
-        width: '20%',
-      },
-    },
-  });
+    });
+  }
 
   constructor(
     public apiService: ApiService,

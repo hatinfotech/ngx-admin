@@ -7,6 +7,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { SystemParameterFormComponent } from '../system-parameter-form/system-parameter-form.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 
 @Component({
   selector: 'ngx-system-parameter-list',
@@ -62,88 +63,90 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Name: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
-        type: 'string',
-        width: '30%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Type: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.type'), 'head-title'),
-        type: 'string',
-        width: '10%',
-      },
-      Value: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.value'), 'head-title'),
-        type: 'string',
-        width: '30%',
-      },
-      Module: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.module'), 'head-title'),
-        type: 'string',
-        width: '20%',
-      },
-      IsApplied: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.enable'), 'head-title'),
-        type: 'boolean',
-        editable: true,
-        width: '10%',
-        onChange: (value, rowData: SystemParameterModel) => {
-          // rowData.AutoUpdate = value;
-          this.apiService.putPromise<SystemParameterModel[]>('/system/parameters', {}, [{ Name: rowData.Name, IsApplied: value }]).then(rs => {
-            console.info(rs);
-          });
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Name: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
+          type: 'string',
+          width: '30%',
         },
+        Type: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.type'), 'head-title'),
+          type: 'string',
+          width: '10%',
+        },
+        Value: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.value'), 'head-title'),
+          type: 'string',
+          width: '30%',
+        },
+        Module: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.module'), 'head-title'),
+          type: 'string',
+          width: '20%',
+        },
+        IsApplied: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.enable'), 'head-title'),
+          type: 'boolean',
+          editable: true,
+          width: '10%',
+          onChange: (value, rowData: SystemParameterModel) => {
+            // rowData.AutoUpdate = value;
+            this.apiService.putPromise<SystemParameterModel[]>('/system/parameters', {}, [{ Name: rowData.Name, IsApplied: value }]).then(rs => {
+              console.info(rs);
+            });
+          },
+        },
+        //   Copy: {
+        //     title: 'Copy',
+        //     type: 'custom',
+        //     width: '10%',
+        //     renderComponent: SmartTableButtonComponent,
+        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //       instance.iconPack = 'eva';
+        //       instance.icon = 'copy';
+        //       instance.label = 'Copy nội dung sang site khác';
+        //       instance.display = true;
+        //       instance.status = 'success';
+        //       instance.valueChange.subscribe(value => {
+        //         // if (value) {
+        //         //   instance.disabled = false;
+        //         // } else {
+        //         //   instance.disabled = true;
+        //         // }
+        //       });
+        //       instance.click.subscribe(async (row: ParameterModel) => {
+
+        //         this.commonService.openDialog(SyncFormComponent, {
+        //           context: {
+        //             inputMode: 'dialog',
+        //             inputId: [row.Code],
+        //             onDialogSave: (newData: ParameterModel[]) => {
+        //               // if (onDialogSave) onDialogSave(row);
+        //             },
+        //             onDialogClose: () => {
+        //               // if (onDialogClose) onDialogClose();
+        //               this.refresh();
+        //             },
+        //           },
+        //         });
+
+        //       });
+        //     },
+        //   },
       },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: ParameterModel) => {
-
-      //         this.commonService.openDialog(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: ParameterModel[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
-
-      //       });
-      //     },
-      //   },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

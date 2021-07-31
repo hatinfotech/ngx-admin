@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { HelpdeskRouteModel } from '../../../../models/helpdesk.model';
 import { HelpdeskRouteFormComponent } from '../helpdesk-route-form/helpdesk-route-form.component';
 import { ApiService } from '../../../../services/api.service';
@@ -35,86 +35,88 @@ export class HelpdeskRouteListComponent extends DataManagerListComponent<Helpdes
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Type: {
-        title: 'Type',
-        type: 'string',
-        width: '10%',
-      },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '30%',
-      },
-      Description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '30%',
-      },
-      MaxUse: {
-        title: 'Max Use',
-        type: 'string',
-        width: '10%',
-      },
-      State: {
-        title: 'Trạng thái',
-        type: 'string',
-        width: '10%',
-      },
-      //   Copy: {
-      //     title: 'Copy',
-      //     type: 'custom',
-      //     width: '10%',
-      //     renderComponent: SmartTableButtonComponent,
-      //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-      //       instance.iconPack = 'eva';
-      //       instance.icon = 'copy';
-      //       instance.label = 'Copy nội dung sang site khác';
-      //       instance.display = true;
-      //       instance.status = 'success';
-      //       instance.valueChange.subscribe(value => {
-      //         // if (value) {
-      //         //   instance.disabled = false;
-      //         // } else {
-      //         //   instance.disabled = true;
-      //         // }
-      //       });
-      //       instance.click.subscribe(async (row: HelpdeskRouteModel) => {
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '10%',
+        },
+        Type: {
+          title: 'Type',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '30%',
+        },
+        Description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '30%',
+        },
+        MaxUse: {
+          title: 'Max Use',
+          type: 'string',
+          width: '10%',
+        },
+        State: {
+          title: 'Trạng thái',
+          type: 'string',
+          width: '10%',
+        },
+        //   Copy: {
+        //     title: 'Copy',
+        //     type: 'custom',
+        //     width: '10%',
+        //     renderComponent: SmartTableButtonComponent,
+        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //       instance.iconPack = 'eva';
+        //       instance.icon = 'copy';
+        //       instance.label = 'Copy nội dung sang site khác';
+        //       instance.display = true;
+        //       instance.status = 'success';
+        //       instance.valueChange.subscribe(value => {
+        //         // if (value) {
+        //         //   instance.disabled = false;
+        //         // } else {
+        //         //   instance.disabled = true;
+        //         // }
+        //       });
+        //       instance.click.subscribe(async (row: HelpdeskRouteModel) => {
 
-      //         this.commonService.openDialog(SyncFormComponent, {
-      //           context: {
-      //             inputMode: 'dialog',
-      //             inputId: [row.Code],
-      //             onDialogSave: (newData: HelpdeskRouteModel[]) => {
-      //               // if (onDialogSave) onDialogSave(row);
-      //             },
-      //             onDialogClose: () => {
-      //               // if (onDialogClose) onDialogClose();
-      //               this.refresh();
-      //             },
-      //           },
-      //         });
+        //         this.commonService.openDialog(SyncFormComponent, {
+        //           context: {
+        //             inputMode: 'dialog',
+        //             inputId: [row.Code],
+        //             onDialogSave: (newData: HelpdeskRouteModel[]) => {
+        //               // if (onDialogSave) onDialogSave(row);
+        //             },
+        //             onDialogClose: () => {
+        //               // if (onDialogClose) onDialogClose();
+        //               this.refresh();
+        //             },
+        //           },
+        //         });
 
-      //       });
-      //     },
-      //   },
-    },
-  });
+        //       });
+        //     },
+        //   },
+      },
+    });
+  }
 
   ngOnInit() {
     this.restrict();

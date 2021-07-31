@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -41,34 +41,36 @@ export class ProductGroupListComponent extends DataManagerListComponent<ProductG
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-        type: 'string',
-        width: '20%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
-        type: 'string',
-        width: '30%',
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '20%',
+        },
+        Name: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
+          type: 'string',
+          width: '30%',
+        },
+        Description: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          type: 'string',
+          width: '50%',
+        },
       },
-      Description: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
-        type: 'string',
-        width: '50%',
-      },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

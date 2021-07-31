@@ -147,7 +147,7 @@ import { DeploymentVoucherPrintComponent } from './modules/deployment/deployment
 // import { DeploymentComponent } from './modules/deployment/deployment.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
-registerLocaleData(localeVi, 'vi', localeViExtra);
+registerLocaleData(localeVi, 'vi-VN', localeViExtra);
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -283,7 +283,7 @@ export class DynamicLocaleId extends String {
       animation: 200,
     }),
     NgxMaskModule.forRoot(options),
-    TranslateModule,
+    // TranslateModule,
     // AdminProductModule,
     NgxUploaderModule,
     NbSpinnerModule,

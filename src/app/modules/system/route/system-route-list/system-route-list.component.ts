@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { SystemRouteModel } from '../../../../models/system.model';
 import { SystemRouteFormComponent } from '../system-route-form/system-route-form.component';
 import { ApiService } from '../../../../services/api.service';
@@ -37,82 +37,84 @@ export class SystemRouteListComponent extends ServerDataManagerListComponent<Sys
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Code: {
-        title: 'Code',
-        type: 'string',
-        width: '10%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '30%',
-      },
-      Description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '30%',
-      },
-      Priority: {
-        title: 'Ưu tiên',
-        type: 'string',
-        width: '10%',
-      },
-      Enable: {
-        title: 'Kích hoạt',
-        type: 'boolean',
-        width: '10%',
-      },
-      Copy: {
-        title: 'Copy',
-        type: 'custom',
-        width: '10%',
-        renderComponent: SmartTableButtonComponent,
-        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-          instance.iconPack = 'eva';
-          instance.icon = 'copy';
-          instance.label = this.commonService.translateText('Common.copy');
-          instance.display = true;
-          instance.status = 'success';
-          instance.valueChange.subscribe(value => {
-            // if (value) {
-            //   instance.disabled = false;
-            // } else {
-            //   instance.disabled = true;
-            // }
-          });
-          instance.click.subscribe(async (row: SystemRouteModel) => {
-
-            this.commonService.openDialog(SystemRouteFormComponent, {
-              context: {
-                inputMode: 'dialog',
-                inputId: [row.Code],
-                isDuplicate: true,
-                onDialogSave: (newData: SystemRouteModel[]) => {
-                  // if (onDialogSave) onDialogSave(row);
-                },
-                onDialogClose: () => {
-                  // if (onDialogClose) onDialogClose();
-                  this.refresh();
-                },
-              },
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Code: {
+          title: 'Code',
+          type: 'string',
+          width: '10%',
+        },
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '30%',
+        },
+        Description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '30%',
+        },
+        Priority: {
+          title: 'Ưu tiên',
+          type: 'string',
+          width: '10%',
+        },
+        Enable: {
+          title: 'Kích hoạt',
+          type: 'boolean',
+          width: '10%',
+        },
+        Copy: {
+          title: 'Copy',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'copy';
+            instance.label = this.commonService.translateText('Common.copy');
+            instance.display = true;
+            instance.status = 'success';
+            instance.valueChange.subscribe(value => {
+              // if (value) {
+              //   instance.disabled = false;
+              // } else {
+              //   instance.disabled = true;
+              // }
             });
+            instance.click.subscribe(async (row: SystemRouteModel) => {
 
-          });
+              this.commonService.openDialog(SystemRouteFormComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [row.Code],
+                  isDuplicate: true,
+                  onDialogSave: (newData: SystemRouteModel[]) => {
+                    // if (onDialogSave) onDialogSave(row);
+                  },
+                  onDialogClose: () => {
+                    // if (onDialogClose) onDialogClose();
+                    this.refresh();
+                  },
+                },
+              });
+
+            });
+          },
         },
       },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();

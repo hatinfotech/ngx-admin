@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { SystemParamModel } from '../../../../models/system.model';
 import { SystemParamFormComponent } from '../system-param-form/system-param-form.component';
 import { ApiService } from '../../../../services/api.service';
@@ -35,29 +35,31 @@ export class SystemParamListComponent extends DataManagerListComponent<SystemPar
   editing = {};
   rows = [];
 
-  settings = this.configSetting({
-    mode: 'external',
-    selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
-    add: this.configAddButton(),
-    edit: this.configEditButton(),
-    delete: this.configDeleteButton(),
-    pager: this.configPaging(),
-    columns: {
-      Name: {
-        title: 'Tên',
-        type: 'string',
-        width: '40%',
+  loadListSetting(): SmartTableSetting {
+    return this.configSetting({
+      mode: 'external',
+      selectMode: 'multi',
+      actions: {
+        position: 'right',
       },
-      Description: {
-        title: 'Mô tả',
-        type: 'string',
-        width: '50%',
+      add: this.configAddButton(),
+      edit: this.configEditButton(),
+      delete: this.configDeleteButton(),
+      pager: this.configPaging(),
+      columns: {
+        Name: {
+          title: 'Tên',
+          type: 'string',
+          width: '40%',
+        },
+        Description: {
+          title: 'Mô tả',
+          type: 'string',
+          width: '50%',
+        },
       },
-    },
-  });
+    });
+  }
 
   ngOnInit() {
     this.restrict();
