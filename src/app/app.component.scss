@@ -118,6 +118,12 @@ body .logo-container {
 .tag .close-btn {
   cursor: pointer;
 }
+a.tag {
+  cursor: pointer;
+  &:hover {
+    background-color: #807f7f85 !important;
+  }
+}
 
 hr {
   margin-top: 0;

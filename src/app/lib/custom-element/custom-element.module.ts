@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
-import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent } from './smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
@@ -56,6 +56,7 @@ import { PrintHeaderComponent } from './print/print-header/print-header.componen
     FileInputComponent,
     FilesInputComponent,
     PrintHeaderComponent,
+    SmartTableTagsComponent,
   ],
   imports: [
     CommonModule,
@@ -95,6 +96,7 @@ import { PrintHeaderComponent } from './print/print-header/print-header.componen
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,
     SmartTableCurrencyEditableComponent,
+    SmartTableTagsComponent,
     CardHeaderComponent, CardHeaderCustomComponent, SmartTableSelectFilterComponent,
     IconViewComponent, DatetimPickerComponent, TextNTagsComponent, FormGroupComponent,
     SmartTableNumberEditableComponent,

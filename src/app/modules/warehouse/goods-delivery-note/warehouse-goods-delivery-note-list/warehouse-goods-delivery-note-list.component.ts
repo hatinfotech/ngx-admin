@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { NbDialogService, NbToastrService, NbDialogRef } from "@nebular/theme";
 import { takeUntil } from "rxjs/operators";
 import { AppModule } from "../../../../app.module";
-import { SmartTableDateTimeComponent, SmartTableButtonComponent } from "../../../../lib/custom-element/smart-table/smart-table.component";
+import { SmartTableDateTimeComponent, SmartTableButtonComponent, SmartTableTagsComponent } from "../../../../lib/custom-element/smart-table/smart-table.component";
 import { ServerDataManagerListComponent } from "../../../../lib/data-manager/server-data-manger-list.component";
 import { ResourcePermissionEditComponent } from "../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component";
 import { WarehouseGoodsDeliveryNoteModel } from "../../../../models/warehouse.model";
@@ -82,12 +82,12 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
       ObjectName: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.object'), 'head-title'),
         type: 'string',
-        width: '20%',
+        width: '15%',
       },
       Title: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
-        width: '30%',
+        width: '20%',
       },
       DateOfCreated: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
@@ -118,6 +118,15 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
         valuePrepareFunction: (cell: string, row?: any) => {
           return this.commonService.getObjectText(cell);
         },
+      },
+      RelativeVouchers: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        type: 'custom',
+        renderComponent: SmartTableTagsComponent,
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        },
+        width: '15%',
       },
       Copy: {
         title: 'Copy',
@@ -276,6 +285,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCreator'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';
       return params;

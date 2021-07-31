@@ -1,3 +1,4 @@
+import { Type } from '@angular/core';
 // import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
@@ -7,7 +8,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -92,7 +93,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
       Title: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
-        width: '50%',
+        width: '30%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       // RelationVoucher: {
@@ -142,6 +143,15 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
       //     instance.style = 'text-align: right';
       //   },
       // },
+      RelativeVouchers: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        type: 'custom',
+        renderComponent: SmartTableTagsComponent,
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        },
+        width: '20%',
+      },
       Copy: {
         title: 'Copy',
         type: 'custom',
@@ -303,6 +313,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCreator'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';
       return params;

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../../app.module';
-import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -93,11 +93,12 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
       },
       RelativeVouchers: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        type: 'html',
+        type: 'custom',
+        renderComponent: SmartTableTagsComponent,
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        },
         width: '20%',
-        valuePrepareFunction: (cell: any, row?: any) => {
-          return cell?.map(m => `<div class="tag" title="${m?.text}  "><nb-icon icon="pricetags-outline" pack="ion"></nb-icon> ${m?.id}</div></div>`).join('');
-        }
       },
       Code: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),

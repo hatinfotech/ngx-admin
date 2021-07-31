@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
@@ -232,24 +233,40 @@ export class SmartTableDateTimeComponent extends SmartTableBaseComponent impleme
 })
 export class SmartTableCurrencyComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
-  // renderValue: number = 0;
-  // disabled: boolean = false;
-  // format$ = new BehaviorSubject('short');
-
   @Input() value: number;
   @Input() rowData: any;
 
-  // @Output() valueChange: EventEmitter<any> = new EventEmitter();
-  // curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
+  ngOnInit() {
+    // this.renderValue = this.value;
+  }
 
-  // constructor(
-  //   public commonService: CommonService,
-  // ) {
-  //   super();
-  // }
+  onChange(value: any) {
+    this.valueChange.emit(value);
+    this.value = value;
+  }
+
+}
+
+
+@Component({
+  template: `<div [style]="style" [class]="class">
+    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag" title="{{tag.text}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.id}}</a>
+  </div>`,
+})
+export class SmartTableTagsComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
+
+  @Input() value: {id: string, text: string, type?: string, icon?: string, iconPack?: string, status?: string} | any;
+  @Input() rowData: any;
+
+  @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
 
   ngOnInit() {
     // this.renderValue = this.value;
+
+  }
+
+  protected onClick(tag: { id: string, text: string, type: string }) {
+    this.click.emit(tag);
   }
 
   onChange(value: any) {

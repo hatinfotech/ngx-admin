@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
-import { SmartTableDateTimeComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -93,7 +93,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
       Title: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
-        width: '50%',
+        width: '40%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       // RelationVoucher: {
@@ -104,7 +104,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
       Code: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
       Creator: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
@@ -121,7 +121,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
       Created: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
         type: 'custom',
-        width: '10%',
+        width: '8%',
         filter: {
           type: 'custom',
           component: SmartTableDateTimeRangeFilterComponent,
@@ -143,6 +143,15 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
       //     instance.style = 'text-align: right';
       //   },
       // },
+      RelativeVouchers: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        type: 'custom',
+        renderComponent: SmartTableTagsComponent,
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        },
+        width: '15%',
+      },
       Task: {
         title: 'Task',
         type: 'custom',
@@ -375,6 +384,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCreator'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';
       return params;

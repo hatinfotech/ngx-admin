@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { PurchaseSimpleVoucherFormComponent } from '../purchase-simple-voucher-form/purchase-simple-voucher-form.component';
 import { PurchaseVoucherFormComponent } from '../purchase-voucher-form/purchase-voucher-form.component';
 import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchase-voucher-print.component';
@@ -71,17 +71,17 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
       Code: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
       ObjectName: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
         type: 'string',
-        width: '20%',
+        width: '15%',
       },
       Title: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
-        width: '30%',
+        width: '20%',
       },
       DateOfPurchase: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfPurchase'), 'head-title'),
@@ -103,6 +103,15 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
         valuePrepareFunction: (cell: string, row?: any) => {
           return this.commonService.getObjectText(cell);
         },
+      },
+      RelativeVouchers: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        type: 'custom',
+        renderComponent: SmartTableTagsComponent,
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        },
+        width: '20%',
       },
       Copy: {
         title: 'Copy',
@@ -255,6 +264,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCreator'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';
       return params;

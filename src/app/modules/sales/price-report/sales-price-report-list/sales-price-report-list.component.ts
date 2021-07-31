@@ -10,7 +10,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { takeUntil } from 'rxjs/operators';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
@@ -97,7 +97,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
       Title: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
         type: 'string',
-        width: '50%',
+        width: '20%',
         filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
       },
       // RelationVoucher: {
@@ -147,6 +147,15 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
       //     instance.style = 'text-align: right';
       //   },
       // },
+      RelativeVouchers: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        type: 'custom',
+        renderComponent: SmartTableTagsComponent,
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        },
+        width: '20%',
+      },
       Task: {
         title: 'Task',
         type: 'custom',
@@ -387,6 +396,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCreator'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';
       return params;

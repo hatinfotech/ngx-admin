@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -78,12 +78,12 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
       Code: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
       ObjectName: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
         type: 'string',
-        width: '20%',
+        width: '15%',
       },
       Title: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -93,7 +93,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
       DateOfPurchase: {
         title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfPurchase'), 'head-title'),
         type: 'custom',
-        width: '15%',
+        width: '8%',
         renderComponent: SmartTableDateTimeComponent,
         onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
           // instance.format$.next('medium');
@@ -110,6 +110,15 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
         valuePrepareFunction: (cell: string, row?: any) => {
           return this.commonService.getObjectText(cell);
         },
+      },
+      RelativeVouchers: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        type: 'custom',
+        renderComponent: SmartTableTagsComponent,
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        },
+        width: '15%',
       },
       Copy: {
         title: 'Copy',
@@ -268,6 +277,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCreator'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';
       return params;
