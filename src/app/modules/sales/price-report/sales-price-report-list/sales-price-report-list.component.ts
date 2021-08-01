@@ -76,7 +76,9 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     return this.configSetting({
       mode: 'external',
       selectMode: 'multi',
-      actions: false,
+      actions: this.isChoosedMode ? false : {
+        position: 'right',
+      },
       add: this.configAddButton(),
       edit: this.configEditButton(),
       delete: this.configDeleteButton(),

@@ -48,6 +48,14 @@ import { CashReceiptVoucherFormComponent } from './modules/accounting/cash/recei
 import { CashReceiptVoucherListComponent } from './modules/accounting/cash/receipt/cash-receipt-voucher-list/cash-receipt-voucher-list.component';
 import { DeploymentVoucherListComponent } from './modules/deployment/deployment-voucher/deployment-voucher-list/deployment-voucher-list.component';
 import { DeploymentVoucherFormComponent } from './modules/deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
+import { ProductCategoryFormComponent } from './modules/admin-product/category/product-category-form/product-category-form.component';
+import { ProductCategoryListComponent } from './modules/admin-product/category/product-category-list/product-category-list.component';
+import { ProductGroupFormComponent } from './modules/admin-product/product-group/product-group-form/product-group-form.component';
+import { ProductGroupListComponent } from './modules/admin-product/product-group/product-group-list/product-group-list.component';
+import { ProductFormComponent } from './modules/admin-product/product/product-form/product-form.component';
+import { ProductListComponent } from './modules/admin-product/product/product-list/product-list.component';
+import { ProductUnitFormComponent } from './modules/admin-product/unit/product-unit-form/product-unit-form.component';
+import { ProductUnitListComponent } from './modules/admin-product/unit/product-unit-list/product-unit-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -552,6 +560,85 @@ const routes: Routes = [
   },
 
 
+  // Admin Product routes
+  {
+    path: 'admin-product/product/list',
+    canActivate: [AuthGuardService],
+    component: ProductListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'admin-product/product/form',
+    canActivate: [AuthGuardService],
+    component: ProductFormComponent,
+  },
+  {
+    path: 'admin-product/product/form/:id',
+    canActivate: [AuthGuardService],
+    component: ProductFormComponent,
+  },
+  {
+    path: 'admin-product/category/list',
+    canActivate: [AuthGuardService],
+    component: ProductCategoryListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'admin-product/category/form',
+    canActivate: [AuthGuardService],
+    component: ProductCategoryFormComponent,
+  },
+  {
+    path: 'admin-product/category/form/:id',
+    canActivate: [AuthGuardService],
+    component: ProductCategoryFormComponent,
+  },
+  {
+    path: 'admin-product/unit/list',
+    canActivate: [AuthGuardService],
+    component: ProductUnitListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'admin-product/unit/form',
+    canActivate: [AuthGuardService],
+    component: ProductUnitFormComponent,
+  },
+  {
+    path: 'admin-product/unit/form/:id',
+    canActivate: [AuthGuardService],
+    component: ProductUnitFormComponent,
+  },
+  // Product group
+
+  {
+    path: 'admin-product/group/list',
+    canActivate: [AuthGuardService],
+    component: ProductGroupListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'admin-product/group/form',
+    canActivate: [AuthGuardService],
+    component: ProductGroupFormComponent,
+  },
+  {
+    path: 'admin-product/group/form/:id',
+    canActivate: [AuthGuardService],
+    component: ProductGroupFormComponent,
+  },
+
+
+  
+
 
 
 
@@ -746,15 +833,15 @@ const routes: Routes = [
     loadChildren: () => import('./modules/promotion/promotion.module')
       .then(m => m.PromotionModule),
   },
-  {
-    path: 'admin-product',
-    resolve: {
-      configuration: RoutingResolve,
-    },
-    // canActivate: [AuthGuardService],
-    loadChildren: () => import('./modules/admin-product/admin-product.module')
-      .then(m => m.AdminProductModule),
-  },
+  // {
+  //   path: 'admin-product',
+  //   resolve: {
+  //     configuration: RoutingResolve,
+  //   },
+  //   // canActivate: [AuthGuardService],
+  //   loadChildren: () => import('./modules/admin-product/admin-product.module')
+  //     .then(m => m.AdminProductModule),
+  // },
   {
     path: 'file',
     resolve: {

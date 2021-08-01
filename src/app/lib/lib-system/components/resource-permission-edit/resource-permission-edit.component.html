@@ -40,12 +40,12 @@
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-6">
-                                                    <ngx-form-group [formGroup]="detail" name="User" label="Common.user" [array]="getPermission(i)" [index]="ir" [allowCopy]="false" [required]="false">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="User" label="Common.user" [array]="getPermission(i)" [index]="ir" [allowCopy]="false" [required]="false">
                                                         <ngx-select2 formControlName="User" [select2Option]="select2OptionForUser"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <ngx-form-group [formGroup]="detail" name="Permissions" label="Common.permission" [array]="getPermission(i)" [index]="ir" [allowCopy]="true" [required]="true">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Permissions" label="Common.permission" [array]="getPermission(i)" [index]="ir" [allowCopy]="true" [required]="true">
                                                         <ngx-select2 formControlName="Permissions" [select2Option]="select2OptionForPms" [data]="pmsList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>

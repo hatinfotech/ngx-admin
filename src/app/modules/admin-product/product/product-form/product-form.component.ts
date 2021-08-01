@@ -154,12 +154,12 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       //   });
       // }
 
-      if (itemFormData.UnitConversions) {
+      if (itemFormData?.UnitConversions) {
         const details = this.getUnitConversions(newForm);
         details.clear();
         itemFormData.UnitConversions.forEach(unitConversion => {
           // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-          const newUnitConversionFormGroup = this.makeNewUnitConversionFormGroup(unitConversion);
+          const newUnitConversionFormGroup = this.makeNewUnitConversionFormGroup(unitConversion, newForm);
           details.push(newUnitConversionFormGroup);
           const comIndex = details.length - 1;
           this.onAddUnitConversionFormGroup(newForm, comIndex, newUnitConversionFormGroup);
@@ -281,13 +281,13 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   /** End Picture Form */
 
   /** Picture Form */
-  makeNewUnitConversionFormGroup(data?: ProductUnitConversoinModel): FormGroup {
+  makeNewUnitConversionFormGroup(data?: ProductUnitConversoinModel, formItem?: FormGroup): FormGroup {
     const newForm = this.formBuilder.group({
       // Id_old: [''],
       Id: [''],
-      Unit: [''],
-      ConversionRatio: [''],
-      IsDefaultSales: [false],
+      Unit: [ formItem.get('WarehouseUnit').value || ''],
+      ConversionRatio: ['1'],
+      IsDefaultSales: [true],
       IsDefaultPurchase: [false],
     });
 
@@ -302,7 +302,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
   addUnitConversionFormGroup(formItem: FormGroup) {
     // this.componentList[formGroupIndex].push([]);
-    const newFormGroup = this.makeNewUnitConversionFormGroup();
+    const newFormGroup = this.makeNewUnitConversionFormGroup(null, formItem);
     this.getUnitConversions(formItem).push(newFormGroup);
     this.onAddUnitConversionFormGroup(formItem, this.getUnitConversions(formItem).length - 1, newFormGroup);
     return false;

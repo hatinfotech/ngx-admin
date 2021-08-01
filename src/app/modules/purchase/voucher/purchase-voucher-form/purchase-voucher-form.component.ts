@@ -138,14 +138,14 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    tags: true,
+    // tags: true,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,Sku=>Sku", includeSearchResultLabel: true, includeUnits: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -360,6 +360,10 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     });
 
     if (data) {
+      if (data?.Product && Array.isArray(data.Product['Units'])) {
+        const unitControl = newForm.get('Unit');
+        unitControl['UnitList'] = data?.Product['Units'];
+      }
       newForm.patchValue(data);
       if (!data['Type']) {
         data["Type"] = 'PRODUCT';
@@ -452,6 +456,12 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
     if (selectedData) {
+      detail.get('Description').setValue(selectedData.Name);
+      if (selectedData.Units) {
+        const unitControl = detail.get('Unit');
+        unitControl['UnitList'] = selectedData.Units;
+        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true));
+      }
       detail.get('Description').setValue(selectedData.Name);
     } else {
       detail.get('Description').setValue('');

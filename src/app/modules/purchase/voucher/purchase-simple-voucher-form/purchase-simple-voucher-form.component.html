@@ -160,7 +160,7 @@
                       </div>
 
                       <div class="col-md-6 col-sm-9 col-xs-9">
-                        <ngx-form-group [formGroup]="detail" name="Image" label="Common.image"
+                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Image" label="Common.image"
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                           <input type="button" nbInput fullWidth formControlName="Image"
                             placeholder="{{'Common.image' | translate | headtitlecase}}" style="
@@ -177,7 +177,7 @@
                   <div class="col-lg-4">
                     <div class="row">
                       <div class="col-md-12">
-                        <ngx-form-group [formGroup]="detail" name="Product" label="Common.image"
+                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.image"
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                           <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct"
                             (selectChange)="onSelectProduct(detail, $event)">
@@ -189,7 +189,7 @@
                   <div class="col-lg-7">
                     <div class="row">
                       <div class="col-md-2">
-                        <ngx-form-group [formGroup]="detail" name="Quantity" label="Voucher.quantity"
+                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Voucher.quantity"
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <input type="text" nbInput fullWidth formControlName="Quantity"
                             placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right"
@@ -197,7 +197,7 @@
                         </ngx-form-group>
                       </div>
                       <div class="col-md-2">
-                        <ngx-form-group [formGroup]="detail" name="Unit" label="Voucher.unit"
+                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit"
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <ngx-select2 formControlName="Unit" [data]="detail.get('Unit')['dataList']"
                             [select2Option]="select2OptionForUnit">
@@ -205,7 +205,7 @@
                         </ngx-form-group>
                       </div>
                       <div class="col-md-2">
-                        <ngx-form-group [formGroup]="detail" name="Price" label="Voucher.price"
+                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Price" label="Voucher.price"
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <input type="text" nbInput fullWidth formControlName="Price"
                             placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right"
@@ -213,7 +213,7 @@
                         </ngx-form-group>
                       </div>
                       <div class="col-md-2">
-                        <ngx-form-group [formGroup]="detail" name="Tax" label="Voucher.tax"
+                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Tax" label="Voucher.tax"
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <input type="text" nbInput fullWidth formControlName="Tax"
                             placeholder="{{'Voucher.tax' | translate | headtitlecase}}" class="align-right"
@@ -221,7 +221,7 @@
                         </ngx-form-group>
                       </div>
                       <div class="col-md-3">
-                        <ngx-form-group [formGroup]="detail" name="Price" label="Voucher.toMoney"
+                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Price" label="Voucher.toMoney"
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="{{'Voucher.toMoney' | translate | headtitlecase}}"
                             class="align-right" currencyMask [options]="curencyFormat">

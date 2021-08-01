@@ -1,12 +1,15 @@
 <div class="form-group" [attr.state]="formControlValidate(formGroup.get(name), 'warning')">
-  <div class="float-icon-area">
-    <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" title="{{customIcon.title || ''}}"></nb-icon>
-    <nb-icon *ngIf="allowCopy" class="copy-btn" (click)="copyFormControlValueToOthers(array, index, name)" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon>
-  </div>
   <label class="label" *ngIf="!hideLabel">
     <span class="valid" [ngStyle]="{'text-align': align && align || 'left', 'margin-right': align && align === 'right' && allowCopy ? '25px' : '0'}">{{label | translate | headtitlecase}}</span>
     <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant(label)} | headtitlecase }}</span>
     <span *ngIf="required" class="text-danger">&nbsp;(*)</span>
+    &nbsp;
+    <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" title="{{customIcon.title || ''}}"></nb-icon>
+    <nb-icon *ngIf="allowCopy" class="copy-btn" (click)="copyFormControlValueToOthers(array, index, name)" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon>
   </label>
+  <div *ngIf="hideLabel" class="float-icon-area{{hideLabel && ' hide-label' || ' show-label'}}">
+    <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" title="{{customIcon.title || ''}}"></nb-icon>
+    <nb-icon *ngIf="allowCopy" class="copy-btn" (click)="copyFormControlValueToOthers(array, index, name)" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon>
+  </div>
   <ng-content></ng-content>
 </div>

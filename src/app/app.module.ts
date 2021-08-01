@@ -92,7 +92,7 @@ import { IConfig, NgxMaskModule } from 'ngx-mask';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { NgxUploaderModule } from '../vendor/ngx-uploader/src/public_api';
 import { CustomElementModule } from './lib/custom-element/custom-element.module';
-import { AdminProductModule } from './modules/admin-product/admin-product.module';
+// import { AdminProductModule } from './modules/admin-product/admin-product.module';
 import { PurchaseOrderVoucherFormComponent } from './modules/purchase/order/purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { PurchaseOrderVoucherListComponent } from './modules/purchase/order/purchase-order-voucher-list/purchase-order-voucher-list.component';
 import { PurchaseOrderVoucherPrintComponent } from './modules/purchase/order/purchase-order-voucher-print/purchase-order-voucher-print.component';
@@ -144,6 +144,15 @@ import { ReferenceChoosingDialogComponent } from './modules/dialog/tab-dialog/re
 import { DeploymentVoucherFormComponent } from './modules/deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
 import { DeploymentVoucherListComponent } from './modules/deployment/deployment-voucher/deployment-voucher-list/deployment-voucher-list.component';
 import { DeploymentVoucherPrintComponent } from './modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
+import { ProductCategoryFormComponent } from './modules/admin-product/category/product-category-form/product-category-form.component';
+import { ProductCategoryListComponent } from './modules/admin-product/category/product-category-list/product-category-list.component';
+import { ProductGroupFormComponent } from './modules/admin-product/product-group/product-group-form/product-group-form.component';
+import { ProductGroupListComponent } from './modules/admin-product/product-group/product-group-list/product-group-list.component';
+import { AssignCategoriesFormComponent } from './modules/admin-product/product/assign-categories-form/assign-categories-form.component';
+import { ProductFormComponent } from './modules/admin-product/product/product-form/product-form.component';
+import { ProductListComponent } from './modules/admin-product/product/product-list/product-list.component';
+import { ProductUnitFormComponent } from './modules/admin-product/unit/product-unit-form/product-unit-form.component';
+import { ProductUnitListComponent } from './modules/admin-product/unit/product-unit-list/product-unit-list.component';
 // import { DeploymentComponent } from './modules/deployment/deployment.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -250,6 +259,17 @@ export class DynamicLocaleId extends String {
     DeploymentVoucherListComponent,
     DeploymentVoucherFormComponent,
     DeploymentVoucherPrintComponent,
+
+    // Admin product components
+    ProductListComponent, 
+    ProductFormComponent,
+    ProductCategoryListComponent, 
+    ProductCategoryFormComponent, 
+    ProductUnitListComponent,
+    ProductUnitFormComponent,
+    AssignCategoriesFormComponent,
+    ProductGroupListComponent,
+    ProductGroupFormComponent,
   ],
   imports: [
 

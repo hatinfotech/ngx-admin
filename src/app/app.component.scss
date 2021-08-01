@@ -1176,18 +1176,33 @@ body .form-group[state="warning"] textarea:focus {
   margin-bottom: 0.5rem;
 }
 
+// .form-group > label {
+//   &.show-label {
+//     float: left;
+//     width: initial;
+//   }
+// }
+
 .form-group .float-icon-area {
-  position: absolute;
+  
   // z-index: 1;
   // right: -14px;
   // top: -14px;
-  right: 0;
-  top: -7px;
+  // right: 0;
+  // top: -7px;
   color: #7d7d7da6;
-  z-index: 1;
-
+  
   nb-icon {
     cursor: pointer;
+  }
+  &.hide-label {
+    position: absolute;
+    right: 0;
+    top: -7px;
+    z-index: 1;
+  }
+  &.show-label {
+    float: left;
   }
 }
 

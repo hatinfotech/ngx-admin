@@ -108,27 +108,27 @@
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-3">
-                                                    <ngx-form-group [formGroup]="detail" name="AccountingBusiness" label="Common.accountingBusiness" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccountingBusiness" label="Common.accountingBusiness" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
                                                         <ngx-select2 formControlName="AccountingBusiness" [select2Option]="select2OptionForAccountingBusiness" [data]="accountingBusinessList" (selectChange)="onAccBusinessChange(detail, $event, ir)"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [formGroup]="detail" name="DebitAccount" label="Accounting.debitAccount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="DebitAccount" label="Accounting.debitAccount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
                                                         <ngx-select2 formControlName="DebitAccount" [select2Option]="select2ForDebitAccount" [data]="accountDebitList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [formGroup]="detail" name="CreditAccount" label="Accounting.creditAccount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="CreditAccount" label="Accounting.creditAccount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false">
                                                         <ngx-select2 formControlName="CreditAccount" [select2Option]="select2ForCreditAccount" [data]="accountCreditList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <ngx-form-group [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="true">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="true">
                                                         <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [formGroup]="detail" name="Amount" label="Common.amount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="false" [align]="'rignt'" [required]="true">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Amount" label="Common.amount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="false" [align]="'rignt'" [required]="true">
                                                         <input type="text" (keyup)="toMoney(formItem)" nbInput fullWidth formControlName="Amount" placeholder="{{'Common.amount' | translate | headtitlecase}}" currencyMask [options]="curencyFormat" style="text-align: right;">
                                                     </ngx-form-group>
                                                 </div>

@@ -6,6 +6,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
@@ -15,6 +16,7 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { PurchaseVoucherPrintComponent } from '../../voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 
@@ -64,11 +66,13 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
+          results: data
+          // .map(item => {
+          //   item['id'] = item['Code'];
+          //   item['text'] = item['Name'];
+          //   return item;
+          // })
+          ,
         };
       },
     },
@@ -116,14 +120,14 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    tags: true,
+    // tags: true,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,Sku=>Sku", includeSearchResultLabel: true, includeUnits: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -332,6 +336,10 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     });
 
     if (data) {
+      if (data?.Product && Array.isArray(data.Product['Units'])) {
+        const unitControl = newForm.get('Unit');
+        unitControl['UnitList'] = data?.Product['Units'];
+      }
       newForm.patchValue(data);
       if (!data['Type']) {
         data["Type"] = 'PRODUCT';
@@ -421,10 +429,15 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     }
   }
 
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
     if (selectedData) {
       detail.get('Description').setValue(selectedData.Name);
+      if (selectedData.Units) {
+        const unitControl = detail.get('Unit');
+        unitControl['UnitList'] = selectedData.Units;
+        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true));
+      }
     } else {
       detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
@@ -510,5 +523,28 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     // }
     return false;
   }
+
+  customIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ProductFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          onDialogSave: (newData: ProductModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+            formGroup.get('Product').patchValue(newProduct);
+            this.onSelectProduct(formGroup, newProduct, option.parentForm)
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
 }
