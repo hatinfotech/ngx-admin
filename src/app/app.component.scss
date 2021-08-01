@@ -120,6 +120,7 @@ body .logo-container {
 }
 a.tag {
   cursor: pointer;
+  font-size: 11px;
   &:hover {
     background-color: #807f7f85 !important;
   }
@@ -1833,10 +1834,6 @@ body [nbButton].appearance-hero.size-medium {
 //   }
 // }
 
-
-
-
-
 .dashed-radius-border {
   border: #8c8c8c21 1px dashed;
   border-radius: 0.4rem;
@@ -1844,7 +1841,6 @@ body [nbButton].appearance-hero.size-medium {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
-
 
 .solid-radius-border {
   border: #101426 1px solid;

@@ -36,47 +36,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
   @Input() title?: string;
   @Input() size?: string = 'medium';
-  actionButtonList: ActionControl[] = [
-    {
-      name: 'reload',
-      status: 'success',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.reload'), 'head-title'),
-      icon: 'refresh',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.reload'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.isProcessing,
-      hidden: () => false,
-      click: () => {
-        this.onFormReload();
-      },
-    },
-    {
-      name: 'remove',
-      status: 'warning',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
-      icon: 'minus-circle',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
-      size: 'medium',
-      hidden: () => this.array.controls.length < 2,
-      disabled: () => this.isProcessing,
-      click: (event, option: ActionControlListOption) => {
-        this.removeFormGroup(option.formIndex);
-        return false;
-      },
-    },
-    {
-      name: 'close',
-      status: 'danger',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
-      icon: 'close',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.isProcessing,
-      click: () => {
-        this.goback();
-      },
-    },
-  ];
+  actionButtonList: ActionControl[];
 
   /** Form unique id = current time as milisecond */
   formUniqueId: string;
@@ -148,6 +108,50 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Form init */
   async init(): Promise<boolean> {
+    await this.commonService.waitForLanguageLoaded();
+    this.actionButtonList = [
+      {
+        name: 'reload',
+        status: 'success',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Common.reload'), 'head-title'),
+        icon: 'refresh',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.reload'), 'head-title'),
+        size: 'medium',
+        disabled: () => this.isProcessing,
+        hidden: () => false,
+        click: () => {
+          this.onFormReload();
+        },
+      },
+      {
+        name: 'remove',
+        status: 'warning',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
+        icon: 'minus-circle',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
+        size: 'medium',
+        hidden: () => this.array.controls.length < 2,
+        disabled: () => this.isProcessing,
+        click: (event, option: ActionControlListOption) => {
+          this.removeFormGroup(option.formIndex);
+          return false;
+        },
+      },
+      {
+        name: 'close',
+        status: 'danger',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+        icon: 'close',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+        size: 'medium',
+        disabled: () => this.isProcessing,
+        click: () => {
+          this.goback();
+        },
+      },
+    ];
+
+
     await this.loadCache();
     if (this.inputMode) {
       this.mode = this.inputMode;
@@ -667,7 +671,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       }
     }
   }
-  
+
   sortablejsInit(sortable: any, details: FormGroup[]) {
     console.log(sortable);
     const parentOnUpdate = sortable.options.onUpdate;

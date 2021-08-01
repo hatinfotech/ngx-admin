@@ -313,6 +313,14 @@ export class CommonService {
     });
   }
 
+  /**
+   * Wait for language loaded
+   * @return Promise<boolean>
+   */
+  async waitForLanguageLoaded(): Promise<boolean> {
+    return this.languageLoaded$.pipe(filter(f => f), take(1)).toPromise();
+  }
+
   async getMainSocket(): Promise<MySocket> {
     if (this.mainSocket) {
       return this.mainSocket;
