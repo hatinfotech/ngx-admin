@@ -63,12 +63,12 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     // multiple: true,
     // tags: true,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '' });
+        return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '' });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

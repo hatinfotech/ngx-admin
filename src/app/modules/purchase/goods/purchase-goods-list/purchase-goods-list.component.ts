@@ -116,12 +116,12 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
         Name: {
           title: 'Tên',
           type: 'string',
-          width: '15%',
+          width: '30%',
         },
         Categories: {
           title: 'Danh mục',
           type: 'html',
-          width: '15%',
+          width: '20%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -249,24 +249,24 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
           type: 'string',
           width: '10%',
         },
-        Inventory: {
-          title: this.commonService.translateText('Warehouse.inventory'),
-          type: 'string',
-          width: '5%',
-        },
+        // Inventory: {
+        //   title: this.commonService.translateText('Warehouse.inventory'),
+        //   type: 'string',
+        //   width: '5%',
+        // },
         CostOfGoodsSold: {
-          title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
+          title: this.commonService.translateText('Purchase.costOfGoodsSold'),
           type: 'currency',
           width: '10%',
         },
-        InventoryCost: {
-          title: this.commonService.translateText('Warehouse.inventoryCost'),
-          type: 'currency',
-          width: '12%',
-          valuePrepareFunction: (value: string, goods: GoodsModel) => {
-            return (goods['Inventory'] * goods['CostOfGoodsSold']).toString();
-          },
-        },
+        // InventoryCost: {
+        //   title: this.commonService.translateText('Warehouse.inventoryCost'),
+        //   type: 'currency',
+        //   width: '12%',
+        //   valuePrepareFunction: (value: string, goods: GoodsModel) => {
+        //     return (goods['Inventory'] * goods['CostOfGoodsSold']).toString();
+        //   },
+        // },
       },
     });
   }

@@ -266,7 +266,11 @@
         "unbookkeepingConfirm": "bạn có chắc là muốn bỏ ghi",
         "unbookkeeped": "bỏ ghi",
         "unbookkeepingSuccess": "bỏ ghi thành công",
-        "goodsOrService": "Hàng hóa/dịch vụ"
+        "goodsOrService": "Hàng hóa/dịch vụ",
+        "dateOfDelivered": "ngày giao hàng",
+        "dateOfCreated": "ngày tạo",
+        "object": "Công ty",
+        "details": "chi tiết"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -423,7 +427,8 @@
             "title": "{{definition}}{{action}} phiếu đặt mua hàng"
         },
         "dateOfPurchase": "ngày mua hàng",
-        "deliveryPerson": "người giao hàng"
+        "deliveryPerson": "người giao hàng",
+        "costOfGoodsSold": "giá nhập"
     },
     "Warehouse": {
         "GoodsReceiptNote": {
@@ -464,7 +469,8 @@
         "costOfGoodsSold" : "giá kho",
         "inventoryCost" : "tổng giá trị tồn",
         "calculateCostOfGoodsSold": "tính giá vốn hàng hóa",
-        "calculateCostOfGoodsSoldConfirm": "bạn có chắc là muốn tính giá vốn hàng hóa trong kho?, lệnh này sẽ tính toán dựa trên phương pháp tính giá vốn trong cài đặt."
+        "calculateCostOfGoodsSoldConfirm": "bạn có chắc là muốn tính giá vốn hàng hóa trong kho?, lệnh này sẽ tính toán dựa trên phương pháp tính giá vốn trong cài đặt.",
+        "container": "chố chứa"
     },
     "AdminProduct": {
         "chooseProducts": "chọn sản phẩm",

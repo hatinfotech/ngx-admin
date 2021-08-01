@@ -56,22 +56,23 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     // multiple: true,
     // tags: true,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '', limit: 40 });
+        return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '', limit: 40 });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
+          results: data
+          // .map(item => {
+          //   item['id'] = item['Code'];
+          //   item['text'] = item['Name'];
+          //   return item;
+          // }),
         };
       },
     },
