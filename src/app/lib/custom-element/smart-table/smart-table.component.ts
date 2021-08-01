@@ -229,7 +229,7 @@ export class SmartTableDateTimeComponent extends SmartTableBaseComponent impleme
 }
 
 @Component({
-  template: `<div [style]="style" [class]="class">{{this.value | currency:'VND'}}</div>`,
+  template: `<div [style]="style" [class]="class">{{value | currency:'VND'}}</div>`,
 })
 export class SmartTableCurrencyComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
@@ -238,6 +238,32 @@ export class SmartTableCurrencyComponent extends SmartTableBaseComponent impleme
 
   ngOnInit() {
     // this.renderValue = this.value;
+  }
+
+  // get parseValue(): number {
+  //   return typeof this.value === 'string' ? parseFloat(this.value) : (typeof this.value === 'undefined' ? 0 : this.value);
+  // }
+
+  onChange(value: any) {
+    this.valueChange.emit(value);
+    this.value = value;
+  }
+
+}
+@Component({
+  template: `<div [style]="style" [class]="class">{{value < 0 && '(' || ''}}{{parseValue | currency:'VND'}}{{value < 0 && ')' || ''}}</div>`,
+})
+export class SmartTableAccCurrencyComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
+
+  @Input() value: number;
+  @Input() rowData: any;
+
+  ngOnInit() {
+    // this.renderValue = this.value;
+  }
+
+  get parseValue(): number {
+    return Math.abs(typeof this.value === 'string' ? parseFloat(this.value) : (typeof this.value === 'undefined' ? 0 : this.value));
   }
 
   onChange(value: any) {
@@ -255,7 +281,7 @@ export class SmartTableCurrencyComponent extends SmartTableBaseComponent impleme
 })
 export class SmartTableTagsComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
-  @Input() value: {id: string, text: string, type?: string, icon?: string, iconPack?: string, status?: string} | any;
+  @Input() value: { id: string, text: string, type?: string, icon?: string, iconPack?: string, status?: string } | any;
   @Input() rowData: any;
 
   @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();

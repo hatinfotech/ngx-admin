@@ -249,7 +249,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   async init() {
-    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {}).then(rs => rs.map(account => {
+    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {limit: 'nolimit'}).then(rs => rs.map(account => {
       account['id'] = account.Code;
       account['text'] = account.Code + ' - ' + account.Name;
       return account;
@@ -258,7 +258,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     this.accountDebitList = this.accountList.filter(f => f.Group != 'CASH');
     this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PAYMENT' }).then(rs => rs.map(accBusiness => {
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { limit: 'nolimit', eq_Type: 'PAYMENT' }).then(rs => rs.map(accBusiness => {
       accBusiness['id'] = accBusiness.Code;
       accBusiness['text'] = accBusiness.Name;
       return accBusiness;

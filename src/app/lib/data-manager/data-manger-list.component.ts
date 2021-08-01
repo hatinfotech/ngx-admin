@@ -8,7 +8,7 @@ import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable, O
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
+import { SmartTableAccCurrencyComponent, SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
@@ -270,7 +270,8 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   getList(callback: (list: M[]) => void) {
     this.commonService.takeUntil(this.componentName, 300, () => {
-      this.executeGet({ limit: 999999999, offset: 0 }, results => callback(results));
+      // this.executeGet({ limit: 999999999, offset: 0 }, results => callback(results));
+      this.executeGet({ limit: 'nolimit', offset: 0 }, results => callback(results));
     });
   }
 
@@ -598,6 +599,15 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         column.position = 'right';
         column.renderComponent = SmartTableCurrencyComponent;
         column.onComponentInitFunction = (instance: SmartTableCurrencyComponent) => {
+          instance.style = 'text-align: right';
+        };
+      }
+      if (column.type === 'acc-currency') {
+        column.type = 'custom';
+        column.class = 'align-right';
+        column.position = 'right';
+        column.renderComponent = SmartTableAccCurrencyComponent;
+        column.onComponentInitFunction = (instance: SmartTableAccCurrencyComponent) => {
           instance.style = 'text-align: right';
         };
       }

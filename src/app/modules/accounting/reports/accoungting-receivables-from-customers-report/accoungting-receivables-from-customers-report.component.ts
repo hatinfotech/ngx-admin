@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
@@ -18,7 +19,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
 
   componentName: string = 'AccoungtingReceivablesFromCustomersReportComponent';
   formPath = '/accounting/account/form';
-  apiPath = '/accounting/accounts';
+  apiPath = '/accounting/reports';
   idKey = 'Code';
   formDialog = AccAccountFormComponent;
 
@@ -87,59 +88,60 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
 
   loadListSetting(): SmartTableSetting {
     return this.configSetting({
+      actions: false,
       columns: {
-        Code: {
-          title: this.commonService.translateText('Common.code'),
+        Object: {
+          title: this.commonService.translateText('Common.customer'),
           type: 'string',
-          width: '5%',
+          width: '10%',
         },
-        Name: {
-          title: this.commonService.translateText('Common.name'),
+        ObjectName: {
+          title: this.commonService.translateText('Common.customerName'),
           type: 'string',
-          width: '20%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          width: '50%',
         },
-        Description: {
-          title: this.commonService.translateText('Common.description'),
-          type: 'string',
-          width: '20%',
+        HeadAmount: {
+          title: this.commonService.translateText('Accounting.headAmount'),
+          type: 'acc-currency',
+          width: '10%',
         },
-        Debit: {
-          title: this.commonService.translateText('Common.debit'),
-          type: 'currency',
-          width: '8%',
+        GenerateAmount: {
+          title: this.commonService.translateText('Accounting.generateAmount'),
+          type: 'acc-currency',
+          width: '10%',
         },
-        Credit: {
-          title: this.commonService.translateText('Common.credit'),
-          type: 'currency',
-          width: '8%',
+        TailAmount: {
+          title: this.commonService.translateText('Accounting.tailAmount'),
+          type: 'acc-currency',
+          width: '10%',
         },
-        Currency: {
-          title: this.commonService.translateText('Common.currency'),
-          type: 'string',
-          width: '8%',
-        },
-        Property: {
-          title: this.commonService.translateText('Common.property'),
-          type: 'string',
-          width: '8%',
-        },
-        Type: {
-          title: this.commonService.translateText('Common.type'),
-          type: 'string',
-          width: '5%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        },
-        Level: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.level'), 'head-title'),
-          type: 'string',
-          width: '5%',
-        },
-        Group: {
-          title: this.commonService.translateText('Common.group'),
-          type: 'string',
-          width: '8%',
-        },
+        Preview: {
+          title: this.commonService.translateText('Common.detail'),
+          type: 'custom',
+          width: '10%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'external-link-outline';
+            instance.display = true;
+            instance.status = 'primary';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.label = this.commonService.translateText('Common.detail');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            // instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            //   this.getFormData([rowData.Code]).then(rs => {
+            //     this.preview(rs);
+            //   });
+            // });
+          },
+        }
       },
     });
   }
@@ -165,7 +167,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
   /** Api get funciton */
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
     // params['includeParent'] = true;
-    params['includeAmount'] = true;
+    params['reportReceivablesFromCustomer'] = true;
     super.executeGet(params, success, error, complete);
   }
 
@@ -188,7 +190,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
 
   refresh() {
     super.refresh();
-    this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
+    // this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
   }
 
 }

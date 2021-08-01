@@ -270,7 +270,9 @@
         "dateOfDelivered": "ngày giao hàng",
         "dateOfCreated": "ngày tạo",
         "object": "Công ty",
-        "details": "chi tiết"
+        "details": "chi tiết",
+        "detail": "chi tiết",
+        "property": "thuộc tính"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -466,8 +468,8 @@
         "inventory": "tồn kho",
         "account": "tài khoản kho",
         "warehousePrice": "giá kho",
-        "costOfGoodsSold" : "giá kho",
-        "inventoryCost" : "tổng giá trị tồn",
+        "costOfGoodsSold": "giá kho",
+        "inventoryCost": "tổng giá trị tồn",
         "calculateCostOfGoodsSold": "tính giá vốn hàng hóa",
         "calculateCostOfGoodsSoldConfirm": "bạn có chắc là muốn tính giá vốn hàng hóa trong kho?, lệnh này sẽ tính toán dựa trên phương pháp tính giá vốn trong cài đặt.",
         "container": "chố chứa"
@@ -616,29 +618,43 @@
         "creditAccount": "tài khoản có",
         "dateOfPayment": "ngày thanh toán",
         "dateOfReceipt": "ngày thu tiền",
+        "debit": "nợ",
+        "credit": "có",
+        "debitGenerate": "phát sinh nợ",
+        "creditGenerate": "phát sinh có",
+        "headCycle": "đầu kỳ",
+        "endCycle": "cuối kỳ",
+        "headDebit": "dư nợ đầu kỳ",
+        "headCredit": "dư có đầu kỳ",
+        "tailDebit": "dư nợ cuối kỳ",
+        "tailCredit": "dư có cuối kỳ",
+        "headAmount": "số dư đầu kỳ",
+        "generateAmount": "số dư phát sinh",
+        "tailAmount": "số dư cuối kỳ",
+        "account": "tài khoản",
         "LiabilitiesReport": {
-            "label" :"Công nợ NCC",
-            "title" :"{{action}}{{definition}} Báo cáo công nợ nhà cung cấp"
+            "label": "Công nợ NCC",
+            "title": "{{action}}{{definition}} Báo cáo công nợ nhà cung cấp"
         },
         "ReceivablesReport": {
-            "label" :"Công nợ thải thu",
-            "title" :"{{action}}{{definition}} Công nợ phải thu"
+            "label": "Công nợ thải thu",
+            "title": "{{action}}{{definition}} Công nợ phải thu"
         },
         "ReceivablesFromCustomersReport": {
-            "label" :"Công nợ KH",
-            "title" :"{{action}}{{definition}} Báo cáo công nợ khách hàng"
+            "label": "Công nợ KH",
+            "title": "{{action}}{{definition}} Báo cáo công nợ khách hàng"
         },
         "ReceivablesFromEmployeeReport": {
-            "label" :"Công nợ NV",
-            "title" :"{{action}}{{definition}} Báo cáo công nợ nhân viên"
+            "label": "Công nợ NV",
+            "title": "{{action}}{{definition}} Báo cáo công nợ nhân viên"
         },
         "ProfitReport": {
-            "label" :"Lãi lỗ",
-            "title" :"{{action}}{{definition}} Báo cáo lãi/lỗ"
+            "label": "Lãi lỗ",
+            "title": "{{action}}{{definition}} Báo cáo lãi/lỗ"
         },
         "SummaryReport": {
-            "label" :"Tổng hợp",
-            "title" :"{{action}}{{definition}} Báo cáo tổng hợp"
+            "label": "Tổng hợp",
+            "title": "{{action}}{{definition}} Báo cáo tổng hợp"
         }
     },
     "Print": {
