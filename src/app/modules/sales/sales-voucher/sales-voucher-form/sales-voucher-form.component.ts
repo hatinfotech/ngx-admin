@@ -26,7 +26,7 @@ import { BusinessModel } from '../../../../models/accounting.model';
 import { WarehouseGoodsDeliveryNoteListComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-list/warehouse-goods-delivery-note-list.component';
 import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
 import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
-import { ReferenceChoosingDialogComponent } from '../../../dialog/tab-dialog/reference-choosing-dialog.component';
+import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({

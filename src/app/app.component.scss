@@ -960,7 +960,9 @@ body ng2-smart-table .no {
     margin-top: 3rem;
   }
 }
-
+nb-card.no-border {
+  border: none;
+}
 nb-card.small-header nb-card-header {
   padding: 0.5rem 1rem !important;
   display: block !important;
@@ -1863,4 +1865,8 @@ body [nbButton].appearance-hero.size-medium {
   margin-bottom: 0.5rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
+
+nb-action {
+  cursor: pointer;
 }

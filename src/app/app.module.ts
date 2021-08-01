@@ -140,7 +140,7 @@ import { CashReceiptVoucherPrintComponent } from './modules/accounting/cash/rece
 import { PurchaseGoodsFormComponent } from './modules/purchase/goods/purchase-goods-form/warehouse-goods-form.component';
 import { PurchaseGoodsListComponent } from './modules/purchase/goods/purchase-goods-list/purchase-goods-list.component';
 import { PurchaseGoodsPrintComponent } from './modules/purchase/goods/purchase-goods-print/purchase-goods-print.component';
-import { ReferenceChoosingDialogComponent } from './modules/dialog/tab-dialog/reference-choosing-dialog.component';
+import { ReferenceChoosingDialogComponent } from './modules/dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { DeploymentVoucherFormComponent } from './modules/deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
 import { DeploymentVoucherListComponent } from './modules/deployment/deployment-voucher/deployment-voucher-list/deployment-voucher-list.component';
 import { DeploymentVoucherPrintComponent } from './modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
@@ -153,6 +153,14 @@ import { ProductFormComponent } from './modules/admin-product/product/product-fo
 import { ProductListComponent } from './modules/admin-product/product/product-list/product-list.component';
 import { ProductUnitFormComponent } from './modules/admin-product/unit/product-unit-form/product-unit-form.component';
 import { ProductUnitListComponent } from './modules/admin-product/unit/product-unit-list/product-unit-list.component';
+import { AccountingLiabilitiesReportComponent } from './modules/accounting/reports/accounting-liabilities-report/accounting-liabilities-report.component';
+import { AccountingReceivablesReportComponent } from './modules/accounting/reports/accounting-receivables-report/accounting-receivables-report.component';
+import { AccountingReportComponent } from './modules/accounting/reports/accounting-report.component';
+import { AccountingSummaryReportComponent } from './modules/accounting/reports/summary-report/accounting-summary-report.component';
+import { ModulesComponent } from './modules/modules.component';
+import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-receivables-from-customers-report/accoungting-receivables-from-customers-report.component';
+import { AccoungtingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accoungting-receivables-from-employee-report/accoungting-receivables-from-employee-report.component';
+import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
 // import { DeploymentComponent } from './modules/deployment/deployment.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -254,6 +262,13 @@ export class DynamicLocaleId extends String {
     AccAccountFormComponent,
     AccBusinessListComponent,
     AccBusinessFormComponent,
+    AccountingReportComponent,
+    AccountingLiabilitiesReportComponent,
+    AccountingReceivablesReportComponent,
+    AccountingSummaryReportComponent,
+    AccoungtingReceivablesFromCustomersReportComponent,
+    AccoungtingReceivablesFromEmployeeReportComponent,
+    AccoungtingProfitReportComponent,
 
     // Deployment components
     DeploymentVoucherListComponent,
@@ -270,6 +285,8 @@ export class DynamicLocaleId extends String {
     AssignCategoriesFormComponent,
     ProductGroupListComponent,
     ProductGroupFormComponent,
+    ModulesComponent,
+    
   ],
   imports: [
 
@@ -400,10 +417,7 @@ export class DynamicLocaleId extends String {
   entryComponents: [
     ShowcaseDialogComponent,
     PlayerDialogComponent,
-    // PbxFormComponent,
     DialogFormComponent,
-    // WarehouseGoodsDeliveryNotePrintComponent,
-    // SalesVoucherListComponent,
   ],
   bootstrap: [AppComponent],
   providers: [

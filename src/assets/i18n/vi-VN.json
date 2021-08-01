@@ -615,7 +615,31 @@
         "debitAccount": "tài khoản nợ",
         "creditAccount": "tài khoản có",
         "dateOfPayment": "ngày thanh toán",
-        "dateOfReceipt": "ngày thu tiền"
+        "dateOfReceipt": "ngày thu tiền",
+        "LiabilitiesReport": {
+            "label" :"Công nợ NCC",
+            "title" :"{{action}}{{definition}} Báo cáo công nợ nhà cung cấp"
+        },
+        "ReceivablesReport": {
+            "label" :"Công nợ thải thu",
+            "title" :"{{action}}{{definition}} Công nợ phải thu"
+        },
+        "ReceivablesFromCustomersReport": {
+            "label" :"Công nợ KH",
+            "title" :"{{action}}{{definition}} Báo cáo công nợ khách hàng"
+        },
+        "ReceivablesFromEmployeeReport": {
+            "label" :"Công nợ NV",
+            "title" :"{{action}}{{definition}} Báo cáo công nợ nhân viên"
+        },
+        "ProfitReport": {
+            "label" :"Lãi lỗ",
+            "title" :"{{action}}{{definition}} Báo cáo lãi/lỗ"
+        },
+        "SummaryReport": {
+            "label" :"Tổng hợp",
+            "title" :"{{action}}{{definition}} Báo cáo tổng hợp"
+        }
     },
     "Print": {
         "listTemplate": "mẫu danh sách",

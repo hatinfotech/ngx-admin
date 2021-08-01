@@ -56,6 +56,13 @@ import { ProductFormComponent } from './modules/admin-product/product/product-fo
 import { ProductListComponent } from './modules/admin-product/product/product-list/product-list.component';
 import { ProductUnitFormComponent } from './modules/admin-product/unit/product-unit-form/product-unit-form.component';
 import { ProductUnitListComponent } from './modules/admin-product/unit/product-unit-list/product-unit-list.component';
+import { AccountingReportComponent } from './modules/accounting/reports/accounting-report.component';
+import { AccountingLiabilitiesReportComponent } from './modules/accounting/reports/accounting-liabilities-report/accounting-liabilities-report.component';
+import { AccountingReceivablesReportComponent } from './modules/accounting/reports/accounting-receivables-report/accounting-receivables-report.component';
+import { AccountingSummaryReportComponent } from './modules/accounting/reports/summary-report/accounting-summary-report.component';
+import { AccoungtingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accoungting-receivables-from-employee-report/accoungting-receivables-from-employee-report.component';
+import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-receivables-from-customers-report/accoungting-receivables-from-customers-report.component';
+import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -538,6 +545,84 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     component: AccBusinessFormComponent,
   },
+  {
+    path: 'accounting/report',
+    canActivate: [AuthGuardService],
+    component: AccountingReportComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'summary',
+        pathMatch: 'full',
+      },
+      {
+        path: 'summary',
+        component: AccountingSummaryReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'liabilities',
+        component: AccountingLiabilitiesReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'receivables',
+        component: AccountingReceivablesReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'receivables-from-employee-report',
+        component: AccoungtingReceivablesFromEmployeeReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'receivables-from-customers-report',
+        component: AccoungtingReceivablesFromCustomersReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'profit-report',
+        component: AccoungtingProfitReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+    ],
+  },
+  // {
+  //   path: 'accounting/report/summary',
+  //   canActivate: [AuthGuardService],
+  //   component: SummaryReportComponent,
+  //   data: {
+  //     reuse: true,
+  //   },
+  // },
+  // {
+  //   path: 'accounting/report/liabilities',
+  //   canActivate: [AuthGuardService],
+  //   component: AccountingLiabilitiesReportComponent,
+  //   data: {
+  //     reuse: true,
+  //   },
+  // },
+  // {
+  //   path: 'accounting/report/receivables',
+  //   canActivate: [AuthGuardService],
+  //   component: AccountingReceivablesReportComponent,
+  //   data: {
+  //     reuse: true,
+  //   },
+  // },
 
   // Deployment routes
   {
