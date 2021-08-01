@@ -1,4 +1,3 @@
-import { BehaviorSubject } from 'rxjs';
 import { NotificationService } from './services/notification.service';
 /**
  * @license
@@ -13,7 +12,6 @@ import { CommonService } from './services/common.service';
 import { NbAuthService } from '@nebular/auth';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, take } from 'rxjs/operators';
-import { NbMenuInternalService } from '@nebular/theme/components/menu/menu.service';
 
 @Component({
   selector: 'ngx-app',
@@ -41,7 +39,6 @@ export class AppComponent implements OnInit {
     public authService: NbAuthService,
     public translate: TranslateService,
     public notificatinoSerivce: NotificationService,
-    public menuInternalService: NbMenuInternalService,
   ) {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.commonService.configReady$.subscribe(ready => {

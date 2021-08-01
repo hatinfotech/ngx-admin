@@ -15,6 +15,7 @@ import { FileModel } from '../../../../models/file.model';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { UnitModel } from '../../../../models/unit.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-product-list',
@@ -54,19 +55,21 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     super(apiService, router, commonService, dialogService, toastService, ref);
 
     // Append assign category buton
-    this.actionButtonList.unshift({
-      name: 'assignCategories',
-      status: 'info',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
-      icon: 'pricetags',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.selectedIds.length === 0,
-      hidden: () => false,
-      click: () => {
-        this.openAssignCategoiesDialplog();
-        return false;
-      },
+    this.commonService.languageLoaded$.pipe(filter(f => f), take(1)).toPromise().then(() => {
+      this.actionButtonList.unshift({
+        name: 'assignCategories',
+        status: 'info',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+        icon: 'pricetags',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+        size: 'medium',
+        disabled: () => this.selectedIds.length === 0,
+        hidden: () => false,
+        click: () => {
+          this.openAssignCategoiesDialplog();
+          return false;
+        },
+      });
     });
   }
 

@@ -1,3 +1,4 @@
+import { filter, take } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { ApiService } from '../../../../services/api.service';
@@ -27,6 +28,45 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
   formDialog = PurchaseGoodsFormComponent;
 
   containerList: WarehouseGoodsContainerModel[] = [];
+
+  constructor(
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public _http: HttpClient,
+    public ref: NbDialogRef<PurchaseGoodsListComponent>,
+  ) {
+    super(apiService, router, commonService, dialogService, toastService, _http, ref);
+    // this.actionButtonList.map(button => {
+    //   if (button.name === 'assignCategories') {
+    //     button.name = 'assginContainer';
+    //     button.label = this.commonService.translateText('Warehouse.assign/unassignContainer');
+    //     button.title = this.commonService.translateText('Warehouse.assign/unassignContainer');
+    //     button.click = (event, option) => {
+    //       this.openAssignContainersDialog();
+    //     };
+    //   }
+    //   return button;
+    // });
+    this.commonService.languageLoaded$.pipe(filter(f => f), take(1)).toPromise().then(() => {
+      this.actionButtonList.unshift({
+        name: 'calculateCostOfGoodsSold',
+        status: 'danger',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
+        icon: 'checkmark-square',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
+        size: 'medium',
+        disabled: () => false,
+        hidden: () => this.isChoosedMode,
+        click: () => {
+          this.calculateCostOfGoodsSold();
+          return false;
+        },
+      });
+    });
+  }
 
   loadListSetting(): SmartTableSetting {
     return this.configSetting({
@@ -231,43 +271,6 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
     });
   }
 
-  constructor(
-    public apiService: ApiService,
-    public router: Router,
-    public commonService: CommonService,
-    public dialogService: NbDialogService,
-    public toastService: NbToastrService,
-    public _http: HttpClient,
-    public ref: NbDialogRef<PurchaseGoodsListComponent>,
-  ) {
-    super(apiService, router, commonService, dialogService, toastService, _http, ref);
-    // this.actionButtonList.map(button => {
-    //   if (button.name === 'assignCategories') {
-    //     button.name = 'assginContainer';
-    //     button.label = this.commonService.translateText('Warehouse.assign/unassignContainer');
-    //     button.title = this.commonService.translateText('Warehouse.assign/unassignContainer');
-    //     button.click = (event, option) => {
-    //       this.openAssignContainersDialog();
-    //     };
-    //   }
-    //   return button;
-    // });
-    this.actionButtonList.unshift({
-      name: 'calculateCostOfGoodsSold',
-      status: 'danger',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
-      icon: 'checkmark-square',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
-      size: 'medium',
-      disabled: () => false,
-      hidden: () => this.isChoosedMode,
-      click: () => {
-        this.calculateCostOfGoodsSold();
-        return false;
-      },
-    });
-  }
-
   async init() {
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
     return super.init();
@@ -344,7 +347,7 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
             this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
             this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), {
             status: 'warning',
-            duration: 15000
+            duration: 5000
           })
           this.apiService.putPromise(this.apiPath, { calculateCostOfGoodsSold: true }, []).then(rs => {
             this.refresh();
@@ -352,7 +355,7 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
               this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
               this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), {
               status: 'success',
-              duration: 5000
+              duration: 4000
             })
           });
         }

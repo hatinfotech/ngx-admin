@@ -527,7 +527,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                     // delete orderDetail.Id;
                     // delete orderDetail.Voucher;
                     // delete orderDetail.No;
-                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null });
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${salesVoucher.Code}/${voucherDetail.Id}` });
                     newDtailFormGroup.get('Business').disable();
                     details.push(newDtailFormGroup);
                   }
