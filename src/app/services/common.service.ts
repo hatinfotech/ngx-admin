@@ -291,8 +291,8 @@ export class CommonService {
             tax['id'] = tax.Code;
             tax['text'] = tax.Name;
             return tax;
-          }); 
-          this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
+          });
+          this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
             tax['id'] = tax.Code;
             tax['text'] = tax.Name;
             return tax;
@@ -791,19 +791,23 @@ export class CommonService {
     'DEPLOYMENT': DeploymentVoucherPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
-    this.openDialog(this.voucherPrintConponentTypeIndex[type], {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        id: [this.getObjectId(relativeVocher)],
-        // data: data,
-        idKey: ['Code'],
-        // approvedConfirm: true,
-        onClose: (data: M) => {
-          onClose && onClose(data);
+    if (this.voucherPrintConponentTypeIndex[type]) {
+      this.openDialog(this.voucherPrintConponentTypeIndex[type], {
+        context: {
+          showLoadinng: true,
+          title: 'Xem trước',
+          id: [this.getObjectId(relativeVocher)],
+          // data: data,
+          idKey: ['Code'],
+          // approvedConfirm: true,
+          onClose: (data: M) => {
+            onClose && onClose(data);
+          },
         },
-      },
-    });
+      });
+      return true;
+    }
+    return false;
   }
 
 }

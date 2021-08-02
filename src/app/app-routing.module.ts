@@ -63,7 +63,6 @@ import { AccountingSummaryReportComponent } from './modules/accounting/reports/s
 import { AccoungtingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accoungting-receivables-from-employee-report/accoungting-receivables-from-employee-report.component';
 import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-receivables-from-customers-report/accoungting-receivables-from-customers-report.component';
 import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
-import { AccoungtingDetailReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-detail-receivables-from-customers-report/accoungting-detail-receivables-from-customers-report.component';
 import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 
 @Injectable()
@@ -600,13 +599,6 @@ const routes: Routes = [
         },
       },
     ],
-  },
-  {
-    path: 'reports/detail-receivables-from-customers-report',
-    component: AccoungtingDetailReceivablesFromCustomersReportComponent,
-    data: {
-      reuse: true,
-    },
   },
   {
     path: 'reports/detail-by-object-report',

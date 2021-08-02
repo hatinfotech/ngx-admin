@@ -633,11 +633,13 @@
         "tailDebit": "dư nợ cuối kỳ",
         "tailCredit": "dư có cuối kỳ",
         "headAmount": "số dư đầu kỳ",
+        "generate": "phát sinh",
         "generateAmount": "số dư phát sinh",
         "tailAmount": "số dư cuối kỳ",
         "account": "tài khoản",
         "voucherDate": "ngày chứng từ",
         "dateOfWriting": "ngày ghi sổ",
+        "increment": "biến động",
         "incrementAmount": "biến động số dư",
         "LiabilitiesReport": {
             "label": "Công nợ NCC",

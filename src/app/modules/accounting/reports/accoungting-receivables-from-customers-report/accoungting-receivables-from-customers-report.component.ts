@@ -9,9 +9,7 @@ import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
-import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
 import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
-import { AccoungtingDetailReceivablesFromCustomersReportComponent } from '../accoungting-detail-receivables-from-customers-report/accoungting-detail-receivables-from-customers-report.component';
 
 @Component({
   selector: 'ngx-accoungting-receivables-from-customers-report',
@@ -108,7 +106,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
           width: '10%',
         },
         GenerateAmount: {
-          title: this.commonService.translateText('Accounting.generateAmount'),
+          title: this.commonService.translateText('Accounting.generate'),
           type: 'acc-currency',
           width: '10%',
         },

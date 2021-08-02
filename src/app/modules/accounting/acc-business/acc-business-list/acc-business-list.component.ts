@@ -71,12 +71,12 @@ export class AccBusinessListComponent extends ServerDataManagerListComponent<Bus
           width: '20%',
         },
         DebitAccount: {
-          title: this.commonService.translateText('Common.currency'),
+          title: this.commonService.translateText('Accounting.debitAccount'),
           type: 'string',
           width: '15%',
         },
         CreditAccount: {
-          title: this.commonService.translateText('Common.property'),
+          title: this.commonService.translateText('Accounting.creditAccount'),
           type: 'string',
           width: '15%',
         },

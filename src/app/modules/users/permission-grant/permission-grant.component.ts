@@ -82,12 +82,12 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
     // (this.permissionForm.get('resources.Ivoip_Resource_Pbxs') as FormGroup).addControl('UPDATE', this.formBuilder.control(false));
     // (this.permissionForm.get('resources.Ivoip_Resource_Pbxs') as FormGroup).addControl('DELETE', this.formBuilder.control(false));
 
-    this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 999999, includeUsers: true, selectUsers: 'id=>Code,name=>Name,type=>Type', isTree: true, select: 'id=>Code,name=>Name,description=>Description,children=>Children,type=>Type' },
+    this.apiService.get<UserGroupModel[]>('/user/groups', { limit: 'nolimit', includeUsers: true, selectUsers: 'id=>Code,name=>Name,type=>Type', isTree: true, select: 'id=>Code,name=>Name,description=>Description,children=>Children,type=>Type' },
       list => {
         this.userGroups = this.prepareUserGroupTree(list);
       });
 
-    this.apiService.get<MenuItemModel[]>('/menu/menu-items', { limit: 999999, isTree: true, includeUsers: true, select: 'id=>Code,name=>Title,children=>Children' }, list => {
+    this.apiService.get<MenuItemModel[]>('/menu/menu-items', { limit: 'nolimit', isTree: true, includeUsers: true, select: 'id=>Code,name=>Title,children=>Children' }, list => {
       this.menuTree = list;
     });
 

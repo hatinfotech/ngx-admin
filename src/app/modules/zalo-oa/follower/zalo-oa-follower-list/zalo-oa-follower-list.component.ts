@@ -43,27 +43,30 @@ export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<
     public mobileAppService: MobileAppService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
-    this.actionButtonList.unshift({
-      name: 'sync',
-      status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.sync'), 'head-title'),
-      icon: 'sync',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.sync'), 'head-title'),
-      size: 'medium',
-      disabled: (option) => false,
-      hidden: () => false,
-      click: (event, option) => {
-        this.apiService.putPromise('/zalo-oa/followers', { sync: true }, []).then(rs => {
-          console.log(rs);
-          option.disabled = false;
-        });
-      },
-    });
+
   }
 
   async init() {
     // await this.loadCache();
-    return super.init();
+    return super.init().then(rs => {
+      this.actionButtonList.unshift({
+        name: 'sync',
+        status: 'primary',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Common.sync'), 'head-title'),
+        icon: 'sync',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Common.sync'), 'head-title'),
+        size: 'medium',
+        disabled: (option) => false,
+        hidden: () => false,
+        click: (event, option) => {
+          this.apiService.putPromise('/zalo-oa/followers', { sync: true }, []).then(rs => {
+            console.log(rs);
+            option.disabled = false;
+          });
+        },
+      });
+      return rs;
+    });
   }
 
   editing = {};

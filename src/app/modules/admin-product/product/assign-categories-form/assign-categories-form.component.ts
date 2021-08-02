@@ -71,7 +71,7 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
   }
 
   async init() {
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     return super.init();
   }
 

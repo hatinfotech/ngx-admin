@@ -578,8 +578,8 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/groups', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/groups', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
   }
 
   editing = {};

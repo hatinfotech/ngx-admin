@@ -65,8 +65,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {limit: 'nolimit'})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
   }
 
   getRequestId(callback: (id?: string[]) => void) {

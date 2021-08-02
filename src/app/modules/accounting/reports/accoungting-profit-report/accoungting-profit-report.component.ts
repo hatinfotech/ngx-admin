@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { takeUntil } from 'rxjs/operators';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
@@ -9,6 +10,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
+import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 
 @Component({
   selector: 'ngx-accoungting-profit-report',
@@ -110,7 +112,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
           width: '10%',
         },
         GenerateAmount: {
-          title: this.commonService.translateText('Accounting.generateAmount'),
+          title: this.commonService.translateText('Accounting.generate'),
           type: 'acc-currency',
           width: '10%',
         },
@@ -139,11 +141,9 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            // instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-            //   this.getFormData([rowData.Code]).then(rs => {
-            //     this.preview(rs);
-            //   });
-            // });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+              this.openInstantDetailReport(rowData);
+            });
           },
         }
       },
@@ -190,6 +190,20 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
       display: true,
       perPage: 99999,
     };
+  }
+
+  openInstantDetailReport(rowData: any) {
+    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
+      context: {
+        inputMode: 'dialog',
+        // object: rowData.Object,
+        accounts: [rowData['DebitAccount'] === '911' ? rowData['CreditAccount'] : rowData['DebitAccount']],
+        report: 'reportDetailByAccountAndObject',
+        fromDate: null,
+        toDate: null,
+      },
+      closeOnEsc: false,
+    })
   }
 
   refresh() {

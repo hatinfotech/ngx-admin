@@ -107,7 +107,7 @@ export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManag
           width: '10%',
         },
         GenerateAmount: {
-          title: this.commonService.translateText('Accounting.generateAmount'),
+          title: this.commonService.translateText('Accounting.generate'),
           type: 'acc-currency',
           width: '10%',
         },

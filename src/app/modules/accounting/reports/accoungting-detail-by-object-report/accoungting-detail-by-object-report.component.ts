@@ -109,12 +109,12 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
         ObjectName: {
           title: this.commonService.translateText('Common.contactName'),
           type: 'string',
-          width: '20%',
+          width: '15%',
         },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
-          width: '20%',
+          width: '15%',
         },
         Voucher: {
           title: this.commonService.translateText('Common.voucher'),
@@ -134,12 +134,12 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
           width: '10%',
         },
         GenerateAmount: {
-          title: this.commonService.translateText('Accounting.generateAmount'),
+          title: this.commonService.translateText('Accounting.generate'),
           type: 'acc-currency',
           width: '10%',
         },
         IncrementAmount: {
-          title: this.commonService.translateText('Accounting.incrementAmount'),
+          title: this.commonService.translateText('Accounting.increment'),
           type: 'acc-currency',
           width: '10%',
         },
@@ -162,7 +162,7 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
             instance.style = 'text-align: right';
             instance.class = 'align-right';
             instance.title = this.commonService.translateText('Common.preview');
-            instance.label = this.commonService.translateText('Common.detail');
+            // instance.label = this.commonService.translateText('Common.detail');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';

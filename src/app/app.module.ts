@@ -161,8 +161,7 @@ import { ModulesComponent } from './modules/modules.component';
 import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-receivables-from-customers-report/accoungting-receivables-from-customers-report.component';
 import { AccoungtingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accoungting-receivables-from-employee-report/accoungting-receivables-from-employee-report.component';
 import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
-import { AccoungtingDetailReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-detail-receivables-from-customers-report/accoungting-detail-receivables-from-customers-report.component';
-import { AccoungtingDetailLiabilitiesReportComponent } from './modules/accounting/reports/accoungting-detail-liabilities-report/accoungting-detail-liabilities-report.component';import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -271,8 +270,6 @@ export class DynamicLocaleId extends String {
     AccoungtingReceivablesFromCustomersReportComponent,
     AccoungtingReceivablesFromEmployeeReportComponent,
     AccoungtingProfitReportComponent,
-    AccoungtingDetailReceivablesFromCustomersReportComponent,
-    AccoungtingDetailLiabilitiesReportComponent,
     AccoungtingDetailByObjectReportComponent,
 
     // Deployment components

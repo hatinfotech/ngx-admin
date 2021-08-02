@@ -125,7 +125,7 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
   ngOnInit() {
     this.restrict();
     this.apiService.get<UserGroupModel[]>(
-      '/user/groups', { limit: 99999 },
+      '/user/groups', { limit: 'nolimit' },
       list1 => {
         list1.unshift({
           Code: '',
