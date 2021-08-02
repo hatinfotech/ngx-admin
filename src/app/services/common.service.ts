@@ -38,6 +38,7 @@ import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
 import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { PurchaseVoucherPrintComponent } from '../modules/purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
+import { AccountingOtherBusinessVoucherPrintComponent } from '../modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 
 @Injectable({
   providedIn: 'root',
@@ -789,6 +790,7 @@ export class CommonService {
     'PAYMENT': CashPaymentVoucherPrintComponent,
     'PRICEREPORT': SalesPriceReportPrintComponent,
     'DEPLOYMENT': DeploymentVoucherPrintComponent,
+    'OTHERBUSINESSVOUCHER': AccountingOtherBusinessVoucherPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {

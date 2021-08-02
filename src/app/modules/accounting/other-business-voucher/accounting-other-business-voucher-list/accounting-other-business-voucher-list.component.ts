@@ -3,35 +3,34 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
-import { AppModule } from '../../../../../app.module';
-import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
-import { ResourcePermissionEditComponent } from '../../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { CashVoucherModel } from '../../../../../models/accounting.model';
-import { UserGroupModel } from '../../../../../models/user-group.model';
-import { ApiService } from '../../../../../services/api.service';
-import { CommonService } from '../../../../../services/common.service';
-// import { AccountingModule } from '../../../accounting.module';
-import { CashReceiptVoucherFormComponent } from '../cash-receipt-voucher-form/cash-receipt-voucher-form.component';
-import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+import { AppModule } from '../../../../app.module';
+import { SmartTableTagsComponent, SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { OtherBusinessVoucherModel } from '../../../../models/accounting.model';
+import { UserGroupModel } from '../../../../models/user-group.model';
+import { ApiService } from '../../../../services/api.service';
+import { CommonService } from '../../../../services/common.service';
+import { AccountingOtherBusinessVoucherFormComponent } from '../accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
+import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 
 @Component({
-  selector: 'ngx-cash-receipt-voucher-list',
-  templateUrl: './cash-receipt-voucher-list.component.html',
-  styleUrls: ['./cash-receipt-voucher-list.component.scss']
+  selector: 'ngx-accounting-other-business-voucher-list',
+  templateUrl: './accounting-other-business-voucher-list.component.html',
+  styleUrls: ['./accounting-other-business-voucher-list.component.scss']
 })
-export class CashReceiptVoucherListComponent extends ServerDataManagerListComponent<CashVoucherModel> implements OnInit {
+export class AccountingOtherBusinessVoucherListComponent extends ServerDataManagerListComponent<OtherBusinessVoucherModel> implements OnInit {
 
-  componentName: string = 'CashReceiptVoucherListComponent';
+  componentName: string = 'AccountingOtherBusinessVoucherListComponent';
   formPath = '/accounting/cash-receipt-voucher/form';
-  apiPath = '/accounting/cash-vouchers';
+  apiPath = '/accounting/other-business-vouchers';
   idKey = 'Code';
-  formDialog = CashReceiptVoucherFormComponent;
+  formDialog = AccountingOtherBusinessVoucherFormComponent;
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<CashReceiptVoucherListComponent>;
+  static _dialog: NbDialogRef<AccountingOtherBusinessVoucherListComponent>;
 
   // Smart table
   static filterConfig: any;
@@ -45,7 +44,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<CashReceiptVoucherListComponent>,
+    public ref: NbDialogRef<AccountingOtherBusinessVoucherListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -88,15 +87,15 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
           width: '20%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-          },
-          width: '20%',
-        },
+        // RelativeVouchers: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        //   type: 'custom',
+        //   renderComponent: SmartTableTagsComponent,
+        //   onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+        //     instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        //   },
+        //   width: '20%',
+        // },
         Code: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
           type: 'string',
@@ -104,6 +103,19 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         },
         Created: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+          type: 'custom',
+          width: '10%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateTimeRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        DateOfVoucher: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Accounting.voucherDate'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -147,10 +159,10 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-              this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-                this.preview(rs);
-              });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: OtherBusinessVoucherModel) => {
+              // this.apiService.getPromise<OtherBusinessVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+                this.preview([rowData['Code']]);
+              // });
             });
           },
         },
@@ -174,7 +186,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: OtherBusinessVoucherModel) => {
 
               this.commonService.openDialog(ResourcePermissionEditComponent, {
                 context: {
@@ -212,7 +224,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: OtherBusinessVoucherModel) => {
               this.getFormData([rowData.Code]).then(rs => {
                 this.preview(rs);
               });
@@ -273,18 +285,19 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: ids, includeContact: true, includeDetails: true, eq_Type: 'RECEIPT' });
+    return this.apiService.getPromise<OtherBusinessVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(data: CashVoucherModel[]) {
-    this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
+  preview(ids: any[]) {
+    this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',
-        data: data,
+        id: typeof ids[0] === 'string' ? ids as any : null,
+        data: typeof ids[0] !== 'string' ? ids as any : null,
         idKey: ['Code'],
         // approvedConfirm: true,
-        onClose: (data: CashVoucherModel) => {
+        onClose: (data: OtherBusinessVoucherModel) => {
           this.refresh();
         },
       },

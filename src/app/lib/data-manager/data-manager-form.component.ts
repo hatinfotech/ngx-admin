@@ -32,6 +32,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   @Input() inputId: string[];
   @Input() onDialogSave?: (newData: M[]) => void;
   @Input() isDuplicate: boolean;
+  @Input() data: M[];
 
   favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
   @Input() title?: string;
@@ -164,6 +165,12 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         if (id && id.length > 0) {
           this.id = id;
           this.formLoad().then(async () => {
+            // wait for dom loaded
+            while (this.array.controls.length === 0) await new Promise(resolve => setTimeout(() => resolve(null), 100));
+            resolve(true);
+          });
+        } else if (this.data) {
+          this.formLoad(this.data).then(async () => {
             // wait for dom loaded
             while (this.array.controls.length === 0) await new Promise(resolve => setTimeout(() => resolve(null), 100));
             resolve(true);

@@ -8,7 +8,6 @@ import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
-import { AccoungtingDetailReceivablesFromCustomersReportComponent } from '../accoungting-detail-receivables-from-customers-report/accoungting-detail-receivables-from-customers-report.component';
 
 @Component({
   selector: 'ngx-accoungting-detail-by-object-report',
@@ -46,7 +45,7 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccoungtingDetailReceivablesFromCustomersReportComponent>,
+    public ref: NbDialogRef<AccoungtingDetailByObjectReportComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }

@@ -643,15 +643,15 @@
         "incrementAmount": "biến động số dư",
         "LiabilitiesReport": {
             "label": "Công nợ NCC",
-            "title": "{{action}}{{definition}} Báo cáo công nợ nhà cung cấp"
+            "title": "{{action}}{{definition}} báo cáo công nợ nhà cung cấp"
         },
         "ReceivablesReport": {
             "label": "Công nợ thải thu",
-            "title": "{{action}}{{definition}} Công nợ phải thu"
+            "title": "{{action}}{{definition}} xông nợ phải thu"
         },
         "ReceivablesFromCustomersReport": {
             "label": "Công nợ KH",
-            "title": "{{action}}{{definition}} Báo cáo công nợ khách hàng"
+            "title": "{{action}}{{definition}} báo cáo công nợ khách hàng"
         },
         "ReceivablesFromEmployeeReport": {
             "label": "Công nợ NV",
@@ -659,15 +659,20 @@
         },
         "ProfitReport": {
             "label": "Lãi lỗ",
-            "title": "{{action}}{{definition}} Báo cáo lãi/lỗ"
+            "title": "{{action}}{{definition}} báo cáo lãi/lỗ"
         },
         "SummaryReport": {
             "label": "Tổng hợp",
-            "title": "{{action}}{{definition}} Báo cáo tổng hợp"
+            "title": "{{action}}{{definition}} báo cáo tổng hợp"
         },
         "DetailAccountByObjectReport": {
             "label": "Chi tiết theo đối tượng",
-            "title": "{{action}}{{definition}} Báo cáo chi tiết theo đối tượng"
+            "title": "{{action}}{{definition}} báo cáo chi tiết theo đối tượng"
+        },
+        "OtherBusinessVoucher": {
+            "label": "Chứng từ nghiệp vụ khác",
+            "title": "{{action}}{{definition}} chứng từ nghiệp vụ khác",
+            "printTitle": "chứng từ kế toán"
         }
     },
     "Print": {

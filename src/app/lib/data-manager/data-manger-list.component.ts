@@ -105,7 +105,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return [];
   }
 
-  preview(data: M[]) {
+  preview(data: any[]) {
     return true;
   }
 

@@ -162,6 +162,9 @@ import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/ac
 import { AccoungtingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accoungting-receivables-from-employee-report/accoungting-receivables-from-employee-report.component';
 import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
 import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { AccountingOtherBusinessVoucherListComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-list/accounting-other-business-voucher-list.component';
+import { AccountingOtherBusinessVoucherFormComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
+import { AccountingOtherBusinessVoucherPrintComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -271,6 +274,10 @@ export class DynamicLocaleId extends String {
     AccoungtingReceivablesFromEmployeeReportComponent,
     AccoungtingProfitReportComponent,
     AccoungtingDetailByObjectReportComponent,
+    AccountingOtherBusinessVoucherListComponent,
+    AccountingOtherBusinessVoucherFormComponent,
+    AccountingOtherBusinessVoucherPrintComponent,
+    
 
     // Deployment components
     DeploymentVoucherListComponent,

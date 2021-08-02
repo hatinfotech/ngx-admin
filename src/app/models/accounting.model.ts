@@ -61,3 +61,46 @@ export interface CashVoucherDetailModel {
     DebitAccount?: string;
     CreditAccount?: string;
 }
+
+export interface OtherBusinessVoucherModel {
+    Id?: string;
+    Code?: string;
+    Type?: string;
+    Seq?: string;
+    Description?: string;
+    Employee?: string;
+    DateOfVoucher?: string;
+    Created?: string;
+    Creator?: string;
+    CreatorName?: string;
+    Object?: string;
+    ObjectName?: string;
+    ObjectPhone?: string;
+    ObjectEmail?: string;
+    ObjectAddress?: string;
+    ObjectTaxCode?: string;
+    ObjectIdentifiedNumber?: string;
+    Amount?: number;
+    Currency?: string;
+    RelationVoucher?: string;
+    Details?: OtherBusinessVoucherDetailModel[];
+    State?: string;
+    Permission?: string;
+}
+
+export interface OtherBusinessVoucherDetailModel {
+    Id?: string;
+    Voucher?: string;
+    RelateCode?: string;
+    Description?: string;
+    Amount?: number;
+    Currency?: string;
+    AccountingBusiness?: string;
+    DebitAccount?: string;
+    CreditAccount?: string;
+    DebitObject?: string;
+    DebitObjectName?: string;
+    CreditObject?: string;
+    CreditObjectName?: string;
+
+}

@@ -1,3 +1,4 @@
+import { AccountingOtherBusinessVoucherListComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-list/accounting-other-business-voucher-list.component';
 import { PurchaseGoodsListComponent } from './modules/purchase/goods/purchase-goods-list/purchase-goods-list.component';
 import { ExtraOptions, RouterModule, Routes, Resolve, ActivatedRouteSnapshot } from '@angular/router';
 import { NgModule, Injectable } from '@angular/core';
@@ -601,8 +602,15 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'reports/detail-by-object-report',
+    path: 'accounting/reports/detail-by-object-report',
     component: AccoungtingDetailByObjectReportComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'accounting/other-business-voucher/list',
+    component: AccountingOtherBusinessVoucherListComponent,
     data: {
       reuse: true,
     },

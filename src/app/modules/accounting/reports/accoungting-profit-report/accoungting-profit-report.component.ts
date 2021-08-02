@@ -1,3 +1,5 @@
+import { OtherBusinessVoucherModel, OtherBusinessVoucherDetailModel } from './../../../../models/accounting.model';
+import { AccountingOtherBusinessVoucherFormComponent } from './../../other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -23,7 +25,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
   idKey = 'Code';
-  formDialog = AccAccountFormComponent;
+  formDialog = AccountingOtherBusinessVoucherFormComponent;
 
   reuseDialog = true;
 
@@ -80,6 +82,48 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
       },
     ];
     return super.init().then(rs => {
+      const addActionButton = this.actionButtonList.find(f => f.name === 'add');
+      if (addActionButton) {
+        addActionButton.click = () => {
+
+
+          this.getList(rs => {
+            const details: OtherBusinessVoucherDetailModel[] = [];
+            for (const detail of rs) {
+              details.push({
+                Description: 'Kết chuyển ' + detail['AccountName'],
+                Amount: detail['TailAmount'],
+                Currency: 'VND',
+                DebitAccount: detail['DebitAccount'],
+                CreditAccount: detail['CreditAccount'],
+              });
+            }
+            this.commonService.openDialog(AccountingOtherBusinessVoucherFormComponent, {
+              context: {
+                showLoadinng: true,
+                inputMode: 'dialog',
+                // inputId: ids,
+                data: [{ Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.commonService.datePipe.transform(new Date(), 'short'), Details: details }],
+                onDialogSave: (newData: OtherBusinessVoucherModel[]) => {
+                  // resolve({ event: 'save', data: newData });
+                  // this.refresh();
+                  // if (editedItems && editedItems.length > 0) {
+                  //   this.updateGridItems(editedItems, newData);
+                  // } else {
+                  //   this.prependGridItems(newData);
+                  // }
+                },
+                onDialogClose: () => {
+                  // resolve({ event: 'close' });
+                },
+              },
+              closeOnEsc: false,
+              closeOnBackdropClick: false,
+            });
+          });
+
+        };
+      }
       return rs;
     });
   }
