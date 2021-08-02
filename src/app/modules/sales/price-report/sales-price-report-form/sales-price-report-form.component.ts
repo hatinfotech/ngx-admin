@@ -251,7 +251,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;

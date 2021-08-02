@@ -77,7 +77,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true }));
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
   }
 
   async init() {

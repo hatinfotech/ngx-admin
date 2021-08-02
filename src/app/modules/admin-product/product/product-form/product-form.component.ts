@@ -123,7 +123,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   async init() {
     await this.loadCache();
-    this.unitList = await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { select: 'id=>Code,text=>Name' });
+    this.unitList = await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { select: 'id=>Code,text=>Name', limit: 'nolimit' });
     return super.init();
   }
 

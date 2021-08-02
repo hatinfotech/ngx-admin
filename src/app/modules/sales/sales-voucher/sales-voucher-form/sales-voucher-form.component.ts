@@ -329,7 +329,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units')).map(tax => {
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;
@@ -491,7 +491,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
-      Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
+      // Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
+      Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
     });
 
     if (data) {
