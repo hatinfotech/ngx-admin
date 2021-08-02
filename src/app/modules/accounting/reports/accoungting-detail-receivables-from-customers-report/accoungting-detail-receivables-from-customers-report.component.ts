@@ -1,26 +1,23 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import { takeUntil } from 'rxjs/operators';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
-import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
-import { AccoungtingDetailReceivablesFromCustomersReportComponent } from '../accoungting-detail-receivables-from-customers-report/accoungting-detail-receivables-from-customers-report.component';
 
 @Component({
-  selector: 'ngx-accoungting-receivables-from-customers-report',
-  templateUrl: './accoungting-receivables-from-customers-report.component.html',
-  styleUrls: ['./accoungting-receivables-from-customers-report.component.scss']
+  selector: 'ngx-accoungting-detail-receivables-from-customers-report',
+  templateUrl: './accoungting-detail-receivables-from-customers-report.component.html',
+  styleUrls: ['./accoungting-detail-receivables-from-customers-report.component.scss']
 })
-export class AccoungtingReceivablesFromCustomersReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
+export class AccoungtingDetailReceivablesFromCustomersReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'AccoungtingReceivablesFromCustomersReportComponent';
+  componentName: string = 'AccoungtingDetailReceivablesFromCustomersReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
   idKey = 'Code';
@@ -36,6 +33,10 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
   totalBalance: { Debit: number, Credit: number } = null;
   tabs: any[];
 
+  @Input() object?: string;
+  @Input() fromDate?: Date;
+  @Input() toDate?: Date;
+
   constructor(
     public apiService: ApiService,
     public router: Router,
@@ -43,7 +44,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccoungtingReceivablesFromCustomersReportComponent>,
+    public ref: NbDialogRef<AccoungtingDetailReceivablesFromCustomersReportComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -92,6 +93,11 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
     return this.configSetting({
       actions: false,
       columns: {
+        VoucherDate: {
+          title: this.commonService.translateText('Accounting.voucherDate'),
+          type: 'datetime',
+          width: '10%',
+        },
         Object: {
           title: this.commonService.translateText('Common.customer'),
           type: 'string',
@@ -100,23 +106,45 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
         ObjectName: {
           title: this.commonService.translateText('Common.customerName'),
           type: 'string',
-          width: '50%',
+          width: '20%',
         },
-        HeadAmount: {
-          title: this.commonService.translateText('Accounting.headAmount'),
-          type: 'acc-currency',
+        Description: {
+          title: this.commonService.translateText('Common.description'),
+          type: 'string',
+          width: '20%',
+        },
+        Voucher: {
+          title: this.commonService.translateText('Common.voucher'),
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          valuePrepareFunction: (cell: string, row: any) => {
+            return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
+          },
+          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+          },
           width: '10%',
         },
+        // HeadAmount: {
+        //   title: this.commonService.translateText('Accounting.headAmount'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
         GenerateAmount: {
           title: this.commonService.translateText('Accounting.generateAmount'),
           type: 'acc-currency',
           width: '10%',
         },
-        TailAmount: {
-          title: this.commonService.translateText('Accounting.tailAmount'),
+        IncrementAmount: {
+          title: this.commonService.translateText('Accounting.incrementAmount'),
           type: 'acc-currency',
           width: '10%',
         },
+        // TailAmount: {
+        //   title: this.commonService.translateText('Accounting.tailAmount'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
         Preview: {
           title: this.commonService.translateText('Common.detail'),
           type: 'custom',
@@ -137,9 +165,11 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
-              this.openInstantDetailReport(rowData);
-            });
+            // instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+            //   this.getFormData([rowData.Code]).then(rs => {
+            //     this.preview(rs);
+            //   });
+            // });
           },
         }
       },
@@ -153,12 +183,19 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
 
   /** Api get funciton */
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
-    params['reportReceivablesFromCustomer'] = true;
+    params['reportDetailReceivablesFromCustomer'] = true;
+    if (this.object) {
+      params['eq_Object'] = this.commonService.getObjectId(this.object);
+    }
     super.executeGet(params, success, error, complete);
   }
 
   getList(callback: (list: AccountModel[]) => void) {
     super.getList((rs) => {
+      let increment = 0;
+      for (const item of rs) {
+        item['IncrementAmount'] = (increment += item['GenerateAmount']);
+      }
       if (callback) callback(rs);
     });
   }
@@ -173,20 +210,6 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
 
   refresh() {
     super.refresh();
-  }
-
-  openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
-      context: {
-        inputMode: 'dialog',
-        object: rowData.Object,
-        accounts: ['131'],
-        fromDate: null,
-        toDate: null,
-        report: 'reportDetailByAccountAndObject',
-      },
-      closeOnEsc: false,
-    })
   }
 
 }

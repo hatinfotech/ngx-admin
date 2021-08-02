@@ -40,7 +40,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccAccountListComponent>,
+    public ref: NbDialogRef<AccoungtingProfitReportComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -78,7 +78,6 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
       },
     ];
     return super.init().then(rs => {
-      this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
       return rs;
     });
   }
@@ -195,7 +194,6 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
 
   refresh() {
     super.refresh();
-    // this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
   }
 
 }

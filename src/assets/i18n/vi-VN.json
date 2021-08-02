@@ -272,7 +272,11 @@
         "object": "Công ty",
         "details": "chi tiết",
         "detail": "chi tiết",
-        "property": "thuộc tính"
+        "property": "thuộc tính",
+        "customerName": "tên khách hàng",
+        "supplierName": "tên nhà cung cấp",
+        "contactName": "tên nhà liên hệ",
+        "voucher": "chứng từ"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -632,6 +636,9 @@
         "generateAmount": "số dư phát sinh",
         "tailAmount": "số dư cuối kỳ",
         "account": "tài khoản",
+        "voucherDate": "ngày chứng từ",
+        "dateOfWriting": "ngày ghi sổ",
+        "incrementAmount": "biến động số dư",
         "LiabilitiesReport": {
             "label": "Công nợ NCC",
             "title": "{{action}}{{definition}} Báo cáo công nợ nhà cung cấp"
@@ -655,6 +662,10 @@
         "SummaryReport": {
             "label": "Tổng hợp",
             "title": "{{action}}{{definition}} Báo cáo tổng hợp"
+        },
+        "DetailAccountByObjectReport": {
+            "label": "Chi tiết theo đối tượng",
+            "title": "{{action}}{{definition}} Báo cáo chi tiết theo đối tượng"
         }
     },
     "Print": {

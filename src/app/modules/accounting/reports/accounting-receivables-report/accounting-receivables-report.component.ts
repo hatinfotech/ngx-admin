@@ -9,6 +9,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
+import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 import { AccountingReportComponent } from '../accounting-report.component';
 
 @Component({
@@ -41,7 +42,7 @@ export class AccountingReceivablesReportComponent extends DataManagerListCompone
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccAccountListComponent>,
+    public ref: NbDialogRef<AccountingReceivablesReportComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -79,7 +80,6 @@ export class AccountingReceivablesReportComponent extends DataManagerListCompone
       },
     ];
     return super.init().then(rs => {
-      this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
       return rs;
     });
   }
@@ -188,9 +188,22 @@ export class AccountingReceivablesReportComponent extends DataManagerListCompone
     };
   }
 
+  openInstantDetailReport(rowData: any) {
+    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
+      context: {
+        inputMode: 'dialog',
+        object: rowData.Object,
+        accounts: ['331'],
+        fromDate: null,
+        toDate: null,
+        report: 'reportDetailByAccountAndObject',
+      },
+      closeOnEsc: false,
+    })
+  }
+
   refresh() {
     super.refresh();
-    this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
   }
 
 }

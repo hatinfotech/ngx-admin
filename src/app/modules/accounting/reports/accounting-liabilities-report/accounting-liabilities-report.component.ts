@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../lib/base-component';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
@@ -10,6 +11,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
+import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 import { AccountingReportComponent } from '../accounting-report.component';
 
 @Component({
@@ -42,7 +44,7 @@ export class AccountingLiabilitiesReportComponent extends DataManagerListCompone
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccAccountListComponent>,
+    public ref: NbDialogRef<AccountingLiabilitiesReportComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -80,7 +82,6 @@ export class AccountingLiabilitiesReportComponent extends DataManagerListCompone
       },
     ];
     return super.init().then(rs => {
-      this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
       return rs;
     });
   }
@@ -137,11 +138,9 @@ export class AccountingLiabilitiesReportComponent extends DataManagerListCompone
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            // instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-            //   this.getFormData([rowData.Code]).then(rs => {
-            //     this.preview(rs);
-            //   });
-            // });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+              this.openInstantDetailReport(rowData);
+            });
           },
         }
       },
@@ -190,9 +189,22 @@ export class AccountingLiabilitiesReportComponent extends DataManagerListCompone
     };
   }
 
+  openInstantDetailReport(rowData: any) {
+    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
+      context: {
+        inputMode: 'dialog',
+        object: rowData.Object,
+        accounts: ['331'],
+        fromDate: null,
+        toDate: null,
+        report: 'reportDetailByAccountAndObject',
+      },
+      closeOnEsc: false,
+    })
+  }
+
   refresh() {
     super.refresh();
-    // this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
   }
 
 }

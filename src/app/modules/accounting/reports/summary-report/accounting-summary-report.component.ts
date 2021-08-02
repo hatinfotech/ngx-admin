@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { takeUntil } from 'rxjs/operators';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
@@ -9,6 +10,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
+import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 
 @Component({
   selector: 'ngx-summary-report',
@@ -40,7 +42,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccAccountListComponent>,
+    public ref: NbDialogRef<AccountingSummaryReportComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -78,7 +80,6 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
       },
     ];
     return super.init().then(rs => {
-      // this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
       return rs;
     });
   }
@@ -197,11 +198,9 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            // instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-            //   this.getFormData([rowData.Code]).then(rs => {
-            //     this.preview(rs);
-            //   });
-            // });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+              this.openInstantDetailReport(rowData);
+            });
           },
         }
       },
@@ -251,9 +250,22 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
     };
   }
 
+  openInstantDetailReport(rowData: any) {
+    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
+      context: {
+        inputMode: 'dialog',
+        // object: rowData.Object,
+        accounts: [rowData['DebitAccount']],
+        report: 'reportDetailByAccountAndObject',
+        fromDate: null,
+        toDate: null,
+      },
+      closeOnEsc: false,
+    })
+  }
+
   refresh() {
     super.refresh();
-    // this.apiService.getPromise<any>(this.apiPath, { getTotalBalance: true }).then(balances => this.totalBalance = balances);
   }
 
 }
