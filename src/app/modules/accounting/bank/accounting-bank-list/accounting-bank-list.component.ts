@@ -59,6 +59,12 @@ export class AccountingBankListComponent extends ServerDataManagerListComponent<
           type: 'string',
           width: '10%',
         },
+        ShortName: {
+          title: this.commonService.translateText('Common.name'),
+          type: 'string',
+          width: '15%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
         Name: {
           title: this.commonService.translateText('Common.name'),
           type: 'string',

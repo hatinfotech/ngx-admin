@@ -478,11 +478,16 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
   onBankAccountChange(formGroup: FormGroup, selectedData: AccountModel) {
     // console.info(item);
-
-    if (selectedData && selectedData.id) {
-      formGroup['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASHINBANK');
-    } else {
-      formGroup['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
+    if (!this.isProcessing) {
+      if (selectedData && selectedData.id) {
+        formGroup['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASHINBANK');
+      } else {
+        formGroup['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
+      }
+      const details = this.getDetails(formGroup);
+      for (const detail of details.controls) {
+        detail.get('CreditAccount').setValue(formGroup['creditAccounts'] && formGroup['creditAccounts'].length > 0 ? formGroup['creditAccounts'][0] : null);
+      }
     }
 
   }

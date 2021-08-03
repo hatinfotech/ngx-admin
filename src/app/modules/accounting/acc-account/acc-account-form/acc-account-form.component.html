@@ -8,29 +8,34 @@
           <nb-card-body>
             <div [formGroup]="formItem">
               <div class="row">
-                <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                    <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Common.code' | translate | headtitlecase}}">
-                  </ngx-form-group>
-                </div>
                 <div class="col-sm-6">
                   <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                     <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name' | translate | headtitlecase}}">
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="Currency" label="Common.currency" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                    <input type="text" nbInput fullWidth formControlName="Currency" placeholder="{{'Common.currency' | translate | headtitlecase}}">
+                  <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Common.code' | translate | headtitlecase}}">
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-9">
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="Currency" label="Common.currency" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
+                    <ngx-select2 formControlName="Currency" [select2Option]="currencyListSelect2Option" [data]="currencyList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-6">
                   <ngx-form-group [formGroup]="formItem" name="Description" label="Common.description" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                     <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="Property" label="Accounting.property" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                    <input type="text" nbInput fullWidth formControlName="Property" placeholder="{{'Accounting.property' | translate | headtitlecase}}">
+                  <ngx-form-group [formGroup]="formItem" name="ReportByObject" label="Accounting.reportByObject" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                    <ngx-select2 formControlName="ReportByObject" [select2Option]="reportByObjectSelect2Option" [data]="reportByObjectList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="Property" label="Accounting.property" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
+                    <ngx-select2 formControlName="Property" [select2Option]="accountTypeListSelect2Option" [data]="accountPropertyList"></ngx-select2>
                   </ngx-form-group>
                 </div>
               </div>

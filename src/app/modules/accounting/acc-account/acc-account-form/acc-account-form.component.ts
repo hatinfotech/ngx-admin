@@ -21,6 +21,51 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
   baseFormUrl = '/accounting/account/form';
   apiPath = '/accounting/accounts';
 
+  reportByObjectList: { id: string, text: string }[] = [];
+  reportByObjectSelect2Option = {
+    placeholder: this.commonService.translateText('Accounting.reportByObject') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  accountPropertyList: { id: string, text: string }[] = [];
+  accountTypeListSelect2Option = {
+    placeholder: this.commonService.translateText('Accounting.property') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  currencyList: { id: string, text: string }[] = [];
+  currencyListSelect2Option = {
+    placeholder: this.commonService.translateText('Accounting.property') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -43,6 +88,49 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
   }
 
   async init() {
+    await this.commonService.waitForLanguageLoaded();
+    this.reportByObjectList = [
+      {
+        id: '',
+        text: this.commonService.translateText('Common.none'),
+      },
+      {
+        id: 'CUSTOMER',
+        text: this.commonService.translateText('Common.customer'),
+      },
+      {
+        id: 'SUPPLIER',
+        text: this.commonService.translateText('Common.supplier'),
+      },
+      {
+        id: 'EMPLOYEE',
+        text: this.commonService.translateText('Common.employee'),
+      },
+    ];
+    this.accountPropertyList = [
+      {
+        id: 'DEBT',
+        text: this.commonService.translateText('Accounting.debit'),
+      },
+      {
+        id: 'CREDIT',
+        text: this.commonService.translateText('Accounting.credit'),
+      },
+      {
+        id: 'BOTH',
+        text: this.commonService.translateText('Accounting.both'),
+      },
+    ];
+    this.currencyList = [
+      {
+        id: 'VND',
+        text: this.commonService.translateText('Common.Currency.Vnd.label'),
+      },
+      {
+        id: 'USD',
+        text: this.commonService.translateText('Common.Currency.Usd.label'),
+      },
+    ];
     return super.init();
   }
 
@@ -84,8 +172,10 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
       Code: ['', Validators.required],
       Name: ['', Validators.required],
       Description: [''],
-      Currency: ['', Validators.required],
+      Currency: ['VND', Validators.required],
       Property: ['', Validators.required],
+      Group: [''],
+      ReportByObject: [''],
     });
     if (data) {
       newForm.patchValue(data);

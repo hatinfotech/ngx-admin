@@ -10,14 +10,16 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
-import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
 import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-accoungting-profit-report',
   templateUrl: './accoungting-profit-report.component.html',
-  styleUrls: ['./accoungting-profit-report.component.scss']
+  styleUrls: ['./accoungting-profit-report.component.scss'],
+  providers: [
+    CurrencyPipe,
+  ]
 })
 export class AccoungtingProfitReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
 
@@ -45,6 +47,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccoungtingProfitReportComponent>,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -84,37 +87,37 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
     return super.init().then(rs => {
       const addActionButton = this.actionButtonList.find(f => f.name === 'add');
       if (addActionButton) {
+        addActionButton.icon= 'save';
+        addActionButton.label = this.commonService.translateText('Accounting.profitForward');
         addActionButton.click = () => {
 
 
           this.getList(rs => {
             const details: OtherBusinessVoucherDetailModel[] = [];
+            let profit = true;
+            let profitAmount = 0;
             for (const detail of rs) {
               details.push({
                 Description: 'Kết chuyển ' + detail['AccountName'],
-                Amount: detail['TailAmount'],
+                Amount: Math.abs(detail['TailCredit'] - detail['TailDebit']),
                 Currency: 'VND',
                 DebitAccount: detail['DebitAccount'],
                 CreditAccount: detail['CreditAccount'],
               });
+              if (detail['DebitAccount'] === '4212') {
+                profit = false;
+                profitAmount = Math.abs(detail['TailCredit'] - detail['TailDebit']);
+              };
             }
             this.commonService.openDialog(AccountingOtherBusinessVoucherFormComponent, {
               context: {
                 showLoadinng: true,
                 inputMode: 'dialog',
                 // inputId: ids,
-                data: [{ Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.commonService.datePipe.transform(new Date(), 'short'), Details: details }],
+                data: [{ Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.commonService.datePipe.transform(new Date(), 'short') + ' => ' + (profit ? 'Lãi' : 'Lỗ') + ' ' + this.currencyPipe.transform(profitAmount, 'VND'), Details: details }],
                 onDialogSave: (newData: OtherBusinessVoucherModel[]) => {
-                  // resolve({ event: 'save', data: newData });
-                  // this.refresh();
-                  // if (editedItems && editedItems.length > 0) {
-                  //   this.updateGridItems(editedItems, newData);
-                  // } else {
-                  //   this.prependGridItems(newData);
-                  // }
                 },
                 onDialogClose: () => {
-                  // resolve({ event: 'close' });
                 },
               },
               closeOnEsc: false,
@@ -139,6 +142,11 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
           title: this.commonService.translateText('Common.description'),
           type: 'string',
           width: '40%',
+          valuePrepareFunction: (cell: any, row: any) => {
+            if (row['DebitAccount'] === '4212') return cell + ' => Lỗ';
+            if (row['CreditAccount'] === '4212') return cell + ' => Lãi';
+            return cell;
+          },
         },
         DebitAccount: {
           title: this.commonService.translateText('Accounting.debitAccount'),
@@ -150,20 +158,23 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
           type: 'string',
           width: '10%',
         },
-        HeadAmount: {
-          title: this.commonService.translateText('Accounting.headAmount'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        GenerateAmount: {
-          title: this.commonService.translateText('Accounting.generate'),
-          type: 'acc-currency',
-          width: '10%',
-        },
+        // HeadAmount: {
+        //   title: this.commonService.translateText('Accounting.headAmount'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
+        // GenerateAmount: {
+        //   title: this.commonService.translateText('Accounting.generate'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
         TailAmount: {
           title: this.commonService.translateText('Accounting.tailAmount'),
           type: 'acc-currency',
           width: '10%',
+          valuePrepareFunction: (cell: any, row: any) => {
+            return Math.abs(row['TailDebit'] - row['TailCredit']) as any;
+          },
         },
         Preview: {
           title: this.commonService.translateText('Common.detail'),
@@ -224,6 +235,10 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
       // rs.forEach(item => {
       //   item.Content = item.Content.substring(0, 256) + '...';
       // });
+      // for (const item of rs) {
+      //   if (item['DebitAccount'] === '4212') item['AccountName'] += ' => Lỗ';
+      //   if (item['CreditAccount'] === '4212') item['AccountName'] += ' => Lãi';
+      // }
       if (callback) callback(rs);
     });
   }

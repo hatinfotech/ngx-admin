@@ -4,18 +4,20 @@ import { SalesVoucherModel } from './../../../../../models/sales.model';
 import { SalesVoucherListComponent } from './../../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../../lib/custom-element/action-control-list/action-control.interface';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
-import { AccountModel, BusinessModel, CashVoucherDetailModel, CashVoucherModel } from '../../../../../models/accounting.model';
+import { AccBankAccount, AccountModel, BusinessModel, CashVoucherDetailModel, CashVoucherModel } from '../../../../../models/accounting.model';
 import { ContactModel } from '../../../../../models/contact.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 import { TaxModel } from '../../../../../models/tax.model';
+import { CustomIcon } from '../../../../../lib/custom-element/form/form-group/form-group.component';
+import { AccBusinessFormComponent } from '../../../acc-business/acc-business-form/acc-business-form.component';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-form',
@@ -39,6 +41,29 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   accountCreditList: AccountModel[] = [];
   accountList: AccountModel[] = [];
   accountingBusinessList: BusinessModel[] = [];
+  bankAccountList: AccBankAccount[] = [];
+
+  customIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(AccBusinessFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Type: 'RECEIPT' }],
+          onDialogSave: (newAccBusiness: BusinessModel[]) => {
+            console.log(newAccBusiness);
+            const accBusiness: any = { ...newAccBusiness[0], id: newAccBusiness[0].Code, text: newAccBusiness[0].Name };
+            detailFormGroup.get('AccountingBusiness').patchValue(accBusiness);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -209,6 +234,20 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     },
   };
 
+  select2OptionForBankAccounting = {
+    placeholder: this.commonService.translateText('Common.bankAccount'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
 
   ngOnInit() {
     this.restrict();
@@ -241,7 +280,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   async init() {
-    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {limit: 'nolimit'}).then(rs => rs.map(account => {
+    this.bankAccountList = await this.apiService.getPromise<AccBankAccount[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;'/';AccountNumber;'/';Bank;'/';Branch)" });
+    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit' }).then(rs => rs.map(account => {
       account['id'] = account.Code;
       account['text'] = account.Code + ' - ' + account.Name;
       return account;
@@ -292,14 +332,18 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       // Currency: ['VND', Validators.required],
       DateOfVoucher: [new Date()],
       RelativeVouchers: [''],
+      BankAccount: [''],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
     if (data) {
       data[this.idKey + '_old'] = data.Code;
       this.prepareRestrictedData(newForm, data);
+      const accoutnGroup = this.commonService.getObjectId(data.BankAccount) ? 'CASHINBANK' : 'CASH';
+      newForm['debitAccounts'] = this.accountList.filter(f => f.Group === accoutnGroup);
       newForm.patchValue(data);
     } else {
+      newForm['debitAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
       this.addDetailFormGroup(newForm);
     }
     return newForm;
@@ -420,6 +464,22 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   }
 
+  onBankAccountChange(formGroup: FormGroup, selectedData: AccountModel) {
+    // console.info(item);
+    if (!this.isProcessing) {
+      if (selectedData && selectedData.id) {
+        formGroup['debitAccounts'] = this.accountList.filter(f => f.Group === 'CASHINBANK');
+      } else {
+        formGroup['debitAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
+      }
+      const details = this.getDetails(formGroup);
+      for (const detail of details.controls) {
+        detail.get('DebitAccount').setValue(formGroup['debitAccounts'] && formGroup['debitAccounts'].length > 0 ? formGroup['debitAccounts'][0] : null);
+      }
+    }
+
+  }
+
   toMoney(formItem: FormGroup) {
     // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
     this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
@@ -457,9 +517,11 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
     if (!this.isProcessing) {
-      detail.get('DebitAccount').setValue(business.DebitAccount);
-      detail.get('CreditAccount').setValue(business.CreditAccount);
-      detail.get('Description').setValue(business.Description);
+      if (business?.DebitAccount) detail.get('DebitAccount').setValue(business.DebitAccount);
+      if (business?.CreditAccount) detail.get('CreditAccount').setValue(business.CreditAccount);
+      const descriptionControl: FormControl = detail.get('Description') as FormControl;
+      if (business?.Name && (!descriptionControl.value || this.accountingBusinessList.findIndex(f => f.Name === descriptionControl.value) > -1))
+        detail.get('Description').setValue(business.Name);
     }
   }
 

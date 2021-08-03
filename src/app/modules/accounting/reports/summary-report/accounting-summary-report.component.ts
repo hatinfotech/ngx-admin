@@ -104,59 +104,43 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
         AccountName: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
-          width: '50%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          width: '20%',
         },
-        // Description: {
-        //   title: this.commonService.translateText('Common.description'),
-        //   type: 'string',
-        //   width: '20%',
-        // },
-        // HeadDebit: {
-        //   title: this.commonService.translateText('Accounting.headDebit'),
-        //   type: 'currency',
-        //   width: '8%',
-        // },
-        // HeadCredit: {
-        //   title: this.commonService.translateText('Accounting.headCredit'),
-        //   type: 'currency',
-        //   width: '8%',
-        // },
-        HeadAmount: {
-          title: this.commonService.translateText('Accounting.headAmount'),
+        HeadDebit: {
+          title: '[' + this.commonService.translateText('Accounting.headDebit'),
           type: 'acc-currency',
           width: '10%',
         },
-        // GenerateDebit: {
-        //   title: this.commonService.translateText('Accounting.debitGenerate'),
-        //   type: 'currency',
-        //   width: '8%',
-        // },
-        // GenerateCredit: {
-        //   title: this.commonService.translateText('Accounting.creditGenerate'),
-        //   type: 'currency',
-        //   width: '8%',
-        // },
-        GenerateAmount: {
-          title: this.commonService.translateText('Accounting.generate'),
+        HeadCredit: {
+          title: this.commonService.translateText('Accounting.headCredit') + ']',
           type: 'acc-currency',
           width: '10%',
         },
-        // TailDebit: {
-        //   title: this.commonService.translateText('Accounting.tailDebit'),
-        //   type: 'currency',
-        //   width: '8%',
-        // },
-        // TailCredit: {
-        //   title: this.commonService.translateText('Accounting.tailCredit'),
-        //   type: 'currency',
-        //   width: '8%',
-        // },
-        TailAmount: {
-          title: this.commonService.translateText('Accounting.tailAmount'),
+        GenerateDebit: {
+          title: '[' + this.commonService.translateText('Accounting.debitGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
+        GenerateCredit: {
+          title: this.commonService.translateText('Accounting.creditGenerate') + ']',
+          type: 'acc-currency',
+          width: '10%',
+        },
+        TailDebit: {
+          title: '[' + this.commonService.translateText('Accounting.tailDebit'),
+          type: 'acc-currency',
+          width: '10%',
+        },
+        TailCredit: {
+          title: this.commonService.translateText('Accounting.tailCredit') + ']',
+          type: 'acc-currency',
+          width: '10%',
+        },
+        // TailAmount: {
+        //   title: this.commonService.translateText('Accounting.tailAmount'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
         // Property: {
         //   title: this.commonService.translateText('Common.property'),
         //   type: 'string',
@@ -229,7 +213,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
     // params['includeParent'] = true;
     params['reportSummary'] = true;
-    params['Accounts'] = '111,112,131,331,511,632,811,156,1331,3331,4212';
+    params['Accounts'] = '111,112,131,331,511,632,6421,4222,811,156,1331,3331,4212,,4111,4112,4118';
     super.executeGet(params, success, error, complete);
   }
 

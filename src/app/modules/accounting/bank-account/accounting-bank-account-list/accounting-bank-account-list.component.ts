@@ -74,7 +74,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         AccountNumber: {
           title: this.commonService.translateText('Accounting.accountNumber'),
           type: 'string',
-          width: '10%',
+          width: '15%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Branch: {
@@ -90,13 +90,18 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         BranchAddress: {
           title: this.commonService.translateText('Common.branchAddress'),
           type: 'string',
-          width: '10%',
+          width: '15%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
           width: '20%',
+        },
+        TailAmount: {
+          title: this.commonService.translateText('Accounting.tailAmount'),
+          type: 'acc-currency',
+          width: '10%',
         },
         Copy: {
           title: 'Copy',

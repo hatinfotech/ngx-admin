@@ -324,7 +324,7 @@ export class DynamicLocaleId extends String {
     NbSelectModule,
     NbActionsModule,
     NbRadioModule,
-    CurrencyMaskModule,
+    // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
     // DialogModule,

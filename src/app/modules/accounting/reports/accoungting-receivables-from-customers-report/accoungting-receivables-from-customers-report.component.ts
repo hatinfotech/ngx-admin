@@ -98,20 +98,35 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
         ObjectName: {
           title: this.commonService.translateText('Common.customerName'),
           type: 'string',
-          width: '50%',
+          width: '20%',
         },
-        HeadAmount: {
-          title: this.commonService.translateText('Accounting.headAmount'),
+        HeadDebit: {
+          title: '[' + this.commonService.translateText('Accounting.headDebit'),
           type: 'acc-currency',
           width: '10%',
         },
-        GenerateAmount: {
-          title: this.commonService.translateText('Accounting.generate'),
+        HeadCredit: {
+          title: this.commonService.translateText('Accounting.headCredit') + ']',
           type: 'acc-currency',
           width: '10%',
         },
-        TailAmount: {
-          title: this.commonService.translateText('Accounting.tailAmount'),
+        GenerateDebit: {
+          title: '[' + this.commonService.translateText('Accounting.debitGenerate'),
+          type: 'acc-currency',
+          width: '10%',
+        },
+        GenerateCredit: {
+          title: this.commonService.translateText('Accounting.creditGenerate') + ']',
+          type: 'acc-currency',
+          width: '10%',
+        },
+        TailDebit: {
+          title: '[' + this.commonService.translateText('Accounting.ReceivablesFromCustomersReport.tailDebit'),
+          type: 'acc-currency',
+          width: '10%',
+        },
+        TailCredit: {
+          title: this.commonService.translateText('Accounting.ReceivablesFromCustomersReport.tailCredit') + ']',
           type: 'acc-currency',
           width: '10%',
         },

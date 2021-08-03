@@ -36,7 +36,7 @@ export class FormGroupComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('Form Group Component Init');
+    // console.log('Form Group Component Init');
   }
 
   formControlValidate(formControl: AbstractControl, invalidText: string, valideText?: string): string {

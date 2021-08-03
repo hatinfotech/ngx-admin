@@ -127,16 +127,26 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
           },
           width: '10%',
         },
-        HeadAmount: {
-          title: this.commonService.translateText('Accounting.headAmount'),
+        GenerateDebit: {
+          title: this.commonService.translateText('Accounting.debitGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
-        GenerateAmount: {
-          title: this.commonService.translateText('Accounting.generate'),
+        GenerateCredit: {
+          title: this.commonService.translateText('Accounting.creditGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
+        // HeadAmount: {
+        //   title: this.commonService.translateText('Accounting.headAmount'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
+        // GenerateAmount: {
+        //   title: this.commonService.translateText('Accounting.generate'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
         IncrementAmount: {
           title: this.commonService.translateText('Accounting.increment'),
           type: 'acc-currency',
@@ -205,7 +215,12 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
     super.getList((rs) => {
       let increment = 0;
       for (const item of rs) {
-        item['IncrementAmount'] = (increment += item['HeadAmount'] + item['GenerateAmount']);
+        if (['131', '141'].indexOf(item['DebitAccount']) > -1) {
+          item['IncrementAmount'] = (increment += (item['GenerateDebit'] - item['GenerateCredit']));
+        }
+        if (['331', '5111', '5112,5113', '5118', '515'].indexOf(item['DebitAccount']) > -1) {
+          item['IncrementAmount'] = (increment += (item['GenerateCredit'] - item['GenerateDebit']));
+        }
       }
       if (callback) callback(rs);
     });

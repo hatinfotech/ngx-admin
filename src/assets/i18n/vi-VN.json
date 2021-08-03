@@ -94,6 +94,14 @@
             "boolean": "đúng/sai",
             "environment": "tham số môi trường"
         },
+        "Currency": {
+            "Vnd": {
+                "label": "Việt Nam đồng"
+            },
+            "Usd": {
+                "label": "Dolar Mỹ"
+            }
+        },
         "create": "tạo",
         "update": "cập nhật",
         "delete": "xoá",
@@ -255,6 +263,7 @@
         "notification": "thông báo",
         "default": "mặc định",
         "expired": "hết hạn",
+        "none": "không có",
         "relativeVoucher": "chứng từ liên quan",
         "accountingBusiness": "nghiệp vụ kế toán",
         "receivedAndPayment": "nhận hàng và thanh toán",
@@ -274,6 +283,7 @@
         "detail": "chi tiết",
         "property": "thuộc tính",
         "customerName": "tên khách hàng",
+        "supplier": "nhà cung cấp",
         "supplierName": "tên nhà cung cấp",
         "contactName": "tên nhà liên hệ",
         "shortName": "tên rút gọn",
@@ -629,6 +639,7 @@
         "dateOfReceipt": "ngày thu tiền",
         "debit": "nợ",
         "credit": "có",
+        "both": "hai bên",
         "debitGenerate": "phát sinh nợ",
         "creditGenerate": "phát sinh có",
         "headCycle": "đầu kỳ",
@@ -648,9 +659,13 @@
         "incrementAmount": "biến động số dư",
         "accountOwner": "chủ tài khoản",
         "accountNumber": "số tài khoản",
+        "reportByObject": "chi tiết theo đối tượng",
+        "profitForward": "kết chuyển lãi/lỗ",
         "LiabilitiesReport": {
             "label": "Công nợ NCC",
-            "title": "{{action}}{{definition}} báo cáo công nợ nhà cung cấp"
+            "title": "{{action}}{{definition}} báo cáo công nợ nhà cung cấp",
+            "tailDebit": "ứng trước",
+            "tailCredit": "đang nợ"
         },
         "ReceivablesReport": {
             "label": "Công nợ thải thu",
@@ -658,11 +673,15 @@
         },
         "ReceivablesFromCustomersReport": {
             "label": "Công nợ KH",
-            "title": "{{action}}{{definition}} báo cáo công nợ khách hàng"
+            "title": "{{action}}{{definition}} báo cáo công nợ khách hàng",
+            "tailDebit": "đang nợ",
+            "tailCredit": "ứng trước"
         },
         "ReceivablesFromEmployeeReport": {
             "label": "Công nợ NV",
-            "title": "{{action}}{{definition}} Báo cáo công nợ nhân viên"
+            "title": "{{action}}{{definition}} Báo cáo công nợ nhân viên",
+            "tailDebit": "tạm ứng",
+            "tailCredit": "hoàn ứng"
         },
         "ProfitReport": {
             "label": "Lãi lỗ",
