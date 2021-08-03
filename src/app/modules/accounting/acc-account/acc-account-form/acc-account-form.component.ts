@@ -109,7 +109,7 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
     ];
     this.accountPropertyList = [
       {
-        id: 'DEBT',
+        id: 'DEBIT',
         text: this.commonService.translateText('Accounting.debit'),
       },
       {
