@@ -87,7 +87,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   @Input('value') value: string | string[];
   // @Input('disabled') disabled: string | string[];
   _select2Option: Select2Options;
-  @Input('select2Option') set select2Option(option: Select2Options){
+  @Input('select2Option') set select2Option(option: Select2Options) {
     option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
       if (object?.id === object?.text) {
         $(container).addClass('new');
@@ -125,12 +125,12 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     // $(this.controls.nativeElement).prop('status', this.status);
     // (async () => {
     //   while (!this.select2Option) await new Promise(resolve => setTimeout(() => resolve(true), 50));
-      // this.select2Option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
-      //   if (object?.id === object?.text) {
-      //     $(container).addClass('new');
-      //   }
-      //   return object?.text;
-      // };
+    // this.select2Option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
+    //   if (object?.id === object?.text) {
+    //     $(container).addClass('new');
+    //   }
+    //   return object?.text;
+    // };
     //   this._select2Option = this.select2Option;
     // })();
 
@@ -231,21 +231,24 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
         } else {
           vl = value;
         }
-        const data = [...this.data];
         if (this.getItemId(vl) && this.getItemText(vl)) {
+          const data = [...this.data.map(idata => { delete idata.selected; return idata; })];
           // Auto push item to data if not exists
           // if (!this.data) {
           //   this.data = [];
           // }
           if (!data.some(item => this.getItemId(item) === this.getItemId(vl))) {
-            data.push({ id: this.getItemId(vl), text: this.getItemText(vl) });
+            data.push({ ...vl, id: this.getItemId(vl), text: this.getItemText(vl), selected: true });
           }
+          this.data = data;
           this.value = this.getItemId(vl);
           // this.value = vl;
         } else {
+          if (typeof vl === 'object') {
+            console.warn('select 2 value is a object but not contain id and text properties');
+          }
           this.value = vl;
         }
-        this.data = data;
       }
     }
     else {
