@@ -165,6 +165,10 @@ import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/r
 import { AccountingOtherBusinessVoucherListComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-list/accounting-other-business-voucher-list.component';
 import { AccountingOtherBusinessVoucherFormComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
+import { AccountingBankListComponent } from './modules/accounting/bank/accounting-bank-list/accounting-bank-list.component';
+import { AccountingBankFormComponent } from './modules/accounting/bank/accounting-bank-form/accounting-bank-form.component';
+import { AccountingBankAccountListComponent } from './modules/accounting/bank-account/accounting-bank-account-list/accounting-bank-account-list.component';
+import { AccountingBankAccountFormComponent } from './modules/accounting/bank-account/accounting-bank-account-form/accounting-bank-account-form.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -277,6 +281,10 @@ export class DynamicLocaleId extends String {
     AccountingOtherBusinessVoucherListComponent,
     AccountingOtherBusinessVoucherFormComponent,
     AccountingOtherBusinessVoucherPrintComponent,
+    AccountingBankListComponent,
+    AccountingBankFormComponent,
+    AccountingBankAccountListComponent,
+    AccountingBankAccountFormComponent,
     
 
     // Deployment components

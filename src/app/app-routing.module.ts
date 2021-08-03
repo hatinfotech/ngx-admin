@@ -1,3 +1,7 @@
+import { AccountingBankAccountFormComponent } from './modules/accounting/bank-account/accounting-bank-account-form/accounting-bank-account-form.component';
+import { AccountingBankAccountListComponent } from './modules/accounting/bank-account/accounting-bank-account-list/accounting-bank-account-list.component';
+import { AccountingBankFormComponent } from './modules/accounting/bank/accounting-bank-form/accounting-bank-form.component';
+import { AccountingBankListComponent } from './modules/accounting/bank/accounting-bank-list/accounting-bank-list.component';
 import { AccountingOtherBusinessVoucherListComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-list/accounting-other-business-voucher-list.component';
 import { PurchaseGoodsListComponent } from './modules/purchase/goods/purchase-goods-list/purchase-goods-list.component';
 import { ExtraOptions, RouterModule, Routes, Resolve, ActivatedRouteSnapshot } from '@angular/router';
@@ -615,30 +619,39 @@ const routes: Routes = [
       reuse: true,
     },
   },
-  // {
-  //   path: 'accounting/report/summary',
-  //   canActivate: [AuthGuardService],
-  //   component: SummaryReportComponent,
-  //   data: {
-  //     reuse: true,
-  //   },
-  // },
-  // {
-  //   path: 'accounting/report/liabilities',
-  //   canActivate: [AuthGuardService],
-  //   component: AccountingLiabilitiesReportComponent,
-  //   data: {
-  //     reuse: true,
-  //   },
-  // },
-  // {
-  //   path: 'accounting/report/receivables',
-  //   canActivate: [AuthGuardService],
-  //   component: AccountingReceivablesReportComponent,
-  //   data: {
-  //     reuse: true,
-  //   },
-  // },
+  // accounting bank
+  {
+    path: 'accounting/bank/list',
+    canActivate: [AuthGuardService],
+    component: AccountingBankListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'accounting/bank/form',
+    canActivate: [AuthGuardService],
+    component: AccountingBankFormComponent,
+  },
+  // accounting bank account
+  {
+    path: 'accounting/bank-account/list',
+    canActivate: [AuthGuardService],
+    component: AccountingBankAccountListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'accounting/bank-account/form',
+    canActivate: [AuthGuardService],
+    component: AccountingBankAccountFormComponent,
+  },
+
+
+
+
+
 
   // Deployment routes
   {

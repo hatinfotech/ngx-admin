@@ -1,8 +1,9 @@
+import { AccBusinessFormComponent } from './../../../acc-business/acc-business-form/acc-business-form.component';
 import { TaxModel } from './../../../../../models/tax.model';
-import { AccountModel, BusinessModel } from './../../../../../models/accounting.model';
+import { AccountModel, BusinessModel, AccBankAccount } from './../../../../../models/accounting.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
@@ -17,6 +18,7 @@ import { Select2SelectionObject } from '../../../../../../vendor/ng2select2/lib/
 import { PurchaseVoucherListComponent } from '../../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
 import { PurchaseVoucherModel } from '../../../../../models/purchase.model';
 import { PurchaseVoucherPrintComponent } from '../../../../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
+import { CustomIcon } from '../../../../../lib/custom-element/form/form-group/form-group.component';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-form',
@@ -37,6 +39,29 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
   accountingBusinessList: BusinessModel[] = [];
+  bankAccountList: AccBankAccount[] = [];
+
+  customIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(AccBusinessFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Type: 'PAYMENT' }],
+          onDialogSave: (newAccBusiness: BusinessModel[]) => {
+            console.log(newAccBusiness);
+            const accBusiness: any = { ...newAccBusiness[0], id: newAccBusiness[0].Code, text: newAccBusiness[0].Name };
+            detailFormGroup.get('AccountingBusiness').patchValue(accBusiness);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -104,6 +129,20 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     },
   };
 
+  select2OptionForBankAccounting = {
+    placeholder: this.commonService.translateText('Common.bankAccount'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   // Currency list
   currencyList = [
     {
@@ -158,12 +197,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    dropdownCssClass: 'is_tags',
+    // dropdownCssClass: 'is_tags',
     // multiple: true,
-    tags: true,
+    // tags: true,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
   };
 
@@ -249,20 +288,20 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   async init() {
-    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {limit: 'nolimit'}).then(rs => rs.map(account => {
+    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit' }).then(rs => rs.map(account => {
       account['id'] = account.Code;
       account['text'] = account.Code + ' - ' + account.Name;
       return account;
     }));
 
     this.accountDebitList = this.accountList.filter(f => f.Group != 'CASH');
-    this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
+    // this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { limit: 'nolimit', eq_Type: 'PAYMENT' }).then(rs => rs.map(accBusiness => {
-      accBusiness['id'] = accBusiness.Code;
-      accBusiness['text'] = accBusiness.Name;
-      return accBusiness;
-    }));
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { select: 'id=>Code,text=>Name,DebitAccount=>DebitAccount,CreditAccount=>CreditAccount,Name=>Name,Code=>Code', limit: 'nolimit', eq_Type: 'PAYMENT' });
+    this.bankAccountList = await this.apiService.getPromise<AccBankAccount[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;'/';AccountNumber;'/';Bank;'/';Branch)" });
+    return super.init().then(rs => {
+      return rs;
+    });
     return super.init().then(rs => {
       // this.getRequestId(id => {
       //   if (!id || id.length === 0) {
@@ -302,14 +341,18 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       // Currency: ['VND', Validators.required],
       DateOfVoucher: [new Date()],
       RelativeVouchers: [''],
+      BankAccount: [''],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
     if (data) {
       data[this.idKey + '_old'] = data.Code;
       this.prepareRestrictedData(newForm, data);
+      const accoutnGroup = this.commonService.getObjectId(data.BankAccount) ? 'CASHINBANK' : 'CASH';
+      newForm['creditAccounts'] = this.accountList.filter(f => f.Group === accoutnGroup);
       newForm.patchValue(data);
     } else {
+      newForm['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
       this.addDetailFormGroup(newForm);
     }
     return newForm;
@@ -358,6 +401,11 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       newForm.patchValue(data);
       this.toMoney(parentFormGroup);
     }
+    // setTimeout(() => {
+    //   const testBusiness = this.accountingBusinessList.find(f => f.Code === 'PAYMENTSUPPPLIER');
+    //   console.log(testBusiness);
+    //   newForm.get('AccountingBusiness').patchValue(testBusiness);
+    // }, 5000);
     return newForm;
   }
 
@@ -428,6 +476,17 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     }
   }
 
+  onBankAccountChange(formGroup: FormGroup, selectedData: AccountModel) {
+    // console.info(item);
+
+    if (selectedData && selectedData.id) {
+      formGroup['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASHINBANK');
+    } else {
+      formGroup['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
+    }
+
+  }
+
   onChangeCurrency(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
 
   }
@@ -473,9 +532,11 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
   onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
     if (!this.isProcessing) {
-      detail.get('DebitAccount').setValue(business.DebitAccount);
-      detail.get('CreditAccount').setValue(business.CreditAccount);
-      detail.get('Description').setValue(business.Description);
+      if (business?.DebitAccount) detail.get('DebitAccount').setValue(business.DebitAccount);
+      if (business?.CreditAccount) detail.get('CreditAccount').setValue(business.CreditAccount);
+      const descriptionControl: FormControl = detail.get('Description') as FormControl;
+      if (business?.Name && (!descriptionControl.value || this.accountingBusinessList.findIndex(f => f.Name === descriptionControl.value) > -1))
+        detail.get('Description').setValue(business.Name);
     }
   }
 

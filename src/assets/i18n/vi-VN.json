@@ -276,6 +276,11 @@
         "customerName": "tên khách hàng",
         "supplierName": "tên nhà cung cấp",
         "contactName": "tên nhà liên hệ",
+        "shortName": "tên rút gọn",
+        "branchAddress": "địa chỉ chi nhánh",
+        "autoGenerate": "tự phát sinh",
+        "bank": "ngân hàng",
+        "bankAccount": "tài khoản ngân hàng",
         "voucher": "chứng từ"
     },
     "Contact": {
@@ -641,6 +646,8 @@
         "dateOfWriting": "ngày ghi sổ",
         "increment": "biến động",
         "incrementAmount": "biến động số dư",
+        "accountOwner": "chủ tài khoản",
+        "accountNumber": "số tài khoản",
         "LiabilitiesReport": {
             "label": "Công nợ NCC",
             "title": "{{action}}{{definition}} báo cáo công nợ nhà cung cấp"
@@ -673,6 +680,10 @@
             "label": "Chứng từ nghiệp vụ khác",
             "title": "{{action}}{{definition}} chứng từ nghiệp vụ khác",
             "printTitle": "chứng từ kế toán"
+        },
+        "Business": {
+            "label": "nghiệp vụ kế toán",
+            "title": "{{action}}{{definition}} nghiệp vụ kế toán"
         }
     },
     "Print": {

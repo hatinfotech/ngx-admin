@@ -48,6 +48,8 @@ export interface CashVoucherModel {
     Details?: CashVoucherDetailModel[];
     State?: string;
     Permission?: string;
+    BankAccount?: string;
+    Bank?: string;
 }
 
 export interface CashVoucherDetailModel {
@@ -102,5 +104,29 @@ export interface OtherBusinessVoucherDetailModel {
     DebitObjectName?: string;
     CreditObject?: string;
     CreditObjectName?: string;
+}
 
+export interface AccBank {
+    [key: string]: any;
+    Id?: string;
+    Code?: string;
+    Name?: string;
+    Logo?: string;
+    ShortName?: string;
+    Description?: string;
+    EnglishName?: string;
+    Address?: string;
+}
+
+export interface AccBankAccount {
+    [key: string]: any;
+    Id?: string;
+    Code?: string;
+    AccountNumber?: string;
+    Name?: string;
+    Branch?: string;
+    Province?: string;
+    BranchAddress?: string;
+    Owner?: string;
+    Description?: string;
 }
