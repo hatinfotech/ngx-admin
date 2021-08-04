@@ -18,9 +18,14 @@
                     <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Common.code' | translate | headtitlecase}}">
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                   <ngx-form-group [formGroup]="formItem" name="Currency" label="Common.currency" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
                     <ngx-select2 formControlName="Currency" [select2Option]="currencyListSelect2Option" [data]="currencyList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-1">
+                  <ngx-form-group [formGroup]="formItem" name="Property" label="Accounting.property" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
+                    <ngx-select2 formControlName="Property" [select2Option]="accountTypeListSelect2Option" [data]="accountPropertyList"></ngx-select2>
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-6">
@@ -34,8 +39,10 @@
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="Property" label="Accounting.property" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
-                    <ngx-select2 formControlName="Property" [select2Option]="accountTypeListSelect2Option" [data]="accountPropertyList"></ngx-select2>
+                  <ngx-form-group [formGroup]="formItem" name="ReportByBankAccount" label="Accounting.reportByBankAccount" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                    <nb-checkbox formControlName="ReportByBankAccount">
+                      <label class="label"><span class="valid">{{'Accounting.reportByBankAccount' | translate | headtitlecase}}</span></label>
+                    </nb-checkbox>
                   </ngx-form-group>
                 </div>
               </div>

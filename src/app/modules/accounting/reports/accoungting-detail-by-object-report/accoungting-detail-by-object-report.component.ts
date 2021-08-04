@@ -84,7 +84,7 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
     ];
     return super.init().then(rs => {
       // this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
-      this.actionButtonList = this.actionButtonList.filter(f => ['delete','edit','add','choose','preview'].indexOf(f.name) < 0);
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
       return rs;
     });
   }
@@ -221,11 +221,13 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
     super.getList((rs) => {
       let increment = 0;
       for (const item of rs) {
-        if (['131', '141'].indexOf(item['Account']) > -1) {
+        // if (['131', '141', '1111','1121'].indexOf(item['Account']) > -1) {
+        if (/^[1|2|6|8]/.test(item['Account'])) {
           item['HeadAmount'] = item['HeadDebit'] - item['HeadCredit'];
           item['IncrementAmount'] = (increment += item['HeadAmount'] + (item['GenerateDebit'] - item['GenerateCredit']));
         }
-        if (['331', '5111', '5112,5113', '5118', '515'].indexOf(item['Account']) > -1) {
+        // if (['331', '5111', '5112,5113', '5118', '515'].indexOf(item['Account']) > -1) {
+        if (/^[3|5|4|9]/.test(item['Account'])) {
           item['HeadAmount'] = item['HeadCredit'] - item['HeadDebit'];
           item['IncrementAmount'] = (increment += item['HeadAmount'] + (item['GenerateCredit'] - item['GenerateDebit']));
         }

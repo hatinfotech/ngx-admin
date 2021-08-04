@@ -292,6 +292,7 @@
         "bank": "ngân hàng",
         "bankAccount": "tài khoản ngân hàng",
         "voucher": "chứng từ",
+        "englishName": "tên tiếng anh",
         "addObject": "thêm đối tượng"
     },
     "Contact": {
@@ -661,8 +662,10 @@
         "accountOwner": "chủ tài khoản",
         "accountNumber": "số tài khoản",
         "reportByObject": "chi tiết theo đối tượng",
+        "reportByBankAccount": "chi tiết theo TK ngân hàng",
         "profitForward": "kết chuyển lãi/lỗ",
         "addAccount": "thêm tài khoản",
+        "property": "tính chất",
         "MasterBook": {
             "label": "sổ cái",
             "title": "{{action}}{{definition}} sổ cái kế toán",
@@ -707,9 +710,18 @@
             "title": "{{action}}{{definition}} chứng từ nghiệp vụ khác",
             "printTitle": "chứng từ kế toán"
         },
+        "Bank": {
+            "title": "{{action}}{{definition}} ngân hàng"
+        },
+        "BankAccount": {
+            "title": "{{action}}{{definition}} tài khoản ngân hàng"
+        },
         "Business": {
             "label": "nghiệp vụ kế toán",
             "title": "{{action}}{{definition}} nghiệp vụ kế toán"
+        },
+        "Warning": {
+            "headAmountNotBalanced": "Số dư đầu kỳ không cân đối, bạn phải nhập số dư sao tổng dư nợ đầu kỳ phải bằng tổng dư có đầu kỳ."
         }
     },
     "Print": {

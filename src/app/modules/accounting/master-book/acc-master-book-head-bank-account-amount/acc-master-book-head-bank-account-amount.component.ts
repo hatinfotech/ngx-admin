@@ -1,5 +1,5 @@
-import { ContactModel } from './../../../../models/contact.model';
-import { ContactListComponent } from './../../../contact/contact/contact-list/contact-list.component';
+import { AccBankAccountModel } from './../../../../models/accounting.model';
+import { AccountingBankAccountListComponent } from './../../bank-account/accounting-bank-account-list/accounting-bank-account-list.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -8,20 +8,22 @@ import { take, takeUntil } from 'rxjs/operators';
 import { SmartTableNumberEditableComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
+import { ContactModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { ContactListComponent } from '../../../contact/contact/contact-list/contact-list.component';
 
 @Component({
-  selector: 'ngx-acc-master-book-head-object-amount',
-  templateUrl: './acc-master-book-head-object-amount.component.html',
-  styleUrls: ['./acc-master-book-head-object-amount.component.scss']
+  selector: 'ngx-acc-master-book-head-bank-account-amount',
+  templateUrl: './acc-master-book-head-bank-account-amount.component.html',
+  styleUrls: ['./acc-master-book-head-bank-account-amount.component.scss']
 })
-export class AccMasterBookHeadObjectAmountComponent extends DataManagerListComponent<AccountModel> implements OnInit {
+export class AccMasterBookHeadBankAccountAmountComponent extends DataManagerListComponent<any> implements OnInit {
 
-  componentName: string = 'AccAccountListComponent';
+  componentName: string = 'AccMasterBookHeadBankAccountAmountComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/master-book-head-entries';
-  idKey = 'Object';
+  idKey = 'BankAccount';
   // formDialog = AccMasterBookHeadAmountComponent;
 
   reuseDialog = true;
@@ -43,7 +45,7 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccMasterBookHeadObjectAmountComponent>,
+    public ref: NbDialogRef<AccMasterBookHeadBankAccountAmountComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -69,15 +71,15 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
         addActionButton.status = 'success';
         addActionButton.label = this.commonService.translateText('Common.addObject');
         addActionButton.click = () => {
-          this.commonService.openDialog(ContactListComponent, {
+          this.commonService.openDialog(AccountingBankAccountListComponent, {
             context: {
               inputMode: 'dialog',
-              onDialogChoose: (accounts: ContactModel[]) => {
+              onDialogChoose: (accounts: AccBankAccountModel[]) => {
                 // console.log(accounts);
-                for (const contact of accounts) {
+                for (const bankAccount of accounts) {
                   this.source.append({
-                    Object: contact.Code,
-                    ObjectName: contact.Name,
+                    BankAccount: bankAccount.Code,
+                    BankAccountDescription: bankAccount.Description,
                     Debit: 0,
                     Credit: 0
                   });
@@ -99,14 +101,14 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
     return this.configSetting({
       actions: false,
       columns: {
-        Object: {
-          title: this.commonService.translateText('Common.object'),
+        BankAccount: {
+          title: this.commonService.translateText('Common.bankAccount'),
           type: 'string',
           width: '5%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        ObjectName: {
-          title: this.commonService.translateText('Common.objectName'),
+        BankAccountDescription: {
+          title: this.commonService.translateText('Common.description'),
           type: 'string',
           width: '45%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),

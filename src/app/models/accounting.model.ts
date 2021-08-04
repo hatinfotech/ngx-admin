@@ -10,8 +10,9 @@ export class AccountModel {
     Level?: string;
     Type?: string;
     Group?: string;
-    ReportByObject?: string;
     NumOfChildren?: number;
+    ReportByObject?: string;
+    ReportByBankAccount?: string;
 }
 
 export class BusinessModel {

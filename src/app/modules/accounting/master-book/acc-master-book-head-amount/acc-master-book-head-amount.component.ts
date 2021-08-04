@@ -1,3 +1,4 @@
+import { AccMasterBookHeadBankAccountAmountComponent } from './../acc-master-book-head-bank-account-amount/acc-master-book-head-bank-account-amount.component';
 import { AccMasterBookModel } from './../../../../models/accounting.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
@@ -9,7 +10,6 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { AccMasterBookHeadObjectAmountComponent } from '../acc-master-book-head-object-amount/acc-master-book-head-object-amount.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
 
@@ -74,6 +74,7 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
                     Currency: account.Currency,
                     Property: account.Property,
                     ReportByObject: account.ReportByObject,
+                    ReportByBankAccount: account.ReportByBankAccount,
                     NumOfChildren: account.NumOfChildren,
                     Debit: 0,
                     Credit: 0
@@ -189,50 +190,75 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
             instance.label = this.commonService.translateText('Accounting.reportByObject');
             instance.title = this.commonService.translateText('Accounting.reportByObject');
             instance.init.pipe(takeUntil(this.destroy$)).subscribe(initRowData => {
-              if (!instance.rowData?.ReportByObject) {
+              if (!instance.rowData?.ReportByObject && !instance.rowData?.ReportByBankAccount) {
                 instance.disabled = true;
               }
+
+              if (instance.rowData?.ReportByBankAccount) {
+                instance.label = this.commonService.translateText('Accounting.reportByBankAccount');
+              }
+
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: AccountModel) => {
-              this.commonService.openDialog(AccMasterBookHeadObjectAmountComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  data: rowData['ReportByObjectDetails'] || [],
-                  onDialogChoose: (detailsData: any[]) => {
-                    console.log(detailsData);
-                    if (detailsData && Array.isArray(detailsData)) {
-                      instance.rowData['ReportByObjectDetails'] = detailsData.map(m => ({
-                        Object: m.Object,
-                        ObjectName: m.ObjectName,
-                        Debit: m.Debit,
-                        Credit: m.Credit,
-                      }));
-                      rowData.Debit = 0;
-                      rowData.Credit = 0;
-                      for (const detail of detailsData) {
-                        rowData.Debit += detail.Debit;
-                        rowData.Credit += detail.Credit;
+              if (instance.rowData?.ReportByObject) {
+                this.commonService.openDialog(AccMasterBookHeadObjectAmountComponent, {
+                  context: {
+                    inputMode: 'dialog',
+                    data: rowData['ReportByObjectDetails'] || [],
+                    onDialogChoose: (detailsData: any[]) => {
+                      console.log(detailsData);
+                      if (detailsData && Array.isArray(detailsData)) {
+                        instance.rowData['ReportByObjectDetails'] = detailsData.map(m => ({
+                          Object: m.Object,
+                          ObjectName: m.ObjectName,
+                          Debit: m.Debit,
+                          Credit: m.Credit,
+                        }));
+                        rowData.Debit = 0;
+                        rowData.Credit = 0;
+                        for (const detail of detailsData) {
+                          rowData.Debit += detail.Debit;
+                          rowData.Credit += detail.Credit;
+                        }
+                        this.updateGridItems([rowData], [rowData]);
                       }
-                      this.updateGridItems([rowData], [rowData]);
-                    }
+                    },
                   },
-                  // inputId: ids,
-                  // data: [{ Type: 'RECEIPT' }],
-                  // onDialogSave: (newAccBusiness: AccMasterBookModel[]) => {
-                  //   console.log(newAccBusiness);
-                  //   // const accBusiness: any = { ...newAccBusiness[0], id: newAccBusiness[0].Code, text: newAccBusiness[0].Name };
-                  //   // detailFormGroup.get('AccountingBusiness').patchValue(accBusiness);
-                  // },
-                  // onDialogClose: () => {
-
-                  // },
-                },
-                closeOnEsc: false,
-                closeOnBackdropClick: false,
-              });
+                  closeOnEsc: false,
+                  closeOnBackdropClick: false,
+                });
+              }
+              if (instance.rowData?.ReportByBankAccount) {
+                this.commonService.openDialog(AccMasterBookHeadBankAccountAmountComponent, {
+                  context: {
+                    inputMode: 'dialog',
+                    data: rowData['ReportByBankAccountDetails'] || [],
+                    onDialogChoose: (detailsData: any[]) => {
+                      console.log(detailsData);
+                      if (detailsData && Array.isArray(detailsData)) {
+                        instance.rowData['ReportByBankAccountDetails'] = detailsData.map(m => ({
+                          BankAccount: m.BankAccount,
+                          BankAccountDescription: m.BankAccountDescription,
+                          Debit: m.Debit,
+                          Credit: m.Credit,
+                        }));
+                        rowData.Debit = 0;
+                        rowData.Credit = 0;
+                        for (const detail of detailsData) {
+                          rowData.Debit += detail.Debit;
+                          rowData.Credit += detail.Credit;
+                        }
+                        this.updateGridItems([rowData], [rowData]);
+                      }
+                    },
+                  },
+                  closeOnEsc: false,
+                  closeOnBackdropClick: false,
+                });
+              }
             });
           },
         },
@@ -314,16 +340,34 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
   }
 
   saveAndClose() {
-    this.save();
-    this.close();
+    this.save().then(rs => {
+      if (rs) {
+        this.close();
+      }
+    });
     return true;
   }
 
-  save() {
+  async save() {
     this.loading = true;
-    this.source.getAll().then(data => {
+    await new Promise(resolve => setTimeout(() => resolve(true), 500));
+    return this.source.getAll().then(data => {
       // console.log(data.filter(f => !!f?.hasModified));
-      this.apiService.putPromise(this.apiPath, { masterBook: this.masterBook.Code }, data).then(rs => {
+
+      let credit = 0;
+      let debit = 0;
+      for (const entry of data) {
+        debit += entry.Debit;
+        credit += entry.Credit;
+      }
+
+      if (debit != credit) {
+        this.loading = false;
+        this.commonService.showDiaplog(this.commonService.translateText('Accounting.headAmount'), this.commonService.translateText('Accounting.Warning.headAmountNotBalanced'), []);
+        return false;
+      }
+
+      return this.apiService.putPromise(this.apiPath, { masterBook: this.masterBook.Code }, data).then(rs => {
         this.loading = false;
         return rs;
       }).catch(err => {
@@ -331,7 +375,6 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
         return Promise.reject(err);
       });
     })
-    return true;
   }
 
 }

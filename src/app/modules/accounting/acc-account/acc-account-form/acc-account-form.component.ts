@@ -176,6 +176,7 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
       Property: ['', Validators.required],
       Group: [''],
       ReportByObject: [''],
+      ReportByBankAccount: [false],
     });
     if (data) {
       newForm.patchValue(data);

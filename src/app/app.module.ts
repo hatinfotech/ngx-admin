@@ -173,6 +173,7 @@ import { AccMasterBookListComponent } from './modules/accounting/master-book/acc
 import { AccMasterBookFormComponent } from './modules/accounting/master-book/acc-master-book-form/acc-master-book-form.component';
 import { AccMasterBookHeadAmountComponent } from './modules/accounting/master-book/acc-master-book-head-amount/acc-master-book-head-amount.component';
 import { AccMasterBookHeadObjectAmountComponent } from './modules/accounting/master-book/acc-master-book-head-object-amount/acc-master-book-head-object-amount.component';
+import { AccMasterBookHeadBankAccountAmountComponent } from './modules/accounting/master-book/acc-master-book-head-bank-account-amount/acc-master-book-head-bank-account-amount.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -311,6 +312,7 @@ export class DynamicLocaleId extends String {
     AccMasterBookFormComponent,
     AccMasterBookHeadAmountComponent,
     AccMasterBookHeadObjectAmountComponent,
+    AccMasterBookHeadBankAccountAmountComponent,
     
   ],
   imports: [

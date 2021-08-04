@@ -74,7 +74,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         AccountNumber: {
           title: this.commonService.translateText('Accounting.accountNumber'),
           type: 'string',
-          width: '10  %',
+          width: '10%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Branch: {
@@ -90,7 +90,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         BranchAddress: {
           title: this.commonService.translateText('Common.branchAddress'),
           type: 'string',
-          width: '15%',
+          width: '20%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Description: {
@@ -103,44 +103,44 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
           type: 'acc-currency',
           width: '10%',
         },
-        Copy: {
-          title: 'Copy',
-          type: 'custom',
-          width: '5%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'copy';
-            // instance.label = this.commonService.translateText('Common.copy');
-            instance.display = true;
-            instance.status = 'warning';
-            instance.valueChange.subscribe(value => {
-              // if (value) {
-              //   instance.disabled = false;
-              // } else {
-              //   instance.disabled = true;
-              // }
-            });
-            instance.click.subscribe(async (row: AccBankAccountModel) => {
+        // Copy: {
+        //   title: 'Copy',
+        //   type: 'custom',
+        //   width: '5%',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'copy';
+        //     // instance.label = this.commonService.translateText('Common.copy');
+        //     instance.display = true;
+        //     instance.status = 'warning';
+        //     instance.valueChange.subscribe(value => {
+        //       // if (value) {
+        //       //   instance.disabled = false;
+        //       // } else {
+        //       //   instance.disabled = true;
+        //       // }
+        //     });
+        //     instance.click.subscribe(async (row: AccBankAccountModel) => {
 
-              this.commonService.openDialog(AccBusinessFormComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  inputId: [row.Code],
-                  isDuplicate: true,
-                  onDialogSave: (newData: AccBankAccountModel[]) => {
-                    // if (onDialogSave) onDialogSave(row);
-                  },
-                  onDialogClose: () => {
-                    // if (onDialogClose) onDialogClose();
-                    this.refresh();
-                  },
-                },
-              });
+        //       this.commonService.openDialog(AccBusinessFormComponent, {
+        //         context: {
+        //           inputMode: 'dialog',
+        //           inputId: [row.Code],
+        //           isDuplicate: true,
+        //           onDialogSave: (newData: AccBankAccountModel[]) => {
+        //             // if (onDialogSave) onDialogSave(row);
+        //           },
+        //           onDialogClose: () => {
+        //             // if (onDialogClose) onDialogClose();
+        //             this.refresh();
+        //           },
+        //         },
+        //       });
 
-            });
-          },
-        },
+        //     });
+        //   },
+        // },
       },
     });
   }

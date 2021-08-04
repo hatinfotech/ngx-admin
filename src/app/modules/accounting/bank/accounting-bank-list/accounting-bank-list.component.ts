@@ -60,76 +60,65 @@ export class AccountingBankListComponent extends ServerDataManagerListComponent<
           width: '10%',
         },
         ShortName: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.commonService.translateText('Common.shortName'),
           type: 'string',
-          width: '15%',
+          width: '20%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Name: {
           title: this.commonService.translateText('Common.name'),
           type: 'string',
-          width: '15%',
+          width: '30%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        Description: {
-          title: this.commonService.translateText('Common.description'),
+        EnglishName: {
+          title: this.commonService.translateText('Common.englishName'),
           type: 'string',
           width: '20%',
         },
-        DebitAccount: {
+        Address: {
           title: this.commonService.translateText('Accounting.debitAccount'),
           type: 'string',
-          width: '15%',
+          width: '20%',
         },
-        CreditAccount: {
-          title: this.commonService.translateText('Accounting.creditAccount'),
-          type: 'string',
-          width: '15%',
-        },
-        Type: {
-          title: this.commonService.translateText('Common.type'),
-          type: 'string',
-          width: '10%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        },
-        Copy: {
-          title: 'Copy',
-          type: 'custom',
-          width: '5%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'copy';
-            // instance.label = this.commonService.translateText('Common.copy');
-            instance.display = true;
-            instance.status = 'warning';
-            instance.valueChange.subscribe(value => {
-              // if (value) {
-              //   instance.disabled = false;
-              // } else {
-              //   instance.disabled = true;
-              // }
-            });
-            instance.click.subscribe(async (row: AccBankModel) => {
+        // Copy: {
+        //   title: 'Copy',
+        //   type: 'custom',
+        //   width: '5%',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'copy';
+        //     // instance.label = this.commonService.translateText('Common.copy');
+        //     instance.display = true;
+        //     instance.status = 'warning';
+        //     instance.valueChange.subscribe(value => {
+        //       // if (value) {
+        //       //   instance.disabled = false;
+        //       // } else {
+        //       //   instance.disabled = true;
+        //       // }
+        //     });
+        //     instance.click.subscribe(async (row: AccBankModel) => {
 
-              this.commonService.openDialog(AccBusinessFormComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  inputId: [row.Code],
-                  isDuplicate: true,
-                  onDialogSave: (newData: AccBankModel[]) => {
-                    // if (onDialogSave) onDialogSave(row);
-                  },
-                  onDialogClose: () => {
-                    // if (onDialogClose) onDialogClose();
-                    this.refresh();
-                  },
-                },
-              });
+        //       this.commonService.openDialog(AccBusinessFormComponent, {
+        //         context: {
+        //           inputMode: 'dialog',
+        //           inputId: [row.Code],
+        //           isDuplicate: true,
+        //           onDialogSave: (newData: AccBankModel[]) => {
+        //             // if (onDialogSave) onDialogSave(row);
+        //           },
+        //           onDialogClose: () => {
+        //             // if (onDialogClose) onDialogClose();
+        //             this.refresh();
+        //           },
+        //         },
+        //       });
 
-            });
-          },
-        },
+        //     });
+        //   },
+        // },
       },
     });
   }
