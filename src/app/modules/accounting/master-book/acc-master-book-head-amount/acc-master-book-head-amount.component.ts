@@ -1,3 +1,4 @@
+import { AccMasterBookListComponent } from './../acc-master-book-list/acc-master-book-list.component';
 import { AccMasterBookHeadBankAccountAmountComponent } from './../acc-master-book-head-bank-account-amount/acc-master-book-head-bank-account-amount.component';
 import { AccMasterBookModel } from './../../../../models/accounting.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -86,6 +87,24 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
           })
         };
       }
+
+      const indexOfAddButton = this.actionButtonList.findIndex(f => f.name === 'add');
+      this.actionButtonList.splice(indexOfAddButton + 1, 0, {
+        label: this.commonService.translateText('Accounting.MasterBook.importFromAnMasterBook'),
+        icon: 'import',
+        type: 'button',
+        status: 'primary',
+        size: 'medium',
+        title: this.commonService.translateText('Accounting.MasterBook.importFromAnMasterBook'),
+        click: () => {
+          this.commonService.openDialog(AccMasterBookListComponent, {
+            context: {
+              inputMode: 'dialog',
+            }
+          });
+        },
+      });
+
       this.actionButtonList.unshift({
         label: this.commonService.translateText('Common.save'),
         icon: 'save',

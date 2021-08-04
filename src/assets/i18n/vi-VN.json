@@ -285,7 +285,7 @@
         "customerName": "tên khách hàng",
         "supplier": "nhà cung cấp",
         "supplierName": "tên nhà cung cấp",
-        "contactName": "tên nhà liên hệ",
+        "contactName": "tên liên hệ",
         "shortName": "tên rút gọn",
         "branchAddress": "địa chỉ chi nhánh",
         "autoGenerate": "tự phát sinh",
@@ -667,9 +667,44 @@
         "addAccount": "thêm tài khoản",
         "property": "tính chất",
         "MasterBook": {
+            "State": {
+                "OPEN": {
+                    "lablel": "đang mở",
+                    "confirm": "bạn có chắc là muốn mở sổ cái này không ?"
+                },
+                "LOCK": {
+                    "lablel": "đang khóa",
+                    "confirm": "bạn có chắc là muốn khóa sổ cái này không ?"
+                },
+                "CLOSE": {
+                    "lablel": "đã đóng",
+                    "confirm": "bạn có chắc là muốn đóng sổ cái này không ?"
+                },
+                "NOTJUSTOPEN": {
+                    "lablel": "chưa mở"
+                }
+            },
             "label": "sổ cái",
             "title": "{{action}}{{definition}} sổ cái kế toán",
-            "headAmount": "số dư đầu kỳ"
+            "headAmount": "số dư đầu kỳ",
+            "openLabel": "đang mở",
+            "openConfirm": "bạn có chắc là muốn mở sổ cái này không ? hãy đảm bảo rằng tất cả sổ cái khác phải được đóng trước.",
+            "lockLabel": "đang khóa",
+            "lockConfirm": "bạn có chắc là muốn khóa sổ cái này không ?",
+            "closeLabel": "đã đóng",
+            "closeConfirm": "bạn có chắc là muốn đóng sổ cái này không ?",
+            "notJustOpenLabel": "chưa mở",
+            "open": "mở sổ",
+            "lock": "khóa sổ",
+            "unlock": "mở khóa",
+            "close": "đóng sổ",
+            "dateOfStart": "đầu kỳ",
+            "year": "năm tài chính",
+            "dateOfEnd": "cuối kỳ",
+            "dateOfBeginning": "ngày bắt đầu hạch toán",
+            "importFromAnMasterBook": "nhập từ sổ cái kỳ trước",
+            "confirmLockOrClose": "khi khóa sổ sẽ không cho phép ghi sổ chứng từ nữa, khi đóng sổ thì yêu cầu tạo sổ mới để tiếp tục ghi số chứng từ. Bạn muốn khóa hay đóng sổ cái? ",
+            "confirmUnlockOrClose": "khi mở khóa sẽ cho phép tiếp tục ghi sổ chứng từ, khi đóng sổ thì yêu cầu tạo sổ mới để tiếp tục ghi số chứng từ. Bạn muốn mở khóa hay đóng sổ cái? "
         },
         "LiabilitiesReport": {
             "label": "Công nợ NCC",
@@ -714,7 +749,8 @@
             "title": "{{action}}{{definition}} ngân hàng"
         },
         "BankAccount": {
-            "title": "{{action}}{{definition}} tài khoản ngân hàng"
+            "title": "{{action}}{{definition}} tài khoản ngân hàng",
+            "add": "thêm tk ngân hàng"
         },
         "Business": {
             "label": "nghiệp vụ kế toán",

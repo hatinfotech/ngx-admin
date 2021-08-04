@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
+import { AppModule } from '../../../../app.module';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -48,7 +49,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
   async init() {
     // await this.loadCache();
     return super.init().then(rs => {
-      
+
       return rs;
     });
   }
@@ -67,43 +68,149 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
         Branch: {
           title: this.commonService.translateText('Common.branch'),
           type: 'string',
-          width: '15%',
+          width: '10%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Year: {
-          title: this.commonService.translateText('Common.year'),
+          title: this.commonService.translateText('Accounting.MasterBook.year'),
           type: 'string',
-          width: '20%',
+          width: '10%',
         },
         Creator: {
-          title: this.commonService.translateText('Accounting.creator'),
+          title: this.commonService.translateText('Common.creator'),
           type: 'string',
-          width: '15%',
+          width: '10%',
         },
         DateOfCreate: {
-          title: this.commonService.translateText('Accounting.dateOfCreate'),
-          type: 'string',
-          width: '15%',
+          title: this.commonService.translateText('Common.dateOfCreated'),
+          type: 'datetime',
+          width: '10%',
         },
         DateOfStart: {
-          title: this.commonService.translateText('Common.dateOfStart'),
-          type: 'string',
+          title: this.commonService.translateText('Accounting.MasterBook.dateOfStart'),
+          type: 'datetime',
           width: '10%',
         },
         DateOfEnd: {
-          title: this.commonService.translateText('Common.dateOfEnd'),
-          type: 'string',
+          title: this.commonService.translateText('Accounting.MasterBook.dateOfEnd'),
+          type: 'datetime',
           width: '10%',
         },
         DateOfBeginning: {
-          title: this.commonService.translateText('Common.dateOfBeginning'),
-          type: 'string',
-          width: '10%',
+          title: this.commonService.translateText('Accounting.MasterBook.dateOfBeginning'),
+          type: 'datetime',
+          width: '20%',
         },
         State: {
           title: this.commonService.translateText('Common.state'),
-          type: 'string',
+          type: 'custom',
           width: '10%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'checkmark-circle';
+            instance.display = true;
+            instance.status = 'success';
+            instance.disabled = this.isChoosedMode;
+            instance.title = this.commonService.translateText('Common.approved');
+            instance.label = this.commonService.translateText('Common.approved');
+            instance.init.subscribe(initRowData => {
+              // instance.label = value.State;
+              const processMap = AppModule.processMaps.accMasterBook[initRowData.State || ''];
+              instance.label = this.commonService.translateText(processMap?.label);
+              instance.status = processMap?.status;
+              instance.outline = processMap?.outline;
+              if (initRowData.State === 'CLOSE') instance.disabled = true;
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: AccMasterBookModel) => {
+              if (!rowData.State) {
+                this.commonService.showDiaplog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.openConfirm'), [
+                  {
+                    label: this.commonService.translateText('Common.goback'),
+                    status: 'danger',
+                    action: () => { },
+                  },
+                  {
+                    label: this.commonService.translateText('Accounting.MasterBook.open'),
+                    status: 'primary',
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { open: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
+                    },
+                  },
+                ]);
+              }
+              if (rowData.State === 'OPEN') {
+                this.commonService.showDiaplog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmLockOrClose'), [
+                  {
+                    label: this.commonService.translateText('Common.goback'),
+                    status: 'danger',
+                    action: () => { },
+                  },
+                  {
+                    label: this.commonService.translateText('Accounting.MasterBook.close'),
+                    status: 'success',
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { close: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
+                    },
+                  },
+                  {
+                    label: this.commonService.translateText('Accounting.MasterBook.lock'),
+                    status: 'primary',
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { lock: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
+                    },
+                  },
+                ]);
+              }
+              if (rowData.State === 'LOCK') {
+                this.commonService.showDiaplog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmUnlockOrClose'), [
+                  {
+                    label: this.commonService.translateText('Common.goback'),
+                    status: 'danger',
+                    action: () => { },
+                  },
+                  {
+                    label: this.commonService.translateText('Accounting.MasterBook.close'),
+                    status: 'success',
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { close: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
+                    },
+                  },
+                  {
+                    label: this.commonService.translateText('Accounting.MasterBook.unlock'),
+                    status: 'primary',
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { unlock: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
+                    },
+                  },
+                ]);
+              }
+              if (rowData.State === 'CLOSE') {
+                // this.commonService.showDiaplog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmLockOrClose'), [
+                //   {
+                //     label: this.commonService.translateText('Common.goback'),
+                //     status: 'danger',
+                //     action: () => { },
+                //   },
+                //   {
+                //     label: this.commonService.translateText('Accounting.MasterBook.close'),
+                //     status: 'success',
+                //     action: () => {
+                //       this.apiService.putPromise(this.apiPath, { close: true }, [{ Code: rowData.Code }]);
+                //     },
+                //   },
+                //   {
+                //     label: this.commonService.translateText('Accounting.MasterBook.lock'),
+                //     status: 'primary',
+                //     action: () => {
+                //       this.apiService.putPromise(this.apiPath, { lock: true }, [{ Code: rowData.Code }]);
+                //     },
+                //   },
+                // ]);
+              }
+            });
+          },
         },
         Preview: {
           title: this.commonService.translateText('Common.show'),

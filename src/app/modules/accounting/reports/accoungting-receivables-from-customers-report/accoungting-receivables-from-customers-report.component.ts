@@ -79,7 +79,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
       },
     ];
     return super.init().then(rs => {
-      this.actionButtonList = this.actionButtonList.filter(f => ['delete','edit','add','choose','preview'].indexOf(f.name) < 0);
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
       this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
       return rs;
     });
@@ -174,6 +174,18 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
 
   getList(callback: (list: AccountModel[]) => void) {
     super.getList((rs) => {
+
+      for (const item of rs) {
+        const amount = item['HeadDebit'] - item['HeadCredit'] + item['GenerateDebit'] - item['GenerateCredit'];
+        if (amount > 0) {
+          item['TailDebit'] = amount;
+          item['TailCredit'] = 0;
+        } else {
+          item['TailDebit'] = 0;
+          item['TailCredit'] = -amount;
+        }
+      }
+
       if (callback) callback(rs);
     });
   }

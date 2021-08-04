@@ -50,22 +50,7 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
     //   }
     //   return button;
     // });
-    this.commonService.languageLoaded$.pipe(filter(f => f), take(1)).toPromise().then(() => {
-      this.actionButtonList.unshift({
-        name: 'calculateCostOfGoodsSold',
-        status: 'danger',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
-        icon: 'checkmark-square',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
-        size: 'medium',
-        disabled: () => false,
-        hidden: () => this.isChoosedMode,
-        click: () => {
-          this.calculateCostOfGoodsSold();
-          return false;
-        },
-      });
-    });
+
   }
 
   loadListSetting(): SmartTableSetting {
@@ -273,7 +258,23 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
 
   async init() {
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
-    return super.init();
+    return super.init().then(rs => {
+      this.actionButtonList.unshift({
+        name: 'calculateCostOfGoodsSold',
+        status: 'danger',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
+        icon: 'checkmark-square',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
+        size: 'medium',
+        disabled: () => false,
+        hidden: () => this.isChoosedMode,
+        click: () => {
+          this.calculateCostOfGoodsSold();
+          return false;
+        },
+      });
+      return rs;
+    });
   }
 
   ngOnInit(): void {

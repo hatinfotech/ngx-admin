@@ -191,9 +191,16 @@ export class AccountingLiabilitiesReportComponent extends DataManagerListCompone
 
   getList(callback: (list: AccountModel[]) => void) {
     super.getList((rs) => {
-      // rs.forEach(item => {
-      //   item.Content = item.Content.substring(0, 256) + '...';
-      // });
+      for (const item of rs) {
+        const amount = item['HeadCredit'] - item['HeadDebit'] + item['GenerateCredit'] - item['GenerateDebit'];
+        if (amount > 0) {
+          item['TailDebit'] = 0;
+          item['TailCredit'] = amount;
+        } else {
+          item['TailDebit'] = -amount;
+          item['TailCredit'] = 0;
+        }
+      }
       if (callback) callback(rs);
     });
   }

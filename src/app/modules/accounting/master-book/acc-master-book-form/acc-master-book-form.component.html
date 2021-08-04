@@ -14,8 +14,26 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="Note" label="Common.note" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <textarea nbInput fullWidth formControlName="Note" placeholder="{{'Common.note' | translate | headtitlecase}}"></textarea>
+                                <ngx-form-group [formGroup]="formItem" name="Year" label="Accounting.MasterBook.year" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input nbInput fullWidth formControlName="Year" placeholder="{{'Accounting.MasterBook.year' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfStart" label="Accounting.MasterBook.dateOfStart" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" [owlDateTime]="DateOfStart" [owlDateTimeTrigger]="DateOfStart" nbInput fullWidth formControlName="DateOfStart" placeholder="{{'Accounting.MasterBook.dateOfStart' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfStart></owl-date-time>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfEnd" label="Accounting.MasterBook.dateOfEnd" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" [owlDateTime]="DateOfEnd" [owlDateTimeTrigger]="DateOfEnd" nbInput fullWidth formControlName="DateOfEnd" placeholder="{{'Accounting.MasterBook.dateOfEnd' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfEnd></owl-date-time>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfBeginning" label="Accounting.MasterBook.dateOfBeginning" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" [owlDateTime]="DateOfBeginning" [owlDateTimeTrigger]="DateOfBeginning" nbInput fullWidth formControlName="DateOfBeginning" placeholder="{{'Accounting.MasterBook.dateOfBeginning' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfBeginning></owl-date-time>
                                 </ngx-form-group>
                             </div>
                         </div>
@@ -24,10 +42,8 @@
                 </nb-card-body>
                 <nb-card-footer>
                     <div class="buttons-row" style="text-align: right;">
-                        <button nbButton status="warning" (click)="addFormGroup($event)" hero style="float: left;">{{'Common.addOne' | translate | headtitlecase}}
-                            nữa</button>
                         <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
-                        <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
+                        <!-- <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button> -->
                     </div>
                 </nb-card-footer>
             </nb-card>

@@ -69,7 +69,7 @@ export class AccMasterBookHeadBankAccountAmountComponent extends DataManagerList
       const addActionButton = this.actionButtonList.find(f => f.name === 'add');
       if (addActionButton) {
         addActionButton.status = 'success';
-        addActionButton.label = this.commonService.translateText('Common.addObject');
+        addActionButton.label = this.commonService.translateText('Accounting.BankAccount.add');
         addActionButton.click = () => {
           this.commonService.openDialog(AccountingBankAccountListComponent, {
             context: {
