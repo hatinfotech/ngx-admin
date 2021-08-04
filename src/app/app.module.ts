@@ -169,6 +169,10 @@ import { AccountingBankListComponent } from './modules/accounting/bank/accountin
 import { AccountingBankFormComponent } from './modules/accounting/bank/accounting-bank-form/accounting-bank-form.component';
 import { AccountingBankAccountListComponent } from './modules/accounting/bank-account/accounting-bank-account-list/accounting-bank-account-list.component';
 import { AccountingBankAccountFormComponent } from './modules/accounting/bank-account/accounting-bank-account-form/accounting-bank-account-form.component';
+import { AccMasterBookListComponent } from './modules/accounting/master-book/acc-master-book-list/acc-master-book-list.component';
+import { AccMasterBookFormComponent } from './modules/accounting/master-book/acc-master-book-form/acc-master-book-form.component';
+import { AccMasterBookHeadAmountComponent } from './modules/accounting/master-book/acc-master-book-head-amount/acc-master-book-head-amount.component';
+import { AccMasterBookHeadObjectAmountComponent } from './modules/accounting/master-book/acc-master-book-head-object-amount/acc-master-book-head-object-amount.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -303,6 +307,10 @@ export class DynamicLocaleId extends String {
     ProductGroupListComponent,
     ProductGroupFormComponent,
     ModulesComponent,
+    AccMasterBookListComponent,
+    AccMasterBookFormComponent,
+    AccMasterBookHeadAmountComponent,
+    AccMasterBookHeadObjectAmountComponent,
     
   ],
   imports: [

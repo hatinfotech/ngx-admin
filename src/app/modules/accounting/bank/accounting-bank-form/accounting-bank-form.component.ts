@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { AccBank } from '../../../../models/accounting.model';
+import { AccBankModel } from '../../../../models/accounting.model';
 import { ContactDetailModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -14,7 +14,7 @@ import { CommonService } from '../../../../services/common.service';
   templateUrl: './accounting-bank-form.component.html',
   styleUrls: ['./accounting-bank-form.component.scss']
 })
-export class AccountingBankFormComponent extends DataManagerFormComponent<AccBank> implements OnInit {
+export class AccountingBankFormComponent extends DataManagerFormComponent<AccBankModel> implements OnInit {
 
   componentName: string = 'AccountingBankFormComponent';
   idKey = 'Code';
@@ -59,7 +59,7 @@ export class AccountingBankFormComponent extends DataManagerFormComponent<AccBan
     });
   }
 
-  async formLoad(formData: AccBank[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: AccBank) => void) {
+  async formLoad(formData: AccBankModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: AccBankModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // if (itemFormData.Details) {
@@ -84,14 +84,14 @@ export class AccountingBankFormComponent extends DataManagerFormComponent<AccBan
   // }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: AccBank[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: AccBankModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeOrganizations'] = true;
     params['includeGroups'] = true;
     params['includeDetails'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: AccBank): FormGroup {
+  makeNewFormGroup(data?: AccBankModel): FormGroup {
     const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
       Code: [''],
@@ -107,7 +107,7 @@ export class AccountingBankFormComponent extends DataManagerFormComponent<AccBan
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: AccBank): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: AccBankModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -126,11 +126,11 @@ export class AccountingBankFormComponent extends DataManagerFormComponent<AccBan
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  onAfterCreateSubmit(newFormData: AccBank[]) {
+  onAfterCreateSubmit(newFormData: AccBankModel[]) {
     super.onAfterCreateSubmit(newFormData);
     // this.minierpService.reloadCache();
   }
-  onAfterUpdateSubmit(newFormData: AccBank[]) {
+  onAfterUpdateSubmit(newFormData: AccBankModel[]) {
     return super.onAfterUpdateSubmit(newFormData);
     // this.minierpService.reloadCache();
   }

@@ -19,11 +19,14 @@ export class SmartTableBaseComponent implements ViewCell, OnInit {
   disabled: boolean = false;
   style: string;
   class: string;
+  name?: string;
+  hasModified?: boolean = false;
 
   @Input() value: string | number;
   @Input() rowData: any;
 
   @Output() valueChange: EventEmitter<any> = new EventEmitter();
+  init?: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
 
@@ -94,6 +97,7 @@ export class SmartTableButtonComponent extends SmartTableBaseComponent implement
   ngOnInit() {
     // this.renderValue = this.value.toString().toUpperCase();
     this.valueChange.emit(this.value);
+    this.init.emit(this.rowData);
   }
 
   onClick() {
@@ -387,7 +391,7 @@ export class SmartTableCurrencyEditableComponent extends SmartTableBaseComponent
   template: `
     <!-- <nb-checkbox [disabled]="disable" [checked]="renderValue" (checkedChange)="onChange($event)"></nb-checkbox> -->
     <div [style]="style" [class]="class">
-      <input #inputText type="text" [name]="name" nbInput fullWidth
+      <input #inputText type="text" [name]="name" nbInput fullWidth [attr.disabled]="disabled ? 'disabled' : null"
           [placeholder]="placeholder" class="align-right" [formControl]="inputControl"
           currencyMask [options]="numberFormat">
     </div>
@@ -399,7 +403,7 @@ export class SmartTableNumberEditableComponent extends SmartTableBaseComponent i
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
   renderValue: boolean;
-  // disabled: boolean = false;
+  disabled: boolean = false;
   placeholder: string = '';
   delay: number = 1000;
   name: string = '';
@@ -453,12 +457,16 @@ export class SmartTableNumberEditableComponent extends SmartTableBaseComponent i
     this.isPatchingValue = true;
     this.inputControl.patchValue(this.value);
     this.isPatchingValue = false;
+    this.init.emit(this.rowData);
   }
 
   onChange(value: any) {
     if (this.value !== value && !this.isPatchingValue) {
       this.valueChange.emit(value);
       this.value = value;
+      this.rowData[this.name] = value;
+      this.rowData['hasModified'] = true;
+      this.hasModified = true;
     }
   }
 

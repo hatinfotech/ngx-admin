@@ -30,7 +30,7 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
   static sortConf: any;
   static pagingConf = { page: 1, perPage: 40 };
 
-  totalBalance: { Debit: number, Credit: number } = null;
+  totalBalance: { Debit: number, Credit: number } = {Debit: 0, Credit: 0};
 
   constructor(
     public apiService: ApiService,

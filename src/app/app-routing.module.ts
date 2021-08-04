@@ -69,6 +69,7 @@ import { AccoungtingReceivablesFromEmployeeReportComponent } from './modules/acc
 import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-receivables-from-customers-report/accoungting-receivables-from-customers-report.component';
 import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
 import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { AccMasterBookListComponent } from './modules/accounting/master-book/acc-master-book-list/acc-master-book-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -646,6 +647,14 @@ const routes: Routes = [
     path: 'accounting/bank-account/form',
     canActivate: [AuthGuardService],
     component: AccountingBankAccountFormComponent,
+  },
+  {
+    path: 'accounting/master-book/list',
+    canActivate: [AuthGuardService],
+    component: AccMasterBookListComponent,
+    data: {
+      reuse: true,
+    },
   },
 
 

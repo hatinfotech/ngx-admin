@@ -5,7 +5,7 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { AccBank } from '../../../../models/accounting.model';
+import { AccBankModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccBusinessFormComponent } from '../../acc-business/acc-business-form/acc-business-form.component';
@@ -16,7 +16,7 @@ import { AccountingBankFormComponent } from '../accounting-bank-form/accounting-
   templateUrl: './accounting-bank-list.component.html',
   styleUrls: ['./accounting-bank-list.component.scss']
 })
-export class AccountingBankListComponent extends ServerDataManagerListComponent<AccBank> implements OnInit {
+export class AccountingBankListComponent extends ServerDataManagerListComponent<AccBankModel> implements OnInit {
 
   componentName: string = 'AccountingBankListComponent';
   formPath = '/accounting/business/form';
@@ -110,14 +110,14 @@ export class AccountingBankListComponent extends ServerDataManagerListComponent<
               //   instance.disabled = true;
               // }
             });
-            instance.click.subscribe(async (row: AccBank) => {
+            instance.click.subscribe(async (row: AccBankModel) => {
 
               this.commonService.openDialog(AccBusinessFormComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [row.Code],
                   isDuplicate: true,
-                  onDialogSave: (newData: AccBank[]) => {
+                  onDialogSave: (newData: AccBankModel[]) => {
                     // if (onDialogSave) onDialogSave(row);
                   },
                   onDialogClose: () => {

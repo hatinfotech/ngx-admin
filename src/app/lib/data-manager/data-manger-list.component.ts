@@ -8,7 +8,7 @@ import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable, O
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableAccCurrencyComponent, SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
+import { SmartTableAccCurrencyComponent, SmartTableBaseComponent, SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
@@ -632,10 +632,16 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         };
       }
 
+      const current_onComponentInitFunction = column.onComponentInitFunction;
+      column.onComponentInitFunction = (instance: SmartTableBaseComponent) => {
+        current_onComponentInitFunction && current_onComponentInitFunction(instance);
+        instance.name = key;
+      };
+
       // });
     }
 
-    if (this.ref && Object.keys(this.ref).length > 0) {
+    if (this.isChoosedMode) {
       settings.columns['Choose'] = {
         title: this.commonService.translateText('Common.choose'),
         type: 'custom',

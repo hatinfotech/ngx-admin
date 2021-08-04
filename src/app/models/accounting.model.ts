@@ -10,6 +10,8 @@ export class AccountModel {
     Level?: string;
     Type?: string;
     Group?: string;
+    ReportByObject?: string;
+    NumOfChildren?: number;
 }
 
 export class BusinessModel {
@@ -106,7 +108,7 @@ export interface OtherBusinessVoucherDetailModel {
     CreditObjectName?: string;
 }
 
-export interface AccBank {
+export interface AccBankModel {
     [key: string]: any;
     Id?: string;
     Code?: string;
@@ -118,7 +120,7 @@ export interface AccBank {
     Address?: string;
 }
 
-export interface AccBankAccount {
+export interface AccBankAccountModel {
     [key: string]: any;
     Id?: string;
     Code?: string;
@@ -129,4 +131,44 @@ export interface AccBankAccount {
     BranchAddress?: string;
     Owner?: string;
     Description?: string;
+}
+export interface AccMasterBookModel {
+    [key: string]: any;
+    Id?: string;
+    Code?: string;
+    Branch?: string;
+    Year?: string;
+    Creator?: string;
+    DateOfCreate?: string;
+    State?: string;
+    PreviousBook?: string;
+    DateOfStart?: string;
+    DateOfEnd?: string;
+    DateOfBeginning?: string;
+}
+export interface AccMasterBookEntryModel {
+    [key: string]: any;
+    Id?: string;
+    MasterBook?: string;
+    Type?: string;
+    WriteType?: string;
+    Branch?: string;
+    Account?: string;
+    ContraAccount?: string;
+    Voucher?: string;
+    VoucherType?: string;
+    VoucherDate?: string;
+    WriteNo?: string;
+    Object?: string;
+    Description?: string;
+    VoucherDescription?: string;
+    Product?: string;
+    ProductUnit?: string;
+    BankAccount?: string;
+    Debit?: string;
+    Credit?: string;
+    Writer?: string;
+    DateOfWriting?: string;
+    State?: string;
+    RelativeStaff?: string;
 }

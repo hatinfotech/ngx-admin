@@ -80,6 +80,8 @@ export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManag
       },
     ];
     return super.init().then(rs => {
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete','edit','add','choose','preview'].indexOf(f.name) < 0);
+      this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
       return rs;
     });
   }

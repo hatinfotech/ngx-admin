@@ -80,6 +80,8 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
       },
     ];
     return super.init().then(rs => {
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete','edit','add','choose','preview'].indexOf(f.name) < 0);
+      this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
       return rs;
     });
   }
@@ -91,7 +93,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
     return this.configSetting({
       actions: false,
       columns: {
-        DebitAccount: {
+        Account: {
           title: this.commonService.translateText('Accounting.account'),
           type: 'string',
           width: '10%',
@@ -239,7 +241,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,
-        accounts: [rowData['DebitAccount']],
+        accounts: [rowData['Account']],
         report: 'reportDetailByAccountAndObject',
         fromDate: null,
         toDate: null,

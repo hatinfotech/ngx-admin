@@ -5,7 +5,7 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { AccBankAccount } from '../../../../models/accounting.model';
+import { AccBankAccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccBusinessFormComponent } from '../../acc-business/acc-business-form/acc-business-form.component';
@@ -16,7 +16,7 @@ import { AccountingBankAccountFormComponent } from '../accounting-bank-account-f
   templateUrl: './accounting-bank-account-list.component.html',
   styleUrls: ['./accounting-bank-account-list.component.scss']
 })
-export class AccountingBankAccountListComponent extends ServerDataManagerListComponent<AccBankAccount> implements OnInit {
+export class AccountingBankAccountListComponent extends ServerDataManagerListComponent<AccBankAccountModel> implements OnInit {
 
   componentName: string = 'AccountingBankAccountListComponent';
   formPath = '/accounting/business/form';
@@ -74,18 +74,18 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         AccountNumber: {
           title: this.commonService.translateText('Accounting.accountNumber'),
           type: 'string',
-          width: '15%',
+          width: '10  %',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Branch: {
           title: this.commonService.translateText('Common.branch'),
           type: 'string',
-          width: '15%',
+          width: '10%',
         },
         Province: {
           title: this.commonService.translateText('Common.province'),
           type: 'string',
-          width: '15%',
+          width: '10%',
         },
         BranchAddress: {
           title: this.commonService.translateText('Common.branchAddress'),
@@ -121,14 +121,14 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
               //   instance.disabled = true;
               // }
             });
-            instance.click.subscribe(async (row: AccBankAccount) => {
+            instance.click.subscribe(async (row: AccBankAccountModel) => {
 
               this.commonService.openDialog(AccBusinessFormComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [row.Code],
                   isDuplicate: true,
-                  onDialogSave: (newData: AccBankAccount[]) => {
+                  onDialogSave: (newData: AccBankAccountModel[]) => {
                     // if (onDialogSave) onDialogSave(row);
                   },
                   onDialogClose: () => {

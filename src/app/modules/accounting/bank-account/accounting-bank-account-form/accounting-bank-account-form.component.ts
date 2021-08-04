@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { AccBank, AccBankAccount } from '../../../../models/accounting.model';
+import { AccBankModel, AccBankAccountModel } from '../../../../models/accounting.model';
 import { ContactDetailModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -14,14 +14,14 @@ import { CommonService } from '../../../../services/common.service';
   templateUrl: './accounting-bank-account-form.component.html',
   styleUrls: ['./accounting-bank-account-form.component.scss']
 })
-export class AccountingBankAccountFormComponent extends DataManagerFormComponent<AccBankAccount> implements OnInit {
+export class AccountingBankAccountFormComponent extends DataManagerFormComponent<AccBankAccountModel> implements OnInit {
 
   componentName: string = 'AccountingBankAccountFormComponent';
   idKey = 'Code';
   baseFormUrl = '/accounting/business/form';
   apiPath = '/accounting/bank-accounts';
 
-  bankList: AccBank[]
+  bankList: AccBankModel[]
   select2OptionForBank = {
     placeholder: 'Ngân hàng...',
     allowClear: true,
@@ -56,7 +56,7 @@ export class AccountingBankAccountFormComponent extends DataManagerFormComponent
   }
 
   async init(): Promise<boolean> {
-    this.bankList = await this.apiService.getPromise<AccBank[]>('/accounting/banks', { select: 'id=>Code,text=>CONCAT(ShortName;\' - \';Name)', limit: 'nolimit' });
+    this.bankList = await this.apiService.getPromise<AccBankModel[]>('/accounting/banks', { select: 'id=>Code,text=>CONCAT(ShortName;\' - \';Name)', limit: 'nolimit' });
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -73,7 +73,7 @@ export class AccountingBankAccountFormComponent extends DataManagerFormComponent
     });
   }
 
-  async formLoad(formData: AccBankAccount[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: AccBankAccount) => void) {
+  async formLoad(formData: AccBankAccountModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: AccBankAccountModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // if (itemFormData.Details) {
@@ -98,14 +98,14 @@ export class AccountingBankAccountFormComponent extends DataManagerFormComponent
   // }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: AccBankAccount[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: AccBankAccountModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeOrganizations'] = true;
     params['includeGroups'] = true;
     params['includeDetails'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: AccBankAccount): FormGroup {
+  makeNewFormGroup(data?: AccBankAccountModel): FormGroup {
     const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
       Code: [''],
@@ -122,7 +122,7 @@ export class AccountingBankAccountFormComponent extends DataManagerFormComponent
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: AccBankAccount): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: AccBankAccountModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -141,11 +141,11 @@ export class AccountingBankAccountFormComponent extends DataManagerFormComponent
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  onAfterCreateSubmit(newFormData: AccBankAccount[]) {
+  onAfterCreateSubmit(newFormData: AccBankAccountModel[]) {
     super.onAfterCreateSubmit(newFormData);
     // this.minierpService.reloadCache();
   }
-  onAfterUpdateSubmit(newFormData: AccBankAccount[]) {
+  onAfterUpdateSubmit(newFormData: AccBankAccountModel[]) {
     return super.onAfterUpdateSubmit(newFormData);
     // this.minierpService.reloadCache();
   }

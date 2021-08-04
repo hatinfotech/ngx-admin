@@ -1,4 +1,4 @@
-<nb-card class="small-header smart-table">
+<nb-card class="small-header smart-table {{inputMode}}">
     <nb-card-header>
         <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Contact.List.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
     </nb-card-header>

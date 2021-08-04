@@ -83,7 +83,8 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
       },
     ];
     return super.init().then(rs => {
-      this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
+      // this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete','edit','add','choose','preview'].indexOf(f.name) < 0);
       return rs;
     });
   }
@@ -215,10 +216,10 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
     super.getList((rs) => {
       let increment = 0;
       for (const item of rs) {
-        if (['131', '141'].indexOf(item['DebitAccount']) > -1) {
+        if (['131', '141'].indexOf(item['Account']) > -1) {
           item['IncrementAmount'] = (increment += (item['GenerateDebit'] - item['GenerateCredit']));
         }
-        if (['331', '5111', '5112,5113', '5118', '515'].indexOf(item['DebitAccount']) > -1) {
+        if (['331', '5111', '5112,5113', '5118', '515'].indexOf(item['Account']) > -1) {
           item['IncrementAmount'] = (increment += (item['GenerateCredit'] - item['GenerateDebit']));
         }
       }

@@ -85,9 +85,12 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
       },
     ];
     return super.init().then(rs => {
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'choose', 'preview'].indexOf(f.name) < 0);
+      this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
       const addActionButton = this.actionButtonList.find(f => f.name === 'add');
       if (addActionButton) {
-        addActionButton.icon= 'save';
+        addActionButton.icon = 'save';
+        addActionButton.status = 'primary';
         addActionButton.label = this.commonService.translateText('Accounting.profitForward');
         addActionButton.click = () => {
 

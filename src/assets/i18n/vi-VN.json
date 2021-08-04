@@ -291,7 +291,8 @@
         "autoGenerate": "tự phát sinh",
         "bank": "ngân hàng",
         "bankAccount": "tài khoản ngân hàng",
-        "voucher": "chứng từ"
+        "voucher": "chứng từ",
+        "addObject": "thêm đối tượng"
     },
     "Contact": {
         "name": "tên liên hệ",
@@ -661,6 +662,12 @@
         "accountNumber": "số tài khoản",
         "reportByObject": "chi tiết theo đối tượng",
         "profitForward": "kết chuyển lãi/lỗ",
+        "addAccount": "thêm tài khoản",
+        "MasterBook": {
+            "label": "sổ cái",
+            "title": "{{action}}{{definition}} sổ cái kế toán",
+            "headAmount": "số dư đầu kỳ"
+        },
         "LiabilitiesReport": {
             "label": "Công nợ NCC",
             "title": "{{action}}{{definition}} báo cáo công nợ nhà cung cấp",

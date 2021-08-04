@@ -94,7 +94,7 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
     return this.configSetting({
       mode: 'external',
       selectMode: 'multi',
-      actions: {
+      actions: this.isChoosedMode ? false : {
         position: 'right',
       },
       add: this.configAddButton(),

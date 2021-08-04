@@ -1,6 +1,6 @@
 import { AccBusinessFormComponent } from './../../../acc-business/acc-business-form/acc-business-form.component';
 import { TaxModel } from './../../../../../models/tax.model';
-import { AccountModel, BusinessModel, AccBankAccount } from './../../../../../models/accounting.model';
+import { AccountModel, BusinessModel, AccBankAccountModel } from './../../../../../models/accounting.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
@@ -39,7 +39,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
   accountingBusinessList: BusinessModel[] = [];
-  bankAccountList: AccBankAccount[] = [];
+  bankAccountList: AccBankAccountModel[] = [];
 
   customIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
@@ -298,7 +298,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     // this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
 
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { select: 'id=>Code,text=>Name,DebitAccount=>DebitAccount,CreditAccount=>CreditAccount,Name=>Name,Code=>Code', limit: 'nolimit', eq_Type: 'PAYMENT' });
-    this.bankAccountList = await this.apiService.getPromise<AccBankAccount[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;'/';AccountNumber;'/';Bank;'/';Branch)" });
+    this.bankAccountList = await this.apiService.getPromise<AccBankAccountModel[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;'/';AccountNumber;'/';Bank;'/';Branch)" });
     return super.init().then(rs => {
       return rs;
     });
