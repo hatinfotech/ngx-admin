@@ -67,7 +67,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
         { id: 'UPDATE_FOLDER_WRITABLE', text: 'Cập nhật quyền ghi cho thư mục' },
         { id: 'CHECK_UPDATE', text: 'Kiểm tra cập nhật' },
         { id: 'DOWNLOAD_UPDATE', text: 'Tải cập nhật' },
-        { id: 'EXTRACT_UPDATE', text: 'Giải nến cập nhật' },
+        { id: 'EXTRACT_UPDATE', text: 'Giải nén cập nhật' },
         { id: 'UPDATE_SOURCE_STRUCTURE', text: 'Cập nhật cấu trúc thư mục' },
         { id: 'UPDATE_DB', text: 'Cập nhật CSDL' },
         { id: 'UPDATE_PERMISSION', text: 'Cập nhật phân quyền' },
@@ -164,6 +164,18 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
             autoRefreshBtn.status = this.autoRefresh ? 'primary' : 'danger';
           }
           this.actionButtonList = [...this.actionButtonList];
+        },
+      });
+
+      this.actionButtonList.unshift({
+        name: 'autoUpdateAllToggle',
+        icon: 'checkmark-square',
+        label: 'Tự động cập nhật',
+        status: 'danger',
+        title: 'Tự động cập nhật',
+        size: 'medium',
+        click: (event: any, option: any) => {
+          this.setUpdateUpdate();
         },
       });
 
@@ -386,8 +398,14 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
         content: 'Đặt chế độ tự động cập nhật cho các site đã chọn',
         actions: [
           {
+            label: 'Trở về',
+            status: 'primary',
+            action: () => {
+
+            },
+          },
+          {
             label: 'Tự động',
-            icon: 'auto',
             status: 'success',
             action: () => {
               const data: MiniErpModel[] = this.selectedIds.map(i => {
@@ -397,16 +415,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
             },
           },
           {
-            label: 'Trở về',
-            icon: 'back',
-            status: 'primary',
-            action: () => {
-
-            },
-          },
-          {
             label: 'Thủ công',
-            icon: 'manual',
             status: 'warning',
             action: () => {
               const data: MiniErpModel[] = this.selectedIds.map(i => {
@@ -439,6 +448,13 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
       }
       return rs;
     });
+  }
+
+  protected configPaging() {
+    return {
+      display: true,
+      perPage: 99999,
+    };
   }
 
 }

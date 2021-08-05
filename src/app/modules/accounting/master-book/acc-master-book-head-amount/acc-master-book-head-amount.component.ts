@@ -370,7 +370,7 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
   async save() {
     this.loading = true;
     await new Promise(resolve => setTimeout(() => resolve(true), 500));
-    return this.source.getAll().then(data => {
+    return this.source.getAll().then(async data => {
       // console.log(data.filter(f => !!f?.hasModified));
 
       let credit = 0;
@@ -382,8 +382,30 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
 
       if (debit != credit) {
         this.loading = false;
-        this.commonService.showDiaplog(this.commonService.translateText('Accounting.headAmount'), this.commonService.translateText('Accounting.Warning.headAmountNotBalanced'), []);
-        return false;
+        const confirm = await new Promise(resolve => {
+          this.commonService.showDiaplog(this.commonService.translateText('Accounting.headAmount'), this.commonService.translateText('Accounting.Warning.headAmountNotBalanced'), [
+            {
+              label: this.commonService.translateText('Common.goback'),
+              status: 'primary',
+              action: () => {
+                resolve(false);
+              },
+            },
+            {
+              label: this.commonService.translateText('Common.forceSave'),
+              status: 'danger',
+              action: () => {
+                resolve(true);
+              },
+            },
+          ], () => {
+            resolve(false);
+          });
+        });
+        if (!confirm) {
+          this.loading = false;
+          return false;
+        };
       }
 
       return this.apiService.putPromise(this.apiPath, { masterBook: this.masterBook.Code }, data).then(rs => {

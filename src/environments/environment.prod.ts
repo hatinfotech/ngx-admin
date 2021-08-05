@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '2.3.8.5',
+  version: '2.3.9.1',
+  // 2.3.9: Complete commerce process
   // 2.3.8: Update MiniErp Auto Update Management feature
   // 2.3.7: Complete commerce process
   // 2.3.6: Update warehouse module

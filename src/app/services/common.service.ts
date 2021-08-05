@@ -470,12 +470,15 @@ export class CommonService {
   }
 
   /** Dialog */
-  showDiaplog(title: string, content: string, buttons: { label: string, icon?: string, status?: string, action?: () => void }[]) {
+  showDiaplog(title: string, content: string, buttons: { label: string, icon?: string, status?: string, action?: () => void }[], onClose?: () => void) {
     return this.dialogService.open(ShowcaseDialogComponent, {
       context: {
         title: title,
         content: content,
         actions: buttons,
+        onClose: () => {
+          onClose && onClose();
+        },
       },
     });
   }

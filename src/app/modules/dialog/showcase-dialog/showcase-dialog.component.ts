@@ -16,6 +16,7 @@ export class ShowcaseDialogComponent implements AfterViewInit {
   @Input() onAfterInit: () => void;
   @Input() actions: { label: string, icon?: string, status?: string, action?: () => void }[];
   @ViewChild('dialogWrap', { static: true }) dialogWrap: ElementRef;
+  @Input() onClose?: () => void;
 
   constructor(public ref: NbDialogRef<ShowcaseDialogComponent>) {
     if (this.actions) {
@@ -44,6 +45,7 @@ export class ShowcaseDialogComponent implements AfterViewInit {
   }
 
   dismiss() {
+    this.onClose && this.onClose();
     this.ref.close();
   }
 }
