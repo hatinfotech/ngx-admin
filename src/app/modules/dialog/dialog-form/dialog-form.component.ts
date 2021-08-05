@@ -18,6 +18,7 @@ export class DialogFormComponent implements OnInit {
     dataList?: { id: string, text: string }[],
     label: string,
     placeholder: string,
+    initValue?: any;
   }[];
   @Input() actions: { label: string, icon?: string, status?: string, action?: (form: FormGroup) => void }[];
 
@@ -45,6 +46,7 @@ export class DialogFormComponent implements OnInit {
     const fcs: { [key: string]: AbstractControl } = {};
     this.controls.forEach(control => {
       fcs[control.name] = new FormControl();
+      fcs[control.name].setValue(control.initValue);
     });
     this.formGroup = new FormGroup(fcs);
   }

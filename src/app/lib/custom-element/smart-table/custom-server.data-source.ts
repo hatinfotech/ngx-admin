@@ -82,7 +82,13 @@ export class CustomServerDataSource<M> extends LocalDataSource {
       this.filterConf.filters.forEach((fieldConf) => {
         if (fieldConf['search']) {
           // params[`filter_${fieldConf['field']}`] = fieldConf['search'];
-          params[`filter_${fieldConf['field']}`] = this.encodeFilterQuery(fieldConf['search']);
+          let condition = 'filter';
+          let value = fieldConf['search'];
+          if (typeof fieldConf['search'] === 'object') {
+            condition = fieldConf['search']['condition'];
+            value = fieldConf['search']['value'];
+          }
+          params[`${condition}_${fieldConf['field']}`] = this.encodeFilterQuery(value);
         }
       });
     }
@@ -108,7 +114,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
   }
 
   encodeFilterQuery(query: { instance: any, value: any }) {
-    if (typeof query === 'object' && query.instance) {
+    if (typeof query === 'object' && query?.instance) {
       return query.instance.encodeFilterQuery(query.value);
     } else {
       return query;

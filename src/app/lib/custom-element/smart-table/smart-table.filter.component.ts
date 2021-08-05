@@ -133,12 +133,14 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
   inputControl = new FormControl();
   select2Option: Select2Option & { data?: () => any[] };
   logic: 'AND' | 'OR' = 'AND';
+  condition = 'filter';
 
   constructor() {
     super();
   }
 
   ngOnInit() {
+    this.condition = this.column.getFilterConfig().condition || this.condition;
     this.select2Option = this.column.getFilterConfig().select2Option;
     if (this.select2Option.logic) {
       this.logic = this.select2Option.logic;
@@ -152,10 +154,10 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
         )
         .subscribe((value: [] & any) => {
           if (this.select2Option.multiple) {
-            this.query = value.length === 0 ? '' : (this.logic === 'AND' ? '{' : '[') + value.map((item: any) => item.id).join(',') + (this.logic === 'AND' ? '}' : ']');
+            this.query = { condition: this.condition, value: value.length === 0 ? '' : (this.logic === 'AND' ? '{' : '[') + value.map((item: any) => item.id).join(',') + (this.logic === 'AND' ? '}' : ']') } as any;
             this.setFilter();
           } else {
-            this.query = value;
+            this.query = { condition: this.condition, value: value?.id || value } as any;
             this.setFilter();
           }
         });
