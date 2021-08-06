@@ -68,7 +68,7 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
       params['sort_Id'] = 'desc';
       params['includeOrganizations'] = true;
       params['includeGroups'] = true;
-      params['eq_IsDeleted'] = '1';
+      params['eq_IsDeleted'] = true;
       return params;
     };
 
@@ -270,7 +270,7 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
       params['sort_Id'] = 'desc';
       params['includeOrganizations'] = true;
       params['includeGroups'] = true;
-      params['is_IsDeleted'] = 'NULL';
+      params['eq_IsDeleted'] = false;
       return params;
     };
 

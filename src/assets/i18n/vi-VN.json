@@ -297,6 +297,7 @@
         "addObject": "thêm đối tượng"
     },
     "Contact": {
+        "code": "mã liên hệ",
         "name": "tên liên hệ",
         "address": "địa chỉ",
         "email": "email",

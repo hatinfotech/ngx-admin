@@ -9,7 +9,6 @@
                 <nb-card-body>
                     <div [formGroup]="formItem">
                         <div class="row">
-                            <input type="hidden" formControlName="Code">
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="Title" label="Contact.title" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Contact.title' | translate | headtitlecase}}">
@@ -20,9 +19,14 @@
                                     <input type="text" nbInput fullWidth formControlName="ShortName" placeholder="{{'Contact.shortName' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <ngx-form-group [formGroup]="formItem" name="Name" label="Contact.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Contact.name' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-2">
+                                <ngx-form-group [formGroup]="formItem" name="Code" label="Contact.code" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Contact.code' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
@@ -186,7 +190,8 @@
                 <nb-card-footer>
                     <div class="buttons-row" style="text-align: right;">
                         <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
-                        <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+                        <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
                     </div>
                 </nb-card-footer>
             </nb-card>

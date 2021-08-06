@@ -243,6 +243,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     });
     if (data) {
       newForm.patchValue(data);
+      newForm.get('Code').disable();
     }
     return newForm;
   }
