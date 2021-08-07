@@ -294,17 +294,36 @@
         "bankAccount": "tài khoản ngân hàng",
         "voucher": "chứng từ",
         "englishName": "tên tiếng anh",
+        "groups": "nhóm",
+        "organizations": "tổ chức",
+        "restore": "khôi phục",
+        "restoreConfirm": "bạn có muốn khôi phục dữ liệu không ?",
         "addObject": "thêm đối tượng"
     },
     "Contact": {
+        "Customer": {
+            "title": "{{definition}}{{action}} khách hàng"
+        },
+        "Supplier": {
+            "title": "{{definition}}{{action}} nhà cung cấp"
+        },
+        "Employee": {
+            "title": "{{definition}}{{action}} nhân viên"
+        },
+        "Removed": {
+            "title": "{{definition}}{{action}} đã xóa"
+        },
+        "title": "{{definition}}{{action}} liên hệ",
         "code": "mã liên hệ",
         "name": "tên liên hệ",
+        "shortName": "Tên rút gọn",
         "address": "địa chỉ",
         "email": "email",
         "phone": "điện thoại",
         "taxCode": "mã số thuế",
         "choosePms": "chọn quyền",
         "syncMainToDetail": "đồng bộ đến chi tiết liên hệ",
+        "contactTitle": "danh xưng",
         "syncMainToDetailConfirmMessage": "bạn có muốn đồng bộ thông tin liên hệ xuống chi tiết cho tất cả liên hệ ?"
     },
     "Bank": {

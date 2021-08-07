@@ -1,3 +1,4 @@
+import { ContactAllListComponent } from './../../../contact/contact-all-list/contact-all-list.component';
 import { ContactModel } from './../../../../models/contact.model';
 import { ContactListComponent } from './../../../contact/contact/contact-list/contact-list.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -69,7 +70,7 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
         addActionButton.status = 'success';
         addActionButton.label = this.commonService.translateText('Common.addObject');
         addActionButton.click = () => {
-          this.commonService.openDialog(ContactListComponent, {
+          this.commonService.openDialog(ContactAllListComponent, {
             context: {
               inputMode: 'dialog',
               onDialogChoose: (accounts: ContactModel[]) => {

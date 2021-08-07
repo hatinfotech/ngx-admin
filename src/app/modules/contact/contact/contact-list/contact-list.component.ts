@@ -1,3 +1,4 @@
+import { ContactGroupModel } from './../../../../models/contact.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -6,7 +7,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { takeUntil } from 'rxjs/operators';
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { SmartTableBaseComponent, SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { CashVoucherModel } from '../../../../models/accounting.model';
@@ -36,7 +37,9 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
   static filterConfig: any;
   static sortConf: any;
   static pagingConf = { page: 1, perPage: 40 };
-  prepareRemoveSource: CustomServerDataSource<ContactModel>;
+  // prepareRemoveSource: CustomServerDataSource<ContactModel>;
+  tabs: any[];
+  groupsList: ContactGroupModel[];
 
   constructor(
     public apiService: ApiService,
@@ -62,15 +65,15 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
         return false;
       },
     });
-    this.prepareRemoveSource = new CustomServerDataSource<ContactModel>(this.apiService, this.getApiPath());
+    // this.prepareRemoveSource = new CustomServerDataSource<ContactModel>(this.apiService, this.getApiPath());
     // Set DataSource: prepareParams
-    this.prepareRemoveSource.prepareParams = (params: any) => {
-      params['sort_Id'] = 'desc';
-      params['includeOrganizations'] = true;
-      params['includeGroups'] = true;
-      params['eq_IsDeleted'] = true;
-      return params;
-    };
+    // this.prepareRemoveSource.prepareParams = (params: any) => {
+    //   params['sort_Id'] = 'desc';
+    //   params['includeOrganizations'] = true;
+    //   params['includeGroups'] = true;
+    //   params['eq_IsDeleted'] = true;
+    //   return params;
+    // };
 
     // this.prepareRemoveSource.prepareData = (data: ContactModel[] | any) => {
     //   return data;
@@ -83,7 +86,53 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
   // }
 
   async init() {
-    // await this.loadCache();
+    // await this.loadCache();await this.commonService.waitForLanguageLoaded();
+    // this.groupsList = await this.apiService.getPromise<ContactGroupModel[]>('/contact/groups', { onlyIdText: true });
+    await this.commonService.waitForLanguageLoaded();
+    this.tabs = [
+      {
+        title: this.commonService.translateText('Contact.title', { action: '', definition: '' }),
+        route: '/contact/all',
+        icon: 'book',
+      },
+      {
+        title: this.commonService.translateText('Contact.Customer.title', { action: '', definition: '' }),
+        route: '/contact/customer',
+        // icon: 'pie-chart',
+      },
+      {
+        title: this.commonService.translateText('Contact.Supplier.title', { action: '', definition: '' }),
+        route: '/contact/supplier',
+        // icon: 'pie-chart',
+      },
+      {
+        title: this.commonService.translateText('Contact.Employee.title', { action: '', definition: '' }),
+        route: '/contact/employee',
+        // icon: 'pie-chart',
+      },
+      {
+        title: this.commonService.translateText('Contact.Removed.title', { action: '', definition: '' }),
+        route: '/contact/removed',
+        // icon: 'pie-chart',
+      },
+      // {
+      //   title: 'Users',
+      //   icon: 'person',
+      //   route: './tab1',
+      // },
+      // {
+      //   title: 'Orders',
+      //   icon: 'paper-plane-outline',
+      //   responsive: true,
+      //   route: [ './tab2' ],
+      // },
+      // {
+      //   title: 'Transaction',
+      //   icon: 'flash-outline',
+      //   responsive: true,
+      //   disabled: true,
+      // },
+    ];
     return super.init();
   }
 
@@ -114,27 +163,10 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
             instance.valueChange.subscribe(value => {
             });
             instance.click.subscribe(async (row: ContactModel) => {
-              // if (this.files.length === 0) {
-              //   this.uploadForProduct = row;
-              //   this.uploadBtn.nativeElement.click();
-              // } else {
-              //   this.commonService.toastService.show(
-              //     this.commonService.translateText('Common.uploadInProcess'),
-              //     this.commonService.translateText('Common.upload'),
-              //     {
-              //       status: 'warning',
-              //     });
-              // }
             });
             instance.title = this.commonService.translateText('click to change main contact avatar');
           },
         },
-        // No: {
-        //   title: 'No.',
-        //   type: 'string',
-        //   width: '5%',
-        //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        // },
         Name: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
@@ -146,16 +178,41 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
           type: 'html',
           width: '20%',
           valuePrepareFunction: (cell: any) => {
-            return cell && cell.map(group => `<div class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> ${group.Name}</div></div>`).join('');
+            return cell && cell.map(group => `<div class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> ${group.text}</div></div>`).join('');
           },
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                placeholder: this.commonService.translateText('Common.groups') + '...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                // multiple: true,
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.groupsList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    };
+                  },
+                },
+              },
+            },
+          },
         },
-        // Phone: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.phone'), 'head-title'),
-        //   type: 'string',
-        //   width: '20%',
-        //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        // },
         Email: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.email'), 'head-title'),
           type: 'string',
@@ -179,18 +236,6 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
             // instance.format$.next('medium');
           },
         },
-        // Amount: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
-        //   type: 'custom',
-        //   class: 'align-right',
-        //   width: '10%',
-        //   position: 'right',
-        //   renderComponent: SmartTableCurrencyComponent,
-        //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-        //     // instance.format$.next('medium');
-        //     instance.style = 'text-align: right';
-        //   },
-        // },
         Merge: {
           title: this.commonService.translateText('Common.preview'),
           type: 'custom',
@@ -234,12 +279,6 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
                   ],
                 },
               });
-
-              // this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
-              //   this.preview(rs[0]);
-              // });
-
-
             });
           },
         }
@@ -270,7 +309,7 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
       params['sort_Id'] = 'desc';
       params['includeOrganizations'] = true;
       params['includeGroups'] = true;
-      params['eq_IsDeleted'] = false;
+      // params['eq_IsDeleted'] = false;
       return params;
     };
 
@@ -317,20 +356,20 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
 
   refresh() {
     super.refresh();
-    this.prepareRemoveSource.refresh();
+    // this.prepareRemoveSource.refresh();
   }
 
   /** Api delete funciton */
-  async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
-    let deletedItems: ContactModel[] = await this.convertIdsToItems(ids);
-    if (!deletedItems || deletedItems.length === 0) {
-      deletedItems = await this.convertIdsToItems(ids, this.prepareRemoveSource);
-    }
-    this.apiService.delete(this.apiPath, { id: ids, permanent: (deletedItems[0] && deletedItems[0].IsDeleted) }, (resp) => {
-      // this.removeGridItems(deletedItems);
-      this.refresh();
-      if (success) success(resp);
-    }, error, complete);
-  }
+  // async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+  //   let deletedItems: ContactModel[] = await this.convertIdsToItems(ids);
+  //   if (!deletedItems || deletedItems.length === 0) {
+  //     deletedItems = await this.convertIdsToItems(ids, this.prepareRemoveSource);
+  //   }
+  //   this.apiService.delete(this.apiPath, { id: ids, permanent: (deletedItems[0] && deletedItems[0].IsDeleted) }, (resp) => {
+  //     // this.removeGridItems(deletedItems);
+  //     this.refresh();
+  //     if (success) success(resp);
+  //   }, error, complete);
+  // }
 
 }

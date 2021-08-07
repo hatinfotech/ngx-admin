@@ -146,8 +146,8 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   }
 
   async init() {
-    this.paramList = (await this.apiService.getPromise<SystemParamModel[]>('/system/params', { includeOptions: true })).map(item => ({ ...item, id: item.Name, text: item.Description + ' (' + item.Name + ')' }));
-    this.actionList = (await this.apiService.getPromise<SystemActionModel[]>('/system/actions', { includeParams: true })).map(item => ({ ...item, id: item.Name, text: `${item.Description} (${item.ActionFunction})`, Params: item.Params.map(param => ({ ...param, id: param.Name, text: param.Description + ' (' + param.Name + ')' })) }));
+    this.paramList = (await this.apiService.getPromise<SystemParamModel[]>('/system/params', { includeOptions: true, limit: 'nolimit' })).map(item => ({ ...item, id: item.Name, text: item.Description + ' (' + item.Name + ')' }));
+    this.actionList = (await this.apiService.getPromise<SystemActionModel[]>('/system/actions', { includeParams: true, limit: 'nolimit' })).map(item => ({ ...item, id: item.Name, text: `${item.Description} (${item.ActionFunction})`, Params: item.Params.map(param => ({ ...param, id: param.Name, text: param.Description + ' (' + param.Name + ')' })) }));
     return super.init().then(status => {
       if (this.isDuplicate) {
         this.id = [];
@@ -250,6 +250,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
       Type: [{ disabled: true, value: '' }, Validators.required],
       State: [{ disabled: true, value: '' }],
       Enable: [true],
+      BreakOnFail: [true],
       RouteIndex: [''],
       Name: ['', Validators.required],
       Description: ['', Validators.required],

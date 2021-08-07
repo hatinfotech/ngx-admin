@@ -1,3 +1,10 @@
+import { ContactCustomerListComponent } from './modules/contact/contact-customer-list/contact-customer-list.component';
+import { ContactRemovedListComponent } from './modules/contact/contact-removed-list/contact-removed-list.component';
+import { ContactEmployeeListComponent } from './modules/contact/contact-employee-list/contact-employee-list.component';
+import { ContactSupplierListComponent } from './modules/contact/contact-supplier-list/contact-supplier-list.component';
+import { CustomerListComponent } from './modules/ivoip/customers/customer-list/customer-list.component';
+import { ContactAllListComponent } from './modules/contact/contact-all-list/contact-all-list.component';
+import { CommerceServiceByCycleListComponent } from './modules/commerce-service-by-cycle/service-by-cycle/commerce-service-by-cycle-list/commerce-service-by-cycle-list.component';
 import { AccountingBankAccountFormComponent } from './modules/accounting/bank-account/accounting-bank-account-form/accounting-bank-account-form.component';
 import { AccountingBankAccountListComponent } from './modules/accounting/bank-account/accounting-bank-account-list/accounting-bank-account-list.component';
 import { AccountingBankFormComponent } from './modules/accounting/bank/accounting-bank-form/accounting-bank-form.component';
@@ -70,6 +77,8 @@ import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/ac
 import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
 import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 import { AccMasterBookListComponent } from './modules/accounting/master-book/acc-master-book-list/acc-master-book-list.component';
+import { ContactFormComponent } from './modules/contact/contact/contact-form/contact-form.component';
+import { ContactListComponent } from './modules/contact/contact/contact-list/contact-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -758,8 +767,81 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     component: ProductGroupFormComponent,
   },
+  
+  
+
+  // Commmerce service by cycle routes
+  {
+    path: 'commerce-service-by-cycle/service-by-cycle/list',
+    canActivate: [AuthGuardService],
+    component: CommerceServiceByCycleListComponent,
+    data: {
+      reuse: true,
+    },
+  },
 
 
+  // Contact routes
+  {
+    path: 'contact',
+    canActivate: [AuthGuardService],
+    component: ContactListComponent,
+    // data: {
+    //   reuse: true,
+    // },
+    children: [
+      {
+        path: '',
+        redirectTo: 'all',
+        pathMatch: 'full',
+      },
+      {
+        path: 'all',
+        component: ContactAllListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'customer',
+        component: ContactCustomerListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'supplier',
+        component: ContactSupplierListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'employee',
+        component: ContactEmployeeListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'removed',
+        component: ContactRemovedListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+    ],
+  },
+  // {
+  //   path: 'contact/form',
+  //   canActivate: [AuthGuardService],
+  //   component: ContactFormComponent,
+  // },
+  // {
+  //   path: 'contact/form/:id',
+  //   canActivate: [AuthGuardService],
+  //   component: ContactFormComponent,
+  // },
   
 
 
@@ -866,15 +948,15 @@ const routes: Routes = [
     loadChildren: () => import('./modules/minierp/minierp.module')
       .then(m => m.MinierpModule),
   },
-  {
-    path: 'contact',
-    resolve: {
-      configuration: RoutingResolve,
-    },
-    // canActivate: [AuthGuardService],
-    loadChildren: () => import('./modules/contact/contact.module')
-      .then(m => m.ContactModule),
-  },
+  // {
+  //   path: 'contact',
+  //   resolve: {
+  //     configuration: RoutingResolve,
+  //   },
+  //   // canActivate: [AuthGuardService],
+  //   loadChildren: () => import('./modules/contact/contact.module')
+  //     .then(m => m.ContactModule),
+  // },
   {
     path: 'helpdesk',
     resolve: {

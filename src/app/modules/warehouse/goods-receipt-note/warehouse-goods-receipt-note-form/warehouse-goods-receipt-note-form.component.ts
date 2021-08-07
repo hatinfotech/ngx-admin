@@ -24,6 +24,8 @@ import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-vo
 import { SalesVoucherPrintComponent } from '../../../sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { BusinessModel } from '../../../../models/accounting.model';
+import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-form',
@@ -103,6 +105,28 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       text: 'Name',
     },
   };
+
+  customIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ProductFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          onDialogSave: (newData: ProductModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+            formGroup.get('Product').patchValue(newProduct);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -421,6 +445,11 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
     if (selectedData) {
+      if (selectedData.Units) {
+        const unitControl = detail.get('Unit');
+        unitControl['UnitList'] = selectedData.Units;
+        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
+      }
       detail.get('Description').setValue(selectedData.Name);
     } else {
       detail.get('Description').setValue('');

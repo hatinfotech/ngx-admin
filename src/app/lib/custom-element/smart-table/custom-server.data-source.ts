@@ -88,7 +88,9 @@ export class CustomServerDataSource<M> extends LocalDataSource {
             condition = fieldConf['search']['condition'];
             value = fieldConf['search']['value'];
           }
-          params[`${condition}_${fieldConf['field']}`] = this.encodeFilterQuery(value);
+          if (value !== null) {
+            params[`${condition}_${fieldConf['field']}`] = this.encodeFilterQuery(value);
+          }
         }
       });
     }

@@ -53,9 +53,18 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     public ref: NbDialogRef<ProductListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
+  }
 
-    // Append assign category buton
-    this.commonService.languageLoaded$.pipe(filter(f => f), take(1)).toPromise().then(() => {
+  async loadCache() {
+    // iniit category
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
+  }
+
+  async init() {
+    await this.loadCache();
+    return super.init().then(rs => {
       this.actionButtonList.unshift({
         name: 'assignCategories',
         status: 'info',
@@ -70,19 +79,8 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           return false;
         },
       });
+      return rs;
     });
-  }
-
-  async loadCache() {
-    // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
-  }
-
-  async init() {
-    await this.loadCache();
-    return super.init();
   }
 
   editing = {};

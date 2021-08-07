@@ -10,8 +10,8 @@
                     <div [formGroup]="formItem">
                         <div class="row">
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Title" label="Contact.title" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Contact.title' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="Title" label="Contact.contactTitle" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Contact.contactTitle' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
@@ -30,13 +30,13 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <ngx-form-group [formGroup]="formItem" name="Organizations" label="Common.organizations" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                <ngx-form-group [formGroup]="formItem" name="Organizations" label="Common.organizations" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
                                     <ngx-select2 [select2Option]="select2Option" formControlName="Organizations"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <ngx-form-group [formGroup]="formItem" name="Groups" label="Common.groups" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <ngx-select2 [select2Option]="select2GroupsOption" formControlName="Groups"></ngx-select2>
+                                <ngx-form-group [formGroup]="formItem" name="Groups" label="Common.groups" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                                    <ngx-select2 [select2Option]="select2GroupsOption" [data]="groupList" formControlName="Groups"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">

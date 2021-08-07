@@ -22,6 +22,8 @@ import { CommonService } from '../../../../services/common.service';
 import { PurchaseOrderVoucherListComponent } from '../../order/purchase-order-voucher-list/purchase-order-voucher-list.component';
 import { PurchaseOrderVoucherPrintComponent } from '../../order/purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { BusinessModel } from '../../../../models/accounting.model';
+import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-form',
@@ -100,6 +102,29 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   };
 
   accountingBusinessList: BusinessModel[] = [];
+
+  customIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ProductFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          showLoadinng: true,
+          onDialogSave: (newData: ProductModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+            formGroup.get('Product').patchValue(newProduct);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -218,7 +243,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;
@@ -461,7 +486,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       if (selectedData.Units) {
         const unitControl = detail.get('Unit');
         unitControl['UnitList'] = selectedData.Units;
-        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true));
+        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
       }
       detail.get('Description').setValue(selectedData.Name);
     } else {
@@ -564,11 +589,13 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
               if (purchaseOrder?.Details) {
                 details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseOrder.Code + ' - ' + purchaseOrder.Title }));
                 for (const orderDetail of purchaseOrder.Details) {
-                  delete orderDetail.Id;
-                  delete orderDetail.Voucher;
-                  delete orderDetail.No;
-                  const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, orderDetail);
-                  details.push(newDtailFormGroup);
+                  if (orderDetail.Type !== 'CATEGORY') {
+                    delete orderDetail.Id;
+                    delete orderDetail.Voucher;
+                    delete orderDetail.No;
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, orderDetail);
+                    details.push(newDtailFormGroup); 
+                  }
                 }
               }
 

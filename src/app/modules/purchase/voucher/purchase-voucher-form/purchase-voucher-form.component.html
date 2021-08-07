@@ -214,7 +214,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-8 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)" [customIcons]="customIcons" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>

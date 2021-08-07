@@ -565,7 +565,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
                 let totalMoney = 0;
                 const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
                 for (const voucherDetail of purchaseVoucher.Details) {
-                  if (voucherDetail.Type === 'PRODUCT') {
+                  if (voucherDetail.Type !== 'CATEGORY') {
                     const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
                     totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
                   }

@@ -16,7 +16,7 @@
                                     <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Type'), 'warning')">
                                     <label class="label"><span class="valid">Loại (*)</span><span class="invalid">Loại là bắt buộc (*)</span></label>
                                     <nb-select size="medium" formControlName="Type" fullWidth selected="PROGRAM">
@@ -25,7 +25,7 @@
                                     </nb-select>
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('RouteIndex'), 'warning')">
                                     <label class="label"><span class="valid">Route Index (*)</span><span class="invalid">Route Index là bắt buộc (*)</span></label>
                                     <input type="text" nbInput fullWidth formControlName="RouteIndex" placeholder="Route Index">
@@ -38,6 +38,15 @@
                                       <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('System.Route.Rule.priority')} | headtitlecase }} (*)</span>
                                     </label>
                                     <input type="text" nbInput fullWidth formControlName="Priority" placeholder="{{'System.Route.Rule.priority' | translate | headtitlecase}}">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('BreakOnFail'), 'warning')">
+                                    <label class="label">
+                                      <span class="valid">Dừng khi thất bại (*)</span>
+                                      <span class="invalid">Trạng thái là bắt buộc (*)</span>
+                                    </label>
+                                    <nb-checkbox formControlName="BreakOnFail" title="Kích hoạt">Dừng khi thất bại</nb-checkbox>
                                 </div>
                             </div>
                             <div class="col-sm-1">

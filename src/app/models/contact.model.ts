@@ -1,11 +1,12 @@
 export class ContactGroupModel {
+  [key: string]: any,
   Code?: string;
   Name?: string;
   Descriptoin?: string;
 }
 
 export class ContactModel {
-
+  [key: string]: any,
   Id?: string;
   Code?: string;
   Branch?: string;
@@ -90,8 +91,8 @@ export class ContactModel {
   // References
   Organizations?: ContactModel[];
   Groups?: ContactGroupModel[];
-  Details?: ContactDetailModel[] & {[key: string]: any};
-  OutsideReferences?: OutsideReferenceModel[] & {[key: string]: any};
+  Details?: ContactDetailModel[] & { [key: string]: any };
+  OutsideReferences?: OutsideReferenceModel[] & { [key: string]: any };
 
   constructor() { }
 

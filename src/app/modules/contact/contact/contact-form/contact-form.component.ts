@@ -1,3 +1,4 @@
+import { ContactGroupModel } from './../../../../models/contact.model';
 import { Component, OnInit } from '@angular/core';
 import { ContactModel, ContactDetailTypeModel, ContactDetailModel } from '../../../../models/contact.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +21,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   apiPath = '/contact/contacts';
   baseFormUrl = '/contact/contact/form';
 
+  // organizationList: ContactModel[];
   select2Option = {
     placeholder: 'Tổ chức...',
     allowClear: true,
@@ -78,8 +80,9 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     },
   };
 
+  groupList: ContactGroupModel[];
   select2GroupsOption = {
-    placeholder: 'Nhóm...',
+    placeholder: this.commonService.translateText('Common.group') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -87,25 +90,25 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     multiple: true,
     tags: true,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
-    ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/contact/groups', { filter_Name: params['term'] });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
-        };
-      },
-    },
+    // ajax: {
+    //   url: params => {
+    //     return this.apiService.buildApiUrl('/contact/groups', { filter_Name: params['term'] });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     console.info(data, params);
+    //     return {
+    //       results: data.map(item => {
+    //         item['id'] = item['Code'];
+    //         item['text'] = item['Name'];
+    //         return item;
+    //       }),
+    //     };
+    //   },
+    // },
   };
 
   typeList: ContactDetailTypeModel[];
@@ -176,6 +179,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
 
   async init() {
     this.typeList = (await this.apiService.getPromise<ContactDetailTypeModel[]>('/contact/detailTypes')).map(type => ({ ...type, id: type.Code, text: type.Name }));
+    this.groupList = await this.apiService.getPromise<ContactGroupModel[]>('/contact/groups', { onlyIdText: true });
     return super.init();
   }
 

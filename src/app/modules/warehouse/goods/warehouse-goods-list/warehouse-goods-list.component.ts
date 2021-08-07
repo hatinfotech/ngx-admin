@@ -240,36 +240,24 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     public ref: NbDialogRef<WarehouseGoodsListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, _http, ref);
-    this.actionButtonList.map(button => {
-      if (button.name === 'assignCategories') {
-        button.name = 'assginContainer';
-        button.label = this.commonService.translateText('Warehouse.assign/unassignContainer');
-        button.title = this.commonService.translateText('Warehouse.assign/unassignContainer');
-        button.click = (event, option) => {
-          this.openAssignContainersDialog();
-        };
-      }
-      return button;
-    });
-    // this.actionButtonList.unshift({
-    //   name: 'calculateCostOfGoodsSold',
-    //   status: 'danger',
-    //   label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
-    //   icon: 'checkmark-square',
-    //   title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
-    //   size: 'medium',
-    //   disabled: () => false,
-    //   hidden: () => this.isChoosedMode,
-    //   click: () => {
-    //     this.calculateCostOfGoodsSold();
-    //     return false;
-    //   },
-    // });
   }
 
   async init() {
-    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
-    return super.init();
+    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: container.Path })) as any;
+    return super.init().then(rs => {
+      this.actionButtonList.map(button => {
+        if (button.name === 'assignCategories') {
+          button.name = 'assginContainer';
+          button.label = this.commonService.translateText('Warehouse.assign/unassignContainer');
+          button.title = this.commonService.translateText('Warehouse.assign/unassignContainer');
+          button.click = (event, option) => {
+            this.openAssignContainersDialog();
+          };
+        }
+        return button;
+      });
+      return rs;
+    });
   }
 
   ngOnInit(): void {

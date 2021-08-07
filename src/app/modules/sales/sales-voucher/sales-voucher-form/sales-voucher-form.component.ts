@@ -27,6 +27,8 @@ import { WarehouseGoodsDeliveryNoteListComponent } from '../../../warehouse/good
 import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
 import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
+import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
@@ -196,6 +198,28 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     },
   };
 
+  customIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ProductFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          onDialogSave: (newData: ProductModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+            formGroup.get('Product').patchValue(newProduct);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -307,6 +331,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   };
   select2DataForType = [
     { id: 'PRODUCT', text: 'Sản phẩm' },
+    { id: 'SERVICE', text: 'Dịch vụ' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
@@ -329,7 +354,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;
@@ -720,29 +745,33 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     console.log(selectedData);
     const priceTable = this.commonService.getObjectId(parentForm.get('PriceTable').value);
     detail.get('Description').setValue(selectedData.Name);
-    if (selectedData && selectedData.Units && selectedData.Units.length > 0 && priceTable) {
-      this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-        priceTable: priceTable,
-        product: this.commonService.getObjectId(selectedData),
-        includeUnit: true,
-      }).then(rs => {
-        console.log(rs);
-        detail['unitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
-        // if (selectedData.Units) {
-        const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
-        if (detaultUnit) {
-          const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
-          detail.get('Unit').setValue('');
-          setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
-          setTimeout(() => {
-            detail.get('Price').setValue(choosed.Price);
-            this.toMoney(parentForm, detail);
-          }, 0);
-        }
-        // } else {
-        //   detail['unitList'] = this.commonService.unitList;
-        // }
-      });
+    if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
+      const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true) || selectedData.Units[0];
+      if (priceTable) {
+        this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+          priceTable: priceTable,
+          product: this.commonService.getObjectId(selectedData),
+          includeUnit: true,
+        }).then(rs => {
+          console.log(rs);
+          detail['unitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
+          // if (selectedData.Units) {
+          if (detaultUnit) {
+            const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
+            detail.get('Unit').setValue('');
+            setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
+            setTimeout(() => {
+              detail.get('Price').setValue(choosed.Price);
+              this.toMoney(parentForm, detail);
+            }, 0);
+          }
+          // } else {
+          //   detail['unitList'] = this.commonService.unitList;
+          // }
+        });
+      } else {
+        detail.get('Unit').setValue(detaultUnit);
+      }
     } else {
       // detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
@@ -869,7 +898,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                 if (refVoucher?.Details) {
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu xuất kho: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
-                    if (voucherDetail.Type === 'PRODUCT') {
+                    if (voucherDetail.Type !== 'CATEGORY') {
                       // delete voucherDetail.Id;
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
@@ -919,9 +948,9 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu xuất kho: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
-                    if (voucherDetail.Type === 'PRODUCT') {
+                    if (voucherDetail.Type !== 'CATEGORY') {
                       // delete voucherDetail.Id;
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
