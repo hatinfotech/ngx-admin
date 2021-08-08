@@ -1,7 +1,7 @@
 import { UserModel } from './user.model';
 
 export class ChatRoomModel {
-
+  [key: string]: any;
   Id?: string;
   Code?: string;
   Description?: string;

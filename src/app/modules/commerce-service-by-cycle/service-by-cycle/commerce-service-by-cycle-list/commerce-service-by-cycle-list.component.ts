@@ -1,22 +1,29 @@
+import { ChatRoomModel } from './../../../../models/chat-room.model';
+import { ProcessMap } from './../../../../models/process-map.model';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { takeUntil } from 'rxjs/operators';
+import { AppModule } from '../../../../app.module';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { BusinessModel } from '../../../../models/accounting.model';
+import { CommerceServiceByCycleModel } from '../../../../models/commerce-service-by-cycle.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccBusinessFormComponent } from '../../../accounting/acc-business/acc-business-form/acc-business-form.component';
 import { CommerceServiceByCycleFormComponent } from '../commerce-service-by-cycle-form/commerce-service-by-cycle-form.component';
+import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 
 @Component({
   selector: 'ngx-commerce-service-by-cycle-list',
   templateUrl: './commerce-service-by-cycle-list.component.html',
   styleUrls: ['./commerce-service-by-cycle-list.component.scss']
 })
-export class CommerceServiceByCycleListComponent extends ServerDataManagerListComponent<BusinessModel> implements OnInit {
+export class CommerceServiceByCycleListComponent extends ServerDataManagerListComponent<CommerceServiceByCycleModel> implements OnInit {
 
   componentName: string = 'CommerceServiceByCycleListComponent';
   formPath = '/commerce-service-by-cycle/service-by-cycle/form';
@@ -30,6 +37,8 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
   static filterConfig: any;
   static sortConf: any;
   static pagingConf = { page: 1, perPage: 40 };
+  cycleMap: { [key: string]: string };
+  stateList: { id: string, text: string }[];
 
   constructor(
     public apiService: ApiService,
@@ -39,12 +48,40 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CommerceServiceByCycleListComponent>,
+    public mobileAppService: MobileAppService
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
+    await this.commonService.waitForLanguageLoaded();
+    this.cycleMap = {
+      MONTHLY: this.commonService.translateText('Common.monthly'),
+      YEARLY: this.commonService.translateText('Common.yearly'),
+    };
+    this.stateList = [
+      {
+        id: 'ACTIVE',
+        text: this.commonService.translateText('Common.activated'),
+      },
+      {
+        id: 'INACTIVE',
+        text: this.commonService.translateText('Common.inactivated'),
+      },
+      {
+        id: 'EXPIREDSOON',
+        text: this.commonService.translateText('Common.expiredSoon'),
+      },
+      {
+        id: 'OVEREXPIRED',
+        text: this.commonService.translateText('Common.overExpired'),
+      },
+      {
+        id: 'EXPIRED',
+        text: this.commonService.translateText('Common.expired'),
+      },
+    ];
     return super.init();
   }
 
@@ -59,69 +96,168 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
           type: 'string',
           width: '10%',
         },
-        Name: {
-          title: this.commonService.translateText('Common.name'),
+        Object: {
+          title: this.commonService.translateText('Common.object'),
+          type: 'string',
+          width: '10%',
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        ObjectName: {
+          title: this.commonService.translateText('Common.objectName'),
           type: 'string',
           width: '15%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
           width: '20%',
         },
-        DebitAccount: {
-          title: this.commonService.translateText('Accounting.debitAccount'),
+        Cycle: {
+          title: this.commonService.translateText('Common.cycle'),
           type: 'string',
           width: '15%',
+          valuePrepareFunction: (cell: any, rowData: CommerceServiceByCycleModel) => {
+            return this.cycleMap[cell] || cell;
+          }
         },
-        CreditAccount: {
-          title: this.commonService.translateText('Accounting.creditAccount'),
-          type: 'string',
-          width: '15%',
-        },
-        Type: {
-          title: this.commonService.translateText('Common.type'),
+        Loop: {
+          title: this.commonService.translateText('Common.loop'),
           type: 'string',
           width: '10%',
+        },
+        DateOfStart: {
+          title: this.commonService.translateText('Common.dateOfStart'),
+          type: 'datetime',
+          width: '15%',
+        },
+        DateOfEnd: {
+          title: this.commonService.translateText('Common.dateOfEnd'),
+          type: 'datetime',
+          width: '15%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        Copy: {
-          title: 'Copy',
+        Task: {
+          title: 'Task',
           type: 'custom',
           width: '5%',
           renderComponent: SmartTableButtonComponent,
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
-            instance.icon = 'copy';
+            instance.icon = 'message-circle';
             // instance.label = this.commonService.translateText('Common.copy');
             instance.display = true;
-            instance.status = 'warning';
-            instance.valueChange.subscribe(value => {
-              // if (value) {
-              //   instance.disabled = false;
-              // } else {
-              //   instance.disabled = true;
-              // }
+            instance.status = 'info';
+            instance.init.subscribe(initRowData => {
             });
-            instance.click.subscribe(async (row: BusinessModel) => {
 
-              this.commonService.openDialog(AccBusinessFormComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  inputId: [row.Code],
-                  isDuplicate: true,
-                  onDialogSave: (newData: BusinessModel[]) => {
-                    // if (onDialogSave) onDialogSave(row);
+
+            instance.click.subscribe(async (row: CommerceServiceByCycleModel) => {
+              // const chatRoomId = row['ChatRooms'] && row['ChatRooms'][0] && row['ChatRooms'][0]['id'] || '';
+              this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
+                Code: null,
+                Resources: [
+                  {
+                    ResourceType: 'SERVICEBYCYCLE',
+                    Resource: row.Code,
+                    Title: row.Description,
+                    Date: row.DateOfStart,
+                  }
+                ]
+              }]).then(rs => {
+                if (rs && rs.length > 0 && rs[0].Resources && rs[0].Resources.length > 0) {
+                  const link = rs[0].Resources[0];
+                  if (link && link.ChatRoom) {
+                    // if (!Array.isArray(row['ChatRooms'])) row['ChatRooms'] = [];
+                    // row['ChatRooms'].push({ id: link.ChatRoom, text: link.Title });
+                    this.commonService.openMobileSidebar();
+                    this.mobileAppService.openChatRoom({ ChatRoom: link.ChatRoom });
+                  }
+                  // else {
+                  //   this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có phòng chat cho dịch vụ chu kỳ này, bạn có muốn tạo ngây bây giờ không ?'), [
+                  //     {
+                  //       label: this.commonService.translateText('Common.goback'),
+                  //       status: 'danger',
+                  //       icon: 'arrow-ios-back',
+                  //     },
+                  //     {
+                  //       label: this.commonService.translateText('Common.create'),
+                  //       status: 'success',
+                  //       icon: 'message-circle-outline',
+                  //       action: () => {
+                  //         this.apiService.putPromise<CommerceServiceByCycleModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
+                  //           if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
+                  //             this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
+                  //               this.commonService.translateText('Common.notification'), {
+                  //               status: 'success',
+                  //             });
+                  //           this.commonService.openMobileSidebar();
+                  //           this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
+                  //         });
+                  //       }
+                  //     },
+                  //   ]);
+                  // }
+                }
+              });
+            });
+          }
+        },
+        State: {
+          title: this.commonService.translateText('Common.state'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'checkmark-circle';
+            instance.display = true;
+            instance.status = 'success';
+            instance.disabled = this.isChoosedMode;
+            instance.title = this.commonService.translateText('Common.state');
+            instance.label = this.commonService.translateText('Common.state');
+            instance.valueChange.subscribe(value => {
+              const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
+              instance.label = this.commonService.translateText(processMap?.label);
+              instance.status = processMap?.status;
+              instance.outline = processMap?.outline;
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CommerceServiceByCycleModel) => {
+              this.changeStateConfirm(instance.rowData).then(status => {
+                if (status) this.refresh();
+              });
+            });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                placeholder: this.commonService.translateText('Common.state') + '...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                // multiple: true,
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
                   },
-                  onDialogClose: () => {
-                    // if (onDialogClose) onDialogClose();
-                    this.refresh();
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.stateList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    };
                   },
                 },
-              });
-
-            });
+              },
+            },
           },
         },
       },
@@ -143,6 +279,45 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
     };
 
     return source;
+  }
+
+  changeStateConfirm(data: CommerceServiceByCycleModel) {
+    const params = { id: [data.Code] };
+    const processMap: ProcessMap = AppModule.processMaps.commerceServiceByCycle[data.State || ''];
+    params['changeState'] = processMap?.nextState;
+
+    return new Promise(resolve => {
+      this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+        {
+          label: this.commonService.translateText('Common.goback'),
+          status: 'primary',
+          action: () => {
+            resolve(false);
+          },
+        },
+        {
+          label: this.commonService.translateText(processMap?.nextStateLabel),
+          status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
+          action: async () => {
+            this.loading = true;
+            return this.apiService.putPromise<CommerceServiceByCycleModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+              this.loading = false;
+              this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+                status: 'success',
+              });
+              resolve(true);
+              return true;
+            }).catch(err => {
+              this.loading = false;
+              resolve(false);
+              return false;
+            });
+          },
+        },
+      ], () => {
+        resolve(false);
+      });
+    });
   }
 
 }

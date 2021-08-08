@@ -1,0 +1,32 @@
+export interface CommerceServiceByCycleModel {
+    [key: string]: any;
+    Id?: string;
+    Code?: string;
+    Name?: string;
+    Description?: string;
+    Cycle?: string;
+    DateOfStart?: string;
+    DateOfEnd?: string;
+    Loop?: string;
+    DaysOfAfterExpired?: string;
+    DaysOfBeforeExpired?: string;
+    CrondOfBefore?: string;
+    Crond?: string;
+    CrondOfAfter?: string;
+    NextRemindOfBeforeExpired?: string;
+    NextRemind?: string;
+    NextRemindOfAfterExpired?: string;
+    Contract?: string;
+    ContractAttachment?: string;
+    Product?: string;
+    ProductName?: string;
+    RelativeVouchers?: string;
+    Permission?: string;
+    State?: string;
+    Object?: string;
+    ObjectName?: string;
+    ObjectPhone?: string;
+    ObjectEmail?: string;
+    ObjectAddress?: string;
+    ObjectIdentifiedNumber?: string;
+}

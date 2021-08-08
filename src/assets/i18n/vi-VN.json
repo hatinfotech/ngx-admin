@@ -298,6 +298,23 @@
         "organizations": "tổ chức",
         "restore": "khôi phục",
         "restoreConfirm": "bạn có muốn khôi phục dữ liệu không ?",
+        "notjustactive": "chưa kích hoạt",
+        "active": "kích hoạt",
+        "activeConfirm": "Bạn có muốn kích hoạt không",
+        "activated": "đã kích hoạt",
+        "activeSuccess": "Kích hoạt thành công",
+        "inactive": "không kích hoạt",
+        "inactiveConfirm": "bạn có muốn ngừng kích hoạt ?",
+        "inactivated": "đã ngừng kích hoạt",
+        "inactiveSuccess": "ngừng kích hoạt thành công",
+        "expiredSoon": "sắp hết hạn",
+        "overExpired": "quá hạn",
+        "dateOfEnd": "ngày kết thúc",
+        "dateOfStart": "ngày bắt đầu",
+        "loop": "lặp lại",
+        "cycle": "chu kỳ",
+        "monthly": "hàng tháng",
+        "yearly": "hàng năm",
         "addObject": "thêm đối tượng"
     },
     "Contact": {
@@ -779,6 +796,11 @@
         },
         "Warning": {
             "headAmountNotBalanced": "Số dư đầu kỳ không cân đối, bạn phải nhập số dư sao tổng dư nợ đầu kỳ phải bằng tổng dư có đầu kỳ."
+        }
+    },
+    "CommerceServiceByCycle": {
+        "ServieByCycle" : {
+            "title": "{{action}}{{definition}} dịch vụ theo chu kỳ"
         }
     },
     "Print": {

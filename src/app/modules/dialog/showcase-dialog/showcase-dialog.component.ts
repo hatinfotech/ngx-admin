@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { MytableContent } from '../../../lib/custom-element/my-components/my-table/my-table.component';
 
@@ -7,31 +7,39 @@ import { MytableContent } from '../../../lib/custom-element/my-components/my-tab
   templateUrl: 'showcase-dialog.component.html',
   styleUrls: ['showcase-dialog.component.scss'],
 })
-export class ShowcaseDialogComponent implements AfterViewInit {
+export class ShowcaseDialogComponent implements AfterViewInit , OnInit{
 
   @Input() title: string;
   @Input() content: string;
   @Input() footerContent: string;
   @Input() tableContent: MytableContent;
   @Input() onAfterInit: () => void;
-  @Input() actions: { label: string, icon?: string, status?: string, action?: () => void }[];
+  @Input() actions: { label: string, icon?: string, status?: string, action?: () => any }[];
   @ViewChild('dialogWrap', { static: true }) dialogWrap: ElementRef;
   @Input() onClose?: () => void;
 
   constructor(public ref: NbDialogRef<ShowcaseDialogComponent>) {
-    if (this.actions) {
-      this.actions.forEach(element => {
-        if (!element.action) {
-          element.action = () => {
+    
+  }
 
-          };
-        }
+  ngOnInit(): void {
+    if (this.actions) {
+      for(const element of this.actions){
+        // if (!element.action) {
+        // }
+        const superAction  = element.action;
+        element.action = async () => {
+          console.log(123);
+          superAction && (await superAction());
+          this.dismiss();
+        };
         if (!element.status) {
           element.status = 'info';
         }
-      });
+      };
     }
   }
+
   ngAfterViewInit(): void {
     // $(this.dialogWrap.nativeElement).closest('.cdk-overlay-pane').css({ width: '100%' });
     // $('.cdk-overlay-pane:has(ngx-showcase-dialog)').css({ width: '100%' });
