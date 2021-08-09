@@ -19,8 +19,8 @@ export class CommerceServiceByCycleFormComponent extends DataManagerFormComponen
 
   componentName: string = 'CommerceServiceByCycleFormComponent';
   idKey = 'Code';
-  baseFormUrl = '/accounting/business/form';
-  apiPath = '/accounting/business';
+  baseFormUrl = '/commerce-service-by-cycle/service-by-cycle/form';
+  apiPath = '/commerce-service-by-cycle/service-by-cycles';
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -34,6 +34,53 @@ export class CommerceServiceByCycleFormComponent extends DataManagerFormComponen
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
+
+  select2ContactOption = {
+    placeholder: 'Chọn liên hệ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        return { results: data };
+      },
+    },
+  };
+
+  cycleList: { id: string, text: string }[] = [
+    {
+      id: 'MONTHLY',
+      text: this.commonService.translateText('Common.monthly'),
+    },
+    {
+      id: 'YEARLY',
+      text: this.commonService.translateText('Common.yearly'),
+    },
+  ];
+  select2CycleOption = {
+    placeholder: this.commonService.translateText('Common.cycle') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
   ngOnInit() {
     this.restrict();
@@ -96,11 +143,23 @@ export class CommerceServiceByCycleFormComponent extends DataManagerFormComponen
     const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
       Code: [''],
-      Type: [''],
+      Cycle: ['', Validators.required],
       Name: ['', Validators.required],
-      Description: [''],
-      DebitAccount: ['', Validators.required],
-      CreditAccount: ['', Validators.required],
+      Description: ['', Validators.required],
+      DateOfStart: ['', Validators.required],
+      // DateOfEnd: [''],
+      Product: ['', Validators.required],
+      ProductName: [''],
+      Object: ['', Validators.required],
+      ObjectName: ['', Validators.required],
+      ObjectPhone: [''],
+      ObjectEmail: [''],
+      ObjectAddress: [''],
+      ObjectIdentifiedNumber: [''],
+      DaysOfAfterExpired: [''],
+      DaysOfBeforeExpired: [''],
+      OriginVoucher: [''],
+      OriginVoucherType: [''],
     });
     if (data) {
       newForm.patchValue(data);

@@ -315,6 +315,9 @@
         "cycle": "chu kỳ",
         "monthly": "hàng tháng",
         "yearly": "hàng năm",
+        "originVoucher": "chứng từ gốc",
+        "originVoucherType": "loại chứng từ gốc",
+        "service": "dịch vụ",
         "addObject": "thêm đối tượng"
     },
     "Contact": {
@@ -801,7 +804,10 @@
     "CommerceServiceByCycle": {
         "ServieByCycle" : {
             "title": "{{action}}{{definition}} dịch vụ theo chu kỳ"
-        }
+        },
+        "daysOfBeforeExpired": "số ngày cảnh báo sớm",
+        "daysOfAfterExpired": "số ngày cảnh báo quá hạn",
+        "serviceInfo": "thông tin dịch vụ"
     },
     "Print": {
         "listTemplate": "mẫu danh sách",
