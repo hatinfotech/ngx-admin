@@ -40,6 +40,7 @@ import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ti
 import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { PurchaseVoucherPrintComponent } from '../modules/purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -181,6 +182,7 @@ export class CommonService {
     /** Load langCode */
     translate.addLangs(['en-US', 'vi-VN']);
     translate.setDefaultLang('en-US');
+    moment.locale('en');
     // translate.setDefaultLang('vi-VN');
     this.locale$.subscribe(info => {
       if (info) {
@@ -192,6 +194,7 @@ export class CommonService {
             console.log('Update locale success');
           });
         }
+        moment.locale(info.locale);
       }
     });
     this.theme$.subscribe(info => {
@@ -819,5 +822,4 @@ export class CommonService {
     }
     return false;
   }
-
 }

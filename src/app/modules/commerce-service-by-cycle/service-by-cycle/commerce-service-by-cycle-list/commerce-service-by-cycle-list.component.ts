@@ -18,6 +18,7 @@ import { CommerceServiceByCycleFormComponent } from '../commerce-service-by-cycl
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import * as moment from 'moment';
 
 @Component({
   selector: 'ngx-commerce-service-by-cycle-list',
@@ -131,11 +132,14 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
           type: 'datetime',
           width: '15%',
         },
-        DateOfEnd: {
-          title: this.commonService.translateText('Common.dateOfEnd'),
-          type: 'datetime',
+        NextRemind: {
+          title: this.commonService.translateText('Common.nextTime'),
+          type: 'html',
           width: '15%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          valuePrepareFunction: (cell: any, rowData: CommerceServiceByCycleModel) => {
+            return cell && this.commonService.datePipe.transform(cell, 'short') + '<br>' + moment(cell).fromNow() || this.commonService.translateText('Common.undefined');
+          },
         },
         RelativeVouchers: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),

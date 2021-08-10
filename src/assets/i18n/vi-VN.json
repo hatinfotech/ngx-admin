@@ -320,6 +320,8 @@
         "service": "dịch vụ",
         "company": "công ty",
         "personal": "cá nhân",
+        "nextTime": "lần tiếp theo",
+        "undefined": "chưa xác định",
         "addObject": "thêm đối tượng"
     },
     "Contact": {
