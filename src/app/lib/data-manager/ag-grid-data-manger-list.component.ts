@@ -450,7 +450,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     this.deleteConfirm([event.data[this.idKey]], () => this.loadList());
   }
 
-  refresh(): false {
+  async refresh() {
     // this.loadList();
     // this.gridApi.refreshInfiniteCache();
     this.gridApi.refreshInfinitePageCache();

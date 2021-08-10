@@ -371,9 +371,9 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
-              this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-                this.preview(rs);
-              });
+              // this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
+                this.preview([rowData]);
+              // });
               // this.getFormData([rowData.Code]).then(rs => {
               //   this.preview(rs, 'list');
               // });
@@ -432,11 +432,16 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
       context: {
         showLoadinng: true,
         title: 'Xem trước',
-        data: data,
-        sourceOfDialog: source,
+        // data: data,
+        id: data.map(m => m[this.idKey]),
+        sourceOfDialog: 'list',
+        mode: 'print',
         idKey: ['Code'],
         // approvedConfirm: true,
         onChange: (data: SalesPriceReportModel) => {
+          this.refresh();
+        },
+        onSaveAndClose: () => {
           this.refresh();
         },
         // onSaveAndClose: () => {

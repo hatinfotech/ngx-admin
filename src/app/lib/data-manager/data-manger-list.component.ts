@@ -469,7 +469,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     //   }
   }
 
-  refresh() {
+  async refresh() {
     this.loadList(() => {
       this.syncSelectedStatus();
     });

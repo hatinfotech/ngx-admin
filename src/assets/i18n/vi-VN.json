@@ -318,6 +318,8 @@
         "originVoucher": "chứng từ gốc",
         "originVoucherType": "loại chứng từ gốc",
         "service": "dịch vụ",
+        "company": "công ty",
+        "personal": "cá nhân",
         "addObject": "thêm đối tượng"
     },
     "Contact": {

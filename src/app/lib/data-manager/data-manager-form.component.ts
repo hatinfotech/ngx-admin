@@ -598,7 +598,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     return this.id && this.id.length > 0;
   }
 
-  refresh() {
+  async refresh() {
     // this.array.clear();
     this.formLoad();
   }

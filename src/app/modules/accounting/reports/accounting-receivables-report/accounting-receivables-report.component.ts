@@ -204,7 +204,7 @@ export class AccountingReceivablesReportComponent extends DataManagerListCompone
     })
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 

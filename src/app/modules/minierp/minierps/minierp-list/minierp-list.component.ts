@@ -429,7 +429,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
     });
   }
 
-  refresh() {
+  async refresh() {
     this.updateSettingBehavios();
     return super.refresh();
   }

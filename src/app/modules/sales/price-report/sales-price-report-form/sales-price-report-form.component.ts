@@ -1,3 +1,4 @@
+import { ContactFormComponent } from './../../../contact/contact/contact-form/contact-form.component';
 import { SalesMasterPriceTableDetailModel } from './../../../../models/sales.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -19,6 +20,7 @@ import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { threadId } from 'worker_threads';
 
 
 @Component({
@@ -46,6 +48,82 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: (UnitModel & { id?: string, text?: string })[];
+
+  constructor(
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref: NbDialogRef<SalesPriceReportFormComponent>,
+  ) {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** Append print button to head card */
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
+  }
+
+  objectControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CUSTOMER', text: this.commonService.translateText('Common.customer') }, { id: 'COMPANY', 'text': this.commonService.translateText('Common.company') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+            // this.onSelectProduct(formGroup, newContacgt, option.parentForm)
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+
+  contactControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CUSTOMER', text: this.commonService.translateText('Common.customer') }, { id: 'PERSONAL', 'text': this.commonService.translateText('Common.personal') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+            // this.onSelectProduct(formGroup, newContacgt, option.parentForm)
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -111,34 +189,6 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   uploadConfig = {
 
   };
-
-  constructor(
-    public activeRoute: ActivatedRoute,
-    public router: Router,
-    public formBuilder: FormBuilder,
-    public apiService: ApiService,
-    public toastrService: NbToastrService,
-    public dialogService: NbDialogService,
-    public commonService: CommonService,
-    public ref: NbDialogRef<SalesPriceReportFormComponent>,
-  ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-
-    /** Append print button to head card */
-    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
-      name: 'print',
-      status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
-      icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.isProcessing,
-      hidden: () => false,
-      click: (event: any, option: ActionControlListOption) => {
-        this.preview(option.form);
-      },
-    });
-  }
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
@@ -226,6 +276,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         this.id = [];
         this.array.controls.forEach((formItem, index) => {
           formItem.get('Code').setValue('');
+          formItem.get('RelativeVouchers').setValue('');
           formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
           this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
             // Clear id
@@ -252,7 +303,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;
@@ -620,17 +671,15 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   preview(formItem: FormGroup) {
     const data: SalesPriceReportModel = formItem.value;
-    data.Details.forEach(detail => {
-      if (typeof detail['Tax'] === 'string') {
-        detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-        if (this.unitList) {
-          detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-        }
-      }
-    });
+    for (const detail of data.Details) {
+      detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');
+      detail['Unit'] = this.commonService.getObjectText(this.unitList.find(f => f.id === this.commonService.getObjectId(detail['Unit'])));
+    };
     this.commonService.openDialog(SalesPriceReportPrintComponent, {
       context: {
         title: 'Xem trước',
+        mode: 'preview',
+        sourceOfDialog: 'form',
         data: [data],
         onSaveAndClose: (priceReport: SalesPriceReportModel) => {
           this.saveAndClose();
@@ -678,6 +727,12 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    return false;
+  }
+
+  removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
+    const relationVoucher = formGroup.get('RelativeVouchers');
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
     return false;
   }
 

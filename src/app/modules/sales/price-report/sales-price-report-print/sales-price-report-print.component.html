@@ -63,7 +63,7 @@
                                         </span>
                                     </td>
                                     <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
-                                    <td class="text-align-right">{{detail.Unit?.Name || detail.Unit}}</td>
+                                    <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                                     <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                                     <td class="text-align-right">{{detail.Tax | objecttext}}</td>
                                     <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td>
@@ -101,12 +101,20 @@
         <nb-card-footer>
             <div class="buttons-row">
                 <!-- <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier"><nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}</button> -->
-                <button nbButton hero status="warning" (click)="prepareCopy(data);"><nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}</button>
+                <button *ngIf="mode === 'preview'" nbButton hero status="danger" (click)="close()">
+                    <nb-icon pack="eva" icon="chevron-left"></nb-icon>{{'Common.goback' | translate | headtitlecase}}
+                </button>
+                <button *ngIf="mode === 'print'" nbButton hero status="primary" (click)="prepareCopy(data);">
+                    <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+                </button>
                 <!-- <button nbButton hero status="info" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
                     <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button> -->
-                <button nbButton hero status="danger" [disabled]="['COMPLETE'].indexOf(data.State) > -1" (click)="approvedConfirm(data, i);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
-                <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
+                <button *ngIf="mode === 'print'" nbButton hero status="danger" [disabled]="['COMPLETE'].indexOf(data.State) > -1" (click)="approvedConfirm(data, i);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
+                <button *ngIf="mode === 'preview'" nbButton hero status="success" (click)="saveAndClose(data);">
                     <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+                </button>
+                <button *ngIf="mode === 'print'" nbButton hero status="warning" (click)="edit(data);">
+                    <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
                 </button>
             </div>
         </nb-card-footer>

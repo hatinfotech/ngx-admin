@@ -250,7 +250,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
     })
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 

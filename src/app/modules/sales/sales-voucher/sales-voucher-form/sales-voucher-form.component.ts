@@ -29,6 +29,7 @@ import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goo
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
+import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
@@ -56,6 +57,57 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: (UnitModel & { id?: string, text?: string })[];
+
+
+
+  objectControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CUSTOMER', text: this.commonService.translateText('Common.customer') }, { id: 'COMPANY', 'text': this.commonService.translateText('Common.company') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+            // this.onSelectProduct(formGroup, newContacgt, option.parentForm)
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+
+  contactControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CUSTOMER', text: this.commonService.translateText('Common.customer') }, { id: 'PERSONAL', 'text': this.commonService.translateText('Common.personal') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+            // this.onSelectProduct(formGroup, newContacgt, option.parentForm)
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+  
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -831,17 +883,14 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   preview(formItem: FormGroup) {
     const data: SalesVoucherModel = formItem.value;
     data.Details.forEach(detail => {
-      if (typeof detail['Tax'] === 'string') {
-        detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-        if (this.unitList) {
-          detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-        }
-      }
+      detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');
+      detail['Unit'] = this.commonService.getObjectText(this.unitList.find(f => f.id === this.commonService.getObjectId(detail['Unit'])));
     });
     this.commonService.openDialog(SalesVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
         data: [data],
+        mode: 'preview',
         idKey: ['Code'],
         onSaveAndClose: (rs: SalesVoucherModel) => {
           this.saveAndClose();

@@ -73,8 +73,8 @@ export class SystemParamFormComponent extends DataManagerFormComponent<SystemPar
     const newForm = this.formBuilder.group({
       Name_old: [''],
       Name: ['', Validators.required],
-      DefaultOperator: ['', Validators.required],
-      DefaultDataType: ['', Validators.required],
+      DefaultOperator: ['EQ', Validators.required],
+      DefaultDataType: ['STRING', Validators.required],
       RemoteDataSource: [''],
       RemoteDataResource: [''],
       Description: ['', Validators.required],

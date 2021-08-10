@@ -79,6 +79,12 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
       });
     });
 
+    this.frameSocket.on<{ id: string, type: string, text: string }>('request-open-voucher').subscribe(request => {
+      console.log('smart-bot send request open voucher', request);
+      this.commonService.previewVoucher(request.data?.type, request.data?.id);
+      request.callback('callback', true);
+    });
+
   }
 
 }

@@ -169,8 +169,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     }
   }
 
-  refresh() {
-
+  async refresh(): Promise<any> {
+    return true;
   }
 
   close() {

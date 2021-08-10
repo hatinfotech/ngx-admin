@@ -198,7 +198,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
     };
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 

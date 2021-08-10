@@ -27,6 +27,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   env = environment;
   apiPath = '/sales/sales-vouchers';
   processMapList: ProcessMap[] = [];
+  formDialog = SalesVoucherFormComponent;
 
   constructor(
     public commonService: CommonService,
@@ -84,7 +85,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   toMoney(detail: SalesVoucherDetailModel) {
-    if (detail.Type === 'PRODUCT') {
+    if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
       detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       if (detail.Tax) {
@@ -261,7 +262,15 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
+    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true }).then(rs => {
+      if (rs[0] && rs[0].Details) {
+        this.setDetailsNo(rs[0].Details, (detail: SalesVoucherDetailModel) => detail.Type !== 'CATEGORY');
+        for(const detail of rs[0].Details) {
+          rs[0]['Total'] += detail['ToMoney'] = this.toMoney(detail);
+        }
+      }
+      return rs;
+    });
   }
 
 }

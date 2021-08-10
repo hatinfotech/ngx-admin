@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { BusinessModel } from '../../../../models/accounting.model';
@@ -17,6 +17,7 @@ import { AccBusinessFormComponent } from '../../../accounting/acc-business/acc-b
 import { CommerceServiceByCycleFormComponent } from '../commerce-service-by-cycle-form/commerce-service-by-cycle-form.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 
 @Component({
   selector: 'ngx-commerce-service-by-cycle-list',
@@ -120,11 +121,11 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
             return this.cycleMap[cell] || cell;
           }
         },
-        Loop: {
-          title: this.commonService.translateText('Common.loop'),
-          type: 'string',
-          width: '10%',
-        },
+        // Loop: {
+        //   title: this.commonService.translateText('Common.loop'),
+        //   type: 'string',
+        //   width: '10%',
+        // },
         DateOfStart: {
           title: this.commonService.translateText('Common.dateOfStart'),
           type: 'datetime',
@@ -135,6 +136,15 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
           type: 'datetime',
           width: '15%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        RelativeVouchers: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+          },
+          width: '10%',
         },
         Task: {
           title: 'Task',
@@ -260,6 +270,44 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
             },
           },
         },
+        Permission: {
+          title: this.commonService.translateText('Common.permission'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'shield';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CommerceServiceByCycleModel) => {
+
+              this.commonService.openDialog(ResourcePermissionEditComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [rowData.Code],
+                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  // resrouce: rowData,
+                  apiPath: this.apiPath,
+                }
+              });
+
+              // this.getFormData([rowData.Code]).then(rs => {
+              //   this.preview(rs);
+              // });
+            });
+          },
+        },
       },
     });
   }
@@ -275,6 +323,8 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeParent'] = true;
+      params['includeRelativeVouchers'] = true;
+      params['sort_DateOfStart'] = 'asc';
       return params;
     };
 

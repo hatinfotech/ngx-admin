@@ -227,7 +227,7 @@ export class AccountingLiabilitiesReportComponent extends DataManagerListCompone
     })
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 

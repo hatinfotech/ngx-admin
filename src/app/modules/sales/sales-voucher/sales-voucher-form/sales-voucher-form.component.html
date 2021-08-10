@@ -16,7 +16,7 @@
                                         <div class="row">
                                             <input type="hidden" formControlName="Code">
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                                <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons">
                                                     <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
@@ -51,7 +51,7 @@
                                         <!-- <label class="label label-with-border-below">{{'Common.contact' | translate | headtitlecase}}</label> -->
                                         <div class="row">
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" name="Contact" label="Common.contact" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [formGroup]="formItem" name="Contact" label="Common.contact" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="contactControlIcons">
                                                     <ngx-select2 formControlName="Contact" [select2Option]="select2ContactOption" (selectChange)="onContactChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
@@ -309,7 +309,7 @@
                 <nb-card-footer>
                     <div class="buttons-row" style="text-align: right;">
                         <button nbButton hero status="primary" (click)="preview(formItem)" [disabled]="!form.valid || isProcessing">
-                            <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                            <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.preview' | translate | headtitlecase}}
                         </button>
                         <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
                         <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>

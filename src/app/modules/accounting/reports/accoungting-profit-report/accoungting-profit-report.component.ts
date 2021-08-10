@@ -268,7 +268,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
     })
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 

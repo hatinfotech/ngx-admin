@@ -329,7 +329,7 @@ export class EmailSentListComponent extends BaseComponent implements OnInit, OnD
     this.alive = false;
   }
 
-  refresh() {
+  async refresh() {
     this.commonService.takeUntil('email-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
       this.infiniteLoadModel.data = [];

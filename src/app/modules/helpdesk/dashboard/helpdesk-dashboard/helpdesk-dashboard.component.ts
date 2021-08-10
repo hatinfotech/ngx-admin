@@ -451,7 +451,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     this.alive = false;
   }
 
-  refresh() {
+  async refresh() {
     this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
       this.infiniteLoadModel.tickets = [];

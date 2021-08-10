@@ -329,7 +329,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
     this.alive = false;
   }
 
-  refresh() {
+  async refresh() {
     this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
       this.infiniteLoadModel.data = [];

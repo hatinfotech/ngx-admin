@@ -1,3 +1,4 @@
+import { CommerceServiceByCycleFormComponent } from './../modules/commerce-service-by-cycle/service-by-cycle/commerce-service-by-cycle-form/commerce-service-by-cycle-form.component';
 import { DeploymentVoucherPrintComponent } from './../modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
 import { SalesPriceReportPrintComponent } from './../modules/sales/price-report/sales-price-report-print/sales-price-report-print.component';
 import { CashPaymentVoucherPrintComponent } from './../modules/accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
@@ -794,6 +795,7 @@ export class CommonService {
     'PRICEREPORT': SalesPriceReportPrintComponent,
     'DEPLOYMENT': DeploymentVoucherPrintComponent,
     'OTHERBUSINESSVOUCHER': AccountingOtherBusinessVoucherPrintComponent,
+    'SERVICEBYCYCLE': CommerceServiceByCycleFormComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {
@@ -802,6 +804,9 @@ export class CommonService {
           showLoadinng: true,
           title: 'Xem trước',
           id: [this.getObjectId(relativeVocher)],
+          inputMode: 'dialog',
+          mode: 'print',
+          inputId: [this.getObjectId(relativeVocher)],
           // data: data,
           idKey: ['Code'],
           // approvedConfirm: true,

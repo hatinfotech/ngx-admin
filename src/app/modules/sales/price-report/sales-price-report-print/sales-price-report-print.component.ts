@@ -27,6 +27,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   apiPath = '/sales/price-reports';
   env = environment;
   processMapList: ProcessMap[] = [];
+  formDialog = SalesPriceReportFormComponent;
 
   constructor(
     public commonService: CommonService,
@@ -59,7 +60,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         return map;
       }, {});
       for (const detail of data.Details) {
-        if (detail.Type === 'PRODUCT') {
+        if (detail.Type !== 'CATEGORT') {
           detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
           detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
           data['Total'] += detail['ToMoney'] = this.toMoney(detail);
@@ -149,17 +150,18 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     this.close();
     this.commonService.openDialog(SalesPriceReportFormComponent, {
       context: {
+        showLoadinng: true,
         inputMode: 'dialog',
         inputId: [data.Code],
         isDuplicate: true,
         onDialogSave: (newData: SalesPriceReportModel[]) => {
           // if (onDialogSave) onDialogSave(row);
-          this.onClose(newData[0]);
+          this.onClose && this.onClose(newData[0]);
+          this.onSaveAndClose && this.onSaveAndClose(newData[0]);
         },
         onDialogClose: () => {
           // if (onDialogClose) onDialogClose();
           this.refresh();
-
         },
       },
     });
@@ -249,12 +251,26 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesPriceReportModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(rs => {
+    return this.apiService.getPromise<SalesPriceReportModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeTax: true, includeUnit: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
-        this.setDetailsNo(rs[0].Details, (detail: SalesPriceReportDetailModel) => detail.Type === 'PRODUCT');
+        this.setDetailsNo(rs[0].Details, (detail: SalesPriceReportDetailModel) => detail.Type !== 'CATEGORY');
+        let total = 0;
+        for(const detail of rs[0].Details) {
+          const tax = detail.Tax;
+          let toMoney = detail['Quantity'] * detail['Price'];
+          if(tax?.Tax) {
+            toMoney += (toMoney * tax?.Tax / 100);
+          }
+
+          detail['ToMoney'] = toMoney;
+          total += toMoney;
+        }
+        rs[0]['Total'] = total;
       }
       return rs;
     });
   }
+
+  
 
 }

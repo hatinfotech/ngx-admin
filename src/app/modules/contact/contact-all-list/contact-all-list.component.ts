@@ -245,7 +245,7 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
     });
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 

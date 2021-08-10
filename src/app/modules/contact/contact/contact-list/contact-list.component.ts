@@ -354,7 +354,7 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
   //   return false;
   // }
 
-  refresh() {
+  async refresh() {
     super.refresh();
     // this.prepareRemoveSource.refresh();
   }

@@ -218,7 +218,7 @@ export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManag
     })
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 

@@ -350,7 +350,7 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
     };
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 

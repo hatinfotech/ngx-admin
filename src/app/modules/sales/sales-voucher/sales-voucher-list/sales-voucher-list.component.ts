@@ -349,7 +349,8 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
       context: {
         showLoadinng: true,
         title: 'Xem trước',
-        data: data,
+        id: data.map(m => m[this.idKey]),
+        mode: 'print',
         idKey: ['Code'],
         // approvedConfirm: true,
         onClose: (data: SalesVoucherModel) => {

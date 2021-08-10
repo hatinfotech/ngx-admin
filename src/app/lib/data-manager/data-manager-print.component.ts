@@ -4,6 +4,8 @@ import { BaseComponent } from '../base-component'; import { OnInit, Input, ViewC
 import { NbDialogRef } from '@nebular/theme';
 import { Icon } from '../custom-element/card-header/card-header.component';
 import { NgModel } from '@angular/forms';
+import { DataManagerFormComponent } from './data-manager-form.component';
+import { Type } from '@angular/core';
 
 declare var $: JQueryStatic;
 export abstract class DataManagerPrintComponent<M> extends BaseComponent implements OnInit, AfterViewInit {
@@ -21,8 +23,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   @Input() idKey?: string[];
   @Input() title?: string;
   @Input() size?: string = 'medium';
+  @Input() mode?: 'print' | 'preview' = 'print';
 
   apiPath?: string;
+  formDialog: Type<DataManagerFormComponent<M>>;
 
   constructor(
     public commonService: CommonService,
@@ -206,5 +210,42 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         detail.No = no++;
       }
     }
+  }
+
+  edit(data: M) {
+    try {
+      this.commonService.openDialog<DataManagerFormComponent<M>>(this.formDialog || this.formDialog, {
+        context: {
+          showLoadinng: true,
+          inputMode: 'dialog',
+          inputId: [this.idKey.map(m => data[m]).join('-')],
+          onDialogSave: (newData: M[]) => {
+            // resolve({ event: 'save', data: newData });
+            // this.refresh();
+            // if (editedItems && editedItems.length > 0) {
+            //   this.updateGridItems(editedItems, newData);
+            // } else {
+            //   this.prependGridItems(newData);
+            // }
+            this.refresh();
+          },
+          onDialogClose: () => {
+            // resolve({ event: 'close' });
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    } catch (e) {
+      throw Error(e);
+    }
+    return true;
+  }
+
+  async refresh() {
+    if (this.id) {
+      this.data = await this.getFormData(this.id);
+    }
+    return true;
   }
 }

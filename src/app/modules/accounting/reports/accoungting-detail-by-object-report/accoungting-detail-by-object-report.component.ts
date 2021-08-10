@@ -244,7 +244,7 @@ export class AccoungtingDetailByObjectReportComponent extends DataManagerListCom
     };
   }
 
-  refresh() {
+  async refresh() {
     super.refresh();
   }
 
