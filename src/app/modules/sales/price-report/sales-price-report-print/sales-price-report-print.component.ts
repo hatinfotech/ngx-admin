@@ -61,8 +61,8 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
       }, {});
       for (const detail of data.Details) {
         if (detail.Type !== 'CATEGORT') {
-          detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
-          detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
+          // detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
+          // detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
           data['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
@@ -101,10 +101,10 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   }
 
   toMoney(detail: SalesPriceReportDetailModel) {
-    if (detail.Type === 'PRODUCT') {
+    if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
       if (detail.Tax) {
-        if (typeof detail.Tax.Tax == 'undefined') {
+        if (typeof detail.Tax?.Tax == 'undefined') {
           throw Error('tax not as tax model');
         }
         toMoney += toMoney * detail.Tax.Tax / 100;
@@ -254,23 +254,26 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     return this.apiService.getPromise<SalesPriceReportModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeTax: true, includeUnit: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: SalesPriceReportDetailModel) => detail.Type !== 'CATEGORY');
-        let total = 0;
-        for(const detail of rs[0].Details) {
-          const tax = detail.Tax;
-          let toMoney = detail['Quantity'] * detail['Price'];
-          if(tax?.Tax) {
-            toMoney += (toMoney * tax?.Tax / 100);
+        // let total = 0;
+        for (const detail of rs[0].Details) {
+          // const tax = detail.Tax;
+          // let toMoney = detail['Quantity'] * detail['Price'];
+          // if(tax?.Tax) {
+          //   toMoney += (toMoney * tax?.Tax / 100);
+          // }
+          if (detail.Type !== 'CATEGORY') {
+            rs[0]['Total'] += (detail['ToMoney'] = this.toMoney(detail));
           }
 
-          detail['ToMoney'] = toMoney;
-          total += toMoney;
+          // detail['ToMoney'] = toMoney;
+          // total += toMoney;
         }
-        rs[0]['Total'] = total;
+        // rs[0]['Total'] = total;
       }
       return rs;
     });
   }
 
-  
+
 
 }
