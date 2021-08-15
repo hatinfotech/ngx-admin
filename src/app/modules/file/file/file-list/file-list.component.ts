@@ -263,7 +263,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
   dragOver: boolean;
 
   onUploadOutput(output: UploadOutput): void {
-    // console.log(output);
+    console.log(output);
     // console.log(this.files);
     switch (output.type) {
       case 'allAddedToQueue':
