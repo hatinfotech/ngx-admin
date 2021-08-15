@@ -79,6 +79,7 @@ import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/r
 import { AccMasterBookListComponent } from './modules/accounting/master-book/acc-master-book-list/acc-master-book-list.component';
 import { ContactFormComponent } from './modules/contact/contact/contact-form/contact-form.component';
 import { ContactListComponent } from './modules/contact/contact/contact-list/contact-list.component';
+import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-key/cluster-authorized-key-list/cluster-authorized-key-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -775,6 +776,16 @@ const routes: Routes = [
     path: 'commerce-service-by-cycle/service-by-cycle/list',
     canActivate: [AuthGuardService],
     component: CommerceServiceByCycleListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+
+  // Cluster routes
+  {
+    path: 'cluster/authorized-key/list',
+    canActivate: [AuthGuardService],
+    component: ClusterAuthorizedKeyListComponent,
     data: {
       reuse: true,
     },

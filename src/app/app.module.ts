@@ -183,6 +183,8 @@ import { ContactListComponent } from './modules/contact/contact/contact-list/con
 import { ContactCustomerListComponent } from './modules/contact/contact-customer-list/contact-customer-list.component';
 import { ContactEmployeeListComponent } from './modules/contact/contact-employee-list/contact-employee-list.component';
 import { ContactSupplierListComponent } from './modules/contact/contact-supplier-list/contact-supplier-list.component';
+import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-key/cluster-authorized-key-list/cluster-authorized-key-list.component';
+import { ClusterAuthorizedKeyFormComponent } from './modules/cluster/authorized-key/cluster-authorized-key-form/cluster-authorized-key-form.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -336,6 +338,8 @@ export class DynamicLocaleId extends String {
     ContactEmployeeListComponent,
     ContactRemovedListComponent,
     ContactAllListComponent,
+    ClusterAuthorizedKeyListComponent,
+    ClusterAuthorizedKeyFormComponent,
 
   ],
   imports: [

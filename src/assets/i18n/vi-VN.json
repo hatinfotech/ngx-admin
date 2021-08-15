@@ -322,6 +322,9 @@
         "personal": "cá nhân",
         "nextTime": "lần tiếp theo",
         "undefined": "chưa xác định",
+        "issuer": "người phát hành",
+        "node": "node",
+        "authorizedKey": "khóa ủy quyền",
         "addObject": "thêm đối tượng"
     },
     "Contact": {
@@ -812,6 +815,11 @@
         "daysOfBeforeExpired": "số ngày cảnh báo sớm",
         "daysOfAfterExpired": "số ngày cảnh báo quá hạn",
         "serviceInfo": "thông tin dịch vụ"
+    },
+    "Cluster": {
+        "AuthorizedKey" : {
+            "title": "{{action}}{{definition}} khóa ủy quyền"
+        }
     },
     "Print": {
         "listTemplate": "mẫu danh sách",
