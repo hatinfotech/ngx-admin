@@ -206,11 +206,12 @@ export class ApiService {
   /** Restful api getting request - promise */
   getObservable<T>(enpoint: string, params?: any): Observable<HttpResponse<T>> {
 
-    return this._http.get<T>(this.buildApiUrl(enpoint, params), { observe: 'response' }).pipe(
-      retry(0),
-      catchError(e => {
-        return this.handleError(e, params['silent']);
-      }));
+    return this._http.get<T>(this.buildApiUrl(enpoint, params), { observe: 'response' })
+      .pipe(
+        retry(0),
+        catchError(e => {
+          return this.handleError(e, params['silent']);
+        }));
 
 
 
@@ -463,20 +464,51 @@ export class ApiService {
     return result;
   }
 
-  onUnauthorizied() {
-    this.takeUntil('ultil_unauthorize', 5000).then(() => {
-      // Fix stress requests
-      this.authService.isAuthenticated().subscribe(isAuth => {
-        if (!isAuth) {
-          this.unauthoriziedSubject.next({
-            previousUrl: this.router.url,
-          });
-          // this.router.navigate(['/auth/login']);
-          if (LoginDialogComponent.instances.length === 0) {
-            this.dialogService.open(LoginDialogComponent);
-          }
+  /** Anti duplicate action */
+  private takeOncePastCount = {};
+  private takeOnceCount = {};
+  async takeOnce(context: string, delay: number): Promise<boolean> {
+    const result = new Promise<boolean>(resolve => {
+      // resolve(true);
+      // if (delay === 0) {
+      //   resolve(true);
+      //   return;
+      // }
+      if (this.takeOncePastCount[context] === this.takeOnceCount[context]) {
+        resolve(true);
+      }
+      if (!this.takeOnceCount[context]) { this.takeOnceCount[context] = 0; }
+      this.takeOnceCount[context]++;
+      ((takeCount) => {
+        setTimeout(() => {
+          this.takeOncePastCount[context] = takeCount;
+        }, delay);
+      })(this.takeOnceCount[context]);
+      setTimeout(() => {
+        if (this.takeOncePastCount[context] === this.takeOnceCount[context]) {
+          this.takeOncePastCount[context] = null;
+          this.takeOnceCount[context] = null;
+          // resolve(true);
         }
+      }, delay);
+    });
+    return result;
+  }
+
+  onUnauthorizied() {
+    this.takeOnce('ultil_unauthorize', 5000).then(() => {
+      // Fix stress requests
+      // this.authService.isAuthenticated().subscribe(isAuth => {
+      // if (!isAuth) {
+      this.unauthoriziedSubject.next({
+        previousUrl: this.router.url,
       });
+      // this.router.navigate(['/auth/login']);
+      if (LoginDialogComponent.instances.length === 0) {
+        this.dialogService.open(LoginDialogComponent);
+      }
+      // }
+      // });
     });
   }
 
@@ -711,12 +743,12 @@ export class ApiInterceptor implements HttpInterceptor {
         return this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token);
       }
       this.apiService.onUnauthorizied();
-      return throwError('AutRefresh token fail');
+      return throwError({ status: 401, error: 'AutRefresh token fail' });
 
     }), catchError((error2: HttpErrorResponse) => {
       this.refreshTokenInProgress = false;
       console.log(error2);
-      return throwError('AutRefresh token fail');
+      return throwError(error2);
     }));
   }
 
