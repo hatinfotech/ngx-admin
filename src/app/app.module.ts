@@ -185,6 +185,24 @@ import { ContactEmployeeListComponent } from './modules/contact/contact-employee
 import { ContactSupplierListComponent } from './modules/contact/contact-supplier-list/contact-supplier-list.component';
 import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-key/cluster-authorized-key-list/cluster-authorized-key-list.component';
 import { ClusterAuthorizedKeyFormComponent } from './modules/cluster/authorized-key/cluster-authorized-key-form/cluster-authorized-key-form.component';
+import { CollaboratorPageListComponent } from './modules/collaborator/page/collaborator-page-list/collaborator-page-list.component';
+import { CollaboratorPageFormComponent } from './modules/collaborator/page/collaborator-page-form/collaborator-page-form.component';
+import { CollaboratorPublisherListComponent } from './modules/collaborator/publisher/collaborator-publisher-list/collaborator-publisher-list.component';
+import { CollaboratorProductListComponent } from './modules/collaborator/product/collaborator-product-list/collaborator-product-list.component';
+import { CollaboratorProductFormComponent } from './modules/collaborator/product/collaborator-product-form/collaborator-product-form.component';
+import { CollaboratorProductCategoryListComponent } from './modules/collaborator/product-category/collaborator-product-category-list/collaborator-product-category-list.component';
+import { CollaboratorProductCategoryFormComponent } from './modules/collaborator/product-category/collaborator-product-category-form/collaborator-product-category-form.component';
+import { CollaboratorUnitListComponent } from './modules/collaborator/unit/collaborator-unit-list/collaborator-unit-list.component';
+import { CollaboratorUnitFormComponent } from './modules/collaborator/unit/collaborator-unit-form/collaborator-unit-form.component';
+import { CollaboratorOrderListComponent } from './modules/collaborator/order/collaborator-order-list/collaborator-order-list.component';
+import { CollaboratorOrderFormComponent } from './modules/collaborator/order/collaborator-order-form/collaborator-order-form.component';
+import { CollaboratorOrderPrintComponent } from './modules/collaborator/order/collaborator-order-print/collaborator-order-print.component';
+import { CollaboratorPageReportComponent } from './modules/collaborator/collaborator-page-report/collaborator-page-report.component';
+import { CollaboratorPublisherReportComponent } from './modules/collaborator/collaborator-publisher-report/collaborator-publisher-report.component';
+import { CollaboratorPublisherSummaryComponent } from './modules/collaborator/collaborator-publisher-summary/collaborator-publisher-summary.component';
+import { CollaboratorPageSummaryComponent } from './modules/collaborator/collaborator-page-summary/collaborator-page-summary.component';
+import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
+import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -340,6 +358,24 @@ export class DynamicLocaleId extends String {
     ContactAllListComponent,
     ClusterAuthorizedKeyListComponent,
     ClusterAuthorizedKeyFormComponent,
+    CollaboratorPageListComponent,
+    CollaboratorPageFormComponent,
+    CollaboratorPublisherListComponent,
+    CollaboratorProductListComponent,
+    CollaboratorProductFormComponent,
+    CollaboratorProductCategoryListComponent,
+    CollaboratorProductCategoryFormComponent,
+    CollaboratorUnitListComponent,
+    CollaboratorUnitFormComponent,
+    CollaboratorOrderListComponent,
+    CollaboratorOrderFormComponent,
+    CollaboratorOrderPrintComponent,
+    CollaboratorPageReportComponent,
+    CollaboratorPublisherReportComponent,
+    CollaboratorPublisherSummaryComponent,
+    CollaboratorPageSummaryComponent,
+    CollaboratorPageComponent,
+    CollaboratorPublisherComponent,
 
   ],
   imports: [

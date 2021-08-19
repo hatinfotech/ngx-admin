@@ -1,3 +1,13 @@
+import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
+import { CollaboratorOrderListComponent } from './modules/collaborator/order/collaborator-order-list/collaborator-order-list.component';
+import { CollaboratorPublisherReportComponent } from './modules/collaborator/collaborator-publisher-report/collaborator-publisher-report.component';
+import { CollaboratorPublisherSummaryComponent } from './modules/collaborator/collaborator-publisher-summary/collaborator-publisher-summary.component';
+import { CollaboratorPageReportComponent } from './modules/collaborator/collaborator-page-report/collaborator-page-report.component';
+import { CollaboratorPageSummaryComponent } from './modules/collaborator/collaborator-page-summary/collaborator-page-summary.component';
+import { CollaboratorProductCategoryListComponent } from './modules/collaborator/product-category/collaborator-product-category-list/collaborator-product-category-list.component';
+import { CollaboratorProductListComponent } from './modules/collaborator/product/collaborator-product-list/collaborator-product-list.component';
+import { CollaboratorPublisherListComponent } from './modules/collaborator/publisher/collaborator-publisher-list/collaborator-publisher-list.component';
+import { CollaboratorPageListComponent } from './modules/collaborator/page/collaborator-page-list/collaborator-page-list.component';
 import { ContactCustomerListComponent } from './modules/contact/contact-customer-list/contact-customer-list.component';
 import { ContactRemovedListComponent } from './modules/contact/contact-removed-list/contact-removed-list.component';
 import { ContactEmployeeListComponent } from './modules/contact/contact-employee-list/contact-employee-list.component';
@@ -80,6 +90,7 @@ import { AccMasterBookListComponent } from './modules/accounting/master-book/acc
 import { ContactFormComponent } from './modules/contact/contact/contact-form/contact-form.component';
 import { ContactListComponent } from './modules/contact/contact/contact-list/contact-list.component';
 import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-key/cluster-authorized-key-list/cluster-authorized-key-list.component';
+import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -768,8 +779,8 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     component: ProductGroupFormComponent,
   },
-  
-  
+
+
 
   // Commmerce service by cycle routes
   {
@@ -786,6 +797,165 @@ const routes: Routes = [
     path: 'cluster/authorized-key/list',
     canActivate: [AuthGuardService],
     component: ClusterAuthorizedKeyListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+
+  // Collaborator routes
+  {
+    path: 'collaborator/page/list',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPageListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/publisher/list',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPublisherListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/product/list',
+    canActivate: [AuthGuardService],
+    component: CollaboratorProductListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/page',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPageComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'summary',
+        pathMatch: 'full',
+      },
+      {
+        path: 'summary',
+        component: CollaboratorPageSummaryComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'report',
+        component: CollaboratorPageReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'publisher/list',
+        component: CollaboratorPublisherListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'list',
+        component: CollaboratorPageListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'order/list',
+        component: CollaboratorOrderListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'product/list',
+        component: CollaboratorProductListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+    ]
+  },
+  {
+    path: 'collaborator/publisher',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPublisherComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'summary',
+        pathMatch: 'full',
+      },
+      {
+        path: 'summary',
+        component: CollaboratorPublisherSummaryComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'report',
+        component: CollaboratorPublisherReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'page/list',
+        component: CollaboratorPageListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'order/list',
+        component: CollaboratorOrderListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'product/list',
+        component: CollaboratorProductListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+    ]
+  },
+  {
+    path: 'collaborator/page-report',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPageReportComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/publisher-summary',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPublisherSummaryComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/publisher-report',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPublisherReportComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/order/list',
+    canActivate: [AuthGuardService],
+    component: CollaboratorOrderListComponent,
     data: {
       reuse: true,
     },
@@ -853,7 +1023,7 @@ const routes: Routes = [
   //   canActivate: [AuthGuardService],
   //   component: ContactFormComponent,
   // },
-  
+
 
 
 
