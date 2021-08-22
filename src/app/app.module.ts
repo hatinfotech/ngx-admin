@@ -203,6 +203,8 @@ import { CollaboratorPublisherSummaryComponent } from './modules/collaborator/co
 import { CollaboratorPageSummaryComponent } from './modules/collaborator/collaborator-page-summary/collaborator-page-summary.component';
 import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
 import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
+import { CollaboratorProductPreviewListComponent } from './modules/collaborator/product/collaborator-product-preview-list/collaborator-product-preview-list.component';
+import { CollaboratorProductSubscriptionComponent } from './modules/collaborator/product/collaborator-product-subscription/collaborator-product-subscription.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -376,6 +378,8 @@ export class DynamicLocaleId extends String {
     CollaboratorPageSummaryComponent,
     CollaboratorPageComponent,
     CollaboratorPublisherComponent,
+    CollaboratorProductPreviewListComponent,
+    CollaboratorProductSubscriptionComponent,
 
   ],
   imports: [

@@ -325,7 +325,10 @@
         "issuer": "người phát hành",
         "node": "node",
         "authorizedKey": "khóa ủy quyền",
-        "addObject": "thêm đối tượng"
+        "addObject": "thêm đối tượng",
+        "summary": "tổng quan",
+        "subscribe": "đăng ký",
+        "report": "báo cáo"
     },
     "Contact": {
         "Customer": {
@@ -819,6 +822,26 @@
     "Cluster": {
         "AuthorizedKey" : {
             "title": "{{action}}{{definition}} khóa ủy quyền"
+        }
+    },
+    "Collaborator": {
+        "Page" : {
+            "label": "trang",
+            "title": "{{action}}{{definition}} trang doanh nghiệp"
+        },
+        "Publisher" : {
+            "label": "cộng tác viên",
+            "title": "{{action}}{{definition}} cộng tác viên"
+        },
+        "Product" : {
+            "label": "sản phẩm",
+            "title": "{{action}}{{definition}} sản phẩm kinh doanh",
+            "subscribeConfirmText": "bạn có chắc là muốn đăng ký kinh doanh các sản phẩm này ?",
+            "subscribeSuccessText": "bạn đã đăng ký kinh doanh sản phẩm thành công"
+        },
+        "Order" : {
+            "label": "đơn hàng",
+            "title": "{{action}}{{definition}} đơn hàng"
         }
     },
     "Print": {

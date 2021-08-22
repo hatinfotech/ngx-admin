@@ -26,8 +26,8 @@ import { CollaboratorPageFormComponent } from '../collaborator-page-form/collabo
 export class CollaboratorPageListComponent extends ServerDataManagerListComponent<CommerceServiceByCycleModel> implements OnInit {
 
   componentName: string = 'CollaboratorPageListComponent';
-  formPath = '/commerce-service-by-cycle/service-by-cycle/form';
-  apiPath = '/commerce-service-by-cycle/service-by-cycles';
+  formPath = '/collaborator/page/form';
+  apiPath = '/collaborator/pages';
   idKey = 'Code';
   formDialog = CollaboratorPageFormComponent;
 
@@ -82,7 +82,19 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
         text: this.commonService.translateText('Common.expired'),
       },
     ];
-    return super.init();
+    return super.init().then(rs => {
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'subcribe',
+        label: this.commonService.translateText('Common.subcribe'),
+        icon: 'cast-outline',
+        status: 'danger',
+        size: 'medium',
+        title: this.commonService.translateText('Common.subcribe'),
+        click: () => { },
+      });
+      return rs;
+    });
   }
 
   editing = {};
@@ -96,123 +108,20 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
           type: 'string',
           width: '10%',
         },
-        Object: {
-          title: this.commonService.translateText('Common.object'),
+        Name: {
+          title: this.commonService.translateText('Common.name'),
           type: 'string',
-          width: '10%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        },
-        ObjectName: {
-          title: this.commonService.translateText('Common.objectName'),
-          type: 'string',
-          width: '15%',
+          width: '20%',
         },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
-          width: '20%',
+          width: '50%',
         },
-        Cycle: {
-          title: this.commonService.translateText('Common.cycle'),
-          type: 'string',
-          width: '15%',
-          valuePrepareFunction: (cell: any, rowData: CommerceServiceByCycleModel) => {
-            return this.cycleMap[cell] || cell;
-          }
-        },
-        // Loop: {
-        //   title: this.commonService.translateText('Common.loop'),
-        //   type: 'string',
-        //   width: '10%',
-        // },
-        DateOfStart: {
+        Created: {
           title: this.commonService.translateText('Common.dateOfStart'),
           type: 'datetime',
           width: '15%',
-        },
-        NextRemind: {
-          title: this.commonService.translateText('Common.nextTime'),
-          type: 'html',
-          width: '15%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-          valuePrepareFunction: (cell: any, rowData: CommerceServiceByCycleModel) => {
-            return cell && this.commonService.datePipe.transform(cell, 'short') + '<br>' + moment(cell).fromNow() || this.commonService.translateText('Common.undefined');
-          },
-        },
-        RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-          },
-          width: '10%',
-        },
-        Task: {
-          title: 'Task',
-          type: 'custom',
-          width: '5%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'message-circle';
-            // instance.label = this.commonService.translateText('Common.copy');
-            instance.display = true;
-            instance.status = 'info';
-            instance.init.subscribe(initRowData => {
-            });
-
-
-            instance.click.subscribe(async (row: CommerceServiceByCycleModel) => {
-              // const chatRoomId = row['ChatRooms'] && row['ChatRooms'][0] && row['ChatRooms'][0]['id'] || '';
-              this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
-                Code: null,
-                Resources: [
-                  {
-                    ResourceType: 'SERVICEBYCYCLE',
-                    Resource: row.Code,
-                    Title: row.Description,
-                    Date: row.DateOfStart,
-                  }
-                ]
-              }]).then(rs => {
-                if (rs && rs.length > 0 && rs[0].Resources && rs[0].Resources.length > 0) {
-                  const link = rs[0].Resources[0];
-                  if (link && link.ChatRoom) {
-                    // if (!Array.isArray(row['ChatRooms'])) row['ChatRooms'] = [];
-                    // row['ChatRooms'].push({ id: link.ChatRoom, text: link.Title });
-                    this.commonService.openMobileSidebar();
-                    this.mobileAppService.openChatRoom({ ChatRoom: link.ChatRoom });
-                  }
-                  // else {
-                  //   this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có phòng chat cho dịch vụ chu kỳ này, bạn có muốn tạo ngây bây giờ không ?'), [
-                  //     {
-                  //       label: this.commonService.translateText('Common.goback'),
-                  //       status: 'danger',
-                  //       icon: 'arrow-ios-back',
-                  //     },
-                  //     {
-                  //       label: this.commonService.translateText('Common.create'),
-                  //       status: 'success',
-                  //       icon: 'message-circle-outline',
-                  //       action: () => {
-                  //         this.apiService.putPromise<CommerceServiceByCycleModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
-                  //           if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                  //             this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
-                  //               this.commonService.translateText('Common.notification'), {
-                  //               status: 'success',
-                  //             });
-                  //           this.commonService.openMobileSidebar();
-                  //           this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
-                  //         });
-                  //       }
-                  //     },
-                  //   ]);
-                  // }
-                }
-              });
-            });
-          }
         },
         State: {
           title: this.commonService.translateText('Common.state'),

@@ -28,30 +28,29 @@ export class CollaboratorPublisherComponent extends BaseComponent {
     await this.commonService.waitForLanguageLoaded();
     this.tabs = [
       {
-        // title: this.commonService.translateText('Summary'),
-        title: 'Summary',
+        title: this.commonService.translateText('Common.summary'),
         route: '/collaborator/publisher/summary',
         icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: 'Business',
+        title: this.commonService.translateText('Collaborator.Page.label'),
         route: '/collaborator/publisher/page/list',
         // icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: 'Product',
+        title: this.commonService.translateText('Collaborator.Product.label'),
         route: '/collaborator/publisher/product/list',
         // icon: 'pie-chart',
       },
       {
-        title: 'Order',
+        title: this.commonService.translateText('Collaborator.Order.label'),
         route: '/collaborator/publisher/order/list',
         // icon: 'pie-chart',
       },
       {
-        title: 'Report',
+        title: this.commonService.translateText('Common.report'),
         route: '/collaborator/publisher/report',
         // icon: 'pie-chart',
       },

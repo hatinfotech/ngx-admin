@@ -1,3 +1,7 @@
+import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
+import { CollaboratorProductPreviewListComponent } from './../collaborator-product-preview-list/collaborator-product-preview-list.component';
+import { take, filter } from 'rxjs/operators';
+import { CollaboratorService } from '../../collaborator.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -8,6 +12,7 @@ import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/sma
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { CollaboratorPage } from '../../../../models/collaborator.model';
 import { FileModel } from '../../../../models/file.model';
 import { ProductModel, ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { UnitModel } from '../../../../models/unit.model';
@@ -24,10 +29,11 @@ import { CollaboratorProductFormComponent } from '../collaborator-product-form/c
 export class CollaboratorProductListComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit {
 
   componentName: string = 'CollaboratorProductListComponent';
-  formPath = '/admin-product/product/form';
-  apiPath = '/admin-product/products';
+  formPath = '/collaborator/product/form';
+  apiPath = '/collaborator/products';
   idKey: string | string[] = 'Code';
   formDialog = CollaboratorProductFormComponent;
+  currentPage: CollaboratorPage;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<CollaboratorProductListComponent>;
@@ -50,9 +56,11 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorProductListComponent>,
+    public collaboratorService: CollaboratorService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
+
 
   async loadCache() {
     // iniit category
@@ -78,6 +86,90 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
           return false;
         },
       });
+
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'subscribe',
+        label: this.commonService.translateText('Common.subscribe'),
+        icon: 'cast-outline',
+        status: 'danger',
+        size: 'medium',
+        title: this.commonService.translateText('Common.subscribe'),
+        click: () => {
+          this.commonService.openDialog(CollaboratorProductPreviewListComponent, {
+            context: {
+              inputMode: 'dialog',
+              onDialogChoose: async (chooseItems: ProductModel[]) => {
+                console.log(chooseItems);
+                this.commonService.openDialog(ShowcaseDialogComponent, {
+                  context: {
+                    title: this.commonService.translateText('Common.subscribe'),
+                    content: this.commonService.translateText('Collaborator.Product.subscribeConfirmText') + '<br>' + chooseItems.map(product => product.Name).join(', '),
+                    actions: [
+                      {
+                        label: this.commonService.translateText('Common.close'),
+                        status: 'primary',
+                      },
+                      {
+                        label: this.commonService.translateText('Common.subscribe'),
+                        status: 'danger',
+                        action: () => {
+                          this.apiService.putPromise<ProductModel[]>('/collaborator/products', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
+                            this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+                              status: 'success',
+                            })
+                            this.refresh();
+                          });
+                        }
+                      },
+                    ],
+                  },
+                })
+              },
+              onDialogClose: () => {
+              },
+            },
+          })
+        },
+      });
+
+      // Add page choosed
+      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+        this.actionButtonList.unshift({
+          type: 'select2',
+          name: 'pbxdomain',
+          status: 'success',
+          label: 'Select page',
+          icon: 'plus',
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          size: 'medium',
+          select2: {
+            data: pageList, option: {
+              placeholder: 'Chọn trang...',
+              allowClear: false,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+            }
+          },
+          value: () => this.collaboratorService.currentpage$.value,
+          change: (value: any, option: any) => {
+            this.onChangePage(value);
+          },
+          disabled: () => {
+            return false;
+          },
+          click: () => {
+            // this.gotoForm();
+            return false;
+          },
+        });
+      });
+
       return rs;
     });
   }
@@ -260,6 +352,9 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
       // params['includeFeaturePicture'] = true;
       params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
+      if (this.collaboratorService.currentpage$.value) {
+        params['page'] = this.collaboratorService.currentpage$.value;
+      }
       return params;
     };
 
@@ -267,10 +362,13 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
   }
 
   /** Api get funciton */
-  executeGet(params: any, success: (resources: ProductModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductModel[] | HttpErrorResponse) => void) {
-    params['includeCategories'] = true;
-    super.executeGet(params, success, error, complete);
-  }
+  // executeGet(params: any, success: (resources: ProductModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductModel[] | HttpErrorResponse) => void) {
+  //   params['includeCategories'] = true;
+  //   if (this.currentPage) {
+  //     params['page'] = this.commonService.getObjectId(this.currentPage);
+  //   }
+  //   super.executeGet(params, success, error, complete);
+  // }
 
   getList(callback: (list: ProductModel[]) => void) {
     super.getList((rs) => {
@@ -424,5 +522,11 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
     this.uploadInput.emit({ type: 'removeAll' });
   }
   /** End ngx-uploader */
+
+  onChangePage(page: CollaboratorPage) {
+    // this.currentPage = page;
+    this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
+    this.refresh();
+  }
 
 }

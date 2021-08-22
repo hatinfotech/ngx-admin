@@ -91,6 +91,7 @@ import { ContactFormComponent } from './modules/contact/contact/contact-form/con
 import { ContactListComponent } from './modules/contact/contact/contact-list/contact-list.component';
 import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-key/cluster-authorized-key-list/cluster-authorized-key-list.component';
 import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
+import { CollaboratorProductSubscriptionComponent } from './modules/collaborator/product/collaborator-product-subscription/collaborator-product-subscription.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -859,7 +860,7 @@ const routes: Routes = [
         },
       },
       {
-        path: 'list',
+        path: 'page-list',
         component: CollaboratorPageListComponent,
         data: {
           reuse: true,
@@ -921,7 +922,7 @@ const routes: Routes = [
       },
       {
         path: 'product/list',
-        component: CollaboratorProductListComponent,
+        component: CollaboratorProductSubscriptionComponent,
         data: {
           reuse: true,
         },

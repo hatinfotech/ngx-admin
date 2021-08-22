@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { take, filter } from 'rxjs/operators';
 import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -12,6 +13,7 @@ import { ProductModel, ProductUnitModel, ProductCategoryModel, ProductGroupModel
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { CollaboratorService } from '../../collaborator.service';
 
 @Component({
   selector: 'ngx-collaborator-product-form',
@@ -22,8 +24,8 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
 
   componentName: string = 'CollaboratorProductFormComponent';
   idKey = 'Code';
-  apiPath = '/admin-product/products';
-  baseFormUrl = '/admin-product/product/form';
+  apiPath = '/collaborator/products';
+  baseFormUrl = '/collaborator/product/form';
 
   unitList: ProductUnitModel[] = [];
 
@@ -43,6 +45,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref?: NbDialogRef<CollaboratorProductFormComponent>,
+    public collaboratorService?: CollaboratorService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -60,8 +63,8 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {limit: 'nolimit'})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -119,7 +122,45 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
   async init() {
     await this.loadCache();
     this.unitList = await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { select: 'id=>Code,text=>Name', limit: 'nolimit' });
-    return super.init();
+    return super.init().then(rs => {
+      // Add page choosed
+      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+        this.actionButtonList.unshift({
+          type: 'select2',
+          name: 'pbxdomain',
+          status: 'success',
+          label: 'Select page',
+          icon: 'plus',
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          size: 'medium',
+          select2: {
+            data: pageList, option: {
+              placeholder: 'Chọn trang...',
+              allowClear: false,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+            }
+          },
+          value: () => this.collaboratorService.currentpage$.value,
+          change: (value: any, option: any) => {
+            // this.onChangePage(value);
+          },
+          disabled: () => {
+            return true;
+          },
+          click: () => {
+            // this.gotoForm();
+            return false;
+          },
+        });
+      });
+      return rs;
+    });
   }
 
   /** Execute api get */
@@ -132,6 +173,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     params['includePictures'] = true;
     params['includeUnitConversions'] = true;
     params['includeWarehouseUnit'] = true;
+    params['page'] = this.collaboratorService?.currentpage$?.value;
     super.executeGet(params, success, error);
   }
 
@@ -280,7 +322,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     const newForm = this.formBuilder.group({
       // Id_old: [''],
       Id: [''],
-      Unit: [ formItem.get('WarehouseUnit').value || ''],
+      Unit: [formItem.get('WarehouseUnit').value || ''],
       ConversionRatio: ['1'],
       IsDefaultSales: [true],
       IsDefaultPurchase: [false],
@@ -473,5 +515,34 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
 
   onCkeditorReady(editor: any) {
     console.log(editor);
+  }
+
+  /** Execute api put */
+  executePut(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
+    params['page'] = this.collaboratorService?.currentpage$?.value;
+    return super.executePut(params, data, success, error);
+  }
+
+  /** Execute api post */
+  executePost(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
+    params['page'] = this.collaboratorService?.currentpage$?.value;
+    return super.executePost(params, data, success, error);
+  }
+
+  getRawFormData() {
+    const data = super.getRawFormData();
+    for (const item of data.array) {
+      item['Page'] = this.collaboratorService.currentpage$.value;
+    }
+    return data;
+  }
+
+  async save(): Promise<ProductModel[]> {
+    if (!this.collaboratorService?.currentpage$?.value) {
+      this.commonService.toastService.show(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
+        status: 'danger',
+      });
+    }
+    return super.save();
   }
 }

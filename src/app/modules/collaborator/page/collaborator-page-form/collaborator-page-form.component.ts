@@ -18,8 +18,8 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Busi
 
   componentName: string = 'CollaboratorPageFormComponent';
   idKey = 'Code';
-  baseFormUrl = '/commerce-service-by-cycle/service-by-cycle/form';
-  apiPath = '/commerce-service-by-cycle/service-by-cycles';
+  baseFormUrl = '/collaborator/page/form';
+  apiPath = '/collaborator/pages';
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -142,23 +142,8 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Busi
     const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
       Code: [''],
-      Cycle: ['', Validators.required],
       Name: ['', Validators.required],
       Description: ['', Validators.required],
-      DateOfStart: ['', Validators.required],
-      // DateOfEnd: [''],
-      Product: ['', Validators.required],
-      ProductName: [''],
-      Object: ['', Validators.required],
-      ObjectName: ['', Validators.required],
-      ObjectPhone: [''],
-      ObjectEmail: [''],
-      ObjectAddress: [''],
-      ObjectIdentifiedNumber: [''],
-      DaysOfAfterExpired: [''],
-      DaysOfBeforeExpired: [''],
-      OriginVoucher: [''],
-      OriginVoucherType: [''],
     });
     if (data) {
       newForm.patchValue(data);
