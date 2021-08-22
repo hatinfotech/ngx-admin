@@ -9,7 +9,7 @@ import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/sma
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { CollaboratorPage } from '../../../../models/collaborator.model';
+import { CollaboratorPageModel } from '../../../../models/collaborator.model';
 import { FileModel } from '../../../../models/file.model';
 import { ProductModel, ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { UnitModel } from '../../../../models/unit.model';
@@ -29,7 +29,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
   formPath = '/collaborator/product/form';
   apiPath = '/collaborator/products';
   idKey: string | string[] = 'Code';
-  currentPage: CollaboratorPage;
+  currentPage: CollaboratorPageModel;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<CollaboratorProductPreviewListComponent>;
@@ -68,20 +68,23 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
   async init() {
     await this.loadCache();
     return super.init().then(rs => {
-      this.actionButtonList.unshift({
-        name: 'assignCategories',
-        status: 'info',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
-        icon: 'pricetags',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
-        size: 'medium',
-        disabled: () => this.selectedIds.length === 0,
-        hidden: () => false,
-        click: () => {
-          this.openAssignCategoiesDialplog();
-          return false;
-        },
-      });
+      // this.actionButtonList.unshift({
+      //   name: 'assignCategories',
+      //   status: 'info',
+      //   label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+      //   icon: 'pricetags',
+      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+      //   size: 'medium',
+      //   disabled: () => this.selectedIds.length === 0,
+      //   hidden: () => false,
+      //   click: () => {
+      //     this.openAssignCategoiesDialplog();
+      //     return false;
+      //   },
+      // });
+
+      // Remove buttons
+      this.actionButtonList = this.actionButtonList.filter(f => ['add','edit','delete'].indexOf(f.name) < 0);
 
       // Add page choosed
       this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
@@ -96,7 +99,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
           select2: {
             data: pageList, option: {
               placeholder: 'Chọn trang...',
-              allowClear: false,
+              allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
               minimumInputLength: 0,
@@ -473,7 +476,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
   }
   /** End ngx-uploader */
 
-  onChangePage(page: CollaboratorPage) {
+  onChangePage(page: CollaboratorPageModel) {
     // this.currentPage = page;
     this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
     this.refresh();

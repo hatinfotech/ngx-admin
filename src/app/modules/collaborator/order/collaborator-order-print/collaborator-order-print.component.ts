@@ -10,6 +10,7 @@ import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
+import { CollaboratorService } from '../../collaborator.service';
 
 @Component({
   selector: 'ngx-collaborator-order-print',
@@ -20,8 +21,8 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
 
   /** Component name */
   componentName = 'CollaboratorOrderPrintComponent';
-  title: string = 'Xem trước phiếu báo giá';
-  apiPath = '/sales/price-reports';
+  title: string = 'Xem trước đơn hàng';
+  apiPath = '/collaborator/orders';
   env = environment;
   processMapList: ProcessMap[] = [];
   formDialog = SalesPriceReportFormComponent;
@@ -31,6 +32,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorOrderPrintComponent>,
+    public collaboratorService: CollaboratorService,
     private datePipe: DatePipe,
   ) {
     super(commonService, router, apiService, ref);
@@ -177,7 +179,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
       ]);
       return;
     }
-    const params = { id: [data.Code] };
+    const params = { id: [data.Code], page: this.collaboratorService.currentpage$.value };
     // const processMap = SalesModule.processMaps.priceReport[data.State || ''];
     params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
@@ -222,7 +224,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<SalesPriceReportModel[]>('/sales/price-reports', params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<SalesPriceReportModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
             this.loading = true;
             this.onChange && this.onChange(data);
             this.close();

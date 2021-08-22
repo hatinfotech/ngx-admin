@@ -609,6 +609,36 @@ export class CommonService {
     return result;
   }
 
+  private takeOncePastCount = {};
+  private takeOnceCount = {};
+  async takeOnce(context: string, delay: number): Promise<boolean> {
+    const result = new Promise<boolean>(resolve => {
+      // resolve(true);
+      // if (delay === 0) {
+      //   resolve(true);
+      //   return;
+      // }
+      if (this.takeOncePastCount[context] === this.takeOnceCount[context]) {
+        resolve(true);
+      }
+      if (!this.takeOnceCount[context]) { this.takeOnceCount[context] = 0; }
+      this.takeOnceCount[context]++;
+      ((takeCount) => {
+        setTimeout(() => {
+          this.takeOncePastCount[context] = takeCount;
+        }, delay);
+      })(this.takeOnceCount[context]);
+      setTimeout(() => {
+        if (this.takeOncePastCount[context] === this.takeOnceCount[context]) {
+          this.takeOncePastCount[context] = null;
+          this.takeOnceCount[context] = null;
+          // resolve(true);
+        }
+      }, delay);
+    });
+    return result;
+  }
+
   generatePassword(length: number): string {
     return Array(length)
       .fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')

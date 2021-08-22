@@ -12,7 +12,7 @@ import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/sma
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { CollaboratorPage } from '../../../../models/collaborator.model';
+import { CollaboratorPageModel } from '../../../../models/collaborator.model';
 import { FileModel } from '../../../../models/file.model';
 import { ProductModel, ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { UnitModel } from '../../../../models/unit.model';
@@ -33,7 +33,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
   apiPath = '/collaborator/products';
   idKey: string | string[] = 'Code';
   formDialog = CollaboratorProductFormComponent;
-  currentPage: CollaboratorPage;
+  currentPage: CollaboratorPageModel;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<CollaboratorProductListComponent>;
@@ -146,7 +146,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
           select2: {
             data: pageList, option: {
               placeholder: 'Chọn trang...',
-              allowClear: false,
+              allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
               minimumInputLength: 0,
@@ -523,10 +523,11 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
   }
   /** End ngx-uploader */
 
-  onChangePage(page: CollaboratorPage) {
-    // this.currentPage = page;
+  onChangePage(page: CollaboratorPageModel) {
     this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
-    this.refresh();
+    this.commonService.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+      this.refresh();
+    });
   }
 
 }

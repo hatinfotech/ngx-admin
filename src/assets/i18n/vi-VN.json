@@ -812,7 +812,7 @@
         }
     },
     "CommerceServiceByCycle": {
-        "ServieByCycle" : {
+        "ServieByCycle": {
             "title": "{{action}}{{definition}} dịch vụ theo chu kỳ"
         },
         "daysOfBeforeExpired": "số ngày cảnh báo sớm",
@@ -820,28 +820,31 @@
         "serviceInfo": "thông tin dịch vụ"
     },
     "Cluster": {
-        "AuthorizedKey" : {
+        "AuthorizedKey": {
             "title": "{{action}}{{definition}} khóa ủy quyền"
         }
     },
     "Collaborator": {
-        "Page" : {
+        "Page": {
             "label": "trang",
             "title": "{{action}}{{definition}} trang doanh nghiệp"
         },
-        "Publisher" : {
+        "Publisher": {
             "label": "cộng tác viên",
-            "title": "{{action}}{{definition}} cộng tác viên"
+            "title": "{{action}}{{definition}} cộng tác viên",
+            "assigned": "ngày tham gia"
         },
-        "Product" : {
+        "Product": {
             "label": "sản phẩm",
             "title": "{{action}}{{definition}} sản phẩm kinh doanh",
             "subscribeConfirmText": "bạn có chắc là muốn đăng ký kinh doanh các sản phẩm này ?",
             "subscribeSuccessText": "bạn đã đăng ký kinh doanh sản phẩm thành công"
         },
-        "Order" : {
+        "Order": {
             "label": "đơn hàng",
-            "title": "{{action}}{{definition}} đơn hàng"
+            "title": "{{action}}{{definition}} đơn hàng",
+            "dateOforder": "ngày đặt hàng",
+            "dateOfDelivery": "ngày giao hàng"
         }
     },
     "Print": {

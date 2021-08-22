@@ -1,32 +1,31 @@
+import { CollaboratorPageModel, CollaboratorPublisherModel } from './../../../../models/collaborator.model';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import * as moment from 'moment';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { ChatRoomModel } from '../../../../models/chat-room.model';
-import { CommerceServiceByCycleModel } from '../../../../models/commerce-service-by-cycle.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
+import { CollaboratorService } from '../../collaborator.service';
 
 @Component({
   selector: 'ngx-collaborator-publisher-list',
   templateUrl: './collaborator-publisher-list.component.html',
   styleUrls: ['./collaborator-publisher-list.component.scss']
 })
-export class CollaboratorPublisherListComponent extends ServerDataManagerListComponent<CommerceServiceByCycleModel> implements OnInit {
+export class CollaboratorPublisherListComponent extends ServerDataManagerListComponent<CollaboratorPublisherModel> implements OnInit {
 
   componentName: string = 'CollaboratorPublisherListComponent';
-  formPath = '/commerce-service-by-cycle/service-by-cycle/form';
-  apiPath = '/commerce-service-by-cycle/service-by-cycles';
+  formPath = '/collaborator/publisher/form';
+  apiPath = '/collaborator/publishers';
   idKey = 'Code';
   // formDialog = CommerceServiceByCycleFormComponent;
 
@@ -47,7 +46,8 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorPublisherListComponent>,
-    public mobileAppService: MobileAppService
+    public mobileAppService: MobileAppService,
+    public collaboratorService: CollaboratorService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -81,7 +81,45 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
         text: this.commonService.translateText('Common.expired'),
       },
     ];
-    return super.init();
+    return super.init().then(rs => {
+      // Add page choosed
+      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+        this.actionButtonList.unshift({
+          type: 'select2',
+          name: 'pbxdomain',
+          status: 'success',
+          label: 'Select page',
+          icon: 'plus',
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          size: 'medium',
+          select2: {
+            data: pageList, option: {
+              placeholder: 'Chọn trang...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+            }
+          },
+          value: () => this.collaboratorService.currentpage$.value,
+          change: (value: any, option: any) => {
+            this.onChangePage(value);
+          },
+          disabled: () => {
+            return false;
+          },
+          click: () => {
+            // this.gotoForm();
+            return false;
+          },
+        });
+      });
+      return rs;
+    });
   }
 
   editing = {};
@@ -90,128 +128,41 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
   loadListSetting(): SmartTableSetting {
     return this.configSetting({
       columns: {
-        Code: {
+        Publisher: {
           title: this.commonService.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
-        Object: {
-          title: this.commonService.translateText('Common.object'),
-          type: 'string',
-          width: '10%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        },
-        ObjectName: {
-          title: this.commonService.translateText('Common.objectName'),
+        Name: {
+          title: this.commonService.translateText('Common.name'),
           type: 'string',
           width: '15%',
         },
-        Description: {
-          title: this.commonService.translateText('Common.description'),
+        Phone: {
+          title: this.commonService.translateText('Common.phone'),
           type: 'string',
           width: '20%',
         },
-        Cycle: {
-          title: this.commonService.translateText('Common.cycle'),
+        Email: {
+          title: this.commonService.translateText('Common.email'),
           type: 'string',
           width: '15%',
-          valuePrepareFunction: (cell: any, rowData: CommerceServiceByCycleModel) => {
+          valuePrepareFunction: (cell: any, rowData: CollaboratorPublisherModel) => {
             return this.cycleMap[cell] || cell;
           }
         },
-        // Loop: {
-        //   title: this.commonService.translateText('Common.loop'),
-        //   type: 'string',
-        //   width: '10%',
-        // },
-        DateOfStart: {
-          title: this.commonService.translateText('Common.dateOfStart'),
+        Address: {
+          title: this.commonService.translateText('Common.address'),
+          type: 'string',
+          width: '15%',
+          valuePrepareFunction: (cell: any, rowData: CollaboratorPublisherModel) => {
+            return this.cycleMap[cell] || cell;
+          }
+        },
+        Assigned: {
+          title: this.commonService.translateText('Collaborator.Publisher.assigned'),
           type: 'datetime',
           width: '15%',
-        },
-        NextRemind: {
-          title: this.commonService.translateText('Common.nextTime'),
-          type: 'html',
-          width: '15%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-          valuePrepareFunction: (cell: any, rowData: CommerceServiceByCycleModel) => {
-            return cell && this.commonService.datePipe.transform(cell, 'short') + '<br>' + moment(cell).fromNow() || this.commonService.translateText('Common.undefined');
-          },
-        },
-        RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-          },
-          width: '10%',
-        },
-        Task: {
-          title: 'Task',
-          type: 'custom',
-          width: '5%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'message-circle';
-            // instance.label = this.commonService.translateText('Common.copy');
-            instance.display = true;
-            instance.status = 'info';
-            instance.init.subscribe(initRowData => {
-            });
-
-
-            instance.click.subscribe(async (row: CommerceServiceByCycleModel) => {
-              // const chatRoomId = row['ChatRooms'] && row['ChatRooms'][0] && row['ChatRooms'][0]['id'] || '';
-              this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
-                Code: null,
-                Resources: [
-                  {
-                    ResourceType: 'SERVICEBYCYCLE',
-                    Resource: row.Code,
-                    Title: row.Description,
-                    Date: row.DateOfStart,
-                  }
-                ]
-              }]).then(rs => {
-                if (rs && rs.length > 0 && rs[0].Resources && rs[0].Resources.length > 0) {
-                  const link = rs[0].Resources[0];
-                  if (link && link.ChatRoom) {
-                    // if (!Array.isArray(row['ChatRooms'])) row['ChatRooms'] = [];
-                    // row['ChatRooms'].push({ id: link.ChatRoom, text: link.Title });
-                    this.commonService.openMobileSidebar();
-                    this.mobileAppService.openChatRoom({ ChatRoom: link.ChatRoom });
-                  }
-                  // else {
-                  //   this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có phòng chat cho dịch vụ chu kỳ này, bạn có muốn tạo ngây bây giờ không ?'), [
-                  //     {
-                  //       label: this.commonService.translateText('Common.goback'),
-                  //       status: 'danger',
-                  //       icon: 'arrow-ios-back',
-                  //     },
-                  //     {
-                  //       label: this.commonService.translateText('Common.create'),
-                  //       status: 'success',
-                  //       icon: 'message-circle-outline',
-                  //       action: () => {
-                  //         this.apiService.putPromise<CommerceServiceByCycleModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
-                  //           if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                  //             this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
-                  //               this.commonService.translateText('Common.notification'), {
-                  //               status: 'success',
-                  //             });
-                  //           this.commonService.openMobileSidebar();
-                  //           this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
-                  //         });
-                  //       }
-                  //     },
-                  //   ]);
-                  // }
-                }
-              });
-            });
-          }
         },
         State: {
           title: this.commonService.translateText('Common.state'),
@@ -233,7 +184,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CommerceServiceByCycleModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPublisherModel) => {
               this.changeStateConfirm(instance.rowData).then(status => {
                 if (status) this.refresh();
               });
@@ -290,7 +241,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CommerceServiceByCycleModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPublisherModel) => {
 
               this.commonService.openDialog(ResourcePermissionEditComponent, {
                 context: {
@@ -326,13 +277,14 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
       params['includeParent'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_DateOfStart'] = 'asc';
+      params['page'] = this.collaboratorService?.currentpage$?.value;
       return params;
     };
 
     return source;
   }
 
-  changeStateConfirm(data: CommerceServiceByCycleModel) {
+  changeStateConfirm(data: CollaboratorPublisherModel) {
     const params = { id: [data.Code] };
     const processMap: ProcessMap = AppModule.processMaps.commerceServiceByCycle[data.State || ''];
     params['changeState'] = processMap?.nextState;
@@ -351,7 +303,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
           status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
           action: async () => {
             this.loading = true;
-            return this.apiService.putPromise<CommerceServiceByCycleModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            return this.apiService.putPromise<CollaboratorPublisherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
               this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
                 status: 'success',
@@ -368,6 +320,13 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
       ], () => {
         resolve(false);
       });
+    });
+  }
+
+  onChangePage(page: CollaboratorPageModel) {
+    this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
+    this.commonService.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+      this.refresh();
     });
   }
 

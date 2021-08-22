@@ -4,10 +4,12 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { filter, take } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment.prod';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { CollaboratorPageModel } from '../../../../models/collaborator.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
@@ -19,6 +21,7 @@ import { CommonService } from '../../../../services/common.service';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { SalesPriceReportPrintComponent } from '../../../sales/price-report/sales-price-report-print/sales-price-report-print.component';
+import { CollaboratorService } from '../../collaborator.service';
 
 @Component({
   selector: 'ngx-collaborator-order-form',
@@ -29,8 +32,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   componentName: string = 'CollaboratorOrderFormComponent';
   idKey = 'Code';
-  apiPath = '/sales/price-reports';
-  baseFormUrl = '/sales/price-report/form';
+  apiPath = '/collaborator/orders';
+  baseFormUrl = '/collaborator/order/form';
 
   env = environment;
 
@@ -55,6 +58,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<CollaboratorOrderFormComponent>,
+    public collaboratorService: CollaboratorService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -230,6 +234,17 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       text: 'Name',
     },
   };
+  select2OptionForPage = {
+    placeholder: 'Chọn trang...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
   select2OptionForTax = {
     placeholder: 'Chọn thuế...',
@@ -281,6 +296,44 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
           });
         });
       }
+
+      // Add page choosed
+      // this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+      //   this.actionButtonList.unshift({
+      //     type: 'select2',
+      //     name: 'pbxdomain',
+      //     status: 'success',
+      //     label: 'Select page',
+      //     icon: 'plus',
+      //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      //     size: 'medium',
+      //     select2: {
+      //       data: pageList, option: {
+      //         placeholder: 'Chọn trang...',
+      //         allowClear: false,
+      //         width: '100%',
+      //         dropdownAutoWidth: true,
+      //         minimumInputLength: 0,
+      //         keyMap: {
+      //           id: 'id',
+      //           text: 'text',
+      //         },
+      //       }
+      //     },
+      //     value: () => this.collaboratorService.currentpage$.value,
+      //     change: (value: any, option: any) => {
+      //       this.onChangePage(value);
+      //     },
+      //     disabled: () => {
+      //       return false;
+      //     },
+      //     click: () => {
+      //       // this.gotoForm();
+      //       return false;
+      //     },
+      //   });
+      // });
+
       return status;
     });
   }
@@ -320,7 +373,20 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     params['includeProductPrice'] = true;
     params['useBaseTimezone'] = true;
     params['includeRelativeVouchers'] = true;
+    // params['page'] = this.collaboratorService?.currentpage$?.value;
     super.executeGet(params, success, error);
+  }
+
+  /** Execute api put */
+  executePut(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
+    // params['page'] = this.collaboratorService?.currentpage$?.value;
+    return super.executePut(params, data, success, error);
+  }
+
+  /** Execute api post */
+  executePost(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
+    // params['page'] = this.collaboratorService?.currentpage$?.value;
+    return super.executePost(params, data, success, error);
   }
 
   async formLoad(formData: SalesPriceReportModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesPriceReportModel) => void) {
@@ -348,26 +414,29 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
     const newForm = this.formBuilder.group({
+      Page: [this.collaboratorService.currentpage$.value, Validators.required],
       Code: [''],
       Object: [''],
-      ObjectName: [''],
+      ObjectName: ['', Validators.required],
       ObjectEmail: [''],
-      ObjectPhone: [''],
+      ObjectPhone: ['', Validators.required],
       ObjectAddress: [''],
-      ObjectIdentifiedNumber: [''],
       ObjectBankName: [''],
-      ObjectBankCode: [''],
-      Contact: [''],
-      ContactName: [''],
-      ContactPhone: [''],
-      ContactEmail: [''],
-      ContactAddress: [''],
-      ContactIdentifiedNumber: [''],
+      ObjectBankAccount: [''],
+      ObjectIdentifiedNumber: [''],
+      // Contact: [''],
+      // ContactName: [''],
+      // ContactPhone: [''],
+      // ContactEmail: [''],
+      // ContactAddress: [''],
+      // ContactIdentifiedNumber: [''],
       // ObjectTaxCode: [''],
       // DirectReceiverName: [''],
       // PaymentStep: [''],
-      PriceTable: [''],
-      DeliveryAddress: [''],
+      // PriceTable: [''],
+      DeliveryAddress: ['', Validators.required],
+      DateOfOrder: [new Date(), Validators.required],
+      DateOfDelivery: [''],
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
@@ -689,11 +758,11 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     return false;
   }
 
-  getRawFormData() {
-    const data = super.getRawFormData();
+  // getRawFormData() {
+  //   const data = super.getRawFormData();
 
-    return data;
-  }
+  //   return data;
+  // }
 
   customIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
@@ -732,5 +801,26 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
     return false;
   }
+
+  // getRawFormData() {
+  //   const data = super.getRawFormData();
+  //   for (const item of data.array) {
+  //     item['Page'] = this.collaboratorService.currentpage$.value;
+  //   }
+  //   return data;
+  // }
+
+  // async save(): Promise<ProductModel[]> {
+  //   if (!this.collaboratorService?.currentpage$?.value) {
+  //     this.commonService.toastService.show(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
+  //       status: 'danger',
+  //     });
+  //   }
+  //   return super.save();
+  // }
+
+  // onChangePage(page: CollaboratorPageModel) {
+  //   this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
+  // }
 
 }

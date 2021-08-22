@@ -1,4 +1,4 @@
-export interface CollaboratorPage {
+export interface CollaboratorPageModel {
     [key: string]: any;
     id?: string, text?: string;
     Id?: string;
@@ -10,7 +10,7 @@ export interface CollaboratorPage {
     Created?: string;
 }
 
-export interface CollaboratorPublisher {
+export interface CollaboratorPublisherModel {
     [key: string]: any;
     Id?: string;
     Page?: string;
@@ -25,7 +25,7 @@ export interface CollaboratorPublisher {
     Level?: string;
 }
 
-export interface CollaboratorOrder {
+export interface CollaboratorOrderModel {
     [key: string]: any;
     Id?: string;
     Page?: string;
@@ -54,7 +54,7 @@ export interface CollaboratorOrder {
     PriceTable?: string;
 }
 
-export interface CollaboratorOrderDetail {
+export interface CollaboratorOrderDetailModel {
     [key: string]: any;
     Id?: string;
     Voucher?: string;

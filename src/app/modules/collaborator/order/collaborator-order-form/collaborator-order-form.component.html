@@ -3,7 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Order.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
                     <div [formGroup]="formItem">
@@ -26,7 +26,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                                     <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.phone' | translate | headtitlecase)}}">
                                                 </ngx-form-group>
                                             </div>
@@ -47,8 +47,7 @@
                                             </div>
                                         </div>
                                     </nb-tab>
-                                    <nb-tab tabTitle="{{'Common.contact' | translate | headtitlecase}}">
-                                        <!-- <label class="label label-with-border-below">{{'Common.contact' | translate | headtitlecase}}</label> -->
+                                    <!-- <nb-tab tabTitle="{{'Common.contact' | translate | headtitlecase}}">
                                         <div class="row">
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Contact" label="Common.contact" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="contactControlIcons">
@@ -81,7 +80,7 @@
                                                 </ngx-form-group>
                                             </div>
                                         </div>
-                                    </nb-tab>
+                                    </nb-tab> -->
                                 </nb-tabset>
                             </div>
                         </div>
@@ -94,29 +93,35 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <ngx-form-group [formGroup]="formItem" name="ObjectBankCode" label="Bank.code" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="ObjectBankCode" placeholder="{{'Bank.code' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="ObjectBankAccount" label="Bank.code" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="ObjectBankAccount" placeholder="{{'Bank.code' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Reported" label="Sales.dateOfReported" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" [owlDateTime]="Reported" [owlDateTimeTrigger]="Reported" nbInput fullWidth formControlName="Reported" placeholder="{{'Common.dateTime' | translate | headtitlecase}}">
-                                    <owl-date-time #Reported></owl-date-time>
+                                <ngx-form-group [formGroup]="formItem" name="DateOfOrder" label="Collaborator.Order.dateOforder" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" [owlDateTime]="DateOfOrder" [owlDateTimeTrigger]="DateOfOrder" nbInput fullWidth formControlName="DateOfOrder" placeholder="{{'Collaborator.Order.dateOforder' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfOrder></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-9">
-                                <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="PriceTable" label="Sales.priceTable" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <ngx-select2 formControlName="PriceTable" [select2Option]="select2SalesPriceReportOption"></ngx-select2>
+                                <ngx-form-group [formGroup]="formItem" name="DateOfDelivery" label="Collaborator.Order.dateOfDelivery" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" [owlDateTime]="DateOfDelivery" [owlDateTimeTrigger]="DateOfDelivery" nbInput fullWidth formControlName="DateOfDelivery" placeholder="{{'Collaborator.Order.dateOfDelivery' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfDelivery></owl-date-time>
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-12">
+                            <div class="col-sm-9">
                                 <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons">
+                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">

@@ -149,6 +149,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
           value: () => this.collaboratorService.currentpage$.value,
           change: (value: any, option: any) => {
             // this.onChangePage(value);
+            this.collaboratorService.currentpage$.next(this.commonService.getObjectId(value));
           },
           disabled: () => {
             return true;
@@ -545,4 +546,5 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     }
     return super.save();
   }
+  
 }

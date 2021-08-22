@@ -1,6 +1,6 @@
 import { take, filter } from 'rxjs/operators';
 import { CommonService } from '../../services/common.service';
-import { CollaboratorPage } from '../../models/collaborator.model';
+import { CollaboratorPageModel } from '../../models/collaborator.model';
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { NbAuthService } from '@nebular/auth';
@@ -11,7 +11,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class CollaboratorService {
 
-  pageList$ = new BehaviorSubject<CollaboratorPage[]>([]);
+  pageList$ = new BehaviorSubject<CollaboratorPageModel[]>([]);
   currentpage$: BehaviorSubject<string>;
 
   constructor(
@@ -25,11 +25,11 @@ export class CollaboratorService {
     this.currentpage$ = new BehaviorSubject<string>(currenPageCache);
 
     // store current page on change
-    this.currentpage$.pipe(filter(f => !!f)).subscribe(value => localStorage.setItem('collaborator.page', value));
+    this.currentpage$.subscribe(value => localStorage.setItem('collaborator.page', typeof value === 'undefined' ? '' : value));
 
     // wait for first authentication success
     this.authService.isAuthenticated().pipe(take(1), filter(f => !!f)).toPromise().then(() => {
-      this.apiService.getPromise<CollaboratorPage[]>('/collaborator/pages', { onlyIdText: true }).then(pageList => this.pageList$.next(pageList));
+      this.apiService.getPromise<CollaboratorPageModel[]>('/collaborator/pages', { onlyIdText: true }).then(pageList => this.pageList$.next(pageList));
     });
 
   }

@@ -1,3 +1,8 @@
-<nb-card>
-    <nb-card-body></nb-card-body>
-</nb-card>
+<div class="row">
+    <div class="col-xxxl-3 col-md-6" *ngFor="let statusCard of statusCards">
+        <ngx-status-card [title]="statusCard.title" [type]="statusCard.type">
+            <i [ngClass]="statusCard.iconClass"></i>
+        </ngx-status-card>
+    </div>
+</div>
+asdfaf
