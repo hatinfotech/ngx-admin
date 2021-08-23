@@ -1,0 +1,144 @@
+<div class="page-deskboard">
+  
+  <div class="row">
+    <div class="col-xxxl-3 col-md-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-warning" (click)="this.commonService.router.navigate(['collaborator/page/product/list'])">
+            <i [ngClass]="'nb-lightbulb'"></i>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="title h5">Đơn hàng phát sinh</div>
+          <div class="status paragraph-2">1567</div>
+        </div>
+      </nb-card>
+    </div>
+    <div class="col-xxxl-3 col-md-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-info" (click)="this.commonService.router.navigate(['collaborator/page/product/list'])">
+            <i [ngClass]="'nb-lightbulb'"></i>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="title h5">Sản phẩm kinh doanh</div>
+          <div class="status paragraph-2">754</div>
+        </div>
+      </nb-card>
+    </div>
+    <div class="col-xxxl-3 col-md-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/page/publisher/list'])">
+            <i [ngClass]="'nb-lightbulb'"></i>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="title h5">Cộng tác viên</div>
+          <div class="status paragraph-2">{{157560000 | currency:'VND'}}</div>
+        </div>
+      </nb-card>
+    </div>
+    <div class="col-xxxl-3 col-md-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-success" (click)="this.commonService.router.navigate(['collaborator/page/report'])">
+            <i [ngClass]="'nb-lightbulb'"></i>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="title h5">Doanh thu</div>
+          <div class="status paragraph-2">{{15756000 | currency:'VND'}}</div>
+        </div>
+      </nb-card>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xxxl-12 col-md-12">
+      <nb-card>
+        <nb-card-body>
+          <div class="row">
+            <div class="col-sm-3">
+              <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [index]="0" [allowCopy]="false" [required]="true">
+                <ngx-select2 formControlName="DateReport" [select2Option]="select2DateReportOption" [data]="dateReportList" (selectChange)="onDateReportChange($event)"></ngx-select2>
+              </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+              <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
+                <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
+                <owl-date-time #DateRange></owl-date-time>
+              </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+              <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [index]="0" [allowCopy]="false" [required]="false">
+                <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+              </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+              <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
+                <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
+              </ngx-form-group>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-xxxl-3 col-xxl-4 col-lg-4 col-md-12">
+      <ngx-most-active-publishers></ngx-most-active-publishers>
+    </div>
+
+    <div class="col-xxxl-9 col-xxl-8 col-lg-8 col-md-12">
+      <nb-card class="chart">
+        <nb-card-header>Phát sinh doanh thu/lợi nhuận/hoa hồng</nb-card-header>
+        <nb-card-body>
+          <ngx-chartjs-multiple-xaxis></ngx-chartjs-multiple-xaxis>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>
+
+  <!-- <div class="row">
+    <div class="col-xxxl-3 col-xxl-4 col-lg-5 col-md-6">
+      <ngx-temperature></ngx-temperature>
+    </div>
+
+    <div class="col-xxxl-9 col-xxl-8 col-lg-7 col-md-6">
+      <ngx-electricity></ngx-electricity>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xxxl-9 col-xl-12">
+      <ngx-rooms></ngx-rooms>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-lg-7 col-md-6">
+      <ngx-contacts></ngx-contacts>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-lg-5 col-md-6">
+      <ngx-solar [chartValue]="solarValue"></ngx-solar>
+
+      <ngx-kitten></ngx-kitten>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-md-5">
+      <ngx-traffic></ngx-traffic>
+      <ngx-weather></ngx-weather>
+    </div>
+
+    <div class="col-xxxl-6 col-xxl-12 col-md-7">
+      <ngx-security-cameras></ngx-security-cameras>
+    </div>
+  </div> -->
+</div>
