@@ -488,6 +488,10 @@ ngx-header ngx-action-control-list {
       background: #192038;
     }
   }
+
+  .select2-container .select2-selection .select2-selection__clear {
+    color: #fff;
+  }
 }
 
 .nb-theme-cosmic {
@@ -608,7 +612,7 @@ ngx-header ngx-action-control-list {
     }
     .select2-search__field {
       background: transparent !important;
-      color: #fff !important;
+      color: #fff;
 
       &::placeholder {
         color: #818ca4 !important;
@@ -644,7 +648,7 @@ ngx-header ngx-action-control-list {
   .select2-container--default
     .select2-selection--multiple
     .select2-selection__clear {
-    color: #fff;
+    color: #fff !important;
   }
 }
 

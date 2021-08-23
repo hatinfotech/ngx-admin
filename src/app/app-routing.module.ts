@@ -92,6 +92,7 @@ import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-
 import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
 import { CollaboratorProductSubscriptionComponent } from './modules/collaborator/product/collaborator-product-subscription/collaborator-product-subscription.component';
 import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
+import { CollaboratorPublisherDashboardComponent } from './modules/collaborator/collaborator-publisher-dashboard/collaborator-publisher-dashboard.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -889,6 +890,14 @@ const routes: Routes = [
         },
       },
     ]
+  },
+  {
+    path: 'collaborator/publisher/dashboard',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPublisherDashboardComponent,
+    data: {
+      reuse: true,
+    },
   },
   {
     path: 'collaborator/publisher',

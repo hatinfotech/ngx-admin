@@ -4,55 +4,51 @@
     <div class="col-xxxl-3 col-md-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-warning" (click)="this.commonService.router.navigate(['collaborator/page/order/list'])">
+          <div class="icon status-warning" (click)="this.commonService.router.navigate(['collaborator/publisher/order/list'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
-
         <div class="details">
           <div class="title h5">Đơn hàng phát sinh</div>
-          <div class="status paragraph-2">1567</div>
+          <div class="status paragraph-2">2304</div>
         </div>
       </nb-card>
     </div>
     <div class="col-xxxl-3 col-md-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-info" (click)="this.commonService.router.navigate(['collaborator/page/product/list'])">
+          <div class="icon status-info" (click)="this.commonService.router.navigate(['collaborator/publisher/product/list'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
-
         <div class="details">
           <div class="title h5">Sản phẩm kinh doanh</div>
-          <div class="status paragraph-2">754</div>
+          <div class="status paragraph-2">56</div>
         </div>
       </nb-card>
     </div>
     <div class="col-xxxl-3 col-md-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/page/publisher/list'])">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/publisher/page/list'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
-
         <div class="details">
-          <div class="title h5">Cộng tác viên</div>
-          <div class="status paragraph-2">{{157560000 | currency:'VND'}}</div>
+          <div class="title h5">Trang bán hàng</div>
+          <div class="status paragraph-2">38</div>
         </div>
       </nb-card>
     </div>
     <div class="col-xxxl-3 col-md-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-success" (click)="this.commonService.router.navigate(['collaborator/page/report'])">
+          <div class="icon status-success" (click)="this.commonService.router.navigate(['collaborator/publisher/report'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
-
         <div class="details">
-          <div class="title h5">Doanh thu</div>
+          <div class="title h5">Hoa hồng</div>
           <div class="status paragraph-2">{{15756000 | currency:'VND'}}</div>
         </div>
       </nb-card>
@@ -94,12 +90,12 @@
   <div class="row">
 
     <div class="col-xxxl-3 col-xxl-4 col-lg-4 col-md-12">
-      <ngx-most-active-publishers></ngx-most-active-publishers>
+      <ngx-most-active-products></ngx-most-active-products>
     </div>
 
     <div class="col-xxxl-9 col-xxl-8 col-lg-8 col-md-12">
       <nb-card class="chart">
-        <nb-card-header>Phát sinh doanh thu/lợi nhuận/hoa hồng</nb-card-header>
+        <nb-card-header>Phát sinh doanh thu/hoa hồng</nb-card-header>
         <nb-card-body>
           <ngx-chartjs-multiple-xaxis></ngx-chartjs-multiple-xaxis>
         </nb-card-body>

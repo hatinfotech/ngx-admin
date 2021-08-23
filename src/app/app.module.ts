@@ -267,6 +267,9 @@ import { ChartjsLineComponent } from './modules/collaborator/collaborator-page-d
 import { ChartjsMultipleXaxisComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-multiple-xaxis.component';
 import { ChartjsPieComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-pie.component';
 import { MostActivePublishersComponent } from './modules/collaborator/collaborator-page-dashboard/most-active-publishers/most-active-publishers.component';
+import { CollaboratorChartjsMultipleXaxisComponent } from './modules/collaborator/collaborator-publisher-dashboard/chartjs-multiple-xaxis.component';
+import { CollaboratorPublisherDashboardComponent } from './modules/collaborator/collaborator-publisher-dashboard/collaborator-publisher-dashboard.component';
+import { MostActiveProductsComponent } from './modules/collaborator/collaborator-publisher-dashboard/most-active-products/most-active-products.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -501,6 +504,10 @@ export class DynamicLocaleId extends String {
     ChartjsPieComponent,
     ChartjsRadarComponent,
     MostActivePublishersComponent,
+
+    CollaboratorPublisherDashboardComponent,
+    CollaboratorChartjsMultipleXaxisComponent,
+    MostActiveProductsComponent,
     
 
   ],
