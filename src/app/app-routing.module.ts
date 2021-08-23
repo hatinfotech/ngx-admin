@@ -3,7 +3,7 @@ import { CollaboratorOrderListComponent } from './modules/collaborator/order/col
 import { CollaboratorPublisherReportComponent } from './modules/collaborator/collaborator-publisher-report/collaborator-publisher-report.component';
 import { CollaboratorPublisherSummaryComponent } from './modules/collaborator/collaborator-publisher-summary/collaborator-publisher-summary.component';
 import { CollaboratorPageReportComponent } from './modules/collaborator/collaborator-page-report/collaborator-page-report.component';
-import { CollaboratorPageSummaryComponent } from './modules/collaborator/collaborator-page-summary/collaborator-page-summary.component';
+import { CollaboratorPageDashboardComponent } from './modules/collaborator/collaborator-page-dashboard/collaborator-page-dashboard.component';
 import { CollaboratorProductCategoryListComponent } from './modules/collaborator/product-category/collaborator-product-category-list/collaborator-product-category-list.component';
 import { CollaboratorProductListComponent } from './modules/collaborator/product/collaborator-product-list/collaborator-product-list.component';
 import { CollaboratorPublisherListComponent } from './modules/collaborator/publisher/collaborator-publisher-list/collaborator-publisher-list.component';
@@ -28,7 +28,7 @@ import {
   NbLoginComponent,
 } from '@nebular/auth';
 import { AuthGuardService } from './services/auth-guard.service';
-import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
+// import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { NotificationComponent } from './modules/notification/notification.component';
 import { MobileAppComponent } from './modules/mobile-app/mobile-app.component';
@@ -87,11 +87,11 @@ import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/ac
 import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
 import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 import { AccMasterBookListComponent } from './modules/accounting/master-book/acc-master-book-list/acc-master-book-list.component';
-import { ContactFormComponent } from './modules/contact/contact/contact-form/contact-form.component';
 import { ContactListComponent } from './modules/contact/contact/contact-list/contact-list.component';
 import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-key/cluster-authorized-key-list/cluster-authorized-key-list.component';
 import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
 import { CollaboratorProductSubscriptionComponent } from './modules/collaborator/product/collaborator-product-subscription/collaborator-product-subscription.component';
+import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -829,22 +829,30 @@ const routes: Routes = [
     },
   },
   {
+    path: 'collaborator/page/dashboard',
+    canActivate: [AuthGuardService],
+    component: CollaboratorPageDashboardComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
     path: 'collaborator/page',
     canActivate: [AuthGuardService],
     component: CollaboratorPageComponent,
     children: [
-      {
-        path: '',
-        redirectTo: 'summary',
-        pathMatch: 'full',
-      },
-      {
-        path: 'summary',
-        component: CollaboratorPageSummaryComponent,
-        data: {
-          reuse: true,
-        },
-      },
+      // {
+      //   path: '',
+      //   redirectTo: 'summary',
+      //   pathMatch: 'full',
+      // },
+      // {
+      //   path: 'summary',
+      //   component: CollaboratorPageDashboardComponent,
+      //   data: {
+      //     reuse: true,
+      //   },
+      // },
       {
         path: 'report',
         component: CollaboratorPageReportComponent,

@@ -46,8 +46,8 @@ import { NbAuthModule, NbPasswordAuthStrategy, NbAuthOAuth2JWTToken } from '@neb
 import { AuthModule } from './modules/auth/auth.module';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-stratery';
-import { ECommerceModule } from './modules/e-commerce/e-commerce.module';
-import { DashboardModule } from './modules/dashboard/dashboard.module';
+// import { ECommerceModule } from './modules/e-commerce/e-commerce.module';
+// import { DashboardModule } from './modules/dashboard/dashboard.module';
 // import { DialogModule } from './modules/dialog/dialog.module';
 import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showcase-dialog.component';
 import { TreeModule } from 'angular-tree-component';
@@ -200,11 +200,73 @@ import { CollaboratorOrderPrintComponent } from './modules/collaborator/order/co
 import { CollaboratorPageReportComponent } from './modules/collaborator/collaborator-page-report/collaborator-page-report.component';
 import { CollaboratorPublisherReportComponent } from './modules/collaborator/collaborator-publisher-report/collaborator-publisher-report.component';
 import { CollaboratorPublisherSummaryComponent } from './modules/collaborator/collaborator-publisher-summary/collaborator-publisher-summary.component';
-import { CollaboratorPageSummaryComponent } from './modules/collaborator/collaborator-page-summary/collaborator-page-summary.component';
+import { CollaboratorPageDashboardComponent } from './modules/collaborator/collaborator-page-dashboard/collaborator-page-dashboard.component';
 import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
 import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
+// import { CollaboratorPagePreviewListComponent } from './modules/collaborator/page/collaborator-page-preview-list/collaborator-page-preview-list.component';
 import { CollaboratorProductPreviewListComponent } from './modules/collaborator/product/collaborator-product-preview-list/collaborator-product-preview-list.component';
 import { CollaboratorProductSubscriptionComponent } from './modules/collaborator/product/collaborator-product-subscription/collaborator-product-subscription.component';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { ContactsComponent } from './modules/dashboard/contacts/contacts.component';
+import { DashboardComponent } from './modules/dashboard/dashboard.component';
+import { ElectricityChartComponent } from './modules/dashboard/electricity/electricity-chart/electricity-chart.component';
+import { ElectricityComponent } from './modules/dashboard/electricity/electricity.component';
+import { KittenComponent } from './modules/dashboard/kitten/kitten.component';
+import { RoomSelectorComponent } from './modules/dashboard/rooms/room-selector/room-selector.component';
+import { RoomsComponent } from './modules/dashboard/rooms/rooms.component';
+import { SecurityCamerasComponent } from './modules/dashboard/security-cameras/security-cameras.component';
+import { SolarComponent } from './modules/dashboard/solar/solar.component';
+import { StatusCardComponent } from './modules/dashboard/status-card/status-card.component';
+import { TemperatureDraggerComponent } from './modules/dashboard/temperature/temperature-dragger/temperature-dragger.component';
+import { TemperatureComponent } from './modules/dashboard/temperature/temperature.component';
+import { TrafficChartComponent } from './modules/dashboard/traffic/traffic-chart.component';
+import { TrafficComponent } from './modules/dashboard/traffic/traffic.component';
+import { WeatherComponent } from './modules/dashboard/weather/weather.component';
+import { PlayerComponent } from './modules/dashboard/rooms/player/player.component';
+import { TimingPipe } from './@theme/pipes';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ChartModule } from 'angular2-chartjs';
+import { ChartPanelHeaderComponent } from './modules/e-commerce/charts-panel/chart-panel-header/chart-panel-header.component';
+import { ChartPanelSummaryComponent } from './modules/e-commerce/charts-panel/chart-panel-summary/chart-panel-summary.component';
+import { ECommerceChartsPanelComponent } from './modules/e-commerce/charts-panel/charts-panel.component';
+import { ProfitChartComponent } from './modules/e-commerce/charts-panel/charts/profit-chart.component';
+import { CountryOrdersChartComponent } from './modules/e-commerce/country-orders/chart/country-orders-chart.component';
+import { CountryOrdersComponent } from './modules/e-commerce/country-orders/country-orders.component';
+import { CountryOrdersMapComponent } from './modules/e-commerce/country-orders/map/country-orders-map.component';
+import { EarningCardBackComponent } from './modules/e-commerce/earning-card/back-side/earning-card-back.component';
+import { EarningPieChartComponent } from './modules/e-commerce/earning-card/back-side/earning-pie-chart.component';
+import { EarningCardComponent } from './modules/e-commerce/earning-card/earning-card.component';
+import { EarningCardFrontComponent } from './modules/e-commerce/earning-card/front-side/earning-card-front.component';
+import { EarningLiveUpdateChartComponent } from './modules/e-commerce/earning-card/front-side/earning-live-update-chart.component';
+import { ECommerceLegendChartComponent } from './modules/e-commerce/legend-chart/legend-chart.component';
+import { ECommerceProgressSectionComponent } from './modules/e-commerce/progress-section/progress-section.component';
+import { SlideOutComponent } from './modules/e-commerce/slide-out/slide-out.component';
+import { TrafficBackCardComponent } from './modules/e-commerce/traffic-reveal-card/back-side/traffic-back-card.component';
+import { TrafficBarChartComponent } from './modules/e-commerce/traffic-reveal-card/back-side/traffic-bar-chart.component';
+import { TrafficBarComponent } from './modules/e-commerce/traffic-reveal-card/front-side/traffic-bar/traffic-bar.component';
+import { TrafficFrontCardComponent } from './modules/e-commerce/traffic-reveal-card/front-side/traffic-front-card.component';
+import { TrafficCardsHeaderComponent } from './modules/e-commerce/traffic-reveal-card/traffic-cards-header/traffic-cards-header.component';
+import { TrafficRevealCardComponent } from './modules/e-commerce/traffic-reveal-card/traffic-reveal-card.component';
+import { ECommerceUserActivityComponent } from './modules/e-commerce/user-activity/user-activity.component';
+import { ECommerceVisitorsAnalyticsChartComponent } from './modules/e-commerce/visitors-analytics/visitors-analytics-chart/visitors-analytics-chart.component';
+import { ECommerceVisitorsAnalyticsComponent } from './modules/e-commerce/visitors-analytics/visitors-analytics.component';
+import { ECommerceVisitorsStatisticsComponent } from './modules/e-commerce/visitors-analytics/visitors-statistics/visitors-statistics.component';
+import { StatsCardFrontComponent } from './modules/e-commerce/profit-card/front-side/stats-card-front.component';
+import { StatsAreaChartComponent } from './modules/e-commerce/profit-card/back-side/stats-area-chart.component';
+import { StatsBarAnimationChartComponent } from './modules/e-commerce/profit-card/front-side/stats-bar-animation-chart.component';
+import { ProfitCardComponent } from './modules/e-commerce/profit-card/profit-card.component';
+import { OrdersChartComponent } from './modules/e-commerce/charts-panel/charts/orders-chart.component';
+import { StatsCardBackComponent } from './modules/e-commerce/profit-card/back-side/stats-card-back.component';
+import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
+import { SmartBotModule } from './modules/smart-bot/smart-bot.module';
+import { ChartjsRadarComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-radar.component';
+import { ChartjsBarHorizontalComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-bar-horizontal.component';
+import { ChartjsBarComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-bar.component';
+import { ChartjsLineComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-line.component';
+import { ChartjsMultipleXaxisComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-multiple-xaxis.component';
+import { ChartjsPieComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-pie.component';
+import { MostActivePublishersComponent } from './modules/collaborator/collaborator-page-dashboard/most-active-publishers/most-active-publishers.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -375,14 +437,81 @@ export class DynamicLocaleId extends String {
     CollaboratorPageReportComponent,
     CollaboratorPublisherReportComponent,
     CollaboratorPublisherSummaryComponent,
-    CollaboratorPageSummaryComponent,
+    CollaboratorPageDashboardComponent,
     CollaboratorPageComponent,
     CollaboratorPublisherComponent,
     CollaboratorProductPreviewListComponent,
     CollaboratorProductSubscriptionComponent,
 
+
+    DashboardComponent,
+    StatusCardComponent,
+    TemperatureDraggerComponent,
+    ContactsComponent,
+    RoomSelectorComponent,
+    TemperatureComponent,
+    RoomsComponent,
+    KittenComponent,
+    SecurityCamerasComponent,
+    ElectricityComponent,
+    ElectricityChartComponent,
+    WeatherComponent,
+    PlayerComponent,
+    SolarComponent,
+    TrafficComponent,
+    TrafficChartComponent,
+
+    ECommerceComponent,
+    StatsCardFrontComponent,
+    StatsAreaChartComponent,
+    StatsBarAnimationChartComponent,
+    ProfitCardComponent,
+    ECommerceChartsPanelComponent,
+    ChartPanelHeaderComponent,
+    ChartPanelSummaryComponent,
+    OrdersChartComponent,
+    ProfitChartComponent,
+    StatsCardBackComponent,
+    TrafficRevealCardComponent,
+    TrafficBarChartComponent,
+    TrafficFrontCardComponent,
+    TrafficBackCardComponent,
+    TrafficBarComponent,
+    TrafficCardsHeaderComponent,
+    CountryOrdersComponent,
+    CountryOrdersMapComponent,
+    CountryOrdersChartComponent,
+    ECommerceVisitorsAnalyticsComponent,
+    ECommerceVisitorsAnalyticsChartComponent,
+    ECommerceVisitorsStatisticsComponent,
+    ECommerceLegendChartComponent,
+    ECommerceUserActivityComponent,
+    ECommerceProgressSectionComponent,
+    SlideOutComponent,
+    EarningCardComponent,
+    EarningCardFrontComponent,
+    EarningCardBackComponent,
+    EarningPieChartComponent,
+    EarningLiveUpdateChartComponent,
+
+    ChartjsBarHorizontalComponent,
+    ChartjsBarComponent,
+    ChartjsLineComponent,
+    ChartjsMultipleXaxisComponent,
+    ChartjsPieComponent,
+    ChartjsRadarComponent,
+    MostActivePublishersComponent,
+    
+
   ],
   imports: [
+
+
+    NgxEchartsModule,
+    ChartModule,
+    NgxChartsModule,
+    LeafletModule,
+    SmartBotModule,
 
     // Form List Form Components
     CommonModule,
@@ -422,8 +551,8 @@ export class DynamicLocaleId extends String {
 
     NotificationModule,
     NbLayoutModule,
-    ECommerceModule,
-    DashboardModule,
+    // ECommerceModule,
+    // DashboardModule,
     MobileAppModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -538,6 +667,7 @@ export class DynamicLocaleId extends String {
     { provide: NbDialogRef, useValue: {} },
     { provide: CurrencyPipe, useValue: {} },
     { provide: DecimalPipe, useValue: {} },
+    { provide: TimingPipe, useValue: {} },
     RoutingResolve,
   ],
 })

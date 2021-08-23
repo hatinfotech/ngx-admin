@@ -328,6 +328,10 @@
         "addObject": "thêm đối tượng",
         "summary": "tổng quan",
         "subscribe": "đăng ký",
+        "fromDate": "từ ngày",
+        "toDate": "đến ngày",
+        "dateReport": "thời gian báo cáo",
+        "date": "ngày",
         "report": "báo cáo"
     },
     "Contact": {
@@ -562,6 +566,7 @@
             "title": "{{definition}}{{action}} danh mục sản phẩm"
         },
         "Group": {
+            "lablel": "nhóm sản phẩm",
             "title": "{{definition}}{{action}} nhóm sản phẩm"
         },
         "Unit": {

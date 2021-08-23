@@ -17,13 +17,13 @@ export interface CustomIcon {
 export class FormGroupComponent implements OnInit {
 
   @Input() option?: any;
-  @Input() formGroup: FormGroup;
-  @Input() name: string;
+  @Input() formGroup?: FormGroup;
+  @Input() name?: string;
   @Input() allowCopy?: boolean;
-  @Input() array: FormArray;
-  @Input() index: number;
-  @Input() label: string;
-  @Input() hideLabel: boolean = false;
+  @Input() array?: FormArray;
+  @Input() index?: number;
+  @Input() label?: string;
+  @Input() hideLabel?: boolean = false;
   @Input() required?: boolean;
   @Input() align = 'left';
   @Input() customIcons?: CustomIcon[];
