@@ -4,13 +4,13 @@
     <div class="col-xxxl-3 col-md-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-warning" (click)="this.commonService.router.navigate(['collaborator/publisher/order/list'])">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/publisher/page/list'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
         <div class="details">
-          <div class="title h5">Đơn hàng phát sinh</div>
-          <div class="status paragraph-2">2304</div>
+          <div class="title h5">Trang bán hàng</div>
+          <div class="status paragraph-2">38</div>
         </div>
       </nb-card>
     </div>
@@ -30,13 +30,13 @@
     <div class="col-xxxl-3 col-md-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/publisher/page/list'])">
+          <div class="icon status-warning" (click)="this.commonService.router.navigate(['collaborator/publisher/order/list'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
         <div class="details">
-          <div class="title h5">Trang bán hàng</div>
-          <div class="status paragraph-2">38</div>
+          <div class="title h5">Đơn hàng phát sinh</div>
+          <div class="status paragraph-2">2.304</div>
         </div>
       </nb-card>
     </div>
@@ -49,7 +49,7 @@
         </div>
         <div class="details">
           <div class="title h5">Hoa hồng</div>
-          <div class="status paragraph-2">{{15756000 | currency:'VND'}}</div>
+          <div class="status paragraph-2">{{150756000 | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
@@ -73,7 +73,7 @@
             </div>
             <div class="col-sm-3">
               <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [index]="0" [allowCopy]="false" [required]="false">
-                <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+                <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value" (selectChange)="onChangePage($event)"></ngx-select2>
               </ngx-form-group>
             </div>
             <div class="col-sm-3">

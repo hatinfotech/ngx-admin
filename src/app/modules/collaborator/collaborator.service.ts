@@ -29,7 +29,7 @@ export class CollaboratorService {
 
     // wait for first authentication success
     this.authService.isAuthenticated().pipe(take(1), filter(f => !!f)).toPromise().then(() => {
-      this.apiService.getPromise<CollaboratorPageModel[]>('/collaborator/pages', { onlyIdText: true }).then(pageList => this.pageList$.next(pageList));
+      this.apiService.getPromise<CollaboratorPageModel[]>('/collaborator/pages', { onlyIdText: true }).then(pageList => this.pageList$.next([{id: '', text: ''}, ...pageList]));
     });
 
   }

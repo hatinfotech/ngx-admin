@@ -7,6 +7,7 @@ import { takeWhile } from 'rxjs/operators';
 import { SolarData } from '../../../@core/data/solar';
 import { CollaboratorService } from '../collaborator.service';
 import { ApiService } from '../../../services/api.service';
+import { CollaboratorPageModel } from '../../../models/collaborator.model';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -41,19 +42,27 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
         this.solarValue = data;
       });
 
+    this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { onlyIdText: true, limit: 'nolimit' }).then(rs => {
+      this.groupList = [{ id: '', text: '' }, ...rs];
+    });
+
     const currentDate = new Date();
     this.formItem = this.formBuilder.group({
       DateReport: ['MONTH', Validators.required],
       DateRange: [[new Date(currentDate.getFullYear(), currentDate.getMonth(), 1), new Date(currentDate.getFullYear(), currentDate.getMonth(), 31)]],
-      Page: [this.collaboratorService.currentpage$.value],
+      Page: [''],
       ProductGroup: [''],
     });
+    // this.formItem.patchValue({
+    //   DateReport: 'MONTH',
+    //   DateRange: [new Date(currentDate.getFullYear(), currentDate.getMonth(), 1), new Date(currentDate.getFullYear(), currentDate.getMonth(), 31)],
+    //   Page: this.collaboratorService.currentpage$.value || null,
+    //   ProductGroup: null,
+    // });
     this.formItem.get('DateRange').valueChanges.subscribe(value => {
       console.log(value);
     })
   }
-
-
 
   select2OptionForPage = {
     placeholder: 'Tất cả trang...',
@@ -61,6 +70,7 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    multiple: true,
     keyMap: {
       id: 'id',
       text: 'text',
@@ -90,20 +100,16 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
 
   select2ProductGroup = {
     placeholder: 'Tất cả nhóm sản phẩm...',
-    allowClear: false,
+    allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    multiple: true,
     keyMap: {
       id: 'id',
       text: 'text',
     },
   };
-
-  async loadCache() {
-    // iniit category
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
-  }
 
   private alive = true;
 
@@ -169,5 +175,9 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.alive = false;
+  }
+
+  onChangePage(page: CollaboratorPageModel) {
+    
   }
 }

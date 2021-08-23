@@ -4,14 +4,14 @@
     <div class="col-xxxl-3 col-md-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-warning" (click)="this.commonService.router.navigate(['collaborator/page/order/list'])">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/page/publisher/list'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
 
         <div class="details">
-          <div class="title h5">Đơn hàng phát sinh</div>
-          <div class="status paragraph-2">1567</div>
+          <div class="title h5">Cộng tác viên</div>
+          <div class="status paragraph-2">1.093</div>
         </div>
       </nb-card>
     </div>
@@ -25,21 +25,21 @@
 
         <div class="details">
           <div class="title h5">Sản phẩm kinh doanh</div>
-          <div class="status paragraph-2">754</div>
+          <div class="status paragraph-2">52</div>
         </div>
       </nb-card>
     </div>
     <div class="col-xxxl-3 col-md-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/page/publisher/list'])">
+          <div class="icon status-warning" (click)="this.commonService.router.navigate(['collaborator/page/order/list'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
 
         <div class="details">
-          <div class="title h5">Cộng tác viên</div>
-          <div class="status paragraph-2">{{157560000 | currency:'VND'}}</div>
+          <div class="title h5">Đơn hàng phát sinh</div>
+          <div class="status paragraph-2">1.2450</div>
         </div>
       </nb-card>
     </div>
@@ -53,7 +53,7 @@
 
         <div class="details">
           <div class="title h5">Doanh thu</div>
-          <div class="status paragraph-2">{{15756000 | currency:'VND'}}</div>
+          <div class="status paragraph-2">{{15450750000 | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
@@ -77,7 +77,7 @@
             </div>
             <div class="col-sm-3">
               <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [index]="0" [allowCopy]="false" [required]="false">
-                <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+                <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value" (selectChange)="onChangePage($event)"></ngx-select2>
               </ngx-form-group>
             </div>
             <div class="col-sm-3">
