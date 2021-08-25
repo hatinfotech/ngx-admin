@@ -27,12 +27,12 @@ export class CollaboratorPublisherComponent extends BaseComponent {
   async init() {
     await this.commonService.waitForLanguageLoaded();
     this.tabs = [
-      {
-        title: this.commonService.translateText('Common.summary'),
-        route: '/collaborator/publisher/summary',
-        icon: 'pie-chart',
-        // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
-      },
+      // {
+      //   title: this.commonService.translateText('Common.summary'),
+      //   route: '/collaborator/publisher/summary',
+      //   icon: 'pie-chart',
+      //   // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
+      // },
       {
         title: this.commonService.translateText('Collaborator.Page.label'),
         route: '/collaborator/publisher/page/list',

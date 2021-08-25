@@ -20,6 +20,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AssignCategoriesFormComponent } from '../../../admin-product/product/assign-categories-form/assign-categories-form.component';
 import { CollaboratorProductFormComponent } from '../collaborator-product-form/collaborator-product-form.component';
+import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 
 @Component({
   selector: 'ngx-collaborator-product-list',
@@ -64,67 +65,54 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/collaborator/product-categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/collaborator/product-groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/collaborator/product-units', { includeIdText: true, limit: 'nolimit' }));
   }
 
   async init() {
     await this.loadCache();
     return super.init().then(rs => {
-      this.actionButtonList.unshift({
-        name: 'assignCategories',
-        status: 'info',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
-        icon: 'pricetags',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
-        size: 'medium',
-        disabled: () => this.selectedIds.length === 0,
-        hidden: () => false,
-        click: () => {
-          this.openAssignCategoiesDialplog();
-          return false;
-        },
-      });
+
+      // Remove buttons
+      this.actionButtonList = this.actionButtonList.filter(f => ['add'].indexOf(f.name) < 0);
+
+      // this.actionButtonList.unshift({
+      //   name: 'assignCategories',
+      //   status: 'info',
+      //   label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+      //   icon: 'pricetags',
+      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+      //   size: 'medium',
+      //   disabled: () => this.selectedIds.length === 0,
+      //   hidden: () => false,
+      //   click: () => {
+      //     this.openAssignCategoiesDialplog();
+      //     return false;
+      //   },
+      // });
 
       this.actionButtonList.unshift({
         type: 'button',
-        name: 'subscribe',
-        label: this.commonService.translateText('Common.subscribe'),
-        icon: 'cast-outline',
-        status: 'danger',
+        name: 'addProduct',
+        label: this.commonService.translateText('Collaborator.Product.add'),
+        icon: 'cube-outline',
+        status: 'primary',
         size: 'medium',
         title: this.commonService.translateText('Common.subscribe'),
         click: () => {
-          this.commonService.openDialog(CollaboratorProductPreviewListComponent, {
+          this.commonService.openDialog(ProductListComponent, {
             context: {
               inputMode: 'dialog',
               onDialogChoose: async (chooseItems: ProductModel[]) => {
                 console.log(chooseItems);
-                this.commonService.openDialog(ShowcaseDialogComponent, {
-                  context: {
-                    title: this.commonService.translateText('Common.subscribe'),
-                    content: this.commonService.translateText('Collaborator.Product.subscribeConfirmText') + '<br>' + chooseItems.map(product => product.Name).join(', '),
-                    actions: [
-                      {
-                        label: this.commonService.translateText('Common.close'),
-                        status: 'primary',
-                      },
-                      {
-                        label: this.commonService.translateText('Common.subscribe'),
-                        status: 'danger',
-                        action: () => {
-                          this.apiService.putPromise<ProductModel[]>('/collaborator/products', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
-                            this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
-                              status: 'success',
-                            })
-                            this.refresh();
-                          });
-                        }
-                      },
-                    ],
-                  },
-                })
+                const page = this.collaboratorService.currentpage$?.value;
+                this.apiService.putPromise<ProductModel[]>('/collaborator/products', { id: chooseItems.map(product => product.Code), assign: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
+                  this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+                    status: 'success',
+                  })
+                  this.refresh();
+                });
               },
               onDialogClose: () => {
               },
@@ -225,12 +213,12 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
         Name: {
           title: 'Tên',
           type: 'string',
-          width: '25%',
+          width: '15%',
         },
         Categories: {
           title: 'Danh mục',
           type: 'html',
-          width: '25%',
+          width: '15%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -268,7 +256,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
         Groups: {
           title: 'Nhóm',
           type: 'html',
-          width: '25%',
+          width: '15%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -303,23 +291,30 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
             },
           },
         },
-        WarehouseUnit: {
+        UnitName: {
           title: 'ĐVT',
           type: 'html',
           width: '10%',
-          valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
-          },
+        },
+        Price: {
+          title: 'Giá',
+          type: 'currency',
+          width: '8%',
         },
         Code: {
           title: 'Code',
           type: 'string',
-          width: '10%',
+          width: '5%',
         },
         Sku: {
           title: 'Sku',
           type: 'string',
           width: '15%',
+        },
+        PageName: {
+          title: 'Trang',
+          type: 'string',
+          width: '12%',
         },
       },
     });
@@ -348,9 +343,10 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
       params['includeGroups'] = true;
-      params['includeWarehouseUnit'] = true;
+      // params['includeWarehouseUnit'] = true;
       // params['includeFeaturePicture'] = true;
-      params['includeUnitConversions'] = true;
+      // params['includeUnitConversions'] = true;
+      params['productOfPage'] = true;
       params['sort_Id'] = 'desc';
       if (this.collaboratorService.currentpage$.value) {
         params['page'] = this.collaboratorService.currentpage$.value;
@@ -359,6 +355,12 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
     };
 
     return source;
+  }
+
+  /** Api delete funciton */
+  async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+    const params = { id: ids, page: this.collaboratorService.currentpage$?.value };
+    return super.executeDelete(params, success, error, complete);
   }
 
   /** Api get funciton */

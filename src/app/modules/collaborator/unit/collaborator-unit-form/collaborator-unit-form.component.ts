@@ -17,8 +17,8 @@ export class CollaboratorUnitFormComponent extends DataManagerFormComponent<Prod
 
   componentName: string = 'CollaboratorUnitFormComponent';
   idKey = 'Code';
-  apiPath = '/admin-product/units';
-  baseFormUrl = '/admin-product/units/form';
+  apiPath = '/collaborator/product-units';
+  baseFormUrl = '/collaborator/product-unit/form';
 
   constructor(
     public activeRoute: ActivatedRoute,

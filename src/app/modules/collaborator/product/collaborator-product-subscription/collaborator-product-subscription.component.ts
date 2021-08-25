@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -29,8 +29,8 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
 
   componentName: string = 'CollaboratorProductSubscriptionComponent';
   formPath = '/collaborator/product/form';
-  apiPath = '/collaborator/products';
-  idKey: string | string[] = 'Code';
+  apiPath = '/collaborator/product-subscriptions';
+  idKey: string | string[] = 'Id';
   currentPage: CollaboratorPageModel;
 
   reuseDialog = true;
@@ -62,9 +62,9 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/collaborator/product-categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/collaborator/product-groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/collaborator/product-units', { includeIdText: true, limit: 'nolimit' }));
   }
 
   async init() {
@@ -89,7 +89,7 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
       // });
 
       // Remove buttons
-      this.actionButtonList = this.actionButtonList.filter(f => ['add','edit'].indexOf(f.name) < 0);
+      this.actionButtonList = this.actionButtonList.filter(f => ['add', 'edit'].indexOf(f.name) < 0);
 
       this.actionButtonList.unshift({
         type: 'button',
@@ -118,7 +118,7 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
                         label: this.commonService.translateText('Common.subscribe'),
                         status: 'danger',
                         action: () => {
-                          this.apiService.putPromise<ProductModel[]>('/collaborator/products', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
+                          this.apiService.putPromise<ProductModel[]>('/collaborator/products', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code, WarehouseUnit: product.WarehouseUnit }))).then(rs => {
                             this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
                               status: 'success',
                             })
@@ -229,12 +229,12 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
         Name: {
           title: 'Tên',
           type: 'string',
-          width: '25%',
+          width: '15%',
         },
         Categories: {
           title: 'Danh mục',
           type: 'html',
-          width: '25%',
+          width: '15%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -272,7 +272,7 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
         Groups: {
           title: 'Nhóm',
           type: 'html',
-          width: '25%',
+          width: '15%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -307,23 +307,30 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
             },
           },
         },
-        WarehouseUnit: {
+        UnitName: {
           title: 'ĐVT',
           type: 'html',
           width: '10%',
-          valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
-          },
+        },
+        Price: {
+          title: 'Giá',
+          type: 'currency',
+          width: '8%',
         },
         Code: {
           title: 'Code',
           type: 'string',
-          width: '10%',
+          width: '5%',
         },
         Sku: {
           title: 'Sku',
           type: 'string',
           width: '15%',
+        },
+        PageName: {
+          title: 'Trang',
+          type: 'string',
+          width: '12%',
         },
       },
     });
@@ -352,11 +359,11 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
       params['includeGroups'] = true;
-      params['includeWarehouseUnit'] = true;
+      // params['includeWarehouseUnit'] = true;
       // params['includeFeaturePicture'] = true;
-      params['includeUnitConversions'] = true;
+      // params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
-      params['subscription'] = true;
+      // params['subscription'] = true;
       if (this.collaboratorService.currentpage$.value) {
         params['page'] = this.collaboratorService.currentpage$.value;
       }
@@ -374,6 +381,15 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
   //   }
   //   super.executeGet(params, success, error, complete);
   // }
+
+  /** Api delete funciton */
+  async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+    const params = {id: ids};
+    if (this.collaboratorService.currentpage$.value) {
+      params['page'] = this.collaboratorService.currentpage$.value;
+    }
+    return super.executeDelete(params, success, error, complete);
+  }
 
   getList(callback: (list: ProductModel[]) => void) {
     super.getList((rs) => {

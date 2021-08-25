@@ -441,7 +441,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Api delete funciton */
   async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
-    const deletedItems = await this.convertIdsToItems(ids);
+    // const deletedItems = await this.convertIdsToItems(ids);
     this.apiService.delete(this.apiPath, ids, (resp) => {
       // this.removeGridItems(deletedItems);
       this.refresh();

@@ -332,6 +332,10 @@
         "toDate": "đến ngày",
         "dateReport": "thời gian báo cáo",
         "date": "ngày",
+        "apiUrl": "đường dẫn api",
+        "apiToken": "api token",
+        "generateToken": "tạo token",
+        "eventUrl": "đường dẫn nhận sự kiện",
         "report": "báo cáo"
     },
     "Contact": {
@@ -832,7 +836,9 @@
     "Collaborator": {
         "Page": {
             "label": "trang",
-            "title": "{{action}}{{definition}} trang doanh nghiệp"
+            "title": "{{action}}{{definition}} trang doanh nghiệp",
+            "pushProductConfirmText": "bạn có chắc là muốn đẩy sản phẩm lên trang này ?",
+            "pushProductLabel": "đẩy thông tin"
         },
         "Publisher": {
             "label": "cộng tác viên",
@@ -843,7 +849,9 @@
             "label": "sản phẩm",
             "title": "{{action}}{{definition}} sản phẩm kinh doanh",
             "subscribeConfirmText": "bạn có chắc là muốn đăng ký kinh doanh các sản phẩm này ?",
-            "subscribeSuccessText": "bạn đã đăng ký kinh doanh sản phẩm thành công"
+            "subscribeSuccessText": "bạn đã đăng ký kinh doanh sản phẩm thành công",
+            "push": "đẩy lên sàn",
+            "add": "thêm sản phẩm"
         },
         "Order": {
             "label": "đơn hàng",

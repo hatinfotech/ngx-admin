@@ -5,6 +5,8 @@ export interface CollaboratorPageModel {
     Code?: string;
     Name?: string;
     Description?: string;
+    PlatformApiUrl?: string;
+    PlatformApiToken?: string;
     Permission?: string;
     State?: string;
     Created?: string;

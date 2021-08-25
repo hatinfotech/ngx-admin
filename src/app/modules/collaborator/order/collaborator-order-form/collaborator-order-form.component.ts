@@ -22,6 +22,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { SalesPriceReportPrintComponent } from '../../../sales/price-report/sales-price-report-print/sales-price-report-print.component';
 import { CollaboratorService } from '../../collaborator.service';
+import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
 
 @Component({
   selector: 'ngx-collaborator-order-form',
@@ -208,7 +209,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
+        return this.apiService.buildApiUrl('/collaborator/product-subscriptions', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: false, includeUnits: true, unitPrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -353,7 +354,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/collaborator/product-units', { limit: 'nolimit' })).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;
@@ -651,36 +652,38 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     console.log(selectedData);
     if (selectedData) {
       detail.get('Description').setValue(selectedData.Name);
-      if (parentForm.get('PriceTable').value) {
-        this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-          priceTable: this.commonService.getObjectId(parentForm.get('PriceTable').value),
-          product: this.commonService.getObjectId(selectedData),
-          includeUnit: true,
-        }).then(rs => {
-          console.log(rs);
-          detail['unitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
-          if (selectedData.Units) {
-            const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
-            if (detaultUnit) {
-              const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
-              detail.get('Unit').setValue('');
-              setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
-              setTimeout(() => {
-                detail.get('Price').setValue(choosed.Price);
-                this.toMoney(parentForm, detail);
-              }, 0);
-            }
-          } else {
-            detail['unitList'] = this.commonService.unitList;
-          }
-        });
+      // if (parentForm.get('PriceTable').value) {
+      // this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+      //   priceTable: this.commonService.getObjectId(parentForm.get('PriceTable').value),
+      //   product: this.commonService.getObjectId(selectedData),
+      //   includeUnit: true,
+      // }).then(rs => {
+      // console.log(rs);
+      if (selectedData.Units)
+        // detail['unitList'] = selectedData.Unit;
+        if (selectedData.Units) {
+        detail['unitList'] = selectedData.Units;
+        // const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
+        // if (detaultUnit) {
+        // const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
+        detail.get('Unit').setValue('');
+        // setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
+        setTimeout(() => {
+          // detail.get('Price').setValue(choosed.Price);
+          this.toMoney(parentForm, detail);
+        }, 0);
+        // }
       } else {
         detail['unitList'] = this.commonService.unitList;
-        const detaultUnit = selectedData.Units?.find(f => f['IsDefaultSales'] === true);
-        if (detaultUnit) {
-          detail.get('Unit').setValue(detaultUnit);
-        }
       }
+      // });
+      // } else {
+      //   detail['unitList'] = this.commonService.unitList;
+      //   const detaultUnit = selectedData.Units?.find(f => f['IsDefaultSales'] === true);
+      //   if (detaultUnit) {
+      //     detail.get('Unit').setValue(detaultUnit);
+      //   }
+      // }
     } else {
       detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
@@ -741,7 +744,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');
       detail['Unit'] = this.commonService.getObjectText(this.unitList.find(f => f.id === this.commonService.getObjectId(detail['Unit'])));
     };
-    this.commonService.openDialog(SalesPriceReportPrintComponent, {
+    this.commonService.openDialog(CollaboratorOrderPrintComponent, {
       context: {
         title: 'Xem trước',
         mode: 'preview',

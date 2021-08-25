@@ -42,7 +42,7 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
         this.solarValue = data;
       });
 
-    this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { onlyIdText: true, limit: 'nolimit' }).then(rs => {
+    this.apiService.getPromise<ProductGroupModel[]>('/collaborator/product-groups', { onlyIdText: true, limit: 'nolimit' }).then(rs => {
       this.groupList = [{ id: '', text: '' }, ...rs];
     });
 

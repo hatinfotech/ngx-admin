@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { BusinessModel } from '../../../../models/accounting.model';
+import { CollaboratorPageModel } from '../../../../models/collaborator.model';
 import { ContactDetailModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -14,7 +14,7 @@ import { CommonService } from '../../../../services/common.service';
   templateUrl: './collaborator-page-form.component.html',
   styleUrls: ['./collaborator-page-form.component.scss']
 })
-export class CollaboratorPageFormComponent extends DataManagerFormComponent<BusinessModel> implements OnInit {
+export class CollaboratorPageFormComponent extends DataManagerFormComponent<CollaboratorPageModel> implements OnInit {
 
   componentName: string = 'CollaboratorPageFormComponent';
   idKey = 'Code';
@@ -33,6 +33,32 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Busi
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
+
+  select2SalesPriceReportOption = {
+    placeholder: 'Chọn bảng giá...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/sales/master-price-tables', { onlyIdText: true, filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data,
+        };
+      },
+    },
+  };
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -106,7 +132,7 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Busi
     });
   }
 
-  async formLoad(formData: BusinessModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: BusinessModel) => void) {
+  async formLoad(formData: CollaboratorPageModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CollaboratorPageModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // if (itemFormData.Details) {
@@ -131,26 +157,30 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Busi
   // }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: BusinessModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: CollaboratorPageModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeOrganizations'] = true;
     params['includeGroups'] = true;
     params['includeDetails'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: BusinessModel): FormGroup {
+  makeNewFormGroup(data?: CollaboratorPageModel): FormGroup {
     const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
       Code: [''],
       Name: ['', Validators.required],
       Description: ['', Validators.required],
+      EventUrl: [''],
+      PlatformApiUrl: [''],
+      PlatformApiToken: [''],
+      PriceTable: [''],
     });
     if (data) {
       newForm.patchValue(data);
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: BusinessModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: CollaboratorPageModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -169,11 +199,11 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Busi
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  onAfterCreateSubmit(newFormData: BusinessModel[]) {
+  onAfterCreateSubmit(newFormData: CollaboratorPageModel[]) {
     super.onAfterCreateSubmit(newFormData);
     // this.minierpService.reloadCache();
   }
-  onAfterUpdateSubmit(newFormData: BusinessModel[]) {
+  onAfterUpdateSubmit(newFormData: CollaboratorPageModel[]) {
     return super.onAfterUpdateSubmit(newFormData);
     // this.minierpService.reloadCache();
   }

@@ -1,5 +1,5 @@
 <div class="dialog-wrap" #dialogWrap>
-  <nb-card style="max-height: initial; margin: 0 auto;" class="small-header">
+  <nb-card [nbSpinner]="loading" style="max-height: initial; margin: 0 auto;" class="small-header">
     <!-- <nb-card-header>{{ title }}</nb-card-header> -->
     <nb-card-header>
       <nav>
@@ -14,7 +14,7 @@
     <nb-card-footer *ngIf="footerContent || actions?.length > 0">
       <span *ngIf="footerContent" [innerHTML]="footerContent"></span>
       <div class="buttons-row">
-        <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="item?.action();"><nb-icon *ngIf="item?.icon" [pack]="'eva'" [icon]="item.icon"></nb-icon>{{ item.label }}</button>
+        <button *ngFor="let item of actions" nbButton hero [status]="item?.status" [disabled]="item?.disabled" (click)="onButtonClick(item);"><nb-icon *ngIf="item?.icon" [pack]="'eva'" [icon]="item.icon"></nb-icon>{{ item.label }}</button>
       </div>
     </nb-card-footer>
   </nb-card>

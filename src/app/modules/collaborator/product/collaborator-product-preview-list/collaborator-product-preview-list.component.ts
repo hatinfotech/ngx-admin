@@ -178,12 +178,12 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
         Name: {
           title: 'Tên',
           type: 'string',
-          width: '25%',
+          width: '15%',
         },
         Categories: {
           title: 'Danh mục',
           type: 'html',
-          width: '25%',
+          width: '15%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -221,7 +221,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
         Groups: {
           title: 'Nhóm',
           type: 'html',
-          width: '25%',
+          width: '15%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -256,23 +256,30 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
             },
           },
         },
-        WarehouseUnit: {
+        UnitName: {
           title: 'ĐVT',
           type: 'html',
           width: '10%',
-          valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
-          },
+        },
+        Price: {
+          title: 'Giá',
+          type: 'currency',
+          width: '8%',
         },
         Code: {
           title: 'Code',
           type: 'string',
-          width: '10%',
+          width: '5%',
         },
         Sku: {
           title: 'Sku',
           type: 'string',
           width: '15%',
+        },
+        PageName: {
+          title: 'Trang',
+          type: 'string',
+          width: '12%',
         },
       },
     });
@@ -301,9 +308,9 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
       params['includeGroups'] = true;
-      params['includeWarehouseUnit'] = true;
+      // params['includeWarehouseUnit'] = true;
       // params['includeFeaturePicture'] = true;
-      params['includeUnitConversions'] = true;
+      // params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
       if (this.collaboratorService.currentpage$.value) {
         params['page'] = this.collaboratorService.currentpage$.value;

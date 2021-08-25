@@ -16,8 +16,8 @@ import { CollaboratorUnitFormComponent } from '../collaborator-unit-form/collabo
 export class CollaboratorUnitListComponent extends DataManagerListComponent<ProductUnitModel> implements OnInit {
 
   componentName: string = 'CollaboratorUnitListComponent';
-  formPath = '/admin-product/unit/form';
-  apiPath = '/admin-product/units';
+  formPath = '/collaborator/product-unit/form';
+  apiPath = '/collaborator/product-units';
   idKey = 'Code';
   formDialog = CollaboratorUnitFormComponent;
 
