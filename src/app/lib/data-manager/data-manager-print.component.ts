@@ -218,7 +218,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         context: {
           showLoadinng: true,
           inputMode: 'dialog',
-          inputId: [this.idKey.map(m => data[m]).join('-')],
+          inputId: [this.idKey.map(m => this.encodeId(data[m])).join('-')],
           onDialogSave: (newData: M[]) => {
             // resolve({ event: 'save', data: newData });
             // this.refresh();

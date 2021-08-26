@@ -63,7 +63,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   abstract baseFormUrl: string;
 
   /** resource id key */
-  abstract idKey: string;
+  abstract idKey: any;
 
   /** Restful api path use for api service */
   abstract apiPath: string;
@@ -337,6 +337,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     return false;
   }
 
+  makeId(item: M) {
+    if (Array.isArray(this.idKey)) {
+      return this.idKey.map(key => this.encodeId(item[key])).join('-');
+    }
+    return item[this.idKey];
+  }
+
   /** After main form create event */
   onAfterCreateSubmit(newFormData: M[]) {
     this.formLoad(newFormData);
@@ -348,7 +355,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         duration: 3000,
       });
     }
-    this.id = newFormData.map(item => item[this.idKey]);
+    this.id = newFormData.map(item => this.makeId(item));
     if (this.mode === 'page') {
       this.commonService.location.go(this.generateUrlByIds(this.id));
     }
@@ -372,7 +379,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         duration: 3000,
       });
     }
-    this.id = newFormData?.map(item => item[this.idKey]);
+    this.id = newFormData?.map(item => this.makeId(item));
     if (this.mode === 'page') {
       this.commonService.location.go(this.generateUrlByIds(this.id));
     }

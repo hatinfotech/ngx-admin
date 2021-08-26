@@ -152,7 +152,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         size: 'medium',
         disabled: () => this.selectedIds.length === 0,
         click: () => {
-          this.deleteConfirm(this.selectedIds, () => this.loadList());
+          this.deleteConfirm(this.selectedIds.map(item => this.makeId(item)), () => this.loadList());
         },
       },
       {
@@ -354,10 +354,17 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     // console.info(event);
   }
 
+  makeId(item: M) {
+    if (Array.isArray(this.idKey)) {
+      return this.idKey.map(key => this.encodeId(item[key])).join('-');
+    }
+    return item[this.idKey];
+  }
+
   /** Edit event */
   onEditAction(event: { data: M }) {
     // this.router.navigate(['modules/manager/form', event.data[this.idKey]]);
-    this.openForm([event.data[this.idKey as string]]);
+    this.openForm([this.makeId(event.data)]);
   }
 
   /** Create and multi edit/delete action */
@@ -457,7 +464,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Delete action */
   delete(event: any): void {
-    this.deleteConfirm([event.data[this.idKey as string]], () => this.loadList());
+    this.deleteConfirm([this.makeId(event.data)], () => this.loadList());
     //   if (window.confirm('Bạn có muốn xoá dữ liệu \'' + event.data.Name + '\' không?')) {
     //     this.apiService.delete(this.apiPath, event.data.Name, result => {
     //       // event.confirm.resolve();
