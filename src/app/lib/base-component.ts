@@ -207,4 +207,12 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     return true;
   }
 
+  encodeId(id: string) {
+    return id.replace(/-/, '~!');
+  }
+
+  decodeId(id: string) {
+    return id.replace(/~!/, '-');
+  }
+
 }

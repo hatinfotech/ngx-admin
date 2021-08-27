@@ -107,6 +107,13 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   abstract close(): void;
 
+  makeId(item: M) {
+    if (Array.isArray(this.idKey)) {
+      return this.idKey.map(key => this.encodeId(item[key])).join('-');
+    }
+    return item[this.idKey];
+  }
+
   getIdentified(data: M): string[] {
     if (this.idKey && this.idKey.length > 0) {
       return this.idKey.map(key => data[key]);

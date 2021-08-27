@@ -4,7 +4,7 @@
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/publisher/page/list'])">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['collaborator/publisher/subscription-page/list'])">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
@@ -43,7 +43,7 @@
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-success" (click)="this.commonService.router.navigate(['collaborator/publisher/report'])">
+          <div class="icon status-success">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
@@ -94,10 +94,13 @@
     </div>
 
     <div class="col-xxxl-9 col-xxl-8 col-lg-8 col-md-12">
-      <nb-card class="chart">
-        <nb-card-header>Phát sinh doanh thu/hoa hồng</nb-card-header>
+      <nb-card class="chart small-header">
+        <!-- <nb-card-header>Phát sinh doanh thu/hoa hồng</nb-card-header> -->
+        <nb-card-header>
+          <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Order.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
         <nb-card-body>
-          <ngx-chartjs-multiple-xaxis></ngx-chartjs-multiple-xaxis>
+          <ngx-publisher-commission-statistics [data]="data" [options]="options"></ngx-publisher-commission-statistics>
         </nb-card-body>
       </nb-card>
     </div>

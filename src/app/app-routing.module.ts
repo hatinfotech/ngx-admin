@@ -90,9 +90,10 @@ import { AccMasterBookListComponent } from './modules/accounting/master-book/acc
 import { ContactListComponent } from './modules/contact/contact/contact-list/contact-list.component';
 import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-key/cluster-authorized-key-list/cluster-authorized-key-list.component';
 import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
-import { CollaboratorProductSubscriptionComponent } from './modules/collaborator/product/collaborator-product-subscription/collaborator-product-subscription.component';
+import { CollaboratorSubscriptionProductComponent } from './modules/collaborator/product/collaborator-subscription-product/collaborator-subscription-product.component';
 import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 import { CollaboratorPublisherDashboardComponent } from './modules/collaborator/collaborator-publisher-dashboard/collaborator-publisher-dashboard.component';
+import { CollaboratorSubscriptionPageListComponent } from './modules/collaborator/page/collaborator-subscription-page-list/collaborator-subscription-page-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -924,8 +925,8 @@ const routes: Routes = [
         },
       },
       {
-        path: 'page/list',
-        component: CollaboratorPageListComponent,
+        path: 'subscription-page/list',
+        component: CollaboratorSubscriptionPageListComponent,
         data: {
           reuse: true,
         },
@@ -939,7 +940,7 @@ const routes: Routes = [
       },
       {
         path: 'product/list',
-        component: CollaboratorProductSubscriptionComponent,
+        component: CollaboratorSubscriptionProductComponent,
         data: {
           reuse: true,
         },

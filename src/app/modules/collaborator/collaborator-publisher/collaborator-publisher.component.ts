@@ -27,15 +27,15 @@ export class CollaboratorPublisherComponent extends BaseComponent {
   async init() {
     await this.commonService.waitForLanguageLoaded();
     this.tabs = [
-      // {
-      //   title: this.commonService.translateText('Common.summary'),
-      //   route: '/collaborator/publisher/summary',
-      //   icon: 'pie-chart',
-      //   // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
-      // },
+      {
+        title: this.commonService.translateText('Common.summary'),
+        route: '/collaborator/publisher/dashboard',
+        icon: 'pie-chart',
+        // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
+      },
       {
         title: this.commonService.translateText('Collaborator.Page.label'),
-        route: '/collaborator/publisher/page/list',
+        route: '/collaborator/publisher/subscription-page/list',
         // icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
@@ -49,11 +49,11 @@ export class CollaboratorPublisherComponent extends BaseComponent {
         route: '/collaborator/publisher/order/list',
         // icon: 'pie-chart',
       },
-      {
-        title: this.commonService.translateText('Common.report'),
-        route: '/collaborator/publisher/report',
-        // icon: 'pie-chart',
-      },
+      // {
+      //   title: this.commonService.translateText('Common.report'),
+      //   route: '/collaborator/publisher/report',
+      //   // icon: 'pie-chart',
+      // },
     ];
     return super.init();
   }

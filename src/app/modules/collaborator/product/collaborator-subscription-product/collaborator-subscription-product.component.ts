@@ -21,20 +21,20 @@ import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorProductPreviewListComponent } from '../collaborator-product-preview-list/collaborator-product-preview-list.component';
 
 @Component({
-  selector: 'ngx-collaborator-product-subscription',
-  templateUrl: './collaborator-product-subscription.component.html',
-  styleUrls: ['./collaborator-product-subscription.component.scss']
+  selector: 'ngx-collaborator-subscription-product',
+  templateUrl: './collaborator-subscription-product.component.html',
+  styleUrls: ['./collaborator-subscription-product.component.scss']
 })
-export class CollaboratorProductSubscriptionComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit {
+export class CollaboratorSubscriptionProductComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit {
 
-  componentName: string = 'CollaboratorProductSubscriptionComponent';
+  componentName: string = 'CollaboratorSubscriptionProductComponent';
   formPath = '/collaborator/product/form';
   apiPath = '/collaborator/product-subscriptions';
   idKey: string | string[] = 'Id';
   currentPage: CollaboratorPageModel;
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<CollaboratorProductSubscriptionComponent>;
+  static _dialog: NbDialogRef<CollaboratorSubscriptionProductComponent>;
 
   // Smart table
   static filterConfig: any;
@@ -53,7 +53,7 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<CollaboratorProductSubscriptionComponent>,
+    public ref: NbDialogRef<CollaboratorSubscriptionProductComponent>,
     public collaboratorService: CollaboratorService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
@@ -91,12 +91,18 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
       // Remove buttons
       this.actionButtonList = this.actionButtonList.filter(f => ['add', 'edit'].indexOf(f.name) < 0);
 
+      const deleteBtn = this.actionButtonList.find(f => f.name === 'delete');
+      if (deleteBtn) {
+        deleteBtn.label = this.commonService.translateText('Common.unsubscribe');
+        deleteBtn.icon = 'flash-off-outline';
+      }
+
       this.actionButtonList.unshift({
         type: 'button',
         name: 'subscribe',
         label: this.commonService.translateText('Common.subscribe'),
         icon: 'cast-outline',
-        status: 'danger',
+        status: 'success',
         size: 'medium',
         title: this.commonService.translateText('Common.subscribe'),
         click: () => {
@@ -317,20 +323,25 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
           type: 'currency',
           width: '8%',
         },
-        Code: {
-          title: 'Code',
-          type: 'string',
-          width: '5%',
-        },
+        // Code: {
+        //   title: 'Code',
+        //   type: 'string',
+        //   width: '5%',
+        // },
         Sku: {
           title: 'Sku',
           type: 'string',
-          width: '15%',
+          width: '13%',
         },
         PageName: {
           title: 'Trang',
           type: 'string',
           width: '12%',
+        },
+        Subscribed: {
+          title: 'Ngày đăng ký',
+          type: 'datetime',
+          width: '8%',
         },
       },
     });
@@ -384,7 +395,7 @@ export class CollaboratorProductSubscriptionComponent extends ServerDataManagerL
 
   /** Api delete funciton */
   async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
-    const params = {id: ids};
+    const params = { id: ids };
     if (this.collaboratorService.currentpage$.value) {
       params['page'] = this.collaboratorService.currentpage$.value;
     }

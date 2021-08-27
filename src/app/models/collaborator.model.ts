@@ -67,7 +67,7 @@ export interface CollaboratorOrderDetailModel {
     Description?: string;
     Quantity?: number;
     Price?: number;
-    Tax?: string;
+    Tax?: any;
     Currency?: string;
     Unit?: string;
 }

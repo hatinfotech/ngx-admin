@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CollaboratorProductSubscriptionComponent } from './collaborator-product-subscription.component';
+import { CollaboratorSubscriptionProductComponent } from './collaborator-subscription-product.component';
 
 describe('CollaboratorProductSubscriptionComponent', () => {
-  let component: CollaboratorProductSubscriptionComponent;
-  let fixture: ComponentFixture<CollaboratorProductSubscriptionComponent>;
+  let component: CollaboratorSubscriptionProductComponent;
+  let fixture: ComponentFixture<CollaboratorSubscriptionProductComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CollaboratorProductSubscriptionComponent ]
+      declarations: [ CollaboratorSubscriptionProductComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CollaboratorProductSubscriptionComponent);
+    fixture = TestBed.createComponent(CollaboratorSubscriptionProductComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

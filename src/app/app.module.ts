@@ -205,7 +205,7 @@ import { CollaboratorPageComponent } from './modules/collaborator/collaborator-p
 import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
 // import { CollaboratorPagePreviewListComponent } from './modules/collaborator/page/collaborator-page-preview-list/collaborator-page-preview-list.component';
 import { CollaboratorProductPreviewListComponent } from './modules/collaborator/product/collaborator-product-preview-list/collaborator-product-preview-list.component';
-import { CollaboratorProductSubscriptionComponent } from './modules/collaborator/product/collaborator-product-subscription/collaborator-product-subscription.component';
+import { CollaboratorSubscriptionProductComponent } from './modules/collaborator/product/collaborator-subscription-product/collaborator-subscription-product.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { ContactsComponent } from './modules/dashboard/contacts/contacts.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
@@ -267,9 +267,10 @@ import { ChartjsLineComponent } from './modules/collaborator/collaborator-page-d
 import { ChartjsMultipleXaxisComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-multiple-xaxis.component';
 import { ChartjsPieComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-pie.component';
 import { MostActivePublishersComponent } from './modules/collaborator/collaborator-page-dashboard/most-active-publishers/most-active-publishers.component';
-import { CollaboratorChartjsMultipleXaxisComponent } from './modules/collaborator/collaborator-publisher-dashboard/chartjs-multiple-xaxis.component';
 import { CollaboratorPublisherDashboardComponent } from './modules/collaborator/collaborator-publisher-dashboard/collaborator-publisher-dashboard.component';
 import { MostActiveProductsComponent } from './modules/collaborator/collaborator-publisher-dashboard/most-active-products/most-active-products.component';
+import { CollaboratorSubscriptionPageListComponent } from './modules/collaborator/page/collaborator-subscription-page-list/collaborator-subscription-page-list.component';
+import { PublisherCommissionStatisticsComponent } from './modules/collaborator/collaborator-publisher-dashboard/publisher-commission-statistics.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -444,7 +445,7 @@ export class DynamicLocaleId extends String {
     CollaboratorPageComponent,
     CollaboratorPublisherComponent,
     CollaboratorProductPreviewListComponent,
-    CollaboratorProductSubscriptionComponent,
+    CollaboratorSubscriptionProductComponent,
 
 
     DashboardComponent,
@@ -506,8 +507,10 @@ export class DynamicLocaleId extends String {
     MostActivePublishersComponent,
 
     CollaboratorPublisherDashboardComponent,
-    CollaboratorChartjsMultipleXaxisComponent,
     MostActiveProductsComponent,
+
+    CollaboratorSubscriptionPageListComponent,
+    PublisherCommissionStatisticsComponent,
     
 
   ],

@@ -1,3 +1,4 @@
+import { CollaboratorOrderModel, CollaboratorOrderDetailModel } from './../../../../models/collaborator.model';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -6,7 +7,7 @@ import { environment } from '../../../../../environments/environment.prod';
 import { AppModule } from '../../../../app.module';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { ProcessMap } from '../../../../models/process-map.model';
-import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
+import { SalesPriceReportDetailModel } from '../../../../models/sales.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
@@ -17,7 +18,7 @@ import { CollaboratorService } from '../../collaborator.service';
   templateUrl: './collaborator-order-print.component.html',
   styleUrls: ['./collaborator-order-print.component.scss']
 })
-export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<SalesPriceReportModel> implements OnInit {
+export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<CollaboratorOrderModel> implements OnInit {
 
   /** Component name */
   componentName = 'CollaboratorOrderPrintComponent';
@@ -25,6 +26,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
   apiPath = '/collaborator/orders';
   env = environment;
   processMapList: ProcessMap[] = [];
+  idKey = ['Code'];
   formDialog = SalesPriceReportFormComponent;
 
   constructor(
@@ -70,7 +72,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
     return result;
   }
 
-  // getIdentified(data: SalesPriceReportModel): string[] {
+  // getIdentified(data: CollaboratorOrderModel): string[] {
   //   if (this.idKey && this.idKey.length > 0) {
   //     return this.idKey.map(key => data[key]);
   //   } else {
@@ -78,7 +80,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
   //   }
   // }
 
-  renderTitle(data: SalesPriceReportModel) {
+  renderTitle(data: CollaboratorOrderModel) {
     return `PhieuBaoGia_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
   }
 
@@ -99,7 +101,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
     }
   }
 
-  toMoney(detail: SalesPriceReportDetailModel) {
+  toMoney(detail: CollaboratorOrderDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
       if (detail.Tax) {
@@ -113,7 +115,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
     return 0;
   }
 
-  getTotal(data: SalesPriceReportModel) {
+  getTotal(data: CollaboratorOrderModel) {
     let total = 0;
     const details = data.Details;
     let no = 1;
@@ -127,7 +129,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
     return total;
   }
 
-  saveAndClose(data: SalesPriceReportModel) {
+  saveAndClose(data: CollaboratorOrderModel) {
     if (this.onSaveAndClose) {
       this.onSaveAndClose(data);
     }
@@ -145,7 +147,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
     return '';
   }
 
-  prepareCopy(data: SalesPriceReportModel) {
+  prepareCopy(data: CollaboratorOrderModel) {
     this.close();
     this.commonService.openDialog(SalesPriceReportFormComponent, {
       context: {
@@ -153,7 +155,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
         inputMode: 'dialog',
         inputId: [data.Code],
         isDuplicate: true,
-        onDialogSave: (newData: SalesPriceReportModel[]) => {
+        onDialogSave: (newData: CollaboratorOrderModel[]) => {
           // if (onDialogSave) onDialogSave(row);
           this.onClose && this.onClose(newData[0]);
           this.onSaveAndClose && this.onSaveAndClose(newData[0]);
@@ -166,7 +168,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
     });
   }
 
-  approvedConfirm(data: SalesPriceReportModel, index: number) {
+  approvedConfirm(data: CollaboratorOrderModel, index: number) {
     if (['COMPLETE'].indexOf(data.State) > -1) {
       this.commonService.showDiaplog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
@@ -179,7 +181,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
       ]);
       return;
     }
-    const params = { id: [data.Code], page: this.collaboratorService.currentpage$.value };
+    const params = { id: [this.makeId(data)], page: this.collaboratorService.currentpage$.value };
     // const processMap = SalesModule.processMaps.priceReport[data.State || ''];
     params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
@@ -224,7 +226,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<SalesPriceReportModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<CollaboratorOrderModel[]>(this.apiPath, params, [{Page: data.Page, Code: data.Code }]).then(rs => {
             this.loading = true;
             this.onChange && this.onChange(data);
             this.close();
@@ -250,7 +252,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<S
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesPriceReportModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeTax: true, includeUnit: true }).then(rs => {
+    return this.apiService.getPromise<CollaboratorOrderModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeTax: true, includeUnit: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: SalesPriceReportDetailModel) => detail.Type !== 'CATEGORY');
         // let total = 0;

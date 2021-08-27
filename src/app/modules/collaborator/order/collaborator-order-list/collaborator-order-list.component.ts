@@ -162,7 +162,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             return this.commonService.getObjectText(cell);
           },
         },
-        Created: {
+        DateOfOrder: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
           type: 'custom',
           width: '15%',
@@ -472,7 +472,8 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         showLoadinng: true,
         title: 'Xem trước',
         // data: data,
-        id: data.map(m => m[this.idKey]),
+        // id: data.map(m => m[this.idKey]),
+        id: data.map(item => this.makeId(item)),
         sourceOfDialog: 'list',
         mode: 'print',
         idKey: ['Code'],

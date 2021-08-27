@@ -1,3 +1,4 @@
+import { CollaboratorOrderPrintComponent } from './../modules/collaborator/order/collaborator-order-print/collaborator-order-print.component';
 import { CommerceServiceByCycleFormComponent } from './../modules/commerce-service-by-cycle/service-by-cycle/commerce-service-by-cycle-form/commerce-service-by-cycle-form.component';
 import { DeploymentVoucherPrintComponent } from './../modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
 import { SalesPriceReportPrintComponent } from './../modules/sales/price-report/sales-price-report-print/sales-price-report-print.component';
@@ -829,6 +830,7 @@ export class CommonService {
     'DEPLOYMENT': DeploymentVoucherPrintComponent,
     'OTHERBUSINESSVOUCHER': AccountingOtherBusinessVoucherPrintComponent,
     'SERVICEBYCYCLE': CommerceServiceByCycleFormComponent,
+    'CLBRTORDER': CollaboratorOrderPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {

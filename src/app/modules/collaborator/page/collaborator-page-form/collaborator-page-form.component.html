@@ -7,8 +7,13 @@
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
-            <input type="hidden" nbInput fullWidth formControlName="Code">
+            <!-- <input type="hidden" nbInput fullWidth formControlName="Code"> -->
             <div class="row">
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Common.code' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
               <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name' | translate | headtitlecase}}">
