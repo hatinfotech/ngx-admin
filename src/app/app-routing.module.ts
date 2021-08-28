@@ -94,6 +94,8 @@ import { CollaboratorSubscriptionProductComponent } from './modules/collaborator
 import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
 import { CollaboratorPublisherDashboardComponent } from './modules/collaborator/collaborator-publisher-dashboard/collaborator-publisher-dashboard.component';
 import { CollaboratorSubscriptionPageListComponent } from './modules/collaborator/page/collaborator-subscription-page-list/collaborator-subscription-page-list.component';
+import { PageFormComponent } from './modules/page/page-form/page-form.component';
+import { PageListComponent } from './modules/page/page-list/page-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -704,6 +706,26 @@ const routes: Routes = [
     path: 'deployment/voucher/form/:id',
     canActivate: [AuthGuardService],
     component: DeploymentVoucherFormComponent,
+  },
+
+  // Page routes
+  {
+    path: 'page/page/list',
+    canActivate: [AuthGuardService],
+    component: PageListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'page/page/form',
+    canActivate: [AuthGuardService],
+    component: PageFormComponent,
+  },
+  {
+    path: 'page/page/form/:id',
+    canActivate: [AuthGuardService],
+    component: PageFormComponent,
   },
 
 

@@ -1,5 +1,3 @@
-import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
-import { CollaboratorProductPreviewListComponent } from './../collaborator-product-preview-list/collaborator-product-preview-list.component';
 import { take, filter } from 'rxjs/operators';
 import { CollaboratorService } from '../../collaborator.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -12,15 +10,15 @@ import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/sma
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { CollaboratorPageModel } from '../../../../models/collaborator.model';
 import { FileModel } from '../../../../models/file.model';
-import { ProductModel, ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
+import { ProductModel, ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AssignCategoriesFormComponent } from '../../../admin-product/product/assign-categories-form/assign-categories-form.component';
 import { CollaboratorProductFormComponent } from '../collaborator-product-form/collaborator-product-form.component';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { PageModel } from '../../../../models/page.model';
 
 @Component({
   selector: 'ngx-collaborator-product-list',
@@ -34,7 +32,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
   apiPath = '/collaborator/products';
   idKey: string | string[] = 'Code';
   formDialog = CollaboratorProductFormComponent;
-  currentPage: CollaboratorPageModel;
+  currentPage: PageModel;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<CollaboratorProductListComponent>;
@@ -525,7 +523,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
   }
   /** End ngx-uploader */
 
-  onChangePage(page: CollaboratorPageModel) {
+  onChangePage(page: PageModel) {
     this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
     this.commonService.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
       this.refresh();

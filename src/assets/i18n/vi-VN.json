@@ -337,7 +337,10 @@
         "apiToken": "api token",
         "generateToken": "tạo token",
         "eventUrl": "đường dẫn nhận sự kiện",
-        "report": "báo cáo"
+        "report": "báo cáo",
+        "success": "thành công",
+        "danger": "lỗi nguy hiểm",
+        "info": "thông tin"
     },
     "Contact": {
         "Customer": {
@@ -839,6 +842,7 @@
             "label": "trang",
             "title": "{{action}}{{definition}} trang doanh nghiệp",
             "pushProductConfirmText": "bạn có chắc là muốn đẩy sản phẩm lên trang này ?",
+            "pushProductSuccessText": "thông tin sản phẩm đã được đẩy lên sàn thành công",
             "pushProductLabel": "đẩy thông tin"
         },
         "Publisher": {

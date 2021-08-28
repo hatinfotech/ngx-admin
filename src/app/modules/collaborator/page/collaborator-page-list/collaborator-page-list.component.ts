@@ -1,4 +1,3 @@
-import { CollaboratorPageModel } from './../../../../models/collaborator.model';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -17,13 +16,14 @@ import { CommonService } from '../../../../services/common.service';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorPageFormComponent } from '../collaborator-page-form/collaborator-page-form.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { PageModel } from '../../../../models/page.model';
 
 @Component({
   selector: 'ngx-collaborator-page-list',
   templateUrl: './collaborator-page-list.component.html',
   styleUrls: ['./collaborator-page-list.component.scss']
 })
-export class CollaboratorPageListComponent extends ServerDataManagerListComponent<CollaboratorPageModel> implements OnInit {
+export class CollaboratorPageListComponent extends ServerDataManagerListComponent<PageModel> implements OnInit {
 
   componentName: string = 'CollaboratorPageListComponent';
   formPath = '/collaborator/page/form';
@@ -97,7 +97,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
       //     this.commonService.openDialog(CollaboratorProductPreviewListComponent, {
       //       context: {
       //         inputMode: 'dialog',
-      //         onDialogChoose: async (chooseItems: CollaboratorPageModel[]) => {
+      //         onDialogChoose: async (chooseItems: PageModel[]) => {
       //           console.log(chooseItems);
       //           this.commonService.openDialog(ShowcaseDialogComponent, {
       //             context: {
@@ -112,7 +112,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
       //                   label: this.commonService.translateText('Common.subscribe'),
       //                   status: 'danger',
       //                   action: () => {
-      //                     this.apiService.putPromise<CollaboratorPageModel[]>('/collaborator/pages', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
+      //                     this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
       //                       this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
       //                         status: 'success',
       //                       })
@@ -180,7 +180,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
             instance.disabled = this.isChoosedMode;
             instance.title = this.commonService.translateText('Collaborator.Page.pushProductLabel');
             instance.label = this.commonService.translateText('Collaborator.Page.pushProductLabel');
-            instance.init.subscribe((page: CollaboratorPageModel) => {
+            instance.init.subscribe((page: PageModel) => {
               if (!page.PlatformApiUrl || !page.PlatformApiToken) {
                 instance.disabled = true;
               }
@@ -189,7 +189,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
               // instance.status = processMap?.status;
               // instance.outline = processMap?.outline;
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPageModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
               if (!rowData.PlatformApiUrl || !rowData.PlatformApiToken) {
                 return false;
               }
@@ -211,8 +211,8 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
                       icon: 'cloud-upload-outline',
                       action: async (item, dialog) => {
                         dialog.setLoading(true);
-                        await this.apiService.putPromise<CollaboratorPageModel[]>('/collaborator/pages', { id: [rowData.Code], push: true }, [{ Code: rowData.Code }]).then(rs => {
-                          this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+                        await this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [rowData.Code], push: true }, [{ Code: rowData.Code }]).then(rs => {
+                          this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Page.pushProductSuccessText'), {
                             status: 'success',
                           })
                         });
@@ -246,8 +246,8 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
               // instance.status = processMap?.status;
               // instance.outline = processMap?.outline;
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPageModel) => {
-              this.apiService.putPromise<CollaboratorPageModel[]>(this.apiPath, { generateToken: true }, [{ Code: rowData.Code }]).then(rs => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
+              this.apiService.putPromise<PageModel[]>(this.apiPath, { generateToken: true }, [{ Code: rowData.Code }]).then(rs => {
                 this.commonService.showDiaplog('Collaborator', rs[0].PlatformApiToken, [
                   {
                     label: 'Close',
@@ -279,7 +279,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPageModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
               this.changeStateConfirm(instance.rowData).then(status => {
                 if (status) this.refresh();
               });
@@ -336,7 +336,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPageModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
 
               this.commonService.openDialog(ResourcePermissionEditComponent, {
                 context: {
@@ -378,7 +378,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
     return source;
   }
 
-  changeStateConfirm(data: CollaboratorPageModel) {
+  changeStateConfirm(data: PageModel) {
     const params = { id: [data.Code] };
     const processMap: ProcessMap = AppModule.processMaps.commerceServiceByCycle[data.State || ''];
     params['changeState'] = processMap?.nextState;
@@ -397,7 +397,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
           status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
           action: async () => {
             this.loading = true;
-            return this.apiService.putPromise<CollaboratorPageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
               this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
                 status: 'success',

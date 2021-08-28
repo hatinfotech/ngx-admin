@@ -3,30 +3,32 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
-import { AppModule } from '../../../../app.module';
-import {  SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { PageModel } from '../../../../models/page.model';
-import { ProcessMap } from '../../../../models/process-map.model';
-import { ApiService } from '../../../../services/api.service';
-import { CommonService } from '../../../../services/common.service';
-import { MobileAppService } from '../../../mobile-app/mobile-app.service';
-import { CollaboratorPageFormComponent } from '../collaborator-page-form/collaborator-page-form.component';
+import { AppModule } from '../../../app.module';
+import { SmartTableButtonComponent } from '../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableSelect2FilterComponent } from '../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableSetting } from '../../../lib/data-manager/data-manger-list.component';
+import { ServerDataManagerListComponent } from '../../../lib/data-manager/server-data-manger-list.component';
+import { ResourcePermissionEditComponent } from '../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { PageModel } from '../../../models/page.model';
+import { ProcessMap } from '../../../models/process-map.model';
+import { ApiService } from '../../../services/api.service';
+import { CommonService } from '../../../services/common.service';
+import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
+import { MobileAppService } from '../../mobile-app/mobile-app.service';
+import { PageFormComponent } from '../page-form/page-form.component';
 
 @Component({
-  selector: 'ngx-collaborator-page-list',
-  templateUrl: './collaborator-subscription-page-list.component.html',
-  styleUrls: ['./collaborator-subscription-page-list.component.scss']
+  selector: 'ngx-page-list',
+  templateUrl: './page-list.component.html',
+  styleUrls: ['./page-list.component.scss']
 })
-export class CollaboratorSubscriptionPageListComponent extends ServerDataManagerListComponent<PageModel> implements OnInit {
+export class PageListComponent extends ServerDataManagerListComponent<PageModel> implements OnInit {
 
-  componentName: string = 'CollaboratorSubscriptionPageListComponent';
-  formPath = '/collaborator/page/form';
-  apiPath = '/collaborator/pages';
+  componentName: string = 'PageListComponent';
+  formPath = '/page/page/form';
+  apiPath = '/page/pages';
   idKey = 'Code';
-  formDialog = CollaboratorPageFormComponent;
+  formDialog = PageFormComponent;
 
   reuseDialog = true;
 
@@ -44,7 +46,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<CollaboratorSubscriptionPageListComponent>,
+    public ref: NbDialogRef<PageListComponent>,
     public mobileAppService: MobileAppService
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
@@ -80,8 +82,6 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
       },
     ];
     return super.init().then(rs => {
-      // remove action buttons
-      this.actionButtonList = this.actionButtonList.filter(f => ['add','edit','delete'].indexOf(f.name) < 0 )
 
       // Push product, categories, groups and units to collaborator platform
       // this.actionButtonList.unshift({
@@ -165,6 +165,99 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
           type: 'datetime',
           width: '15%',
         },
+        Push: {
+          title: this.commonService.translateText('Collaborator.Page.pushProductLabel'),
+          type: 'custom',
+          width: '10%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'cloud-upload-outline';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.disabled = this.isChoosedMode;
+            instance.title = this.commonService.translateText('Collaborator.Page.pushProductLabel');
+            instance.label = this.commonService.translateText('Collaborator.Page.pushProductLabel');
+            instance.init.subscribe((page: PageModel) => {
+              if (!page.PlatformApiUrl || !page.PlatformApiToken) {
+                instance.disabled = true;
+              }
+              // const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
+              // instance.label = this.commonService.translateText(processMap?.label);
+              // instance.status = processMap?.status;
+              // instance.outline = processMap?.outline;
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
+              if (!rowData.PlatformApiUrl || !rowData.PlatformApiToken) {
+                return false;
+              }
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                closeOnBackdropClick: false,
+                closeOnEsc: false,
+                context: {
+                  title: this.commonService.translateText('Common.subscribe'),
+                  content: this.commonService.translateText('Collaborator.Page.pushProductConfirmText'),
+                  actions: [
+                    {
+                      label: this.commonService.translateText('Common.close'),
+                      icon: 'arrow-ios-back-outline',
+                      status: 'primary',
+                    },
+                    {
+                      label: this.commonService.translateText('Collaborator.Page.pushProductLabel'),
+                      status: 'danger',
+                      icon: 'cloud-upload-outline',
+                      action: async (item, dialog) => {
+                        dialog.setLoading(true);
+                        await this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [rowData.Code], push: true }, [{ Code: rowData.Code }]).then(rs => {
+                          this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+                            status: 'success',
+                          })
+                        });
+                        dialog.setLoading(false);
+                        this.refresh();
+                      }
+                    },
+                  ],
+                },
+              });
+            });
+          },
+        },
+        Token: {
+          title: this.commonService.translateText('Common.token'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'award-outline';
+            instance.display = true;
+            instance.status = 'primary';
+            instance.disabled = this.isChoosedMode;
+            instance.title = this.commonService.translateText('Common.generateToken');
+            instance.label = this.commonService.translateText('Common.generateToken');
+            instance.init.subscribe(value => {
+              // const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
+              // instance.label = this.commonService.translateText(processMap?.label);
+              // instance.status = processMap?.status;
+              // instance.outline = processMap?.outline;
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
+              this.apiService.putPromise<PageModel[]>(this.apiPath, { generateToken: true }, [{ Code: rowData.Code }]).then(rs => {
+                this.commonService.showDiaplog('Collaborator', rs[0].PlatformApiToken, [
+                  {
+                    label: 'Close',
+                    status: 'danger',
+                    action: () => { },
+                  }
+                ])
+              });
+            });
+          },
+        },
         State: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',
@@ -176,7 +269,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
             instance.icon = 'checkmark-circle';
             instance.display = true;
             instance.status = 'success';
-            instance.disabled = true;
+            instance.disabled = this.isChoosedMode;
             instance.title = this.commonService.translateText('Common.state');
             instance.label = this.commonService.translateText('Common.state');
             instance.valueChange.subscribe(value => {
@@ -223,6 +316,44 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
             },
           },
         },
+        Permission: {
+          title: this.commonService.translateText('Common.permission'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'shield';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
+
+              this.commonService.openDialog(ResourcePermissionEditComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [rowData.Code],
+                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  // resrouce: rowData,
+                  apiPath: this.apiPath,
+                }
+              });
+
+              // this.getFormData([rowData.Code]).then(rs => {
+              //   this.preview(rs);
+              // });
+            });
+          },
+        },
       },
     });
   }
@@ -240,7 +371,6 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
       params['includeParent'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_DateOfStart'] = 'asc';
-      params['subscription'] = true;
       return params;
     };
 

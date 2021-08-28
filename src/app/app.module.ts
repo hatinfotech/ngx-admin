@@ -272,6 +272,8 @@ import { MostActiveProductsComponent } from './modules/collaborator/collaborator
 import { CollaboratorSubscriptionPageListComponent } from './modules/collaborator/page/collaborator-subscription-page-list/collaborator-subscription-page-list.component';
 import { PublisherCommissionStatisticsComponent } from './modules/collaborator/collaborator-publisher-dashboard/publisher-commission-statistics.component';
 import { PageCommissionStatisticsComponent } from './modules/collaborator/collaborator-page-dashboard/page-commission-statistics.component';
+import { PageListComponent } from './modules/page/page-list/page-list.component';
+import { PageFormComponent } from './modules/page/page-form/page-form.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -513,6 +515,8 @@ export class DynamicLocaleId extends String {
     CollaboratorSubscriptionPageListComponent,
     PublisherCommissionStatisticsComponent,
     PageCommissionStatisticsComponent,
+    PageListComponent,
+    PageFormComponent,
     
 
   ],

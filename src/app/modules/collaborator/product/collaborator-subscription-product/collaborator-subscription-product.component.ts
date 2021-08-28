@@ -9,9 +9,9 @@ import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/sma
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { CollaboratorPageModel } from '../../../../models/collaborator.model';
 import { FileModel } from '../../../../models/file.model';
-import { ProductModel, ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
+import { PageModel } from '../../../../models/page.model';
+import { ProductModel, ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -31,7 +31,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
   formPath = '/collaborator/product/form';
   apiPath = '/collaborator/product-subscriptions';
   idKey: string | string[] = 'Id';
-  currentPage: CollaboratorPageModel;
+  currentPage: PageModel;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<CollaboratorSubscriptionProductComponent>;
@@ -555,7 +555,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
   }
   /** End ngx-uploader */
 
-  onChangePage(page: CollaboratorPageModel) {
+  onChangePage(page: PageModel) {
     // this.currentPage = page;
     this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
     this.refresh();

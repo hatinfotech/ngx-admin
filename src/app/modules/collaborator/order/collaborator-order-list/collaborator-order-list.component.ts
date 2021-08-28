@@ -9,7 +9,8 @@ import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-e
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { CollaboratorOrderModel, CollaboratorPageModel } from '../../../../models/collaborator.model';
+import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
+import { PageModel } from '../../../../models/page.model';
 import { PriceReportModel } from '../../../../models/price-report.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
@@ -492,7 +493,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
     return false;
   }
 
-  onChangePage(page: CollaboratorPageModel) {
+  onChangePage(page: PageModel) {
     this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
     this.commonService.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
       this.refresh();

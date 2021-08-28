@@ -7,9 +7,9 @@ import { takeWhile } from 'rxjs/operators';
 import { SolarData } from '../../../@core/data/solar';
 import { CollaboratorService } from '../collaborator.service';
 import { ApiService } from '../../../services/api.service';
-import { CollaboratorPageModel } from '../../../models/collaborator.model';
 import { Icon } from '../../../lib/custom-element/card-header/card-header.component';
 import { ActionControl } from '../../../lib/custom-element/action-control-list/action-control.interface';
+import { PageModel } from '../../../models/page.model';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -133,9 +133,9 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
       this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
     });
 
-    setTimeout(() => {
-      this.refresh();
-    }, 1000);
+    // setTimeout(() => {
+    //   this.refresh();
+    // }, 1000);
     this.formItem.valueChanges.subscribe(() => {
       this.refresh();
     });
@@ -285,7 +285,7 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
     this.alive = false;
   }
 
-  onChangePage(page: CollaboratorPageModel) {
+  onChangePage(page: PageModel) {
 
   }
 

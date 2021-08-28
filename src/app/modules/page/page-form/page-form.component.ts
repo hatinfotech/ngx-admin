@@ -3,23 +3,23 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { ContactDetailModel } from '../../../../models/contact.model';
-import { PageModel } from '../../../../models/page.model';
-import { ApiService } from '../../../../services/api.service';
-import { CommonService } from '../../../../services/common.service';
+import { DataManagerFormComponent } from '../../../lib/data-manager/data-manager-form.component';
+import { ContactDetailModel } from '../../../models/contact.model';
+import { PageModel } from '../../../models/page.model';
+import { ApiService } from '../../../services/api.service';
+import { CommonService } from '../../../services/common.service';
 
 @Component({
-  selector: 'ngx-collaborator-page-form',
-  templateUrl: './collaborator-page-form.component.html',
-  styleUrls: ['./collaborator-page-form.component.scss']
+  selector: 'ngx-page-form',
+  templateUrl: './page-form.component.html',
+  styleUrls: ['./page-form.component.scss']
 })
-export class CollaboratorPageFormComponent extends DataManagerFormComponent<PageModel> implements OnInit {
+export class PageFormComponent extends DataManagerFormComponent<PageModel> implements OnInit {
 
-  componentName: string = 'CollaboratorPageFormComponent';
+  componentName: string = 'PageFormComponent';
   idKey = 'Code';
-  baseFormUrl = '/collaborator/page/form';
-  apiPath = '/collaborator/pages';
+  baseFormUrl = '/page/page/form';
+  apiPath = '/page/pages';
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -29,7 +29,7 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<CollaboratorPageFormComponent>,
+    public ref: NbDialogRef<PageFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }

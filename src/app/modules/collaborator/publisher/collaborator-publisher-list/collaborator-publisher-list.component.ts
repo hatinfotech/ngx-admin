@@ -1,4 +1,4 @@
-import { CollaboratorPageModel, CollaboratorPublisherModel } from './../../../../models/collaborator.model';
+import { CollaboratorPublisherModel } from './../../../../models/collaborator.model';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
+import { PageModel } from '../../../../models/page.model';
 
 @Component({
   selector: 'ngx-collaborator-publisher-list',
@@ -323,7 +324,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
     });
   }
 
-  onChangePage(page: CollaboratorPageModel) {
+  onChangePage(page: PageModel) {
     this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
     this.commonService.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
       this.refresh();
