@@ -115,6 +115,7 @@
   ngx-chartjs-line,
   ngx-chartjs-multiple-xaxis,
   ngx-chartjs-bar-horizontal,
+  .commission-statistics-wrapper,
   ngx-chartjs-radar {
     display: block;
     height: nb-theme(card-height-medium);
@@ -127,7 +128,7 @@
     }
   }
 
-  .nb-theme-dark nb-card.size-giant {
+  nb-card.size-giant {
     height: 34.65rem;
   }
 }

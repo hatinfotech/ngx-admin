@@ -98,10 +98,12 @@
     </div>
 
     <div class="col-xxxl-9 col-xxl-8 col-lg-8 col-md-12">
-      <nb-card class="chart">
-        <nb-card-header>Phát sinh doanh thu/lợi nhuận/hoa hồng</nb-card-header>
-        <nb-card-body>
-          <ngx-chartjs-multiple-xaxis></ngx-chartjs-multiple-xaxis>
+      <nb-card class="size-giant chart small-header">
+        <nb-card-header>
+          <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Order.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body class="commission-statistics-wrapper">
+          <chart type="line" [data]="data" [options]="options"></chart>
         </nb-card-body>
       </nb-card>
     </div>

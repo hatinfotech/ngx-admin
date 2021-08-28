@@ -115,11 +115,11 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
       this.groupList = [{ id: '', text: '' }, ...rs];
     });
 
-    const currentDate = new Date();
+    // const currentDate = new Date();
     this.formItem = this.formBuilder.group({
-      DateReport: ['MONTH', Validators.required],
-      DateRange: [this.dateReportList.find(f => f.id === 'MONTH').range],
-      Page: [''],
+      DateReport: ['DAY', Validators.required],
+      DateRange: [this.dateReportList.find(f => f.id === 'DAY').range],
+      Page: [[]],
       ProductGroup: { value: '', disabled: true },
     });
     // this.formItem.patchValue({
@@ -186,7 +186,7 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
     },
   };
   dateReportList = [
-    { id: 'DAY', text: 'Phân tích theo tháng', range: [new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), 31, 23,59,59)] },
+    { id: 'DAY', text: 'Phân tích theo tháng', range: [new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), 31, 23, 59, 59)] },
     { id: 'MONTH', text: 'Phân tích theo năm', range: [new Date(new Date().getFullYear(), 0, 1), new Date(new Date().getFullYear(), 11, 31)] },
     { id: 'DAYOFWEEK', text: 'Phân tích theo tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
     { id: 'HOUR', text: 'Phân tích theo giờ', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
@@ -291,17 +291,20 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
 
   async refresh() {
     const reportType = this.commonService.getObjectId(this.formItem.get('DateReport').value);
-    let pages = this.formItem.get('Page').value.map(page => this.commonService.getObjectId(page));
-    pages = pages.join(',');
+    let pages = this.formItem.get('Page').value;
+    if (pages) {
+      pages = pages.map(page => this.commonService.getObjectId(page));
+      pages = pages.join(',');
+    }
     const dateRange = this.formItem.get('DateRange').value;
     const fromDate = dateRange && dateRange[0] && dateRange[0].toISOString() || null;
     const toDate = dateRange && dateRange[1] && dateRange[1].toISOString() || null;
     this.apiService.getPromise<any[]>('/collaborator/statistics', { reportTempNetRevenue: true, page: pages, reportBy: reportType, ge_DateOfOrder: fromDate, le_DateOfOrder: toDate, limit: 'nolimit' }).then(tempNetREvenues => {
       this.apiService.getPromise<any[]>('/collaborator/statistics', { page: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' }).then(rs => {
         this.data = {
-          labels: reportType === 'MONTH' ? tempNetREvenues.map(statistic => statistic['Month'] + '/' + statistic['Year']) 
-            : (reportType === 'DAY' ? tempNetREvenues.map(statistic => statistic['Day'] + '/' + statistic['Month']) 
-            : (reportType === 'HOUR' ? tempNetREvenues.map(statistic => statistic['Hour']) : tempNetREvenues.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
+          labels: reportType === 'MONTH' ? tempNetREvenues.map(statistic => statistic['Month'] + '/' + statistic['Year'])
+            : (reportType === 'DAY' ? tempNetREvenues.map(statistic => statistic['Day'] + '/' + statistic['Month'])
+              : (reportType === 'HOUR' ? tempNetREvenues.map(statistic => statistic['Hour']) : tempNetREvenues.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
           datasets: [
             {
               label: 'Doanh thu tạm tính',
