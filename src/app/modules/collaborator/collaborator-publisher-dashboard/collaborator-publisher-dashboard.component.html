@@ -1,5 +1,5 @@
 <div class="page-deskboard">
-  
+
   <div class="row">
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
@@ -10,7 +10,7 @@
         </div>
         <div class="details">
           <div class="title h5">Trang bán hàng</div>
-          <div class="status paragraph-2">38</div>
+          <div class="status paragraph-2">{{summaryReport?.NumOfPage | number}}</div>
         </div>
       </nb-card>
     </div>
@@ -23,7 +23,7 @@
         </div>
         <div class="details">
           <div class="title h5">Sản phẩm kinh doanh</div>
-          <div class="status paragraph-2">56</div>
+          <div class="status paragraph-2">{{summaryReport?.NumOfProduct | number}}</div>
         </div>
       </nb-card>
     </div>
@@ -36,20 +36,20 @@
         </div>
         <div class="details">
           <div class="title h5">Đơn hàng phát sinh</div>
-          <div class="status paragraph-2">2.304</div>
+          <div class="status paragraph-2">{{summaryReport?.NumOfOrder | number}}</div>
         </div>
       </nb-card>
     </div>
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
-        <div class="icon-container">
+        <div class="icon-container" (click)="this.commonService.router.navigate(['/collaborator/publisher/commission/list'])">
           <div class="icon status-success">
             <i [ngClass]="'nb-lightbulb'"></i>
           </div>
         </div>
         <div class="details">
           <div class="title h5">Hoa hồng</div>
-          <div class="status paragraph-2">{{150756000 | currency:'VND'}}</div>
+          <div class="status paragraph-2">{{summaryReport?.CommissionAmount | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>

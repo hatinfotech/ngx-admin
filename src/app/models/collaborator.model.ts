@@ -57,3 +57,24 @@ export interface CollaboratorOrderDetailModel {
     Currency?: string;
     Unit?: string;
 }
+
+export interface CollaboratorCommissionVoucherModel {
+    [key: string]: any;
+    Id?: string;
+    Code?: string;
+    Page?: string;
+    Publisher?: string;
+    PublisherName?: string;
+    PublisherPhone?: string;
+    PublisherEmail?: string;
+    PublisherAddress?: string;
+    PublisherIdentifiedNumber?: string;
+    Bank?: string;
+    BankName?: string;
+    BankAccount?: string;
+    Amount?: number;
+    Created?: string;
+    CommissionTo?: string;
+    Description?: string;
+    State?: string;
+}

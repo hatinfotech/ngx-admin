@@ -1,3 +1,4 @@
+import { CollaboratorPublisherCommissionListComponent } from './modules/collaborator/publisher-commission/collaborator-publisher-commission-list/collaborator-publisher-commission-list.component';
 import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
 import { CollaboratorOrderListComponent } from './modules/collaborator/order/collaborator-order-list/collaborator-order-list.component';
 import { CollaboratorPublisherReportComponent } from './modules/collaborator/collaborator-publisher-report/collaborator-publisher-report.component';
@@ -912,6 +913,13 @@ const routes: Routes = [
           reuse: true,
         },
       },
+      {
+        path: 'commission/list',
+        component: CollaboratorPublisherCommissionListComponent,
+        data: {
+          reuse: true,
+        },
+      },
     ]
   },
   {
@@ -963,6 +971,13 @@ const routes: Routes = [
       {
         path: 'product/list',
         component: CollaboratorSubscriptionProductComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'commission/list',
+        component: CollaboratorPublisherCommissionListComponent,
         data: {
           reuse: true,
         },

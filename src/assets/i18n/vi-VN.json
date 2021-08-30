@@ -863,6 +863,11 @@
             "title": "{{action}}{{definition}} đơn hàng",
             "dateOforder": "ngày đặt hàng",
             "dateOfDelivery": "ngày giao hàng"
+        },
+        "Commission": {
+            "label": "hoa hồng",
+            "title": "{{action}}{{definition}} phiếu hoa hồng",
+            "commissionTo": "đến ngày"
         }
     },
     "Print": {

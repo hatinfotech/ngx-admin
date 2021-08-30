@@ -274,6 +274,9 @@ import { PublisherCommissionStatisticsComponent } from './modules/collaborator/c
 import { PageCommissionStatisticsComponent } from './modules/collaborator/collaborator-page-dashboard/page-commission-statistics.component';
 import { PageListComponent } from './modules/page/page-list/page-list.component';
 import { PageFormComponent } from './modules/page/page-form/page-form.component';
+import { CollaboratorPublisherCommissionListComponent } from './modules/collaborator/publisher-commission/collaborator-publisher-commission-list/collaborator-publisher-commission-list.component';
+import { CollaboratorPublisherCommissionFormComponent } from './modules/collaborator/publisher-commission/collaborator-publisher-commission-form/collaborator-publisher-commission-form.component';
+import { CollaboratorPublisherCommissionPrintComponent } from './modules/collaborator/publisher-commission/collaborator-publisher-commission-print/collaborator-publisher-commission-print.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -517,6 +520,9 @@ export class DynamicLocaleId extends String {
     PageCommissionStatisticsComponent,
     PageListComponent,
     PageFormComponent,
+    CollaboratorPublisherCommissionListComponent,
+    CollaboratorPublisherCommissionFormComponent,
+    CollaboratorPublisherCommissionPrintComponent,
     
 
   ],
@@ -981,6 +987,17 @@ export class AppModule {
         responseTitle: 'Common.approved',
         restponseText: 'Common.approveSuccess',
       },
+      "NOTJUSTAPPROVE": {
+        state: 'NOTJUSTAPPROVE',
+        label: 'Common.notJustApproved',
+        status: 'danger',
+        outline: false,
+        nextState: 'APPROVE',
+        nextStateLabel: 'Common.approve',
+        confirmText: 'Common.approvedConfirm',
+        responseTitle: 'Common.approved',
+        restponseText: 'Common.approveSuccess',
+      },
       "": {
         state: 'NOTJUSTAPPROVE',
         label: 'Common.notJustApproved',
@@ -1162,6 +1179,63 @@ export class AppModule {
         confirmText: 'Common.activeConfirm',
         responseTitle: 'Common.activated',
         restponseText: 'Common.activeSuccess',
+      },
+    },
+    commissionVoucher: {
+      "APPROVE": {
+        state: 'APPROVE',
+        label: 'Common.approved',
+        status: 'success',
+        outline: false,
+        nextState: 'COMPLETE',
+        nextStateLabel: 'Common.complete',
+        confirmText: 'Common.completeConfirm',
+        responseTitle: 'Common.completed',
+        restponseText: 'Common.completeSuccess',
+      },
+      "COMPLETE": {
+        state: 'COMPLETE',
+        label: 'Common.completed',
+        status: 'success',
+        outline: true,
+        nextState: 'UNBOOKKEEPING',
+        nextStateLabel: 'Common.unbookkeeping',
+        confirmText: 'Common.unbookkeepingConfirm',
+        responseTitle: 'Common.unbookkeeping',
+        restponseText: 'Common.unbookkeepingSuccess',
+      },
+      "UNBOOKKEEPING": {
+        state: 'UNBOOKKEEPING',
+        label: 'Common.unbookkeeped',
+        status: 'warning',
+        outline: true,
+        nextState: 'APPROVE',
+        nextStateLabel: 'Common.approve',
+        confirmText: 'Common.approvedConfirm',
+        responseTitle: 'Common.approved',
+        restponseText: 'Common.approveSuccess',
+      },
+      "NOTJUSTAPPROVE": {
+        state: 'NOTJUSTAPPROVE',
+        label: 'Common.notJustApproved',
+        status: 'danger',
+        outline: false,
+        nextState: 'APPROVE',
+        nextStateLabel: 'Common.approve',
+        confirmText: 'Common.approvedConfirm',
+        responseTitle: 'Common.approved',
+        restponseText: 'Common.approveSuccess',
+      },
+      "": {
+        state: 'NOTJUSTAPPROVE',
+        label: 'Common.notJustApproved',
+        status: 'danger',
+        outline: false,
+        nextState: 'APPROVE',
+        nextStateLabel: 'Common.approve',
+        confirmText: 'Common.approvedConfirm',
+        responseTitle: 'Common.approved',
+        restponseText: 'Common.approveSuccess',
       },
     },
   };

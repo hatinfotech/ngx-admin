@@ -35,6 +35,13 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
   colors: any;
   chartjs: any;
 
+  summaryReport: {
+    NumOfPage?: number,
+    NumOfProduct?: number,
+    NumOfOrder?: number,
+    CommissionAmount?: number,
+  };
+
   constructor(
     private themeService: NbThemeService,
     private solarService: SolarData,
@@ -299,6 +306,10 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
     const dateRange = this.formItem.get('DateRange').value;
     const fromDate = dateRange && dateRange[0] && dateRange[0].toISOString() || null;
     const toDate = dateRange && dateRange[1] && dateRange[1].toISOString() || null;
+    this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'PAGE,PRODUCT,ORDER,COMMISSION', page: pages, reportBy: reportType, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
+      this.summaryReport = summaryReport;
+      console.log(summaryReport);
+    });
     this.apiService.getPromise<any[]>('/collaborator/statistics', { reportTempNetRevenue: true, page: pages, reportBy: reportType, ge_DateOfOrder: fromDate, le_DateOfOrder: toDate, limit: 'nolimit' }).then(tempNetREvenues => {
       this.apiService.getPromise<any[]>('/collaborator/statistics', { page: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' }).then(rs => {
         this.data = {
