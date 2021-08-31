@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CollaboratorPublisherCommissionListComponent } from './collaborator-publisher-commission-list.component';
+import { CollaboratorCommissionListComponent } from './collaborator-commission-list.component';
 
 describe('CollaboratorPublisherCommissionListComponent', () => {
-  let component: CollaboratorPublisherCommissionListComponent;
-  let fixture: ComponentFixture<CollaboratorPublisherCommissionListComponent>;
+  let component: CollaboratorCommissionListComponent;
+  let fixture: ComponentFixture<CollaboratorCommissionListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CollaboratorPublisherCommissionListComponent ]
+      declarations: [ CollaboratorCommissionListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CollaboratorPublisherCommissionListComponent);
+    fixture = TestBed.createComponent(CollaboratorCommissionListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

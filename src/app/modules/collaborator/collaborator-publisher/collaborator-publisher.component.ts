@@ -54,6 +54,11 @@ export class CollaboratorPublisherComponent extends BaseComponent {
         route: '/collaborator/publisher/commission/list',
         // icon: 'pie-chart',
       },
+      {
+        title: this.commonService.translateText('Collaborator.Commission.paymentLabel'),
+        route: '/collaborator/publisher/commission-payment/list',
+        // icon: 'pie-chart',
+      },
     ];
     return super.init();
   }

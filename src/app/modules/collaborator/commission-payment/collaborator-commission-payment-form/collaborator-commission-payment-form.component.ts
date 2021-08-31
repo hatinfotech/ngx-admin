@@ -1,36 +1,32 @@
-import { takeUntil } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { takeUntil } from 'rxjs/operators';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { AccountModel, BusinessModel, CashVoucherDetailModel } from '../../../../models/accounting.model';
+import { AccountModel, BusinessModel } from '../../../../models/accounting.model';
 import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { ContactModel } from '../../../../models/contact.model';
-import { SalesVoucherModel } from '../../../../models/sales.model';
-import { TaxModel } from '../../../../models/tax.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { AccountingOtherBusinessVoucherFormComponent } from '../../../accounting/other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../../../accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
-import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { CollaboratorService } from '../../collaborator.service';
 
 @Component({
-  selector: 'ngx-collaborator-publisher-commission-form',
-  templateUrl: './collaborator-publisher-commission-form.component.html',
-  styleUrls: ['./collaborator-publisher-commission-form.component.scss']
+  selector: 'ngx-collaborator-commission-payment-form',
+  templateUrl: './collaborator-commission-payment-form.component.html',
+  styleUrls: ['./collaborator-commission-payment-form.component.scss']
 })
-export class CollaboratorPublisherCommissionFormComponent extends DataManagerFormComponent<CollaboratorCommissionVoucherModel> implements OnInit {
+export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormComponent<CollaboratorCommissionVoucherModel> implements OnInit {
 
   // Base variables
-  componentName = 'AccountingOtherBusinessVoucherFormComponent';
+  componentName = 'CollaboratorCommissionPaymentFormComponent';
   idKey = 'Code';
   baseFormUrl = '/collaborator/commission-voucher/form';
-  apiPath = '/collaborator/commission-vouchers';
+  apiPath = '/collaborator/commission-payment-vouchers';
 
   // variables
   locale = this.commonService.getCurrentLoaleDataset();
@@ -50,7 +46,7 @@ export class CollaboratorPublisherCommissionFormComponent extends DataManagerFor
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<AccountingOtherBusinessVoucherFormComponent>,
+    public ref: NbDialogRef<CollaboratorCommissionPaymentFormComponent>,
     public collaboratorService: CollaboratorService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);

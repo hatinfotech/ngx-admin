@@ -49,7 +49,7 @@
         </div>
         <div class="details">
           <div class="title h5">Hoa hồng</div>
-          <div class="status paragraph-2">{{summaryReport?.CommissionAmount | currency:'VND'}}</div>
+          <div class="status paragraph-2">{{summaryReport?.CommissionPaymentAmount | currency:'VND'}}/{{(summaryReport?.CommissionAmount + summaryReport?.CommissionPaymentAmount) | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>

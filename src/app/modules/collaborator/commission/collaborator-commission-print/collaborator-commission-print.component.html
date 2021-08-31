@@ -1,0 +1,48 @@
+<div class="dialog-wrap {{inputMode}}" #dialogWrap>
+    <nb-card *ngFor="let data of this.data; let i=index;" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+        <nb-card-header>
+            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Collaborator.Commission.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body class="print-body" #printContent>
+            <div id="print-area">
+                <ngx-print-header></ngx-print-header>
+                <div>
+                    <div class="print-title">{{ 'Collaborator.Commission.title' | translate:{action: '', definition: ''} | uppercase }}
+                    </div>
+                    <div class="under-title">{{ data.Code }} - {{ data.CommissionTo | date:'short' }}</div>
+                </div>
+                <div>
+                    <div class="under-line">{{'Common.publisher' | translate | headtitlecase}} : {{renderValue(data.PublisherName)}}</div>
+                    <div class="under-line">{{'Common.phone' | translate | headtitlecase}} : {{renderValue(data.PublisherPhone)}}</div>
+                    <div class="under-line">{{'Common.email' | translate | headtitlecase}} : {{renderValue(data.PublisherEmail)}}</div>
+                    <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.PublisherAddress)}}</div>
+                    <div class="under-line">{{'Collaborator.Commission.label' | translate | headtitlecase}} : {{data.Amount | currency:'VND'}}</div>
+                </div>
+                <div>
+                    <div class="under-line">{{'Common.description' | translate | headtitlecase}}: {{renderValue(data.Description)}}</div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap">
+                    <div style="text-align: center; flex: 0 0 50%;">
+                        <br> {{'Common.treasurer' | translate | headtitlecase}}
+                        <br><br><br>
+                    </div>
+                    <div style="text-align: center; flex: 0 0 50%;">
+                        <br> {{'Common.payer' | translate | headtitlecase}}
+                        <br><br><br>
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="buttons-row">
+                <button nbButton hero status="warning" (click)="prepareCopy(data);">
+                    <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+                </button>
+                <button nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
+                <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
+                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+                </button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</div>

@@ -1,5 +1,5 @@
 <div class="page-deskboard">
-  
+
   <div class="row">
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
@@ -11,7 +11,7 @@
 
         <div class="details">
           <div class="title h5">Cộng tác viên</div>
-          <div class="status paragraph-2">1.093</div>
+          <div class="status paragraph-2">{{summaryReport?.NumOfPublisher | number}}</div>
         </div>
       </nb-card>
     </div>
@@ -25,7 +25,7 @@
 
         <div class="details">
           <div class="title h5">Sản phẩm kinh doanh</div>
-          <div class="status paragraph-2">52</div>
+          <div class="status paragraph-2">{{summaryReport?.NumOfProduct | number}}</div>
         </div>
       </nb-card>
     </div>
@@ -39,7 +39,7 @@
 
         <div class="details">
           <div class="title h5">Đơn hàng phát sinh</div>
-          <div class="status paragraph-2">1.2450</div>
+          <div class="status paragraph-2">{{summaryReport?.NumOfOrder | number}}</div>
         </div>
       </nb-card>
     </div>
@@ -53,7 +53,7 @@
 
         <div class="details">
           <div class="title h5">Doanh thu</div>
-          <div class="status paragraph-2">{{15450750000 | currency:'VND'}}</div>
+          <div class="status paragraph-2">{{summaryReport?.NetVenueAmount | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>

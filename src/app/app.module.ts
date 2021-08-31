@@ -274,9 +274,12 @@ import { PublisherCommissionStatisticsComponent } from './modules/collaborator/c
 import { PageCommissionStatisticsComponent } from './modules/collaborator/collaborator-page-dashboard/page-commission-statistics.component';
 import { PageListComponent } from './modules/page/page-list/page-list.component';
 import { PageFormComponent } from './modules/page/page-form/page-form.component';
-import { CollaboratorPublisherCommissionListComponent } from './modules/collaborator/publisher-commission/collaborator-publisher-commission-list/collaborator-publisher-commission-list.component';
-import { CollaboratorPublisherCommissionFormComponent } from './modules/collaborator/publisher-commission/collaborator-publisher-commission-form/collaborator-publisher-commission-form.component';
-import { CollaboratorPublisherCommissionPrintComponent } from './modules/collaborator/publisher-commission/collaborator-publisher-commission-print/collaborator-publisher-commission-print.component';
+import { CollaboratorCommissionListComponent } from './modules/collaborator/commission/collaborator-commission-list/collaborator-commission-list.component';
+import { CollaboratorCommissionPrintComponent } from './modules/collaborator/commission/collaborator-commission-print/collaborator-commission-print.component';
+import { CollaboratorCommissionPaymentListComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-list/collaborator-commission-payment-list.component';
+import { CollaboratorCommissionPaymentFormComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-form/collaborator-commission-payment-form.component';
+import { CollaboratorCommissionPaymentPrintComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-print/collaborator-commission-payment-print.component';
+import { CollaboratorCommissionFormComponent } from './modules/collaborator/commission/collaborator-commission-form/collaborator-commission-form.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -520,10 +523,13 @@ export class DynamicLocaleId extends String {
     PageCommissionStatisticsComponent,
     PageListComponent,
     PageFormComponent,
-    CollaboratorPublisherCommissionListComponent,
-    CollaboratorPublisherCommissionFormComponent,
-    CollaboratorPublisherCommissionPrintComponent,
-    
+    CollaboratorCommissionListComponent,
+    CollaboratorCommissionFormComponent,
+    CollaboratorCommissionPrintComponent,
+    CollaboratorCommissionPaymentListComponent,
+    CollaboratorCommissionPaymentFormComponent,
+    CollaboratorCommissionPaymentPrintComponent,
+
 
   ],
   imports: [
@@ -1182,6 +1188,63 @@ export class AppModule {
       },
     },
     commissionVoucher: {
+      "CONFIRMREQUEST": {
+        state: 'CONFIRMREQUEST',
+        label: 'Collaborator.Commission.confirmRequest',
+        status: 'warning',
+        outline: false,
+        nextState: 'CONFIRMED',
+        nextStateLabel: 'Common.confirm',
+        confirmText: 'Common.confirmedConfirm',
+        responseTitle: 'Common.confirm',
+        restponseText: 'Common.confirmedSuccess',
+      },
+      "CONFIRMED": {
+        state: 'CONFIRMREQUEST',
+        label: 'Collaborator.Commission.confirmed',
+        status: 'primary',
+        outline: false,
+        nextState: 'APPROVED',
+        nextStateLabel: 'Common.approve',
+        confirmText: 'Common.approvedConfirm',
+        responseTitle: 'Common.approved',
+        restponseText: 'Common.approved',
+      },
+      "APPROVED": {
+        state: 'APPROVED',
+        label: 'Common.approved',
+        status: 'success',
+        outline: false,
+        nextState: 'NOTJUSTAPPROVE',
+        nextStateLabel: 'Common.unbookkeeping',
+        confirmText: 'Common.unbookkeepingConfirm',
+        responseTitle: 'Common.unbookkeeping',
+        restponseText: 'Common.unbookkeepingSuccess',
+      },
+      "NOTJUSTAPPROVE": {
+        state: 'NOTJUSTAPPROVE',
+        label: 'Common.notJustCofirmedRequest',
+        status: 'danger',
+        outline: false,
+        nextState: 'CONFIRMREQUEST',
+        nextStateLabel: 'Collaborator.Commission.confirmRequest',
+        confirmText: 'Collaborator.Commission.confirmedRequest',
+        responseTitle: 'Collaborator.Commission.confirmed',
+        restponseText: 'Collaborator.Commission.confirmedSuccess',
+      },
+      "": {
+        state: 'NOTJUSTAPPROVE',
+        label: 'Common.notJustCofirmedRequest',
+        status: 'danger',
+        outline: false,
+        nextState: 'CONFIRMREQUEST',
+        nextStateLabel: 'Collaborator.Commission.confirmRequest',
+        confirmText: 'Collaborator.Commission.confirmedRequest',
+        responseTitle: 'Collaborator.Commission.confirmed',
+        restponseText: 'Collaborator.Commission.confirmedSuccess',
+      },
+    },
+    collaboratoOrder: {
       "APPROVE": {
         state: 'APPROVE',
         label: 'Common.approved',

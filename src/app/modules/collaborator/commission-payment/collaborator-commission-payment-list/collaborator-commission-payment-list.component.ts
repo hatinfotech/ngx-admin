@@ -1,4 +1,3 @@
-import { State } from './../../../mobile-app/f7pages/messages.page';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -9,29 +8,28 @@ import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableBut
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { CollaboratorPublisherCommissionFormComponent } from '../collaborator-publisher-commission-form/collaborator-publisher-commission-form.component';
-import { CollaboratorPublisherCommissionPrintComponent } from '../collaborator-publisher-commission-print/collaborator-publisher-commission-print.component';
+import { CollaboratorCommissionPrintComponent } from '../../commission/collaborator-commission-print/collaborator-commission-print.component';
+import { CollaboratorCommissionPaymentFormComponent } from '../collaborator-commission-payment-form/collaborator-commission-payment-form.component';
 
 @Component({
-  selector: 'ngx-collaborator-publisher-commission-list',
-  templateUrl: './collaborator-publisher-commission-list.component.html',
-  styleUrls: ['./collaborator-publisher-commission-list.component.scss']
+  selector: 'ngx-collaborator-commission-payment-list',
+  templateUrl: './collaborator-commission-payment-list.component.html',
+  styleUrls: ['./collaborator-commission-payment-list.component.scss']
 })
-export class CollaboratorPublisherCommissionListComponent extends ServerDataManagerListComponent<CollaboratorCommissionVoucherModel> implements OnInit {
+export class CollaboratorCommissionPaymentListComponent extends ServerDataManagerListComponent<CollaboratorCommissionVoucherModel> implements OnInit {
 
-  componentName: string = 'CollaboratorPublisherCommissionListComponent';
+  componentName: string = 'CollaboratorCommissionPaymentListComponent';
   formPath = '/collaborator/commission-voucher/form';
-  apiPath = '/collaborator/commission-vouchers';
+  apiPath = '/collaborator/commission-payment-vouchers';
   idKey = 'Code';
-  formDialog = CollaboratorPublisherCommissionFormComponent;
+  formDialog = CollaboratorCommissionPaymentFormComponent;
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<CollaboratorPublisherCommissionListComponent>;
+  static _dialog: NbDialogRef<CollaboratorCommissionPaymentListComponent>;
 
   // Smart table
   static filterConfig: any;
@@ -45,7 +43,7 @@ export class CollaboratorPublisherCommissionListComponent extends ServerDataMana
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<CollaboratorPublisherCommissionListComponent>,
+    public ref: NbDialogRef<CollaboratorCommissionPaymentListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -258,7 +256,7 @@ export class CollaboratorPublisherCommissionListComponent extends ServerDataMana
   }
 
   preview(ids: any[]) {
-    this.commonService.openDialog(CollaboratorPublisherCommissionPrintComponent, {
+    this.commonService.openDialog(CollaboratorCommissionPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',

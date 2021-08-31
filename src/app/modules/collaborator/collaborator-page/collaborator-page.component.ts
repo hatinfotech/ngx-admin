@@ -49,11 +49,16 @@ export class CollaboratorPageComponent extends BaseComponent {
         route: '/collaborator/page/order/list',
         // icon: 'pie-chart',
       },
-      // {
-      //   title: this.commonService.translateText('Common.report'),
-      //   route: '/collaborator/page/report',
-      //   // icon: 'pie-chart',
-      // },
+      {
+        title: this.commonService.translateText('Collaborator.Commission.label'),
+        route: '/collaborator/page/commission/list',
+        // icon: 'pie-chart',
+      },
+      {
+        title: this.commonService.translateText('Collaborator.Commission.paymentLabel'),
+        route: '/collaborator/page/commission-payment/list',
+        // icon: 'pie-chart',
+      },
     ];
     return super.init();
   }

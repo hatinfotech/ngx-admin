@@ -340,6 +340,7 @@
         "report": "báo cáo",
         "success": "thành công",
         "danger": "lỗi nguy hiểm",
+        "notJustCofirmedRequest": "chưa yêu cầu xác nhận",
         "info": "thông tin"
     },
     "Contact": {
@@ -865,9 +866,17 @@
             "dateOfDelivery": "ngày giao hàng"
         },
         "Commission": {
-            "label": "hoa hồng",
-            "title": "{{action}}{{definition}} phiếu hoa hồng",
+            "label": "kết chuyển hoa hồng",
+            "paymentLabel": "kết chuyển hoa hồng",
+            "title": "{{action}}{{definition}} kết chuyển hoa hồng",
+            "confirmRequest": "yêu cầu xác nhận",
+            "confirmed": "đã xác nhận",
             "commissionTo": "đến ngày"
+        },
+        "PaymentCommission": {
+            "label": "thanh toán hoa hồng",
+            "paymentLabel": "thanh toán hoa hồng",
+            "title": "{{action}}{{definition}} phiếu thanh toán hoa hồng"
         }
     },
     "Print": {

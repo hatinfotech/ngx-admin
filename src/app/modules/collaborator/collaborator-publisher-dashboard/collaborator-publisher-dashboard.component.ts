@@ -40,6 +40,8 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
     NumOfProduct?: number,
     NumOfOrder?: number,
     CommissionAmount?: number,
+    CommissionPaymentAmount?: number,
+    NetvenueAmount?: number,
   };
 
   constructor(
@@ -306,7 +308,7 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
     const dateRange = this.formItem.get('DateRange').value;
     const fromDate = dateRange && dateRange[0] && dateRange[0].toISOString() || null;
     const toDate = dateRange && dateRange[1] && dateRange[1].toISOString() || null;
-    this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'PAGE,PRODUCT,ORDER,COMMISSION', page: pages, reportBy: reportType, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
+    this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'PAGE,PRODUCT,ORDER,COMMISSION,COMMISSIONPAYMENT', page: pages, reportBy: reportType, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
       this.summaryReport = summaryReport;
       console.log(summaryReport);
     });

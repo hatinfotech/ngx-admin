@@ -197,129 +197,6 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
           width: '20%',
         },
-        // Task: {
-        //   title: 'Task',
-        //   type: 'custom',
-        //   width: '10%',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'message-circle';
-        //     // instance.label = this.commonService.translateText('Common.copy');
-        //     instance.display = true;
-        //     instance.status = 'info';
-        //     instance.valueChange.subscribe(value => {
-        //       // if (value) {
-        //       //   instance.disabled = false;
-        //       // } else {
-        //       //   instance.disabled = true;
-        //       // }
-        //     });
-
-        //     // instance.valueChange.subscribe(rowData => {
-
-        //     //   if (instance.rowData?.Code === 'PBG09721100') {
-        //     //     setInterval(() => {
-        //     //       console.log(instance.disabled);
-        //     //       // this.disabled = !this.disabled;
-        //     //     }, 1000);
-        //     //   }
-        //     // });
-
-
-        //     instance.click.subscribe(async (row: CollaboratorOrderModel) => {
-
-        //       this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
-        //         const priceReport = rs[0];
-        //         if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
-        //           this.commonService.openMobileSidebar();
-        //           this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
-        //         } else {
-        //           this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
-        //             {
-        //               label: this.commonService.translateText('Common.goback'),
-        //               status: 'danger',
-        //               icon: 'arrow-ios-back',
-        //             },
-        //             {
-        //               label: this.commonService.translateText('Common.create'),
-        //               status: 'success',
-        //               icon: 'message-circle-outline',
-        //               action: () => {
-        //                 this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
-        //                   if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-        //                     this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
-        //                       this.commonService.translateText('Common.notification'), {
-        //                       status: 'success',
-        //                     });
-        //                   this.commonService.openMobileSidebar();
-        //                   this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
-        //                 });
-        //               }
-        //             },
-        //           ]);
-        //         }
-
-        //       }).catch(err => {
-        //         return Promise.reject(err);
-        //       });
-
-        //       // this.commonService.openDialog(SalesPriceReportFormComponent, {
-        //       //   context: {
-        //       //     inputMode: 'dialog',
-        //       //     inputId: [row.Code],
-        //       //     isDuplicate: true,
-        //       //     onDialogSave: (newData: CollaboratorOrderModel[]) => {
-        //       //       // if (onDialogSave) onDialogSave(row);
-        //       //     },
-        //       //     onDialogClose: () => {
-        //       //       // if (onDialogClose) onDialogClose();
-        //       //       this.refresh();
-        //       //     },
-        //       //   },
-        //       // });
-
-        //     });
-        //   },
-        // },
-        // Copy: {
-        //   title: 'Copy',
-        //   type: 'custom',
-        //   width: '10%',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'copy';
-        //     // instance.label = this.commonService.translateText('Common.copy');
-        //     instance.display = true;
-        //     instance.status = 'warning';
-        //     instance.valueChange.subscribe(value => {
-        //       // if (value) {
-        //       //   instance.disabled = false;
-        //       // } else {
-        //       //   instance.disabled = true;
-        //       // }
-        //     });
-        //     instance.click.subscribe(async (row: CollaboratorOrderModel) => {
-
-        //       this.commonService.openDialog(SalesPriceReportFormComponent, {
-        //         context: {
-        //           inputMode: 'dialog',
-        //           inputId: [row.Code],
-        //           isDuplicate: true,
-        //           onDialogSave: (newData: CollaboratorOrderModel[]) => {
-        //             // if (onDialogSave) onDialogSave(row);
-        //           },
-        //           onDialogClose: () => {
-        //             // if (onDialogClose) onDialogClose();
-        //             this.refresh();
-        //           },
-        //         },
-        //       });
-
-        //     });
-        //   },
-        // },
         State: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',
@@ -336,7 +213,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.priceReport[value || ''];
+              const processMap = AppModule.processMaps.collaboratoOrder[value || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap.outline;
@@ -352,44 +229,6 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             });
           },
         },
-        // Permission: {
-        //   title: this.commonService.translateText('Common.permission'),
-        //   type: 'custom',
-        //   width: '5%',
-        //   class: 'align-right',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'shield';
-        //     instance.display = true;
-        //     instance.status = 'danger';
-        //     instance.style = 'text-align: right';
-        //     instance.class = 'align-right';
-        //     instance.title = this.commonService.translateText('Common.preview');
-        //     instance.valueChange.subscribe(value => {
-        //       // instance.icon = value ? 'unlock' : 'lock';
-        //       // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-        //       // instance.disabled = value !== 'REQUEST';
-        //     });
-        //     instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorOrderModel) => {
-
-        //       this.commonService.openDialog(ResourcePermissionEditComponent, {
-        //         context: {
-        //           inputMode: 'dialog',
-        //           inputId: [rowData.Code],
-        //           note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-        //           resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
-        //           // resrouce: rowData,
-        //           apiPath: '/sales/price-reports',
-        //         }
-        //       });
-
-        //       // this.getFormData([rowData.Code]).then(rs => {
-        //       //   this.preview(rs);
-        //       // });
-        //     });
-        //   },
-        // },
         Preview: {
           title: this.commonService.translateText('Common.show'),
           type: 'custom',

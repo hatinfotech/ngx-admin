@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CollaboratorPublisherCommissionFormComponent } from './collaborator-publisher-commission-form.component';
+import { CollaboratorCommissionFormComponent } from './collaborator-commission-form.component';
 
 describe('CollaboratorPublisherCommissionFormComponent', () => {
-  let component: CollaboratorPublisherCommissionFormComponent;
-  let fixture: ComponentFixture<CollaboratorPublisherCommissionFormComponent>;
+  let component: CollaboratorCommissionFormComponent;
+  let fixture: ComponentFixture<CollaboratorCommissionFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CollaboratorPublisherCommissionFormComponent ]
+      declarations: [ CollaboratorCommissionFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CollaboratorPublisherCommissionFormComponent);
+    fixture = TestBed.createComponent(CollaboratorCommissionFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

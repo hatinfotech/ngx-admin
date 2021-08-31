@@ -67,7 +67,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
           data['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
-      this.processMapList[i] = AppModule.processMaps.priceReport[data.State || ''];
+      this.processMapList[i] = AppModule.processMaps.collaboratoOrder[data.State || ''];
     }
     return result;
   }

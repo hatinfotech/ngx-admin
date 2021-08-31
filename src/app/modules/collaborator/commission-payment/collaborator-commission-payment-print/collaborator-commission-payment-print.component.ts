@@ -12,16 +12,16 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 
 @Component({
-  selector: 'ngx-collaborator-publisher-commission-print',
-  templateUrl: './collaborator-publisher-commission-print.component.html',
-  styleUrls: ['./collaborator-publisher-commission-print.component.scss']
+  selector: 'ngx-collaborator-commission-payment-print',
+  templateUrl: './collaborator-commission-payment-print.component.html',
+  styleUrls: ['./collaborator-commission-payment-print.component.scss']
 })
-export class CollaboratorPublisherCommissionPrintComponent extends DataManagerPrintComponent<CollaboratorCommissionVoucherModel> implements OnInit {
+export class CollaboratorCommissionPaymentPrintComponent extends DataManagerPrintComponent<CollaboratorCommissionVoucherModel> implements OnInit {
 
   /** Component name */
-  componentName = 'CollaboratorPublisherCommissionPrintComponent';
+  componentName = 'CollaboratorCommissionPaymentPrintComponent';
   title: string = 'Xem trước chứng từ kế toán';
-  apiPath = '/collaborator/commission-vouchers';
+  apiPath = '/collaborator/commission-payment-vouchers';
   env = environment;
   processMapList: ProcessMap[] = [];
 
@@ -29,7 +29,7 @@ export class CollaboratorPublisherCommissionPrintComponent extends DataManagerPr
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<CollaboratorPublisherCommissionPrintComponent>,
+    public ref: NbDialogRef<CollaboratorCommissionPaymentPrintComponent>,
     private datePipe: DatePipe,
   ) {
     super(commonService, router, apiService, ref);

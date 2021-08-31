@@ -1,4 +1,4 @@
-import { CollaboratorPublisherCommissionListComponent } from './modules/collaborator/publisher-commission/collaborator-publisher-commission-list/collaborator-publisher-commission-list.component';
+import { CollaboratorCommissionListComponent } from './modules/collaborator/commission/collaborator-commission-list/collaborator-commission-list.component';
 import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
 import { CollaboratorOrderListComponent } from './modules/collaborator/order/collaborator-order-list/collaborator-order-list.component';
 import { CollaboratorPublisherReportComponent } from './modules/collaborator/collaborator-publisher-report/collaborator-publisher-report.component';
@@ -97,6 +97,7 @@ import { CollaboratorPublisherDashboardComponent } from './modules/collaborator/
 import { CollaboratorSubscriptionPageListComponent } from './modules/collaborator/page/collaborator-subscription-page-list/collaborator-subscription-page-list.component';
 import { PageFormComponent } from './modules/page/page-form/page-form.component';
 import { PageListComponent } from './modules/page/page-list/page-list.component';
+import { CollaboratorCommissionPaymentListComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-list/collaborator-commission-payment-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -914,8 +915,15 @@ const routes: Routes = [
         },
       },
       {
+        path: 'commission-payment/list',
+        component: CollaboratorCommissionPaymentListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
         path: 'commission/list',
-        component: CollaboratorPublisherCommissionListComponent,
+        component: CollaboratorCommissionListComponent,
         data: {
           reuse: true,
         },
@@ -976,8 +984,15 @@ const routes: Routes = [
         },
       },
       {
+        path: 'commission-payment/list',
+        component: CollaboratorCommissionPaymentListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
         path: 'commission/list',
-        component: CollaboratorPublisherCommissionListComponent,
+        component: CollaboratorCommissionListComponent,
         data: {
           reuse: true,
         },
