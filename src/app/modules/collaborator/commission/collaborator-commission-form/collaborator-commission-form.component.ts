@@ -18,6 +18,7 @@ import { AccountingOtherBusinessVoucherFormComponent } from '../../../accounting
 import { AccountingOtherBusinessVoucherPrintComponent } from '../../../accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { CollaboratorService } from '../../collaborator.service';
+import { CollaboartorCommissionDetailComponent } from './collaboartor-commission-detail/collaboartor-commission-detail.component';
 
 @Component({
   selector: 'ngx-collaborator-commission-form',
@@ -130,6 +131,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
+        // this.onAddFormGroup(index, newForm, itemFormData);
       }
     });
 
@@ -187,49 +189,55 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       PublisherBankName: [''],
       PublisherBankAccount: [''],
       Amount: ['', Validators.required],
-      CommissionTo: [new Date(), Validators.required],
+      CommissionRange: [[new Date(), new Date()], Validators.required],
       Description: [`Kết chuyển hoa hồng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
     });
     if (data) {
       this.prepareRestrictedData(newForm, data);
       newForm.patchValue(data);
     }
-    newForm.get('CommissionTo').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
 
-      const publisherEle = newForm.get('Publisher');
-      const publisher = this.commonService.getObjectId(publisherEle.value);
-      const publisherName = newForm.get('PublisherName').value;
-      if (!this.isProcessing && publisher) {
-        const page = this.commonService.getObjectId(newForm.get('Page').value);
-        const amountEle = newForm.get('Amount');
-        const descriptionEle = newForm.get('Description');
-        this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: value && value.toISOString(), limit: 'nolimit' }).then(summaryReport => {
-          console.log(summaryReport);
-          amountEle.setValue(summaryReport?.CommissionAmount);
-          descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${value && value.toLocaleDateString()} cho ${publisherName}`);
-        });
-      }
-    });
-    newForm.get('Publisher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
-      const commissionTo = newForm.get('CommissionTo').value;
-      // const publisherEle = newForm.get('Publisher');
-      publisher = this.commonService.getObjectId(publisher);
-      const publisherName = newForm.get('PublisherName').value;
-      if (!this.isProcessing && publisher) {
-        const page = this.commonService.getObjectId(newForm.get('Page').value);
-        const amountEle = newForm.get('Amount');
-        const descriptionEle = newForm.get('Description');
-        this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: commissionTo && commissionTo.toISOString(), limit: 'nolimit' }).then(summaryReport => {
-          console.log(summaryReport);
-          amountEle.setValue(summaryReport?.CommissionAmount);
-          descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionTo && commissionTo.toLocaleDateString()} cho ${publisherName}`);
-        });
-      }
-    });
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: CollaboratorCommissionVoucherModel): void {
     super.onAddFormGroup(index, newForm, formData);
+    setTimeout(() => {
+      newForm.get('CommissionRange').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(commissionRange => {
+        console.log(commissionRange);
+        const publisherEle = newForm.get('Publisher');
+        const publisher = this.commonService.getObjectId(publisherEle.value);
+        const publisherName = newForm.get('PublisherName').value;
+        if (!this.isProcessing && publisher) {
+          const page = this.commonService.getObjectId(newForm.get('Page').value);
+          const amountEle = newForm.get('Amount');
+          const descriptionEle = newForm.get('Description');
+          this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: commissionRange && commissionRange[1] && commissionRange[1].toISOString && commissionRange[1].toISOString(), limit: 'nolimit' }).then(summaryReport => {
+            console.log(summaryReport);
+            amountEle.setValue(summaryReport?.CommissionAmount);
+            descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()}`);
+          });
+          setTimeout(() => {
+            newForm['listInstance'] && newForm['listInstance'].refresh();
+          }, 500);
+        }
+      });
+      newForm.get('Publisher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
+        const commissionRange = newForm.get('CommissionRange').value;
+        // const publisherEle = newForm.get('Publisher');
+        publisher = this.commonService.getObjectId(publisher);
+        const publisherName = newForm.get('PublisherName').value;
+        if (!this.isProcessing && publisher) {
+          const page = this.commonService.getObjectId(newForm.get('Page').value);
+          const amountEle = newForm.get('Amount');
+          const descriptionEle = newForm.get('Description');
+          this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: commissionRange && commissionRange[1] && commissionRange[1].toISOString && commissionRange[1].toISOString(), limit: 'nolimit' }).then(summaryReport => {
+            console.log(summaryReport);
+            amountEle.setValue(summaryReport?.CommissionAmount);
+            descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()} cho ${publisherName}`);
+          });
+        }
+      });
+    }, 3000);
     // this.resourceList.push([]);
   }
   onRemoveFormGroup(index: number): void {
@@ -293,6 +301,10 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
         }
       }
     }
+
+    setTimeout(() => {
+      formGroup['listInstance'] && formGroup['listInstance'].refresh();
+    }, 500);
   }
 
   onChangeCurrency(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
@@ -366,6 +378,11 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     const relationVoucher = formGroup.get('RelativeVouchers');
     relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
     return false;
+  }
+
+  onListInit(listInstance: CollaboartorCommissionDetailComponent, formGroup: FormGroup) {
+    console.log(listInstance);
+    formGroup['listInstance'] = listInstance;
   }
 
 }

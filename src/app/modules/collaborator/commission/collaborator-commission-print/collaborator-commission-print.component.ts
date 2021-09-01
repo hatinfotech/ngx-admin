@@ -20,7 +20,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
 
   /** Component name */
   componentName = 'CollaboratorPublisherCommissionPrintComponent';
-  title: string = 'Xem trước chứng từ kế toán';
+  title: string = 'Xem trước phiếu hoa hồng';
   apiPath = '/collaborator/commission-vouchers';
   env = environment;
   processMapList: ProcessMap[] = [];
@@ -47,9 +47,9 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     for (const i in this.data) {
       const data = this.data[i];
       data['Title'] = this.renderTitle(data);
-      // for (const detail of data.Details) {
-      //   data['Total'] += parseFloat(detail['Amount'] as any);
-      // }
+      for (const detail of data.Details) {
+        data['Total'] += parseFloat(detail['Amount'] as any);
+      }
       this.processMapList[i] = AppModule.processMaps.commissionVoucher[data.State || ''];
     }
 
@@ -57,7 +57,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
   }
 
   renderTitle(data: CollaboratorCommissionVoucherModel) {
-    return `Nghiep_Vu_Khac_${this.getIdentified(data).join('-')}` + (data.DateOfVoucher ? ('_' + this.datePipe.transform(data.DateOfVoucher, 'short')) : '');
+    return `Phieu_Hoa_Hong_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
   }
 
   close() {
@@ -106,7 +106,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     // return this.data.Code;
     return '';
   }
-  
+
   approvedConfirm(data: CollaboratorCommissionVoucherModel) {
     // if (['COMPLETE'].indexOf(data.State) > -1) {
     //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
@@ -123,6 +123,20 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     const params = { id: [data.Code] };
     const processMap = AppModule.processMaps.commissionVoucher[data.State || ''];
     params['changeState'] = processMap?.nextState;
+    // let confirmText = '';
+    // let responseText = '';
+    // switch (data.State) {
+    //   case 'APPROVE':
+    //     params['changeState'] = 'COMPLETE';
+    //     confirmText = 'Common.completeConfirm';
+    //     responseText = 'Common.completeSuccess';
+    //     break;
+    //   default:
+    //     params['changeState'] = 'APPROVE';
+    //     confirmText = 'Common.approvedConfirm';
+    //     responseText = 'Common.approvedSuccess';
+    //     break;
+    // }
 
     this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
       {
@@ -133,7 +147,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
         },
       },
       {
-        label: this.commonService.translateText(processMap.nextStateLabel),
+        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -145,6 +159,14 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
             this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
               status: 'success',
             });
+            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            //   {
+            //     label: this.commonService.translateText('Common.close'),
+            //     status: 'success',
+            //     action: () => {
+            //     },
+            //   },
+            // ]);
           }).catch(err => {
             this.loading = false;
           });
@@ -154,7 +176,8 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: ids, includeContact: true });
+    return this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
+
 
 }

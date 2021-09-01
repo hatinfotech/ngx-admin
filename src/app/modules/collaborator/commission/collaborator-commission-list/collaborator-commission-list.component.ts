@@ -16,6 +16,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorCommissionFormComponent } from '../collaborator-commission-form/collaborator-commission-form.component';
 import { CollaboratorCommissionPrintComponent } from '../collaborator-commission-print/collaborator-commission-print.component';
+import { CollaboartorCommissionDetailComponent } from '../collaborator-commission-form/collaboartor-commission-detail/collaboartor-commission-detail.component';
 
 @Component({
   selector: 'ngx-collaborator-commission-list',
@@ -58,6 +59,13 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
         addButton.label = 'Kết chuyển hoa hồng';
         addButton.icon = 'flash-outline';
         addButton.status = 'primary';
+        // addButton.click = () => {
+        //   this.commonService.openDialog(CollaboartorCommissionDetailComponent, {
+        //     context: {
+
+        //     }
+        //   })
+        // };
       }
       return rs;
     });

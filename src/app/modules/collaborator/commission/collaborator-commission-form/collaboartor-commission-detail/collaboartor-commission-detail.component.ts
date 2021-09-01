@@ -1,27 +1,26 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { AccountModel } from '../../../../models/accounting.model';
-import { ApiService } from '../../../../services/api.service';
-import { CommonService } from '../../../../services/common.service';
-import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
+import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
+import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
+import { AccountModel } from '../../../../../models/accounting.model';
+import { ApiService } from '../../../../../services/api.service';
+import { CommonService } from '../../../../../services/common.service';
 
 @Component({
-  selector: 'ngx-accoungting-detail-by-object-report',
-  templateUrl: './accoungting-detail-by-object-report.component.html',
-  styleUrls: ['./accoungting-detail-by-object-report.component.scss']
+  selector: 'ngx-collaboartor-commission-detail',
+  templateUrl: './collaboartor-commission-detail.component.html',
+  styleUrls: ['./collaboartor-commission-detail.component.scss']
 })
-export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
+export class CollaboartorCommissionDetailComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'AccoungtingDetailByObjectReportComponent';
+  componentName: string = 'CollaboartorCommissionDetailComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
   idKey = 'Code';
-  formDialog = AccAccountFormComponent;
+  // formDialog = AccAccountFormComponent;
 
   reuseDialog = true;
 
@@ -33,11 +32,12 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
   totalBalance: { Debit: number, Credit: number } = null;
   tabs: any[];
 
-  @Input() object?: string;
-  @Input() accounts?: string[];
-  @Input() fromDate?: Date;
-  @Input() toDate?: Date;
-  @Input() report?: string;
+  @Input('employee') employee?: string;
+  @Input('accounts') accounts?: string[];
+  @Input('fromDate') fromDate?: Date;
+  @Input('toDate') toDate?: Date;
+  @Input('report') report?: string;
+  @Output() onInit = new EventEmitter<CollaboartorCommissionDetailComponent>();
 
   constructor(
     public apiService: ApiService,
@@ -46,7 +46,7 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccoungtingDetailByObjectReportComponent>,
+    public ref: NbDialogRef<CollaboartorCommissionDetailComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -86,6 +86,7 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
     return super.init().then(rs => {
       // this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
+      this.onInit.emit(this);
       return rs;
     });
   }
@@ -107,11 +108,11 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
           type: 'string',
           width: '10%',
         },
-        ObjectName: {
-          title: this.commonService.translateText('Common.contactName'),
-          type: 'string',
-          width: '15%',
-        },
+        // ObjectName: {
+        //   title: this.commonService.translateText('Common.contactName'),
+        //   type: 'string',
+        //   width: '15%',
+        // },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
@@ -208,8 +209,9 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
 
-      if (this.object) {
-        params['eq_Object'] = this.object;
+      if (this.employee) {
+        // params['eq_Object'] = this.object;
+        params['eq_Employee'] = this.employee;
       }
       if (this.accounts) {
         params['eq_Account'] = this.accounts.join(',');
@@ -220,6 +222,12 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
         params['reportDetailByObject'] = true;
       }
       params['includeIncrementAmount'] = true;
+      if (this.fromDate) {
+        params['fromDate'] = new Date(this.fromDate).toISOString();
+      }
+      if (this.toDate) {
+        params['toDate'] = new Date(this.toDate).toISOString();
+      }
 
       return params;
     };
@@ -229,9 +237,9 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
 
   /** Api get funciton */
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
-    if (this.object) {
-      params['eq_Object'] = this.object;
-    }
+    // if (this.object) {
+    //   params['eq_Object'] = this.object;
+    // }
     if (this.accounts) {
       params['eq_Account'] = this.accounts.join(',');
     }

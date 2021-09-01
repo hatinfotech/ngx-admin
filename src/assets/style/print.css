@@ -47,7 +47,7 @@
 }
 
 .print-voucher-detail-table tr td {
-    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     vertical-align: top;
 }
 
@@ -57,6 +57,9 @@
 
 #print-area .text-align-right {
     text-align: right;
+}
+#print-area .text-align-left {
+    text-align: left;
 }
 
 #print-area .print-voucher-detail-line {

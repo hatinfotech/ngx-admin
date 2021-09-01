@@ -74,6 +74,7 @@ export interface CollaboratorCommissionVoucherModel {
     BankAccount?: string;
     Amount?: number;
     Created?: string;
+    CommissionFrom?: string;
     CommissionTo?: string;
     Description?: string;
     State?: string;

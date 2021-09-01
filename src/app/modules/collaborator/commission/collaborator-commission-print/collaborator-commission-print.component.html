@@ -12,11 +12,47 @@
                     <div class="under-title">{{ data.Code }} - {{ data.CommissionTo | date:'short' }}</div>
                 </div>
                 <div>
-                    <div class="under-line">{{'Common.publisher' | translate | headtitlecase}} : {{renderValue(data.PublisherName)}}</div>
-                    <div class="under-line">{{'Common.phone' | translate | headtitlecase}} : {{renderValue(data.PublisherPhone)}}</div>
-                    <div class="under-line">{{'Common.email' | translate | headtitlecase}} : {{renderValue(data.PublisherEmail)}}</div>
-                    <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.PublisherAddress)}}</div>
-                    <div class="under-line">{{'Collaborator.Commission.label' | translate | headtitlecase}} : {{data.Amount | currency:'VND'}}</div>
+                    <div class="under-line">{{'Common.contact' | translate | headtitlecase}} : {{renderValue(data.PublisherName)}}</div>
+                    <!-- <div class="under-line">{{'Common.amount' | translate | headtitlecase}} : {{renderValue(data.Amount)}}</div> -->
+                </div>
+                <div>
+                    <div>
+                        <table style="width: 100%;" class="print-voucher-detail-table">
+                            <colgroup>
+                                <!--STT-->
+                                <col span="1" style="width: 1cm;">
+                                <!--Phieu-->
+                                <col span="1" style="width: 2cm;">
+                                <!--Ngay-->
+                                <col span="1" style="width: 4cm;">
+                                <!--Dien giai-->
+                                <col span="1" style="width: 12cm;">
+                                <!--Thanh tien-->
+                                <col span="1" style="width: 2cm; text-align: right;">
+                            </colgroup>
+                            <tr class="print-voucher-detail-header">
+                                <th class="text-align-left">{{'Common.noNumber' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Common.voucher' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Common.date' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Common.description' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Common.numOfMoney' | translate | headtitlecase}}</th>
+                            </tr>
+                            <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
+                                <td class="text-align-left">{{i + 1}}</td>
+                                <td class="text-align-left"><a class="link" (click)="this.commonService.previewVoucher('CLBRTORDER', detail.Voucher)">{{renderValue(detail.Voucher)}}</a></td>
+                                <td class="text-align-left">{{renderValue(detail.VoucherDate | date:'short')}}</td>
+                                <td class="text-align-left">{{renderValue(detail.Description)}}</td>
+                                <td class="text-align-right">{{(detail.HeadCredit - detail.HeadDebit + detail.GenerateCredit - detail.GenerateDebit) | currency:'VND'}}</td>
+                            </tr>
+                            <tr style="font-weight: bold;">
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{data.Amount | currency:'VND'}}</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
                 <div>
                     <div class="under-line">{{'Common.description' | translate | headtitlecase}}: {{renderValue(data.Description)}}</div>
@@ -34,6 +70,16 @@
             </div>
         </nb-card-body>
         <nb-card-footer>
+            <!-- <div class="buttons-row">
+                <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
+                    <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                </button>
+                <button nbButton hero status="danger" (click)="saveAndClose();">
+                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+                </button>
+                <button nbButton hero status="warning" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
+                <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button>
+            </div> -->
             <div class="buttons-row">
                 <button nbButton hero status="warning" (click)="prepareCopy(data);">
                     <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}

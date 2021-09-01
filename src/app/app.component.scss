@@ -126,6 +126,20 @@ a.tag {
   }
 }
 
+.nb-theme-dark,
+.nb-theme-cosmic,
+.nb-theme-default,
+.nb-theme-corporate {
+  .link {
+    color: #274bdb !important;
+    cursor: pointer;
+    &:hover {
+      color: #274bdb !important;
+      text-decoration: underline !important;
+    }
+  }
+}
+
 hr {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -1190,14 +1204,13 @@ body .form-group[state="warning"] textarea:focus {
 // }
 
 .form-group .float-icon-area {
-  
   // z-index: 1;
   // right: -14px;
   // top: -14px;
   // right: 0;
   // top: -7px;
   color: #7d7d7da6;
-  
+
   nb-icon {
     cursor: pointer;
   }

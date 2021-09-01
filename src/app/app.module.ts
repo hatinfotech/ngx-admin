@@ -280,6 +280,7 @@ import { CollaboratorCommissionPaymentListComponent } from './modules/collaborat
 import { CollaboratorCommissionPaymentFormComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-form/collaborator-commission-payment-form.component';
 import { CollaboratorCommissionPaymentPrintComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-print/collaborator-commission-payment-print.component';
 import { CollaboratorCommissionFormComponent } from './modules/collaborator/commission/collaborator-commission-form/collaborator-commission-form.component';
+import { CollaboartorCommissionDetailComponent } from './modules/collaborator/commission/collaborator-commission-form/collaboartor-commission-detail/collaboartor-commission-detail.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -529,6 +530,7 @@ export class DynamicLocaleId extends String {
     CollaboratorCommissionPaymentListComponent,
     CollaboratorCommissionPaymentFormComponent,
     CollaboratorCommissionPaymentPrintComponent,
+    CollaboartorCommissionDetailComponent,
 
 
   ],

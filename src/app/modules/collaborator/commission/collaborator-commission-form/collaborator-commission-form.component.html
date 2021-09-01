@@ -11,7 +11,7 @@
                             <input type="hidden" formControlName="Code">
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="Publisher" label="Collaborator.Publisher.label" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <ngx-select2 formControlName="Publisher" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                    <ngx-select2 #publisher formControlName="Publisher" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
@@ -50,9 +50,9 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="CommissionTo" label="Common.toDate" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                                    <input type="text" [owlDateTime]="DateOfVoucher" [owlDateTimeTrigger]="DateOfVoucher" nbInput fullWidth formControlName="CommissionTo" placeholder="{{'Common.toDate' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfVoucher></owl-date-time>
+                                <ngx-form-group [formGroup]="formItem" name="CommissionRange" label="Common.date" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" #_commissionRange [owlDateTime]="CommissionRange" [owlDateTimeTrigger]="CommissionRange" [selectMode]="'range'" nbInput fullWidth formControlName="CommissionRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
+                                    <owl-date-time #CommissionRange  [pickerType]="'calendar'"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
@@ -61,6 +61,7 @@
                                 </ngx-form-group>
                             </div>
                         </div>
+                        <ngx-collaboartor-commission-detail (onInit)="onListInit($event, formItem)" [employee]="this.commonService.getObjectId(publisher.value)" [accounts]="['3349']" [fromDate]="(formItem.get('CommissionRange').value || [null, null])[0]" [toDate]="(formItem.get('CommissionRange').value || [null, null])[1]" [report]="'reportDetailByAccountAndObject'"></ngx-collaboartor-commission-detail>
                     </div>
                 </nb-card-body>
                 <nb-card-footer>
