@@ -1,11 +1,11 @@
 import { State } from '../../../mobile-app/f7pages/messages.page';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -38,6 +38,8 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
   static filterConfig: any;
   static sortConf: any;
   static pagingConf = { page: 1, perPage: 40 };
+
+  @Input('filter') filter: any;
 
   constructor(
     public apiService: ApiService,
@@ -95,7 +97,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
         PublisherName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
-          width: '20%',
+          width: '15%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Description: {
@@ -104,15 +106,15 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
           width: '20%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        // RelativeVouchers: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        //   type: 'custom',
-        //   renderComponent: SmartTableTagsComponent,
-        //   onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-        //     instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-        //   },
-        //   width: '20%',
-        // },
+        RelativeVouchers: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+          },
+          width: '10%',
+        },
         Code: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
           type: 'string',
@@ -234,9 +236,14 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       // params['includeParent'] = true;
-      // params['includeRelativeVouchers'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Created'] = 'desc';
       // params['eq_Type'] = 'RECEIPT';
+      if (this.filter) {
+        for (const key in this.filter) {
+          params[key] = this.filter[key];
+        }
+      }
       return params;
     };
 

@@ -81,7 +81,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   // }
 
   select2OptionForContact = {
-    placeholder: 'Chọn liên hệ...',
+    placeholder: 'Chọn cộng tác viên...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,

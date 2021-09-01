@@ -4,23 +4,26 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { CashVoucherModel } from '../../../../models/accounting.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { CollaboratorCommissionPrintComponent } from '../../commission/collaborator-commission-print/collaborator-commission-print.component';
+import { CashPaymentVoucherListComponent } from '../../../accounting/cash/payment/cash-payment-voucher-list/cash-payment-voucher-list.component';
+import { CashPaymentVoucherPrintComponent } from '../../../accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
 import { CollaboratorCommissionPaymentFormComponent } from '../collaborator-commission-payment-form/collaborator-commission-payment-form.component';
+import { CollaboratorCommissionPaymentPrintComponent } from '../collaborator-commission-payment-print/collaborator-commission-payment-print.component';
 
 @Component({
   selector: 'ngx-collaborator-commission-payment-list',
   templateUrl: './collaborator-commission-payment-list.component.html',
   styleUrls: ['./collaborator-commission-payment-list.component.scss']
 })
-export class CollaboratorCommissionPaymentListComponent extends ServerDataManagerListComponent<CollaboratorCommissionVoucherModel> implements OnInit {
+export class CollaboratorCommissionPaymentListComponent extends ServerDataManagerListComponent<CashVoucherModel> implements OnInit {
 
   componentName: string = 'CollaboratorCommissionPaymentListComponent';
   formPath = '/collaborator/commission-voucher/form';
@@ -43,21 +46,19 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<CollaboratorCommissionPaymentListComponent>,
+    public ref: NbDialogRef<CashPaymentVoucherListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
 
+  // async loadCache() {
+  //   // iniit category
+  //   // this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+  // }
+
   async init() {
     // await this.loadCache();
-    return super.init().then(rs => {
-      const addButton = this.actionButtonList.find(f => f.name === 'add');
-      if (addButton) {
-        addButton.label = 'Yêu cầu thanh toán';
-        addButton.icon = 'flash-outline';
-      }
-      return rs;
-    });
+    return super.init();
   }
 
   editing = {};
@@ -90,18 +91,18 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
         Description: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
           type: 'string',
-          width: '20%',
+          width: '25%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        // RelativeVouchers: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        //   type: 'custom',
-        //   renderComponent: SmartTableTagsComponent,
-        //   onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-        //     instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-        //   },
-        //   width: '20%',
-        // },
+        RelativeVouchers: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+          },
+          width: '20%',
+        },
         Code: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
           type: 'string',
@@ -109,19 +110,6 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
         },
         Created: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
-          type: 'custom',
-          width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
-        },
-        DateOfVoucher: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Commission.commissionTo'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -156,18 +144,57 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
             instance.icon = 'checkmark-circle';
             instance.display = true;
             instance.status = 'success';
-            instance.disabled = true || this.isChoosedMode;
+            instance.disabled = this.isChoosedMode;
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
-            instance.init.subscribe(commissionVoucher => {
-              const processMap = AppModule.processMaps.commissionVoucher[commissionVoucher.State || ''];
+            instance.valueChange.subscribe(value => {
+              const processMap = AppModule.processMaps.commissionPaymentVoucher[value || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
-              // this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-              this.preview([rowData['Code']]);
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+              this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+                this.preview(rs);
+              });
+            });
+          },
+        },
+        Permission: {
+          title: this.commonService.translateText('Common.permission'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          exclude: this.isChoosedMode,
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'shield';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+
+              this.commonService.openDialog(ResourcePermissionEditComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [rowData.Code],
+                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                  resourceName: this.commonService.translateText('Purchase.PurchaseVoucher  .title', { action: '', definition: '' }) + ` ${rowData.Description || ''}`,
+                  // resrouce: rowData,
+                  apiPath: this.apiPath,
+                }
+              });
+
+              // this.getFormData([rowData.Code]).then(rs => {
+              //   this.preview(rs);
               // });
             });
           },
@@ -191,13 +218,63 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
               this.getFormData([rowData.Code]).then(rs => {
                 this.preview(rs);
               });
             });
           },
         }
+        //   State: {
+        //     title: this.commonService.translateText('Common.approve'),
+        //     type: 'custom',
+        //     width: '5%',
+        //     class: 'align-right',
+        //     renderComponent: SmartTableButtonComponent,
+        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //       instance.iconPack = 'eva';
+        //       instance.icon = 'checkmark-circle';
+        //       instance.display = true;
+        //       instance.status = 'warning';
+        //       instance.style = 'text-align: right';
+        //       instance.class = 'align-right';
+        //       instance.title = this.commonService.translateText('Common.approve');
+        //       instance.valueChange.subscribe(value => {
+        //         // instance.icon = value ? 'unlock' : 'lock';
+        //         // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+        //         instance.disabled = value !== 'REQUEST';
+        //       });
+        //       instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
+        //         // this.commonService.openDialog(ShowcaseDialogComponent, {
+        //         //   context: {
+        //         //     title: this.commonService.translateText('Common.confirm'),
+        //         //     content: 'Accounting.CashPayment.approveConfirmText',
+        //         //     actions: [
+        //         //       {
+        //         //         label: this.commonService.translateText('Common.close'),
+        //         //         status: 'primary',
+        //         //       },
+        //         //       {
+        //         //         label: this.commonService.translateText('Common.approve'),
+        //         //         status: 'danger',
+        //         //         action: () => {
+        //         //           this.apiService.putPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: [rowData.Code], approve: true }, [{ Code: rowData.Code }]).then(rs => {
+        //         //             this.refresh();
+        //         //           });
+        //         //         }
+        //         //       },
+        //         //     ],
+        //         //   },
+        //         // });
+
+        //         this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
+        //           this.preview(rs[0]);
+        //         });
+
+
+        //       });
+        //     },
+        //   }
       },
     });
   }
@@ -222,10 +299,10 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
-      // params['includeParent'] = true;
-      // params['includeRelativeVouchers'] = true;
+      params['includeParent'] = true;
+      params['includeRelativeVouchers'] = true;
       params['sort_Created'] = 'desc';
-      // params['eq_Type'] = 'RECEIPT';
+      params['eq_Type'] = 'PAYMENT';
       return params;
     };
 
@@ -252,19 +329,18 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
+    return this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, eq_Type: 'PAYMENT' });
   }
 
-  preview(ids: any[]) {
-    this.commonService.openDialog(CollaboratorCommissionPrintComponent, {
+  preview(data: CashVoucherModel[]) {
+    this.commonService.openDialog(CollaboratorCommissionPaymentPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',
-        id: typeof ids[0] === 'string' ? ids as any : null,
-        data: typeof ids[0] !== 'string' ? ids as any : null,
+        data: data,
         idKey: ['Code'],
         // approvedConfirm: true,
-        onClose: (data: CollaboratorCommissionVoucherModel) => {
+        onClose: (data: CashVoucherModel) => {
           this.refresh();
         },
       },

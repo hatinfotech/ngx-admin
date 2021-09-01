@@ -341,6 +341,9 @@
         "success": "thành công",
         "danger": "lỗi nguy hiểm",
         "notJustCofirmedRequest": "chưa yêu cầu xác nhận",
+        "approvedRequest": "yêu cầu duyệt",
+        "approvedRequestSuccess": "yêu cầu duyệt thành công",
+        "approvedRequestConfirm": "bạn có muốn gửi yêu câu duyệt ?",
         "info": "thông tin"
     },
     "Contact": {

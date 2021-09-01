@@ -1,26 +1,32 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { takeUntil } from 'rxjs/operators';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { AccountModel, BusinessModel } from '../../../../models/accounting.model';
+import { AccBankAccountModel, AccountModel, BusinessModel, CashVoucherDetailModel, CashVoucherModel } from '../../../../models/accounting.model';
 import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { ContactModel } from '../../../../models/contact.model';
+import { TaxModel } from '../../../../models/tax.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { AccBusinessFormComponent } from '../../../accounting/acc-business/acc-business-form/acc-business-form.component';
+import { CashPaymentVoucherPrintComponent } from '../../../accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../../../accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
+import { PurchaseVoucherListComponent } from '../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
 import { CollaboratorService } from '../../collaborator.service';
+import { CollaboratorCommissionListComponent } from '../../commission/collaborator-commission-list/collaborator-commission-list.component';
 
 @Component({
   selector: 'ngx-collaborator-commission-payment-form',
   templateUrl: './collaborator-commission-payment-form.component.html',
   styleUrls: ['./collaborator-commission-payment-form.component.scss']
 })
-export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormComponent<CollaboratorCommissionVoucherModel> implements OnInit {
+export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormComponent<CashVoucherModel> implements OnInit {
 
   // Base variables
   componentName = 'CollaboratorCommissionPaymentFormComponent';
@@ -33,10 +39,30 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
-  // accountDebitList: AccountModel[] = [];
-  // accountCreditList: AccountModel[] = [];
-  accountList: AccountModel[] = [];
   accountingBusinessList: BusinessModel[] = [];
+  bankAccountList: AccBankAccountModel[] = [];
+
+  customIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(AccBusinessFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Type: 'PAYMENT' }],
+          onDialogSave: (newAccBusiness: BusinessModel[]) => {
+            console.log(newAccBusiness);
+            const accBusiness: any = { ...newAccBusiness[0], id: newAccBusiness[0].Code, text: newAccBusiness[0].Name };
+            detailFormGroup.get('AccountingBusiness').patchValue(accBusiness);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -76,7 +102,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   // }
 
   select2OptionForContact = {
-    placeholder: 'Chọn liên hệ...',
+    placeholder: 'Chọn cộng tác viên...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -89,19 +115,29 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] });
+        return this.apiService.buildApiUrl('/collaborator/publishers', { onlyIdText: true, filter_Name: params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         console.info(data, params);
         return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
+          results: data,
         };
       },
+    },
+  };
+
+  select2OptionForBankAccounting = {
+    placeholder: this.commonService.translateText('Common.bankAccount'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
     },
   };
 
@@ -133,16 +169,24 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   // Accounting Business Option
   // select2DataForAccountingBusiness = [
   //   {
-  //     id: 'SALESRECEIPT',
-  //     text: 'Thu tiền bán hàng',
+  //     id: 'PURCHASEPAYMENT',
+  //     text: 'Trả tiền nhập hàng',
   //   },
   //   {
-  //     id: 'DEBTRECEIPT',
-  //     text: 'Thu tiền công nợ',
+  //     id: 'DEBTPAYMENT',
+  //     text: 'Trả tiền công nợ',
   //   },
   //   {
-  //     id: 'CONTRACTRECEIPT',
-  //     text: 'Thu tiền hợp đồng',
+  //     id: 'CONTRACTPAYMENT',
+  //     text: 'Trả tiền hợp đồng',
+  //   },
+  //   {
+  //     id: 'SALARYPAYMENT',
+  //     text: 'Trả tiền lương nhân viên',
+  //   },
+  //   {
+  //     id: 'ADVANCES2EMPLOYEES',
+  //     text: 'Tạm ứng cho nhân viên',
   //   },
   // ];
   select2OptionForAccountingBusiness = {
@@ -151,11 +195,12 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    // dropdownCssClass: 'is_tags',
     // multiple: true,
-    tags: true,
+    // tags: true,
     keyMap: {
-      id: 'Code',
-      text: 'Name',
+      id: 'id',
+      text: 'text',
     },
   };
 
@@ -176,37 +221,39 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     multiple: true,
-    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+  select2ForAccount = {
+    placeholder: 'Tài khản...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+  select2ForReciprocalAccount = {
+    placeholder: 'Tài khản đối ứng...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
     keyMap: {
       id: 'id',
       text: 'text',
     },
   };
 
-  select2ForDebitAccount = {
-    placeholder: 'Tài khản nợ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    multiple: false,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-  };
-  select2ForCreditAccount = {
-    placeholder: 'Tài khản có...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    multiple: false,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-  };
+  accountList: AccountModel[] = [];
+  accountDebitList: AccountModel[] = [];
+  accountCreditList: AccountModel[] = [];
 
   select2OptionForPage = {
     placeholder: 'Chọn trang...',
@@ -220,14 +267,27 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
     },
   };
 
-
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
   }
 
-  async formLoad(formData: CollaboratorCommissionVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CollaboratorCommissionVoucherModel) => void) {
+  async formLoad(formData: CashVoucherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CashVoucherModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
+
+      // Resources form load
+      if (itemFormData?.Details) {
+        const details = this.getDetails(newForm);
+        details.clear();
+        itemFormData.Details.forEach(detail => {
+          const newResourceFormGroup = this.makeNewDetailFormGroup(newForm, detail);
+          details.push(newResourceFormGroup);
+          const comIndex = details.length - 1;
+          this.onAddDetailFormGroup(newForm, comIndex, newResourceFormGroup);
+        });
+      }
+
+      this.toMoney(newForm);
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -238,18 +298,20 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   }
 
   async init() {
-    // this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {limit: 'nolimit'}).then(rs => rs.map(account => {
-    //   account['id'] = account.Code;
-    //   account['text'] = account.Code + ' - ' + account.Name;
-    //   return account;
-    // }));
-    // this.accountDebitList = this.accountList;
-    // this.accountCreditList = this.accountList;
-    // this.accountingBusinessList = await this.apiService.getPromise<AccountModel[]>('/accounting/business', { limit: 'nolimit' }).then(rs => rs.map(accBusiness => {
-    //   accBusiness['id'] = accBusiness.Code;
-    //   accBusiness['text'] = accBusiness.Name;
-    //   return accBusiness;
-    // }));
+    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit' }).then(rs => rs.map(account => {
+      account['id'] = account.Code;
+      account['text'] = account.Code + ' - ' + account.Name;
+      return account;
+    }));
+
+    this.accountDebitList = this.accountList.filter(f => f.Group != 'CASH');
+    // this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
+
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { select: 'id=>Code,text=>Name,DebitAccount=>DebitAccount,CreditAccount=>CreditAccount,Name=>Name,Code=>Code', limit: 'nolimit', eq_Type: 'PAYMENT' });
+    this.bankAccountList = await this.apiService.getPromise<AccBankAccountModel[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;'/';AccountNumber;'/';Bank;'/';Branch)" });
+    return super.init().then(rs => {
+      return rs;
+    });
     return super.init().then(rs => {
       // this.getRequestId(id => {
       //   if (!id || id.length === 0) {
@@ -266,51 +328,47 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   }
 
   /** Get form data by id from api */
-  getFormData(callback: (data: CollaboratorCommissionVoucherModel[]) => void) {
-    this.apiService.get<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: this.id, multi: true, includeDetails: true, includeContact: true, includeRelativeVouchers: true },
+  getFormData(callback: (data: CashVoucherModel[]) => void) {
+    this.apiService.get<CashVoucherModel[]>(this.apiPath, { id: this.id, multi: true, includeDetails: true, includeContact: true, includeRelativeVouchers: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
     };
   }
 
-  makeNewFormGroup(data?: CollaboratorCommissionVoucherModel): FormGroup {
-    const loggedUser = this.commonService?.loginInfo$?.value?.user;
-
+  makeNewFormGroup(data?: CashVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
       Page: [this.collaboratorService.currentpage$.value, Validators.required],
-      // RelatedUserName: [''],
-      ObjectName: [loggedUser && loggedUser.Name || ''],
-      ObjectPhone: [loggedUser && loggedUser.Phone || ''],
-      ObjectEmail: [loggedUser && loggedUser.Email || ''],
+      Description: ['', Validators.required],
+      RelatedUserName: [''],
+      DateOfImplement: [''],
+      Object: [''],
+      ObjectName: [''],
+      ObjectPhone: [''],
+      ObjectEmail: [''],
       ObjectAddress: [''],
-      ObjectIdentifiedNumber: [''],
-      ObjectBankName: [''],
-      ObjectBankAccount: [''],
-      Amount: ['', Validators.required],
-      DateOfVoucher: [new Date(), Validators.required],
-      Description: [`Yêu cầu thanh toán tiền hoa hồng đến ngày ${new Date().toLocaleDateString()} cho ${loggedUser.Name}`, Validators.required],
+      ObjectTaxCode: [''],
+      // Currency: ['VND', Validators.required],
+      DateOfVoucher: [new Date()],
+      RelativeVouchers: [''],
+      BankAccount: [''],
+      Details: this.formBuilder.array([]),
+      _total: [''],
     });
     if (data) {
+      data[this.idKey + '_old'] = data.Code;
       this.prepareRestrictedData(newForm, data);
+      const accoutnGroup = this.commonService.getObjectId(data.BankAccount) ? 'CASHINBANK' : 'CASH';
+      newForm['creditAccounts'] = this.accountList.filter(f => f.Group === accoutnGroup);
       newForm.patchValue(data);
+    } else {
+      newForm['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
+      this.addDetailFormGroup(newForm);
     }
-    newForm.get('DateOfVoucher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if (!this.isProcessing) {
-        const page = this.commonService.getObjectId(newForm.get('Page').value);
-        const amountEle = newForm.get('Amount');
-        const descriptionEle = newForm.get('Description');
-        this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, toDate: value && value.toISOString(), limit: 'nolimit' }).then(summaryReport => {
-          console.log(summaryReport);
-          amountEle.setValue(summaryReport?.CommissionAmount);
-          descriptionEle.setValue(`Yêu cầu thanh toán tiền hoa hồng đến ngày ${value && value.toLocaleDateString()} cho ${loggedUser.Name}`);
-        });
-      }
-    });
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: CollaboratorCommissionVoucherModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: CashVoucherModel): void {
     super.onAddFormGroup(index, newForm, formData);
     // this.resourceList.push([]);
   }
@@ -332,18 +390,68 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: CollaboratorCommissionVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeDetails'] = true;
+  executeGet(params: any, success: (resources: CashVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+    params['includeDetails'] = true;
     params['includeContact'] = true;
-    // params['includeRelativeVouchers'] = true;
+    params['includeRelativeVouchers'] = true;
     return super.executeGet(params, success, error);
+  }
+
+  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CashVoucherDetailModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      Id: [''],
+      // AccountingBusiness: [''],
+      Description: ['', Validators.required],
+      // RelateCode: [''],
+      // DebitAccount: ['', Validators.required],
+      // CreditAccount: ['1111', Validators.required],
+      Amount: ['', Validators.required],
+    });
+
+    if (data) {
+      newForm.patchValue(data);
+      this.toMoney(parentFormGroup);
+    }
+    // setTimeout(() => {
+    //   const testBusiness = this.accountingBusinessList.find(f => f.Code === 'PAYMENTSUPPPLIER');
+    //   console.log(testBusiness);
+    //   newForm.get('AccountingBusiness').patchValue(testBusiness);
+    // }, 5000);
+    return newForm;
+  }
+
+  getDetails(formGroup: FormGroup) {
+    return formGroup.get('Details') as FormArray;
+  }
+
+  addDetailFormGroup(formGroup: FormGroup) {
+    const newFormGroup = this.makeNewDetailFormGroup(formGroup);
+    const details = this.getDetails(formGroup);
+    details.push(newFormGroup);
+    this.onAddDetailFormGroup(formGroup, details.length - 1, newFormGroup);
+    return false;
+  }
+
+  onAddDetailFormGroup(parentFormGroup: FormGroup, index: number, newFormGroup: FormGroup) {
+  }
+
+  removeDetail(formGroup: FormGroup, index: number) {
+    this.getDetails(formGroup).removeAt(index);
+    // this.componentList[formGroupIndex].splice(index, 1);
+    this.onRemoveDetailFormGroup(formGroup, index);
+    return false;
+  }
+
+  onRemoveDetailFormGroup(formGroup: FormGroup, index: number) {
+    // this.resourceList[mainIndex].splice(index, 1);
+    this.toMoney(formGroup);
   }
 
   // Orverride
   getRawFormData() {
     const data = super.getRawFormData();
     for (const item of data.array) {
-      item['Type'] = 'RECEIPT';
+      item['Type'] = 'PAYMENT';
     }
     return data;
   }
@@ -373,8 +481,26 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
             ObjectName: selectedData['text'],
           });
         }
+
+
       }
     }
+  }
+
+  onBankAccountChange(formGroup: FormGroup, selectedData: AccountModel) {
+    // console.info(item);
+    if (!this.isProcessing) {
+      if (selectedData && selectedData.id) {
+        formGroup['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASHINBANK');
+      } else {
+        formGroup['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
+      }
+      const details = this.getDetails(formGroup);
+      for (const detail of details.controls) {
+        detail.get('CreditAccount').setValue(formGroup['creditAccounts'] && formGroup['creditAccounts'].length > 0 ? formGroup['creditAccounts'][0] : null);
+      }
+    }
+
   }
 
   onChangeCurrency(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
@@ -385,7 +511,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
     // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
     this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
-      const details = formItem.get('Details') as FormArray;
+      const details = this.getDetails(formItem);
       let total = 0;
       for (const detail of details.controls) {
         // total += this.calculatToMoney(details.controls[i] as FormGroup);
@@ -399,16 +525,20 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
 
 
   preview(formItem: FormGroup) {
-    const data: CollaboratorCommissionVoucherModel = formItem.value;
-    this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
+    const data: CashVoucherModel = formItem.value;
+    data.Details.forEach(detail => {
+      // if (typeof detail['Tax'] === 'string') {
+      //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+      // }
+    });
+    this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
         data: [data],
-        idKey: ['Code'],
-        onSaveAndClose: (rs: CollaboratorCommissionVoucherModel) => {
+        onSaveAndClose: (rs: CashVoucherModel) => {
           this.saveAndClose();
         },
-        onSaveAndPrint: (rs: CollaboratorCommissionVoucherModel) => {
+        onSaveAndPrint: (rs: CashVoucherModel) => {
           this.save();
         },
       },
@@ -418,16 +548,105 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
 
   onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
     if (!this.isProcessing) {
-      detail.get('DebitAccount').setValue(business.DebitAccount);
-      detail.get('CreditAccount').setValue(business.CreditAccount);
-      detail.get('Description').setValue(business.Description);
+      if (business?.DebitAccount) detail.get('DebitAccount').setValue(business.DebitAccount);
+      if (business?.CreditAccount) detail.get('CreditAccount').setValue(business.CreditAccount);
+      const descriptionControl: FormControl = detail.get('Description') as FormControl;
+      if (business?.Name && (!descriptionControl.value || this.accountingBusinessList.findIndex(f => f.Name === descriptionControl.value) > -1))
+        detail.get('Description').setValue(business.Name);
     }
+  }
+
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.commonService.openDialog(CollaboratorCommissionListComponent, {
+      context: {
+        inputMode: 'dialog',
+        filter: {
+          eq_State: 'APPROVED',
+        },
+        onDialogChoose: async (chooseItems: CollaboratorCommissionVoucherModel[]) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          this.onProcessing();
+          for (let i = 0; i < chooseItems.length; i++) {
+            const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
+            if (index < 0) {
+              const details = this.getDetails(formGroup);
+              // get purchase order
+              const commissionVoucher = await this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>('/collaborator/commission-vouchers/' + chooseItems[i].Code, { includeContact: true }).then(rs => rs[0]);
+
+              if (this.commonService.getObjectId(commissionVoucher.State) != 'APPROVED') {
+                this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                continue;
+              }
+              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                if (this.commonService.getObjectId(commissionVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu hoa hồng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+              } else {
+                // delete commissionVoucher.Id;
+                formGroup.patchValue({
+                  Object: { id: commissionVoucher.Publisher, text: commissionVoucher.PublisherName, Phone: commissionVoucher.PublisherPhone, Email: commissionVoucher.PublisherEmail, Address: commissionVoucher.PublisherAddress, IdentifiedNumber: commissionVoucher.PublisherIdentifiedNumber },
+                  ObjectName: commissionVoucher.PublisherName,
+                  ObjectPhone: commissionVoucher.PublisherPhone,
+                  ObjectEmail: commissionVoucher.PublisherEmail,
+                  ObjectAddress: commissionVoucher.PublisherAddress,
+                  ObjectIdentifiedNumber: commissionVoucher.PublisherIdentifiedNumber,
+                  Description: commissionVoucher.Description,
+                  Page: commissionVoucher.Page,
+                  VoucherDate: new Date(),
+                });
+                // formGroup.get('ObjectName').patchValue(commissionVoucher.PublisherName);
+                // formGroup.get('ObjectPhone').patchValue(commissionVoucher.PublisherPhone);
+                // formGroup.get('ObjectEmail').patchValue(commissionVoucher.PublisherEmail);
+                // formGroup.get('ObjectAddress').patchValue(commissionVoucher.PublisherAddress);
+                // formGroup.get('ObjectIdentifiedNumber').patchValue(commissionVoucher.PublisherIdentifiedNumber);
+                formGroup.get('Description').patchValue('Thanh toán cho: ' + commissionVoucher.Description);
+                details.clear();
+              }
+
+              insertList.push(chooseItems[i]);
+
+              // Insert order details into voucher details
+              // if (commissionVoucher) {
+              // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
+              // let totalMoney = 0;
+              // const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
+              // for (const voucherDetail of commissionVoucher.Details) {
+              //   if (voucherDetail.Type !== 'CATEGORY') {
+              //     const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
+              //     totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
+              //   }
+              // }
+              const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+                // AccountingBusiness: 'PAYMENTSUPPPLIER',
+                Description: commissionVoucher.Description,
+                // DebitAccount: '331',
+                // CreditAccount: '1111',
+                Amount: commissionVoucher.Amount,
+              });
+              details.push(newDtailFormGroup);
+              // }
+            }
+          }
+          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'CLBRTCOMMISSION' }))]);
+          // setTimeout(() => {
+          this.onProcessed();
+          // }, 500);
+        },
+        onDialogClose: () => {
+        },
+      }
+    })
+    return false;
   }
 
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
-    // if (relativeVocher && relativeVocher.type == 'SALES') {
-    //   this.commonService.openDialog(SalesVoucherPrintComponent, {
+    // if (relativeVocher && relativeVocher.type == 'PURCHASE') {
+    //   this.commonService.openDialog(PurchaseVoucherPrintComponent, {
     //     context: {
     //       showLoadinng: true,
     //       title: 'Xem trước',
@@ -435,7 +654,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
     //       // data: data,
     //       idKey: ['Code'],
     //       // approvedConfirm: true,
-    //       onClose: (data: SalesVoucherModel) => {
+    //       onClose: (data: CollaboratorCommissionVoucherModel) => {
     //         this.refresh();
     //       },
     //     },
