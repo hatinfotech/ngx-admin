@@ -26,7 +26,7 @@
                             </div>
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons">
-                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+                                    <ngx-select2 #page formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-8">
@@ -61,7 +61,7 @@
                                 </ngx-form-group>
                             </div>
                         </div>
-                        <ngx-collaboartor-commission-detail (onInit)="onListInit($event, formItem)" [employee]="this.commonService.getObjectId(publisher.value)" [accounts]="['3349']" [fromDate]="(formItem.get('CommissionRange').value || [null, null])[0]" [toDate]="(formItem.get('CommissionRange').value || [null, null])[1]" [report]="'reportDetailByAccountAndObject'"></ngx-collaboartor-commission-detail>
+                        <ngx-collaboartor-commission-detail (onInit)="onListInit($event, formItem)" [employee]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [accounts]="['3349']" [fromDate]="(formItem.get('CommissionRange').value || [null, null])[0]" [toDate]="(formItem.get('CommissionRange').value || [null, null])[1]" [report]="'reportDetailByAccountAndObject'"></ngx-collaboartor-commission-detail>
                     </div>
                 </nb-card-body>
                 <nb-card-footer>

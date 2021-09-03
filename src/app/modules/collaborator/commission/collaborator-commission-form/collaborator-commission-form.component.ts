@@ -199,53 +199,85 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
 
     return newForm;
   }
+
+  onConditionFieldsChange(newForm) {
+    const commissionRange = newForm.get('CommissionRange').value;
+    console.log(commissionRange);
+    const publisherEle = newForm.get('Publisher');
+    const publisher = this.commonService.getObjectId(publisherEle.value);
+    const publisherName = newForm.get('PublisherName').value;
+    if (!this.isProcessing && publisher) {
+      const page = this.commonService.getObjectId(newForm.get('Page').value);
+      const amountEle = newForm.get('Amount');
+      const descriptionEle = newForm.get('Description');
+
+      const dateRange = commissionRange;
+      const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
+      const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
+
+      this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
+        console.log(summaryReport);
+        amountEle.setValue(summaryReport?.CommissionAmount);
+        descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()}`);
+      });
+      setTimeout(() => {
+        newForm['listInstance'] && newForm['listInstance'].refresh();
+      }, 500);
+    }
+  }
+
   onAddFormGroup(index: number, newForm: FormGroup, formData?: CollaboratorCommissionVoucherModel): void {
     super.onAddFormGroup(index, newForm, formData);
     setTimeout(() => {
       newForm.get('CommissionRange').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(commissionRange => {
-        console.log(commissionRange);
-        const publisherEle = newForm.get('Publisher');
-        const publisher = this.commonService.getObjectId(publisherEle.value);
-        const publisherName = newForm.get('PublisherName').value;
-        if (!this.isProcessing && publisher) {
-          const page = this.commonService.getObjectId(newForm.get('Page').value);
-          const amountEle = newForm.get('Amount');
-          const descriptionEle = newForm.get('Description');
+        this.onConditionFieldsChange(newForm);
+        // console.log(commissionRange);
+        // const publisherEle = newForm.get('Publisher');
+        // const publisher = this.commonService.getObjectId(publisherEle.value);
+        // const publisherName = newForm.get('PublisherName').value;
+        // if (!this.isProcessing && publisher) {
+        //   const page = this.commonService.getObjectId(newForm.get('Page').value);
+        //   const amountEle = newForm.get('Amount');
+        //   const descriptionEle = newForm.get('Description');
 
-          const dateRange = commissionRange;
-          const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
-          const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
+        //   const dateRange = commissionRange;
+        //   const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
+        //   const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
 
-          this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
-            console.log(summaryReport);
-            amountEle.setValue(summaryReport?.CommissionAmount);
-            descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()}`);
-          });
-          setTimeout(() => {
-            newForm['listInstance'] && newForm['listInstance'].refresh();
-          }, 500);
-        }
+        //   this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
+        //     console.log(summaryReport);
+        //     amountEle.setValue(summaryReport?.CommissionAmount);
+        //     descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()}`);
+        //   });
+        //   setTimeout(() => {
+        //     newForm['listInstance'] && newForm['listInstance'].refresh();
+        //   }, 500);
+        // }
       });
       newForm.get('Publisher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
-        const commissionRange = newForm.get('CommissionRange').value;
-        // const publisherEle = newForm.get('Publisher');
-        publisher = this.commonService.getObjectId(publisher);
-        const publisherName = newForm.get('PublisherName').value;
+        this.onConditionFieldsChange(newForm);
+        // const commissionRange = newForm.get('CommissionRange').value;
+        // // const publisherEle = newForm.get('Publisher');
+        // publisher = this.commonService.getObjectId(publisher);
+        // const publisherName = newForm.get('PublisherName').value;
 
-        const dateRange = commissionRange.value;
-          const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
-          const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
+        // const dateRange = commissionRange.value;
+        //   const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
+        //   const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
 
-        if (!this.isProcessing && publisher) {
-          const page = this.commonService.getObjectId(newForm.get('Page').value);
-          const amountEle = newForm.get('Amount');
-          const descriptionEle = newForm.get('Description');
-          this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
-            console.log(summaryReport);
-            amountEle.setValue(summaryReport?.CommissionAmount);
-            descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()} cho ${publisherName}`);
-          });
-        }
+        // if (!this.isProcessing && publisher) {
+        //   const page = this.commonService.getObjectId(newForm.get('Page').value);
+        //   const amountEle = newForm.get('Amount');
+        //   const descriptionEle = newForm.get('Description');
+        //   this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
+        //     console.log(summaryReport);
+        //     amountEle.setValue(summaryReport?.CommissionAmount);
+        //     descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()} cho ${publisherName}`);
+        //   });
+        // }
+      });
+      newForm.get('Page').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
+        this.onConditionFieldsChange(newForm);
       });
     }, 3000);
     // this.resourceList.push([]);

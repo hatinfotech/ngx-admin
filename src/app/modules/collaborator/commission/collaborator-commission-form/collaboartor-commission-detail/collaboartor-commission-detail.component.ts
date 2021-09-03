@@ -37,6 +37,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
   @Input('fromDate') fromDate?: Date;
   @Input('toDate') toDate?: Date;
   @Input('report') report?: string;
+  @Input('page') page?: string;
   @Output() onInit = new EventEmitter<CollaboartorCommissionDetailComponent>();
 
   constructor(
@@ -229,6 +230,9 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
       if (this.toDate) {
         const toDate = this.toDate instanceof Date ? this.toDate : new Date(this.toDate);
         params['toDate'] = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 23, 59, 59).toISOString();
+      }
+      if (this.page) {
+        params['eq_Page'] = this.page;
       }
 
       return params;

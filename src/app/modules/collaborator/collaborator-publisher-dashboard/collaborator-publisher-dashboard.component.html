@@ -68,7 +68,7 @@
             <div class="col-sm-3">
               <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
                 <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
-                <owl-date-time #DateRange></owl-date-time>
+                <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
               </ngx-form-group>
             </div>
             <div class="col-sm-3">
