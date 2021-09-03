@@ -496,24 +496,29 @@ export class ApiService {
   }
 
   onUnauthorizied() {
-    this.takeOnce('ultil_unauthorize', 5000).then(() => {
+    this.takeUntil('ultil_unauthorize', 5000).then(() => {
       // Fix stress requests
+      this.getPromise('/user/login/info', {}).then(rs => {
+        console.log('refresh token success');
+      }).catch(err => {
+        console.log('refresh token no success');
+        this.unauthoriziedSubject.next({
+          previousUrl: this.router.url,
+        });
+        if (LoginDialogComponent.instances.length === 0) {
+          this.dialogService.open(LoginDialogComponent);
+        }
+      });
       // this.authService.isAuthenticated().subscribe(isAuth => {
       // if (!isAuth) {
-      this.unauthoriziedSubject.next({
-        previousUrl: this.router.url,
-      });
       // this.router.navigate(['/auth/login']);
-      if (LoginDialogComponent.instances.length === 0) {
-        this.dialogService.open(LoginDialogComponent);
-      }
       // }
       // });
     });
   }
 
   handleError(e: HttpErrorResponse, silent?: boolean) {
-    if (e.status === 401) {
+    if (e.status === 401 && !silent) {
       console.warn('API: Bạn chưa đăng nhập');
       // this.router.navigate(['/auth/login']);
       this.onUnauthorizied();

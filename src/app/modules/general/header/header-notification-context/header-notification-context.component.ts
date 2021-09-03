@@ -96,7 +96,7 @@ export class HeaderNotificationContextComponent extends NbPositionedContainer im
     // });
 
     this.notificationService.requestNewestNotificaitons().then(newNotifications => {
-      if (newNotifications.length > 0) {
+      if (newNotifications && newNotifications.length > 0) {
         this.prepareForUpdateNotificaitonState(newNotifications);
       }
     });
