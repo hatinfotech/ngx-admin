@@ -15,7 +15,7 @@ export class PbxDomainSelection {
 }
 
 @Injectable(
-  // { providedIn: 'root' },
+  { providedIn: 'root' },
 )
 export class IvoipService {
 

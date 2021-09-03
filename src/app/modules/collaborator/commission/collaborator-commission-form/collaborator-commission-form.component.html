@@ -52,7 +52,7 @@
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="CommissionRange" label="Common.date" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" #_commissionRange [owlDateTime]="CommissionRange" [owlDateTimeTrigger]="CommissionRange" [selectMode]="'range'" nbInput fullWidth formControlName="CommissionRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
-                                    <owl-date-time #CommissionRange  [pickerType]="'calendar'"></owl-date-time>
+                                    <owl-date-time #CommissionRange [pickerType]="'calendar'"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">

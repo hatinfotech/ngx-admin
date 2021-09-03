@@ -306,8 +306,8 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
       pages = pages.join(',');
     }
     const dateRange = this.formItem.get('DateRange').value;
-    const fromDate = dateRange && dateRange[0] && dateRange[0].toISOString() || null;
-    const toDate = dateRange && dateRange[1] && dateRange[1].toISOString() || null;
+    const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
+    const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
     this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'PAGE,PRODUCT,ORDER,COMMISSION,COMMISSIONPAYMENT', page: pages, reportBy: reportType, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
       this.summaryReport = summaryReport;
       console.log(summaryReport);

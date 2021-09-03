@@ -211,7 +211,12 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
           const page = this.commonService.getObjectId(newForm.get('Page').value);
           const amountEle = newForm.get('Amount');
           const descriptionEle = newForm.get('Description');
-          this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: commissionRange && commissionRange[1] && commissionRange[1].toISOString && commissionRange[1].toISOString(), limit: 'nolimit' }).then(summaryReport => {
+
+          const dateRange = commissionRange;
+          const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
+          const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
+
+          this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
             console.log(summaryReport);
             amountEle.setValue(summaryReport?.CommissionAmount);
             descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()}`);
@@ -226,11 +231,16 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
         // const publisherEle = newForm.get('Publisher');
         publisher = this.commonService.getObjectId(publisher);
         const publisherName = newForm.get('PublisherName').value;
+
+        const dateRange = commissionRange.value;
+          const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
+          const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
+
         if (!this.isProcessing && publisher) {
           const page = this.commonService.getObjectId(newForm.get('Page').value);
           const amountEle = newForm.get('Amount');
           const descriptionEle = newForm.get('Description');
-          this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: commissionRange && commissionRange[1] && commissionRange[1].toISOString && commissionRange[1].toISOString(), limit: 'nolimit' }).then(summaryReport => {
+          this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
             console.log(summaryReport);
             amountEle.setValue(summaryReport?.CommissionAmount);
             descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()} cho ${publisherName}`);

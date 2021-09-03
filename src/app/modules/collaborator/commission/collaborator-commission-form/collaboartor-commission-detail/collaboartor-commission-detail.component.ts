@@ -223,10 +223,12 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
       }
       params['includeIncrementAmount'] = true;
       if (this.fromDate) {
-        params['fromDate'] = new Date(this.fromDate).toISOString();
+        const formDate = this.fromDate instanceof Date ? this.fromDate : new Date(this.fromDate);
+        params['fromDate'] = new Date(formDate.getFullYear(), formDate.getMonth(), formDate.getDate(), 0, 0, 0).toISOString();
       }
       if (this.toDate) {
-        params['toDate'] = new Date(this.toDate).toISOString();
+        const toDate = this.toDate instanceof Date ? this.toDate : new Date(this.toDate);
+        params['toDate'] = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 23, 59, 59).toISOString();
       }
 
       return params;

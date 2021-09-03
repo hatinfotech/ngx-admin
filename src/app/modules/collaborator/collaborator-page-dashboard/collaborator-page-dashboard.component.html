@@ -72,7 +72,7 @@
             <div class="col-sm-3">
               <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
                 <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
-                <owl-date-time #DateRange></owl-date-time>
+                <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
               </ngx-form-group>
             </div>
             <div class="col-sm-3">
@@ -93,11 +93,11 @@
 
   <div class="row">
 
-    <div class="col-xxxl-3 col-xxl-4 col-lg-4 col-md-12">
+    <div class="col-xxxl-3 col-xxl-3 col-lg-3 col-md-12">
       <ngx-most-active-publishers></ngx-most-active-publishers>
     </div>
 
-    <div class="col-xxxl-9 col-xxl-8 col-lg-8 col-md-12">
+    <div class="col-xxxl-9 col-xxl-9 col-lg-9 col-md-12">
       <nb-card class="size-giant chart small-header">
         <nb-card-header>
           <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Order.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
