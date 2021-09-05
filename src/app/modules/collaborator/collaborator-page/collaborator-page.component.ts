@@ -25,7 +25,7 @@ export class CollaboratorPageComponent extends BaseComponent {
   }
 
   async init() {
-    await this.commonService.waitForLanguageLoaded();
+    await this.commonService.waitForReady();
     this.tabs = [
       {
         title: this.commonService.translateText('Common.summary'),

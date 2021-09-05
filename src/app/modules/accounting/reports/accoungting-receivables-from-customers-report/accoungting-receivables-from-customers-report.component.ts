@@ -48,7 +48,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForLanguageLoaded();
+    await this.commonService.waitForReady();
     this.tabs = [
       {
         title: 'Liabilities',

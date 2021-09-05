@@ -25,7 +25,7 @@ export class AccountingReportComponent extends BaseComponent {
   }
 
   async init() {
-    await this.commonService.waitForLanguageLoaded();
+    await this.commonService.waitForReady();
     this.tabs = [
       {
         title: this.commonService.translateText('Accounting.SummaryReport.label'),

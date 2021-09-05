@@ -91,7 +91,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
             },
           ],
         });
+        return false;
       }
+      return true;
     });
   }
 

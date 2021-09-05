@@ -104,8 +104,10 @@ export class CommonService {
     'Ά': 'Α', 'Έ': 'Ε', 'Ή': 'Η', 'Ί': 'Ι', 'Ϊ': 'Ι', 'Ό': 'Ο', 'Ύ': 'Υ', 'Ϋ': 'Υ', 'Ώ': 'Ω', 'ά': 'α', 'έ': 'ε', 'ή': 'η', 'ί': 'ι', 'ϊ': 'ι', 'ΐ': 'ι', 'ό': 'ο', 'ύ': 'υ',
     'ϋ': 'υ', 'ΰ': 'υ', 'ώ': 'ω', 'ς': 'σ', '’': '\''
   };
+
+  // ready$ = new BehaviorSubject<boolean>(false);
   isLoggedIn$ = new BehaviorSubject<boolean>(false);
-  private permissionsCache: { [key: string]: boolean };
+  private permissionsCache$ = new BehaviorSubject<{ [key: string]: boolean }>({});
   private excludeComponents = [
     // 'AppComponent',
     // 'ECommerceComponent',
@@ -257,6 +259,7 @@ export class CommonService {
     this.authService.onAuthenticationChange().subscribe(async state => {
       console.info('Authentication change with state ' + state);
       if (state) {
+        this.loadPermissionToCache();
         // Get login info
         this.apiService.get<LoginInfoModel>('/user/login/info', {}, loginInfo => {
           // this.loginInfoSubject.next(loginInfo);
@@ -278,7 +281,6 @@ export class CommonService {
           this.theme$.next({ theme, skipUpdate: true });
           // localStorage.setItem('configuration.locale', locale);
           // localStorage.setItem('configuration.timezone', timezone);
-
           // Re-register main socket on login changed
           this.mainSocket.emit('register', {
             token: this.apiService.getAccessToken(),
@@ -327,6 +329,15 @@ export class CommonService {
    */
   async waitForLanguageLoaded(): Promise<boolean> {
     return this.languageLoaded$.pipe(filter(f => f), take(1)).toPromise();
+  }
+  async waitForReady(): Promise<boolean> {
+    // return this.languageLoaded$.pipe(filter(f => f), take(1)).toPromise();
+    return Promise.all([
+      this.languageLoaded$.pipe(filter(f => f), take(1)).toPromise(),
+      this.permissionsCache$.pipe(filter(f => !!f), take(1)).toPromise(),
+    ]).then(allStatus => {
+      return true;
+    });
   }
 
   async getMainSocket(): Promise<MySocket> {
@@ -446,34 +457,39 @@ export class CommonService {
   //   return this.permissionsCache;
   // }
 
-  private loadPermissionToCache(callback?: () => void) {
-    if (!this.permissionsCache || Object.keys(this.permissionsCache).length === 0) {
-      this.apiService.get<{ Component: string, Path: string, Permission: string, State: number }[]>('/user/permissions', { limi: 99999, loadPermissionsForLoggedUser: true }, results => {
-        this.permissionsCache = {};
+  async loadPermissionToCache(callback?: () => void) {
+    if (!this.permissionsCache$.value || Object.keys(this.permissionsCache$.value).length === 0) {
+      this.apiService.getPromise<{ Component: string, Path: string, Permission: string, State: number }[]>('/user/permissions', { limit: 'nolimit', loadPermissionsForLoggedUser: true }).then(results => {
+        const permissionsCache = {};
         results.map(item => {
           if (item.Component)
-            this.permissionsCache[`${item.Component}_${item.Permission}`] = item.State > 0 ? true : false;
+            permissionsCache[`${item.Component}_${item.Permission}`] = item.State > 0 ? true : false;
         });
         if (callback) callback();
+        this.permissionsCache$.next(permissionsCache);
+        return permissionsCache;
       });
     } else {
       if (callback) callback();
+      return this.permissionsCache$.value;
     }
   }
 
-  checkPermission(componentName: string, permission: string, callback: (result: boolean) => void) {
+  checkPermission(componentName: string, permission: string, callback?: (result: boolean) => boolean) {
     // path = path.replace(/^\//g, '').replace(/\:id/g, '').replace(/\/$/g, '');
     // const componentName = component['componentName'];
     if (this.excludeComponents.indexOf(componentName) < 0) {
-      this.loadPermissionToCache(() => {
-        callback(typeof this.permissionsCache[`${componentName}_${permission}`] === 'undefined' ? false : this.permissionsCache[`${componentName}_${permission}`]);
-      });
+      // return this.loadPermissionToCache().then(permissionsCache => {
+      const result = typeof this.permissionsCache$.value[`${componentName}_${permission}`] === 'undefined' ? false : this.permissionsCache$.value[`${componentName}_${permission}`];
+      callback && callback(result);
+      return result;
+      // });
     }
-    return callback(true);
+    return callback && callback(true) || true;
   }
 
   clearCache() {
-    this.permissionsCache = null;
+    this.permissionsCache$.next(null);
   }
 
   /** Dialog */

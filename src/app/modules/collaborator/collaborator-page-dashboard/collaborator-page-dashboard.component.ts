@@ -139,7 +139,7 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
       this.refresh();
     });
 
-    this.commonService.waitForLanguageLoaded().then(() => {
+    this.commonService.waitForReady().then(() => {
       this.actionButtonList = [
         {
           name: 'refresh',

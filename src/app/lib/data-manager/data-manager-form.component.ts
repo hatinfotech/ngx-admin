@@ -109,7 +109,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Form init */
   async init(): Promise<boolean> {
-    await this.commonService.waitForLanguageLoaded();
+    await this.commonService.waitForReady();
     this.actionButtonList = [
       {
         name: 'reload',

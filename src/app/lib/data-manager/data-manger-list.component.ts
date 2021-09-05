@@ -112,7 +112,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   async init(): Promise<boolean> {
 
     // Wait for langluage service loaded
-    await this.commonService.waitForLanguageLoaded();
+    await this.commonService.waitForReady();
     this.actionButtonList = [
       {
         name: 'choose',

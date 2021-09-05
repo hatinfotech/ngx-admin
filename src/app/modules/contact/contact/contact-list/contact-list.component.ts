@@ -88,7 +88,7 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
   async init() {
     // await this.loadCache();await this.commonService.waitForLanguageLoaded();
     // this.groupsList = await this.apiService.getPromise<ContactGroupModel[]>('/contact/groups', { onlyIdText: true });
-    await this.commonService.waitForLanguageLoaded();
+    await this.commonService.waitForReady();
     this.tabs = [
       {
         title: this.commonService.translateText('Contact.title', { action: '', definition: '' }),

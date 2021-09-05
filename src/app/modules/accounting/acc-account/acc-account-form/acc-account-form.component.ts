@@ -88,7 +88,7 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
   }
 
   async init() {
-    await this.commonService.waitForLanguageLoaded();
+    await this.commonService.waitForReady();
     this.reportByObjectList = [
       {
         id: '',

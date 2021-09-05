@@ -25,7 +25,7 @@ import { CollaboartorCommissionDetailComponent } from '../collaborator-commissio
 })
 export class CollaboratorCommissionListComponent extends ServerDataManagerListComponent<CollaboratorCommissionVoucherModel> implements OnInit {
 
-  componentName: string = 'CollaboratorPublisherCommissionListComponent';
+  componentName: string = 'CollaboratorCommissionListComponent';
   formPath = '/collaborator/commission-voucher/form';
   apiPath = '/collaborator/commission-vouchers';
   idKey = 'Code';
@@ -169,7 +169,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
             instance.icon = 'checkmark-circle';
             instance.display = true;
             instance.status = 'success';
-            instance.disabled = this.isChoosedMode;
+            // instance.disabled = this.isChoosedMode;
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
             instance.init.subscribe(commissionVoucher => {
@@ -177,6 +177,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
+              instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
               // this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {

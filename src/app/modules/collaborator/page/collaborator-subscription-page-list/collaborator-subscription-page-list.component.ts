@@ -52,7 +52,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForLanguageLoaded();
+    await this.commonService.waitForReady();
     this.cycleMap = {
       MONTHLY: this.commonService.translateText('Common.monthly'),
       YEARLY: this.commonService.translateText('Common.yearly'),
