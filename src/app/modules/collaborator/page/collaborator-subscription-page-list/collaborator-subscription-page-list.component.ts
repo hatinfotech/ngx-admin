@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import {  SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { CollaboratorPublisherModel } from '../../../../models/collaborator.model';
 import { PageModel } from '../../../../models/page.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
@@ -24,8 +25,8 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
 
   componentName: string = 'CollaboratorSubscriptionPageListComponent';
   formPath = '/collaborator/page/form';
-  apiPath = '/collaborator/pages';
-  idKey = 'Code';
+  apiPath = '/collaborator/subscription-pages';
+  idKey = ['Page', 'Publisher'];
   formDialog = CollaboratorPageFormComponent;
 
   reuseDialog = true;
@@ -81,7 +82,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
     ];
     return super.init().then(rs => {
       // remove action buttons
-      this.actionButtonList = this.actionButtonList.filter(f => ['add','edit','delete'].indexOf(f.name) < 0 )
+      this.actionButtonList = this.actionButtonList.filter(f => ['add', 'edit', 'delete'].indexOf(f.name) < 0)
 
       // Push product, categories, groups and units to collaborator platform
       // this.actionButtonList.unshift({
@@ -140,7 +141,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
   loadListSetting(): SmartTableSetting {
     return this.configSetting({
       columns: {
-        Code: {
+        Page: {
           title: this.commonService.translateText('Common.code'),
           type: 'string',
           width: '10%',
@@ -148,24 +149,14 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
         Name: {
           title: this.commonService.translateText('Common.name'),
           type: 'string',
+          width: '60%',
+        },
+        Assigned: {
+          title: this.commonService.translateText('Common.assigned'),
+          type: 'datetime',
           width: '20%',
         },
-        Description: {
-          title: this.commonService.translateText('Common.description'),
-          type: 'string',
-          width: '40%',
-        },
-        PriceTable: {
-          title: this.commonService.translateText('Sales.priceTable '),
-          type: 'string',
-          width: '10%',
-        },
-        Created: {
-          title: this.commonService.translateText('Common.created'),
-          type: 'datetime',
-          width: '15%',
-        },
-        State: {
+        Level: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',
           width: '5%',
@@ -176,16 +167,17 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
             instance.icon = 'checkmark-circle';
             instance.display = true;
             instance.status = 'success';
-            instance.disabled = true;
-            instance.title = this.commonService.translateText('Common.state');
-            instance.label = this.commonService.translateText('Common.state');
-            instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
-              instance.status = processMap?.status;
-              instance.outline = processMap?.outline;
+            instance.disabled = this.isChoosedMode;
+            instance.outline = true
+            // instance.label = this.commonService.translateText('Common.state');
+            instance.init.subscribe((row: CollaboratorPublisherModel) => {
+              // const processMap = AppModule.processMaps.commerceServiceByCycle[row.State || ''];
+              instance.title = row.LevelLabel;
+              instance.label = row.LevelLabel;
+              // instance.status = processMap?.status;
+              // instance.outline = processMap?.outline;
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPublisherModel) => {
               this.changeStateConfirm(instance.rowData).then(status => {
                 if (status) this.refresh();
               });

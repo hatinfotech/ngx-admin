@@ -16,6 +16,7 @@ import { CommonService } from '../../../../services/common.service';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
 import { PageModel } from '../../../../models/page.model';
+import { CollaboratorPublisherFormComponent } from '../collaborator-publisher-form/collaborator-publisher-form.component';
 
 @Component({
   selector: 'ngx-collaborator-publisher-list',
@@ -27,8 +28,8 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
   componentName: string = 'CollaboratorPublisherListComponent';
   formPath = '/collaborator/publisher/form';
   apiPath = '/collaborator/publishers';
-  idKey = 'Code';
-  // formDialog = CommerceServiceByCycleFormComponent;
+  idKey = ['Publisher', 'Page'];
+  formDialog = CollaboratorPublisherFormComponent;
 
   reuseDialog = true;
 
@@ -165,7 +166,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
           type: 'datetime',
           width: '15%',
         },
-        State: {
+        Level: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',
           width: '5%',
@@ -177,13 +178,14 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
             instance.display = true;
             instance.status = 'success';
             instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.state');
-            instance.label = this.commonService.translateText('Common.state');
-            instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
-              instance.status = processMap?.status;
-              instance.outline = processMap?.outline;
+            instance.outline = true
+            // instance.label = this.commonService.translateText('Common.state');
+            instance.init.subscribe((row: CollaboratorPublisherModel) => {
+              // const processMap = AppModule.processMaps.commerceServiceByCycle[row.State || ''];
+              instance.title = row.LevelLabel;
+              instance.label = row.LevelLabel;
+              // instance.status = processMap?.status;
+              // instance.outline = processMap?.outline;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPublisherModel) => {
               this.changeStateConfirm(instance.rowData).then(status => {

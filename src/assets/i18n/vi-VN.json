@@ -880,6 +880,14 @@
             "label": "thanh toán hoa hồng",
             "paymentLabel": "thanh toán hoa hồng",
             "title": "{{action}}{{definition}} phiếu thanh toán hoa hồng"
+        },
+        "Level": {
+            "label": "level",
+            "name": "nhãn",
+            "ratio": "tỷ lệ chiết khấu"
+        },
+        "Badge": {
+            "label": "danh hiệu"
         }
     },
     "Print": {

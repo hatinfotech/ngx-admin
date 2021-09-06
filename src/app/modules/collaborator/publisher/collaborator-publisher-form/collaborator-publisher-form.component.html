@@ -1,0 +1,57 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup" style="width: 90%; margin: 0 auto;">
+    <div formArrayName="array">
+        <div *ngFor="let formItem of array.controls; let i = index">
+            <nb-card class="small-header popup">
+                <nb-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Publisher.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+                </nb-card-header>
+                <nb-card-body>
+                    <div [formGroup]="formItem">
+                        <!-- <input type="hidden" nbInput fullWidth formControlName="Code"> -->
+                        <div class="row">
+                            <input type="hidden" formControlName="Page">
+                            <input type="hidden" formControlName="Publisher">
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Phone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" nbInput fullWidth formControlName="Phone" placeholder="{{'Common.phone' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Email" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" nbInput fullWidth formControlName="Email" placeholder="{{'Common.email' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Address" label="Common.address" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" nbInput fullWidth formControlName="Address" placeholder="{{'Common.address' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="IdentifiedNumber" label="Common.identifiedNumber" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" nbInput fullWidth formControlName="IdentifiedNumber" placeholder="{{'Common.identifiedNumber' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Level" label="Collaborator.Level.label" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="Level" [data]="levelList" [select2Option]="select2OptionForLevel"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                        </div>
+                    </div>
+                </nb-card-body>
+                <nb-card-footer>
+                    <div class="buttons-row" style="text-align: right;">
+                        <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
+                    </div>
+                </nb-card-footer>
+            </nb-card>
+
+        </div>
+    </div>
+</form>

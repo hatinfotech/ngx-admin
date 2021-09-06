@@ -11,7 +11,7 @@
                             <input type="hidden" formControlName="Code">
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="Publisher" label="Collaborator.Publisher.label" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <ngx-select2 #publisher formControlName="Publisher" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                    <ngx-select2 formControlName="Publisher" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
@@ -26,7 +26,7 @@
                             </div>
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons">
-                                    <ngx-select2 #page formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-8">

@@ -753,6 +753,11 @@ export class CommonService {
     const locale = this.getCurrentLoaleDataset();
     return { prefix: '', suffix: '', thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
   }
+  
+  getPercentMaskConfig(): CurrencyMaskConfig {
+    const locale = this.getCurrentLoaleDataset();
+    return { prefix: '', suffix: '%', thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
+  }
 
   getTaxMaskConfig(): CurrencyMaskConfig {
     const locale = this.getCurrentLoaleDataset();

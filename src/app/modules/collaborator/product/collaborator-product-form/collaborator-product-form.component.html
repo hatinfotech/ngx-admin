@@ -1,186 +1,132 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
-    <div formArrayName="array">
-      <div *ngFor="let formItem of array.controls; let i = index">
-        <nb-card class="small-header popup" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event, formItem, i)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver[i] }">
-          <nb-card-header>
-            <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Product.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
-          </nb-card-header>
-          <nb-card-body>
-            <div [formGroup]="formItem">
-              <div class="row">
-                <input type="hidden" formControlName="Code_old">
-                <input type="hidden" formControlName="FeaturePicture">
-                <div class="col-sm-6">
-                  <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                    <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
-                        (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Name')" pack="eva" icon="copy-outline">
-                      </nb-icon>
-                    </label>
-                    <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Product.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Page">
+              <div class="col-sm-8">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
+                      (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Product'), 'warning')">
+                  <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Product" maxlength="30" placeholder="Mã sản phẩm">
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
+                  <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Sku" placeholder="Sku">
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Unit'), 'warning')">
+                  <label class="label"><span class="valid">Đơn vị tính (*)</span><span class="invalid">ĐVT là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Unit" placeholder="Đơn vị tính">
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('IsUsed'), 'warning')">
+                  <label class="label"><span class="valid">Điều kiện kinh doanh</span></label>
+                  <nb-checkbox formControlName="IsUsed">Đã sử dụng qua sản phẩm</nb-checkbox>
+                </div>
+              </div>
+
+              <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <!-- Detail form -->
+                <label class="label">{{'Cài đặt level' | translate | headtitlecase}}</label>
+                <div class="row fit-row form-detail-header">
+                  <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
+                  <div class="row fit-content-column">
+                    <div class="col-sm-3 label column">{{'Collaborator.Badge.label' | translate | headtitlecase}}</div>
+                    <div class="col-sm-3 label column">{{'Collaborator.Level.label' | translate | headtitlecase}}</div>
+                    <div class="col-sm-4 label column">{{'Common.description' | translate | headtitlecase}}</div>
+                    <div class="col-sm-2 label column">{{'Collaborator.Level.ratio' | translate | headtitlecase}} (%)</div>
+                  </div>
+                  <div class="fit-last-col column">
+                    <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addLevelFormGroup(formItem)" size="medium" hero>
+                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                    </button>
                   </div>
                 </div>
-                <div class="col-sm-2">
-                  <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
-                    <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt
-                        buộc
-                        (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Sku')" pack="eva" icon="copy-outline">
-                      </nb-icon>
-                    </label>
-                    <input type="text" nbInput fullWidth formControlName="Sku" placeholder="Sku">
-                  </div>
-                </div>
-                <div class="col-sm-2">
-                  <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')">
-                    <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt
-                        buộc
-                        (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'WarehouseUnit')" pack="eva" icon="copy-outline">
-                      </nb-icon>
-                    </label>
-                    <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList">
-                    </ngx-select2>
-                  </div>
-                </div>
-                <div class="col-sm-2">
-                  <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                    <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt
-                        buộc
-                        (*)</span></label>
-                    <input type="text" nbInput fullWidth formControlName="Code" maxlength="30" placeholder="Tự động tạo mã">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
-                    <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
-                        (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Categories')" pack="eva" icon="copy-outline">
-                      </nb-icon>
-                    </label>
-                    <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList">
-                    </ngx-select2>
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
-                    <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
-                        (*)</span>
-                      <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Groups')" pack="eva" icon="copy-outline">
-                      </nb-icon>
-                    </label>
-                    <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups" [data]="groupList">
-                    </ngx-select2>
-                  </div>
-                </div>
-  
-                <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
-                  <!-- Detail form -->
-                  <label class="label">{{'AdminProduct.conversionRatio' | translate | headtitlecase}}</label>
-                  <div class="row fit-row form-detail-header">
-                    <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
-                    <div class="row fit-content-column">
-                      <div class="col-sm-3 label column">{{'AdminProduct.unit' | translate | headtitlecase}}</div>
-                      <div class="col-sm-3 label column">{{'AdminProduct.conversionRatio' | translate | headtitlecase}}</div>
-                      <div class="col-sm-3 label column">{{'AdminProduct.defaultSales' | translate | headtitlecase}}</div>
-                      <div class="col-sm-3 label column">{{'AdminProduct.defaultPurchase' | translate | headtitlecase}}</div>
-                    </div>
-                    <div class="fit-last-col column">
-                      <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addUnitConversionFormGroup(formItem)" size="medium" hero>
-                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
-                      </button>
-                    </div>
-                  </div>
-  
-                  <div formArrayName="UnitConversions" class="form-details" [sortablejs]="getUnitConversions(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
-                    <hr>
-                    <div class="form-detail-item" *ngFor="let unitConversion of getUnitConversions(formItem).controls; let ic=index" [formGroup]="unitConversion">
-                      <div class="row fit-row">
-                        <div class="fit-fist-col label">
-                          <div class="form-group">
-                            <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
-                            <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ ic + 1 }}">
-                            <input type="hidden" formControlName="Id">
-                          </div>
+
+                <div formArrayName="Levels" class="form-details" [sortablejs]="getLevels(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                  <hr>
+                  <div class="form-detail-item" *ngFor="let levelGroup of getLevels(formItem).controls; let ic=index" [formGroup]="levelGroup">
+                    <div class="row fit-row">
+                      <div class="fit-fist-col label">
+                        <div class="form-group">
+                          <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
+                          <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ ic + 1 }}">
+                          <input type="hidden" formControlName="Id">
                         </div>
-                        <div class="row fit-content-column">
-                          <div class="col-sm-12">
-                            <div class="row">
-                              <div class="col-sm-3">
-                                <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="Unit" label="AdminProduct.unit" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
-                                  <ngx-select2 formControlName="Unit" [data]="unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
-                                </ngx-form-group>
-                              </div>
-                              <div class="col-sm-3">
-                                <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="ConversionRatio" label="AdminProduct.conversionRatio" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
-                                  <input type="text" nbInput fullWidth formControlName="ConversionRatio" placeholder="{{'Product.conversionRatio' | translate | headtitlecase}}">
-                                </ngx-form-group>
-                              </div>
-                              <div class="col-sm-3">
-                                <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsDefaultSales" label="AdminProduct.defaultSales" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                  <nb-checkbox formControlName="IsDefaultSales">
-                                    <label class="label"><span class="valid">{{'AdminProduct.defaultSales' | translate | headtitlecase}}</span></label>
-                                  </nb-checkbox>
-                                </ngx-form-group>
-                              </div>
-                              <div class="col-sm-3">
-                                <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsDefaultPurchase" label="AdminProduct.defaultPurchase" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                  <nb-checkbox formControlName="IsDefaultPurchase">
-                                    <label class="label"><span class="valid">{{'AdminProduct.defaultPurchase' | translate | headtitlecase}}</span></label>
-                                  </nb-checkbox>
-                                </ngx-form-group>
-                              </div>
+                      </div>
+                      <div class="row fit-content-column">
+                        <div class="col-sm-12">
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <ngx-form-group [hideLabel]="true" [formGroup]="levelGroup" name="Badge" label="Collaborator.Badge.label" [array]="getLevels(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
+                                <ngx-select2 formControlName="Badge" [data]="badgeList" [select2Option]="select2OptionForbadge"></ngx-select2>
+                              </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                              <ngx-form-group [hideLabel]="true" [formGroup]="levelGroup" name="Level" label="Collaborator.Level.label" [array]="getLevels(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
+                                <ngx-select2 formControlName="Level" [data]="levelList" [select2Option]="select2OptionForLevel" (selectChange)="onLevelChange($event, levelGroup)"></ngx-select2>
+                              </ngx-form-group>
+                            </div>
+                            <div class="col-sm-4">
+                              <ngx-form-group [hideLabel]="true" [formGroup]="levelGroup" name="Description" label="Common.description" [array]="getLevels(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
+                                <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
+                              </ngx-form-group>
+                            </div>
+                            <div class="col-sm-2">
+                              <ngx-form-group [hideLabel]="true" [formGroup]="levelGroup" name="CommissionRatio" label="Collaborator.Level.ratio" [array]="getLevels(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
+                                <input type="text" nbInput fullWidth formControlName="CommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}" currencyMask [options]="percentFormat">
+                              </ngx-form-group>
                             </div>
                           </div>
                         </div>
-                        <div class="fit-last-col">
-                          <div class="form-group" style="text-align: right;">
-                            <label class="label">CM</label>
-                            <button class="fit-control-button" nbButton status="danger" [outline]="true" hero size="medium" (click)="removeUnitConversionGroup(formItem, unitConversion, ic)">
-                              <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
-                            </button>
-                          </div>
+                      </div>
+                      <div class="fit-last-col">
+                        <div class="form-group" style="text-align: right;">
+                          <label class="label">CM</label>
+                          <button class="fit-control-button" nbButton status="danger" [outline]="true" hero size="medium" (click)="removeLevelGroup(formItem, levelGroup, ic)">
+                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                          </button>
                         </div>
                       </div>
-  
                     </div>
+
                   </div>
-                  <!-- End Detail form -->
                 </div>
-  
+                <!-- End Detail form -->
               </div>
-              <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
-              <div class="row">
-                <div class="col-sm-12">
-                  <ngx-form-group [formGroup]="formItem" name="Pictures" label="Common.pictures" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
-                    <ngx-files-input formControlName="Pictures" [config]="{style: {height: '10rem'}, thumbnailStype: {height: '8rem'}, colSize: 3}" (onThumbnailClick)="onThumbnailPcitureClick($event, formItem)"></ngx-files-input>
-                  </ngx-form-group>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
-                    <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc (*)</span></label>
-                    <ckeditor [editor]="Editor" formControlName="Description" [config]="{ height: '200px' }" (ready)="onCkeditorReady($event)"></ckeditor>
-                  </div>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group" [attr.state]="formControlValidate(formItem.get('Technical'), 'warning')">
-                    <label class="label"><span class="valid">Thông tin kỹ thuật (*)</span><span class="invalid">Thông tin kỹ thuật là bắt buộc (*)</span></label>
-                    <ckeditor [editor]="Editor" formControlName="Technical" [config]="{ height: '200px' }"></ckeditor>
-                  </div>
-                </div>
-              </div>
-  
+
             </div>
-          </nb-card-body>
-          <nb-card-footer>
-            <div class="buttons-row" style="text-align: right;">
-              <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm cái nữa</button>
-              <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
-              <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
-            </div>
-          </nb-card-footer>
-        </nb-card>
-  
-      </div>
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm cái nữa</button> -->
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
     </div>
-  </form>
+  </div>
+</form>

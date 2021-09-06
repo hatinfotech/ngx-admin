@@ -11,6 +11,7 @@ export interface CollaboratorPublisherModel {
     Assigned?: string;
     State?: string;
     Level?: string;
+    LevelLabel?: string;
 }
 
 export interface CollaboratorOrderModel {
