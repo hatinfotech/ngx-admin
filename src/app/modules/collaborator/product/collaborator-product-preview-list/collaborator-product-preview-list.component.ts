@@ -310,7 +310,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
       params['includeGroups'] = true;
       // params['includeWarehouseUnit'] = true;
       // params['includeFeaturePicture'] = true;
-      // params['includeUnitConversions'] = true;
+      params['filterByLevelAndBadge'] = true;
       params['sort_Id'] = 'desc';
       if (this.collaboratorService.currentpage$.value) {
         params['page'] = this.collaboratorService.currentpage$.value;
