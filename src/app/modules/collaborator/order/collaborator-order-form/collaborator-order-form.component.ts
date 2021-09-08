@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment.prod';
+import { Select2, Select2QueryOptions } from '../../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -243,6 +244,87 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       text: 'text',
     },
   };
+  select2OptionForProvince = {
+    placeholder: 'Chọn tỉnh/TP...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params, options: any) => {
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  makeSelect2Option(select2Options:any, formGroup: FormGroup) {
+    return {
+      ...select2Options,
+      formGroup
+    }
+  }
+  select2OptionForDistrict = {
+    placeholder: 'Chọn quận/huyện...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params, options: any) => {
+        const formGroup = options?.formGroup;
+        const provice = formGroup && this.commonService.getObjectId(formGroup.get('Province').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[CDISTRICT,PDISTRICT,BURG,CITYDISTRICT]', eq_Parent: provice });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  select2OptionForWard = {
+    placeholder: 'Chọn phường/xã/thị trấn...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params: any, options: any) => {
+        const formGroup = options?.formGroup;
+        const district = formGroup && this.commonService.getObjectId(formGroup.get('District').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
 
   select2OptionForTax = {
     placeholder: 'Chọn thuế...',
@@ -432,9 +514,12 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       // DirectReceiverName: [''],
       // PaymentStep: [''],
       // PriceTable: [''],
+      Province: ['', Validators.required],
+      District: ['', Validators.required],
+      Ward: ['', Validators.required],
       DeliveryAddress: ['', Validators.required],
       DateOfOrder: [new Date(), Validators.required],
-      DateOfDelivery: [''],
+      // DateOfDelivery: [''],
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
@@ -659,20 +744,20 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       if (selectedData.Units)
         // detail['unitList'] = selectedData.Unit;
         if (selectedData.Units) {
-        detail['unitList'] = selectedData.Units;
-        // const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
-        // if (detaultUnit) {
-        // const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
-        detail.get('Unit').setValue('');
-        // setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
-        setTimeout(() => {
-          // detail.get('Price').setValue(choosed.Price);
-          this.toMoney(parentForm, detail);
-        }, 0);
-        // }
-      } else {
-        detail['unitList'] = this.commonService.unitList;
-      }
+          detail['unitList'] = selectedData.Units;
+          // const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
+          // if (detaultUnit) {
+          // const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
+          detail.get('Unit').setValue('');
+          // setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
+          setTimeout(() => {
+            // detail.get('Price').setValue(choosed.Price);
+            this.toMoney(parentForm, detail);
+          }, 0);
+          // }
+        } else {
+          detail['unitList'] = this.commonService.unitList;
+        }
       // });
       // } else {
       //   detail['unitList'] = this.commonService.unitList;

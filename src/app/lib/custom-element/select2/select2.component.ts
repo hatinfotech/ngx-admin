@@ -3,6 +3,20 @@ import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VAL
 import { Select2Options, Select2AjaxOptions, Select2QueryOptions, Select2SelectionObject, IdTextPair } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import * as _ from 'lodash';
 
+// declare var Search: any;
+
+// Search.prototype.handleSearch = function (evt) {
+//   if (!this._keyUpPrevented) {
+//     var input = this.$search.val();
+
+//     this.trigger('query', {
+//       term: input
+//     });
+//   }
+
+//   this._keyUpPrevented = false;
+// };
+
 export interface Select2Option {
   [key: string]: any;
   width?: string;

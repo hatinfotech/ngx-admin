@@ -87,6 +87,11 @@
 
                         <label class="label label-with-border-below">{{'Common.deliveryAndPayment' | translate | headtitlecase}}</label>
                         <div class="row dashed-radius-border">
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="ObjectBankName" label="Bank.name" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="ObjectBankName" placeholder="{{'Bank.name' | translate | headtitlecase}}">
@@ -103,25 +108,29 @@
                                     <owl-date-time #DateOfOrder></owl-date-time>
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Province" label="Common.province" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="Province" [select2Option]="makeSelect2Option(select2OptionForProvince, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="District" label="Common.district" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="District" [select2Option]="makeSelect2Option(select2OptionForDistrict, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Ward" label="Common.ward" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="Ward" [select2Option]="makeSelect2Option(select2OptionForWard, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
-                                </ngx-form-group>
-                            </div>
-                            <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfDelivery" label="Collaborator.Order.dateOfDelivery" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                                    <input type="text" [owlDateTime]="DateOfDelivery" [owlDateTimeTrigger]="DateOfDelivery" nbInput fullWidth formControlName="DateOfDelivery" placeholder="{{'Collaborator.Order.dateOfDelivery' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfDelivery></owl-date-time>
-                                </ngx-form-group>
-                            </div>
-                            <div class="col-sm-9">
-                                <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                                    <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
-                                </ngx-form-group>
-                            </div>
-                            <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons">
-                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
