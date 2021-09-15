@@ -111,6 +111,23 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       text: 'text',
     },
   };
+  cycleList = [
+    { id: 'WEEKLY', text: 'Tuần' },
+    { id: 'MONTHLY', text: 'Tháng' },
+    { id: 'YEARLY', text: 'Năm' },
+  ];
+  select2OptionForCycle = {
+    placeholder: 'Chọn chu kỳ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
   onLevelChange(level: any, formGroup: FormGroup) {
     if (level && level.text) {
       formGroup.get('Description').setValue(level.text);
@@ -230,6 +247,9 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       Sku: { value: '', disabled: true },
       Name: { value: '', disabled: true },
       Unit: { value: '', disabled: true },
+      Cycle: ['MONTHLY'],
+      DateOfStart: [new Date()],
+      IsAutoExtended: [true],
       Levels: this.formBuilder.array([]),
     });
     if (data) {
@@ -528,6 +548,10 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     const data = super.getRawFormData();
     for (const item of data.array) {
       // item['Page'] = this.collaboratorService.currentpage$.value;
+      // if (item['DateOfStart']) {
+        // const dateOfStart = new Date(item['DateOfStart']);
+        // item['DateOfStart'] = new Date(dateOfStart.getFullYear(), dateOfStart.getMonth(), dateOfStart.getDate(), 0, 0, 0);
+      // }
     }
     return data;
   }

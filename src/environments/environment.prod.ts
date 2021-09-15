@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '4.0.0.16',
+  version: '4.0.0.17',
   // 3.0.0: Upgrade: support multi core connection
   // 2.3.10: Dev Commerce service by cycle module
   // 2.3.9: Complete commerce process

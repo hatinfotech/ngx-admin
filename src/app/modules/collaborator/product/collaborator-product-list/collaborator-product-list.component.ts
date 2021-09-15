@@ -292,7 +292,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
         UnitName: {
           title: 'ĐVT',
           type: 'html',
-          width: '10%',
+          width: '5%',
         },
         Price: {
           title: 'Giá',
@@ -307,12 +307,27 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
         Sku: {
           title: 'Sku',
           type: 'string',
-          width: '15%',
+          width: '10%',
+        },
+        Cycle: {
+          title: 'Chu kỳ',
+          type: 'string',
+          width: '10%',
+        },
+        IsAutoExtended: {
+          title: 'Gia hạn',
+          type: 'boolean',
+          width: '5%',
+        },
+        IsUsed: {
+          title: 'Đã sử dụng',
+          type: 'boolean',
+          width: '5%',
         },
         PageName: {
           title: 'Trang',
           type: 'string',
-          width: '12%',
+          width: '15%',
         },
       },
     });

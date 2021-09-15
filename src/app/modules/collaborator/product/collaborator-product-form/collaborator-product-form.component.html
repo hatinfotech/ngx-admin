@@ -43,6 +43,22 @@
                   <nb-checkbox formControlName="IsUsed">Đã sử dụng qua sản phẩm</nb-checkbox>
                 </div>
               </div>
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="Cycle" label="Common.cycle" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <ngx-select2 formControlName="Cycle" [data]="cycleList" [select2Option]="select2OptionForCycle"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="DateOfStart" label="Common.dateOfStart" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" [owlDateTime]="DateOfStart" [owlDateTimeTrigger]="DateOfStart" nbInput fullWidth formControlName="DateOfStart" placeholder="{{'Common.dateOfStart' | translate | headtitlecase}}">
+                <owl-date-time #DateOfStart></owl-date-time>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Common.cycle" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <nb-checkbox formControlName="IsAutoExtended">Tự động gia hạn</nb-checkbox>
+                </ngx-form-group>
+              </div>
 
               <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
                 <!-- Detail form -->
