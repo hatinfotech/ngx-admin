@@ -47,6 +47,14 @@
       -webkit-backface-visibility: hidden;
       color: nb-theme(text-control-color);
 
+      nb-icon {
+        font-size: 3.75rem;
+      }
+      nb-icon[pack="ion"] {
+        height: initial;
+        width: initial;
+      }
+
       @each $status in nb-get-statuses() {
         &.status-#{$status} {
           $left-color: nb-theme(button-hero-#{$status}-left-background-color);

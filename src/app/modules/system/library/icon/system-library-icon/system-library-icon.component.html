@@ -1,10 +1,47 @@
-<nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
-  <nb-card-header id="helpdeskHeader">
-    Icons
-  </nb-card-header>
-  <nb-card-body>
-    <span class="icon" *ngFor="let icon of icons">
-      <nb-icon icon="{{icon}}" pack="ion"></nb-icon> {{icon}}
-    </span>
-  </nb-card-body>
-</nb-card>
+<div class="row">
+  <div class="col-md-12 col-lg-6">
+    <nb-card>
+      <nb-card-header>
+        Eva Icons
+      </nb-card-header>
+      <nb-card-body>
+        <nb-icon *ngFor="let icon of evaIcons" [icon]="icon" pack="eva" (click)="showIconInfo(icon, 'eva')"></nb-icon>
+      </nb-card-body>
+      <nb-card-footer>
+        <a href="https://akveo.github.io/eva-icons/?utm_campaign=eva_icons%20-%20home%20-%20ngx_admin%20code%20embed&utm_source=ngx_admin&utm_medium=embedded&utm_content=icons_eva_icons_card" target="_blank">See all Eva Icons</a>
+      </nb-card-footer>
+    </nb-card>
+  </div>
+
+  <div class="col-md-12 col-lg-6">
+    <nb-card>
+      <nb-card-header>
+        Font awesome icons
+      </nb-card-header>
+      <nb-card-body>
+        <nb-icon *ngFor="let icon of icons.fontAwesome" [icon]="icon" pack="fa" (click)="showIconInfo(icon, 'fa')"></nb-icon>
+        <nb-icon *ngFor="let icon of icons.fontAwesomeRegular" [icon]="icon" pack="far" (click)="showIconInfo(icon, 'far')"></nb-icon>
+      </nb-card-body>
+      <nb-card-footer>
+        <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">
+          See all Font Awesome icons
+        </a>
+      </nb-card-footer>
+    </nb-card>
+
+    <nb-card>
+      <nb-card-header>
+        Ionicons
+      </nb-card-header>
+      <nb-card-body>
+        <!-- <span *ngFor="let icon of icons.ionicons" class="nowrap no-margin with-label"> -->
+          <nb-icon *ngFor="let icon of icons.ionicons" [icon]="icon" pack="ion" (click)="showIconInfo(icon, 'ion')"></nb-icon>
+        <!-- </span> -->
+      </nb-card-body>
+      <nb-card-footer>
+        <a href="http://ionicons.com/" target="_blank">See all ionicons</a>
+      </nb-card-footer>
+    </nb-card>
+
+  </div>
+</div>

@@ -41,6 +41,8 @@ export class AppComponent implements OnInit {
     public notificatinoSerivce: NotificationService,
   ) {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
+    iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'far ' });
+    iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
     this.commonService.configReady$.subscribe(ready => {
       if (ready) {
         this.commonService.getMenuTree(menuTree => {
