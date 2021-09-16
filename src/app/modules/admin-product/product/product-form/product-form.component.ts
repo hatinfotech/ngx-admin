@@ -1,3 +1,4 @@
+// import { SimpleUploadAdapter } from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductGroupModel } from './../../../../models/product.model';
 import { Component, OnInit, EventEmitter } from '@angular/core';
@@ -15,8 +16,118 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FileModel } from '../../../../models/file.model';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
-import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic';
+// import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic/build/ckeditor.js';
+// import * as ClassicEditorBuild from '../../../../../vendor/ckeditor5-build-classic/build/ckeditor.js'; 
+import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckediter5-custom-build/build/ckeditor.js';
 
+class MyUploadAdapter {
+  xhr: XMLHttpRequest;
+  loader: any;
+  options: any;
+  editor: any;
+  constructor(loader: any, options: any) {
+    // The file loader instance to use during the upload.
+    this.loader = loader;
+    this.options = options;
+  }
+
+
+  // Starts the upload process.
+  upload() {
+    return this.loader.file
+      .then(file => new Promise((resolve, reject) => {
+        this._initRequest();
+        this._initListeners(resolve, reject, file);
+        this._sendRequest(file);
+      }));
+  }
+
+  // Aborts the upload process.
+  abort() {
+    if (this.xhr) {
+      this.xhr.abort();
+    }
+  }
+
+  // Initializes the XMLHttpRequest object using the URL passed to the constructor.
+  _initRequest() {
+    const xhr = this.xhr = new XMLHttpRequest();
+
+    // Note that your request may look different. It is up to you and your editor
+    // integration to choose the right communication channel. This example uses
+    // a POST request with JSON as a data structure but your configuration
+    // could be different.
+    xhr.open('POST', this.options.uploadUrl(), true);
+    xhr.responseType = 'json';
+  }
+
+  // Initializes XMLHttpRequest listeners.
+  _initListeners(resolve, reject, file) {
+    const xhr = this.xhr;
+    const loader = this.loader;
+    const genericErrorText = `Couldn't upload file: ${file.name}.`;
+
+    xhr.addEventListener('error', () => reject(genericErrorText));
+    xhr.addEventListener('abort', () => reject());
+    xhr.addEventListener('load', () => {
+      const response = xhr.response;
+
+      // This example assumes the XHR server's "response" object will come with
+      // an "error" which has its own "message" that can be passed to reject()
+      // in the upload promise.
+      //
+      // Your integration may handle upload errors in a different way so make sure
+      // it is done properly. The reject() function must be called when the upload fails.
+      if (!response || response.error) {
+        return reject(response && response.error ? response.error.message : genericErrorText);
+      }
+
+      // If the upload is successful, resolve the upload promise with an object containing
+      // at least the "default" URL, pointing to the image on the server.
+      // This URL will be used to display the image in the content. Learn more in the
+      // UploadAdapter#upload documentation.
+      resolve({
+        default: response[0].OriginImage
+      });
+    });
+
+    // Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
+    // properties which are used e.g. to display the upload progress bar in the editor
+    // user interface.
+    if (xhr.upload) {
+      xhr.upload.addEventListener('progress', evt => {
+        if (evt.lengthComputable) {
+          loader.uploadTotal = evt.total;
+          loader.uploaded = evt.loaded;
+        }
+      });
+    }
+  }
+
+  // Prepares the data and sends the request.
+  _sendRequest(file) {
+    // Prepare the form data.
+    const data = new FormData();
+
+    data.append('file', file);
+
+    // Important note: This is the right place to implement security mechanisms
+    // like authentication and CSRF protection. For instance, you can use
+    // XMLHttpRequest.setRequestHeader() to set the request headers containing
+    // the CSRF token generated earlier by your application.
+
+    // Send the request.
+    this.xhr.send(data);
+  }
+}
+
+function MyCustomUploadAdapterPlugin(editor) {
+  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+    // Configure the URL to the upload script in your back-end here!
+    const options = editor.config.get('simpleUpload');
+    return new MyUploadAdapter(loader, options);
+  };
+}
 
 @Component({
   selector: 'ngx-product-form',
@@ -38,6 +149,59 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
 
   public Editor = ClassicEditorBuild;
+  public ckEditorConfig = {
+    height: '200px',
+    // plugins: [ImageResize],
+    extraPlugins: [MyCustomUploadAdapterPlugin],
+    simpleUpload: {
+      uploadUrl: () => {
+        return this.apiService.buildApiUrl('/file/files', { upload: true });
+      },
+    },
+    // toolbar: {
+    //   items: [
+    //     'heading',
+    //     '|',
+    //     'bold',
+    //     'italic',
+    //     'link',
+    //     'bulletedList',
+    //     'numberedList',
+    //     '|',
+    //     'outdent',
+    //     'indent',
+    //     '|',
+    //     'imageUpload',
+    //     'blockQuote',
+    //     'insertTable',
+    //     'mediaEmbed',
+    //     'undo',
+    //     'redo',
+    //     'imageInsert',
+    //     'alignment',
+    //     'removeFormat'
+    //   ]
+    // },
+    // language: 'en',
+    // image: {
+    //   toolbar: [
+    //     'imageTextAlternative',
+    //     'imageStyle:inline',
+    //     'imageStyle:block',
+    //     'imageStyle:side',
+    //     'linkImage'
+    //   ]
+    // },
+    // table: {
+    //   contentToolbar: [
+    //     'tableColumn',
+    //     'tableRow',
+    //     'mergeTableCells',
+    //     'tableCellProperties',
+    //     'tableProperties'
+    //   ]
+    // }
+  };
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -65,8 +229,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {limit: 'nolimit'})).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -285,7 +449,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     const newForm = this.formBuilder.group({
       // Id_old: [''],
       Id: [''],
-      Unit: [ formItem.get('WarehouseUnit').value || ''],
+      Unit: [formItem.get('WarehouseUnit').value || ''],
       ConversionRatio: ['1'],
       IsDefaultSales: [true],
       IsDefaultPurchase: [false],

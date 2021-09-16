@@ -1887,3 +1887,10 @@ body [nbButton].appearance-hero.size-medium {
 nb-action {
   cursor: pointer;
 }
+
+
+/** CKeditor */
+.ck.ck-balloon-panel {
+    z-index: 1040 !important;
+}
+/** End CKeditor */

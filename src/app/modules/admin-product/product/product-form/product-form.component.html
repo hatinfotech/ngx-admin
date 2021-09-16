@@ -159,13 +159,13 @@
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc (*)</span></label>
-                  <ckeditor [editor]="Editor" formControlName="Description" [config]="{ height: '200px' }" (ready)="onCkeditorReady($event)"></ckeditor>
+                  <ckeditor [editor]="Editor" formControlName="Description" [config]="ckEditorConfig" (ready)="onCkeditorReady($event)"></ckeditor>
                 </div>
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Technical'), 'warning')">
                   <label class="label"><span class="valid">Thông tin kỹ thuật (*)</span><span class="invalid">Thông tin kỹ thuật là bắt buộc (*)</span></label>
-                  <ckeditor [editor]="Editor" formControlName="Technical" [config]="{ height: '200px' }"></ckeditor>
+                  <ckeditor [editor]="Editor" formControlName="Technical" [config]="ckEditorConfig"></ckeditor>
                 </div>
               </div>
             </div>

@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '4.0.0.18',
+  version: '4.0.1.1',
+  // 4.0.1.1: Update CKeditor support upload image to file store, support more toolbar: image style, image resize,...
   // 3.0.0: Upgrade: support multi core connection
   // 2.3.10: Dev Commerce service by cycle module
   // 2.3.9: Complete commerce process
