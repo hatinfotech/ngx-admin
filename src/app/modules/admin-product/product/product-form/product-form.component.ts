@@ -18,7 +18,7 @@ import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput }
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 // import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic/build/ckeditor.js';
 // import * as ClassicEditorBuild from '../../../../../vendor/ckeditor5-build-classic/build/ckeditor.js'; 
-import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckediter5-custom-build/build/ckeditor.js';
+import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
 
 class MyUploadAdapter {
   xhr: XMLHttpRequest;

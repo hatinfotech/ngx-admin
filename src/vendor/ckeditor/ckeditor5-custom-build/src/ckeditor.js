@@ -28,7 +28,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
