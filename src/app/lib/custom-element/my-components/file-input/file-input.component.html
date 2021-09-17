@@ -1,5 +1,6 @@
-<div type="button" class="thumbnail input-full-width size-medium status-basic shape-rectangle" ngFileDrop (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }" [ngStyle]="style" fullWidth nbInput (click)="preview()">
+<div type="button" class="thumbnail input-full-width size-medium status-basic shape-rectangle" ngFileDrop (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }" [ngStyle]="style" fullWidth nbInput>
   <button class="upload-btn" nbButton size="tiny" (click)="chooseFile()">upload</button>
   <button class="preview-btn" nbButton size="tiny" (click)="remove()">remove</button>
+  <div class="preview" [ngStyle]="previewStyle" (click)="preview()"></div>
 </div>
 <input #uploadButton nbIn style="display: none;" type="file" ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">

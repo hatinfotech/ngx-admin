@@ -94,6 +94,25 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       text: 'text',
     },
   };
+
+  okrList = [
+    { id: 'WEEK', text: 'Theo tuần' },
+    { id: 'MONTH', text: 'Theo tháng' },
+    { id: 'QUARTER', text: 'Theo quý', },
+    { id: 'YEAR', text: 'Theo năm', },
+  ];
+  select2OptionForKpi = {
+    placeholder: 'Chọn thời gian...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
   badgeList = [
     { id: 'DONG1', text: 'Đồng 1' },
     { id: 'BAC2', text: 'Bạc 2' },
@@ -191,23 +210,13 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     // params['forNgPickDateTime'] = true;
     params['includeProduct'] = true;
     params['includeLevels'] = true;
+    params['includeKpis'] = true;
     // params['page'] = this.collaboratorService?.currentpage$?.value;
     super.executeGet(params, success, error);
   }
 
   async formLoad(formData: ProductModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ProductModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
-
-      // Conditions form load
-      // if (itemFormData.Pictures) {
-      //   itemFormData.Pictures.forEach(picture => {
-      //     picture['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-      //     const newPictureFormGroup = this.makeNewPictureFormGroup(picture);
-      //     this.getPictures(index).push(newPictureFormGroup);
-      //     const comIndex = this.getPictures(index).length - 1;
-      //     this.onAddPictureFormGroup(index, comIndex, newPictureFormGroup);
-      //   });
-      // }
 
       if (itemFormData?.Levels) {
         const details = this.getLevels(newForm);
@@ -221,15 +230,17 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
         });
       }
 
-      // // Actions form load
-      // if (itemFormData.Actions) {
-      //   itemFormData.Actions.forEach(action => {
-      //     const newActionFormGroup = this.makeNewActionFormGroup(action);
-      //     this.getActions(index).push(newActionFormGroup);
-      //     const comIndex = this.getActions(index).length - 1;
-      //     this.onAddActionFormGroup(index, comIndex, newActionFormGroup);
-      //   });
-      // }
+      if (itemFormData?.Kpis) {
+        const kpis = this.getKpis(newForm);
+        kpis.clear();
+        itemFormData.Kpis.forEach(kpi => {
+          // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+          const newKpiFormGroup = this.makeNewKpiFormGroup(kpi, newForm);
+          kpis.push(newKpiFormGroup);
+          const comIndex = kpis.length - 1;
+          this.onAddKpiFormGroup(newForm, comIndex, newKpiFormGroup);
+        });
+      }
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -251,6 +262,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       DateOfStart: [new Date()],
       IsAutoExtended: [true],
       Levels: this.formBuilder.array([]),
+      Kpis: this.formBuilder.array([]),
     });
     if (data) {
       newForm.patchValue(data);
@@ -279,60 +291,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  /** Picture Form */
-  // makeNewPictureFormGroup(data?: ProductPictureModel): FormGroup {
-  //   const newForm = this.formBuilder.group({
-  //     // Id_old: [''],
-  //     Id: [''],
-  //     Image: [''],
-  //     Thumbnail: [''],
-  //     DownloadLink: [''],
-  //     ProgressId: [''],
-  //   });
-
-  //   if (data) {
-  //     // data['Id_old'] = data['Id'];
-  //     newForm.patchValue(data);
-  //   }
-  //   return newForm;
-  // }
-  // getPictures(formGroupIndex: number) {
-  //   return this.array.controls[formGroupIndex].get('Pictures') as FormArray;
-  // }
-  // addPictureFormGroup(formGroupIndex: number) {
-  //   // this.componentList[formGroupIndex].push([]);
-  //   const newFormGroup = this.makeNewPictureFormGroup();
-  //   this.getPictures(formGroupIndex).push(newFormGroup);
-  //   this.onAddPictureFormGroup(formGroupIndex, this.getPictures(formGroupIndex).length - 1, newFormGroup);
-  //   return false;
-  // }
-  // removePictureGroup(formGroupIndex: number, index: number) {
-  //   this.getPictures(formGroupIndex).removeAt(index);
-  //   // this.componentList[formGroupIndex].splice(index, 1);
-  //   this.onRemovePictureFormGroup(formGroupIndex, index);
-  //   return false;
-  // }
-  // onAddPictureFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
-  //   // this.componentList[mainIndex].push([]);
-  // }
-  // onRemovePictureFormGroup(mainIndex: number, index: number) {
-  //   // this.componentList[mainIndex].splice(index, 1);
-  // }
-  // previewPicture(pictureFormGroup: FormGroup) {
-  //   let link = pictureFormGroup.get('DownloadLink').value;
-  //   if (!link && pictureFormGroup.get('ProgressId').value) {
-  //     link = this.filesIndex[pictureFormGroup.get('ProgressId').value].response[0].DownloadLink;
-  //   }
-  //   window.open(link + '?token=' + this.apiService.getAccessToken(), '_blank');
-  //   return false;
-  // }
-  // setAsFeaturePicture(formIndex: number, pictureFormGroup: FormGroup) {
-  //   this.array.controls[formIndex].get('FeaturePicture').setValue(pictureFormGroup.get('Image').value);
-  //   return false;
-  // }
-  /** End Picture Form */
-
-  /** Picture Form */
+  /** Levels Form */
   makeNewLevelFormGroup(data?: ProductUnitConversoinModel, formItem?: FormGroup): FormGroup {
     const newForm = this.formBuilder.group({
       Id: [],
@@ -370,7 +329,47 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
   onRemoveLevelFormGroup(formItem: FormGroup, index: number) {
     // this.componentList[mainIndex].splice(index, 1);
   }
-  /** End Picture Form */
+  /** End Levels Form */
+
+  /** OKr Form */
+  makeNewKpiFormGroup(data?: ProductUnitConversoinModel, formItem?: FormGroup): FormGroup {
+    const newForm = this.formBuilder.group({
+      Id: [],
+      Cycle: [],
+      Quantity: [],
+      Okr: [],
+      CommissionRatio: [],
+    });
+
+    if (data) {
+      // data['Id_old'] = data['Id'];
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+  getKpis(formItem: FormGroup) {
+    return formItem.get('Kpis') as FormArray;
+  }
+  addKpiFormGroup(formItem: FormGroup) {
+    // this.componentList[formGroupIndex].push([]);
+    const newFormGroup = this.makeNewKpiFormGroup(null, formItem);
+    this.getKpis(formItem).push(newFormGroup);
+    this.onAddKpiFormGroup(formItem, this.getKpis(formItem).length - 1, newFormGroup);
+    return false;
+  }
+  removeKpiGroup(parentForm: FormGroup, formItem: FormGroup, index: number) {
+    this.getKpis(parentForm).removeAt(index);
+    // this.componentList[formGroupIndex].splice(index, 1);
+    this.onRemoveKpiFormGroup(formItem, index);
+    return false;
+  }
+  onAddKpiFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
+    // this.componentList[mainIndex].push([]);
+  }
+  onRemoveKpiFormGroup(formItem: FormGroup, index: number) {
+    // this.componentList[mainIndex].splice(index, 1);
+  }
+  /** End Levels Form */
 
   /** ngx-uploader */
   // options: UploaderOptions;
@@ -549,8 +548,8 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     for (const item of data.array) {
       // item['Page'] = this.collaboratorService.currentpage$.value;
       // if (item['DateOfStart']) {
-        // const dateOfStart = new Date(item['DateOfStart']);
-        // item['DateOfStart'] = new Date(dateOfStart.getFullYear(), dateOfStart.getMonth(), dateOfStart.getDate(), 0, 0, 0);
+      // const dateOfStart = new Date(item['DateOfStart']);
+      // item['DateOfStart'] = new Date(dateOfStart.getFullYear(), dateOfStart.getMonth(), dateOfStart.getDate(), 0, 0, 0);
       // }
     }
     return data;

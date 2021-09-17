@@ -1,4 +1,5 @@
-import { FileModel } from './../../../../models/file.model';
+import { CommonService } from './../../../../services/common.service';
+import { FileModel, FileStoreModel } from './../../../../models/file.model';
 import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChanges, Input, ViewChild, ElementRef, forwardRef } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
@@ -38,11 +39,13 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
 
   apiPath = '/file/files';
   style?: any = {};
+  previewStyle: any = {};
 
   onChange: (item: any) => void;
 
   constructor(
     public apiService: ApiService,
+    public commonService: CommonService,
   ) {
 
     /** ngx-uploader */
@@ -80,7 +83,8 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
     this.value = obj;
     if (this.value && this.value.Thumbnail) {
       // this.thumbnail = this.value.Thumbnail;
-      this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
+      // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
+      this.previewStyle.backgroundImage = 'url(' + this.value.Thumbnail + ')';
     }
   }
   registerOnChange(fn: (item: any) => void): void {
@@ -100,13 +104,30 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
     switch (output.type) {
       case 'allAddedToQueue':
         // uncomment this if you want to auto upload files when added
-        const event: UploadInput = {
-          type: 'uploadAll',
-          url: this.apiService.buildApiUrl(this.apiPath),
-          method: 'POST',
-          data: { foo: 'bar' },
-        };
-        this.uploadInput.emit(event);
+        // const event: UploadInput = {
+        //   type: 'uploadAll',
+        //   url: this.apiService.buildApiUrl(this.apiPath),
+        //   method: 'POST',
+        //   data: { foo: 'bar' },
+        // };
+
+        let weight = 0;
+        for (const file of this.files) {
+          weight += file.size;
+        }
+
+        // this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', eq_IsAvailable: true, eq_IsUpload: true, requestUploadToken: true, weight, limit: 1 }).then(fileStores => {
+        this.commonService.getAvailableFileStores().then(fileStores => {
+          const event: UploadInput = {
+            type: 'uploadAll',
+            url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', { token: fileStores[0]['UploadToken'] }),
+            method: 'POST',
+            data: { foo: 'bar' },
+          };
+          this.uploadInput.emit(event);
+        });
+
+        // this.uploadInput.emit(event);
         break;
       case 'addedToQueue':
         if (typeof output.file !== 'undefined') {
@@ -137,7 +158,8 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
         console.log('Upload complete', output);
         const respFile: FileModel = output.file.response[0];
         this.value = respFile;
-        this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
+        // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
+        this.previewStyle.backgroundImage = 'url(' + this.value.Thumbnail + ')';
 
         this.onChange && this.onChange(this.value);
 
@@ -166,8 +188,9 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
     this.uploadInput.emit({ type: 'cancel', id: id });
   }
 
-  removeFile(id: string): void {
+  removeFile(id: string): boolean {
     this.uploadInput.emit({ type: 'remove', id: id });
+    return false;
   }
 
   removeAllFiles(): void {
@@ -188,6 +211,8 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
   remove() {
     this.value = null;
     this.onChange(null);
-    delete this.style.backgroundImage;
+    // delete this.style.backgroundImage;
+    delete this.previewStyle.backgroundImage;
+    return false;
   }
 }

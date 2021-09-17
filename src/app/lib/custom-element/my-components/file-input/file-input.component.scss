@@ -1,9 +1,6 @@
 .thumbnail {
-//   height: 5.5rem;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  background-image: url(assets/icon/eva/image-outline.svg);
+  //   height: 5.5rem;
+  display: flex;
 
   button {
     background-color: #edf1f7a8;
@@ -12,6 +9,14 @@
   }
 
   button.upload-btn {
-      margin-right: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  .preview {
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right;
+    background-image: url(assets/icon/eva/image-outline.svg);
+    height: inherit;
+    flex: 1;
   }
 }

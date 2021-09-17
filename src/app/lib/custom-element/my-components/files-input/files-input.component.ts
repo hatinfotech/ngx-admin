@@ -3,6 +3,7 @@ import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChange
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { ApiService } from '../../../../services/api.service';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'ngx-files-input',
@@ -51,6 +52,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
 
   constructor(
     public apiService: ApiService,
+    public commonService: CommonService,
   ) {
 
     /** ngx-uploader */
@@ -117,7 +119,8 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         for (const file of this.files) {
           weight += file.size;
         }
-        this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight, limit: 1 }).then(fileStores => {
+        // this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', eq_IsAvailable: true, eq_IsUpload: true, requestUploadToken: true, weight, limit: 1 }).then(fileStores => {
+        this.commonService.getAvailableFileStores().then(fileStores => {
           const event: UploadInput = {
             type: 'uploadAll',
             url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', { token: fileStores[0]['UploadToken'] }),
@@ -211,7 +214,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
     // window.open(file.OriginImage, '_blank');
 
     // Open photo browser
-    
+
 
     this.onThumbnailClick.emit(file);
     return false;

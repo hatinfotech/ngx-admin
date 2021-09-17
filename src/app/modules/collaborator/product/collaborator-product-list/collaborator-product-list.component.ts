@@ -180,7 +180,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
           type: 'custom',
           width: '5%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['FeaturePicture']['Thumbnail'];
+            return product && product['FeaturePicture'] && product['FeaturePicture']['Thumbnail'] || 'assets/images/no-image-available.png';
           },
           renderComponent: SmartTableThumbnailComponent,
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {

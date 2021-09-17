@@ -20,8 +20,28 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="TagName" label="Common.tagName" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="TagName" placeholder="{{'Common.tagName' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Summary" label="Common.summary" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="Summary" placeholder="{{'Common.summary' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="Description" label="Common.description" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                   <textarea type="text" class="scrollable-container" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}"></textarea>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Logo" label="Common.logo" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <ngx-file-input formControlName="Logo"></ngx-file-input>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Banner" label="Common.banner" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <ngx-file-input formControlName="Banner"></ngx-file-input>
                 </ngx-form-group>
               </div>
               <div class="col-sm-12">

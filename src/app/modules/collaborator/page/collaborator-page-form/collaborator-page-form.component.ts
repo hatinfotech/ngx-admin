@@ -169,11 +169,15 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
     const newForm = this.formBuilder.group({
       Code: [''],
       Name: ['', Validators.required],
+      TagName: ['', Validators.required],
+      Summary: ['', Validators.required],
       Description: ['', Validators.required],
       EventUrl: [''],
       PlatformApiUrl: [''],
       PlatformApiToken: [''],
       PriceTable: [''],
+      Logo: [''],
+      Banner: [''],
     });
     if (data) {
       newForm.patchValue(data);

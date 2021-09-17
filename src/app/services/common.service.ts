@@ -44,6 +44,7 @@ import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales
 import { PurchaseVoucherPrintComponent } from '../modules/purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 import * as moment from 'moment';
+import { FileStoreModel } from '../models/file.model';
 
 @Injectable({
   providedIn: 'root',
@@ -753,7 +754,7 @@ export class CommonService {
     const locale = this.getCurrentLoaleDataset();
     return { prefix: '', suffix: '', thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
   }
-  
+
   getPercentMaskConfig(): CurrencyMaskConfig {
     const locale = this.getCurrentLoaleDataset();
     return { prefix: '', suffix: '%', thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
@@ -878,5 +879,9 @@ export class CommonService {
       return true;
     }
     return false;
+  }
+
+  async getAvailableFileStores(option?: { weight?: number, limit?: number }) {
+    return this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', eq_IsAvailable: true, eq_IsUpload: true, requestUploadToken: true, weight: option?.weight, limit: option?.limit || 1 });
   }
 }

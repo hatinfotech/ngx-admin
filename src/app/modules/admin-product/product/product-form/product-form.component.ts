@@ -13,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 // import '../../../../lib/ckeditor.loader';
 // import 'ckeditor';
 // import * as ckeditor from "ckeditor"
-import { FileModel } from '../../../../models/file.model';
+import { FileModel, FileStoreModel } from '../../../../models/file.model';
 import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 // import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic/build/ckeditor.js';
@@ -35,8 +35,8 @@ class MyUploadAdapter {
   // Starts the upload process.
   upload() {
     return this.loader.file
-      .then(file => new Promise((resolve, reject) => {
-        this._initRequest();
+      .then(file => new Promise(async (resolve, reject) => {
+        await this._initRequest();
         this._initListeners(resolve, reject, file);
         this._sendRequest(file);
       }));
@@ -50,14 +50,14 @@ class MyUploadAdapter {
   }
 
   // Initializes the XMLHttpRequest object using the URL passed to the constructor.
-  _initRequest() {
+  async _initRequest() {
     const xhr = this.xhr = new XMLHttpRequest();
 
     // Note that your request may look different. It is up to you and your editor
     // integration to choose the right communication channel. This example uses
     // a POST request with JSON as a data structure but your configuration
     // could be different.
-    xhr.open('POST', this.options.uploadUrl(), true);
+    xhr.open('POST', await this.options.uploadUrl(), true);
     xhr.responseType = 'json';
   }
 
@@ -155,7 +155,10 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     extraPlugins: [MyCustomUploadAdapterPlugin],
     simpleUpload: {
       uploadUrl: () => {
-        return this.apiService.buildApiUrl('/file/files', { upload: true });
+        // return this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight: 4194304, limit: 1 }).then(fileStores => {
+        return this.commonService.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
+          return this.apiService.buildApiUrl(fileStore.Path + '/v1/file/files', { token: fileStore['UploadToken'] });
+        });
       },
     },
     // toolbar: {
