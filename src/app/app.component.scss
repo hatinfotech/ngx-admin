@@ -1181,6 +1181,17 @@ body .form-group[state="warning"] span.valid {
   width: 100%;
 }
 
+.form-group {
+  .form-group-icon-control {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+  .form-group-input-control {
+    padding-left: 40px !important;
+  }
+}
+
 body .form-group[state="warning"] label,
 body .form-group[state="warning"] input,
 body .form-group[state="warning"] select,
@@ -1888,9 +1899,8 @@ nb-action {
   cursor: pointer;
 }
 
-
 /** CKeditor */
 .ck.ck-balloon-panel {
-    z-index: 1040 !important;
+  z-index: 1040 !important;
 }
 /** End CKeditor */

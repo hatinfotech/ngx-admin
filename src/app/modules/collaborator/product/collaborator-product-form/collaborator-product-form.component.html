@@ -51,12 +51,23 @@
               <div class="col-sm-4">
                 <ngx-form-group [formGroup]="formItem" name="DateOfStart" label="Common.dateOfStart" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                   <input type="text" [owlDateTime]="DateOfStart" [owlDateTimeTrigger]="DateOfStart" nbInput fullWidth formControlName="DateOfStart" placeholder="{{'Common.dateOfStart' | translate | headtitlecase}}">
-                <owl-date-time #DateOfStart></owl-date-time>
+                  <owl-date-time #DateOfStart></owl-date-time>
                 </ngx-form-group>
               </div>
               <div class="col-sm-4">
                 <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Common.cycle" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <nb-checkbox formControlName="IsAutoExtended">Tự động gia hạn</nb-checkbox>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="SelfOrderDiscount" label="Giảm giá khi khách tự đặt hàng (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <nb-checkbox class="form-group-icon-control" formControlName="IsSelfOrder"></nb-checkbox>
+                  <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="SelfOrderDiscount" placeholder="Giảm giá khi khách tự đặt hàng (%)">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-8">
+                <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Cho phép bán thêm" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <nb-checkbox formControlName="IsAutoExtended">Cho phép team CSKH tư vấn bán thêm nhằm tiết kiệm chi phí vận chuyển cho khách</nb-checkbox>
                 </ngx-form-group>
               </div>
 

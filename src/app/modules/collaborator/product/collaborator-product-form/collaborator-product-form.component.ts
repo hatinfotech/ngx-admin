@@ -259,6 +259,8 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       Name: { value: '', disabled: true },
       Unit: { value: '', disabled: true },
       Cycle: ['MONTHLY'],
+      IsSelfOrder: [false],
+      SelfOrderDiscount: [null],
       DateOfStart: [new Date()],
       IsAutoExtended: [true],
       Levels: this.formBuilder.array([]),
