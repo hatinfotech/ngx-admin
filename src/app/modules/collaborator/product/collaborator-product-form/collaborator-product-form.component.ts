@@ -218,29 +218,29 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
   async formLoad(formData: ProductModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ProductModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
-      if (itemFormData?.Levels) {
-        const details = this.getLevels(newForm);
-        details.clear();
-        itemFormData.Levels.forEach(unitConversion => {
-          // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-          const newLevelFormGroup = this.makeNewLevelFormGroup(unitConversion, newForm);
-          details.push(newLevelFormGroup);
-          const comIndex = details.length - 1;
-          this.onAddLevelFormGroup(newForm, comIndex, newLevelFormGroup);
-        });
-      }
+      // if (itemFormData?.Levels) {
+      //   const details = this.getLevels(newForm);
+      //   details.clear();
+      //   itemFormData.Levels.forEach(unitConversion => {
+      //     // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+      //     const newLevelFormGroup = this.makeNewLevelFormGroup(unitConversion, newForm);
+      //     details.push(newLevelFormGroup);
+      //     const comIndex = details.length - 1;
+      //     this.onAddLevelFormGroup(newForm, comIndex, newLevelFormGroup);
+      //   });
+      // }
 
-      if (itemFormData?.Kpis) {
-        const kpis = this.getKpis(newForm);
-        kpis.clear();
-        itemFormData.Kpis.forEach(kpi => {
-          // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-          const newKpiFormGroup = this.makeNewKpiFormGroup(kpi, newForm);
-          kpis.push(newKpiFormGroup);
-          const comIndex = kpis.length - 1;
-          this.onAddKpiFormGroup(newForm, comIndex, newKpiFormGroup);
-        });
-      }
+      // if (itemFormData?.Kpis) {
+      //   const kpis = this.getKpis(newForm);
+      //   kpis.clear();
+      //   itemFormData.Kpis.forEach(kpi => {
+      //     // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+      //     const newKpiFormGroup = this.makeNewKpiFormGroup(kpi, newForm);
+      //     kpis.push(newKpiFormGroup);
+      //     const comIndex = kpis.length - 1;
+      //     this.onAddKpiFormGroup(newForm, comIndex, newKpiFormGroup);
+      //   });
+      // }
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -263,8 +263,87 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       SelfOrderDiscount: [null],
       DateOfStart: [new Date()],
       IsAutoExtended: [true],
-      Levels: this.formBuilder.array([]),
-      Kpis: this.formBuilder.array([]),
+      IsDiscountByVoucher: [false],
+      // Levels: this.formBuilder.array([]),
+      // Kpis: this.formBuilder.array([]),
+      PlatformFee: [],
+      
+      // Level 1 field
+      IsAppliedForLevel1Weekly: [true],
+      Level1WeeklyLabel: {disabled: true, value: ''},
+      Level1WeeklyKpi: [],
+      Level1WeeklyOkr: [],
+      Level1WeeklyCommissionRatio: [],
+
+      IsAppliedForLevel1Monthly: [true],
+      Level1MonthlyLabel: {disabled: true, value: ''},
+      Level1MonthlyKpi: [],
+      Level1MonthlyOkr: [],
+      Level1MonthlyCommissionRatio: [],
+
+      IsAppliedForLevel1Quarterly: [true],
+      Level1QuarterlyLabel: {disabled: true, value: ''},
+      Level1QuarterlyKpi: [],
+      Level1QuarterlyOkr: [],
+      Level1QuarterlyCommissionRatio: [],
+      
+      IsAppliedForLevel1Yearly: [true],
+      Level1YearlyLabel: {disabled: true, value: ''},
+      Level1YearlyKpi: [],
+      Level1YearlyOkr: [],
+      Level1YearlyCommissionRatio: [],
+
+      // Level 2 field
+      IsAppliedForLevel2Weekly: [true],
+      Level2WeeklyLabel: {disabled: true, value: ''},
+      Level2WeeklyKpi: [],
+      Level2WeeklyOkr: [],
+      Level2WeeklyCommissionRatio: [],
+
+      IsAppliedForLevel2Monthly: [true],
+      Level2MonthlyLabel: {disabled: true, value: ''},
+      Level2MonthlyKpi: [],
+      Level2MonthlyOkr: [],
+      Level2MonthlyCommissionRatio: [],
+
+      IsAppliedForLevel2Quarterly: [true],
+      Level2QuarterlyLabel: {disabled: true, value: ''},
+      Level2QuarterlyKpi: [],
+      Level2QuarterlyOkr: [],
+      Level2QuarterlyCommissionRatio: [],
+      
+      IsAppliedForLevel2Yearly: [true],
+      Level2YearlyLabel: {disabled: true, value: ''},
+      Level2YearlyKpi: [],
+      Level2YearlyOkr: [],
+      Level2YearlyCommissionRatio: [],
+
+      // Level 3 field
+      IsAppliedForLevel3Weekly: [true],
+      Level3WeeklyLabel: {disabled: true, value: ''},
+      Level3WeeklyKpi: [],
+      Level3WeeklyOkr: [],
+      Level3WeeklyCommissionRatio: [],
+
+      IsAppliedForLevel3Monthly: [true],
+      Level3MonthlyLabel: {disabled: true, value: ''},
+      Level3MonthlyKpi: [],
+      Level3MonthlyOkr: [],
+      Level3MonthlyCommissionRatio: [],
+
+      IsAppliedForLevel3Quarterly: [true],
+      Level3QuarterlyLabel: {disabled: true, value: ''},
+      Level3QuarterlyKpi: [],
+      Level3QuarterlyOkr: [],
+      Level3QuarterlyCommissionRatio: [],
+      
+      IsAppliedForLevel3Yearly: [true],
+      Level3YearlyLabel: {disabled: true, value: ''},
+      Level3YearlyKpi: [],
+      Level3YearlyOkr: [],
+      Level3YearlyCommissionRatio: [],
+
+
     });
     if (data) {
       newForm.patchValue(data);

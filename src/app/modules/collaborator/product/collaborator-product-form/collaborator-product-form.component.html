@@ -45,34 +45,52 @@
               </div>
               <div class="col-sm-4">
                 <ngx-form-group [formGroup]="formItem" name="Cycle" label="Common.cycle" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                  <ngx-select2 formControlName="Cycle" [data]="cycleList" [select2Option]="select2OptionForCycle"></ngx-select2>
+                  <nb-checkbox class="form-group-icon-control" formControlName="IsAutoExtended"></nb-checkbox>
+                  <ngx-select2 class="form-group-input-control" formControlName="Cycle" [data]="cycleList" [select2Option]="select2OptionForCycle"></ngx-select2>
                 </ngx-form-group>
               </div>
               <div class="col-sm-4">
-                <ngx-form-group [formGroup]="formItem" name="DateOfStart" label="Common.dateOfStart" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                <ngx-form-group [formGroup]="formItem" name="DateOfStart" label="Ngày bắt đầu chu kỳ" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                   <input type="text" [owlDateTime]="DateOfStart" [owlDateTimeTrigger]="DateOfStart" nbInput fullWidth formControlName="DateOfStart" placeholder="{{'Common.dateOfStart' | translate | headtitlecase}}">
                   <owl-date-time #DateOfStart></owl-date-time>
                 </ngx-form-group>
               </div>
               <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Cho phép bán thêm" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <nb-checkbox formControlName="IsAutoExtended" title="Cho phép team CSKH tư vấn bán thêm nhằm tiết kiệm chi phí vận chuyển cho khách">Cho phép team CSKH tư vấn bán thêm</nb-checkbox>
+                </ngx-form-group>
+              </div>
+              <!-- <div class="col-sm-4">
                 <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Common.cycle" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <nb-checkbox formControlName="IsAutoExtended">Tự động gia hạn</nb-checkbox>
                 </ngx-form-group>
+              </div> -->
+              <!-- <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="CommissionRatio" label="Chiết khấu level 1 (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="CommissionRatio" placeholder="Chiết khấu level 1 (%)">
+                </ngx-form-group>
+              </div> -->
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="SelfOrderDiscount" label="Giảm giá x% khi tự đặt hàng trên app ProBox" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <nb-checkbox class="form-group-icon-control" formControlName="IsSelfOrder"></nb-checkbox>
+                  <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="SelfOrderDiscount" placeholder="Giảm giá x% khi tự đặt hàng trên app ProBox">
+                </ngx-form-group>
               </div>
               <div class="col-sm-4">
-                <ngx-form-group [formGroup]="formItem" name="SelfOrderDiscount" label="Giảm giá khi khách tự đặt hàng (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                  <nb-checkbox class="form-group-icon-control" formControlName="IsSelfOrder"></nb-checkbox>
-                  <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="SelfOrderDiscount" placeholder="Giảm giá khi khách tự đặt hàng (%)">
-                </ngx-form-group>
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PlatformFee'), 'warning')">
+                  <label class="label"><span class="valid">Phí sàn CTV bán hàng (%)</span><span class="invalid">Phí sàn CTV bán hàng (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="PlatformFee" placeholder="Phí sàn CTV bán hàng">
+                </div>
               </div>
-              <div class="col-sm-8">
-                <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Cho phép bán thêm" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                  <nb-checkbox formControlName="IsAutoExtended">Cho phép team CSKH tư vấn bán thêm nhằm tiết kiệm chi phí vận chuyển cho khách</nb-checkbox>
-                </ngx-form-group>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('IsDiscountByVoucher'), 'warning')">
+                  <label class="label"><span class="valid">Giảm giá áp dụng voucher</span></label>
+                  <nb-checkbox formControlName="IsDiscountByVoucher">Giảm giá áp dụng voucher</nb-checkbox>
+                </div>
               </div>
 
-              <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
-                <!-- Levels form -->
+              <!-- <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
                 <label class="label">{{'Cài đặt level' | translate | headtitlecase}}</label>
                 <div class="row fit-row form-detail-header">
                   <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
@@ -138,77 +156,255 @@
 
                   </div>
                 </div>
-                <!-- End Levels form -->
-              </div>
+              </div>-->
 
+              <label class="label">{{'I/ CÀI ĐẶT CHIẾC KHẤU CHO CTV BÁN HÀNG LEVEL 1 , TƯƠNG ỨNG DANH HIỆU CTV BÁN HÀNG ĐỒNG 1 TRÊN APP PROBOX' | translate | headtitlecase}}</label>
               <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
-                <!-- Kpis form -->
-                <label class="label">{{'Cài đặt KPI' | translate | headtitlecase}}</label>
-                <div class="row fit-row form-detail-header">
-                  <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
-                  <div class="row fit-content-column">
-                    <div class="col-sm-3 label column">{{'Thời gian' | translate | headtitlecase}}</div>
-                    <div class="col-sm-3 label column">{{'Doanh số' | translate | headtitlecase}}</div>
-                    <div class="col-sm-4 label column">{{'Số sao' | translate | headtitlecase}}</div>
-                    <div class="col-sm-2 label column">{{'Collaborator.Level.ratio' | translate | headtitlecase}} (%)</div>
-                  </div>
-                  <div class="fit-last-col column">
-                    <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addKpiFormGroup(formItem)" size="medium" hero>
-                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
-                    </button>
-                  </div>
+                <label class="label">{{'1.1 Hệ số chiếc khấu' | translate | headtitlecase}}</label>
+                <div class="row">
+                  <div class="col-sm-3 label column">{{'Danh hiệu CTV bán hàng' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label column">{{'Cấp độ CTV Bán Hàng ' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label column">{{'Tỷ lệ chiếc khấu (%)' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label column align-right">{{'Collaborator.Level.ratio' | translate | headtitlecase}} (%)</div>
                 </div>
 
-                <div formArrayName="Kpis" class="form-details" [sortablejs]="getKpis(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                <div class="form-details">
                   <hr>
-                  <div class="form-detail-item" *ngFor="let okrGroup of getKpis(formItem).controls; let ic=index" [formGroup]="okrGroup">
-                    <div class="row fit-row">
-                      <div class="fit-fist-col label">
-                        <div class="form-group">
-                          <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
-                          <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ ic + 1 }}">
-                          <input type="hidden" formControlName="Id">
-                        </div>
+                  <div class="form-detail-item">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <ngx-form-group [formGroup]="formItem" name="Level1WeeklyLabel" label="CTV Bán Hàng Đồng 1" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <input type="text"nbInput fullWidth formControlName="Level1WeeklyLabel" placeholder="CTV Bán Hàng Đồng 1">
+                        </ngx-form-group>
                       </div>
-                      <div class="row fit-content-column">
-                        <div class="col-sm-12">
-                          <div class="row">
-                            <div class="col-sm-3">
-                              <ngx-form-group [hideLabel]="true" [formGroup]="okrGroup" name="Cycle" label="Thời gian" [array]="getKpis(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
-                                <ngx-select2 formControlName="Cycle" [data]="okrList" [select2Option]="select2OptionForKpi"></ngx-select2>
-                              </ngx-form-group>
-                            </div>
-                            <div class="col-sm-3">
-                              <ngx-form-group [hideLabel]="true" [formGroup]="okrGroup" name="Quantity" label="Doanh số" [array]="getKpis(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
-                                <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Doanh số' | translate | headtitlecase}}">
-                              </ngx-form-group>
-                            </div>
-                            <div class="col-sm-4">
-                              <ngx-form-group [hideLabel]="true" [formGroup]="okrGroup" name="Okr" label="Số sao" [array]="getKpis(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
-                                <input type="text" nbInput fullWidth formControlName="Okr" placeholder="{{'Số sao' | translate | headtitlecase}}">
-                              </ngx-form-group>
-                            </div>
-                            <div class="col-sm-2">
-                              <ngx-form-group [hideLabel]="true" [formGroup]="okrGroup" name="CommissionRatio" label="Collaborator.Level.ratio" [array]="getKpis(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
-                                <input type="text" nbInput fullWidth formControlName="CommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}" currencyMask [options]="percentFormat">
-                              </ngx-form-group>
-                            </div>
-                          </div>
-                        </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level1WeeklyKpi" label="Cấp độ CTV Bán Hàng " [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level1WeeklyKpi" placeholder="{{'CTV Bán Hàng Level 1' | translate | headtitlecase}}">
+                        </ngx-form-group>
                       </div>
-                      <div class="fit-last-col">
-                        <div class="form-group" style="text-align: right;">
-                          <label class="label">CM</label>
-                          <button class="fit-control-button" nbButton status="danger" [outline]="true" hero size="medium" (click)="removeKpiGroup(formItem, okrGroup, ic)">
-                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
-                          </button>
-                        </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level1WeeklyCommissionRatio" label="Collaborator.Level.ratio" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level1WeeklyCommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}" currencyMask [options]="percentFormat">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level1WeeklyOkr" label="Mô tả" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level1WeeklyOkr" placeholder="{{'Mô tả' | translate | headtitlecase}}">
+                        </ngx-form-group>
                       </div>
                     </div>
-
                   </div>
                 </div>
-                <!-- End Levels form -->
+
+                <label class="label">{{'1.2 Hệ số thưởng thêm khi đạt số liệu KPI / OKR' | translate | headtitlecase}}</label>
+                <div class="row">
+                  <div class="col-sm-3 label column">{{'Chu kỳ' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label column">{{'Số lượng (đơn vị sản phẩm bán ra)' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label column">{{'Phản hồi (số sao)' | translate | headtitlecase}}</div>
+                  <div class="col-sm-3 label column align-right">{{'Collaborator.Level.ratio' | translate | headtitlecase}} (%)</div>
+                </div>
+
+                <div class="form-details">
+                  <hr>
+                  <div class="form-detail-item">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <ngx-form-group [formGroup]="formItem" name="Level2WeeklyLabel" label="Theo tuần" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <nb-checkbox class="form-group-icon-control" formControlName="IsAppliedForLevel2Weekly"></nb-checkbox>
+                          <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="Level2WeeklyLabel" placeholder="Theo tuần">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyKpi" label="Doanh số" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyKpi" placeholder="{{'Doanh số' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyOkr" label="Số sao" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyOkr" placeholder="{{'Số sao' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyCommissionRatio" label="Collaborator.Level.ratio" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyCommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}" currencyMask [options]="percentFormat">
+                        </ngx-form-group>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-detail-item">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <ngx-form-group [formGroup]="formItem" name="Level2MonthlyLabel" label="Theo tháng" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <nb-checkbox class="form-group-icon-control" formControlName="IsAppliedForLevel2Monthly"></nb-checkbox>
+                          <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="Level2MonthlyLabel" placeholder="Theo tháng">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2MonthlyKpi" label="Doanh số" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2MonthlyKpi" placeholder="{{'Doanh số' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2MonthlyOkr" label="Số sao" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2MonthlyOkr" placeholder="{{'Số sao' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2MonthlyCommissionRatio" label="Collaborator.Level.ratio" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2MonthlyCommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}" currencyMask [options]="percentFormat">
+                        </ngx-form-group>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-detail-item">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <ngx-form-group [formGroup]="formItem" name="Level2QuarterlyLabel" label="Theo quý" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <nb-checkbox class="form-group-icon-control" formControlName="IsAppliedForLevel2Quarterly"></nb-checkbox>
+                          <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="Level2QuarterlyLabel" placeholder="Theo quý">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2QuarterlyKpi" label="Doanh số" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2QuarterlyKpi" placeholder="{{'Doanh số' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2QuarterlyOkr" label="Số sao" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2QuarterlyOkr" placeholder="{{'Số sao' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2QuarterlyCommissionRatio" label="Collaborator.Level.ratio" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2QuarterlyCommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}" currencyMask [options]="percentFormat">
+                        </ngx-form-group>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-detail-item">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <ngx-form-group [formGroup]="formItem" name="Level2YearlyLabel" label="Theo năm" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <nb-checkbox class="form-group-icon-control" formControlName="IsAppliedForLevel2Yearly"></nb-checkbox>
+                          <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="Level2YearlyLabel" placeholder="Theo năm">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2YearlyKpi" label="Doanh số" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2YearlyKpi" placeholder="{{'Doanh số' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2YearlyOkr" label="Số sao" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2YearlyOkr" placeholder="{{'Số sao' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2YearlyCommissionRatio" label="Collaborator.Level.ratio" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2YearlyCommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}" currencyMask [options]="percentFormat">
+                        </ngx-form-group>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <label class="label">{{'II/ CÀI ĐẶT CHIẾC KHẤU CỘNG THÊM CHO CTV BÁN HÀNG LEVEL 2, TƯƠNG ỨNG DANH HIỆU CTV BÁN HÀNG BẠC 2 TRÊN APP PROBOX' | translate | headtitlecase}}</label>
+              <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <label class="label">{{'Cài đặt Chiết khấu cho CTV Level 2' | translate | headtitlecase}}</label>
+                <div class="row">
+                  <div class="col-sm-2 label column">{{'Danh hiệu CTV bán hàng' | translate | headtitlecase}}</div>
+                  <div class="col-sm-6 label column">{{'KPI Số lượng bắt buột' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label column">{{'OKR bắt buột (số sao)' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label column align-right">{{'Collaborator.Level.ratio' | translate | headtitlecase}} (%)</div>
+                </div>
+
+                <div class="form-details">
+                  <hr>
+                  <div class="form-detail-item">
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <ngx-form-group [formGroup]="formItem" name="Level2WeeklyLabel" label="" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyLabel" placeholder="CTV Bán Hàng Bạc 2">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-6">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyKpi" label="" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyKpi" placeholder="KPI Số lượng bắt buột">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-2">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyOkr" label="Số sao" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyOkr" placeholder="{{'Số sao' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-2">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyCommissionRatio" label="Collaborator.Level.ratio" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyCommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-2">
+                        <ngx-form-group [formGroup]="formItem" name="Level2WeeklyLabel" label="" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyLabel" placeholder="CTV Bán Hàng Level 2">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-10">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyOkr" label="Mô tả" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyOkr" placeholder="{{'Mô tả' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <label class="label">{{'II/ CÀI ĐẶT CHIẾC KHẤU CỘNG THÊM CHO CTV BÁN HÀNG LEVEL 3, TƯƠNG ỨNG DANH HIỆU CTV BÁN HÀNG VÀNG 3 TRÊN APP PROBOX' | translate | headtitlecase}}</label>
+              <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <label class="label">{{'Cài đặt Chiết khấu cho CTV Level 3' | translate | headtitlecase}}</label>
+                <div class="row">
+                  <div class="col-sm-2 label column">{{'Danh hiệu CTV bán hàng' | translate | headtitlecase}}</div>
+                  <div class="col-sm-6 label column">{{'KPI Số lượng bắt buột' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label column">{{'OKR bắt buột (số sao)' | translate | headtitlecase}}</div>
+                  <div class="col-sm-2 label column align-right">{{'Collaborator.Level.ratio' | translate | headtitlecase}} (%)</div>
+                </div>
+
+                <div class="form-details">
+                  <hr>
+                  <div class="form-detail-item">
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <ngx-form-group [formGroup]="formItem" name="Level2WeeklyLabel" label="" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyLabel" placeholder="CTV Bán Hàng Vàng 3">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-6">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyKpi" label="" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyKpi" placeholder="KPI Số lượng bắt buột">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-2">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyOkr" label="Số sao" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyOkr" placeholder="{{'Số sao' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-2">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyCommissionRatio" label="Collaborator.Level.ratio" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyCommissionRatio" placeholder="{{'Collaborator.Level.ratio' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-2">
+                        <ngx-form-group [formGroup]="formItem" name="Level2WeeklyLabel" label="" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyLabel" placeholder="CTV Bán Hàng Level 3">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-10">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2WeeklyOkr" label="Mô tả" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="Level2WeeklyOkr" placeholder="{{'Mô tả' | translate | headtitlecase}}">
+                        </ngx-form-group>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
             </div>
