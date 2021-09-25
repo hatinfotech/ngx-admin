@@ -41,10 +41,14 @@ export class FormGroupComponent implements OnInit {
 
   formControlValidate(formControl: AbstractControl, invalidText: string, valideText?: string): string {
     // console.info('Form control validate', formControl);
-    if (formControl.touched && formControl.errors && formControl.errors.required) {
-      return invalidText;
+    try {
+      if (formControl.touched && formControl.errors && formControl.errors.required) {
+        return invalidText;
+      }
+      return valideText ? valideText : '';
+    } catch (err) {
+      console.error(`Form control ${this.name} error`, err);
     }
-    return valideText ? valideText : '';
   }
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
