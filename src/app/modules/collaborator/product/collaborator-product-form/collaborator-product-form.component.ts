@@ -1,9 +1,12 @@
+import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { createMask } from '@ngneat/input-mask';
+// import { createMask } from '@ngneat/input-mask';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { take, filter } from 'rxjs/operators';
 import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
@@ -19,7 +22,10 @@ import { CollaboratorService } from '../../collaborator.service';
 @Component({
   selector: 'ngx-collaborator-product-form',
   templateUrl: './collaborator-product-form.component.html',
-  styleUrls: ['./collaborator-product-form.component.scss']
+  styleUrls: ['./collaborator-product-form.component.scss'],
+  providers: [
+    CurrencyPipe
+  ]
 })
 export class CollaboratorProductFormComponent extends DataManagerFormComponent<ProductModel> implements OnInit {
 
@@ -36,7 +42,43 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
   groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
 
   // public Editor = ClassicEditorBuild;
-  percentFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  percentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 3 };
+  okrPercentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 1 };
+  kpiPercentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
+  // currencyInputMask = createMask({
+  //   alias: 'numeric',
+  //   // inputmode: 'numeric',
+  //   groupSeparator: this.commonService.getNumberGroupPointChar(),
+  //   radixPoint: this.commonService.getNumberRadixPointChar(),
+  //   digits: 2,
+  //   // digitsOptional: false,
+  //   prefix: '',
+  //   placeholder: '0',
+  //   // autoUnmask:true,
+  //   // unmaskAsNumber: true,
+  //   parser: (value: string) => {
+  //     return parseFloat(value.replace(/\,/, '.'));
+  //   },
+  //   onBeforeMask: (initialValue: string, opts: Inputmask.Options) => {
+  //     return `${initialValue}`.replace(/\./, ',');
+  //   }
+  // });
+  currencyInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 3
+  });
+  okrInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 1
+  });
+  level1ComissionRatioInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 1
+  });
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -57,7 +99,6 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     // this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
     // this.humanizeBytes = humanizeBytes;
     /** End ngx-uploader */
-
 
     // Config editor
     // this.Editor;
@@ -267,87 +308,63 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       // Levels: this.formBuilder.array([]),
       // Kpis: this.formBuilder.array([]),
       PlatformFee: [],
-      
+
       // Level 1 field
+      Level1Badge: { value: 'CTV Bán Hàng Đồng 1', disabled: true },
+      Level1Label: { value: 'CTV Bán Hàng Level 1', disabled: true },
+      Level1Description: ['Bán dược bao nhiêu hưởng bấy nhiêu'],
+      Level1CommissionRatio: [],
+
       IsAppliedForLevel1Weekly: [true],
-      Level1WeeklyLabel: {disabled: true, value: ''},
+      Level1WeeklyLabel: { disabled: true, value: 'Theo tuần' },
       Level1WeeklyKpi: [],
       Level1WeeklyOkr: [],
       Level1WeeklyCommissionRatio: [],
 
       IsAppliedForLevel1Monthly: [true],
-      Level1MonthlyLabel: {disabled: true, value: ''},
+      Level1MonthlyLabel: { disabled: true, value: 'Theo tháng' },
       Level1MonthlyKpi: [],
       Level1MonthlyOkr: [],
       Level1MonthlyCommissionRatio: [],
 
       IsAppliedForLevel1Quarterly: [true],
-      Level1QuarterlyLabel: {disabled: true, value: ''},
+      Level1QuarterlyLabel: { disabled: true, value: 'Theo quý' },
       Level1QuarterlyKpi: [],
       Level1QuarterlyOkr: [],
       Level1QuarterlyCommissionRatio: [],
-      
+
       IsAppliedForLevel1Yearly: [true],
-      Level1YearlyLabel: {disabled: true, value: ''},
+      Level1YearlyLabel: { disabled: true, value: 'Theo năm' },
       Level1YearlyKpi: [],
       Level1YearlyOkr: [],
       Level1YearlyCommissionRatio: [],
 
       // Level 2 field
-      IsAppliedForLevel2Weekly: [true],
-      Level2WeeklyLabel: {disabled: true, value: ''},
-      Level2WeeklyKpi: [],
-      Level2WeeklyOkr: [],
-      Level2WeeklyCommissionRatio: [],
-
-      IsAppliedForLevel2Monthly: [true],
-      Level2MonthlyLabel: {disabled: true, value: ''},
-      Level2MonthlyKpi: [],
-      Level2MonthlyOkr: [],
-      Level2MonthlyCommissionRatio: [],
-
-      IsAppliedForLevel2Quarterly: [true],
-      Level2QuarterlyLabel: {disabled: true, value: ''},
-      Level2QuarterlyKpi: [],
-      Level2QuarterlyOkr: [],
-      Level2QuarterlyCommissionRatio: [],
-      
-      IsAppliedForLevel2Yearly: [true],
-      Level2YearlyLabel: {disabled: true, value: ''},
-      Level2YearlyKpi: [],
-      Level2YearlyOkr: [],
-      Level2YearlyCommissionRatio: [],
+      Level2ExtBadge: { disabled: true, value: 'CTV Bán Hàng Bạc 2' },
+      Level2ExtLabel: { disabled: true, value: 'CTV Bán Hàng Level 2' },
+      Level2ExtRequiredKpi: [],
+      Level2ExtRequiredOkr: [],
+      Level2ExtCommissionRatio: [],
+      Level2ExtDescription: [],
 
       // Level 3 field
-      IsAppliedForLevel3Weekly: [true],
-      Level3WeeklyLabel: {disabled: true, value: ''},
-      Level3WeeklyKpi: [],
-      Level3WeeklyOkr: [],
-      Level3WeeklyCommissionRatio: [],
+      Level3ExtBadge: { disabled: true, value: 'CTV Bán Hàng Vàng 3' },
+      Level3ExtLabel: { disabled: true, value: 'CTV Bán Hàng Level 3' },
+      Level3ExtRequiredKpi: [],
+      Level3ExtRequiredOkr: [],
+      Level3ExtCommissionRatio: [],
+      Level3ExtDescription: [],
 
-      IsAppliedForLevel3Monthly: [true],
-      Level3MonthlyLabel: {disabled: true, value: ''},
-      Level3MonthlyKpi: [],
-      Level3MonthlyOkr: [],
-      Level3MonthlyCommissionRatio: [],
-
-      IsAppliedForLevel3Quarterly: [true],
-      Level3QuarterlyLabel: {disabled: true, value: ''},
-      Level3QuarterlyKpi: [],
-      Level3QuarterlyOkr: [],
-      Level3QuarterlyCommissionRatio: [],
-      
-      IsAppliedForLevel3Yearly: [true],
-      Level3YearlyLabel: {disabled: true, value: ''},
-      Level3YearlyKpi: [],
-      Level3YearlyOkr: [],
-      Level3YearlyCommissionRatio: [],
 
 
     });
     if (data) {
+      // data.PlatformFee = `${data.PlatformFee}`.replace(/\./, ',');
       newForm.patchValue(data);
     }
+    newForm.get('PlatformFee').valueChanges.subscribe(value => {
+      console.log(value);
+    });
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: ProductModel): void {
@@ -645,4 +662,16 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     return super.save();
   }
 
+  // alphaNumberOnly(e: any) {  // Accept only alpha numerics, not special characters 
+  //   console.log(e.target.value);
+  //   console.log("^[0-9]*(\\" + this.commonService.getFloatPointChar() + "[0-9]*)?$");
+  //   var regex = new RegExp("^[0-9]*(\\" + this.commonService.getFloatPointChar() + "[0-9]*)?$");
+  //   var str = e.target.value + e.key;
+  //   if (regex.test(str)) {
+  //     return true;
+  //   }
+
+  //   e.preventDefault();
+  //   return false;
+  // }
 }

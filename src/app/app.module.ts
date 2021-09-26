@@ -282,7 +282,8 @@ import { CollaboratorCommissionPaymentPrintComponent } from './modules/collabora
 import { CollaboratorCommissionFormComponent } from './modules/collaborator/commission/collaborator-commission-form/collaborator-commission-form.component';
 import { CollaboartorCommissionDetailComponent } from './modules/collaborator/commission/collaborator-commission-form/collaboartor-commission-detail/collaboartor-commission-detail.component';
 import { CollaboratorPublisherFormComponent } from './modules/collaborator/publisher/collaborator-publisher-form/collaborator-publisher-form.component';
-
+import { InputMaskModule } from '@ngneat/input-mask';
+// import { InputMaskModule } from '@ngneat/input-mask';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -538,7 +539,7 @@ export class DynamicLocaleId extends String {
   ],
   imports: [
 
-
+    InputMaskModule,
     NgxEchartsModule,
     ChartModule,
     NgxChartsModule,

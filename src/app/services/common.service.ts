@@ -45,6 +45,7 @@ import { PurchaseVoucherPrintComponent } from '../modules/purchase/voucher/purch
 import { AccountingOtherBusinessVoucherPrintComponent } from '../modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 import * as moment from 'moment';
 import { FileStoreModel } from '../models/file.model';
+import { createMask } from '@ngneat/input-mask';
 
 @Injectable({
   providedIn: 'root',
@@ -745,6 +746,13 @@ export class CommonService {
     return getCurrencySymbol('VND', 'narrow', this.translate.currentLang);
   }
 
+  getNumberRadixPointChar() {
+    return this.getCurrentLoaleDataset()[13][0];
+  }
+  getNumberGroupPointChar() {
+    return this.getCurrentLoaleDataset()[13][1];
+  }
+
   getCurrencyMaskConfig(): CurrencyMaskConfig {
     const locale = this.getCurrentLoaleDataset();
     return { prefix: '', suffix: ' ' + getCurrencySymbol('VND', 'narrow', this.translate.currentLang), thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
@@ -763,6 +771,26 @@ export class CommonService {
   getTaxMaskConfig(): CurrencyMaskConfig {
     const locale = this.getCurrentLoaleDataset();
     return { prefix: '', suffix: '%', thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
+  }
+
+  createFloatNumberMaskConfig(options?: Inputmask.Options) {
+    const radixPoint = this.getNumberRadixPointChar();
+    const groupsSeparator = this.getNumberGroupPointChar();
+    return createMask({
+      alias: 'numeric',
+      groupSeparator: this.getNumberGroupPointChar(),
+      radixPoint: this.getNumberRadixPointChar(),
+      digits: 2,
+      prefix: '',
+      placeholder: '0',
+      parser: (value: string) => {
+        return parseFloat(radixPoint !== '.' ? value.replace(new RegExp(`\\${groupsSeparator}`,'g'), '').replace(new RegExp(`\\${radixPoint}`, 'g'), '.') : value);
+      },
+      onBeforeMask: (initialValue: string, opts: Inputmask.Options) => {
+        return radixPoint !== '.' ? `${initialValue}`.replace('.', radixPoint) : initialValue;
+      },
+      ...options,
+    })
   }
 
   getObjectId(obj: any, idName?: string) {
