@@ -98,6 +98,7 @@ import { CollaboratorSubscriptionPageListComponent } from './modules/collaborato
 import { PageFormComponent } from './modules/page/page-form/page-form.component';
 import { PageListComponent } from './modules/page/page-list/page-list.component';
 import { CollaboratorCommissionPaymentListComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-list/collaborator-commission-payment-list.component';
+import { CollaboratorAwardListComponent } from './modules/collaborator/award/collaborator-award-list/collaborator-award-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -928,6 +929,13 @@ const routes: Routes = [
           reuse: true,
         },
       },
+      {
+        path: 'award/list',
+        component: CollaboratorAwardListComponent,
+        data: {
+          reuse: true,
+        },
+      },
     ]
   },
   {
@@ -993,6 +1001,13 @@ const routes: Routes = [
       {
         path: 'commission/list',
         component: CollaboratorCommissionListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'award/list',
+        component: CollaboratorAwardListComponent,
         data: {
           reuse: true,
         },

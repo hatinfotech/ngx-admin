@@ -283,6 +283,10 @@ import { CollaboratorCommissionFormComponent } from './modules/collaborator/comm
 import { CollaboartorCommissionDetailComponent } from './modules/collaborator/commission/collaborator-commission-form/collaboartor-commission-detail/collaboartor-commission-detail.component';
 import { CollaboratorPublisherFormComponent } from './modules/collaborator/publisher/collaborator-publisher-form/collaborator-publisher-form.component';
 import { InputMaskModule } from '@ngneat/input-mask';
+import { CollaboartorAwardDetailComponent } from './modules/collaborator/award/collaborator-award-form/collaboartor-award-detail/collaboartor-award-detail.component';
+import { CollaboratorAwardFormComponent } from './modules/collaborator/award/collaborator-award-form/collaborator-award-form.component';
+import { CollaboratorAwardListComponent } from './modules/collaborator/award/collaborator-award-list/collaborator-award-list.component';
+import { CollaboratorAwardPrintComponent } from './modules/collaborator/award/collaborator-award-print/collaborator-award-print.component';
 // import { InputMaskModule } from '@ngneat/input-mask';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -534,6 +538,11 @@ export class DynamicLocaleId extends String {
     CollaboratorCommissionPaymentPrintComponent,
     CollaboartorCommissionDetailComponent,
     CollaboratorPublisherFormComponent,
+
+    CollaboratorAwardListComponent,
+    CollaboratorAwardFormComponent,
+    CollaboratorAwardPrintComponent,
+    CollaboartorAwardDetailComponent,
 
 
   ],
@@ -1273,6 +1282,63 @@ export class AppModule {
       },
     },
     commissionVoucher: {
+      "CONFIRMATIONREQUESTED": {
+        state: 'CONFIRMATIONREQUESTED',
+        label: 'Collaborator.Commission.confirmRequest',
+        status: 'warning',
+        outline: false,
+        nextState: 'CONFIRMED',
+        nextStateLabel: 'Common.confirm',
+        confirmText: 'Common.confirmedConfirm',
+        responseTitle: 'Common.confirm',
+        restponseText: 'Common.confirmedSuccess',
+      },
+      "CONFIRMED": {
+        state: 'CONFIRMED',
+        label: 'Collaborator.Commission.confirmed',
+        status: 'primary',
+        outline: false,
+        nextState: 'APPROVED',
+        nextStateLabel: 'Common.approve',
+        confirmText: 'Common.approvedConfirm',
+        responseTitle: 'Common.approved',
+        restponseText: 'Common.approved',
+      },
+      "APPROVED": {
+        state: 'APPROVED',
+        label: 'Common.approved',
+        status: 'success',
+        outline: true,
+        nextState: 'NOTJUSTAPPROVED',
+        nextStateLabel: 'Common.unbookkeeping',
+        confirmText: 'Common.unbookkeepingConfirm',
+        responseTitle: 'Common.unbookkeeping',
+        restponseText: 'Common.unbookkeepingSuccess',
+      },
+      "NOTJUSTAPPROVED": {
+        state: 'NOTJUSTAPPROVED',
+        label: 'Common.notJustCofirmedRequest',
+        status: 'danger',
+        outline: false,
+        nextState: 'CONFIRMATIONREQUESTED',
+        nextStateLabel: 'Collaborator.Commission.confirmRequest',
+        confirmText: 'Collaborator.Commission.confirmedRequest',
+        responseTitle: 'Collaborator.Commission.confirmed',
+        restponseText: 'Collaborator.Commission.confirmedSuccess',
+      },
+      "": {
+        state: 'NOTJUSTAPPROVED',
+        label: 'Common.notJustCofirmedRequest',
+        status: 'danger',
+        outline: false,
+        nextState: 'CONFIRMATIONREQUESTED',
+        nextStateLabel: 'Collaborator.Commission.confirmRequest',
+        confirmText: 'Collaborator.Commission.confirmedRequest',
+        responseTitle: 'Collaborator.Commission.confirmed',
+        restponseText: 'Collaborator.Commission.confirmedSuccess',
+      },
+    },
+    awardVoucher: {
       "CONFIRMATIONREQUESTED": {
         state: 'CONFIRMATIONREQUESTED',
         label: 'Collaborator.Commission.confirmRequest',

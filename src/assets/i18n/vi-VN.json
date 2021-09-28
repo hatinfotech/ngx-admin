@@ -876,6 +876,14 @@
             "confirmed": "đã xác nhận",
             "commissionTo": "đến ngày"
         },
+        "Award": {
+            "label": "kết chuyển thưởng",
+            "paymentLabel": "kết chuyển thưởng",
+            "title": "{{action}}{{definition}} kết chuyển thưởng",
+            "confirmRequest": "yêu cầu xác nhận",
+            "confirmed": "đã xác nhận",
+            "commissionTo": "đến ngày"
+        },
         "PaymentCommission": {
             "label": "thanh toán hoa hồng",
             "paymentLabel": "thanh toán hoa hồng",

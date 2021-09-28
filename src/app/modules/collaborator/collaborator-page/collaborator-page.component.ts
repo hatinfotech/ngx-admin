@@ -55,6 +55,11 @@ export class CollaboratorPageComponent extends BaseComponent {
         // icon: 'pie-chart',
       },
       {
+        title: this.commonService.translateText('Collaborator.Award.label'),
+        route: '/collaborator/page/award/list',
+        // icon: 'pie-chart',
+      },
+      {
         title: this.commonService.translateText('Collaborator.PaymentCommission.paymentLabel'),
         route: '/collaborator/page/commission-payment/list',
         // icon: 'pie-chart',

@@ -1,4 +1,3 @@
-import { UserModel } from './../../../../../models/user.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,15 +10,15 @@ import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 
 @Component({
-  selector: 'ngx-collaboartor-commission-detail',
-  templateUrl: './collaboartor-commission-detail.component.html',
-  styleUrls: ['./collaboartor-commission-detail.component.scss']
+  selector: 'ngx-collaboartor-award-detail',
+  templateUrl: './collaboartor-award-detail.component.html',
+  styleUrls: ['./collaboartor-award-detail.component.scss']
 })
-export class CollaboartorCommissionDetailComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
+export class CollaboartorAwardDetailComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'CollaboartorCommissionDetailComponent';
+  componentName: string = 'CollaboartorAwardDetailComponent';
   formPath = '/accounting/account/form';
-  apiPath = '/accounting/reports';
+  apiPath = '/collaborator/statistics';
   idKey = 'Code';
   // formDialog = AccAccountFormComponent;
 
@@ -33,13 +32,14 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
   totalBalance: { Debit: number, Credit: number } = null;
   tabs: any[];
 
-  @Input('employee') employee?: string;
-  @Input('accounts') accounts?: string[];
-  @Input('fromDate') fromDate?: Date;
-  @Input('toDate') toDate?: Date;
-  @Input('report') report?: string;
   @Input('page') page?: string;
-  @Output() onInit = new EventEmitter<CollaboartorCommissionDetailComponent>();
+  @Input('publisher') publisher?: string;
+  // @Input('accounts') accounts?: string[];
+  // @Input('fromDate') fromDate?: Date;
+  @Input('toDate') toDate?: Date;
+  // @Input('report') report?: string;
+  @Input('awardCycle') awardCycle?: string;
+  @Output() onInit = new EventEmitter<CollaboartorAwardDetailComponent>();
 
   constructor(
     public apiService: ApiService,
@@ -48,14 +48,13 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<CollaboartorCommissionDetailComponent>,
+    public ref: NbDialogRef<CollaboartorAwardDetailComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    new UserModel();
     await this.commonService.waitForReady();
     this.tabs = [
       {
@@ -101,15 +100,15 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
     const settings = this.configSetting({
       actions: false,
       columns: {
-        VoucherDate: {
-          title: this.commonService.translateText('Accounting.voucherDate'),
-          type: 'datetime',
-          width: '10%',
-        },
-        Object: {
-          title: this.commonService.translateText('Common.contact'),
+        Product: {
+          title: this.commonService.translateText('Common.code'),
           type: 'string',
-          width: '10%',
+          width: '5%',
+        },
+        Unit: {
+          title: this.commonService.translateText('Common.unit'),
+          type: 'string',
+          width: '5%',
         },
         // ObjectName: {
         //   title: this.commonService.translateText('Common.contactName'),
@@ -117,37 +116,70 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
         //   width: '15%',
         // },
         Description: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.commonService.translateText('Sản phẩm'),
           type: 'string',
-          width: '15%',
+          width: '55%',
         },
-        Voucher: {
-          title: this.commonService.translateText('Common.voucher'),
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          valuePrepareFunction: (cell: string, row: any) => {
-            return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
-          },
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id));
-          },
+        // Voucher: {
+        //   title: this.commonService.translateText('Common.voucher'),
+        //   type: 'custom',
+        //   renderComponent: SmartTableTagsComponent,
+        //   valuePrepareFunction: (cell: string, row: any) => {
+        //     return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
+        //   },
+        //   onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+        //     instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id));
+        //   },
+        //   width: '10%',
+        // },
+        SumOfQuantity: {
+          title: this.commonService.translateText('KPI đạt được'),
+          type: 'string',
+          width: '5%',
+        },
+        Level1Kpi: {
+          title: this.commonService.translateText('KPI LV1 yêu cầu'),
+          type: 'string',
+          width: '5%',
+        },
+        Level1AwardRatio: {
+          title: this.commonService.translateText('Tỷ lệ thưởng LV1'),
+          type: 'string',
+          width: '5%',
+          valuePrepareFunction:(value) => value + '%',
+        },
+        Level2AwardRatio: {
+          title: this.commonService.translateText('Tỷ lệ thưởng LV2'),
+          type: 'string',
+          width: '5%',
+          valuePrepareFunction:(value) => value + '%',
+        },
+        Level3AwardRatio: {
+          title: this.commonService.translateText('Tỷ lệ thưởng LV3'),
+          type: 'string',
+          width: '5%',
+          valuePrepareFunction:(value) => value + '%',
+        },
+        Level1AwardAmount: {
+          title: this.commonService.translateText('Tiền thưởng'),
+          type: 'currency',
           width: '10%',
         },
-        HeadAmount: {
-          title: this.commonService.translateText('Accounting.headAmount'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        GenerateDebit: {
-          title: this.commonService.translateText('Accounting.debitGenerate'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        GenerateCredit: {
-          title: this.commonService.translateText('Accounting.creditGenerate'),
-          type: 'acc-currency',
-          width: '10%',
-        },
+        // SumOfMonthlyQuantity: {
+        //   title: this.commonService.translateText('Số lượng theo tháng'),
+        //   type: 'string',
+        //   width: '10%',
+        // },
+        // SumOfQuarterlyQuantity: {
+        //   title: this.commonService.translateText('Số lượng theo quý'),
+        //   type: 'string',
+        //   width: '10%',
+        // },
+        // SumOfYearlyQuantity: {
+        //   title: this.commonService.translateText('Số lượng theo năm'),
+        //   type: 'string',
+        //   width: '10%',
+        // },
         // HeadAmount: {
         //   title: this.commonService.translateText('Accounting.headAmount'),
         //   type: 'acc-currency',
@@ -158,11 +190,11 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
         //   type: 'acc-currency',
         //   width: '10%',
         // },
-        IncrementAmount: {
-          title: this.commonService.translateText('Accounting.increment'),
-          type: 'acc-currency',
-          width: '10%',
-        },
+        // IncrementAmount: {
+        //   title: this.commonService.translateText('Accounting.increment'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
         // TailAmount: {
         //   title: this.commonService.translateText('Accounting.tailAmount'),
         //   type: 'acc-currency',
@@ -212,79 +244,43 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
 
-      if (this.employee) {
-        // params['eq_Object'] = this.object;
-        params['eq_Employee'] = this.employee;
-      }
-      if (this.accounts) {
-        params['eq_Account'] = this.accounts.join(',');
-      }
-      if (this.report) {
-        params[this.report] = true;
-      } else {
-        params['reportDetailByObject'] = true;
-      }
-      params['includeIncrementAmount'] = true;
-      if (this.fromDate) {
-        const formDate = this.fromDate instanceof Date ? this.fromDate : new Date(this.fromDate);
-        params['fromDate'] = new Date(formDate.getFullYear(), formDate.getMonth(), formDate.getDate(), 0, 0, 0).toISOString();
-      }
-      if (this.toDate) {
-        const toDate = this.toDate instanceof Date ? this.toDate : new Date(this.toDate);
-        params['toDate'] = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 23, 59, 59).toISOString();
-      }
-      if (this.page) {
-        params['eq_Page'] = this.page;
-      }
+      // if (this.employee) {
+      //   // params['eq_Object'] = this.object;
+      //   params['eq_Employee'] = this.employee;
+      // }
+      // if (this.accounts) {
+      //   params['eq_Account'] = this.accounts.join(',');
+      // }
+      // if (this.report) {
+      //   params[this.report] = true;
+      // } else {
+      //   params['reportDetailByObject'] = true;
+      // }
+      // params['includeIncrementAmount'] = true;
+      // if (this.fromDate) {
+      //   const formDate = this.fromDate instanceof Date ? this.fromDate : new Date(this.fromDate);
+      //   params['fromDate'] = new Date(formDate.getFullYear(), formDate.getMonth(), formDate.getDate(), 0, 0, 0).toISOString();
+      // }
+      // if (this.toDate) {
+      //   const toDate = this.toDate instanceof Date ? this.toDate : new Date(this.toDate);
+      //   params['toDate'] = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 23, 59, 59).toISOString();
+      // }
+      // if (this.page) {
+      //   params['eq_Page'] = this.page;
+      // }
+
+      params['tempAwardReport'] = true;
+      params['page'] = this.page;
+      params['publisher'] = this.publisher;
+      params['toDate'] = this.toDate.toISOString();
+      params['awardCycle'] = this.awardCycle;
+
 
       return params;
     };
 
     return source;
   }
-
-  /** Api get funciton */
-  executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
-    // if (this.object) {
-    //   params['eq_Object'] = this.object;
-    // }
-    if (this.accounts) {
-      params['eq_Account'] = this.accounts.join(',');
-    }
-    if (this.report) {
-      params[this.report] = true;
-    } else {
-      params['reportDetailByObject'] = true;
-    }
-    super.executeGet(params, success, error, complete);
-  }
-
-  // getList(callback: (list: AccountModel[]) => void) {
-  //   super.getList((rs) => {
-  //     let increment = 0;
-  //     for (const item of rs) {
-  //       // if (['131', '141', '1111','1121'].indexOf(item['Account']) > -1) {
-  //       if (/^[1|2|6|8]/.test(item['Account'])) {
-  //         item['HeadAmount'] = item['HeadDebit'] - item['HeadCredit'];
-  //         item['IncrementAmount'] = (increment += item['HeadAmount'] + (item['GenerateDebit'] - item['GenerateCredit']));
-  //       }
-  //       // if (['331', '5111', '5112,5113', '5118', '515'].indexOf(item['Account']) > -1) {
-  //       if (/^[3|5|4|9]/.test(item['Account'])) {
-  //         item['HeadAmount'] = item['HeadCredit'] - item['HeadDebit'];
-  //         item['IncrementAmount'] = (increment += item['HeadAmount'] + (item['GenerateCredit'] - item['GenerateDebit']));
-  //       }
-  //     }
-  //     if (callback) callback(rs);
-  //   });
-  // }
-
-  /** Config for paging */
-  // protected configPaging() {
-  //   return {
-  //     display: true,
-  //     perPage: 99999,
-  //   };
-  // }
 
   async refresh() {
     super.refresh();

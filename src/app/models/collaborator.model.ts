@@ -80,3 +80,24 @@ export interface CollaboratorCommissionVoucherModel {
     Description?: string;
     State?: string;
 }
+export interface CollaboratorAwardVoucherModel {
+    [key: string]: any;
+    Id?: string;
+    Code?: string;
+    Page?: string;
+    Publisher?: string;
+    PublisherName?: string;
+    PublisherPhone?: string;
+    PublisherEmail?: string;
+    PublisherAddress?: string;
+    PublisherIdentifiedNumber?: string;
+    Bank?: string;
+    BankName?: string;
+    BankAccount?: string;
+    Amount?: number;
+    Created?: string;
+    CommissionFrom?: string;
+    CommissionTo?: string;
+    Description?: string;
+    State?: string;
+}
