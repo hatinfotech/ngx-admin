@@ -319,32 +319,32 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       Level1WeeklyLabel: { disabled: true, value: 'Theo tuần' },
       Level1WeeklyKpi: [],
       Level1WeeklyOkr: [],
-      Level1WeeklyCommissionRatio: [],
+      Level1WeeklyAwardRatio: [],
 
       IsAppliedForLevel1Monthly: [true],
       Level1MonthlyLabel: { disabled: true, value: 'Theo tháng' },
       Level1MonthlyKpi: [],
       Level1MonthlyOkr: [],
-      Level1MonthlyCommissionRatio: [],
+      Level1MonthlyAwardRatio: [],
 
       IsAppliedForLevel1Quarterly: [true],
       Level1QuarterlyLabel: { disabled: true, value: 'Theo quý' },
       Level1QuarterlyKpi: [],
       Level1QuarterlyOkr: [],
-      Level1QuarterlyCommissionRatio: [],
+      Level1QuarterlyAwardRatio: [],
 
       IsAppliedForLevel1Yearly: [true],
       Level1YearlyLabel: { disabled: true, value: 'Theo năm' },
       Level1YearlyKpi: [],
       Level1YearlyOkr: [],
-      Level1YearlyCommissionRatio: [],
+      Level1YearlyAwardRatio: [],
 
       // Level 2 field
       Level2ExtBadge: { disabled: true, value: 'CTV Bán Hàng Bạc 2' },
       Level2ExtLabel: { disabled: true, value: 'CTV Bán Hàng Level 2' },
       Level2ExtRequiredKpi: [],
       Level2ExtRequiredOkr: [],
-      Level2ExtCommissionRatio: [],
+      Level2ExtAwardRatio: [],
       Level2ExtDescription: [],
 
       // Level 3 field
@@ -352,7 +352,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       Level3ExtLabel: { disabled: true, value: 'CTV Bán Hàng Level 3' },
       Level3ExtRequiredKpi: [],
       Level3ExtRequiredOkr: [],
-      Level3ExtCommissionRatio: [],
+      Level3ExtAwardRatio: [],
       Level3ExtDescription: [],
 
 
