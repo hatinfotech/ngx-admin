@@ -297,7 +297,8 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 export class DynamicLocaleId extends String {
-  constructor(public translate: TranslateService) {
+  constructor(
+    public translate: TranslateService) {
     super();
   }
 
@@ -701,11 +702,12 @@ export class DynamicLocaleId extends String {
       useClass: DynamicLocaleId,
       deps: [TranslateService],
     },
-    {
-      provide: OWL_DATE_TIME_LOCALE,
-      useClass: DynamicLocaleId,
-      deps: [TranslateService],
-    },
+    // {
+    //   provide: OWL_DATE_TIME_LOCALE,
+    //   // useClass: DynamicLocaleId,
+    //   // deps: [TranslateService],
+    //   useValue: 'en-US'
+    // },
     { provide: NbDialogRef, useValue: {} },
     { provide: CurrencyPipe, useValue: {} },
     { provide: DecimalPipe, useValue: {} },

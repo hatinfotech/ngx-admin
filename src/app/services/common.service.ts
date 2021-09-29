@@ -46,6 +46,7 @@ import { AccountingOtherBusinessVoucherPrintComponent } from '../modules/account
 import * as moment from 'moment';
 import { FileStoreModel } from '../models/file.model';
 import { createMask } from '@ngneat/input-mask';
+import { DateTimeAdapter } from 'ng-pick-datetime';
 
 @Injectable({
   providedIn: 'root',
@@ -179,6 +180,7 @@ export class CommonService {
     private toastrService: NbToastrService,
     private mobileService: MobileAppService,
     public activeRoute: ActivatedRoute,
+    public dateTimeAdapter: DateTimeAdapter<any>,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
@@ -193,6 +195,7 @@ export class CommonService {
     // translate.setDefaultLang('vi-VN');
     this.locale$.subscribe(info => {
       if (info) {
+        this.dateTimeAdapter.setLocale(info.locale);
         this.languageLoaded$.next(false);
         translate.use(info.locale).pipe(take(1)).toPromise().then(() => setTimeout(() => this.languageLoaded$.next(true), 1000));
         localStorage.setItem('configuration.locale', info.locale);
