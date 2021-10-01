@@ -60,11 +60,16 @@
                                     <input type="text" nbInput fullWidth formControlName="Amount" currencyMask [options]="curencyFormat" placeholder="{{'Collaborator.Award.label' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
+                            <div class="col-sm-2">
+                                <ngx-form-group [formGroup]="formItem" name="Type" label="Common.type" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons">
+                                    <ngx-select2 formControlName="Type" [select2Option]="select2OptionForType" [data]="select2OptionForType.data"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
                         </div>
                         <div style="margin-left: -20px; margin-right: -20px" *ngIf="isShowDetail(formItem)">
-                            <nb-tabset>
+                            <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'statistics')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [toDate]="formItem.get('ToDate').value" [awardCycle]="commonService.getObjectId(formItem.get('Type').value)"></ngx-collaboartor-award-detail>
+                            <!-- <nb-tabset>
                                 <nb-tab tabTitle="{{'KPI Tuần' | translate | headtitlecase}}">
-                                    <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'weekly')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [toDate]="formItem.get('ToDate').value" [awardCycle]="'WEEKLY'"></ngx-collaboartor-award-detail>
                                 </nb-tab>
                                 <nb-tab tabTitle="{{'KPI Tháng' | translate | headtitlecase}}">
                                     <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'monthly')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [toDate]="formItem.get('ToDate').value" [awardCycle]="'MONTHLY'"></ngx-collaboartor-award-detail>
@@ -75,7 +80,7 @@
                                 <nb-tab tabTitle="{{'KPI Năm' | translate | headtitlecase}}">
                                     <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'yearly')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [toDate]="formItem.get('ToDate').value" [awardCycle]="'YEARLY'"></ngx-collaboartor-award-detail>
                                 </nb-tab>
-                            </nb-tabset>
+                            </nb-tabset> -->
                         </div>
                     </div>
                 </nb-card-body>

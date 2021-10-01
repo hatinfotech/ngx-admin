@@ -107,6 +107,73 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
     },
   };
 
+  select2OptionForWeekend = {
+    placeholder: this.commonService.translateText('Common.dayOfWeek') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    data: [
+      {
+        id: '0',
+        text: 'Thứ hai'
+      },
+      {
+        id: '1',
+        text: 'Thứ ba'
+      },
+      {
+        id: '2',
+        text: 'Thứ tư'
+      },
+      {
+        id: '3',
+        text: 'Thứ năm'
+      },
+      {
+        id: '4',
+        text: 'Thứ sáu'
+      },
+      {
+        id: '5',
+        text: 'Thứ bảy'
+      },
+      {
+        id: '6',
+        text: 'Chủ nhật'
+      },
+    ]
+  };
+
+  endOfYearInputMask = {
+    alias: 'datetime',
+    inputFormat: 'dd/mm',
+    // parser: (value: string) => {
+    //   const values = value.split('/');
+    //   const year = +values[2];
+    //   const month = +values[1] - 1;
+    //   const date = +values[0];
+    //   return new Date(year, month, date);
+    // },
+  };
+  endOfMonthInputMask = {
+    alias: 'datetime',
+    inputFormat: 'dd',
+    // parser: (value: string) => {
+    //   const values = value.split('/');
+    //   const year = +values[2];
+    //   const month = +values[1] - 1;
+    //   const date = +values[0];
+    //   return new Date(year, month, date);
+    // },
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -178,6 +245,10 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
       PriceTable: [''],
       Logo: [''],
       Banner: [''],
+      Weekend: ['6', Validators.required],
+      EndOfTheMonth: ['28', Validators.required],
+      EndOfTheQuarter: ['28', Validators.required],
+      EndOfTheYear: ['24/12', Validators.required],
     });
     if (data) {
       newForm.patchValue(data);

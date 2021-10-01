@@ -1,7 +1,8 @@
+import { Select2Component } from './../../../../../vendor/ng2select2/lib/ng2-select2.component';
 import { takeUntil } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
@@ -119,6 +120,24 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
     },
   };
 
+  select2OptionForType = {
+    placeholder: 'Chọn loại...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    data: [
+      { id: 'WEEKLY', text: 'Tuần' },
+      { id: 'MONTHLY', text: 'Tháng' },
+      { id: 'QUARTERLY', text: 'Quý' },
+      { id: 'YEARLY', text: 'Năm' },
+    ],
+  };
+
 
   ngOnInit() {
     this.restrict();
@@ -188,6 +207,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
       PublisherIdentifiedNumber: [''],
       PublisherBankName: [''],
       PublisherBankAccount: [''],
+      Type: [],
       Amount: ['', Validators.required],
       ToDate: [new Date(), Validators.required],
       Description: [`Kết chuyển hoa hồng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
@@ -238,6 +258,9 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
         this.onConditionFieldsChange(newForm);
       });
       newForm.get('Page').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
+        this.onConditionFieldsChange(newForm);
+      });
+      newForm.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(type => {
         this.onConditionFieldsChange(newForm);
       });
     }, 3000);
@@ -385,6 +408,9 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
   }
 
   onListInit(listInstance: CollaboartorAwardDetailComponent, formGroup: FormGroup, tab: string) {
+    // type.selectChange.subscribe(value => {
+    //   console.log(value);
+    // });
     console.log(listInstance);
     if (!formGroup['listInstance']) {
       formGroup['listInstance'] = {};
@@ -401,7 +427,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
   }
 
   isShowDetail(formGroup: FormGroup) {
-    return formGroup.get('Page').value && formGroup.get('Publisher').value && formGroup.get('ToDate').value;
+    return formGroup.get('Page').value && formGroup.get('Publisher').value && formGroup.get('ToDate').value && formGroup.get('Type').value;
   }
 
 }

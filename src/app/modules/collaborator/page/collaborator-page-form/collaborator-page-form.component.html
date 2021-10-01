@@ -50,6 +50,26 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Weekend" label="DateTime.weekend" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <ngx-select2 formControlName="Weekend" [select2Option]="select2OptionForWeekend" [data]="select2OptionForWeekend.data"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="EndOfTheMonth" label="DateTime.endOfTheMonth" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="EndOfTheMonth" placeholder="{{'DateTime.endOfTheMonth' | translate | headtitlecase}}" [inputMask]="endOfMonthInputMask">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="EndOfTheQuarter" label="DateTime.endOfTheQuarter" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="EndOfTheQuarter" placeholder="{{'DateTime.endOfTheQuarter' | translate | headtitlecase}}" [inputMask]="endOfMonthInputMask">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="EndOfTheYear" label="DateTime.endOfTheYear" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="EndOfTheYear" placeholder="{{'DateTime.endOfTheYear' | translate | headtitlecase}}"  [inputMask]="endOfYearInputMask">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="EventUrl" label="Common.eventUrl" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                   <input type="text" nbInput fullWidth formControlName="EventUrl" placeholder="{{'Common.eventUrl' | translate | headtitlecase}}">
                 </ngx-form-group>

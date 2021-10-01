@@ -62,6 +62,12 @@
         },
         "deploymentTask": "task triển khai"
     },
+    "DateTime": {
+        "weekend": "cuối tuần",
+        "endOfTheMonth": "cuối tháng",
+        "endOfTheQuarter": "cuối quý",
+        "endOfTheYear": "cuối năm"
+    },
     "Common": {
         "Pms": {
             "list": "xem danh sách",
