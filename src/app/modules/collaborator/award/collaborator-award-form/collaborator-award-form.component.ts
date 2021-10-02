@@ -120,7 +120,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
     },
   };
 
-  select2OptionForType = {
+  select2OptionForCycle = {
     placeholder: 'Chọn loại...',
     allowClear: false,
     width: '100%',
@@ -207,9 +207,9 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
       PublisherIdentifiedNumber: [''],
       PublisherBankName: [''],
       PublisherBankAccount: [''],
-      Type: [],
+      Cycle: [],
       Amount: ['', Validators.required],
-      ToDate: [new Date(), Validators.required],
+      AwardTo: [new Date(), Validators.required],
       Description: [`Kết chuyển hoa hồng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
     });
     if (data) {
@@ -221,25 +221,25 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
   }
 
   onConditionFieldsChange(newForm) {
-    const awardRange = newForm.get('ToDate').value;
+    const awardRange = newForm.get('AwardTo').value;
     console.log(awardRange);
     const publisherEle = newForm.get('Publisher');
     const publisher = this.commonService.getObjectId(publisherEle.value);
     const publisherName = newForm.get('PublisherName').value;
     if (!this.isProcessing && publisher) {
-      const page = this.commonService.getObjectId(newForm.get('Page').value);
-      const amountEle = newForm.get('Amount');
-      const descriptionEle = newForm.get('Description');
+      // const page = this.commonService.getObjectId(newForm.get('Page').value);
+      // const amountEle = newForm.get('Amount');
+      // const descriptionEle = newForm.get('Description');
 
-      const dateRange = awardRange;
-      const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
-      const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
+      // const dateRange = awardRange;
+      // const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
+      // const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
 
-      this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
-        console.log(summaryReport);
-        amountEle.setValue(summaryReport?.AwardAmount);
-        descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${awardRange && awardRange[1] && awardRange[1].toLocaleDateString()}`);
-      });
+      // this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, moment: toDate, limit: 'nolimit' }).then(summaryReport => {
+      //   console.log(summaryReport);
+      //   amountEle.setValue(summaryReport?.AwardAmount);
+      //   descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${awardRange && awardRange[1] && awardRange[1].toLocaleDateString()}`);
+      // });
       setTimeout(() => {
         // newForm['listInstance'] && newForm['listInstance'].refresh();
         this.refreshAllTab(newForm);
@@ -250,7 +250,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
   onAddFormGroup(index: number, newForm: FormGroup, formData?: CollaboratorAwardVoucherModel): void {
     super.onAddFormGroup(index, newForm, formData);
     setTimeout(() => {
-      newForm.get('ToDate').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(awardRange => {
+      newForm.get('AwardTo').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(awardRange => {
         // console.log(awardRange);
         this.onConditionFieldsChange(newForm);
       });
@@ -260,7 +260,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
       newForm.get('Page').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
         this.onConditionFieldsChange(newForm);
       });
-      newForm.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(type => {
+      newForm.get('Cycle').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(type => {
         this.onConditionFieldsChange(newForm);
       });
     }, 3000);
@@ -294,9 +294,9 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
   // Orverride
   getRawFormData() {
     const data = super.getRawFormData();
-    for (const item of data.array) {
-      item['Type'] = 'RECEIPT';
-    }
+    // for (const item of data.array) {
+    //   // item['Type'] = 'RECEIPT';
+    // }
     return data;
   }
 
@@ -427,7 +427,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
   }
 
   isShowDetail(formGroup: FormGroup) {
-    return formGroup.get('Page').value && formGroup.get('Publisher').value && formGroup.get('ToDate').value && formGroup.get('Type').value;
+    return formGroup.get('Page').value && formGroup.get('Publisher').value && formGroup.get('AwardTo').value && formGroup.get('Cycle').value;
   }
 
 }

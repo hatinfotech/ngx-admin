@@ -36,7 +36,7 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
   @Input('publisher') publisher?: string;
   // @Input('accounts') accounts?: string[];
   // @Input('fromDate') fromDate?: Date;
-  @Input('toDate') toDate?: Date;
+  @Input('moment') moment?: Date;
   // @Input('report') report?: string;
   @Input('awardCycle') awardCycle?: string;
   @Output() onInit = new EventEmitter<CollaboartorAwardDetailComponent>();
@@ -118,7 +118,7 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
         Description: {
           title: this.commonService.translateText('Sản phẩm'),
           type: 'string',
-          width: '55%',
+          width: '10%', 
         },
         // Voucher: {
         //   title: this.commonService.translateText('Common.voucher'),
@@ -148,20 +148,42 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           width: '5%',
           valuePrepareFunction:(value) => value + '%',
         },
-        Level2AwardRatio: {
+        Level1AwardAmount: {
+          title: this.commonService.translateText('Tiền thưởng LV1'),
+          type: 'currency',
+          width: '10%',
+        },
+        ExtSumOfNetRevenue: {
+          title: this.commonService.translateText('Doanh số của học trò'),
+          type: 'currency',
+          width: '10%',
+        },
+        Level2ExtAwardRatio: {
           title: this.commonService.translateText('Tỷ lệ thưởng LV2'),
           type: 'string',
           width: '5%',
           valuePrepareFunction:(value) => value + '%',
         },
-        Level3AwardRatio: {
+        Level2ExtAwardAmount: {
+          title: this.commonService.translateText('Thưởng LV2'),
+          type: 'currency',
+          width: '10%',
+          valuePrepareFunction:(value) => value,
+        },
+        Level3ExtAwardRatio: {
           title: this.commonService.translateText('Tỷ lệ thưởng LV3'),
           type: 'string',
           width: '5%',
           valuePrepareFunction:(value) => value + '%',
         },
-        Level1AwardAmount: {
-          title: this.commonService.translateText('Tiền thưởng'),
+        Level3ExtAwardAmount: {
+          title: this.commonService.translateText('Thưởng LV3'),
+          type: 'currency',
+          width: '10%',
+          valuePrepareFunction:(value) => value,
+        },
+        TotalAwardAmount: {
+          title: this.commonService.translateText('Tổng thưởng'),
           type: 'currency',
           width: '10%',
         },
@@ -203,7 +225,7 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
         Preview: {
           title: this.commonService.translateText('Common.detail'),
           type: 'custom',
-          width: '10%',
+          width: '5%',
           class: 'align-right',
           renderComponent: SmartTableButtonComponent,
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
@@ -272,7 +294,7 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
       params['tempAwardReport'] = true;
       params['page'] = this.page;
       params['publisher'] = this.publisher;
-      params['toDate'] = this.toDate.toISOString();
+      params['moment'] = this.moment.toISOString();
       params['awardCycle'] = this.awardCycle;
 
 
