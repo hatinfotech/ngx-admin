@@ -19,18 +19,20 @@ import { AssignCategoriesFormComponent } from '../../../admin-product/product/as
 import { CollaboratorProductFormComponent } from '../collaborator-product-form/collaborator-product-form.component';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { PageModel } from '../../../../models/page.model';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-collaborator-product-list',
   templateUrl: './collaborator-product-list.component.html',
-  styleUrls: ['./collaborator-product-list.component.scss']
+  styleUrls: ['./collaborator-product-list.component.scss'],
+  providers: [CurrencyPipe],
 })
 export class CollaboratorProductListComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit {
 
   componentName: string = 'CollaboratorProductListComponent';
   formPath = '/collaborator/product/form';
   apiPath = '/collaborator/page-products';
-  idKey: string | string[] = ['Page', 'Product', 'Unit'];
+  idKey: string | string[] = ['Page', 'Product'];
   formDialog = CollaboratorProductFormComponent;
   currentPage: PageModel;
 
@@ -56,6 +58,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorProductListComponent>,
     public collaboratorService: CollaboratorService,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -289,15 +292,17 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
             },
           },
         },
-        UnitName: {
-          title: 'ĐVT',
+        Units: {
+          title: 'Giá/ĐVT',
           type: 'html',
-          width: '5%',
-        },
-        Price: {
-          title: 'Giá',
-          type: 'currency',
-          width: '8%',
+          width: '13%',
+          valuePrepareFunction: (cell: any, row?: any) => {
+            return (cell || []).map(m => {
+              let text = `${this.currencyPipe.transform(m.Price, 'VND')}/${m.text}`;
+              if(row.Unit == m.id) text = `<b>${text}</b>`;
+              return text;
+            } ).join('<br>');
+          },
         },
         Product: {
           title: 'Code',
@@ -358,7 +363,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
       params['includeGroups'] = true;
       params['includeProduct'] = true;
       params['includeUnit'] = true;
-      params['includePrice'] = true;
+      params['includeUnitPrices'] = true;
       // params['includeFeaturePicture'] = true;
       // params['includeUnitConversions'] = true;
       params['productOfPage'] = true;

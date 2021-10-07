@@ -30,7 +30,7 @@ import { CollaboratorService } from '../../collaborator.service';
 export class CollaboratorProductFormComponent extends DataManagerFormComponent<ProductModel> implements OnInit {
 
   componentName: string = 'CollaboratorProductFormComponent';
-  idKey = ['Page', 'Product', 'Unit'];
+  idKey = ['Page', 'Product'];
   apiPath = '/collaborator/page-products';
   baseFormUrl = '/collaborator/product/form';
 

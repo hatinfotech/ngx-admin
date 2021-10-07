@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -23,7 +24,8 @@ import { CollaboratorProductPreviewListComponent } from '../collaborator-product
 @Component({
   selector: 'ngx-collaborator-subscription-product',
   templateUrl: './collaborator-subscription-product.component.html',
-  styleUrls: ['./collaborator-subscription-product.component.scss']
+  styleUrls: ['./collaborator-subscription-product.component.scss'],
+  providers: [CurrencyPipe],
 })
 export class CollaboratorSubscriptionProductComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit {
 
@@ -55,6 +57,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorSubscriptionProductComponent>,
     public collaboratorService: CollaboratorService,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -313,16 +316,26 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
             },
           },
         },
-        UnitName: {
-          title: 'ĐVT',
+        Units: {
+          title: 'Giá/ĐVT',
           type: 'html',
-          width: '10%',
+          width: '18%',
+          valuePrepareFunction: (cell: any, row?: any) => {
+            return (cell || []).map(m => {
+              let text = `${this.currencyPipe.transform(m.Price, 'VND')}/${m.text}`;
+              if(row.Unit == m.id) text = `<b>${text}</b>`;
+              return text;
+            } ).join('<br>');
+          },
+          // onComponentInitFunction: (cell, row) => {
+            
+          // },
         },
-        Price: {
-          title: 'Giá',
-          type: 'currency',
-          width: '8%',
-        },
+        // Price: {
+        //   title: 'Giá',
+        //   type: 'currency',
+        //   width: '8%',
+        // },
         // Code: {
         //   title: 'Code',
         //   type: 'string',
@@ -370,7 +383,8 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
     source.prepareParams = (params: any) => {
       params['includeCategories'] = true;
       params['includeGroups'] = true;
-      // params['includeWarehouseUnit'] = true;
+      params['includeUnitPrices'] = true;
+      params['includePage'] = true;
       // params['includeFeaturePicture'] = true;
       // params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
