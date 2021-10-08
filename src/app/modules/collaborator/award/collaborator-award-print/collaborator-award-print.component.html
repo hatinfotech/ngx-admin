@@ -41,8 +41,8 @@
                                 <td class="text-align-left">{{i + 1}}</td>
                                 <td class="text-align-left"><a class="link" (click)="this.commonService.previewVoucher('CLBRTORDER', detail.Voucher)">{{renderValue(detail.Voucher)}}</a></td>
                                 <td class="text-align-left">{{renderValue(detail.VoucherDate | date:'short')}}</td>
-                                <td class="text-align-left">{{renderValue(detail.Description)}}</td>
-                                <td class="text-align-right">{{(detail.HeadCredit - detail.HeadDebit + detail.GenerateCredit - detail.GenerateDebit) | currency:'VND'}}</td>
+                                <td class="text-align-left">{{renderValue(detail.ProductName)}}</td>
+                                <td class="text-align-right">{{(detail.TotalAwardAmount) | currency:'VND'}}</td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td> </td>

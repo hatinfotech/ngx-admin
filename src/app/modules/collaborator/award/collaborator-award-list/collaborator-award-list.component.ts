@@ -31,6 +31,8 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
   idKey = 'Code';
   formDialog = CollaboratorAwardFormComponent;
 
+  @Input('context') context?: any;
+
   reuseDialog = true;
   static _dialog: NbDialogRef<CollaboratorAwardListComponent>;
 
@@ -120,31 +122,15 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
           type: 'string',
           width: '10%',
         },
-        Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
-          type: 'custom',
+        AwardFrom: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.fromDate'), 'head-title'),
+          type: 'datetime',
           width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
         },
-        DateOfVoucher: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Award.awardTo'), 'head-title'),
-          type: 'custom',
+        AwardTo: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.toDate'), 'head-title'),
+          type: 'datetime',
           width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
         },
         Amount: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),

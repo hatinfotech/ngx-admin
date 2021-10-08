@@ -210,7 +210,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
       Cycle: [],
       Amount: {value: '', disabled: true},
       AwardTo: [new Date(), Validators.required],
-      Description: [`Kết chuyển hoa hồng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
+      Description: [`Kết chuyển thưởng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
     });
     if (data) {
       this.prepareRestrictedData(newForm, data);

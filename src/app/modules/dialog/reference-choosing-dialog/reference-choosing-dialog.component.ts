@@ -9,6 +9,7 @@ export class ReferenceChoosingDialogComponent<T> implements OnInit {
 
   @Input() components: {[key: string]: {
     // name: string,
+    [key: string]: any,
     title: string,
   }};
   @Input() onDialogChoose?: (chooseItems: any[], type?: string) => void;

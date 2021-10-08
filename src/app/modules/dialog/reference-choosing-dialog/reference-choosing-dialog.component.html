@@ -20,6 +20,12 @@
                 <nb-tab *ngIf="components['PURCHASE']" tabTitle="{{components['PURCHASE'].title}}">
                     <ngx-purchase-voucher-list (onItemsChoosed)="onDialogChoose($event, 'PURCHASE')"></ngx-purchase-voucher-list>
                 </nb-tab>
+                <nb-tab *ngIf="components['CLBRTCOMMISSION']" tabTitle="{{components['CLBRTCOMMISSION'].title}}">
+                    <ngx-collaborator-commission-list (onItemsChoosed)="onDialogChoose($event, 'CLBRTCOMMISSION')"></ngx-collaborator-commission-list>
+                </nb-tab>
+                <nb-tab *ngIf="components['CLBRTAWARD']" tabTitle="{{components['CLBRTAWARD'].title}}">
+                    <ngx-collaborator-award-list (onItemsChoosed)="onDialogChoose($event, 'CLBRTAWARD')" [context]="components['CLBRTAWARD']"></ngx-collaborator-award-list>
+                </nb-tab>
             </nb-tabset>
         </nb-card-body>
     </nb-card>

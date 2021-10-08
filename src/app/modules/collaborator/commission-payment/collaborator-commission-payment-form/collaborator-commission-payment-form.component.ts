@@ -9,7 +9,7 @@ import { ActionControlListOption } from '../../../../lib/custom-element/action-c
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { AccBankAccountModel, AccountModel, BusinessModel, CashVoucherDetailModel, CashVoucherModel } from '../../../../models/accounting.model';
-import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
+import { CollaboratorAwardVoucherModel, CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { ApiService } from '../../../../services/api.service';
@@ -17,6 +17,7 @@ import { CommonService } from '../../../../services/common.service';
 import { AccBusinessFormComponent } from '../../../accounting/acc-business/acc-business-form/acc-business-form.component';
 import { CashPaymentVoucherPrintComponent } from '../../../accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../../../accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
+import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { PurchaseVoucherListComponent } from '../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorCommissionListComponent } from '../../commission/collaborator-commission-list/collaborator-commission-list.component';
@@ -557,87 +558,124 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.commonService.openDialog(CollaboratorCommissionListComponent, {
+    this.commonService.openDialog(ReferenceChoosingDialogComponent, {
       context: {
-        inputMode: 'dialog',
-        filter: {
-          eq_State: 'APPROVED',
+        // inputMode: 'dialog',
+        // filter: {
+        //   eq_State: 'APPROVED',
+        // },
+        components: {
+          'CLBRTCOMMISSION': {
+            title: 'Kết chuyển chiết khấu',
+            filter: {
+              eq_State: 'APPROVED',
+            },
+          },
+          'CLBRTAWARD': {
+            title: 'Kết chuyển thưởng',
+            filter: {
+              eq_State: 'APPROVED',
+            },
+          },
         },
-        onDialogChoose: async (chooseItems: CollaboratorCommissionVoucherModel[]) => {
+        onDialogChoose: async (chooseItems: any[], type?: string) => {
           console.log(chooseItems);
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
           this.onProcessing();
-          for (let i = 0; i < chooseItems.length; i++) {
-            const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
-            if (index < 0) {
-              const details = this.getDetails(formGroup);
-              // get purchase order
-              const commissionVoucher = await this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>('/collaborator/commission-vouchers/' + chooseItems[i].Code, { includeContact: true }).then(rs => rs[0]);
+          if (type === 'CLBRTCOMMISSION') {
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
+              if (index < 0) {
+                const details = this.getDetails(formGroup);
+                // get purchase order
+                const commissionVoucher = await this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>('/collaborator/commission-vouchers/' + chooseItems[i].Code, { includeContact: true }).then(rs => rs[0]);
 
-              if (this.commonService.getObjectId(commissionVoucher.State) != 'APPROVED') {
-                this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-                continue;
-              }
-              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                if (this.commonService.getObjectId(commissionVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu hoa hồng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.commonService.getObjectId(commissionVoucher.State) != 'APPROVED') {
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu kết chuyển chiết khấu chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-              } else {
-                // delete commissionVoucher.Id;
-                formGroup.patchValue({
-                  Object: { id: commissionVoucher.Publisher, text: commissionVoucher.PublisherName, Phone: commissionVoucher.PublisherPhone, Email: commissionVoucher.PublisherEmail, Address: commissionVoucher.PublisherAddress, IdentifiedNumber: commissionVoucher.PublisherIdentifiedNumber },
-                  ObjectName: commissionVoucher.PublisherName,
-                  ObjectPhone: commissionVoucher.PublisherPhone,
-                  ObjectEmail: commissionVoucher.PublisherEmail,
-                  ObjectAddress: commissionVoucher.PublisherAddress,
-                  ObjectIdentifiedNumber: commissionVoucher.PublisherIdentifiedNumber,
-                  Description: commissionVoucher.Description,
-                  Page: commissionVoucher.Page,
-                  VoucherDate: new Date(),
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(commissionVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu hoa hồng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  formGroup.patchValue({
+                    Object: { id: commissionVoucher.Publisher, text: commissionVoucher.PublisherName, Phone: commissionVoucher.PublisherPhone, Email: commissionVoucher.PublisherEmail, Address: commissionVoucher.PublisherAddress, IdentifiedNumber: commissionVoucher.PublisherIdentifiedNumber },
+                    ObjectName: commissionVoucher.PublisherName,
+                    ObjectPhone: commissionVoucher.PublisherPhone,
+                    ObjectEmail: commissionVoucher.PublisherEmail,
+                    ObjectAddress: commissionVoucher.PublisherAddress,
+                    ObjectIdentifiedNumber: commissionVoucher.PublisherIdentifiedNumber,
+                    Description: commissionVoucher.Description,
+                    Page: commissionVoucher.Page,
+                    VoucherDate: new Date(),
+                  });
+                  formGroup.get('Description').patchValue('Thanh toán cho: ' + commissionVoucher.Description);
+                  details.clear();
+                }
+
+                insertList.push(chooseItems[i]);
+
+                const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+                  Description: `${commissionVoucher.Code}: ${commissionVoucher.Description}`,
+                  Amount: commissionVoucher.Amount,
                 });
-                // formGroup.get('ObjectName').patchValue(commissionVoucher.PublisherName);
-                // formGroup.get('ObjectPhone').patchValue(commissionVoucher.PublisherPhone);
-                // formGroup.get('ObjectEmail').patchValue(commissionVoucher.PublisherEmail);
-                // formGroup.get('ObjectAddress').patchValue(commissionVoucher.PublisherAddress);
-                // formGroup.get('ObjectIdentifiedNumber').patchValue(commissionVoucher.PublisherIdentifiedNumber);
-                formGroup.get('Description').patchValue('Thanh toán cho: ' + commissionVoucher.Description);
-                details.clear();
+                details.push(newDtailFormGroup);
               }
-
-              insertList.push(chooseItems[i]);
-
-              // Insert order details into voucher details
-              // if (commissionVoucher) {
-              // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
-              // let totalMoney = 0;
-              // const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
-              // for (const voucherDetail of commissionVoucher.Details) {
-              //   if (voucherDetail.Type !== 'CATEGORY') {
-              //     const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
-              //     totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
-              //   }
-              // }
-              const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
-                // AccountingBusiness: 'PAYMENTSUPPPLIER',
-                Description: commissionVoucher.Description,
-                // DebitAccount: '331',
-                // CreditAccount: '1111',
-                Amount: commissionVoucher.Amount,
-              });
-              details.push(newDtailFormGroup);
-              // }
             }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'CLBRTCOMMISSION' }))]);
           }
-          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'CLBRTCOMMISSION' }))]);
-          // setTimeout(() => {
+          if (type === 'CLBRTAWARD') {
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
+              if (index < 0) {
+                const details = this.getDetails(formGroup);
+                // get purchase order
+                const awardVoucher = await this.apiService.getPromise<CollaboratorAwardVoucherModel[]>('/collaborator/award-vouchers/' + chooseItems[i].Code, { includeContact: true }).then(rs => rs[0]);
+
+                if (this.commonService.getObjectId(awardVoucher.State) != 'APPROVED') {
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu thưởng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(awardVoucher.Publisher, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu thưởng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  formGroup.patchValue({
+                    Object: { id: awardVoucher.Publisher, text: awardVoucher.PublisherName, Phone: awardVoucher.PublisherPhone, Email: awardVoucher.PublisherEmail, Address: awardVoucher.PublisherAddress, IdentifiedNumber: awardVoucher.PublisherIdentifiedNumber },
+                    ObjectName: awardVoucher.PublisherName,
+                    ObjectPhone: awardVoucher.PublisherPhone,
+                    ObjectEmail: awardVoucher.PublisherEmail,
+                    ObjectAddress: awardVoucher.PublisherAddress,
+                    ObjectIdentifiedNumber: awardVoucher.PublisherIdentifiedNumber,
+                    Description: awardVoucher.Description,
+                    Page: awardVoucher.Page,
+                    VoucherDate: new Date(),
+                  });
+                  formGroup.get('Description').patchValue('Thanh toán cho: ' + awardVoucher.Description);
+                  details.clear();
+                }
+
+                insertList.push(chooseItems[i]);
+
+                const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+                  Description: `${awardVoucher.Code}: ${awardVoucher.Description}`,
+                  Amount: awardVoucher.Amount,
+                });
+                details.push(newDtailFormGroup);
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'CLBRTAWARD' }))]);
+          }
           this.onProcessed();
-          // }, 500);
         },
-        onDialogClose: () => {
-        },
+        // onDialogClose: () => {
+        // },
       }
     })
     return false;

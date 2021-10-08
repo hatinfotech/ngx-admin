@@ -19,8 +19,8 @@ import { CommonService } from '../../../../services/common.service';
 export class CollaboratorAwardPrintComponent extends DataManagerPrintComponent<CollaboratorAwardVoucherModel> implements OnInit {
 
   /** Component name */
-  componentName = 'CollaboratorPublisherAwardPrintComponent';
-  title: string = 'Xem trước phiếu hoa hồng';
+  componentName = 'CollaboratorAwardPrintComponent';
+  title: string = 'Xem trước phiếu thưởng';
   apiPath = '/collaborator/award-vouchers';
   env = environment;
   processMapList: ProcessMap[] = [];

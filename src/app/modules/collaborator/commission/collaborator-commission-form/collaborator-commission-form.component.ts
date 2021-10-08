@@ -190,7 +190,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       PublisherBankAccount: [''],
       Amount: ['', Validators.required],
       CommissionRange: [[new Date(), new Date()], Validators.required],
-      Description: [`Kết chuyển hoa hồng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
+      Description: [`Kết chuyển chiết khấu đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
     });
     if (data) {
       this.prepareRestrictedData(newForm, data);
@@ -323,13 +323,13 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       if (selectedData && !selectedData['doNotAutoFill']) {
 
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-        if (selectedData.Code) {
+        if (selectedData.id) {
           const data = {
-            ObjectName: selectedData.Name,
-            ObjectPhone: selectedData.Phone,
-            ObjectEmail: selectedData.Email,
-            ObjectAddress: selectedData.Address,
-            ObjectTaxCode: selectedData.TaxCode,
+            PublisherName: selectedData.text,
+            // ObjectPhone: selectedData.Phone,
+            // ObjectEmail: selectedData.Email,
+            // ObjectAddress: selectedData.Address,
+            // ObjectTaxCode: selectedData.TaxCode,
             // ObjectBankName: selectedData.BankName,
             // ObjectBankCode: selectedData.BankAcc,
           };
@@ -338,7 +338,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
           formGroup.patchValue(data);
         } else {
           formGroup.patchValue({
-            ObjectName: selectedData['text'],
+            PublisherName: selectedData['text'],
           });
         }
       }

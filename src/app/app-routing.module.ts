@@ -1012,6 +1012,13 @@ const routes: Routes = [
           reuse: true,
         },
       },
+      {
+        path: 'award/list',
+        component: CollaboratorAwardListComponent,
+        data: {
+          reuse: true,
+        },
+      },
     ]
   },
   {
