@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableTagsComponent, SmartTableButtonComponent, SmartTableBaseComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountModel } from '../../../../../models/accounting.model';
@@ -40,6 +40,7 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
   // @Input('report') report?: string;
   @Input('awardCycle') awardCycle?: string;
   @Output() onInit = new EventEmitter<CollaboartorAwardDetailComponent>();
+  @Output() onUpdateTotalAward = new EventEmitter<number>();
 
   constructor(
     public apiService: ApiService,
@@ -106,7 +107,7 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           width: '5%',
         },
         Unit: {
-          title: this.commonService.translateText('Common.unit'),
+          title: this.commonService.translateText('ĐVT'),
           type: 'string',
           width: '5%',
         },
@@ -138,48 +139,74 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           width: '5%',
         },
         Level1Kpi: {
-          title: this.commonService.translateText('KPI LV1 yêu cầu'),
+          title: this.commonService.translateText('KPI yêu cầu'),
           type: 'string',
           width: '5%',
+        },
+        SumOfNetRevenue: {
+          title: this.commonService.translateText('Doanh số'),
+          type: 'currency',
+          width: '5%',
+          valuePrepareFunction:(value) => value,
         },
         Level1AwardRatio: {
-          title: this.commonService.translateText('Tỷ lệ thưởng LV1'),
-          type: 'string',
+          title: this.commonService.translateText('TL thưởng'),
           width: '5%',
           valuePrepareFunction:(value) => value + '%',
+          type: 'custom',
+          renderComponent: SmartTableBaseComponent,
+          class: 'align-right',
+          position: 'right',
+          onComponentInitFunction: (instance: SmartTableBaseComponent) => {
+            instance.style = 'text-align: right';
+          }
         },
         Level1AwardAmount: {
-          title: this.commonService.translateText('Tiền thưởng LV1'),
+          title: this.commonService.translateText('Tiền thưởng'),
           type: 'currency',
-          width: '10%',
+          width: '7%',
         },
         ExtSumOfNetRevenue: {
-          title: this.commonService.translateText('Doanh số của học trò'),
+          title: this.commonService.translateText('D.Số học trò'),
           type: 'currency',
-          width: '10%',
+          width: '8%',
         },
         Level2ExtAwardRatio: {
-          title: this.commonService.translateText('Tỷ lệ thưởng LV2'),
-          type: 'string',
-          width: '5%',
+          title: this.commonService.translateText('TL thưởng LV2'),
+          // type: 'string',
+          width: '7%',
           valuePrepareFunction:(value) => value + '%',
+          type: 'custom',
+          renderComponent: SmartTableBaseComponent,
+          class: 'align-right',
+          position: 'right',
+          onComponentInitFunction: (instance: SmartTableBaseComponent) => {
+            instance.style = 'text-align: right';
+          }
         },
         Level2ExtAwardAmount: {
           title: this.commonService.translateText('Thưởng LV2'),
           type: 'currency',
-          width: '10%',
+          width: '8%',
           valuePrepareFunction:(value) => value,
         },
         Level3ExtAwardRatio: {
-          title: this.commonService.translateText('Tỷ lệ thưởng LV3'),
-          type: 'string',
-          width: '5%',
+          title: this.commonService.translateText('TL thưởng LV3'),
+          // type: 'string',
+          width: '7%',
           valuePrepareFunction:(value) => value + '%',
+          type: 'custom',
+          renderComponent: SmartTableBaseComponent,
+          class: 'align-right',
+          position: 'right',
+          onComponentInitFunction: (instance: SmartTableBaseComponent) => {
+            instance.style = 'text-align: right';
+          }
         },
         Level3ExtAwardAmount: {
           title: this.commonService.translateText('Thưởng LV3'),
           type: 'currency',
-          width: '10%',
+          width: '8%',
           valuePrepareFunction:(value) => value,
         },
         TotalAwardAmount: {
@@ -300,7 +327,16 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
 
       return params;
     };
+    
 
+    source.prepareData = (data) => {
+      let totalAward = 0;
+      for(const item of data) {
+        totalAward += item.TotalAwardAmount;
+      }
+      this.onUpdateTotalAward.next(totalAward);
+      return data;
+    };
     return source;
   }
 

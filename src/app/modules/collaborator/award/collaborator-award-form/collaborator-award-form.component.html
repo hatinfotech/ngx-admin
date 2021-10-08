@@ -67,7 +67,7 @@
                             </div>
                         </div>
                         <div style="margin-left: -20px; margin-right: -20px" *ngIf="isShowDetail(formItem)">
-                            <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'statistics')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('AwardTo').value" [awardCycle]="commonService.getObjectId(formItem.get('Cycle').value)"></ngx-collaboartor-award-detail>
+                            <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'statistics')" (onUpdateTotalAward)="updateTotalAward($event, formItem, 'statistics')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('AwardTo').value" [awardCycle]="commonService.getObjectId(formItem.get('Cycle').value)"></ngx-collaboartor-award-detail>
                             <!-- <nb-tabset>
                                 <nb-tab tabTitle="{{'KPI Tuần' | translate | headtitlecase}}">
                                 </nb-tab>

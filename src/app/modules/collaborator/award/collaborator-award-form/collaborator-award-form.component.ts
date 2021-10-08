@@ -208,7 +208,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
       PublisherBankName: [''],
       PublisherBankAccount: [''],
       Cycle: [],
-      Amount: ['', Validators.required],
+      Amount: {value: '', disabled: true},
       AwardTo: [new Date(), Validators.required],
       Description: [`Kết chuyển hoa hồng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
     });
@@ -416,6 +416,13 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
       formGroup['listInstance'] = {};
     }
     formGroup['listInstance'][tab] = listInstance;
+  }
+
+  updateTotalAward(totalAawrd: number, formGroup: FormGroup, tab: string) {
+    // type.selectChange.subscribe(value => {
+    //   console.log(value);
+    // });
+    formGroup.get('Amount').setValue(totalAawrd);
   }
 
   refreshAllTab(formGroup: FormGroup) {
