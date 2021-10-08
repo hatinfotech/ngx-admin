@@ -96,10 +96,16 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
+        Cycle: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.cycle'), 'head-title'),
+          type: 'string',
+          width: '5%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
         PublisherName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
-          width: '15%',
+          width: '10%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Description: {

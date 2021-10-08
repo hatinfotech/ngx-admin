@@ -350,7 +350,10 @@
         "approvedRequest": "yêu cầu duyệt",
         "approvedRequestSuccess": "yêu cầu duyệt thành công",
         "approvedRequestConfirm": "bạn có muốn gửi yêu câu duyệt ?",
-        "info": "thông tin"
+        "info": "thông tin",
+        "quantity": "số lượng",
+        "price": "giá",
+        "product": "sản phẩm"
     },
     "Contact": {
         "Customer": {

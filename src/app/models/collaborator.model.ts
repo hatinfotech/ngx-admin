@@ -100,4 +100,70 @@ export interface CollaboratorAwardVoucherModel {
     CommissionTo?: string;
     Description?: string;
     State?: string;
+    Details?: CollaboratorAwardVoucherDetailModel[];
+}
+export interface CollaboratorAwardVoucherDetailModel {
+    [key: string]: any;
+    Id?: string;
+    AwardVoucher?: string;
+    No?: string;
+    Image?: string;
+    Product?: string;
+    ProductName?: string;
+    Unit?: string;
+    UnitLabel?: string;
+    Kpi?: string;
+    Okr?: string;
+    AwardAmount?: string;
+    RelativeVouchers?: string;
+    Level1AwardRatio?: string;
+    Level1AwardAmount?: string;
+    Level1Kpi?: string;
+    Level2ExtAwardRatio?: string;
+    Level2ExtAwardAmount?: string;
+    Level3ExtAwardRatio?: string;
+    Level3ExtAwardAmount?: string;
+    SumOfQuantity?: string;
+    ExtSumOfNetRevenue?: string;
+    TotalAwardAmount?: string;
+    DirectOrders?: CollaboratorAwardVoucherDetailDirectOrderModel[];
+    RefOrders?: CollaboratorAwardVoucherDetailRefOrderModel[];
+}
+export interface CollaboratorAwardVoucherDetailDirectOrderModel {
+    [key: string]: any;
+    Id?: string;
+    AwardVoucher?: string;
+    DetailNo?: string;
+    No?: string;
+    Voucher?: string;
+    VoucherDetailNo?: string;
+    VoucherTitle?: string;
+    Product?: string;
+    Unit?: string;
+    UnitLabel?: string;
+    Description?: string;
+    Tax?: string;
+    TaxValue?: string;
+    TaxLabel?: string;
+    Quantity?: string;
+    Price?: string;
+}
+export interface CollaboratorAwardVoucherDetailRefOrderModel {
+    [key: string]: any;
+    Id?: string;
+    AwardVoucher?: string;
+    DetailNo?: string;
+    No?: string;
+    Voucher?: string;
+    VoucherDetailNo?: string;
+    VoucherTitle?: string;
+    Product?: string;
+    Unit?: string;
+    UnitLabel?: string;
+    Description?: string;
+    Tax?: string;
+    TaxValue?: string;
+    TaxLabel?: string;
+    Quantity?: string;
+    Price?: string;
 }
