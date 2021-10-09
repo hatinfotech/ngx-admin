@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CollaboartorCommissionDetailComponent } from './collaboartor-commission-detail.component';
+import { CollaboartorAwardDetailComponent } from './collaboartor-commission-detail.component';
 
-describe('CollaboartorCommissionDetailComponent', () => {
-  let component: CollaboartorCommissionDetailComponent;
-  let fixture: ComponentFixture<CollaboartorCommissionDetailComponent>;
+describe('CollaboartorAwardDetailComponent', () => {
+  let component: CollaboartorAwardDetailComponent;
+  let fixture: ComponentFixture<CollaboartorAwardDetailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CollaboartorCommissionDetailComponent ]
+      declarations: [ CollaboartorAwardDetailComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CollaboartorCommissionDetailComponent);
+    fixture = TestBed.createComponent(CollaboartorAwardDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

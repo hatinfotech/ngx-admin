@@ -22,7 +22,7 @@
                                 <!--STT-->
                                 <col span="1" style="width: 1cm;">
                                 <!--Phieu-->
-                                <col span="1" style="width: 2cm;">
+                                <!-- <col span="1" style="width: 2cm;"> -->
                                 <!--Ngay-->
                                 <col span="1" style="width: 4cm;">
                                 <!--Dien giai-->
@@ -32,20 +32,19 @@
                             </colgroup>
                             <tr class="print-voucher-detail-header">
                                 <th class="text-align-left">{{'Common.noNumber' | translate | headtitlecase}}</th>
-                                <th class="text-align-left">{{'Common.voucher' | translate | headtitlecase}}</th>
-                                <th class="text-align-left">{{'Common.date' | translate | headtitlecase}}</th>
-                                <th class="text-align-left">{{'Common.description' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Common.product' | translate | headtitlecase}}</th>
+                                <!-- <th class="text-align-left">{{'Common.date' | translate | headtitlecase}}</th> -->
+                                <th class="text-align-left">{{'Product.name' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Common.numOfMoney' | translate | headtitlecase}}</th>
                             </tr>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td class="text-align-left">{{i + 1}}</td>
-                                <td class="text-align-left"><a class="link" (click)="this.commonService.previewVoucher('CLBRTORDER', detail.Voucher)">{{renderValue(detail.Voucher)}}</a></td>
-                                <td class="text-align-left">{{renderValue(detail.VoucherDate | date:'short')}}</td>
-                                <td class="text-align-left">{{renderValue(detail.Description)}}</td>
-                                <td class="text-align-right">{{(detail.HeadCredit - detail.HeadDebit + detail.GenerateCredit - detail.GenerateDebit) | currency:'VND'}}</td>
+                                <td class="text-align-left"><a class="link" (click)="previewDetail([data.Code+'-'+detail.No])">{{renderValue(detail.Product)}}</a></td>
+                                <!-- <td class="text-align-left">{{renderValue(detail.VoucherDate | date:'short')}}</td> -->
+                                <td class="text-align-left">{{renderValue(detail.ProductName)}}</td>
+                                <td class="text-align-right">{{(detail.TotalCommissionAmount) | currency:'VND'}}</td>
                             </tr>
                             <tr style="font-weight: bold;">
-                                <td> </td>
                                 <td> </td>
                                 <td> </td>
                                 <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>

@@ -6,23 +6,23 @@ import { environment } from '../../../../../environments/environment.prod';
 import { AppModule } from '../../../../app.module';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherDetailModel } from '../../../../models/accounting.model';
-import { CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel, CollaboratorCommissionVoucherDetailModel, CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
+import { CollaboratorAwardVoucherDetailModel } from '../../../../models/collaborator.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { CollaboratorCommissionDetailPrintComponent } from '../collaborator-commission-detail-print/collaborator-commission-detail-print.component';
 
 @Component({
-  selector: 'ngx-collaborator-commission-print',
-  templateUrl: './collaborator-commission-print.component.html',
-  styleUrls: ['./collaborator-commission-print.component.scss']
+  selector: 'ngx-collaborator-commission-detail-print',
+  templateUrl: './collaborator-commission-detail-print.component.html',
+  styleUrls: ['./collaborator-commission-detail-print.component.scss']
 })
-export class CollaboratorCommissionPrintComponent extends DataManagerPrintComponent<CollaboratorCommissionVoucherModel> implements OnInit {
+export class CollaboratorCommissionDetailPrintComponent extends DataManagerPrintComponent<CollaboratorAwardVoucherDetailModel> implements OnInit {
 
   /** Component name */
-  componentName = 'CollaboratorCommissionPrintComponent';
-  title: string = 'Xem trước phiếu thưởng';
-  apiPath = '/collaborator/award-vouchers';
+  componentName = 'CollaboratorCommissionDetailPrintComponent';
+  title: string = 'Xem trước chi tiết phiếu thưởng';
+  apiPath = '/collaborator/award-voucher-details';
+  idKey = ['AwardVoucher', 'No'];
   env = environment;
   processMapList: ProcessMap[] = [];
 
@@ -30,7 +30,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<CollaboratorCommissionPrintComponent>,
+    public ref: NbDialogRef<CollaboratorCommissionDetailPrintComponent>,
     private datePipe: DatePipe,
   ) {
     super(commonService, router, apiService, ref);
@@ -57,8 +57,8 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     return result;
   }
 
-  renderTitle(data: CollaboratorAwardVoucherModel) {
-    return `Phieu_Hoa_Hong_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
+  renderTitle(data: CollaboratorAwardVoucherDetailModel) {
+    return `Chi_Tiet_Thuong_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
   }
 
   close() {
@@ -74,14 +74,10 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
 
   toMoney(detail: CashVoucherDetailModel) {
     let toMoney = parseInt(detail['Amount'] as any);
-    // const tax = detail['Tax'] as any;
-    // if (tax) {
-    //   toMoney += toMoney * tax.Tax / 100;
-    // }
     return toMoney;
   }
 
-  getTotal(data: CollaboratorAwardVoucherModel) {
+  getTotal(data: CollaboratorAwardVoucherDetailModel) {
     let total = 0;
     const details = data.Details;
     for (let i = 0; i < details.length; i++) {
@@ -90,7 +86,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     return total;
   }
 
-  saveAndClose(data: CollaboratorAwardVoucherModel) {
+  saveAndClose(data: CollaboratorAwardVoucherDetailModel) {
     if (this.onSaveAndClose) {
       this.onSaveAndClose(data);
     }
@@ -108,36 +104,10 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     return '';
   }
 
-  approvedConfirm(data: CollaboratorAwardVoucherModel) {
-    // if (['COMPLETE'].indexOf(data.State) > -1) {
-    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-    //     {
-    //       label: this.commonService.translateText('Common.close'),
-    //       status: 'success',
-    //       action: () => {
-    //         this.onClose(data);
-    //       },
-    //     },
-    //   ]);
-    //   return;
-    // }
+  approvedConfirm(data: CollaboratorAwardVoucherDetailModel) {
     const params = { id: [data.Code] };
     const processMap = AppModule.processMaps.awardVoucher[data.State || ''];
     params['changeState'] = processMap?.nextState;
-    // let confirmText = '';
-    // let responseText = '';
-    // switch (data.State) {
-    //   case 'APPROVE':
-    //     params['changeState'] = 'COMPLETE';
-    //     confirmText = 'Common.completeConfirm';
-    //     responseText = 'Common.completeSuccess';
-    //     break;
-    //   default:
-    //     params['changeState'] = 'APPROVE';
-    //     confirmText = 'Common.approvedConfirm';
-    //     responseText = 'Common.approvedSuccess';
-    //     break;
-    // }
 
     this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
       {
@@ -152,7 +122,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<CollaboratorAwardVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<CollaboratorAwardVoucherDetailModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
             this.loading = false;
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
@@ -160,14 +130,6 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
             this.commonService.toastService.show(this.commonService.translateText(processMap?.restponseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
               status: 'success',
             });
-            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-            //   {
-            //     label: this.commonService.translateText('Common.close'),
-            //     status: 'success',
-            //     action: () => {
-            //     },
-            //   },
-            // ]);
           }).catch(err => {
             this.loading = false;
           });
@@ -177,24 +139,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
-  }
-
-  previewDetail(ids: any[]) {
-    this.commonService.openDialog(CollaboratorCommissionDetailPrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        id: typeof ids[0] === 'string' ? ids as any : null,
-        // data: typeof ids[0] !== 'string' ? ids as any : null,
-        idKey: ['AwardVoucher', 'No'],
-        // approvedConfirm: true,
-        onClose: (data: CollaboratorCommissionVoucherDetailModel) => {
-          // this.refresh();
-        },
-      },
-    });
-    return false;
+    return this.apiService.getPromise<CollaboratorAwardVoucherDetailModel[]>(this.apiPath, { id: ids, includeContact: true, includeDirectOrders: true, includeRefOrders: true});
   }
 
 

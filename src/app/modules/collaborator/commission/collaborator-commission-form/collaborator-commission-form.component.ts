@@ -1,14 +1,14 @@
+import { Select2Component } from '../../../../../vendor/ng2select2/lib/ng2-select2.component';
 import { takeUntil } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { AccountModel, BusinessModel, CashVoucherDetailModel } from '../../../../models/accounting.model';
-import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { SalesVoucherModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
@@ -19,6 +19,7 @@ import { AccountingOtherBusinessVoucherPrintComponent } from '../../../accountin
 import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboartorCommissionDetailComponent } from './collaboartor-commission-detail/collaboartor-commission-detail.component';
+import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 
 @Component({
   selector: 'ngx-collaborator-commission-form',
@@ -28,10 +29,10 @@ import { CollaboartorCommissionDetailComponent } from './collaboartor-commission
 export class CollaboratorCommissionFormComponent extends DataManagerFormComponent<CollaboratorCommissionVoucherModel> implements OnInit {
 
   // Base variables
-  componentName = 'AccountingOtherBusinessVoucherFormComponent';
+  componentName = 'CollaboratorCommissionFormComponent';
   idKey = 'Code';
-  baseFormUrl = '/collaborator/commission-voucher/form';
-  apiPath = '/collaborator/commission-vouchers';
+  baseFormUrl = '/collaborator/award-voucher/form';
+  apiPath = '/collaborator/award-vouchers';
 
   // variables
   locale = this.commonService.getCurrentLoaleDataset();
@@ -51,7 +52,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<AccountingOtherBusinessVoucherFormComponent>,
+    public ref: NbDialogRef<CollaboratorCommissionFormComponent>,
     public collaboratorService: CollaboratorService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
@@ -117,6 +118,24 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       id: 'id',
       text: 'text',
     },
+  };
+
+  select2OptionForCycle = {
+    placeholder: 'Chọn loại...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    data: [
+      { id: 'WEEKLY', text: 'Tuần' },
+      { id: 'MONTHLY', text: 'Tháng' },
+      { id: 'QUARTERLY', text: 'Quý' },
+      { id: 'YEARLY', text: 'Năm' },
+    ],
   };
 
 
@@ -188,9 +207,10 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       PublisherIdentifiedNumber: [''],
       PublisherBankName: [''],
       PublisherBankAccount: [''],
-      Amount: ['', Validators.required],
-      CommissionRange: [[new Date(), new Date()], Validators.required],
-      Description: [`Kết chuyển chiết khấu đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
+      Cycle: [],
+      Amount: {value: '', disabled: true},
+      CommissionTo: [new Date(), Validators.required],
+      Description: [`Kết chuyển thưởng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
     });
     if (data) {
       this.prepareRestrictedData(newForm, data);
@@ -200,28 +220,30 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     return newForm;
   }
 
-  onConditionFieldsChange(newForm) {
-    const commissionRange = newForm.get('CommissionRange').value;
-    console.log(commissionRange);
+  onConditionFieldsChange(newForm: FormGroup) {
+    const awardRange = newForm.get('CommissionTo').value;
+    console.log(awardRange);
     const publisherEle = newForm.get('Publisher');
     const publisher = this.commonService.getObjectId(publisherEle.value);
     const publisherName = newForm.get('PublisherName').value;
+    newForm.get('Description').setValue(`Kết chuyển thưởng đến ngày ${newForm.get('CommissionTo')?.value?.toLocaleDateString()}`);
     if (!this.isProcessing && publisher) {
-      const page = this.commonService.getObjectId(newForm.get('Page').value);
-      const amountEle = newForm.get('Amount');
-      const descriptionEle = newForm.get('Description');
+      // const page = this.commonService.getObjectId(newForm.get('Page').value);
+      // const amountEle = newForm.get('Amount');
+      // const descriptionEle = newForm.get('Description');
 
-      const dateRange = commissionRange;
-      const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
-      const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
+      // const dateRange = awardRange;
+      // const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
+      // const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
 
-      this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
-        console.log(summaryReport);
-        amountEle.setValue(summaryReport?.CommissionAmount);
-        descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()}`);
-      });
+      // this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, moment: toDate, limit: 'nolimit' }).then(summaryReport => {
+      //   console.log(summaryReport);
+      //   amountEle.setValue(summaryReport?.CommissionAmount);
+      //   descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${awardRange && awardRange[1] && awardRange[1].toLocaleDateString()}`);
+      // });
       setTimeout(() => {
-        newForm['listInstance'] && newForm['listInstance'].refresh();
+        // newForm['listInstance'] && newForm['listInstance'].refresh();
+        this.refreshAllTab(newForm);
       }, 500);
     }
   }
@@ -229,54 +251,17 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   onAddFormGroup(index: number, newForm: FormGroup, formData?: CollaboratorCommissionVoucherModel): void {
     super.onAddFormGroup(index, newForm, formData);
     setTimeout(() => {
-      newForm.get('CommissionRange').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(commissionRange => {
+      newForm.get('CommissionTo').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(awardRange => {
+        // console.log(awardRange);
         this.onConditionFieldsChange(newForm);
-        // console.log(commissionRange);
-        // const publisherEle = newForm.get('Publisher');
-        // const publisher = this.commonService.getObjectId(publisherEle.value);
-        // const publisherName = newForm.get('PublisherName').value;
-        // if (!this.isProcessing && publisher) {
-        //   const page = this.commonService.getObjectId(newForm.get('Page').value);
-        //   const amountEle = newForm.get('Amount');
-        //   const descriptionEle = newForm.get('Description');
-
-        //   const dateRange = commissionRange;
-        //   const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
-        //   const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
-
-        //   this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
-        //     console.log(summaryReport);
-        //     amountEle.setValue(summaryReport?.CommissionAmount);
-        //     descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()}`);
-        //   });
-        //   setTimeout(() => {
-        //     newForm['listInstance'] && newForm['listInstance'].refresh();
-        //   }, 500);
-        // }
       });
       newForm.get('Publisher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
         this.onConditionFieldsChange(newForm);
-        // const commissionRange = newForm.get('CommissionRange').value;
-        // // const publisherEle = newForm.get('Publisher');
-        // publisher = this.commonService.getObjectId(publisher);
-        // const publisherName = newForm.get('PublisherName').value;
-
-        // const dateRange = commissionRange.value;
-        //   const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
-        //   const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
-
-        // if (!this.isProcessing && publisher) {
-        //   const page = this.commonService.getObjectId(newForm.get('Page').value);
-        //   const amountEle = newForm.get('Amount');
-        //   const descriptionEle = newForm.get('Description');
-        //   this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
-        //     console.log(summaryReport);
-        //     amountEle.setValue(summaryReport?.CommissionAmount);
-        //     descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${commissionRange && commissionRange[1] && commissionRange[1].toLocaleDateString()} cho ${publisherName}`);
-        //   });
-        // }
       });
       newForm.get('Page').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
+        this.onConditionFieldsChange(newForm);
+      });
+      newForm.get('Cycle').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(type => {
         this.onConditionFieldsChange(newForm);
       });
     }, 3000);
@@ -310,9 +295,9 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   // Orverride
   getRawFormData() {
     const data = super.getRawFormData();
-    for (const item of data.array) {
-      item['Type'] = 'RECEIPT';
-    }
+    // for (const item of data.array) {
+    //   // item['Type'] = 'RECEIPT';
+    // }
     return data;
   }
 
@@ -323,13 +308,13 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       if (selectedData && !selectedData['doNotAutoFill']) {
 
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-        if (selectedData.id) {
+        if (selectedData.Code) {
           const data = {
-            PublisherName: selectedData.text,
-            // ObjectPhone: selectedData.Phone,
-            // ObjectEmail: selectedData.Email,
-            // ObjectAddress: selectedData.Address,
-            // ObjectTaxCode: selectedData.TaxCode,
+            ObjectName: selectedData.Name,
+            ObjectPhone: selectedData.Phone,
+            ObjectEmail: selectedData.Email,
+            ObjectAddress: selectedData.Address,
+            ObjectTaxCode: selectedData.TaxCode,
             // ObjectBankName: selectedData.BankName,
             // ObjectBankCode: selectedData.BankAcc,
           };
@@ -338,14 +323,15 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
           formGroup.patchValue(data);
         } else {
           formGroup.patchValue({
-            PublisherName: selectedData['text'],
+            ObjectName: selectedData['text'],
           });
         }
       }
     }
 
     setTimeout(() => {
-      formGroup['listInstance'] && formGroup['listInstance'].refresh();
+      // formGroup['listInstance'] && formGroup['listInstance'].refresh();
+      this.refreshAllTab(formGroup);
     }, 500);
   }
 
@@ -422,9 +408,34 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     return false;
   }
 
-  onListInit(listInstance: CollaboartorCommissionDetailComponent, formGroup: FormGroup) {
+  onListInit(listInstance: CollaboartorCommissionDetailComponent, formGroup: FormGroup, tab: string) {
+    // type.selectChange.subscribe(value => {
+    //   console.log(value);
+    // });
     console.log(listInstance);
-    formGroup['listInstance'] = listInstance;
+    if (!formGroup['listInstance']) {
+      formGroup['listInstance'] = {};
+    }
+    formGroup['listInstance'][tab] = listInstance;
+  }
+
+  updateTotalCommission(totalAawrd: number, formGroup: FormGroup, tab: string) {
+    // type.selectChange.subscribe(value => {
+    //   console.log(value);
+    // });
+    formGroup.get('Amount').setValue(totalAawrd);
+  }
+
+  refreshAllTab(formGroup: FormGroup) {
+    if (formGroup['listInstance']) {
+      for (const tabName in formGroup['listInstance']) {
+        formGroup['listInstance'][tabName].refresh();
+      }
+    }
+  }
+
+  isShowDetail(formGroup: FormGroup) {
+    return formGroup.get('Page').value && formGroup.get('Publisher').value && formGroup.get('CommissionTo').value && formGroup.get('Cycle').value;
   }
 
 }

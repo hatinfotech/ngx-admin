@@ -1,9 +1,8 @@
-import { UserModel } from './../../../../../models/user.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableTagsComponent, SmartTableButtonComponent, SmartTableBaseComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountModel } from '../../../../../models/accounting.model';
@@ -19,7 +18,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
 
   componentName: string = 'CollaboartorCommissionDetailComponent';
   formPath = '/accounting/account/form';
-  apiPath = '/accounting/reports';
+  apiPath = '/collaborator/statistics';
   idKey = 'Code';
   // formDialog = AccAccountFormComponent;
 
@@ -31,15 +30,17 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
   static pagingConf = { page: 1, perPage: 40 };
 
   totalBalance: { Debit: number, Credit: number } = null;
-  tabs: any[];
+  // tabs: any[];
 
-  @Input('employee') employee?: string;
-  @Input('accounts') accounts?: string[];
-  @Input('fromDate') fromDate?: Date;
-  @Input('toDate') toDate?: Date;
-  @Input('report') report?: string;
   @Input('page') page?: string;
+  @Input('publisher') publisher?: string;
+  // @Input('accounts') accounts?: string[];
+  // @Input('fromDate') fromDate?: Date;
+  @Input('moment') moment?: Date;
+  // @Input('report') report?: string;
+  @Input('awardCycle') awardCycle?: string;
   @Output() onInit = new EventEmitter<CollaboartorCommissionDetailComponent>();
+  @Output() onUpdateTotalCommission = new EventEmitter<number>();
 
   constructor(
     public apiService: ApiService,
@@ -55,37 +56,36 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
 
   async init() {
     // await this.loadCache();
-    new UserModel();
     await this.commonService.waitForReady();
-    this.tabs = [
-      {
-        title: 'Liabilities',
-        route: '/accounting/report/liabilities',
-        icon: 'home',
-        // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
-      },
-      {
-        title: 'Receivables',
-        route: '/accounting/report/receivables',
-      },
-      {
-        title: 'Users',
-        icon: 'person',
-        route: './tab1',
-      },
-      {
-        title: 'Orders',
-        icon: 'paper-plane-outline',
-        responsive: true,
-        route: ['./tab2'],
-      },
-      {
-        title: 'Transaction',
-        icon: 'flash-outline',
-        responsive: true,
-        disabled: true,
-      },
-    ];
+    // this.tabs = [
+    //   {
+    //     title: 'Liabilities',
+    //     route: '/accounting/report/liabilities',
+    //     icon: 'home',
+    //     // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
+    //   },
+    //   {
+    //     title: 'Receivables',
+    //     route: '/accounting/report/receivables',
+    //   },
+    //   {
+    //     title: 'Users',
+    //     icon: 'person',
+    //     route: './tab1',
+    //   },
+    //   {
+    //     title: 'Orders',
+    //     icon: 'paper-plane-outline',
+    //     responsive: true,
+    //     route: ['./tab2'],
+    //   },
+    //   {
+    //     title: 'Transaction',
+    //     icon: 'flash-outline',
+    //     responsive: true,
+    //     disabled: true,
+    //   },
+    // ];
     return super.init().then(rs => {
       // this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
@@ -101,77 +101,53 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
     const settings = this.configSetting({
       actions: false,
       columns: {
-        VoucherDate: {
-          title: this.commonService.translateText('Accounting.voucherDate'),
-          type: 'datetime',
-          width: '10%',
-        },
-        Object: {
-          title: this.commonService.translateText('Common.contact'),
+        Product: {
+          title: this.commonService.translateText('Common.code'),
           type: 'string',
-          width: '10%',
+          width: '5%',
         },
-        // ObjectName: {
-        //   title: this.commonService.translateText('Common.contactName'),
-        //   type: 'string',
-        //   width: '15%',
-        // },
+        Unit: {
+          title: this.commonService.translateText('ĐVT'),
+          type: 'string',
+          width: '5%',
+        },
         Description: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.commonService.translateText('Sản phẩm'),
           type: 'string',
-          width: '15%',
+          width: '40%', 
         },
-        Voucher: {
-          title: this.commonService.translateText('Common.voucher'),
+        SumOfQuantity: {
+          title: this.commonService.translateText('KPI đạt được'),
+          type: 'string',
+          width: '10%',
+        },
+        SumOfNetRevenue: {
+          title: this.commonService.translateText('Doanh số'),
+          type: 'currency',
+          width: '10%',
+          valuePrepareFunction:(value) => value,
+        },
+        Level1CommissionRatio: {
+          title: this.commonService.translateText('TL thưởng'),
+          width: '10%',
+          valuePrepareFunction:(value) => value + '%',
           type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          valuePrepareFunction: (cell: string, row: any) => {
-            return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
-          },
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id));
-          },
+          renderComponent: SmartTableBaseComponent,
+          class: 'align-right',
+          position: 'right',
+          onComponentInitFunction: (instance: SmartTableBaseComponent) => {
+            instance.style = 'text-align: right';
+          }
+        },
+        Level1CommissionAmount: {
+          title: this.commonService.translateText('Tiền thưởng'),
+          type: 'currency',
           width: '10%',
         },
-        HeadAmount: {
-          title: this.commonService.translateText('Accounting.headAmount'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        GenerateDebit: {
-          title: this.commonService.translateText('Accounting.debitGenerate'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        GenerateCredit: {
-          title: this.commonService.translateText('Accounting.creditGenerate'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        // HeadAmount: {
-        //   title: this.commonService.translateText('Accounting.headAmount'),
-        //   type: 'acc-currency',
-        //   width: '10%',
-        // },
-        // GenerateAmount: {
-        //   title: this.commonService.translateText('Accounting.generate'),
-        //   type: 'acc-currency',
-        //   width: '10%',
-        // },
-        IncrementAmount: {
-          title: this.commonService.translateText('Accounting.increment'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        // TailAmount: {
-        //   title: this.commonService.translateText('Accounting.tailAmount'),
-        //   type: 'acc-currency',
-        //   width: '10%',
-        // },
         Preview: {
           title: this.commonService.translateText('Common.detail'),
           type: 'custom',
-          width: '10%',
+          width: '5%',
           class: 'align-right',
           renderComponent: SmartTableButtonComponent,
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
@@ -212,79 +188,52 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
 
-      if (this.employee) {
-        // params['eq_Object'] = this.object;
-        params['eq_Employee'] = this.employee;
-      }
-      if (this.accounts) {
-        params['eq_Account'] = this.accounts.join(',');
-      }
-      if (this.report) {
-        params[this.report] = true;
-      } else {
-        params['reportDetailByObject'] = true;
-      }
-      params['includeIncrementAmount'] = true;
-      if (this.fromDate) {
-        const formDate = this.fromDate instanceof Date ? this.fromDate : new Date(this.fromDate);
-        params['fromDate'] = new Date(formDate.getFullYear(), formDate.getMonth(), formDate.getDate(), 0, 0, 0).toISOString();
-      }
-      if (this.toDate) {
-        const toDate = this.toDate instanceof Date ? this.toDate : new Date(this.toDate);
-        params['toDate'] = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 23, 59, 59).toISOString();
-      }
-      if (this.page) {
-        params['eq_Page'] = this.page;
-      }
+      // if (this.employee) {
+      //   // params['eq_Object'] = this.object;
+      //   params['eq_Employee'] = this.employee;
+      // }
+      // if (this.accounts) {
+      //   params['eq_Account'] = this.accounts.join(',');
+      // }
+      // if (this.report) {
+      //   params[this.report] = true;
+      // } else {
+      //   params['reportDetailByObject'] = true;
+      // }
+      // params['includeIncrementAmount'] = true;
+      // if (this.fromDate) {
+      //   const formDate = this.fromDate instanceof Date ? this.fromDate : new Date(this.fromDate);
+      //   params['fromDate'] = new Date(formDate.getFullYear(), formDate.getMonth(), formDate.getDate(), 0, 0, 0).toISOString();
+      // }
+      // if (this.toDate) {
+      //   const toDate = this.toDate instanceof Date ? this.toDate : new Date(this.toDate);
+      //   params['toDate'] = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 23, 59, 59).toISOString();
+      // }
+      // if (this.page) {
+      //   params['eq_Page'] = this.page;
+      // }
+
+      params['tempCommissionReport'] = true;
+      params['page'] = this.page;
+      params['publisher'] = this.publisher;
+      params['moment'] = this.moment.toISOString();
+      params['awardCycle'] = this.awardCycle;
+
 
       return params;
     };
+    
 
+    source.prepareData = (data) => {
+      let totalCommission = 0;
+      for(const item of data) {
+        totalCommission += item.TotalCommissionAmount;
+      }
+      this.onUpdateTotalCommission.next(totalCommission);
+      return data;
+    };
     return source;
   }
-
-  /** Api get funciton */
-  executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
-    // if (this.object) {
-    //   params['eq_Object'] = this.object;
-    // }
-    if (this.accounts) {
-      params['eq_Account'] = this.accounts.join(',');
-    }
-    if (this.report) {
-      params[this.report] = true;
-    } else {
-      params['reportDetailByObject'] = true;
-    }
-    super.executeGet(params, success, error, complete);
-  }
-
-  // getList(callback: (list: AccountModel[]) => void) {
-  //   super.getList((rs) => {
-  //     let increment = 0;
-  //     for (const item of rs) {
-  //       // if (['131', '141', '1111','1121'].indexOf(item['Account']) > -1) {
-  //       if (/^[1|2|6|8]/.test(item['Account'])) {
-  //         item['HeadAmount'] = item['HeadDebit'] - item['HeadCredit'];
-  //         item['IncrementAmount'] = (increment += item['HeadAmount'] + (item['GenerateDebit'] - item['GenerateCredit']));
-  //       }
-  //       // if (['331', '5111', '5112,5113', '5118', '515'].indexOf(item['Account']) > -1) {
-  //       if (/^[3|5|4|9]/.test(item['Account'])) {
-  //         item['HeadAmount'] = item['HeadCredit'] - item['HeadDebit'];
-  //         item['IncrementAmount'] = (increment += item['HeadAmount'] + (item['GenerateCredit'] - item['GenerateDebit']));
-  //       }
-  //     }
-  //     if (callback) callback(rs);
-  //   });
-  // }
-
-  /** Config for paging */
-  // protected configPaging() {
-  //   return {
-  //     display: true,
-  //     perPage: 99999,
-  //   };
-  // }
 
   async refresh() {
     super.refresh();

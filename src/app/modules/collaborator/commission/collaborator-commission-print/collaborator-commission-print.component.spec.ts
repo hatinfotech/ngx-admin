@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CollaboratorCommissionPrintComponent } from './collaborator-commission-print.component';
+import { CollaboratorAwardPrintComponent } from './collaborator-commission-print.component';
 
-describe('CollaboratorPublisherCommissionPrintComponent', () => {
-  let component: CollaboratorCommissionPrintComponent;
-  let fixture: ComponentFixture<CollaboratorCommissionPrintComponent>;
+describe('CollaboratorPublisherAwardPrintComponent', () => {
+  let component: CollaboratorAwardPrintComponent;
+  let fixture: ComponentFixture<CollaboratorAwardPrintComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CollaboratorCommissionPrintComponent ]
+      declarations: [ CollaboratorAwardPrintComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CollaboratorCommissionPrintComponent);
+    fixture = TestBed.createComponent(CollaboratorAwardPrintComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -5,18 +5,15 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorCommissionFormComponent } from '../collaborator-commission-form/collaborator-commission-form.component';
 import { CollaboratorCommissionPrintComponent } from '../collaborator-commission-print/collaborator-commission-print.component';
-import { CollaboartorCommissionDetailComponent } from '../collaborator-commission-form/collaboartor-commission-detail/collaboartor-commission-detail.component';
 
 @Component({
   selector: 'ngx-collaborator-commission-list',
@@ -26,10 +23,12 @@ import { CollaboartorCommissionDetailComponent } from '../collaborator-commissio
 export class CollaboratorCommissionListComponent extends ServerDataManagerListComponent<CollaboratorCommissionVoucherModel> implements OnInit {
 
   componentName: string = 'CollaboratorCommissionListComponent';
-  formPath = '/collaborator/commission-voucher/form';
-  apiPath = '/collaborator/commission-vouchers';
+  formPath = '/collaborator/award-voucher/form';
+  apiPath = '/collaborator/award-vouchers';
   idKey = 'Code';
   formDialog = CollaboratorCommissionFormComponent;
+
+  @Input('context') context?: any;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<CollaboratorCommissionListComponent>;
@@ -58,7 +57,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
     return super.init().then(rs => {
       const addButton = this.actionButtonList.find(f => f.name === 'add');
       if (addButton) {
-        addButton.label = 'Kết chuyển hoa hồng';
+        addButton.label = this.commonService.translateText('Collaborator.Commission.label');
         addButton.icon = 'flash-outline';
         addButton.status = 'primary';
         // addButton.click = () => {
@@ -94,10 +93,16 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
+        Cycle: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.cycle'), 'head-title'),
+          type: 'string',
+          width: '5%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
         PublisherName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
-          width: '15%',
+          width: '10%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Description: {
@@ -120,31 +125,15 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
           type: 'string',
           width: '10%',
         },
-        Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
-          type: 'custom',
+        CommissionFrom: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.fromDate'), 'head-title'),
+          type: 'datetime',
           width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
         },
-        DateOfVoucher: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Commission.commissionTo'), 'head-title'),
-          type: 'custom',
+        CommissionTo: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.toDate'), 'head-title'),
+          type: 'datetime',
           width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
         },
         Amount: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
@@ -172,8 +161,8 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
             // instance.disabled = this.isChoosedMode;
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
-            instance.init.subscribe(commissionVoucher => {
-              const processMap = AppModule.processMaps.commissionVoucher[commissionVoucher.State || ''];
+            instance.init.subscribe(awardVoucher => {
+              const processMap = AppModule.processMaps.awardVoucher[awardVoucher.State || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;

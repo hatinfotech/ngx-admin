@@ -288,6 +288,7 @@ import { CollaboratorAwardFormComponent } from './modules/collaborator/award/col
 import { CollaboratorAwardListComponent } from './modules/collaborator/award/collaborator-award-list/collaborator-award-list.component';
 import { CollaboratorAwardPrintComponent } from './modules/collaborator/award/collaborator-award-print/collaborator-award-print.component';
 import { CollaboratorAwardDetailPrintComponent } from './modules/collaborator/award/collaborator-award-detail-print/collaborator-award-detail-print.component';
+import { CollaboratorCommissionDetailPrintComponent } from './modules/collaborator/commission/collaborator-commission-detail-print/collaborator-commission-detail-print.component';
 // import { InputMaskModule } from '@ngneat/input-mask';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -540,6 +541,7 @@ export class DynamicLocaleId extends String {
     CollaboratorCommissionPaymentPrintComponent,
     CollaboartorCommissionDetailComponent,
     CollaboratorPublisherFormComponent,
+    CollaboratorCommissionDetailPrintComponent,
 
     CollaboratorAwardListComponent,
     CollaboratorAwardFormComponent,

@@ -50,9 +50,9 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="CommissionRange" label="Common.date" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                                    <input type="text" #_commissionRange [owlDateTime]="CommissionRange" [owlDateTimeTrigger]="CommissionRange" [selectMode]="'range'" nbInput fullWidth formControlName="CommissionRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
-                                    <owl-date-time #CommissionRange [pickerType]="'calendar'"></owl-date-time>
+                                <ngx-form-group [formGroup]="formItem" name="CommissionTo" label="Common.date" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                    <input type="text" #_commissionRange [owlDateTime]="CommissionTo" [owlDateTimeTrigger]="CommissionTo" nbInput fullWidth formControlName="CommissionTo" placeholder="{{'Common.date' | translate | headtitlecase}}">
+                                    <owl-date-time #CommissionTo [pickerType]="'calendar'"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
@@ -60,8 +60,28 @@
                                     <input type="text" nbInput fullWidth formControlName="Amount" currencyMask [options]="curencyFormat" placeholder="{{'Collaborator.Commission.label' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
+                            <div class="col-sm-2">
+                                <ngx-form-group [formGroup]="formItem" name="Cycle" label="Common.cycle" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons">
+                                    <ngx-select2 formControlName="Cycle" [select2Option]="select2OptionForCycle" [data]="select2OptionForCycle.data"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
                         </div>
-                        <ngx-collaboartor-commission-detail (onInit)="onListInit($event, formItem)" [employee]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [accounts]="['3349']" [fromDate]="(formItem.get('CommissionRange').value || [null, null])[0]" [toDate]="(formItem.get('CommissionRange').value || [null, null])[1]" [report]="'reportDetailByAccountAndObject'"></ngx-collaboartor-commission-detail>
+                        <div style="margin-left: -20px; margin-right: -20px" *ngIf="isShowDetail(formItem)">
+                            <ngx-collaboartor-commission-detail (onInit)="onListInit($event, formItem, 'statistics')" (onUpdateTotalCommission)="updateTotalCommission($event, formItem, 'statistics')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('CommissionTo').value" [awardCycle]="commonService.getObjectId(formItem.get('Cycle').value)"></ngx-collaboartor-commission-detail>
+                            <!-- <nb-tabset>
+                                <nb-tab tabTitle="{{'KPI Tuần' | translate | headtitlecase}}">
+                                </nb-tab>
+                                <nb-tab tabTitle="{{'KPI Tháng' | translate | headtitlecase}}">
+                                    <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'monthly')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('CommissionTo').value" [awardCycle]="'MONTHLY'"></ngx-collaboartor-award-detail>
+                                </nb-tab>
+                                <nb-tab tabTitle="{{'KPI Quý' | translate | headtitlecase}}">
+                                    <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'quarterly')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('CommissionTo').value" [awardCycle]="'QUARTERLY'"></ngx-collaboartor-award-detail>
+                                </nb-tab>
+                                <nb-tab tabTitle="{{'KPI Năm' | translate | headtitlecase}}">
+                                    <ngx-collaboartor-award-detail (onInit)="onListInit($event, formItem, 'yearly')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('CommissionTo').value" [awardCycle]="'YEARLY'"></ngx-collaboartor-award-detail>
+                                </nb-tab>
+                            </nb-tabset> -->
+                        </div>
                     </div>
                 </nb-card-body>
                 <nb-card-footer>
