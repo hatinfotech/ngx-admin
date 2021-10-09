@@ -1028,7 +1028,7 @@ export class AppModule {
         label: 'Common.notJustApproved',
         status: 'danger',
         outline: false,
-        nextState: 'APPROVE',
+        nextState: 'APPROVED',
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',

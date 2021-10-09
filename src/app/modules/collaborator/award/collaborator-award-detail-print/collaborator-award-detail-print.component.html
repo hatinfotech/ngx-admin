@@ -17,6 +17,7 @@
                 </div>
                 <div>
                     <div>
+                        <label>Danh sách phiếu đặt hàng được thưởng</label>
                         <table style="width: 100%;" class="print-voucher-detail-table">
                             <colgroup>
                                 <!--STT-->
@@ -60,8 +61,63 @@
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
                                 <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
-                                <td class="text-align-right">{{data.Amount | currency:'VND'}}</td>
+                                <td class="text-align-right">{{data.TotalAwardAmount | currency:'VND'}}</td>
+                            </tr>
+                        </table>
+                        
+                        <label>Danh sách phiếu đặt hàng của học trò được thưởng</label>
+                        <table *ngIf="data.RefOrders && data.RefOrders.length > 0" style="width: 100%;" class="print-voucher-detail-table">
+                            <colgroup>
+                                <!--STT-->
+                                <col span="1" style="width: 1cm;">
+                                <!--Phieu-->
+                                <col span="1" style="width: 1cm;">
+                                <!--Phieu-->
+                                <col span="1" style="width: 1cm;">
+                                <!--Dien giai-->
+                                <col span="1" style="width: 8cm;">
+                                <!--DVT-->
+                                <col span="1" style="width: 4cm;">
+                                <!--SL-->
+                                <col span="1" style="width: 2cm; text-align: right;">
+                                <!--DG-->
+                                <col span="1" style="width: 2cm; text-align: right;">
+                                <!--Thanh tien-->
+                                <col span="1" style="width: 2cm; text-align: right;">
+                            </colgroup>
+                            <tr class="print-voucher-detail-header">
+                                <th class="text-align-left">{{'Common.noNumber' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Common.voucher' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Common.product' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Common.description' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Product.unit' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Common.quantity' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Common.price' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Common.numOfMoney' | translate | headtitlecase}}</th>
+                            </tr>
+                            <tr class="print-voucher-detail-line" *ngFor="let detail of data.RefOrders; let i = index">
+                                <td class="text-align-left">{{i + 1}}</td>
+                                <td class="text-align-left"><a class="link" (click)="this.commonService.previewVoucher('CLBRTORDER', detail.Voucher)">{{renderValue(detail.Voucher)}}</a></td>
+                                <td class="text-align-left">{{renderValue(detail.Product)}}</td>
+                                <td class="text-align-left">{{renderValue(detail.Description)}}</td>
+                                <td class="text-align-left">{{renderValue(detail.UnitLabel)}}</td>
+                                <td class="text-align-right">{{detail.Quantity}}</td>
+                                <td class="text-align-right">{{(detail.Price) | currency:'VND'}}</td>
+                                <td class="text-align-right">{{(detail.Quantity * detail.Price) | currency:'VND'}}</td>
+                            </tr>
+                            <tr style="font-weight: bold;">
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{data.TotalAwardAmount | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>

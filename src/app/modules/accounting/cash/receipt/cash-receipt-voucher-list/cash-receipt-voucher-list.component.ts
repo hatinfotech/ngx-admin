@@ -143,7 +143,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
             instance.label = this.commonService.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.cashVoucher[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = instance.title = this.commonService.translateText(processMap?.label || '');
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
               instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);

@@ -220,12 +220,13 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
     return newForm;
   }
 
-  onConditionFieldsChange(newForm) {
+  onConditionFieldsChange(newForm: FormGroup) {
     const awardRange = newForm.get('AwardTo').value;
     console.log(awardRange);
     const publisherEle = newForm.get('Publisher');
     const publisher = this.commonService.getObjectId(publisherEle.value);
     const publisherName = newForm.get('PublisherName').value;
+    newForm.get('Description').setValue(`Kết chuyển thưởng đến ngày ${newForm.get('AwardTo')?.value?.toLocaleDateString()}`);
     if (!this.isProcessing && publisher) {
       // const page = this.commonService.getObjectId(newForm.get('Page').value);
       // const amountEle = newForm.get('Amount');
