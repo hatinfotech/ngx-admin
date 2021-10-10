@@ -4,7 +4,7 @@
 /out-tsc
 
 # dependencies
-node_modules
+/node_modules
 
 # IDEs and editors
 /.idea
@@ -39,6 +39,11 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# System Files
+.DS_Store
+Thumbs.db
 src/vendor/ng2select2
 src/vendor/select2
 #src/vendor/ckeditor/ckeditor5-custom-build/node_modules
+src/vendor/ckeditor/ckeditor5-custom-build/node_modules/*

@@ -3,6 +3,9 @@
     "node_modules/codelyzer"
   ],
   "rules": {
+    "deprecation": {
+      "severity": "warning"
+    },
     "trailing-comma": [
       true,
       {
@@ -37,6 +40,8 @@
     "no-arg": true,
     "no-console": [
       true,
+      "debug",
+      "log",
       "time",
       "timeEnd",
       "trace"
@@ -130,5 +135,5 @@
     "component-class-suffix": true,
     "directive-class-suffix": true,
     "no-unused-variable": true
-  }
+}
 }
