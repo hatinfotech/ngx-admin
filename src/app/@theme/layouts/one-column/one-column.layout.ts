@@ -1,14 +1,13 @@
-import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
-import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/theme';
+import { Component, ViewChild } from '@angular/core';
 import { NbAuthService } from '@nebular/auth';
-import { environment } from '../../../../environments/environment';
+import { NbSidebarComponent, NbSidebarService, NbMenuService } from '@nebular/theme';
+import { environment } from '../../../../environments/environment.prod';
 import { CommonService } from '../../../services/common.service';
 
 @Component({
   selector: 'ngx-one-column-layout',
   styleUrls: ['./one-column.layout.scss'],
   template: `
-    <!-- <nb-layout [attr.authState]="authState" windowMode> -->
     <nb-layout [attr.authState]="authState" windowMode>
       <nb-layout-header fixed>
         <ngx-header></ngx-header>
@@ -32,8 +31,7 @@ import { CommonService } from '../../../services/common.service';
     </nb-layout>
   `,
 })
-export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
-
+export class OneColumnLayoutComponent {
   @ViewChild('menuSidebar', { static: false }) menuSidebar: NbSidebarComponent;
   @ViewChild('chatSidebar', { static: false }) chatSiderbar: NbSidebarComponent;
 
@@ -73,7 +71,20 @@ export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
     this.commonService.menuSidebar = this.menuSidebar;
     this.commonService.mobileSidebar = this.chatSiderbar;
 
-    // console.info(this.siderbar);
+    // Restore sidebar state
+    const menuSidebarState = localStorage.getItem(`sidebar-state-menu`);
+    const chatSidebarState = localStorage.getItem(`sidebar-state-chat`);
+    if(menuSidebarState === 'true') {
+      this.sidebarService.expand('menu-sidebar');
+    } else {
+      this.sidebarService.collapse('menu-sidebar');
+    }
+    if(chatSidebarState === 'true') {
+      this.sidebarService.expand('chat-sidebar');
+    } else {
+      this.sidebarService.collapse('chat-sidebar');
+    }
+
     this.sidebarService.onToggle().subscribe(info => {
       if (info.tag === 'menu-sidebar') {
         if (this.menuSidebar.expanded && this.chatSiderbar.expanded) {
@@ -85,6 +96,8 @@ export class OneColumnLayoutComponent implements OnInit, AfterViewInit {
           this.sidebarService.toggle(true, 'menu-sidebar');
         }
       }
+      localStorage.setItem(`sidebar-state-menu`, `${this.menuSidebar.expanded}`);
+      localStorage.setItem(`sidebar-state-chat`, `${this.chatSiderbar.expanded}`);
     });
 
     this.menuService.onSubmenuToggle().subscribe(item => {

@@ -1,5 +1,4 @@
-import { LibSystemModule } from './../lib/lib-system.module';
-import { GeneralModule } from './../modules/general/general.module';
+import { CustomElementModule } from './../lib/custom-element/custom-element.module';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -14,6 +13,8 @@ import {
   NbSelectModule,
   NbIconModule,
   NbThemeModule,
+  NbCardModule,
+  NbListModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -40,12 +41,10 @@ import { DEFAULT_THEME } from './styles/theme.default';
 import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
-import { CustomElementModule } from '../lib/custom-element/custom-element.module';
-import { VirtualPhoneModule } from '../modules/virtual-phone/virtual-phone.module';
-import { MobileAppModule } from '../modules/mobile-app/mobile-app.module';
-import { TranslateModule } from '@ngx-translate/core';
 import { SmartBotModule } from '../modules/smart-bot/smart-bot.module';
-import { HeaderNotificationContextDirective } from '../modules/general/header/header-notification-context/header-notification-context.directive';
+import { ActivityNotificationComponent } from './components/header/header/activity-notification/activity-notification.component';
+import { HeaderNotificationContextDirective } from './components/header/header/header-notification-context/header-notification-context.directive';
+import { HeaderNotificationContextComponent } from './components/header/header/header-notification-context/header-notification-context.component';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -60,13 +59,10 @@ const NB_MODULES = [
   NbSelectModule,
   NbIconModule,
   NbEvaIconsModule,
-  CustomElementModule,
-  VirtualPhoneModule,
-  MobileAppModule,
-  TranslateModule,
+  NbCardModule,
+  NbListModule,
   SmartBotModule,
-  GeneralModule,
-  LibSystemModule,
+  CustomElementModule,
 ];
 const COMPONENTS = [
   HeaderComponent,
@@ -76,6 +72,12 @@ const COMPONENTS = [
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
+  
+  /** Custom */
+  ActivityNotificationComponent,
+  HeaderNotificationContextDirective,
+  HeaderNotificationContextComponent,
+  /** End Custom */
 ];
 const PIPES = [
   CapitalizePipe,
@@ -98,7 +100,6 @@ export class ThemeModule {
         ...NbThemeModule.forRoot(
           {
             name: 'default',
-            // name: 'dark',
           },
           [ DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME ],
         ).providers,
