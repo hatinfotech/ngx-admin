@@ -51,7 +51,6 @@ export class AppComponent implements OnInit {
       }
     });
 
-
     // translate.use('vi');
 
     this.authService.onAuthenticationChange().subscribe(state => {

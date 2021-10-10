@@ -1,9 +1,9 @@
-import { Icon } from './../lib/custom-element/card-header/card-header.component';
+// import { Icon } from '../../../lib/custom-element/card-header/card-header.component';
 import { NotificationModel } from './../models/notification.model';
 import { take } from 'rxjs/operators';
 import { CommonService } from './common.service';
 import { Injectable, EventEmitter } from '@angular/core';
-import { AngularFireMessaging } from '@angular/fire/messaging';
+// import { AngularFireMessaging } from '@angular/fire/messaging';
 import { BehaviorSubject } from 'rxjs';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
@@ -28,7 +28,7 @@ export class NotificationService {
   activityUpdate$ = new BehaviorSubject<NotificationModel>(null);
 
   constructor(
-    private angularFireMessaging: AngularFireMessaging,
+    // private angularFireMessaging: AngularFireMessaging,
     public authService: NbAuthService,
     public commonService: CommonService,
     private toastrService: NbToastrService,
@@ -37,12 +37,12 @@ export class NotificationService {
     public router: Router,
   ) {
     console.log('init notification service...');
-    this.angularFireMessaging.messages.subscribe(
-      (_messaging: any) => {
-        _messaging.onMessage = _messaging.onMessage.bind(_messaging);
-        _messaging.onTokenRefresh = _messaging.onTokenRefresh.bind(_messaging);
-      }
-    );
+    // this.angularFireMessaging.messages.subscribe(
+    //   (_messaging: any) => {
+    //     _messaging.onMessage = _messaging.onMessage.bind(_messaging);
+    //     _messaging.onTokenRefresh = _messaging.onTokenRefresh.bind(_messaging);
+    //   }
+    // );
 
     // let autoUpdateNotificationLoop = null;
     this.authService.onAuthenticationChange().subscribe(async state => {
@@ -53,7 +53,7 @@ export class NotificationService {
         console.log('request notifications permission');
         this.requestPermission().then(token => {
           //Register device
-          this.commonService.registerDevice({ pushRegId: token });
+          // this.commonService.registerDevice({ pushRegId: token });
         });
 
         // Load new user notificaitons at first time
@@ -148,51 +148,51 @@ export class NotificationService {
     });
     // Firebase messaging event
     console.log('receive message');
-    this.receiveMessage().subscribe(
-      (payload: any) => {
-        console.log("new message received. ", payload);
-        // this.currentMessage.next(payload);
+    // this.receiveMessage().subscribe(
+    //   (payload: any) => {
+    //     console.log("new message received. ", payload);
+    //     // this.currentMessage.next(payload);
 
-        // Update notifcation list
-        // const notifications = this.notifications$.getValue();
-        const newNotification: NotificationModel = {
-          Id: parseInt(payload?.data?.id),
-          Time: parseInt(payload?.data?.time),
-          Action: payload?.data?.action,
-          Status: payload?.data?.status || 'warning',
-          Icon: payload?.data?.icon || 'email',
-          Type: payload?.data?.type,
-          Title: payload?.data?.title,
-          Content: payload?.data?.content ? (this.convertToPlanText(payload?.data?.content)) : payload?.data?.body,
-          Picture: payload?.data?.picture,
-          Data: payload?.data,
-        };
-        if(newNotification.Type === 'ACTIVITY') this.activityUpdate$.next(newNotification);
-        this.notifications.unshift(newNotification);
-        // this.notifications$.next(notifications);
+    //     // Update notifcation list
+    //     // const notifications = this.notifications$.getValue();
+    //     const newNotification: NotificationModel = {
+    //       Id: parseInt(payload?.data?.id),
+    //       Time: parseInt(payload?.data?.time),
+    //       Action: payload?.data?.action,
+    //       Status: payload?.data?.status || 'warning',
+    //       Icon: payload?.data?.icon || 'email',
+    //       Type: payload?.data?.type,
+    //       Title: payload?.data?.title,
+    //       Content: payload?.data?.content ? (this.convertToPlanText(payload?.data?.content)) : payload?.data?.body,
+    //       Picture: payload?.data?.picture,
+    //       Data: payload?.data,
+    //     };
+    //     if(newNotification.Type === 'ACTIVITY') this.activityUpdate$.next(newNotification);
+    //     this.notifications.unshift(newNotification);
+    //     // this.notifications$.next(notifications);
 
-        if (newNotification?.Type !== 'ACTIVITY') {
-          const toastr: any = this.toastrService.show(payload?.data?.body, payload?.data?.title, {
-            status: 'success',
-            hasIcon: true,
-            position: NbGlobalPhysicalPosition.TOP_RIGHT,
-            toastClass: 'room-' + payload?.data?.room,
-            icon: 'email-outline',
-          });
-          console.log(toastr);
-          this.increamentUnreadCount();
-          $(toastr.toastContainer?.containerRef?.location?.nativeElement).find('.' + 'room-' + payload?.data?.room).click(() => {
-            // this.commonService.openMobileSidebar();
-            // this.mobileAppService.openChatRoom({ ChatRoom: payload?.data?.room });
-            // this.updateReceiverState([payload?.data?.id], 'ACTIVE').then(rs => {
-            //   this.updateUnreadCount();
-            // });
-            this.openNotification(this.prepareNotificaitonInfo(newNotification));
-          });
-        } else {
-          // this.activityNotifications$.next([newNotification]);
-        }
-      });
+    //     if (newNotification?.Type !== 'ACTIVITY') {
+    //       const toastr: any = this.toastrService.show(payload?.data?.body, payload?.data?.title, {
+    //         status: 'success',
+    //         hasIcon: true,
+    //         position: NbGlobalPhysicalPosition.TOP_RIGHT,
+    //         toastClass: 'room-' + payload?.data?.room,
+    //         icon: 'email-outline',
+    //       });
+    //       console.log(toastr);
+    //       this.increamentUnreadCount();
+    //       $(toastr.toastContainer?.containerRef?.location?.nativeElement).find('.' + 'room-' + payload?.data?.room).click(() => {
+    //         // this.commonService.openMobileSidebar();
+    //         // this.mobileAppService.openChatRoom({ ChatRoom: payload?.data?.room });
+    //         // this.updateReceiverState([payload?.data?.id], 'ACTIVE').then(rs => {
+    //         //   this.updateUnreadCount();
+    //         // });
+    //         this.openNotification(this.prepareNotificaitonInfo(newNotification));
+    //       });
+    //     } else {
+    //       // this.activityNotifications$.next([newNotification]);
+    //     }
+    //   });
 
 
     // Listen service worker events
@@ -276,7 +276,7 @@ export class NotificationService {
   }
 
   async requestPermission() {
-    return this.angularFireMessaging.requestToken.pipe(take(1)).toPromise();
+    // return this.angularFireMessaging.requestToken.pipe(take(1)).toPromise();
     // .then(
     //   (token) => {
     //     console.log(token);
@@ -289,17 +289,17 @@ export class NotificationService {
 
   async deleteToken(token?: string) {
     if (!token) {
-      token = await this.getToken();
+      // token = await this.getToken();
     }
-    this.angularFireMessaging.deleteToken(token).pipe(take(1)).toPromise();
+    // this.angularFireMessaging.deleteToken(token).pipe(take(1)).toPromise();
   }
 
   receiveMessage() {
-    return this.angularFireMessaging.messages;
+    // return this.angularFireMessaging.messages;
   }
 
   async getToken() {
-    return this.angularFireMessaging.getToken.pipe(take(1)).toPromise();
+    // return this.angularFireMessaging.getToken.pipe(take(1)).toPromise();
   }
 
   async loadNotifications(params?: { limit?: number, offset?: number, silent?: boolean, gt_Id?: number, lt_Id?: number, sort_Id?: string, eq_Type?: string, eq_ReceiverState?: string }) {

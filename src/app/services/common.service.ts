@@ -1,16 +1,17 @@
-import { CollaboratorAwardPrintComponent } from './../modules/collaborator/award/collaborator-award-print/collaborator-award-print.component';
-import { CollaboratorCommissionPaymentPrintComponent } from './../modules/collaborator/commission-payment/collaborator-commission-payment-print/collaborator-commission-payment-print.component';
-import { CollaboratorCommissionPrintComponent } from './../modules/collaborator/commission/collaborator-commission-print/collaborator-commission-print.component';
-import { CollaboratorOrderPrintComponent } from './../modules/collaborator/order/collaborator-order-print/collaborator-order-print.component';
-import { CommerceServiceByCycleFormComponent } from './../modules/commerce-service-by-cycle/service-by-cycle/commerce-service-by-cycle-form/commerce-service-by-cycle-form.component';
-import { DeploymentVoucherPrintComponent } from './../modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
-import { SalesPriceReportPrintComponent } from './../modules/sales/price-report/sales-price-report-print/sales-price-report-print.component';
-import { CashPaymentVoucherPrintComponent } from './../modules/accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
-import { CashReceiptVoucherPrintComponent } from './../modules/accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
-import { WarehouseGoodsReceiptNotePrintComponent } from './../modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
-import { WarehouseGoodsDeliveryNotePrintComponent } from './../modules/warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
-import { PurchaseOrderVoucherPrintComponent } from './../modules/purchase/order/purchase-order-voucher-print/purchase-order-voucher-print.component';
-import { PurchasePriceTablePrintComponent } from './../modules/purchase/price-table/purchase-price-table-print/purchase-price-table-print.component';
+import { timezones } from './../lib/timezones';
+// import { CollaboratorAwardPrintComponent } from './../modules/collaborator/award/collaborator-award-print/collaborator-award-print.component';
+// import { CollaboratorCommissionPaymentPrintComponent } from './../modules/collaborator/commission-payment/collaborator-commission-payment-print/collaborator-commission-payment-print.component';
+// import { CollaboratorCommissionPrintComponent } from './../modules/collaborator/commission/collaborator-commission-print/collaborator-commission-print.component';
+// import { CollaboratorOrderPrintComponent } from './../modules/collaborator/order/collaborator-order-print/collaborator-order-print.component';
+// import { CommerceServiceByCycleFormComponent } from './../modules/commerce-service-by-cycle/service-by-cycle/commerce-service-by-cycle-form/commerce-service-by-cycle-form.component';
+// import { DeploymentVoucherPrintComponent } from './../modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
+// import { SalesPriceReportPrintComponent } from './../modules/sales/price-report/sales-price-report-print/sales-price-report-print.component';
+// import { CashPaymentVoucherPrintComponent } from './../modules/accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
+// import { CashReceiptVoucherPrintComponent } from './../modules/accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+// import { WarehouseGoodsReceiptNotePrintComponent } from './../modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
+// import { WarehouseGoodsDeliveryNotePrintComponent } from './../modules/warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
+// import { PurchaseOrderVoucherPrintComponent } from './../modules/purchase/order/purchase-order-voucher-print/purchase-order-voucher-print.component';
+// import { PurchasePriceTablePrintComponent } from './../modules/purchase/price-table/purchase-price-table-print/purchase-price-table-print.component';
 import { HelpdeskTicketModel } from './../models/helpdesk.model';
 import { TaxModel } from './../models/tax.model';
 import { Injectable, Type, TemplateRef } from '@angular/core';
@@ -40,14 +41,29 @@ import { DeviceModel } from '../models/device.model';
 import { v4 as uuidv4 } from 'uuid';
 import { NotificationService } from './notification.service';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
-import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
-import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
-import { PurchaseVoucherPrintComponent } from '../modules/purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
-import { AccountingOtherBusinessVoucherPrintComponent } from '../modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
+// import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
+// import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
+// import { PurchaseVoucherPrintComponent } from '../modules/purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
+// import { AccountingOtherBusinessVoucherPrintComponent } from '../modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 import * as moment from 'moment';
 import { FileStoreModel } from '../models/file.model';
 import { createMask } from '@ngneat/input-mask';
 import { DateTimeAdapter } from 'ng-pick-datetime';
+import { CashPaymentVoucherPrintComponent } from '../modules/accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
+import { CashReceiptVoucherPrintComponent } from '../modules/accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+import { AccountingOtherBusinessVoucherPrintComponent } from '../modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
+import { CollaboratorAwardPrintComponent } from '../modules/collaborator/award/collaborator-award-print/collaborator-award-print.component';
+import { CollaboratorCommissionPaymentPrintComponent } from '../modules/collaborator/commission-payment/collaborator-commission-payment-print/collaborator-commission-payment-print.component';
+import { CollaboratorCommissionPrintComponent } from '../modules/collaborator/commission/collaborator-commission-print/collaborator-commission-print.component';
+import { CollaboratorOrderPrintComponent } from '../modules/collaborator/order/collaborator-order-print/collaborator-order-print.component';
+import { CommerceServiceByCycleFormComponent } from '../modules/commerce-service-by-cycle/service-by-cycle/commerce-service-by-cycle-form/commerce-service-by-cycle-form.component';
+import { DeploymentVoucherPrintComponent } from '../modules/deployment/deployment-voucher/deployment-voucher-print/deployment-voucher-print.component';
+import { PurchaseOrderVoucherPrintComponent } from '../modules/purchase/order/purchase-order-voucher-print/purchase-order-voucher-print.component';
+import { PurchaseVoucherPrintComponent } from '../modules/purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
+import { SalesPriceReportPrintComponent } from '../modules/sales/price-report/sales-price-report-print/sales-price-report-print.component';
+import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
+import { WarehouseGoodsDeliveryNotePrintComponent } from '../modules/warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
+import { WarehouseGoodsReceiptNotePrintComponent } from '../modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 
 @Injectable({
   providedIn: 'root',
@@ -163,6 +179,7 @@ export class CommonService {
   // localStorageAvailable$: BehaviorSubject<WindowLocalStorage> = new BehaviorSubject<WindowLocalStorage>(null);
 
   notificationMessage: BehaviorSubject<any>;
+  timezones$ = new BehaviorSubject<any>(null);
 
   constructor(
     public authService: NbAuthService,
@@ -188,6 +205,13 @@ export class CommonService {
     //     this.loadPermissionToCache();
     //   }
     // });
+
+    const getTimezonesProcess = setInterval(() => {
+      if (timezones) {
+        clearInterval(getTimezonesProcess);
+        this.timezones$.next(timezones as any);
+      }
+    }, 300);
 
     /** Load langCode */
     translate.addLangs(['en-US', 'vi-VN']);
@@ -341,6 +365,7 @@ export class CommonService {
     return Promise.all([
       this.languageLoaded$.pipe(filter(f => f), take(1)).toPromise(),
       this.permissionsCache$.pipe(filter(f => !!f), take(1)).toPromise(),
+      this.timezones$.pipe(filter(f => !!f), take(1)).toPromise(),
     ]).then(allStatus => {
       return true;
     });
@@ -451,7 +476,10 @@ export class CommonService {
 
   gotoNotification(params: { type?: string, icon?: string, title: string, content: string, actions?: { label: string, icon?: string, status?: string, action?: () => void }[] }): void {
     this.routeParams.push(params);
-    this.router.navigate(['/notification', this.routeParams.length]);
+    // this.router.navigate(['/notification', this.routeParams.length]);
+    // this.toastService.show(params.content, params.title, {
+    //   status: 'warning',
+    // })
   }
 
   // privegetPermissions() {
@@ -788,7 +816,7 @@ export class CommonService {
       prefix: '',
       placeholder: '0',
       parser: (value: string) => {
-        return parseFloat(radixPoint !== '.' ? value.replace(new RegExp(`\\${groupsSeparator}`,'g'), '').replace(new RegExp(`\\${radixPoint}`, 'g'), '.') : value);
+        return parseFloat(radixPoint !== '.' ? value.replace(new RegExp(`\\${groupsSeparator}`, 'g'), '').replace(new RegExp(`\\${radixPoint}`, 'g'), '.') : value);
       },
       onBeforeMask: (initialValue: string, opts: Inputmask.Options) => {
         return radixPoint !== '.' ? `${initialValue}`.replace('.', radixPoint) : initialValue;
@@ -858,20 +886,20 @@ export class CommonService {
   }
 
   openTicketForm(id: { Code?: string, UuidIndex?: string }) {
-    this.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
-      context: {
-        showLoadinng: false,
-        inputMode: 'dialog',
-        ticketCode: id.Code,
-        uuidIndex: id.UuidIndex,
-        onDialogSave: (newData: HelpdeskTicketModel[]) => {
-        },
-        onDialogClose: () => {
-        },
-      },
-      closeOnEsc: false,
-      closeOnBackdropClick: false,
-    });
+    // this.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
+    //   context: {
+    //     showLoadinng: false,
+    //     inputMode: 'dialog',
+    //     ticketCode: id.Code,
+    //     uuidIndex: id.UuidIndex,
+    //     onDialogSave: (newData: HelpdeskTicketModel[]) => {
+    //     },
+    //     onDialogClose: () => {
+    //     },
+    //   },
+    //   closeOnEsc: false,
+    //   closeOnBackdropClick: false,
+    // });
   }
 
   voucherPrintConponentTypeIndex = {

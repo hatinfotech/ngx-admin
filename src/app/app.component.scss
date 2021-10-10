@@ -6,7 +6,7 @@
 /* @import "@ag-grid-community/all-modules/dist/styles/ag-grid.css";
 @import "@ag-grid-community/all-modules/dist/styles/ag-theme-material.css"; */
 
-@import "../assets/framework7.bundle.scss";
+// @import "../assets/framework7.bundle.scss";
 // @import "../assets/phone.scss";
 
 /*
@@ -564,7 +564,7 @@ ngx-header ngx-action-control-list {
           width: 1.5rem;
           height: 1.5rem;
           border-radius: 0.2rem;
-          background-image: url(assets/icon/eva/image-outline.svg);
+          background-image: url(../assets/icon/eva/image-outline.svg);
           .image {
             background-repeat: no-repeat;
             background-size: cover;
@@ -1759,105 +1759,105 @@ body [nbButton].appearance-hero.size-medium {
 }
 
 /** End button */
-.nb-theme-default my-context-menu {
-  background-color: #ffffff;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 0;
-  border-radius: 0.25rem;
-  box-shadow: 0 0.5rem 1rem 0 #2c33491a;
-  min-width: 10rem;
-  max-width: 15rem;
-}
-.nb-theme-default my-context-menu nb-menu {
-  border-radius: 0.25rem;
-  overflow: hidden;
-  text-align: center;
-}
-.nb-theme-dark my-context-menu {
-  background-color: #222b45;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 0;
-  border-radius: 0.25rem;
-  box-shadow: 0 0.5rem 1rem 0 #1a1f33;
-  min-width: 10rem;
-  max-width: 15rem;
-}
+// .nb-theme-default ngx-notification-menu {
+//   background-color: #ffffff;
+//   border-color: transparent;
+//   border-style: solid;
+//   border-width: 0;
+//   border-radius: 0.25rem;
+//   box-shadow: 0 0.5rem 1rem 0 #2c33491a;
+//   min-width: 10rem;
+//   max-width: 15rem;
+// }
+// .nb-theme-default ngx-notification-menu nb-menu {
+//   border-radius: 0.25rem;
+//   overflow: hidden;
+//   text-align: center;
+// }
+// .nb-theme-dark ngx-notification-menu {
+//   background-color: #222b45;
+//   border-color: transparent;
+//   border-style: solid;
+//   border-width: 0;
+//   border-radius: 0.25rem;
+//   box-shadow: 0 0.5rem 1rem 0 #1a1f33;
+//   min-width: 10rem;
+//   max-width: 15rem;
+// }
 
-.notification-area {
-  nb-list-item {
-    color: var(--gray-dark);
-    cursor: pointer;
-  }
-}
+// .notification-area {
+//   nb-list-item {
+//     color: var(--gray-dark);
+//     cursor: pointer;
+//   }
+// }
 
-.nb-theme-dark,
-.nb-theme-cosmic {
-  .notification-area {
-    nb-list-item {
-      color: #b0b3b8;
-    }
+// .nb-theme-dark,
+// .nb-theme-cosmic {
+//   .notification-area {
+//     nb-list-item {
+//       color: #b0b3b8;
+//     }
 
-    nb-list-item:hover {
-      background-color: #7d7d7d21;
-    }
+//     nb-list-item:hover {
+//       background-color: #7d7d7d21;
+//     }
 
-    // nb-list-item.new {
-    // //   background-color: #3bb8e8d6;
-    // }
-    // nb-list-item.read {
-    // //   background-color: #82a2afd6;
-    // }
-    // nb-list-item.active {
-    // //   background-color: inherit;
-    // }
-    // nb-list-item.new:hover  {
-    // //   background-color: #3bb8e8;
-    // }
-    // nb-list-item.read:hover  {
-    // //   background-color: #82a2af;
-    // }
-    // nb-list-item.active:hover  {
-    // //   background-color: #7373733b;
-    // }
-  }
-}
+//     // nb-list-item.new {
+//     // //   background-color: #3bb8e8d6;
+//     // }
+//     // nb-list-item.read {
+//     // //   background-color: #82a2afd6;
+//     // }
+//     // nb-list-item.active {
+//     // //   background-color: inherit;
+//     // }
+//     // nb-list-item.new:hover  {
+//     // //   background-color: #3bb8e8;
+//     // }
+//     // nb-list-item.read:hover  {
+//     // //   background-color: #82a2af;
+//     // }
+//     // nb-list-item.active:hover  {
+//     // //   background-color: #7373733b;
+//     // }
+//   }
+// }
 
-.nb-theme-default,
-.nb-theme-corporate {
-  .notification-area {
-    nb-list-item {
-      color: #6c757d;
-    }
+// .nb-theme-default,
+// .nb-theme-corporate {
+//   .notification-area {
+//     nb-list-item {
+//       color: #6c757d;
+//     }
 
-    nb-list-item:hover {
-      background-color: #7d7d7d21;
-    }
+//     nb-list-item:hover {
+//       background-color: #7d7d7d21;
+//     }
 
-    //   nb-list-item.new {
-    //     // color: #fff;
-    //     // background-color: #3bb8e8d6;
-    //   }
-    //   nb-list-item.read {
-    //     // color: #fff;
-    //     // background-color: #82a2afd6;
-    //   }
-    //   nb-list-item.active {
-    //     // color: #929292;
-    //     // background-color: inherit;
-    //   }
-    //   nb-list-item.new:hover  {
-    //     // background-color: #3bb8e8;
-    //   }
-    //   nb-list-item.read:hover  {
-    //     // background-color: #82a2af;
-    //   }
-    //   nb-list-item.active:hover  {
-    //     // background-color: #7373733b;
-    //   }
-  }
-}
+//     //   nb-list-item.new {
+//     //     // color: #fff;
+//     //     // background-color: #3bb8e8d6;
+//     //   }
+//     //   nb-list-item.read {
+//     //     // color: #fff;
+//     //     // background-color: #82a2afd6;
+//     //   }
+//     //   nb-list-item.active {
+//     //     // color: #929292;
+//     //     // background-color: inherit;
+//     //   }
+//     //   nb-list-item.new:hover  {
+//     //     // background-color: #3bb8e8;
+//     //   }
+//     //   nb-list-item.read:hover  {
+//     //     // background-color: #82a2af;
+//     //   }
+//     //   nb-list-item.active:hover  {
+//     //     // background-color: #7373733b;
+//     //   }
+//   }
+// }
 
 .procedure-area img {
   max-width: 100%;
