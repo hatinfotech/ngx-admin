@@ -111,6 +111,7 @@ import { TranslateModule } from '@ngx-translate/core';
     EarningPieChartComponent,
     EarningLiveUpdateChartComponent,
   ],
+  exports: [],
   providers: [
     CountryOrdersMapService,
   ],
