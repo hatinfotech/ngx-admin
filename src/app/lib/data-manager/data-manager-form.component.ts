@@ -11,6 +11,7 @@ import { BaseComponent } from '../base-component';
 import { ActionControl, ActionControlListOption } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
 
+@Component({template: ''})
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   mode: 'dialog' | 'page' | 'inline' = 'page';

@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { CustomServerDataSource } from '../custom-element/smart-table/custom-server.data-source';
 
+@Component({template: ''})
 export abstract class ServerDataManagerListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   constructor(

@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy, Input, AfterViewInit } from '@angular/core';
+import { OnInit, OnDestroy, Input, AfterViewInit, Component } from '@angular/core';
 import { CommonService } from '../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
@@ -8,9 +8,10 @@ import { NbDialogRef } from '@nebular/theme';
 import { Icon } from './custom-element/card-header/card-header.component';
 import { ActionControl } from './custom-element/action-control-list/action-control.interface';
 
+@Component({ template: '' })
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent, AfterViewInit {
 
-  abstract componentName: string = '';
+  abstract componentName: string;
   requiredPermissions: string[] = ['ACCESS'];
 
   protected subcriptions: Subscription[] = [];
@@ -68,7 +69,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref?: NbDialogRef<BaseComponent> & { [key: string]: any },
+    public ref?: NbDialogRef<BaseComponent>,
   ) {
     commonService.iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
   }
@@ -80,17 +81,21 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   restrict() {
     this.commonService.checkPermission(this.componentName, 'ACCESS', result => {
       if (!result) {
-        this.commonService.gotoNotification({
-          title: 'Quyền truy cập',
-          content: 'Bạn không có quyền trên chức năng vừa truy cập !',
-          actions: [
-            {
-              label: 'OK', status: 'success', action: () => {
-                this.router.navigate(['/']);
-              },
-            },
-          ],
-        });
+        // this.commonService.gotoNotification({
+        //   title: 'Quyền truy cập',
+        //   content: 'Bạn không có quyền trên chức năng vừa truy cập !',
+        //   actions: [
+        //     {
+        //       label: 'OK', status: 'success', action: () => {
+        //         this.router.navigate(['/']);
+        //       },
+        //     },
+        //   ],
+        // });
+        // this.commonService.toastService.show('Bạn không có quyền truy cập ' + this.componentName + ' !', 'Quyền truy cập', {
+        //   status: 'warning',
+        // })
+        console.warn('Bạn không có quyền truy cập ' + this.componentName + ' !!! tạm thời vẫn cho vào component nhưng sẽ phải fix lại là không cho vào component khi không có quyền');
         return false;
       }
       return true;
@@ -141,7 +146,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         this.overlayBackdrop = this.overlayWraper.prev();
 
         // Hide dialog
-        this.ref.hide = () => {
+        (this.ref as any).hide = () => {
           this.overlayWraper.fadeOut(100);
           this.overlayBackdrop.fadeOut(100);
           setTimeout(() => {
@@ -151,7 +156,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         };
 
         // Show dialog
-        this.ref.show = (config?: { events?: { [key: string]: any } }) => {
+        (this.ref as any).show = (config?: { events?: { [key: string]: any } }) => {
           if (config && config.events) {
             Object.keys(config.events).forEach((eventName: string) => {
               this[eventName] = config.events[eventName];
@@ -177,8 +182,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
 
   close() {
     if (this.ref) {
-      if (this.reuseDialog && this.ref.hide) {
-        this.ref.hide();
+      if (this.reuseDialog && (this.ref as any).hide) {
+        (this.ref as any).hide();
       } else {
         this.ref.close();
       }
@@ -186,8 +191,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   hide() {
-    if (this.ref && this.ref.hide) {
-      this.ref.hide();
+    if (this.ref && (this.ref as any).hide) {
+      (this.ref as any).hide();
     }
   }
 

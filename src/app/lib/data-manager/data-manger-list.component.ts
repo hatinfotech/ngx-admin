@@ -57,6 +57,7 @@ export class SmartTableSetting {
   };
 }
 
+@Component({template: ''})
 export abstract class DataManagerListComponent<M> extends BaseComponent implements OnInit, AfterViewInit, ReuseComponent {
 
   editing = {};

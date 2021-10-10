@@ -65,7 +65,7 @@ export class ChatManager {
       // const sucription = this.mainSocket.onConnect$.subscribe(rs => {
       this.mainSocket.onConnect$.subscribe(rs => {
         if (rs === true) {
-          resolve();
+          resolve(true);
         }
         // if (typeof sucription !== 'undefined') {
         // sucription.unsubscribe();

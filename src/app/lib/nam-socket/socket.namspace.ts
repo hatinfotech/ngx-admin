@@ -243,7 +243,7 @@ export class SocketNamespace {
   takeUntil(context: string, delay: number): Promise<any> {
     return new Promise<any>(resolve => {
       if (delay === 0) {
-        resolve();
+        resolve(true);
         return;
       }
       if (!this.takeUltilCount[context]) { this.takeUltilCount[context] = 0; }
@@ -255,7 +255,7 @@ export class SocketNamespace {
       })(this.takeUltilCount[context]);
       setTimeout(() => {
         if (this.takeUltilPastCount[context] === this.takeUltilCount[context]) {
-          resolve();
+          resolve(true);
         }
       }, delay);
     });
