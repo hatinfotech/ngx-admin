@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { TranslateService } from '@ngx-translate/core';
+import { filter, take } from 'rxjs/operators';
 import { environment } from '../../../../../../environments/environment';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
 import { LocaleConfigModel } from '../../../../../models/system.model';
@@ -12,7 +13,6 @@ import { UnitModel } from '../../../../../models/unit.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { Timezone } from '../../system-configuration-board/system-locale-config/system-locale-config.component';
-import * as timezones from '../../../../../../assets/timezones.json';
 
 @Component({
   selector: 'ngx-theme-config',
@@ -64,17 +64,19 @@ export class ThemeConfigComponent extends DataManagerFormComponent<LocaleConfigM
     /** Remove close button */
     this.actionButtonList = this.actionButtonList.filter(btn => btn.name !== 'close');
 
-    this.tz = (timezones as any).default.map((timezon: Timezone) => {
-      return {
-        id: timezon.value,
-        text: timezon.text,
-        children: timezon.utc.map(utc => {
-          return {
-            id: utc,
-            text: utc,
-          };
-        }),
-      };
+    this.commonService.timezones$.pipe(filter(f => !!f), take(1)).toPromise().then((timezones) => {
+      this.tz = (timezones as Timezone[]).map((timezon) => {
+        return {
+          id: timezon.value,
+          text: timezon.text,
+          children: timezon.utc.map(utc => {
+            return {
+              id: utc,
+              text: utc,
+            };
+          }),
+        };
+      });
     });
   }
 

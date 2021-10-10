@@ -17,17 +17,17 @@ import { NbAuthService } from '@nebular/auth';
 import { MobileAppService } from './mobile-app.service';
 import { NbThemeService } from '@nebular/theme';
 import { takeUntil, map } from 'rxjs/operators';
-import { MessagesPage } from './f7pages/messages.page';
-import { AboutPage } from './f7pages/about.page';
-import { PhonePage } from './f7pages/phone.page';
+// import { MessagesPage } from './f7pages/messages.page';
+// import { AboutPage } from './f7pages/about.page';
+// import { PhonePage } from './f7pages/phone.page';
 import { Track } from '../../@core/utils/player.service';
 import { Component as F7Component } from 'framework7';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../vendor/ngx-uploader/src/public_api';
 import { FormGroup } from '@angular/forms';
 import { ProductModel } from '../../models/product.model';
 import { FileModel } from '../../models/file.model';
-import { ChatRoomSettingPage } from './f7pages/chat-room-setting.page';
-import { ContactsPage } from './f7pages/contacts.page';
+// import { ChatRoomSettingPage } from './f7pages/chat-room-setting.page';
+// import { ContactsPage } from './f7pages/contacts.page';
 
 // Global var
 let f7app = null;
@@ -227,8 +227,8 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   mediaTracks: Track[] = [];
 
-  messagePage: MessagesPage;
-  chatRoomSettingPage: ChatRoomSettingPage;
+  // messagePage: MessagesPage;
+  // chatRoomSettingPage: ChatRoomSettingPage;
 
   // app: Framework7;
   constructor(
@@ -295,15 +295,15 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
     this.ready$.subscribe(isReady => {
       if (isReady) {
-        this.messagePage = new MessagesPage(this, this.commonService, this.authService, this.apiService);
-        this.chatRoomSettingPage = new ChatRoomSettingPage(this, this.commonService, this.authService, this.apiService);
-        const routes: any[] = [
-          this.messagePage.f7Component,
-          this.chatRoomSettingPage.f7Component,
-          new AboutPage(this, this.commonService, this.authService).f7Component,
-          new PhonePage(this, this.commonService, this.authService).f7Component,
-          new ContactsPage(this, this.commonService, this.authService, this.apiService).f7Component,
-        ];
+        // this.messagePage = new MessagesPage(this, this.commonService, this.authService, this.apiService);
+        // this.chatRoomSettingPage = new ChatRoomSettingPage(this, this.commonService, this.authService, this.apiService);
+        // const routes: any[] = [
+        //   this.messagePage.f7Component,
+        //   this.chatRoomSettingPage.f7Component,
+        //   new AboutPage(this, this.commonService, this.authService).f7Component,
+        //   new PhonePage(this, this.commonService, this.authService).f7Component,
+        //   new ContactsPage(this, this.commonService, this.authService, this.apiService).f7Component,
+        // ];
 
         // Init Framework7 app
         if (f7app) {
@@ -322,7 +322,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
               // swipe: 'left',
             },
             // Add default routes
-            routes: routes,
+            // routes: routes,
             // ... other parameters˛
           });
 
@@ -413,14 +413,14 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
       this.mainView.router.navigate(`/chat-room/${id}`);
     }
     return new Promise<F7Component & { sendMessage?: (message: any) => void }>(resolve => {
-      const subcription = this.messagePage.onOpenChatRoom$.asObservable().subscribe(f7MessageComponent => {
-        if (f7MessageComponent.$route.params['id'] === option.ChatRoom) {
-          if (subcription) {
-            subcription.unsubscribe();
-          }
-          resolve(f7MessageComponent);
-        }
-      });
+      // const subcription = this.messagePage.onOpenChatRoom$.asObservable().subscribe(f7MessageComponent => {
+      //   if (f7MessageComponent.$route.params['id'] === option.ChatRoom) {
+      //     if (subcription) {
+      //       subcription.unsubscribe();
+      //     }
+      //     resolve(f7MessageComponent);
+      //   }
+      // });
     });
   }
 

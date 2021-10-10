@@ -1,0 +1,28 @@
+<!-- <ngx-file-upload [fileListComponent]="this"></ngx-file-upload> -->
+
+<nb-card class="small-header smart-table" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
+    <nb-card-header>
+        <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('File.File.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase) + '(' + 'File.dragAndDropToUpload' | translate) + ')'" [controls]="actionButtonList"></ngx-card-header>
+        <!-- <nav>
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách file (kéo & thả file vào để upload)
+      <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
+        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+      </button>
+      <button nbButton size="tiny" status="danger" (click)="uploadButton.click()" style="float: right;">
+        <nb-icon pack="eva" icon="cloud-upload-outline"></nb-icon>Chọn file tải lên</button> -->
+        <input #uploadButton style="display: none;" type="file" ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple>
+        <!-- </nav> -->
+    </nb-card-header>
+
+    <nb-card-body>
+        <div>
+            <nb-progress-bar style="margin: 1rem;" *ngFor="let file of files" [value]="file.progress.status == 1 ? file.progress.data.percentage*90/100 : file.progress.data.percentage" [status]="file.progress.status == 1 ? 'danger' : 'success'" size="medium">
+                {{file.progress.data.percentage > 40 ? file.name : ''}} upload {{file.progress.data.percentage
+                < 100 ? (file.progress.data.percentage + '%') : 'complete'}} </nb-progress-bar>
+        </div>
+        <div class="ng2-smart-table-wrap">
+            <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)" (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+            </ng2-smart-table>
+        </div>
+    </nb-card-body>
+</nb-card>

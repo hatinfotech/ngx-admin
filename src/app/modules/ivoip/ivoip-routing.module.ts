@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { IvoipComponent } from './ivoip.component';
 import { AuthGuardService } from '../../services/auth-guard.service';
-import { IvoipDashboardComponent } from './dashboard/ivoip-dashboard.component';
 import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';
 import { PbxFormComponent } from './pbx/pbx-form/pbx-form.component';
 import { CallBlockListComponent } from './call-blocks/call-block-list/call-block-list.component';
@@ -36,6 +35,7 @@ import { CustomerListComponent } from './customers/customer-list/customer-list.c
 import { CustomerFormComponent } from './customers/customer-form/customer-form.component';
 import { UserListComponent } from './users/user-list/user-list.component';
 import { UserFormComponent } from './users/user-form/user-form.component';
+import { IvoipDashboardComponent } from './dashboard/ivoip-dashboard.component';
 
 
 const routes: Routes = [{

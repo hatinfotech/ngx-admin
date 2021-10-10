@@ -7,7 +7,6 @@ import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxMo
 import { ShortLinkRoutingModule } from './ads-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
-import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
 // import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { DialogModule } from '../dialog/dialog.module';
@@ -28,7 +27,6 @@ import { TranslateModule } from '@ngx-translate/core';
     NbIconModule,
     NbInputModule,
     NbCheckboxModule,
-    IvoipDashboardModule,
     NbRouteTabsetModule,
     NbStepperModule,
     NbButtonModule,

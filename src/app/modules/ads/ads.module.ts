@@ -9,7 +9,7 @@ import { AdsRoutingModule } from './ads-routing.module';
 import { NbTabsetModule, NbCardModule, NbIconModule, NbInputModule, NbCheckboxModule, NbRouteTabsetModule, NbStepperModule, NbButtonModule, NbListModule, NbAccordionModule, NbUserModule, NbSelectModule, NbActionsModule, NbRadioModule, NbDatepickerModule, NbProgressBarModule, NbDialogModule } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
-import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
+// import { IvoipDashboardModule } from '../ivoip/dashboard/ivoip-dashboard.module';
 // import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { DialogModule } from '../dialog/dialog.module';
@@ -30,7 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NbIconModule,
     NbInputModule,
     NbCheckboxModule,
-    IvoipDashboardModule,
+    // IvoipDashboardModule,
     NbRouteTabsetModule,
     NbStepperModule,
     NbButtonModule,

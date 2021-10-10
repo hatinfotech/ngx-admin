@@ -9,10 +9,10 @@ import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableTagsC
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { WarehouseGoodsReceiptNoteFormComponent } from '../warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
 import { takeUntil } from 'rxjs/operators';
-import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { AppModule } from '../../../../app.module';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-list',

@@ -3,11 +3,12 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReuseComponent } from '../../lib/reuse-component';
 import { WebHostingService } from './web-hosting-service';
 import { HttpErrorResponse } from '@angular/common/http';
 
+@Component({template: ''})
 export abstract class WebHostingBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   // hostingList: WhHostingModel[] = [];

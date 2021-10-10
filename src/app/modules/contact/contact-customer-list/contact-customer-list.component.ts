@@ -24,6 +24,7 @@ import { ContactFormComponent } from '../contact/contact-form/contact-form.compo
 })
 export class ContactCustomerListComponent extends ContactAllListComponent implements OnInit {
 
+  componentName: string = 'ContactCustomerListComponent';
   static _dialog: NbDialogRef<ContactCustomerListComponent>;
 
   constructor(

@@ -4,10 +4,11 @@ import { FormBuilder } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../services/common.service';
-import { OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MinierpService } from './minierp-service.service';
 
+@Component({template: ''})
 export abstract class MinierpBaseFormComponent<M> extends DataManagerFormComponent<M> implements OnInit {
 
   constructor(

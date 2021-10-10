@@ -10,7 +10,6 @@ import { ExtensionsComponent } from './extensions/extensions.component';
 import { DevicesComponent } from './devices/devices.component';
 import { PstnNumbersComponent } from './pstn-numbers/pstn-numbers.component';
 import { CallBlocksComponent } from './call-blocks/call-blocks.component';
-import { IvoipDashboardModule } from './dashboard/ivoip-dashboard.module';
 import { PbxFormComponent } from './pbx/pbx-form/pbx-form.component';
 import { PbxListComponent } from './pbx/pbx-list/pbx-list.component';
 // import { CurrencyMaskModule } from 'ng2-currency-mask';
@@ -53,6 +52,18 @@ import { TranslateModule } from '@ngx-translate/core';
 // import { RoutingResolve } from '../../app-routing.module';
 import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 import { IvoipService } from './ivoip-service';
+import { CdrStatisticsChartsPanelComponent } from './dashboard/charts-panel/cdr-statistics-charts-panel.component';
+import { OrdersChartComponent } from './dashboard/charts-panel/charts/orders-chart.component';
+import { ChartPanelHeaderComponent } from './dashboard/charts-panel/chart-panel-header/chart-panel-header.component';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ChartModule } from 'angular2-chartjs';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { ThemeModule } from '../../@theme/theme.module';
+import { ProfitChartComponent } from './dashboard/charts-panel/charts/profit-chart.component';
+import { ECommerceLegendChartComponent } from './dashboard/legend-chart/legend-chart.component';
+import { IvoipDashboardComponent } from './dashboard/ivoip-dashboard.component';
+import { IvoipDashboardModule } from './dashboard/ivoip-dashboard.module';
 
 @NgModule({
   declarations: [
@@ -100,7 +111,6 @@ import { IvoipService } from './ivoip-service';
     NbIconModule,
     NbInputModule,
     NbCheckboxModule,
-    IvoipDashboardModule,
     NbRouteTabsetModule,
     NbStepperModule,
     NbButtonModule,
@@ -111,15 +121,15 @@ import { IvoipService } from './ivoip-service';
     NbActionsModule,
     NbRadioModule,
     NbDatepickerModule,
-    // CurrencyMaskModule,
     FormsModule,
     ReactiveFormsModule,
-    // DialogModule,
     NbProgressBarModule,
     TranslateModule,
     SortablejsModule.forRoot({
       animation: 200,
     }),
+
+    IvoipDashboardModule,
   ],
   // exports: [PbxFormComponent],
   providers: [

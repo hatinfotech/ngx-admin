@@ -12,7 +12,7 @@ import { CommonService } from '../../../../../services/common.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Timezone } from '../../system-configuration-board/system-locale-config/system-locale-config.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import * as timezones from '../../../../../../assets/timezones.json';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-user-locale-config',
@@ -64,17 +64,19 @@ export class UserLocaleConfigComponent extends DataManagerFormComponent<LocaleCo
     /** Remove close button */
     this.actionButtonList = this.actionButtonList.filter(btn => btn.name !== 'close');
 
-    this.tz = (timezones as any).default.map((timezon: Timezone) => {
-      return {
-        id: timezon.value,
-        text: timezon.text,
-        children: timezon.utc.map(utc => {
-          return {
-            id: utc,
-            text: utc,
-          };
-        }),
-      };
+    this.commonService.timezones$.pipe(filter(f => !!f), take(1)).toPromise().then((timezones) => {
+      this.tz = (timezones as Timezone[]).map((timezon) => {
+        return {
+          id: timezon.value,
+          text: timezon.text,
+          children: timezon.utc.map(utc => {
+            return {
+              id: utc,
+              text: utc,
+            };
+          }),
+        };
+      });
     });
   }
 

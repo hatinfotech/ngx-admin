@@ -1,0 +1,19 @@
+<nb-card class="small-header smart-table">
+  <nb-card-header>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('File.Store.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <!-- <nav>
+      <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách file store
+      <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
+        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>
+      </button>
+    </nav> -->
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="ng2-smart-table-wrap">
+      <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
+        (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+      </ng2-smart-table>
+    </div>
+  </nb-card-body>
+</nb-card>

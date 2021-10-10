@@ -1,4 +1,5 @@
 import { ContactGroupModel } from './../../../../models/contact.model';
+import { IdTextModel } from './../../../../models/common.model';
 import { Component, OnInit } from '@angular/core';
 import { ContactModel, ContactDetailTypeModel, ContactDetailModel } from '../../../../models/contact.model';
 import { ActivatedRoute, Router } from '@angular/router';

@@ -6,9 +6,10 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../services/common.service';
 import { IvoipService } from './ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
 
+@Component({template: ''})
 export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent<M> implements OnInit {
 
   domainList: { id: string, text: string, domain: PbxDomainModel }[] = [];

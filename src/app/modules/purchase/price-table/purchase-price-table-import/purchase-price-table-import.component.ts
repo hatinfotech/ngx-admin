@@ -15,7 +15,7 @@ import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsP
 import { SmsReceipientModel } from '../../../../models/sms.model';
 import { EmailAddressListDetailModel } from '../../../../models/email.model';
 import { CurrencyPipe } from '@angular/common';
-import { isNumber } from 'util';
+// import { isNumber } from 'util';
 import { BehaviorSubject } from 'rxjs';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { TaxModel } from '../../../../models/tax.model';
@@ -186,7 +186,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         valueFormatter: (params: { value: number & string }) => {
           // console.log(params);
           const value = parseFloat(params.value);
-          return isNumber(value) ? this.currencyPipe.transform(value, 'VND') : 0;
+          return typeof value === 'number' ? this.currencyPipe.transform(value, 'VND') : 0;
         },
       },
       {
@@ -200,7 +200,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         valueFormatter: (params: { value: number & string }) => {
           // console.log(params);
           const value = parseFloat(params.value);
-          return isNumber(value) ? this.currencyPipe.transform(value, 'VND') : 0;
+          return typeof value === 'number' ? this.currencyPipe.transform(value, 'VND') : 0;
         },
       },
     ];

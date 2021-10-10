@@ -1,3 +1,4 @@
+import { filter, take } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
 import { LocaleConfigModel } from '../../../../../models/system.model';
@@ -10,7 +11,6 @@ import { ApiService } from '../../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import * as timezones from '../../../../../../assets/timezones.json';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface Timezone {
@@ -68,17 +68,19 @@ export class SystemLocaleConfigComponent extends DataManagerFormComponent<Locale
     public translate: TranslateService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-    this.tz = (timezones as any).default.map((timezon: Timezone) => {
-      return {
-        id: timezon.value,
-        text: timezon.text,
-        children: timezon.utc.map(utc => {
-          return {
-            id: utc,
-            text: utc,
-          };
-        }),
-      };
+    this.commonService.timezones$.pipe(filter(f => !!f), take(1)).toPromise().then((timezones) => {
+      this.tz = (timezones as Timezone[]).map((timezon) => {
+        return {
+          id: timezon.value,
+          text: timezon.text,
+          children: timezon.utc.map(utc => {
+            return {
+              id: utc,
+              text: utc,
+            };
+          }),
+        };
+      });
     });
   }
 

@@ -13,7 +13,7 @@ import { OrdersProfitChartData } from '../../../../@core/data/orders-profit-char
 import { HelpdeskTicketModel, HelpdeskTicketCallingSessionModel } from '../../../../models/helpdesk.model';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { QuickTicketFormComponent } from '../quick-ticket-form/quick-ticket-form.component';
-import { MobileAppService, CallState } from '../../../mobile-app/mobile-app.service';
+import { CallState, MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ContactModel } from '../../../../models/contact.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';

@@ -2,10 +2,11 @@ import { filter, take } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MobileAppComponent } from './mobile-app.component';
-import { CallingSession } from './phone-manager/calling-session';
-import { DialpadComponent } from './dialpad/dialpad.component';
+// import { CallingSession } from './phone-manager/calling-session';
+// import { DialpadComponent } from './dialpad/dialpad.component';
 import { Track } from '../../@core/utils/player.service';
 import { FrameSocket } from '../../lib/frame-socket/frame-socket';
+import { CallingSession } from './phone-manager/calling-session';
 
 export interface CallState {
   state: string;
@@ -27,20 +28,20 @@ export class MobileAppService {
   frameSocket: FrameSocket;
 
   public mobileApp: MobileAppComponent;
-  public callScreen: DialpadComponent;
+  // public callScreen: DialpadComponent;
 
   constructor() { }
 
-  get callScrennMinimized() {
-    return this.callScreen.minimized;
-  }
+  // get callScrennMinimized() {
+  //   return this.callScreen.minimized;
+  // }
 
   registerMobileApp(mobileApp: MobileAppComponent) {
     this.mobileApp = mobileApp;
   }
-  registerCallScreen(callScreen: DialpadComponent) {
-    this.callScreen = callScreen;
-  }
+  // registerCallScreen(callScreen: DialpadComponent) {
+  //   this.callScreen = callScreen;
+  // }
 
   updateCallState(incommingCallState: CallState) {
     this.mobileApp.switchScreen('phone');

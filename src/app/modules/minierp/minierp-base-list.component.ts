@@ -3,11 +3,12 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReuseComponent } from '../../lib/reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MinierpService } from './minierp-service.service';
 
+@Component({template: ''})
 export abstract class MinierpBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   constructor(

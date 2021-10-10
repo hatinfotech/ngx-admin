@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService, PbxDomainSelection } from './ivoip-service';
-import { OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
 import { ReuseComponent } from '../../lib/reuse-component';
 
+@Component({template: ''})
 export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   domainList: PbxDomainSelection[] = [];
