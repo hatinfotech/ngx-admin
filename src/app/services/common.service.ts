@@ -49,6 +49,7 @@ import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales
 import { WarehouseGoodsDeliveryNotePrintComponent } from '../modules/warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
+import { NotificationModel } from '../models/notification.model';
 
 @Injectable({
   providedIn: 'root',
@@ -131,6 +132,7 @@ export class CommonService {
     private mobileService: MobileAppService,
     public activeRoute: ActivatedRoute,
     public dateTimeAdapter: DateTimeAdapter<any>,
+    public notificationService: NotificationService,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
@@ -253,6 +255,12 @@ export class CommonService {
             return tax;
           });
         });
+
+        // Notification
+        this.notificationService.requestPermission().then(token => {
+          //Register device
+          this.registerDevice({ pushRegId: token });
+        });
       } else {
         // this.loginInfoSubject.next(new LoginInfoModel());
         // this.unregisterDevice();
@@ -264,6 +272,35 @@ export class CommonService {
     this.apiService.unauthorizied$.subscribe(info => {
       if (info) {
         this.setPreviousUrl(info.previousUrl);
+      }
+    });
+
+    // Listen notification service event
+    this.notificationService.eventEmiter.subscribe(event => {
+      switch (event.name) {
+        case 'open-notification':
+          const notification: NotificationModel = event.data;
+          // Chat room case
+          if (notification.Type === 'CHATROOM') {
+
+            this.mobileService.allReady().then(rs => {
+              if (/^\/dashboard/.test(this.router.url)) {
+                // home page
+                this.mobileService.openChatRoom({ ChatRoom: notification.Data?.room }, 'large-smart-bot');
+              } else {
+                this.openMobileSidebar();
+                this.mobileService.openChatRoom({ ChatRoom: notification.Data?.room }, 'small-smart-bot');
+              }
+            });
+          }
+
+          // Activity case
+          if (notification.Type === 'ACTIVITY') {
+            if (notification?.Action === 'OPENTICKET') {
+              this.openTicketForm({ Code: notification?.Data?.ticket, UuidIndex: notification?.Data?.uuid });
+            }
+          }
+          break;
       }
     });
   }

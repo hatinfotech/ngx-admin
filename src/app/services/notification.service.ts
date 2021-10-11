@@ -3,7 +3,7 @@ import { NotificationModel } from './../models/notification.model';
 import { take } from 'rxjs/operators';
 import { CommonService } from './common.service';
 import { Injectable, EventEmitter } from '@angular/core';
-import { AngularFireMessaging } from '@angular/fire/messaging';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { BehaviorSubject } from 'rxjs';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
@@ -26,49 +26,36 @@ export class NotificationService {
   numOfUnread = new BehaviorSubject<number>(0);
 
   activityUpdate$ = new BehaviorSubject<NotificationModel>(null);
+  public eventEmiter = new EventEmitter<{name: string, data: any}>();
 
   constructor(
     private angularFireMessaging: AngularFireMessaging,
     public authService: NbAuthService,
-    public commonService: CommonService,
+    // public commonService: CommonService,
     private toastrService: NbToastrService,
     private mobileAppService: MobileAppService,
     private apiService: ApiService,
     public router: Router,
   ) {
     console.log('init notification service...');
-    // this.angularFireMessaging.messages.subscribe(
-    //   (_messaging: any) => {
-    //     _messaging.onMessage = _messaging.onMessage.bind(_messaging);
-    //     _messaging.onTokenRefresh = _messaging.onTokenRefresh.bind(_messaging);
-    //   }
-    // );
+    this.angularFireMessaging.messages.subscribe(
+      (_messaging: any) => {
+        _messaging.onMessage = _messaging.onMessage.bind(_messaging);
+        _messaging.onTokenRefresh = _messaging.onTokenRefresh.bind(_messaging);
+      }
+    );
 
-    // let autoUpdateNotificationLoop = null;
     this.authService.onAuthenticationChange().subscribe(async state => {
       console.info('Authentication change with state ' + state);
       if (state) {
 
         // Request notification permission and register firebase messaging
         console.log('request notifications permission');
-        this.requestPermission().then(token => {
-          //Register device
-          // this.commonService.registerDevice({ pushRegId: token });
-        });
-
-        // Load new user notificaitons at first time
-        // this.loadNotifications({order_Id: 'desc', limit: 10, offset: 0}).then(notifications => {
-        //   this.notifications = notifications;
+        // this.requestPermission().then(token => {
+        //   //Register device
+        //   this.commonService.registerDevice({ pushRegId: token });
         // });
 
-        // if (!autoUpdateNotificationLoop) {
-        //   autoUpdateNotificationLoop = setInterval(() => {
-        //     this.loadNotifications().then(notifications => {
-        //       this.notifications = notifications;
-        //       this.reloadEvent.emit(true);
-        //     });
-        //   }, 10000);
-        // }
 
         this.updateUnreadCount();
         this.requestNewestActivityNotifications();
@@ -148,51 +135,42 @@ export class NotificationService {
     });
     // Firebase messaging event
     console.log('receive message');
-    // this.receiveMessage().subscribe(
-    //   (payload: any) => {
-    //     console.log("new message received. ", payload);
-    //     // this.currentMessage.next(payload);
+    this.receiveMessage().subscribe(
+      (payload: any) => {
+        console.log("new message received. ", payload);
+        // Update notifcation list
+        const newNotification: NotificationModel = {
+          Id: parseInt(payload?.data?.id),
+          Time: parseInt(payload?.data?.time),
+          Action: payload?.data?.action,
+          Status: payload?.data?.status || 'warning',
+          Icon: payload?.data?.icon || 'email',
+          Type: payload?.data?.type,
+          Title: payload?.data?.title,
+          Content: payload?.data?.content ? (this.convertToPlanText(payload?.data?.content)) : payload?.data?.body,
+          Picture: payload?.data?.picture,
+          Data: payload?.data,
+        };
+        if(newNotification.Type === 'ACTIVITY') this.activityUpdate$.next(newNotification);
+        this.notifications.unshift(newNotification);
+        // this.notifications$.next(notifications);
 
-    //     // Update notifcation list
-    //     // const notifications = this.notifications$.getValue();
-    //     const newNotification: NotificationModel = {
-    //       Id: parseInt(payload?.data?.id),
-    //       Time: parseInt(payload?.data?.time),
-    //       Action: payload?.data?.action,
-    //       Status: payload?.data?.status || 'warning',
-    //       Icon: payload?.data?.icon || 'email',
-    //       Type: payload?.data?.type,
-    //       Title: payload?.data?.title,
-    //       Content: payload?.data?.content ? (this.convertToPlanText(payload?.data?.content)) : payload?.data?.body,
-    //       Picture: payload?.data?.picture,
-    //       Data: payload?.data,
-    //     };
-    //     if(newNotification.Type === 'ACTIVITY') this.activityUpdate$.next(newNotification);
-    //     this.notifications.unshift(newNotification);
-    //     // this.notifications$.next(notifications);
-
-    //     if (newNotification?.Type !== 'ACTIVITY') {
-    //       const toastr: any = this.toastrService.show(payload?.data?.body, payload?.data?.title, {
-    //         status: 'success',
-    //         hasIcon: true,
-    //         position: NbGlobalPhysicalPosition.TOP_RIGHT,
-    //         toastClass: 'room-' + payload?.data?.room,
-    //         icon: 'email-outline',
-    //       });
-    //       console.log(toastr);
-    //       this.increamentUnreadCount();
-    //       $(toastr.toastContainer?.containerRef?.location?.nativeElement).find('.' + 'room-' + payload?.data?.room).click(() => {
-    //         // this.commonService.openMobileSidebar();
-    //         // this.mobileAppService.openChatRoom({ ChatRoom: payload?.data?.room });
-    //         // this.updateReceiverState([payload?.data?.id], 'ACTIVE').then(rs => {
-    //         //   this.updateUnreadCount();
-    //         // });
-    //         this.openNotification(this.prepareNotificaitonInfo(newNotification));
-    //       });
-    //     } else {
-    //       // this.activityNotifications$.next([newNotification]);
-    //     }
-    //   });
+        if (newNotification?.Type !== 'ACTIVITY') {
+          const toastr: any = this.toastrService.show(payload?.data?.body, payload?.data?.title, {
+            status: 'success',
+            hasIcon: true,
+            position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            toastClass: 'room-' + payload?.data?.room,
+            icon: 'email-outline',
+          });
+          console.log(toastr);
+          this.increamentUnreadCount();
+          $(toastr.toastContainer?.containerRef?.location?.nativeElement).find('.' + 'room-' + payload?.data?.room).click(() => {
+            this.openNotification(this.prepareNotificaitonInfo(newNotification));
+          });
+        } else {
+        }
+      });
 
 
     // Listen service worker events
@@ -204,19 +182,6 @@ export class NotificationService {
         });
         console.log(notification);
         this.openNotification(notification);
-        // if (event.data?.payload?.type === 'CHATROOM') {
-        //   if (event.data?.payload && event.data?.payload?.room) {
-        //     this.commonService.openMobileSidebar();
-        //     this.mobileAppService.openChatRoom({
-        //       ChatRoom: event.data?.payload?.room,
-        //     });
-        //     if (event.data?.payload?.id) {
-        //       this.updateReceiverState([event.data?.payload?.id], 'ACTIVE').then(rs => {
-        //         this.updateUnreadCount();
-        //       });
-        //     }
-        //   }
-        // }
       }
     });
     console.log('register messages observer');
@@ -243,7 +208,6 @@ export class NotificationService {
   async requestNewestActivityNotifications() {
     // Update activity notifications
     return this.loadNotifications({ sort_Id: 'desc', limit: 1, offset: 0, silent: true, eq_Type: 'ACTIVITY', eq_ReceiverState: 'NEW' }).then(notifications => {
-      // this.activityNotifications$.next(notifications);
       if (notifications && notifications.length > 0) {
         if (this.activityUpdate$.value && this.activityUpdate$.value.Id != notifications[0].Id) {
           this.activityUpdate$.next(notifications[0]);
@@ -253,73 +217,45 @@ export class NotificationService {
     });
   }
 
-  // protected lastUpdate: number = Date.now();
   async requestNewestNotificaitons() {
-    // if (this.lastUpdate + 30 * 1000 < Date.now()) {
-    // this.lastUpdate = Date.now();
 
     if (this.notifications.length > 0) {
       return this.loadNotifications({ sort_Id: 'desc', limit: 10, offset: 0, gt_Id: this.notifications[0].Id, silent: true }).then(notifications => {
-        // for(const notification of notifications) {
-        //   this.prepareNotificaitonInfo(notification);
-        // }
         this.notifications.unshift(...notifications);
         this.updateUnreadCount();
-        // this.reloadEvent.emit(true);
         return notifications;
       });
     }
-    // } else {
-    //   console.info('no need reload');
-    //   return false;
-    // }
   }
 
   async requestPermission() {
-    // return this.angularFireMessaging.requestToken.pipe(take(1)).toPromise();
-    // .then(
-    //   (token) => {
-    //     console.log(token);
-    //   },
-    //   (err) => {
-    //     console.error('Unable to get permission to notify.', err);
-    //   }
-    // );
+    return this.angularFireMessaging.requestToken.pipe(take(1)).toPromise();
   }
 
   async deleteToken(token?: string) {
     if (!token) {
-      // token = await this.getToken();
+      token = await this.getToken();
     }
-    // this.angularFireMessaging.deleteToken(token).pipe(take(1)).toPromise();
+    this.angularFireMessaging.deleteToken(token).pipe(take(1)).toPromise();
   }
 
   receiveMessage() {
-    // return this.angularFireMessaging.messages;
+    return this.angularFireMessaging.messages;
   }
 
   async getToken() {
-    // return this.angularFireMessaging.getToken.pipe(take(1)).toPromise();
+    return this.angularFireMessaging.getToken.pipe(take(1)).toPromise();
   }
 
   async loadNotifications(params?: { limit?: number, offset?: number, silent?: boolean, gt_Id?: number, lt_Id?: number, sort_Id?: string, eq_Type?: string, eq_ReceiverState?: string }) {
-    // const params: any = { silent: true, limit: limit || 10, offset: offset || 0 };
     if (!params) {
       params = { silent: true, limit: 10, offset: 0 };
     }
-    // if (typeof limit === 'undefined' && typeof offset === 'undefined' && this.notifications.length > 0) {
-    //   params.fromId = this.notifications[0].Id;
-    // }
     return this.apiService.getPromise<NotificationModel[]>('/notification/notifications/byCurrentUser', params).then(notifications => {
-      // const currentNotifications = this.notifications$.getValue();
       notifications = notifications.map(notification => {
-        // notification.Content = this.convertToPlanText(notification.Content);
         this.prepareNotificaitonInfo(notification);
         return notification;
       });
-      // this.notifications.push(...notifications);
-      // this.notifications$.next(currentNotifications);
-      // this.items = notifications;
       return notifications;
     });
   }
@@ -354,22 +290,8 @@ export class NotificationService {
 
   async openNotification(notification: NotificationModel) {
 
-
     const rs = this.updateReceiverState([notification.Id], 'ACTIVE').then(rs => {
       console.log('update notifications state to active');
-
-      // this.items.find(f => f.Id == notification.Id).State = 'ACTIVE';
-      // this.items = [...this.items];
-
-      // this.prepareForUpdateNotificaitonState();
-      // this.notificationService.updateReceiverState([...this.notificaitonUpdateQueue].map(item => item.Id), 'ACTIVE').then(rs => {
-      //   console.log('update notifications state to read');
-      //   for (const notification of this.notificaitonUpdateQueue) {
-      //     notification.State = 'READ';
-      //   }
-      //   this.items = [...this.items];
-      // });
-
       if (notification.Type === 'ACTIVITY') {
         this.requestNewestActivityNotifications();
       }
@@ -377,33 +299,31 @@ export class NotificationService {
       return rs;
     });
 
-    // Chat room case
-    if (notification.Type === 'CHATROOM') {
+    this.eventEmiter.emit({
+      name: 'open-notification',
+      data: notification,
+    });
 
-      this.mobileAppService.allReady().then(rs => {
-        if (/^\/dashboard/.test(this.router.url)) {
-          // home page
-          this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room }, 'large-smart-bot');
-        } else {
-          this.commonService.openMobileSidebar();
-          this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room }, 'small-smart-bot');
-        }
-      });
+    // // Chat room case
+    // if (notification.Type === 'CHATROOM') {
 
-      // this.mobileAppService.allReady().then(rs => {
-      //   // setTimeout(() => {
-      //     this.commonService.openMobileSidebar();
-      //     this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room });
-      //   // }, 3000);
-      // });
-    }
+    //   this.mobileAppService.allReady().then(rs => {
+    //     if (/^\/dashboard/.test(this.router.url)) {
+    //       // home page
+    //       this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room }, 'large-smart-bot');
+    //     } else {
+    //       this.commonService.openMobileSidebar();
+    //       this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room }, 'small-smart-bot');
+    //     }
+    //   });
+    // }
 
-    // Activity case
-    if (notification.Type === 'ACTIVITY') {
-      if (notification?.Action === 'OPENTICKET') {
-        this.commonService.openTicketForm({ Code: notification?.Data?.ticket, UuidIndex: notification?.Data?.uuid });
-      }
-    }
+    // // Activity case
+    // if (notification.Type === 'ACTIVITY') {
+    //   if (notification?.Action === 'OPENTICKET') {
+    //     this.commonService.openTicketForm({ Code: notification?.Data?.ticket, UuidIndex: notification?.Data?.uuid });
+    //   }
+    // }
 
     return rs
   }

@@ -221,6 +221,7 @@ import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-
 import { TreeModule } from 'angular-tree-component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { AngularFireModule } from '@angular/fire/compat';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -475,6 +476,7 @@ export class DynamicLocaleId extends String {
         deps: [HttpClient],
       },
     }),
+    AngularFireModule.initializeApp(environment.firebase),
 
     // My Lib
     CustomElementModule,
