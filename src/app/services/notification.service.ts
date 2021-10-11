@@ -3,7 +3,7 @@ import { NotificationModel } from './../models/notification.model';
 import { take } from 'rxjs/operators';
 import { CommonService } from './common.service';
 import { Injectable, EventEmitter } from '@angular/core';
-// import { AngularFireMessaging } from '@angular/fire/messaging';
+import { AngularFireMessaging } from '@angular/fire/messaging';
 import { BehaviorSubject } from 'rxjs';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
@@ -28,7 +28,7 @@ export class NotificationService {
   activityUpdate$ = new BehaviorSubject<NotificationModel>(null);
 
   constructor(
-    // private angularFireMessaging: AngularFireMessaging,
+    private angularFireMessaging: AngularFireMessaging,
     public authService: NbAuthService,
     public commonService: CommonService,
     private toastrService: NbToastrService,
