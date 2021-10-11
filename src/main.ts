@@ -28,9 +28,3 @@ if (environment.hmr) {
 } else {
   bootstrap().catch(err => console.info(err));
 }
-
-// setTimeout(() => {
-//   $(document).on('select2:open', () => {
-//     (document.querySelector('.select2-search__field') as any).focus();
-//   });
-// }, 3000);
