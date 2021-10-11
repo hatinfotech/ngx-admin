@@ -20,7 +20,7 @@
                             <input type="hidden" [value]="i" formControlName="_index">
                             <div class="col-sm-6">
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Locale'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
+                                    <label class="label"><span class="valid">{{'Common.language' | translate | headtitlecase}}</span><span
                       class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.language')} | headtitlecase }}
                       (*)</span></label>
                                     <nb-select size="medium" formControlName="Locale" fullWidth>
@@ -31,8 +31,8 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Timezone'), 'warning')">
-                                    <label class="label"><span class="valid">{{'Common.value' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.timezone')} | headtitlecase }}
+                                    <label class="label"><span class="valid">{{'Common.region' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.region')} | headtitlecase }}
                       (*)</span></label>
                                     <ngx-select2 [data]="tz" formControlName="Timezone" [select2Option]="select2OptionTimezone">
                                     </ngx-select2>

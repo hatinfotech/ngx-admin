@@ -58,8 +58,15 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
-    this.formLoad();
+    // this.formLoad();
     // this.id = [this.commonService.loginInfo.user.Code];
+  }
+
+  async init(): Promise<boolean> {
+    return super.init().then(rs => {
+      this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'remove' && f.name !== 'close');
+      return rs;
+    });
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -74,7 +81,7 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
 
   /** Get form data by id from api */
   getFormData(callback: (data: UserModel[]) => void) {
-    this.apiService.get<UserModel[]>(this.apiPath, { id: this.id, multi: true, includeGroups: true, includeUserPhoneExtensions: true },
+    this.apiService.get<UserModel[]>(this.apiPath, {includeGroups: true, includeUserPhoneExtensions: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);

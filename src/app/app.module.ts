@@ -284,7 +284,6 @@ export class DynamicLocaleId extends String {
     PurchaseGoodsPrintComponent,
 
     // Warehouse components
-    // WarehouseComponent,
     WarehouseGoodsReceiptNoteListComponent,
     WarehouseGoodsReceiptNoteFormComponent,
     WarehouseGoodsReceiptNotePrintComponent,
@@ -307,7 +306,6 @@ export class DynamicLocaleId extends String {
     WarehouseBookCommitComponent,
 
     // Accounting components
-    // AccountingComponent,
     CashReceiptVoucherListComponent,
     CashReceiptVoucherFormComponent,
     CashPaymentVoucherListComponent,

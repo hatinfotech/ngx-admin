@@ -3,18 +3,6 @@
  * Copyright Akveo. All Rights Reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
-// import { enableProdMode } from '@angular/core';
-// import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-// import { AppModule } from './app/app.module';
-// import { environment } from './environments/environment';
-
-// if (environment.production) {
-//   enableProdMode();
-// }
-
-// platformBrowserDynamic().bootstrapModule(AppModule)
-//   .catch(err => console.error(err));
 
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -31,7 +19,7 @@ if (environment.production) {
 const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
-  if (module[ 'hot' ]) {
+  if (module['hot']) {
     hmrBootstrap(module, bootstrap);
   } else {
     console.error('HMR is not enabled for webpack-dev-server!');
@@ -40,3 +28,9 @@ if (environment.hmr) {
 } else {
   bootstrap().catch(err => console.info(err));
 }
+
+// setTimeout(() => {
+//   $(document).on('select2:open', () => {
+//     (document.querySelector('.select2-search__field') as any).focus();
+//   });
+// }, 3000);

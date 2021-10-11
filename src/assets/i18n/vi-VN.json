@@ -353,6 +353,16 @@
         "info": "thông tin",
         "quantity": "số lượng",
         "price": "giá",
+        "language": "ngôn ngữ",
+        "region": "vùng miền",
+        "theme": "giao diện",
+        "prodocol": "giao thức",
+        "port": "cổng",
+        "host": "host",
+        "domain": "miền",
+        "password": "mật khẩu",
+        "extNumber": "số mở rộng",
+        "extPhoneNumberList": "danh sách số mở rộng",
         "product": "sản phẩm"
     },
     "Contact": {
@@ -905,6 +915,20 @@
         },
         "Badge": {
             "label": "danh hiệu"
+        }
+    },
+    "User": {
+        "Account": {
+            "title": "tài khoản"
+        },
+        "Profile": {
+            "title": "Profile"
+        },
+        "LocaleConfig": {
+            "title": "ngôn ngữ & vùng miền"
+        },
+        "ThemeConfig": {
+            "title": "giao diện"
         }
     },
     "Print": {

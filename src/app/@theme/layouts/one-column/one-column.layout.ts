@@ -74,7 +74,7 @@ export class OneColumnLayoutComponent {
     // Restore sidebar state
     const menuSidebarState = localStorage.getItem(`sidebar-state-menu`);
     const chatSidebarState = localStorage.getItem(`sidebar-state-chat`);
-    if(menuSidebarState === 'true') {
+    if(menuSidebarState === 'true' || menuSidebarState == null) {
       this.sidebarService.expand('menu-sidebar');
     } else {
       this.sidebarService.collapse('menu-sidebar');
