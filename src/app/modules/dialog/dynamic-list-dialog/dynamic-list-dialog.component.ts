@@ -63,7 +63,8 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
   async init() {
     // await this.loadCache();
     return super.init().then(rs => {
-      this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
+      const excludeActionButtons = ['choose', 'add', 'delete', 'edit'];
+      this.actionButtonList = this.actionButtonList.filter(f => excludeActionButtons.indexOf(f.name) < 0);
       return rs;
     });
   }

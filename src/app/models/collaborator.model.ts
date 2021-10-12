@@ -92,7 +92,7 @@ export interface CollaboratorCommissionVoucherDetailModel {
     UnitLabel?: string;
     Kpi?: string;
     Okr?: string;
-    AwardAmount?: string;
+    CommissionAmount?: string;
     RelativeVouchers?: string;
     Level1AwardRatio?: string;
     Level1AwardAmount?: string;
@@ -104,12 +104,12 @@ export interface CollaboratorCommissionVoucherDetailModel {
     SumOfQuantity?: string;
     ExtSumOfNetRevenue?: string;
     TotalAwardAmount?: string;
-    Orders?: CollaboratorAwardVoucherDetailOrderModel[];
+    Orders?: CollaboratorCommissionVoucherDetailOrderModel[];
 }
-export interface CollaboratorAwardVoucherDetailOrderModel {
+export interface CollaboratorCommissionVoucherDetailOrderModel {
     [key: string]: any;
     Id?: string;
-    AwardVoucher?: string;
+    CommissionVoucher?: string;
     DetailNo?: string;
     No?: string;
     Voucher?: string;
@@ -122,8 +122,8 @@ export interface CollaboratorAwardVoucherDetailOrderModel {
     Tax?: string;
     TaxValue?: string;
     TaxLabel?: string;
-    Quantity?: string;
-    Price?: string;
+    Quantity?: number;
+    Price?: number;
 }
 export interface CollaboratorAwardVoucherModel {
     [key: string]: any;

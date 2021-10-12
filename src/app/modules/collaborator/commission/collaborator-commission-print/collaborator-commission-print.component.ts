@@ -2,12 +2,13 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
+import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment.prod';
 import { AppModule } from '../../../../app.module';
-import { SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherDetailModel } from '../../../../models/accounting.model';
-import { CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel, CollaboratorCommissionVoucherDetailModel, CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
+import { CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel, CollaboratorCommissionVoucherDetailModel, CollaboratorCommissionVoucherDetailOrderModel, CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -240,10 +241,10 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
             Description: {
               title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
               type: 'string',
-              width: '45%',
+              width: '40%',
               filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
             },
-            Unit: {
+            UnitLabel: {
               title: this.commonService.textTransform(this.commonService.translate.instant('Product.unit'), 'head-title'),
               type: 'string',
               width: '5%',
@@ -278,10 +279,34 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
                 // instance.format$.next('medium');
                 instance.style = 'text-align: right';
               },
-              valuePrepareFunction: (cell: string, row: CollaboratorCommissionVoucherDetailModel) => {
+              valuePrepareFunction: (cell: string, row: CollaboratorCommissionVoucherDetailOrderModel) => {
                 return `${row.Quantity * row.Price}`;
               },
             },
+            Preview: {
+              title: this.commonService.translateText('Common.show'),
+              type: 'custom',
+              width: '5%',
+              class: 'align-right',
+              renderComponent: SmartTableButtonComponent,
+              onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+                instance.iconPack = 'eva';
+                instance.icon = 'external-link-outline';
+                instance.display = true;
+                instance.status = 'primary';
+                instance.style = 'text-align: right';
+                instance.class = 'align-right';
+                instance.title = this.commonService.translateText('Common.preview');
+                instance.valueChange.subscribe(value => {
+                  // instance.icon = value ? 'unlock' : 'lock';
+                  // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+                  // instance.disabled = value !== 'REQUEST';
+                });
+                instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherDetailOrderModel) => {
+                  this.commonService.previewVoucher('CLBRTORDER', rowData.Voucher);
+                });
+              },
+            }
           }
         }
       },

@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '5.0.0.3',
+  version: '5.0.0.4',
   // 5.0: Upgrade ngx-admin 8, angular 12
   // 4.0.2.1: Add KPI config for collaborator > productÎ
   // 4.0.1.1: Update CKeditor support upload image to file store, support more toolbar: image style, image resize,...
