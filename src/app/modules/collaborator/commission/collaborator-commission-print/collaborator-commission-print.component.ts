@@ -187,7 +187,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
         title: 'Xem trước',
         id: typeof ids[0] === 'string' ? ids as any : null,
         // data: typeof ids[0] !== 'string' ? ids as any : null,
-        idKey: ['AwardVoucher', 'No'],
+        idKey: ['CommissionVoucher', 'No'],
         // approvedConfirm: true,
         onClose: (data: CollaboratorCommissionVoucherDetailModel) => {
           // this.refresh();

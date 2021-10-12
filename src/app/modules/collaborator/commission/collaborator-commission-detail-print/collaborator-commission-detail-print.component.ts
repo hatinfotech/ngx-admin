@@ -21,8 +21,8 @@ export class CollaboratorCommissionDetailPrintComponent extends DataManagerPrint
   /** Component name */
   componentName = 'CollaboratorCommissionDetailPrintComponent';
   title: string = 'Xem trước chi tiết phiếu thưởng';
-  apiPath = '/collaborator/award-voucher-details';
-  idKey = ['AwardVoucher', 'No'];
+  apiPath = '/collaborator/commission-voucher-details';
+  idKey = ['CommissionVoucher', 'No'];
   env = environment;
   processMapList: ProcessMap[] = [];
 
@@ -58,7 +58,7 @@ export class CollaboratorCommissionDetailPrintComponent extends DataManagerPrint
   }
 
   renderTitle(data: CollaboratorAwardVoucherDetailModel) {
-    return `Chi_Tiet_Thuong_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
+    return `Chi_Tiet_Chiet_Khau_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
   }
 
   close() {
@@ -139,7 +139,7 @@ export class CollaboratorCommissionDetailPrintComponent extends DataManagerPrint
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CollaboratorAwardVoucherDetailModel[]>(this.apiPath, { id: ids, includeContact: true, includeDirectOrders: true, includeRefOrders: true});
+    return this.apiService.getPromise<CollaboratorAwardVoucherDetailModel[]>(this.apiPath, { id: ids, includeContact: true, includeOrders: true });
   }
 
 
