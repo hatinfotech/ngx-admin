@@ -118,7 +118,12 @@
         "yes": "có",
         "no": "không",
         "noNumber": "stt",
+        "confirmationRequeset": "yêu cầu xác nhận",
+        "confirmationRequeseted": "đã yêu cầu xác nhận",
+        "confirmationRequesetedConfirmText": "bạn có muốn gửi yêu cầu xác nhận ?",
+        "confirmationRequesetedResponseText": "gửi yêu cầu xác nhận thành công !",
         "confirm": "xác nhận",
+        "confirmed": "đã xác nhận",
         "enable": "kích hoạt",
         "disable": "vô hiệu hoá",
         "list": "danh sách",
@@ -363,7 +368,12 @@
         "password": "mật khẩu",
         "extNumber": "số mở rộng",
         "extPhoneNumberList": "danh sách số mở rộng",
-        "product": "sản phẩm"
+        "product": "sản phẩm",
+        "netRevenue": "doanh số",
+        "unrecord": "bỏ ghi",
+        "unrecorded": "bỏ ghi",
+        "unrecordedConfirm": "bạn có muốn bỏ ghi phiếu này không ?",
+        "unrecordedResponse": "bỏ ghi thành công"
     },
     "Contact": {
         "Customer": {
@@ -893,7 +903,8 @@
             "title": "{{action}}{{definition}} kết chuyển hoa hồng",
             "confirmRequest": "yêu cầu xác nhận",
             "confirmed": "đã xác nhận",
-            "commissionTo": "đến ngày"
+            "commissionTo": "đến ngày",
+            "ratio": "tỷ lệ chiết khấu"
         },
         "Award": {
             "label": "kết chuyển thưởng",
@@ -901,7 +912,8 @@
             "title": "{{action}}{{definition}} kết chuyển thưởng",
             "confirmRequest": "yêu cầu xác nhận",
             "confirmed": "đã xác nhận",
-            "commissionTo": "đến ngày"
+            "commissionTo": "đến ngày",
+            "ratio": "tỷ lệ thưởng"
         },
         "PaymentCommission": {
             "label": "thanh toán hoa hồng",

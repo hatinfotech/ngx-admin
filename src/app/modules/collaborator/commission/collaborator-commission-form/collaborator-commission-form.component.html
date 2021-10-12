@@ -60,14 +60,14 @@
                                     <input type="text" nbInput fullWidth formControlName="Amount" currencyMask [options]="curencyFormat" placeholder="{{'Collaborator.Commission.label' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-2">
+                            <!-- <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="Cycle" label="Common.cycle" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons">
                                     <ngx-select2 formControlName="Cycle" [select2Option]="select2OptionForCycle" [data]="select2OptionForCycle.data"></ngx-select2>
                                 </ngx-form-group>
-                            </div>
+                            </div> -->
                         </div>
                         <div style="margin-left: -20px; margin-right: -20px" *ngIf="isShowDetail(formItem)">
-                            <ngx-collaboartor-commission-detail (onInit)="onListInit($event, formItem, 'statistics')" (onUpdateTotalCommission)="updateTotalCommission($event, formItem, 'statistics')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('CommissionTo').value" [awardCycle]="commonService.getObjectId(formItem.get('Cycle').value)"></ngx-collaboartor-commission-detail>
+                            <ngx-collaboartor-commission-detail (onInit)="onListInit($event, formItem, 'statistics')" (onUpdateTotalCommission)="updateTotalCommission($event, formItem, 'statistics')" [publisher]="this.commonService.getObjectId(formItem.get('Publisher').value)" [page]="this.commonService.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('CommissionTo').value"></ngx-collaboartor-commission-detail>
                             <!-- <nb-tabset>
                                 <nb-tab tabTitle="{{'KPI Tuần' | translate | headtitlecase}}">
                                 </nb-tab>

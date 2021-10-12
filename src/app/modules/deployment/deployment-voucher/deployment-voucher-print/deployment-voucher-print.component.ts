@@ -244,7 +244,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
             this.loading = false;
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(this.processMapList[index]?.restponseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(this.processMapList[index]?.responseTitle), {
+            this.commonService.toastService.show(this.commonService.translateText(this.processMapList[index]?.responseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(this.processMapList[index]?.responseTitle), {
               status: 'success',
             });
             // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Deployment.Voucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [

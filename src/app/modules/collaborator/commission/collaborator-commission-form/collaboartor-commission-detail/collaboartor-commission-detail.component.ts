@@ -38,7 +38,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
   // @Input('fromDate') fromDate?: Date;
   @Input('moment') moment?: Date;
   // @Input('report') report?: string;
-  @Input('awardCycle') awardCycle?: string;
+  // @Input('awardCycle') awardCycle?: string;
   @Output() onInit = new EventEmitter<CollaboartorCommissionDetailComponent>();
   @Output() onUpdateTotalCommission = new EventEmitter<number>();
 
@@ -116,10 +116,13 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
           type: 'string',
           width: '40%', 
         },
-        SumOfQuantity: {
-          title: this.commonService.translateText('KPI đạt được'),
+        SumOfBaseQuantity: {
+          title: this.commonService.translateText('SL Bán'),
           type: 'string',
           width: '10%',
+          valuePrepareFunction: (cell: string, row: any) => {
+            return `~${row['SumOfBaseQuantity']}/${row['UnitLabel']}`;
+          },
         },
         SumOfNetRevenue: {
           title: this.commonService.translateText('Doanh số'),
@@ -139,7 +142,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
             instance.style = 'text-align: right';
           }
         },
-        Level1CommissionAmount: {
+        CommissionAmount: {
           title: this.commonService.translateText('Tiền thưởng'),
           type: 'currency',
           width: '10%',
@@ -217,7 +220,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
       params['page'] = this.page;
       params['publisher'] = this.publisher;
       params['moment'] = this.moment.toISOString();
-      params['awardCycle'] = this.awardCycle;
+      // params['awardCycle'] = this.awardCycle;
 
 
       return params;

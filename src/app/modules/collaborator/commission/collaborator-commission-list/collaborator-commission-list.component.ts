@@ -22,8 +22,8 @@ import { CollaboratorCommissionPrintComponent } from '../collaborator-commission
 export class CollaboratorCommissionListComponent extends ServerDataManagerListComponent<CollaboratorCommissionVoucherModel> implements OnInit {
 
   componentName: string = 'CollaboratorCommissionListComponent';
-  formPath = '/collaborator/award-voucher/form';
-  apiPath = '/collaborator/award-vouchers';
+  formPath = '/collaborator/commission-voucher/form';
+  apiPath = '/collaborator/commission-vouchers';
   idKey = 'Code';
   formDialog = CollaboratorCommissionFormComponent;
 
@@ -92,12 +92,12 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        Cycle: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.cycle'), 'head-title'),
-          type: 'string',
-          width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        },
+        // Cycle: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.cycle'), 'head-title'),
+        //   type: 'string',
+        //   width: '5%',
+        //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        // },
         PublisherName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
@@ -107,7 +107,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
         Description: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
           type: 'string',
-          width: '20%',
+          width: '25%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         RelativeVouchers: {
@@ -161,7 +161,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
             instance.init.subscribe(awardVoucher => {
-              const processMap = AppModule.processMaps.awardVoucher[awardVoucher.State || ''];
+              const processMap = AppModule.processMaps.commissionVoucher[awardVoucher.State || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;

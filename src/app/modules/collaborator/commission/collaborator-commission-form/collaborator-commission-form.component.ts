@@ -31,8 +31,8 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   // Base variables
   componentName = 'CollaboratorCommissionFormComponent';
   idKey = 'Code';
-  baseFormUrl = '/collaborator/award-voucher/form';
-  apiPath = '/collaborator/award-vouchers';
+  baseFormUrl = '/collaborator/commission-voucher/form';
+  apiPath = '/collaborator/commission-vouchers';
 
   // variables
   locale = this.commonService.getCurrentLoaleDataset();
@@ -120,23 +120,23 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     },
   };
 
-  select2OptionForCycle = {
-    placeholder: 'Chọn loại...',
-    allowClear: false,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    data: [
-      { id: 'WEEKLY', text: 'Tuần' },
-      { id: 'MONTHLY', text: 'Tháng' },
-      { id: 'QUARTERLY', text: 'Quý' },
-      { id: 'YEARLY', text: 'Năm' },
-    ],
-  };
+  // select2OptionForCycle = {
+  //   placeholder: 'Chọn loại...',
+  //   allowClear: false,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   data: [
+  //     { id: 'WEEKLY', text: 'Tuần' },
+  //     { id: 'MONTHLY', text: 'Tháng' },
+  //     { id: 'QUARTERLY', text: 'Quý' },
+  //     { id: 'YEARLY', text: 'Năm' },
+  //   ],
+  // };
 
 
   ngOnInit() {
@@ -207,7 +207,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       PublisherIdentifiedNumber: [''],
       PublisherBankName: [''],
       PublisherBankAccount: [''],
-      Cycle: [],
+      // Cycle: [],
       Amount: {value: '', disabled: true},
       CommissionTo: [new Date(), Validators.required],
       Description: [`Kết chuyển thưởng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
@@ -261,9 +261,9 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       newForm.get('Page').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
         this.onConditionFieldsChange(newForm);
       });
-      newForm.get('Cycle').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(type => {
-        this.onConditionFieldsChange(newForm);
-      });
+      // newForm.get('Cycle').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(type => {
+      //   this.onConditionFieldsChange(newForm);
+      // });
     }, 3000);
     // this.resourceList.push([]);
   }
@@ -435,7 +435,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   }
 
   isShowDetail(formGroup: FormGroup) {
-    return formGroup.get('Page').value && formGroup.get('Publisher').value && formGroup.get('CommissionTo').value && formGroup.get('Cycle').value;
+    return formGroup.get('Page').value && formGroup.get('Publisher').value && formGroup.get('CommissionTo').value;
   }
 
 }

@@ -222,6 +222,7 @@ import { TreeModule } from 'angular-tree-component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { AngularFireModule } from '@angular/fire/compat';
+import { ProcessMap } from './models/process-map.model';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -585,7 +586,53 @@ export class DynamicLocaleId extends String {
   ],
 })
 export class AppModule {
-  static processMaps = {
+
+  static approvedState: ProcessMap = {
+    state: 'APPROVED',
+    label: 'Common.approved',
+    status: 'success',
+    outline: true,
+    confirmTitle: 'Common.approve',
+    confirmText: 'Common.approvedConfirm',
+    responseTitle: 'Common.approved',
+    responseText: 'Common.approved',
+  };
+  static unrecordedState: ProcessMap = {
+    state: 'UNRECORDED',
+    status: 'warning',
+    label: 'Common.unrecorded',
+    confirmTitle: 'Common.unrecorded',
+    confirmText: 'Common.unrecordedConfirm',
+    responseTitle: 'Common.unrecorded',
+    responseText: 'Common.unrecordedResponse',
+  };
+  static confirmedState: ProcessMap = {
+    state: 'CONFIRMED',
+    status: 'primary',
+    label: 'Common.confirmed',
+    confirmTitle: 'Common.confirm',
+    confirmText: 'Common.confirmedConfirm',
+    responseTitle: 'Common.confirm',
+    responseText: 'Common.confirmedSuccess',
+  };
+  static notJustApprodedState: ProcessMap = {
+    state: 'NOTJUSTAPPROVED',
+    label: 'Common.notJustCofirmedRequest',
+    status: 'danger',
+    outline: false,
+  };
+  static confirmationRequestedState: ProcessMap = {
+    state: 'CONFIRMATIONREQUESTED',
+    label: 'Collaborator.Commission.confirmRequest',
+    status: 'info',
+    outline: false,
+    confirmTitle: 'Common.confirmationRequeset',
+    confirmText: 'Common.confirmationRequesetedConfirmText',
+    responseTitle: 'Common.confirmationRequeseted',
+    responseText: 'Common.confirmationRequesetedResponseText',
+  };
+
+  static processMaps: { [key: string]: { [key: string]: ProcessMap } } = {
     priceReport: {
       "APPROVE": {
         state: 'APPROVE',
@@ -596,7 +643,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "DEPLOYMENT": {
         state: 'DEPLOYMENT',
@@ -607,7 +654,7 @@ export class AppModule {
         nextStateLabel: 'Common.acceptance',
         confirmText: 'Common.acceptanceConfirm',
         responseTitle: 'Common.acceptanced',
-        restponseText: 'Common.acceptanceSuccess',
+        responseText: 'Common.acceptanceSuccess',
       },
       "ACCEPTANCE": {
         state: 'ACCEPTANCE',
@@ -618,7 +665,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "COMPLETE": {
         state: 'COMPLETE',
@@ -629,7 +676,7 @@ export class AppModule {
         nextStateLabel: 'Common.completed',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVE',
@@ -640,7 +687,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
     },
     salesVoucher: {
@@ -653,7 +700,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "COMPLETE": {
         state: 'COMPLETE',
@@ -664,7 +711,7 @@ export class AppModule {
         nextStateLabel: 'Common.unbookkeeping',
         confirmText: 'Common.unbookkeepingConfirm',
         responseTitle: 'Common.unbookkeeping',
-        restponseText: 'Common.unbookkeepingSuccess',
+        responseText: 'Common.unbookkeepingSuccess',
       },
       "UNBOOKKEEPING": {
         state: 'UNBOOKKEEPING',
@@ -675,7 +722,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVE',
@@ -686,7 +733,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
     },
     purchaseVoucher: {
@@ -699,7 +746,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "COMPLETE": {
         state: 'COMPLETE',
@@ -710,7 +757,7 @@ export class AppModule {
         nextStateLabel: 'Common.unbookkeeping',
         confirmText: 'Common.unbookkeepingConfirm',
         responseTitle: 'Common.unbookkeeping',
-        restponseText: 'Common.unbookkeepingSuccess',
+        responseText: 'Common.unbookkeepingSuccess',
       },
       "UNBOOKKEEPING": {
         state: 'UNBOOKKEEPING',
@@ -721,7 +768,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVE',
@@ -732,7 +779,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
     },
     purchaseOrder: {
@@ -745,7 +792,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "COMPLETE": {
         state: 'COMPLETE',
@@ -756,7 +803,7 @@ export class AppModule {
         nextStateLabel: '',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVE',
@@ -767,7 +814,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
     },
     warehouseReceiptGoodsNote: {
@@ -780,7 +827,7 @@ export class AppModule {
         nextStateLabel: 'Common.unbookkeeping',
         confirmText: 'Common.unbookkeepingConfirm',
         responseTitle: 'Common.unbookkeeped',
-        restponseText: 'Common.unbookkeepingSuccess',
+        responseText: 'Common.unbookkeepingSuccess',
       },
       "UNBOOKKEEPING": {
         state: 'UNBOOKKEEPING',
@@ -791,7 +838,7 @@ export class AppModule {
         nextStateLabel: 'Common.bookkeeping',
         confirmText: 'Common.bookkeepingConfirm',
         responseTitle: 'Common.bookkeeping',
-        restponseText: 'Common.bookkeepingSuccess',
+        responseText: 'Common.bookkeepingSuccess',
       },
       "": {
         state: 'NOTJUSTBOOKKEEPING',
@@ -802,7 +849,7 @@ export class AppModule {
         nextStateLabel: 'Common.bookkeeping',
         confirmText: 'Common.bookkeepingConfirm',
         responseTitle: 'Common.bookkeeping',
-        restponseText: 'Common.bookkeepingSuccess',
+        responseText: 'Common.bookkeepingSuccess',
       },
     },
     warehouseDeliveryGoodsNote: {
@@ -815,7 +862,7 @@ export class AppModule {
         nextStateLabel: 'Common.unbookkeeping',
         confirmText: 'Common.unbookkeepingConfirm',
         responseTitle: 'Common.unbookkeeped',
-        restponseText: 'Common.unbookkeepingSuccess',
+        responseText: 'Common.unbookkeepingSuccess',
       },
       "UNBOOKKEEPING": {
         state: 'UNBOOKKEEPING',
@@ -826,7 +873,7 @@ export class AppModule {
         nextStateLabel: 'Common.bookkeeping',
         confirmText: 'Common.bookkeepingConfirm',
         responseTitle: 'Common.bookkeeping',
-        restponseText: 'Common.bookkeepingSuccess',
+        responseText: 'Common.bookkeepingSuccess',
       },
       "": {
         state: 'NOTJUSTBOOKKEEPING',
@@ -837,7 +884,7 @@ export class AppModule {
         nextStateLabel: 'Common.bookkeeping',
         confirmText: 'Common.bookkeepingConfirm',
         responseTitle: 'Common.bookkeeping',
-        restponseText: 'Common.bookkeepingSuccess',
+        responseText: 'Common.bookkeepingSuccess',
       },
     },
     cashVoucher: {
@@ -850,7 +897,7 @@ export class AppModule {
         nextStateLabel: 'Common.unbookkeeping',
         confirmText: 'Common.unbookkeepingConfirm',
         responseTitle: 'Common.unbookkeeping',
-        restponseText: 'Common.unbookkeepingSuccess',
+        responseText: 'Common.unbookkeepingSuccess',
       },
       "APPROVALREQUESTED": {
         state: 'APPROVALREQUESTED',
@@ -861,7 +908,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
       "UNRECORDED": {
         state: 'UNRECORDED',
@@ -872,7 +919,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
       "NOTJUSTAPPROVED": {
         state: 'NOTJUSTAPPROVED',
@@ -883,7 +930,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVED',
@@ -894,7 +941,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
     },
     commissionPaymentVoucher: {
@@ -907,7 +954,7 @@ export class AppModule {
         nextStateLabel: 'Common.approvedRequest',
         confirmText: 'Common.approvedRequest',
         responseTitle: 'Common.approvedRequest',
-        restponseText: 'Common.approvedRequest',
+        responseText: 'Common.approvedRequest',
       },
       "APPROVED": {
         state: 'APPROVED',
@@ -918,7 +965,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "UNRECORDED": {
         state: 'UNRECORDED',
@@ -929,7 +976,7 @@ export class AppModule {
         nextStateLabel: 'Common.approvedRequest',
         confirmText: 'Common.approvedRequestConfirm',
         responseTitle: 'Common.approvedRequest',
-        restponseText: 'Common.approvedRequestSuccess',
+        responseText: 'Common.approvedRequestSuccess',
       },
       "NOTJUSTAPPROVED": {
         state: 'NOTJUSTAPPROVED',
@@ -940,7 +987,7 @@ export class AppModule {
         nextStateLabel: 'Common.approvedRequest',
         confirmText: 'Common.approvedRequestConfirm',
         responseTitle: 'Common.approvedRequest',
-        restponseText: 'Common.approvedRequestSuccess',
+        responseText: 'Common.approvedRequestSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVED',
@@ -951,7 +998,7 @@ export class AppModule {
         nextStateLabel: 'Common.approvedRequest',
         confirmText: 'Common.approvedRequestConfirm',
         responseTitle: 'Common.approvedRequest',
-        restponseText: 'Common.approvedRequestSuccess',
+        responseText: 'Common.approvedRequestSuccess',
       },
     },
     deploymentVoucher: {
@@ -964,7 +1011,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "DEPLOYMENT": {
         state: 'DEPLOYMENT',
@@ -975,7 +1022,7 @@ export class AppModule {
         nextStateLabel: 'Common.acceptance',
         confirmText: 'Common.acceptanceConfirm',
         responseTitle: 'Common.acceptanced',
-        restponseText: 'Common.acceptanceSuccess',
+        responseText: 'Common.acceptanceSuccess',
       },
       "ACCEPTANCE": {
         state: 'ACCEPTANCE',
@@ -986,7 +1033,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "COMPLETE": {
         state: 'COMPLETE',
@@ -997,7 +1044,7 @@ export class AppModule {
         nextStateLabel: '',
         confirmText: 'Common.completeConfirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVE',
@@ -1008,7 +1055,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
     },
     accMasterBook: {
@@ -1021,7 +1068,7 @@ export class AppModule {
         nextStateLabel: 'Common.complete',
         confirmText: 'Accounting.MasterBook.State.OPEN.confirm',
         responseTitle: 'Common.completed',
-        restponseText: 'Common.completeSuccess',
+        responseText: 'Common.completeSuccess',
       },
       "LOCK": {
         state: 'LOCK',
@@ -1032,7 +1079,7 @@ export class AppModule {
         nextStateLabel: 'Common.unbookkeeping',
         confirmText: 'Accounting.MasterBook.State.LOCK.confirm',
         responseTitle: 'Common.unbookkeeping',
-        restponseText: 'Common.unbookkeepingSuccess',
+        responseText: 'Common.unbookkeepingSuccess',
       },
       "CLOSE": {
         state: 'UNBOOKKEEPING',
@@ -1043,7 +1090,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Accounting.MasterBook.State.CLOSE.confirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
       "": {
         state: 'NOTJUSTOPEN',
@@ -1054,7 +1101,7 @@ export class AppModule {
         nextStateLabel: 'Accounting.MasterBook.State.OPEN.label',
         confirmText: 'Accounting.MasterBook.State.OPEN.confirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
     },
     commerceServiceByCycle: {
@@ -1067,7 +1114,7 @@ export class AppModule {
         nextStateLabel: 'Common.inactive',
         confirmText: 'Common.inactiveConfirm',
         responseTitle: 'Common.inactivated',
-        restponseText: 'Common.inactiveSuccess',
+        responseText: 'Common.inactiveSuccess',
       },
       "EXPIRED": {
         state: 'EXPIRED',
@@ -1078,7 +1125,7 @@ export class AppModule {
         nextStateLabel: 'Common.active',
         confirmText: 'Common.activeConfirm',
         responseTitle: 'Common.activated',
-        restponseText: 'Common.activeSuccess',
+        responseText: 'Common.activeSuccess',
       },
       "EXPIREDSOON": {
         state: 'EXPIREDSOON',
@@ -1089,7 +1136,7 @@ export class AppModule {
         nextStateLabel: 'Common.active',
         confirmText: 'Common.activeConfirm',
         responseTitle: 'Common.activated',
-        restponseText: 'Common.activeSuccess',
+        responseText: 'Common.activeSuccess',
       },
       "OVEREXPIRED": {
         state: 'OVEREXPIRED',
@@ -1100,7 +1147,7 @@ export class AppModule {
         nextStateLabel: 'Common.active',
         confirmText: 'Common.activeConfirm',
         responseTitle: 'Common.activated',
-        restponseText: 'Common.activeSuccess',
+        responseText: 'Common.activeSuccess',
       },
       "INACTIVE": {
         state: 'INACTIVE',
@@ -1111,7 +1158,7 @@ export class AppModule {
         nextStateLabel: 'Common.active',
         confirmText: 'Common.activeConfirm',
         responseTitle: 'Common.activated',
-        restponseText: 'Common.activeSuccess',
+        responseText: 'Common.activeSuccess',
       },
       "": {
         state: 'NOTJUSTACTIVE',
@@ -1122,64 +1169,102 @@ export class AppModule {
         nextStateLabel: 'Common.active',
         confirmText: 'Common.activeConfirm',
         responseTitle: 'Common.activated',
-        restponseText: 'Common.activeSuccess',
+        responseText: 'Common.activeSuccess',
       },
     },
     commissionVoucher: {
       "CONFIRMATIONREQUESTED": {
-        state: 'CONFIRMATIONREQUESTED',
-        label: 'Collaborator.Commission.confirmRequest',
-        status: 'warning',
-        outline: false,
+        ...AppModule.confirmationRequestedState,
+        // state: 'CONFIRMATIONREQUESTED',
+        // label: 'Collaborator.Commission.confirmRequest',
+        // status: 'warning',
+        // outline: false,
         nextState: 'CONFIRMED',
-        nextStateLabel: 'Common.confirm',
-        confirmText: 'Common.confirmedConfirm',
-        responseTitle: 'Common.confirm',
-        restponseText: 'Common.confirmedSuccess',
+        // // nextStateLabel: 'Common.confirm',
+        // // confirmText: 'Common.confirmedConfirm',
+        // // responseTitle: 'Common.confirm',
+        // // responseText: 'Common.confirmedSuccess',
+        nextStates: [
+          AppModule.confirmedState,
+          AppModule.unrecordedState,
+        ],
       },
       "CONFIRMED": {
-        state: 'CONFIRMED',
-        label: 'Collaborator.Commission.confirmed',
-        status: 'primary',
-        outline: false,
+        ...AppModule.confirmedState,
+        // state: 'CONFIRMED',
+        // label: 'Collaborator.Commission.confirmed',
+        // status: 'primary',
+        // outline: false,
         nextState: 'APPROVED',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        restponseText: 'Common.approved',
+
+        // nextStateLabel: 'Common.approve',
+        // confirmText: 'Common.approvedConfirm',
+        // responseTitle: 'Common.approved',
+        // responseText: 'Common.approved',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
       "APPROVED": {
-        state: 'APPROVED',
-        label: 'Common.approved',
-        status: 'success',
-        outline: true,
-        nextState: 'NOTJUSTAPPROVED',
-        nextStateLabel: 'Common.unbookkeeping',
-        confirmText: 'Common.unbookkeepingConfirm',
-        responseTitle: 'Common.unbookkeeping',
-        restponseText: 'Common.unbookkeepingSuccess',
+        ...AppModule.approvedState,
+        // state: 'APPROVED',
+        // label: 'Common.approved',
+        // status: 'success',
+        // outline: true,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.unrecordedState
+        ],
+      },
+      "UNRECORDED": {
+        ...AppModule.unrecordedState,
+        // state: 'UNRECORDED',
+        // label: 'Common.unrecorded',
+        // status: 'warning',
+        // outline: true,
+        nextState: 'APPROVED',
+        // nextStateLabel: 'Common.approve',
+        // confirmText: 'Common.approvedConfirm',
+        // responseTitle: 'Common.approved',
+        // responseText: 'Common.approved',
+        nextStates: [
+          AppModule.confirmationRequestedState,
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
       "NOTJUSTAPPROVED": {
-        state: 'NOTJUSTAPPROVED',
-        label: 'Common.notJustCofirmedRequest',
-        status: 'danger',
-        outline: false,
+        ...AppModule.notJustApprodedState,
+        // state: 'NOTJUSTAPPROVED',
+        // label: 'Common.notJustCofirmedRequest',
+        // status: 'danger',
+        // outline: false,
         nextState: 'CONFIRMATIONREQUESTED',
-        nextStateLabel: 'Collaborator.Commission.confirmRequest',
-        confirmText: 'Collaborator.Commission.confirmedRequest',
-        responseTitle: 'Collaborator.Commission.confirmed',
-        restponseText: 'Collaborator.Commission.confirmedSuccess',
+        // nextStateLabel: 'Collaborator.Commission.confirmRequest',
+        // confirmText: 'Collaborator.Commission.confirmedRequest',
+        // responseTitle: 'Collaborator.Commission.confirmed',
+        // responseText: 'Collaborator.Commission.confirmedSuccess',
+        nextStates: [
+          AppModule.confirmationRequestedState,
+          AppModule.unrecordedState,
+        ],
       },
       "": {
-        state: 'NOTJUSTAPPROVED',
-        label: 'Common.notJustCofirmedRequest',
-        status: 'danger',
-        outline: false,
+        ...AppModule.notJustApprodedState,
+        // state: 'NOTJUSTAPPROVED',
+        // label: 'Common.notJustCofirmedRequest',
+        // status: 'danger',
+        // outline: false,
         nextState: 'CONFIRMATIONREQUESTED',
-        nextStateLabel: 'Collaborator.Commission.confirmRequest',
-        confirmText: 'Collaborator.Commission.confirmedRequest',
-        responseTitle: 'Collaborator.Commission.confirmed',
-        restponseText: 'Collaborator.Commission.confirmedSuccess',
+        // nextStateLabel: 'Collaborator.Commission.confirmRequest',
+        // confirmText: 'Collaborator.Commission.confirmedRequest',
+        // responseTitle: 'Collaborator.Commission.confirmed',
+        // responseText: 'Collaborator.Commission.confirmedSuccess',
+        nextStates: [
+          AppModule.confirmationRequestedState,
+          AppModule.unrecordedState,
+        ],
       },
     },
     awardVoucher: {
@@ -1192,7 +1277,7 @@ export class AppModule {
         nextStateLabel: 'Common.confirm',
         confirmText: 'Common.confirmedConfirm',
         responseTitle: 'Common.confirm',
-        restponseText: 'Common.confirmedSuccess',
+        responseText: 'Common.confirmedSuccess',
       },
       "CONFIRMED": {
         state: 'CONFIRMED',
@@ -1203,7 +1288,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approved',
+        responseText: 'Common.approved',
       },
       "APPROVED": {
         state: 'APPROVED',
@@ -1214,7 +1299,7 @@ export class AppModule {
         nextStateLabel: 'Common.unbookkeeping',
         confirmText: 'Common.unbookkeepingConfirm',
         responseTitle: 'Common.unbookkeeping',
-        restponseText: 'Common.unbookkeepingSuccess',
+        responseText: 'Common.unbookkeepingSuccess',
       },
       "NOTJUSTAPPROVED": {
         state: 'NOTJUSTAPPROVED',
@@ -1225,7 +1310,7 @@ export class AppModule {
         nextStateLabel: 'Collaborator.Commission.confirmRequest',
         confirmText: 'Collaborator.Commission.confirmedRequest',
         responseTitle: 'Collaborator.Commission.confirmed',
-        restponseText: 'Collaborator.Commission.confirmedSuccess',
+        responseText: 'Collaborator.Commission.confirmedSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVED',
@@ -1236,7 +1321,7 @@ export class AppModule {
         nextStateLabel: 'Collaborator.Commission.confirmRequest',
         confirmText: 'Collaborator.Commission.confirmedRequest',
         responseTitle: 'Collaborator.Commission.confirmed',
-        restponseText: 'Collaborator.Commission.confirmedSuccess',
+        responseText: 'Collaborator.Commission.confirmedSuccess',
       },
     },
     collaboratoOrder: {
@@ -1249,7 +1334,7 @@ export class AppModule {
         nextStateLabel: 'Common.unbookkeeping',
         confirmText: 'Common.unbookkeepingConfirm',
         responseTitle: 'Common.unbookkeeping',
-        restponseText: 'Common.unbookkeepingSuccess',
+        responseText: 'Common.unbookkeepingSuccess',
       },
       "UNRECORDED": {
         state: 'UNRECORDED',
@@ -1260,7 +1345,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
       "NOTJUSTAPPROVED": {
         state: 'NOTJUSTAPPROVED',
@@ -1271,7 +1356,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
       "": {
         state: 'NOTJUSTAPPROVED',
@@ -1282,7 +1367,7 @@ export class AppModule {
         nextStateLabel: 'Common.approve',
         confirmText: 'Common.approvedConfirm',
         responseTitle: 'Common.approved',
-        restponseText: 'Common.approveSuccess',
+        responseText: 'Common.approveSuccess',
       },
     },
   };

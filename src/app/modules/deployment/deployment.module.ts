@@ -88,7 +88,7 @@
 //           nextStateLabel: 'Common.complete',
 //           confirmText: 'Common.completeConfirm',
 //           responseTitle: 'Common.completed',
-//           restponseText: 'Common.completeSuccess',
+//           responseText: 'Common.completeSuccess',
 //         },
 //         "DEPLOYMENT": {
 //           state: 'DEPLOYMENT',
@@ -99,7 +99,7 @@
 //           nextStateLabel: 'Common.acceptance',
 //           confirmText: 'Common.acceptanceConfirm',
 //           responseTitle: 'Common.acceptanced',
-//           restponseText: 'Common.acceptanceSuccess',
+//           responseText: 'Common.acceptanceSuccess',
 //         },
 //         "ACCEPTANCE": {
 //           state: 'ACCEPTANCE',
@@ -110,7 +110,7 @@
 //           nextStateLabel: 'Common.complete',
 //           confirmText: 'Common.completeConfirm',
 //           responseTitle: 'Common.completed',
-//           restponseText: 'Common.completeSuccess',
+//           responseText: 'Common.completeSuccess',
 //         },
 //         "COMPLETE": {
 //           state: 'COMPLETE',
@@ -121,7 +121,7 @@
 //           nextStateLabel: '',
 //           confirmText: 'Common.completeConfirm',
 //           responseTitle: 'Common.completed',
-//           restponseText: 'Common.completeSuccess',
+//           responseText: 'Common.completeSuccess',
 //         },
 //         "": {
 //           state: 'NOTJUSTAPPROVE',
@@ -132,7 +132,7 @@
 //           nextStateLabel: 'Common.approve',
 //           confirmText: 'Common.approveConfirm',
 //           responseTitle: 'Common.approved',
-//           restponseText: 'Common.approveSuccess',
+//           responseText: 'Common.approveSuccess',
 //         },
 //       },
 //     };

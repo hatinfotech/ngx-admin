@@ -230,7 +230,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
             this.onChange && this.onChange(data);
             this.close();
             this.onClose && this.onClose(data);
-            this.commonService.toastService.show(this.commonService.translateText(this.processMapList[index]?.restponseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(this.processMapList[index]?.responseTitle), {
+            this.commonService.toastService.show(this.commonService.translateText(this.processMapList[index]?.responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(this.processMapList[index]?.responseTitle), {
               status: 'success',
             });
             // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
