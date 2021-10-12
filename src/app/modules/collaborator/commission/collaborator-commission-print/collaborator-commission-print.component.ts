@@ -4,12 +4,14 @@ import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { environment } from '../../../../../environments/environment.prod';
 import { AppModule } from '../../../../app.module';
+import { SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherDetailModel } from '../../../../models/accounting.model';
 import { CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel, CollaboratorCommissionVoucherDetailModel, CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { DynamicListDialogComponent } from '../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { CollaboratorCommissionDetailPrintComponent } from '../collaborator-commission-detail-print/collaborator-commission-detail-print.component';
 
 @Component({
@@ -180,18 +182,108 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     return this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  previewDetail(ids: any[]) {
-    this.commonService.openDialog(CollaboratorCommissionDetailPrintComponent, {
+  previewDetail(detail: CollaboratorCommissionVoucherDetailModel) {
+    // this.commonService.openDialog(CollaboratorCommissionDetailPrintComponent, {
+    //   context: {
+    //     showLoadinng: true,
+    //     title: 'Xem trước',
+    //     id: typeof ids[0] === 'string' ? ids as any : null,
+    //     // data: typeof ids[0] !== 'string' ? ids as any : null,
+    //     idKey: ['CommissionVoucher', 'No'],
+    //     // approvedConfirm: true,
+    //     onClose: (data: CollaboratorCommissionVoucherDetailModel) => {
+    //       // this.refresh();
+    //     },
+    //   },
+    // });
+    // id = id[0].split('-');
+    this.commonService.openDialog(DynamicListDialogComponent, {
       context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        id: typeof ids[0] === 'string' ? ids as any : null,
-        // data: typeof ids[0] !== 'string' ? ids as any : null,
-        idKey: ['CommissionVoucher', 'No'],
-        // approvedConfirm: true,
-        onClose: (data: CollaboratorCommissionVoucherDetailModel) => {
-          // this.refresh();
-        },
+        inputMode: 'dialog',
+        title: 'Chi tiết kết chuyển chiết khấu theo sản phẩm: ' + detail.ProductName,
+        apiPath: '/collaborator/commission-voucher-detail-orders',
+        idKey: ['CommissionVoucher', 'DetailNo', 'No'],
+        params: { eq_CommissionVoucher: detail.CommissionVoucher, eq_DetailNo: detail.No },
+        // actionButtonList: [],
+        listSettings: {
+          // pager: {
+          //   display: true,
+          //   perPage: 10,
+          // },
+          actions: false,
+          columns: {
+            No: {
+              title: 'No.',
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Voucher: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.voucher'), 'head-title'),
+              type: 'custom',
+              renderComponent: SmartTableTagsComponent,
+              onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+                instance.click.subscribe((voucher: string) => this.commonService.previewVoucher('CLBRTORDER', voucher));
+              },
+              width: '10%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              valuePrepareFunction: (cell: string, row: any) => {
+                return [{ id: cell, text: cell }] as any;
+              },
+            },
+            Product: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.product'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Description: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+              type: 'string',
+              width: '45%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Unit: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Product.unit'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Quantity: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.quantity'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Price: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.price'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+            },
+            ToMoney: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+              valuePrepareFunction: (cell: string, row: CollaboratorCommissionVoucherDetailModel) => {
+                return `${row.Quantity * row.Price}`;
+              },
+            },
+          }
+        }
       },
     });
     return false;

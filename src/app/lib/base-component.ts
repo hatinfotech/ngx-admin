@@ -33,7 +33,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   @Input() title?: string;
   @Input() size?: string = 'medium';
-  actionButtonList: ActionControl[] = [
+  @Input() actionButtonList?: ActionControl[] = [
     {
       name: 'refresh',
       status: 'success',

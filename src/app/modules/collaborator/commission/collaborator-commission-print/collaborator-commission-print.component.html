@@ -48,7 +48,7 @@
                             </tr>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td class="text-align-left">{{i + 1}}</td>
-                                <td class="text-align-left"><a class="link" (click)="previewDetail([data.Code+'-'+detail.No])">{{renderValue(detail.Product)}}</a></td>
+                                <td class="text-align-left"><a class="link" (click)="previewDetail(detail)">{{renderValue(detail.Product)}}</a></td>
                                 <td class="text-align-left">{{renderValue(detail.ProductName)}}</td>
                                 <td>{{detail.UnitLabel}}</td>
                                 <td class="text-align-right">{{detail.SumOfQuantity}}</td>

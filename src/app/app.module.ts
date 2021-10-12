@@ -223,6 +223,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { AngularFireModule } from '@angular/fire/compat';
 import { ProcessMap } from './models/process-map.model';
+import { DynamicListDialogComponent } from './modules/dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -436,6 +437,7 @@ export class DynamicLocaleId extends String {
     CollaboratorAwardPrintComponent,
     CollaboartorAwardDetailComponent,
     CollaboratorAwardDetailPrintComponent,
+    DynamicListDialogComponent,
 
   ],
   imports: [

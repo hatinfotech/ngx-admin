@@ -89,7 +89,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   @Input() title?: string;
   @Input() size?: string = 'medium';
-  actionButtonList: ActionControl[];
+  @Input() actionButtonList?: ActionControl[];
 
   constructor(
     public apiService: ApiService,

@@ -83,7 +83,7 @@ export interface CollaboratorCommissionVoucherModel {
 export interface CollaboratorCommissionVoucherDetailModel {
     [key: string]: any;
     Id?: string;
-    AwardVoucher?: string;
+    CommissionVoucher?: string;
     No?: string;
     Image?: string;
     Product?: string;
