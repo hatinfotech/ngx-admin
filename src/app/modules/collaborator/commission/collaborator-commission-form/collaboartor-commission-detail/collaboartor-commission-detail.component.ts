@@ -131,7 +131,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
           valuePrepareFunction:(value) => value,
         },
         Level1CommissionRatio: {
-          title: this.commonService.translateText('TL thưởng'),
+          title: this.commonService.translateText('TL Chiết khấu'),
           width: '10%',
           valuePrepareFunction:(value) => value + '%',
           type: 'custom',
@@ -143,7 +143,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
           }
         },
         CommissionAmount: {
-          title: this.commonService.translateText('Tiền thưởng'),
+          title: this.commonService.translateText('Chiết khấu'),
           type: 'currency',
           width: '10%',
         },

@@ -871,6 +871,10 @@ export class CommonService {
     'CLBRTCOMMPAY': CollaboratorCommissionPaymentPrintComponent,
     'COLLABORATORORDER': CollaboratorOrderPrintComponent,
     'CLBRTAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTWEEKLYAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTMONTHLYAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTQUARTERLYAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTYEARLYAWARD': CollaboratorAwardPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {
