@@ -1177,15 +1177,7 @@ export class AppModule {
     commissionVoucher: {
       "CONFIRMATIONREQUESTED": {
         ...AppModule.confirmationRequestedState,
-        // state: 'CONFIRMATIONREQUESTED',
-        // label: 'Collaborator.Commission.confirmRequest',
-        // status: 'warning',
-        // outline: false,
         nextState: 'CONFIRMED',
-        // // nextStateLabel: 'Common.confirm',
-        // // confirmText: 'Common.confirmedConfirm',
-        // // responseTitle: 'Common.confirm',
-        // // responseText: 'Common.confirmedSuccess',
         nextStates: [
           AppModule.confirmedState,
           AppModule.unrecordedState,
@@ -1193,16 +1185,7 @@ export class AppModule {
       },
       "CONFIRMED": {
         ...AppModule.confirmedState,
-        // state: 'CONFIRMED',
-        // label: 'Collaborator.Commission.confirmed',
-        // status: 'primary',
-        // outline: false,
         nextState: 'APPROVED',
-
-        // nextStateLabel: 'Common.approve',
-        // confirmText: 'Common.approvedConfirm',
-        // responseTitle: 'Common.approved',
-        // responseText: 'Common.approved',
         nextStates: [
           AppModule.approvedState,
           AppModule.unrecordedState,
@@ -1210,10 +1193,6 @@ export class AppModule {
       },
       "APPROVED": {
         ...AppModule.approvedState,
-        // state: 'APPROVED',
-        // label: 'Common.approved',
-        // status: 'success',
-        // outline: true,
         nextState: 'UNRECORDED',
         nextStates: [
           AppModule.unrecordedState
@@ -1221,15 +1200,7 @@ export class AppModule {
       },
       "UNRECORDED": {
         ...AppModule.unrecordedState,
-        // state: 'UNRECORDED',
-        // label: 'Common.unrecorded',
-        // status: 'warning',
-        // outline: true,
         nextState: 'APPROVED',
-        // nextStateLabel: 'Common.approve',
-        // confirmText: 'Common.approvedConfirm',
-        // responseTitle: 'Common.approved',
-        // responseText: 'Common.approved',
         nextStates: [
           AppModule.confirmationRequestedState,
           AppModule.approvedState,
@@ -1238,15 +1209,7 @@ export class AppModule {
       },
       "NOTJUSTAPPROVED": {
         ...AppModule.notJustApprodedState,
-        // state: 'NOTJUSTAPPROVED',
-        // label: 'Common.notJustCofirmedRequest',
-        // status: 'danger',
-        // outline: false,
         nextState: 'CONFIRMATIONREQUESTED',
-        // nextStateLabel: 'Collaborator.Commission.confirmRequest',
-        // confirmText: 'Collaborator.Commission.confirmedRequest',
-        // responseTitle: 'Collaborator.Commission.confirmed',
-        // responseText: 'Collaborator.Commission.confirmedSuccess',
         nextStates: [
           AppModule.confirmationRequestedState,
           AppModule.unrecordedState,
@@ -1254,15 +1217,7 @@ export class AppModule {
       },
       "": {
         ...AppModule.notJustApprodedState,
-        // state: 'NOTJUSTAPPROVED',
-        // label: 'Common.notJustCofirmedRequest',
-        // status: 'danger',
-        // outline: false,
         nextState: 'CONFIRMATIONREQUESTED',
-        // nextStateLabel: 'Collaborator.Commission.confirmRequest',
-        // confirmText: 'Collaborator.Commission.confirmedRequest',
-        // responseTitle: 'Collaborator.Commission.confirmed',
-        // responseText: 'Collaborator.Commission.confirmedSuccess',
         nextStates: [
           AppModule.confirmationRequestedState,
           AppModule.unrecordedState,
@@ -1271,59 +1226,52 @@ export class AppModule {
     },
     awardVoucher: {
       "CONFIRMATIONREQUESTED": {
-        state: 'CONFIRMATIONREQUESTED',
-        label: 'Collaborator.Commission.confirmRequest',
-        status: 'warning',
-        outline: false,
+        ...AppModule.confirmationRequestedState,
         nextState: 'CONFIRMED',
-        nextStateLabel: 'Common.confirm',
-        confirmText: 'Common.confirmedConfirm',
-        responseTitle: 'Common.confirm',
-        responseText: 'Common.confirmedSuccess',
+        nextStates: [
+          AppModule.confirmedState,
+          AppModule.unrecordedState,
+        ],
       },
       "CONFIRMED": {
-        state: 'CONFIRMED',
-        label: 'Collaborator.Commission.confirmed',
-        status: 'primary',
-        outline: false,
+        ...AppModule.confirmedState,
         nextState: 'APPROVED',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approved',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
       "APPROVED": {
-        state: 'APPROVED',
-        label: 'Common.approved',
-        status: 'success',
-        outline: true,
-        nextState: 'NOTJUSTAPPROVED',
-        nextStateLabel: 'Common.unbookkeeping',
-        confirmText: 'Common.unbookkeepingConfirm',
-        responseTitle: 'Common.unbookkeeping',
-        responseText: 'Common.unbookkeepingSuccess',
+        ...AppModule.approvedState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.unrecordedState
+        ],
+      },
+      "UNRECORDED": {
+        ...AppModule.unrecordedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.confirmationRequestedState,
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
       "NOTJUSTAPPROVED": {
-        state: 'NOTJUSTAPPROVED',
-        label: 'Common.notJustCofirmedRequest',
-        status: 'danger',
-        outline: false,
+        ...AppModule.notJustApprodedState,
         nextState: 'CONFIRMATIONREQUESTED',
-        nextStateLabel: 'Collaborator.Commission.confirmRequest',
-        confirmText: 'Collaborator.Commission.confirmedRequest',
-        responseTitle: 'Collaborator.Commission.confirmed',
-        responseText: 'Collaborator.Commission.confirmedSuccess',
+        nextStates: [
+          AppModule.confirmationRequestedState,
+          AppModule.unrecordedState,
+        ],
       },
       "": {
-        state: 'NOTJUSTAPPROVED',
-        label: 'Common.notJustCofirmedRequest',
-        status: 'danger',
-        outline: false,
+        ...AppModule.notJustApprodedState,
         nextState: 'CONFIRMATIONREQUESTED',
-        nextStateLabel: 'Collaborator.Commission.confirmRequest',
-        confirmText: 'Collaborator.Commission.confirmedRequest',
-        responseTitle: 'Collaborator.Commission.confirmed',
-        responseText: 'Collaborator.Commission.confirmedSuccess',
+        nextStates: [
+          AppModule.confirmationRequestedState,
+          AppModule.unrecordedState,
+        ],
       },
     },
     collaboratoOrder: {

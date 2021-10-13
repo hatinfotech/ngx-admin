@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { takeUntil } from 'rxjs/operators';
 import { SmartTableTagsComponent, SmartTableButtonComponent, SmartTableBaseComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
@@ -111,29 +112,12 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           type: 'string',
           width: '5%',
         },
-        // ObjectName: {
-        //   title: this.commonService.translateText('Common.contactName'),
-        //   type: 'string',
-        //   width: '15%',
-        // },
         Description: {
           title: this.commonService.translateText('Sản phẩm'),
           type: 'string',
           width: '10%', 
         },
-        // Voucher: {
-        //   title: this.commonService.translateText('Common.voucher'),
-        //   type: 'custom',
-        //   renderComponent: SmartTableTagsComponent,
-        //   valuePrepareFunction: (cell: string, row: any) => {
-        //     return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
-        //   },
-        //   onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-        //     instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id));
-        //   },
-        //   width: '10%',
-        // },
-        SumOfQuantity: {
+        SumOfBaseQuantity: {
           title: this.commonService.translateText('KPI đạt được'),
           type: 'string',
           width: '5%',
@@ -268,12 +252,12 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
+              // return false;
             });
-            // instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-            //   this.getFormData([rowData.Code]).then(rs => {
-            //     this.preview(rs);
-            //   });
-            // });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+              console.log(rowData);
+              return false;
+            });
           },
         }
       },

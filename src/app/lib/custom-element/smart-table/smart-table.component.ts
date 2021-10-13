@@ -102,6 +102,7 @@ export class SmartTableButtonComponent extends SmartTableBaseComponent implement
 
   onClick() {
     this.click.emit(this.rowData);
+    return false;
   }
 }
 

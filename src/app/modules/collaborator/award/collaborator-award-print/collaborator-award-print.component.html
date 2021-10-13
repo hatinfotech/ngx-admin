@@ -21,28 +21,40 @@
                             <colgroup>
                                 <!--STT-->
                                 <col span="1" style="width: 1cm;">
-                                <!--Phieu-->
-                                <!-- <col span="1" style="width: 2cm;"> -->
-                                <!--Ngay-->
-                                <col span="1" style="width: 4cm;">
-                                <!--Dien giai-->
-                                <col span="1" style="width: 12cm;">
+                                <!--Common.product-->
+                                <col span="1" style="width: 2cm;">
+                                <!--Product.name-->
+                                <col span="1" style="width: 2cm;">
+                                <!--Product.unit-->
+                                <col span="1" style="width: 1cm;">
+                                <!--Common.quantity-->
+                                <col span="1" style="width: 1cm;">
+                                <!--Common.quantity-->
+                                <col span="1" style="width: 2cm;">
+                                <!--Award.Award.ratio-->
+                                <col span="1" style="width: 2cm;">
                                 <!--Thanh tien-->
                                 <col span="1" style="width: 2cm; text-align: right;">
                             </colgroup>
                             <tr class="print-voucher-detail-header">
                                 <th class="text-align-left">{{'Common.noNumber' | translate | headtitlecase}}</th>
                                 <th class="text-align-left">{{'Common.product' | translate | headtitlecase}}</th>
-                                <!-- <th class="text-align-left">{{'Common.date' | translate | headtitlecase}}</th> -->
                                 <th class="text-align-left">{{'Product.name' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'Product.unit' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Common.quantity' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Common.netRevenue' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Collaborator.Award.ratio' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Common.numOfMoney' | translate | headtitlecase}}</th>
                             </tr>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td class="text-align-left">{{i + 1}}</td>
-                                <td class="text-align-left"><a class="link" (click)="previewDetail([data.Code+'-'+detail.No])">{{renderValue(detail.Product)}}</a></td>
-                                <!-- <td class="text-align-left">{{renderValue(detail.VoucherDate | date:'short')}}</td> -->
+                                <td class="text-align-left"><a class="link" (click)="previewDetail(detail)">{{renderValue(detail.Product)}}</a></td>
                                 <td class="text-align-left">{{renderValue(detail.ProductName)}}</td>
-                                <td class="text-align-right">{{(detail.TotalAwardAmount) | currency:'VND'}}</td>
+                                <td>{{detail.UnitLabel}}</td>
+                                <td class="text-align-right">{{detail.SumOfQuantity}}</td>
+                                <td class="text-align-right">{{detail.SumOfNetRevenue | currency:'VND'}}</td>
+                                <td class="text-align-right">{{detail.AwardRatio}}</td>
+                                <td class="text-align-right">{{detail.AwardAmount | currency:'VND'}}</td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td> </td>
@@ -69,21 +81,12 @@
             </div>
         </nb-card-body>
         <nb-card-footer>
-            <!-- <div class="buttons-row">
-                <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
-                    <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
-                </button>
-                <button nbButton hero status="danger" (click)="saveAndClose();">
-                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
-                </button>
-                <button nbButton hero status="warning" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
-                <button nbButton hero status="info" (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button>
-            </div> -->
             <div class="buttons-row">
                 <button nbButton hero status="warning" (click)="prepareCopy(data);">
                     <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
                 </button>
-                <button nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
+                <!-- <button nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
+                <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.label | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward'}}"></nb-icon></button>
                 <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
                     <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
                 </button>
