@@ -173,8 +173,29 @@ export interface CollaboratorAwardVoucherDetailModel {
     TotalAwardAmount?: string;
     DirectOrders?: CollaboratorAwardVoucherDetailDirectOrderModel[];
     RefOrders?: CollaboratorAwardVoucherDetailRefOrderModel[];
+    CommissionVouchers?: CollaboratorAwardVoucherDetailCommissionModel[];
+    ExtCommissionVouchers?: CollaboratorAwardVoucherDetailCommissionModel[];
 }
 export interface CollaboratorAwardVoucherDetailDirectOrderModel {
+    [key: string]: any;
+    Id?: string;
+    AwardVoucher?: string;
+    DetailNo?: string;
+    No?: string;
+    Voucher?: string;
+    VoucherDetailNo?: string;
+    VoucherTitle?: string;
+    Product?: string;
+    Unit?: string;
+    UnitLabel?: string;
+    Description?: string;
+    Tax?: string;
+    TaxValue?: string;
+    TaxLabel?: string;
+    Quantity?: string;
+    Price?: string;
+}
+export interface CollaboratorAwardVoucherDetailCommissionModel {
     [key: string]: any;
     Id?: string;
     AwardVoucher?: string;

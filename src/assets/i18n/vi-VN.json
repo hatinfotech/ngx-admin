@@ -898,9 +898,9 @@
             "dateOfDelivery": "ngày giao hàng"
         },
         "Commission": {
-            "label": "kết chuyển hoa hồng",
-            "paymentLabel": "kết chuyển hoa hồng",
-            "title": "{{action}}{{definition}} kết chuyển hoa hồng",
+            "label": "kết chuyển chiết khấu",
+            "paymentLabel": "kết chuyển chiết khấu",
+            "title": "{{action}}{{definition}} kết chuyển chiết khấu",
             "confirmRequest": "yêu cầu xác nhận",
             "confirmed": "đã xác nhận",
             "commissionTo": "đến ngày",

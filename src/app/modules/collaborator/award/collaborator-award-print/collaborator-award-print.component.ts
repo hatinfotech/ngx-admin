@@ -8,7 +8,7 @@ import { AppModule } from '../../../../app.module';
 import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherDetailModel } from '../../../../models/accounting.model';
-import { CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel } from '../../../../models/collaborator.model';
+import { CollaboratorAwardVoucherDetailCommissionModel, CollaboratorAwardVoucherDetailDirectOrderModel, CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel } from '../../../../models/collaborator.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -183,26 +183,12 @@ export class CollaboratorAwardPrintComponent extends DataManagerPrintComponent<C
     return this.apiService.getPromise<CollaboratorAwardVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  previewDetail(detail: CollaboratorAwardVoucherDetailModel) {
-    // this.commonService.openDialog(CollaboratorAwardDetailPrintComponent, {
-    //   context: {
-    //     showLoadinng: true,
-    //     title: 'Xem trước',
-    //     id: typeof ids[0] === 'string' ? ids as any : null,
-    //     // data: typeof ids[0] !== 'string' ? ids as any : null,
-    //     idKey: ['AwardVoucher', 'No'],
-    //     // approvedConfirm: true,
-    //     onClose: (data: CollaboratorAwardVoucherDetailModel) => {
-    //       // this.refresh();
-    //     },
-    //   },
-    // });
-    // id = id[0].split('-');
+  previewCommissionVouchers(detail: CollaboratorAwardVoucherDetailModel) {
     this.commonService.openDialog(DynamicListDialogComponent, {
       context: {
         inputMode: 'dialog',
-        title: 'Chi tiết kết chuyển chiết khấu theo sản phẩm: ' + detail.ProductName,
-        apiPath: '/collaborator/award-voucher-detail-orders',
+        title: 'Chi tiết tiền thưởng từ doanh số trực tiếp: ' + detail.ProductName,
+        apiPath: '/collaborator/award-voucher-detail-commissions',
         idKey: ['AwardVoucher', 'DetailNo', 'No'],
         params: { eq_AwardVoucher: detail.AwardVoucher, eq_DetailNo: detail.No },
         // actionButtonList: [],
@@ -224,7 +210,7 @@ export class CollaboratorAwardPrintComponent extends DataManagerPrintComponent<C
               type: 'custom',
               renderComponent: SmartTableTagsComponent,
               onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-                instance.click.subscribe((voucher: string) => this.commonService.previewVoucher('CLBRTORDER', voucher));
+                instance.click.subscribe((voucher: string) => this.commonService.previewVoucher('CLBRTCOMMISSION', voucher));
               },
               width: '10%',
               filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
@@ -302,9 +288,126 @@ export class CollaboratorAwardPrintComponent extends DataManagerPrintComponent<C
                   // instance.status = value === 'REQUEST' ? 'warning' : 'success';
                   // instance.disabled = value !== 'REQUEST';
                 });
-                // instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorAwardVoucherDetailOrderModel) => {
-                //   this.commonService.previewVoucher('CLBRTORDER', rowData.Voucher);
-                // });
+                instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorAwardVoucherDetailCommissionModel) => {
+                  this.commonService.previewVoucher('CLBRTCOMMISSION', rowData.Voucher);
+                });
+              },
+            }
+          }
+        }
+      },
+    });
+    return false;
+  }
+
+  previewExtCommissionVouchers(detail: CollaboratorAwardVoucherDetailModel) {
+    this.commonService.openDialog(DynamicListDialogComponent, {
+      context: {
+        inputMode: 'dialog',
+        title: 'Chi tiết tiền thưởng từ doanh số của học trò: ' + detail.ProductName,
+        apiPath: '/collaborator/award-voucher-detail-ext-commissions',
+        idKey: ['AwardVoucher', 'DetailNo', 'No'],
+        params: { eq_AwardVoucher: detail.AwardVoucher, eq_DetailNo: detail.No },
+        // actionButtonList: [],
+        listSettings: {
+          // pager: {
+          //   display: true,
+          //   perPage: 10,
+          // },
+          actions: false,
+          columns: {
+            No: {
+              title: 'No.',
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Voucher: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.voucher'), 'head-title'),
+              type: 'custom',
+              renderComponent: SmartTableTagsComponent,
+              onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+                instance.click.subscribe((voucher: string) => this.commonService.previewVoucher('CLBRTCOMMISSION', voucher));
+              },
+              width: '10%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              valuePrepareFunction: (cell: string, row: any) => {
+                return [{ id: cell, text: cell }] as any;
+              },
+            },
+            Product: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.product'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Description: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+              type: 'string',
+              width: '40%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            UnitLabel: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Product.unit'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Quantity: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.quantity'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Price: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.price'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+            },
+            ToMoney: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+              // valuePrepareFunction: (cell: string, row: CollaboratorAwardVoucherDetailOrderModel) => {
+              //   return `${row.Quantity * row.Price}`;
+              // },
+            },
+            Preview: {
+              title: this.commonService.translateText('Common.show'),
+              type: 'custom',
+              width: '5%',
+              class: 'align-right',
+              renderComponent: SmartTableButtonComponent,
+              onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+                instance.iconPack = 'eva';
+                instance.icon = 'external-link-outline';
+                instance.display = true;
+                instance.status = 'primary';
+                instance.style = 'text-align: right';
+                instance.class = 'align-right';
+                instance.title = this.commonService.translateText('Common.preview');
+                instance.valueChange.subscribe(value => {
+                  // instance.icon = value ? 'unlock' : 'lock';
+                  // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+                  // instance.disabled = value !== 'REQUEST';
+                });
+                instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorAwardVoucherDetailCommissionModel) => {
+                  this.commonService.previewVoucher('CLBRTCOMMISSION', rowData.Voucher);
+                });
               },
             }
           }

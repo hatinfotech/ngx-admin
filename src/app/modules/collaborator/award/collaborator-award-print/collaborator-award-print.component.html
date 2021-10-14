@@ -12,61 +12,92 @@
                     <div class="under-title">{{ data.Code }} - {{ data.AwardTo | date:'short' }}</div>
                 </div>
                 <div>
-                    <div class="under-line">{{'Common.contact' | translate | headtitlecase}} : {{renderValue(data.PublisherName)}}</div>
-                    <!-- <div class="under-line">{{'Common.amount' | translate | headtitlecase}} : {{renderValue(data.Amount)}}</div> -->
+                    <div class="under-line"><span class="text-label">{{'Common.description' | translate | headtitlecase}}</span>: {{renderValue(data.Description)}}</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">{{'Collaborator.Publisher.label' | translate | headtitlecase}}</span>: {{renderValue(data.Publisher)}}</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">{{'Common.name' | translate | headtitlecase}}</span>: {{renderValue(data.PublisherName)}}</div>
+                    <div><span class="text-label"><i><u>Chú thích</u></i></span></div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">DVT</span>: Đơn vị tính cơ bản</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">SL</span>: Số lượng bán được</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">DS</span>: Danh số bán được</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">TLT</span>: Tỷ lệ thưởng</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">TT</span>: Tiền thưởng</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">DSHT</span>: Doanh số học trò</div>
+                    <div style="clear: both;"></div>
                 </div>
+                <br>
                 <div>
                     <div>
-                        <table style="width: 100%;" class="print-voucher-detail-table">
+                        <table style="width: 100%;" class="print-voucher-detail-table with-border">
                             <colgroup>
                                 <!--STT-->
                                 <col span="1" style="width: 1cm;">
-                                <!--Common.product-->
-                                <col span="1" style="width: 2cm;">
                                 <!--Product.name-->
                                 <col span="1" style="width: 2cm;">
                                 <!--Product.unit-->
-                                <col span="1" style="width: 1cm;">
+                                <col span="1" style="width: 1cm; text-align: right;">
                                 <!--Common.quantity-->
-                                <col span="1" style="width: 1cm;">
+                                <col span="1" style="width: 1cm; text-align: right;">
                                 <!--Common.quantity-->
-                                <col span="1" style="width: 2cm;">
+                                <col span="1" style="width: 1cm; text-align: right;">
                                 <!--Award.Award.ratio-->
-                                <col span="1" style="width: 2cm;">
+                                <col span="1" style="width: 1cm; text-align: right;">
                                 <!--Thanh tien-->
-                                <col span="1" style="width: 2cm; text-align: right;">
+                                <col span="1" style="width: 1cm; text-align: right;">
+                                <!--Common.quantity-->
+                                <col span="1" style="width: 1cm; text-align: right;">
+                                <!--Award.Award.ratio-->
+                                <col span="1" style="width: 1cm; text-align: right;">
+                                <!--Thanh tien-->
+                                <col span="1" style="width: 1cm; text-align: right;">
+                                <!--Thanh tien-->
+                                <col span="1" style="width: 1cm; text-align: right;">
                             </colgroup>
                             <tr class="print-voucher-detail-header">
-                                <th class="text-align-left">{{'Common.noNumber' | translate | headtitlecase}}</th>
-                                <th class="text-align-left">{{'Common.product' | translate | headtitlecase}}</th>
-                                <th class="text-align-left">{{'Product.name' | translate | headtitlecase}}</th>
-                                <th class="text-align-left">{{'Product.unit' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'Common.quantity' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'Common.netRevenue' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'Collaborator.Award.ratio' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'Common.numOfMoney' | translate | headtitlecase}}</th>
+                                <th class="text-align-left" style="vertical-align: middle; text-align: center;">{{'Common.noNumber' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'DVT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'SL' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'DS' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TLT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'SL/DSHT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'DSHT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TLT/DSHT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TT/DSHT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Tổng thưởng' | translate | headtitlecase}}</th>
                             </tr>
-                            <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
-                                <td class="text-align-left">{{i + 1}}</td>
-                                <td class="text-align-left"><a class="link" (click)="previewDetail(detail)">{{renderValue(detail.Product)}}</a></td>
-                                <td class="text-align-left">{{renderValue(detail.ProductName)}}</td>
-                                <td>{{detail.UnitLabel}}</td>
-                                <td class="text-align-right">{{detail.SumOfQuantity}}</td>
-                                <td class="text-align-right">{{detail.SumOfNetRevenue | currency:'VND'}}</td>
-                                <td class="text-align-right">{{detail.AwardRatio}}</td>
-                                <td class="text-align-right">{{detail.AwardAmount | currency:'VND'}}</td>
-                            </tr>
+                            <ng-container *ngFor="let detail of data.Details; let i = index">
+                                <tr>
+                                    <td rowspan="2" style="vertical-align: middle; text-align: center;" class="text-align-left">{{i + 1}}</td>
+                                    <td colspan="10">{{renderValue(detail.Product)}}: {{renderValue(detail.ProductName)}}</td>
+                                </tr>
+                                <tr class="print-voucher-detail-line">
+                                    <!-- <td class="text-align-left"> </td> -->
+                                    <td>{{detail.UnitLabel}}</td>
+                                    <td class="text-align-right">{{detail.SumOfQuantity}}</td>
+                                    <td class="text-align-right">{{detail.SumOfNetRevenue | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail.Level1AwardRatio}}%</td>
+                                    <td class="text-align-right"><a href="#" (click)="previewCommissionVouchers(detail)">{{detail.Level1AwardAmount | currency:'VND'}}</a></td>
+                                    <td class="text-align-right">{{detail.ExtSumOfQuantity}}</td>
+                                    <td class="text-align-right"><a href="#" (click)="previewExtCommissionVouchers(detail)">{{detail.ExtSumOfNetRevenue | currency:'VND'}}</a></td>
+                                    <td class="text-align-right">{{detail.Level2ExtAwardRatio}}%</td>
+                                    <td class="text-align-right">{{detail.Level2ExtAwardAmount | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail.TotalAwardAmount | currency:'VND'}}</td>
+                                </tr>
+                            </ng-container>
                             <tr style="font-weight: bold;">
                                 <td> </td>
                                 <td> </td>
-                                <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td colspan="2" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{data.Amount | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>
-                </div>
-                <div>
-                    <div class="under-line">{{'Common.description' | translate | headtitlecase}}: {{renderValue(data.Description)}}</div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap">
                     <div style="text-align: center; flex: 0 0 50%;">

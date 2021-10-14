@@ -9,7 +9,7 @@ import { Type } from '@angular/core';
 
 declare var $: JQueryStatic;
 
-@Component({template: ''})
+@Component({ template: '' })
 export abstract class DataManagerPrintComponent<M> extends BaseComponent implements OnInit, AfterViewInit {
 
   // title: string = 'Xem trước';
@@ -100,7 +100,15 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     await this.loadCache();
     return super.init().then(async rs => {
       if ((!this.data || this.data.length === 0) && this.id) {
-        this.data = await this.getFormData(this.id);
+        try {
+          this.data = await this.getFormData(this.id);
+          if (!this.data || this.data.length === 0) {
+            this.commonService.toastService.show('Không tải được dữ liệu', 'Common.warning', { status: 'warning' });
+            this.close();
+          }
+        } catch (err) {
+          this.close();
+        }
       }
       this.onAfterInit && this.onAfterInit();
       return rs;

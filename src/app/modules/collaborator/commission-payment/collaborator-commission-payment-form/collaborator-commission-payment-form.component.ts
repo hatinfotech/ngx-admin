@@ -597,7 +597,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(commissionVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(commissionVoucher.Publisher, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
                     this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu hoa hồng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }

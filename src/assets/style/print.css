@@ -1,247 +1,256 @@
 #print-area {
-    width: 21cm;
-    /*padding: 1cm;*/
-    /*padding-right: 2cm;*/
-    /** Chinh cho may in kim (!!phai xem lai cho tat ca cac loai may in khac) */
-    /* margin: 1cm auto; */
-    /* border: 1px #d3d3d3 solid; */
-    /* border-radius: 5px; */
-    /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); */
-    /* padding-left: 15px;
+  width: 21cm;
+  /*padding: 1cm;*/
+  /*padding-right: 2cm;*/
+  /** Chinh cho may in kim (!!phai xem lai cho tat ca cac loai may in khac) */
+  /* margin: 1cm auto; */
+  /* border: 1px #d3d3d3 solid; */
+  /* border-radius: 5px; */
+  /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); */
+  /* padding-left: 15px;
   padding-right: 15px; */
 }
 
 #print-area .print-title {
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    line-height: 2rem;
-    padding: 0.5px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 2rem;
+  padding: 0.5px;
 }
 
 #print-area .under-title {
-    text-align: center;
-    font-size: 0.8rem;
-    font-style: italic;
-    line-height: 0.8rem;
-    padding: 0.5px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-style: italic;
+  line-height: 0.8rem;
+  padding: 0.5px;
 }
 
 #print-area * {
-    font-size: 0.9rem;
-    text-shadow: initial !important;
-    font-family: Open Sans, sans-serif;
+  font-size: 0.9rem;
+  text-shadow: initial !important;
+  font-family: Open Sans, sans-serif;
 }
 
 .voucher-logo-image {
-    height: 60px;
+  height: 60px;
 }
 
 .print-voucher-detail-table {
-    page-break-inside: auto;
+  page-break-inside: auto;
 }
 
 .print-voucher-detail-table tr {
-    page-break-inside: avoid;
-    page-break-after: auto;
+  page-break-inside: avoid;
+  page-break-after: auto;
 }
 
 .print-voucher-detail-table tr td {
-    border-bottom: 1px solid #ccc;
-    vertical-align: top;
+  border-bottom: 1px solid #ccc;
+  vertical-align: top;
 }
 
 #print-area .under-line {
-    border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 }
 
 #print-area .text-align-right {
-    text-align: right;
+  text-align: right;
 }
 #print-area .text-align-left {
-    text-align: left;
+  text-align: left;
 }
 
 #print-area .print-voucher-detail-line {
-    line-height: 1rem;
+  line-height: 1rem;
 }
 
 #print-area .print-voucher-detail-thumnail {
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    border-radius: 3px;
-    width: 100%;
-    height: 1.5cm;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: 3px;
+  width: 100%;
+  height: 1.5cm;
 }
 
 #print-area .print-voucher-detail-line td {
-    padding-top: 2px;
-    padding-bottom: 2px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .print-body {
-    background-color: #fff;
-    color: #000;
+  background-color: #fff;
+  color: #000;
 }
 
 @media print {
-    body {
-        background: #fff !important;
-    }
-    #print-area {
-        min-height: 29.7cm;
-        margin: 0;
-        padding: 0;
-        border: initial;
-        border-radius: initial;
-        width: initial;
-        min-height: initial;
-        box-shadow: initial;
-        background: initial;
-        page-break-after: always;
-    }
+  body {
+    background: #fff !important;
+  }
+  #print-area {
+    min-height: 29.7cm;
+    margin: 0;
+    padding: 0;
+    border: initial;
+    border-radius: initial;
+    width: initial;
+    min-height: initial;
+    box-shadow: initial;
+    background: initial;
+    page-break-after: always;
+  }
 }
 
 .row {
-    /* margin-right: -9px;
+  /* margin-right: -9px;
   margin-left: -9px; */
-    /* display: flex;
+  /* display: flex;
   flex-wrap: wrap; */
-    width: 100%;
+  width: 100%;
 }
 
 .col-sm-1 {
-    -webkit-box-flex: 0;
-    flex: 0 0 8.333333%;
-    max-width: 8.333333%;
+  -webkit-box-flex: 0;
+  flex: 0 0 8.333333%;
+  max-width: 8.333333%;
 }
 
 .col-sm-2 {
-    -webkit-box-flex: 0;
-    flex: 0 0 16.666667%;
-    max-width: 16.666667%;
+  -webkit-box-flex: 0;
+  flex: 0 0 16.666667%;
+  max-width: 16.666667%;
 }
 
 .col-sm-3 {
-    /* -webkit-box-flex: 0;
+  /* -webkit-box-flex: 0;
   flex: 0 0 25%;
   max-width: 25%; */
-    float: left;
-    width: 25%;
+  float: left;
+  width: 25%;
 }
 
 .col-sm-4 {
-    -webkit-box-flex: 0;
-    flex: 0 0 33.333333%;
-    max-width: 33.333333%;
+  -webkit-box-flex: 0;
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
 }
 
 .col-sm-5 {
-    -webkit-box-flex: 0;
-    flex: 0 0 41.666667%;
-    max-width: 41.666667%;
+  -webkit-box-flex: 0;
+  flex: 0 0 41.666667%;
+  max-width: 41.666667%;
 }
 
 .col-sm-6 {
-    -webkit-box-flex: 0;
-    flex: 0 0 50%;
-    max-width: 50%;
+  -webkit-box-flex: 0;
+  flex: 0 0 50%;
+  max-width: 50%;
 }
 
 .col-sm-7 {
-    -webkit-box-flex: 0;
-    flex: 0 0 58.333333%;
-    max-width: 58.333333%;
+  -webkit-box-flex: 0;
+  flex: 0 0 58.333333%;
+  max-width: 58.333333%;
 }
 
 .col-sm-8 {
-    -webkit-box-flex: 0;
-    flex: 0 0 66.666667%;
-    max-width: 66.666667%;
+  -webkit-box-flex: 0;
+  flex: 0 0 66.666667%;
+  max-width: 66.666667%;
 }
 
 .col-sm-9 {
-    -webkit-box-flex: 0;
-    flex: 0 0 75%;
-    max-width: 75%;
+  -webkit-box-flex: 0;
+  flex: 0 0 75%;
+  max-width: 75%;
 }
 
 .col-sm-10 {
-    -webkit-box-flex: 0;
-    flex: 0 0 83.333333%;
-    max-width: 83.333333%;
+  -webkit-box-flex: 0;
+  flex: 0 0 83.333333%;
+  max-width: 83.333333%;
 }
 
 .col-sm-11 {
-    -webkit-box-flex: 0;
-    flex: 0 0 91.666667%;
-    max-width: 91.666667%;
+  -webkit-box-flex: 0;
+  flex: 0 0 91.666667%;
+  max-width: 91.666667%;
 }
 
 .col-sm-12 {
-    -webkit-box-flex: 0;
-    flex: 0 0 100%;
-    max-width: 100%;
+  -webkit-box-flex: 0;
+  flex: 0 0 100%;
+  max-width: 100%;
 }
-
 
 /** Grid Item */
 
 .details {
-    page-break-inside: auto;
+  page-break-inside: auto;
 }
 
 .grid-item {
-    margin: 5px;
+  margin: 5px;
 }
 
 .grid-item .image {
-    height: 125px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+  height: 125px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
-
 
 /* .grid-item .image img {
   border-radius: 5px;
 } */
 
 .grid-item .name {
-    overflow: hidden;
-    line-height: 16px;
-    font-weight: bold;
-    font-size: 12px !important;
+  overflow: hidden;
+  line-height: 16px;
+  font-weight: bold;
+  font-size: 12px !important;
 }
 
 .grid-item .price {
-    height: 16px;
-    font-weight: bold;
-    color: #a91a49;
-    font-size: 14px !important;
-    line-height: 18px;
+  height: 16px;
+  font-weight: bold;
+  color: #a91a49;
+  font-size: 14px !important;
+  line-height: 18px;
 }
 
 .grid-item .unit {
-    float: right;
-    color: #000;
-    text-transform: lowercase;
+  float: right;
+  color: #000;
+  text-transform: lowercase;
 }
 
 .page-break-after {
-    page-break-inside: avoid;
-    page-break-after: auto;
-    display: table;
+  page-break-inside: avoid;
+  page-break-after: auto;
+  display: table;
 }
 
 .page-break-before {
-    page-break-inside: avoid;
-    page-break-before: auto;
-    display: table;
+  page-break-inside: avoid;
+  page-break-before: auto;
+  display: table;
 }
-
-
 /** End Grid Item */
+
+.print-voucher-detail-table.with-border {
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
+.print-voucher-detail-table.with-border tr th,
+.print-voucher-detail-table.with-border tr td {
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+.text-label {
+  font-weight: bold;
+}
