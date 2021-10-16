@@ -678,6 +678,18 @@ export class AppModule {
     responseTitle: 'Common.deployed',
     responseText: 'Common.deployedSuccess',
   };
+  static approvalRequestedState: ProcessMap = {
+    state: 'APPROVALREQUESTED',
+    label: 'Common.approvedRequest',
+    confirmLabel: 'Common.approvedRequest',
+    status: 'warning',
+    outline: false,
+    nextState: '',
+    nextStateLabel: 'Common.approvedRequest',
+    confirmText: 'Common.approvedRequest',
+    responseTitle: 'Common.approvedRequest',
+    responseText: 'Common.approvedRequest',
+  };
 
   static processMaps: { [key: string]: { [key: string]: ProcessMap } } = {
     priceReport: {
@@ -916,59 +928,41 @@ export class AppModule {
     },
     cashVoucher: {
       "APPROVED": {
-        state: 'APPROVED',
-        label: 'Common.approved',
-        status: 'success',
-        outline: true,
+        ...AppModule.approvedState,
         nextState: 'UNRECORDED',
-        nextStateLabel: 'Common.unbookkeeping',
-        confirmText: 'Common.unbookkeepingConfirm',
-        responseTitle: 'Common.unbookkeeping',
-        responseText: 'Common.unbookkeepingSuccess',
+        nextStates: [
+          AppModule.unrecordedState,
+        ],
       },
       "APPROVALREQUESTED": {
-        state: 'APPROVALREQUESTED',
-        label: 'Common.approvedRequest',
-        status: 'warning',
-        outline: false,
+        ...AppModule.approvalRequestedState,
         nextState: 'APPROVED',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
       "UNRECORDED": {
-        state: 'UNRECORDED',
-        label: 'Common.unbookkeeped',
-        status: 'warning',
-        outline: true,
-        nextState: 'APPROVED',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        ...AppModule.unrecordedState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
       "NOTJUSTAPPROVED": {
-        state: 'NOTJUSTAPPROVED',
-        label: 'Common.notJustApproved',
-        status: 'danger',
-        outline: false,
+        ...AppModule.notJustApprodedState,
         nextState: 'APPROVED',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        nextStates: [
+          AppModule.approvedState,
+        ],
       },
       "": {
-        state: 'NOTJUSTAPPROVED',
-        label: 'Common.notJustApproved',
-        status: 'danger',
-        outline: false,
+        ...AppModule.notJustApprodedState,
         nextState: 'APPROVED',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        nextStates: [
+          AppModule.approvedState,
+        ]
       },
     },
     commissionPaymentVoucher: {
@@ -1033,7 +1027,7 @@ export class AppModule {
         ...AppModule.approvedState,
         nextState: 'DEPLOYEMNT',
         nextStates: [
-          {...AppModule.depploymentState, status: 'danger'},
+          { ...AppModule.depploymentState, status: 'danger' },
           AppModule.notJustApprodedState,
         ],
       },
@@ -1041,7 +1035,7 @@ export class AppModule {
         ...AppModule.depploymentState,
         nextState: 'COMPLETE',
         nextStates: [
-          {...AppModule.completeState, status: 'success'},
+          { ...AppModule.completeState, status: 'success' },
           AppModule.notJustApprodedState,
         ],
       },
@@ -1049,7 +1043,7 @@ export class AppModule {
         ...AppModule.acceptanceState,
         nextState: 'COMPLETE',
         nextStates: [
-          {...AppModule.completeState, status: 'success'},
+          { ...AppModule.completeState, status: 'success' },
           AppModule.notJustApprodedState,
         ],
       },

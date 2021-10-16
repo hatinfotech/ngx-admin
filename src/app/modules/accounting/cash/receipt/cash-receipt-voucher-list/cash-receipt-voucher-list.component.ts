@@ -284,6 +284,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         title: 'Xem trước',
         data: data,
         idKey: ['Code'],
+        sourceOfDialog: 'list',
         // approvedConfirm: true,
         onClose: (data: CashVoucherModel) => {
           this.refresh();

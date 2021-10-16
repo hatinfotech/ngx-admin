@@ -206,4 +206,8 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
     return this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
+  getItemDescription(item: CashVoucherModel) {
+    return item?.Description;
+  }
+
 }
