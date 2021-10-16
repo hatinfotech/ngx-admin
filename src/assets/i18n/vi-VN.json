@@ -373,7 +373,9 @@
         "unrecord": "bỏ ghi",
         "unrecorded": "bỏ ghi",
         "unrecordedConfirm": "bạn có muốn bỏ ghi phiếu này không ?",
-        "unrecordedResponse": "bỏ ghi thành công"
+        "unrecordedResponse": "bỏ ghi thành công",
+        "confirmRequested": "yêu cầu xác nhận",
+        "confirmationRequest": "yêu cầu xác nhận"
     },
     "Contact": {
         "Customer": {

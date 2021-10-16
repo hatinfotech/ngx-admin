@@ -592,6 +592,7 @@ export class AppModule {
   static approvedState: ProcessMap = {
     state: 'APPROVED',
     label: 'Common.approved',
+    confirmLabel: 'Common.approve',
     status: 'success',
     outline: true,
     confirmTitle: 'Common.approve',
@@ -603,6 +604,7 @@ export class AppModule {
     state: 'UNRECORDED',
     status: 'warning',
     label: 'Common.unrecorded',
+    confirmLabel: 'Common.unrecord',
     confirmTitle: 'Common.unrecorded',
     confirmText: 'Common.unrecordedConfirm',
     responseTitle: 'Common.unrecorded',
@@ -612,6 +614,7 @@ export class AppModule {
     state: 'CONFIRMED',
     status: 'primary',
     label: 'Common.confirmed',
+    confirmLabel: 'Common.confirm',
     confirmTitle: 'Common.confirm',
     confirmText: 'Common.confirmedConfirm',
     responseTitle: 'Common.confirm',
@@ -619,13 +622,14 @@ export class AppModule {
   };
   static notJustApprodedState: ProcessMap = {
     state: 'NOTJUSTAPPROVED',
-    label: 'Common.notJustCofirmedRequest',
+    label: 'Common.notJustApproved',
     status: 'danger',
     outline: false,
   };
   static confirmationRequestedState: ProcessMap = {
     state: 'CONFIRMATIONREQUESTED',
-    label: 'Collaborator.Commission.confirmRequest',
+    label: 'Common.confirmRequested',
+    confirmLabel: 'Common.confirmationRequest',
     status: 'info',
     outline: false,
     confirmTitle: 'Common.confirmationRequeset',
@@ -693,49 +697,38 @@ export class AppModule {
       },
     },
     salesVoucher: {
-      "APPROVE": {
-        state: 'APPROVE',
-        label: 'Common.approved',
-        status: 'success',
-        outline: false,
-        nextState: 'COMPLETE',
-        nextStateLabel: 'Common.complete',
-        confirmText: 'Common.completeConfirm',
-        responseTitle: 'Common.completed',
-        responseText: 'Common.completeSuccess',
+      "APPROVED": {
+        ...AppModule.approvedState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.unrecordedState,
+        ],
       },
-      "COMPLETE": {
-        state: 'COMPLETE',
-        label: 'Common.completed',
-        status: 'success',
-        outline: true,
-        nextState: 'UNBOOKKEEPING',
-        nextStateLabel: 'Common.unbookkeeping',
-        confirmText: 'Common.unbookkeepingConfirm',
-        responseTitle: 'Common.unbookkeeping',
-        responseText: 'Common.unbookkeepingSuccess',
+      "UNRECORDED": {
+        ...AppModule.unrecordedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
-      "UNBOOKKEEPING": {
-        state: 'UNBOOKKEEPING',
-        label: 'Common.unbookkeeped',
-        status: 'warning',
-        outline: true,
-        nextState: 'APPROVE',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+      "NOTJUSTAPPROVED": {
+        ...AppModule.notJustApprodedState,
+        state: 'NOTJUSTAPPROVED',
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
       "": {
-        state: 'NOTJUSTAPPROVE',
-        label: 'Common.notJustApproved',
-        status: 'danger',
-        outline: false,
-        nextState: 'APPROVE',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        ...AppModule.notJustApprodedState,
+        state: 'NOTJUSTAPPROVED',
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
     },
     purchaseVoucher: {

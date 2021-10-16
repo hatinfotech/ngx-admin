@@ -27,6 +27,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   env = environment;
   apiPath = '/sales/sales-vouchers';
   processMapList: ProcessMap[] = [];
+  idKey = ['Code'];
   formDialog = SalesVoucherFormComponent;
 
   constructor(
@@ -271,6 +272,10 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
       }
       return rs;
     });
+  }
+
+  getItemDescription(item: SalesVoucherModel) {
+    return item?.Description;
   }
 
 }

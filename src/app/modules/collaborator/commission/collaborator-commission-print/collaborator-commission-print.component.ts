@@ -145,38 +145,42 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     ]);
   }
 
-  stateActionConfirm(data: CollaboratorAwardVoucherModel, nextState: ProcessMap) {
-    const params = { id: [data.Code] };
-    const processMap = AppModule.processMaps.commissionVoucher[data.State || ''];
-    params['changeState'] = nextState.state;
+  // stateActionConfirm(data: CollaboratorAwardVoucherModel, nextState: ProcessMap) {
+  //   const params = { id: [data.Code] };
+  //   const processMap = AppModule.processMaps.commissionVoucher[data.State || ''];
+  //   params['changeState'] = nextState.state;
 
-    this.commonService.showDiaplog(this.commonService.translateText(nextState.confirmText), this.commonService.translateText(nextState.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
-      {
-        label: this.commonService.translateText('Common.cancel'),
-        status: 'primary',
-        action: () => {
+  //   this.commonService.showDiaplog(this.commonService.translateText(nextState.confirmText), this.commonService.translateText(nextState.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+  //     {
+  //       label: this.commonService.translateText('Common.cancel'),
+  //       status: 'primary',
+  //       action: () => {
 
-        },
-      },
-      {
-        label: this.commonService.translateText(nextState.label),
-        status: nextState.status,
-        action: () => {
-          this.loading = true;
-          this.apiService.putPromise<CollaboratorAwardVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
-            this.loading = false;
-            this.onChange && this.onChange(data);
-            this.onClose && this.onClose(data);
-            this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
-              status: 'success',
-            });
-          }).catch(err => {
-            this.loading = false;
-          });
-        },
-      },
-    ]);
+  //       },
+  //     },
+  //     {
+  //       label: this.commonService.translateText(nextState.label),
+  //       status: nextState.status,
+  //       action: () => {
+  //         this.loading = true;
+  //         this.apiService.putPromise<CollaboratorAwardVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+  //           this.loading = false;
+  //           this.onChange && this.onChange(data);
+  //           this.onClose && this.onClose(data);
+  //           this.close();
+  //           this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+  //             status: 'success',
+  //           });
+  //         }).catch(err => {
+  //           this.loading = false;
+  //         });
+  //       },
+  //     },
+  //   ]);
+  // }
+
+  getItemDescription(item: CollaboratorCommissionVoucherModel) {
+    return item?.Description;
   }
 
   async getFormData(ids: string[]) {

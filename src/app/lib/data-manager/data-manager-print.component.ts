@@ -6,6 +6,8 @@ import { Icon } from '../custom-element/card-header/card-header.component';
 import { NgModel } from '@angular/forms';
 import { DataManagerFormComponent } from './data-manager-form.component';
 import { Type } from '@angular/core';
+import { ProcessMap } from '../../models/process-map.model';
+import { AppModule } from '../../app.module';
 
 declare var $: JQueryStatic;
 
@@ -118,6 +120,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   abstract close(): void;
 
   makeId(item: M) {
+    if (typeof item === 'string') return item;
     if (Array.isArray(this.idKey)) {
       return this.idKey.map(key => this.encodeId(item[key])).join('-');
     }
@@ -257,6 +260,52 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       throw Error(e);
     }
     return true;
+  }
+
+  getItemDescription(item: M) {
+    return 'undefined';
+  }
+
+  stateActionConfirm(item: M, nextState: ProcessMap) {
+    const params = { id: this.makeId(item) };
+    // const processMap = AppModule.processMaps.awardVoucher[data.State || ''];
+    params['changeState'] = nextState.state;
+    const putData: any = {};
+    if (Array.isArray(this.idKey)) {
+      for (const key of this.idKey) {
+        putData[key] = item[key];
+      }
+    } else {
+      putData[this.idKey] = item[this.idKey];
+    }
+
+    this.commonService.showDiaplog(this.commonService.translateText(nextState.confirmText), this.commonService.translateText(nextState.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), [
+      {
+        label: this.commonService.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.commonService.translateText(nextState.label),
+        status: nextState.status,
+        action: () => {
+          this.loading = true;
+          this.apiService.putPromise<M[]>(this.apiPath, params, [putData]).then(rs => {
+            this.loading = false;
+            this.onChange && this.onChange(item);
+            this.onClose && this.onClose(item);
+            this.close();
+            this.commonService.toastService.show(this.commonService.translateText(nextState?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), this.commonService.translateText(nextState?.responseTitle), {
+              status: 'success',
+            });
+          }).catch(err => {
+            this.loading = false;
+          });
+        },
+      },
+    ]);
   }
 
   async refresh() {
