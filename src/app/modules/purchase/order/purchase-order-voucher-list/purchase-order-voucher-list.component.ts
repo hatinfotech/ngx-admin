@@ -299,6 +299,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
         title: 'Xem trước',
         data: data,
         idKey: ['Code'],
+        sourceOfDialog: 'list',
         // approvedConfirm: true,
         onClose: (data: PurchaseVoucherModel) => {
           this.refresh();

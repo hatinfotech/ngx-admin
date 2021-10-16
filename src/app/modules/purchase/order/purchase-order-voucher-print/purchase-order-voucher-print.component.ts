@@ -188,4 +188,8 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     ]);
   }
 
+  getItemDescription(item: PurchaseOrderVoucherModel) {
+    return item?.Title;
+  }
+
 }

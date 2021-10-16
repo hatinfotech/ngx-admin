@@ -308,6 +308,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
         title: 'Xem trước',
         data: data,
         idKey: ['Code'],
+        sourceOfDialog: 'list',
         // approvedConfirm: true,
         onClose: (data: WarehouseGoodsDeliveryNoteModel) => {
           this.refresh();
