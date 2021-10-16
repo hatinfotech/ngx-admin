@@ -356,6 +356,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   makeId(item: M) {
+    if(typeof item === 'string') return item;
     if (Array.isArray(this.idKey)) {
       return this.idKey.map(key => this.encodeId(item[key])).join('-');
     }
