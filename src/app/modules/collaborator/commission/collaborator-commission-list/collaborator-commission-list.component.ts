@@ -270,6 +270,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
         id: typeof ids[0] === 'string' ? ids as any : null,
         data: typeof ids[0] !== 'string' ? ids as any : null,
         idKey: ['Code'],
+        sourceOfDialog: 'list',
         // approvedConfirm: true,
         onClose: (data: CollaboratorCommissionVoucherModel) => {
           this.refresh();

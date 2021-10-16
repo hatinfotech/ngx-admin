@@ -340,6 +340,7 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
         title: 'Xem trước',
         data: data,
         idKey: ['Code'],
+        sourceOfDialog: 'list',
         // approvedConfirm: true,
         onClose: (data: CashVoucherModel) => {
           this.refresh();
