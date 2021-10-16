@@ -101,7 +101,9 @@
           <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
         </button>
         <!-- <button *ngIf="mode === 'print'" nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
+        
         <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.confirmLabel | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward'}}"></nb-icon></button>
+        
         <button *ngIf="mode === 'preview'" nbButton hero status="success" (click)="saveAndClose(data);">
           <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
         </button>
