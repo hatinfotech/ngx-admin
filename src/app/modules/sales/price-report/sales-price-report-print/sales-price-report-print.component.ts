@@ -28,6 +28,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   env = environment;
   processMapList: ProcessMap[] = [];
   formDialog = SalesPriceReportFormComponent;
+  idKey: ['Code'];
 
   constructor(
     public commonService: CommonService,
@@ -272,6 +273,10 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
       }
       return rs;
     });
+  }
+
+  getItemDescription(item: SalesPriceReportModel) {
+    return item?.Title;
   }
 
 
