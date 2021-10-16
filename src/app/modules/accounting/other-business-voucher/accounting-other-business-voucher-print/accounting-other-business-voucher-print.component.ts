@@ -23,6 +23,7 @@ export class AccountingOtherBusinessVoucherPrintComponent extends DataManagerPri
   apiPath = '/accounting/other-business-vouchers';
   env = environment;
   processMapList: ProcessMap[] = [];
+  idKey: ['Code'];
 
   constructor(
     public commonService: CommonService,
@@ -49,7 +50,7 @@ export class AccountingOtherBusinessVoucherPrintComponent extends DataManagerPri
       for (const detail of data.Details) {
         data['Total'] += parseFloat(detail['Amount'] as any);
       }
-      this.processMapList[i] = AppModule.processMaps.cashVoucher[data.State || ''];
+      this.processMapList[i] = AppModule.processMaps.otherBusinessVoucher[data.State || ''];
     }
 
     return result;
@@ -120,7 +121,7 @@ export class AccountingOtherBusinessVoucherPrintComponent extends DataManagerPri
     //   return;
     // }
     const params = { id: [data.Code] };
-    const processMap = AppModule.processMaps.cashVoucher[data.State || ''];
+    const processMap = AppModule.processMaps.otherBusinessVoucher[data.State || ''];
     params['changeState'] = processMap?.nextState;
     // let confirmText = '';
     // let responseText = '';
@@ -176,6 +177,10 @@ export class AccountingOtherBusinessVoucherPrintComponent extends DataManagerPri
 
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<OtherBusinessVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
+  }
+
+  getItemDescription(item: OtherBusinessVoucherModel) {
+    return item?.Description;
   }
 
 

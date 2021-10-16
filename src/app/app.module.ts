@@ -965,6 +965,45 @@ export class AppModule {
         ]
       },
     },
+    otherBusinessVoucher: {
+      "APPROVED": {
+        ...AppModule.approvedState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.unrecordedState,
+        ],
+      },
+      "APPROVALREQUESTED": {
+        ...AppModule.approvalRequestedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
+      },
+      "UNRECORDED": {
+        ...AppModule.unrecordedState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
+      },
+      "NOTJUSTAPPROVED": {
+        ...AppModule.notJustApprodedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+      "": {
+        ...AppModule.notJustApprodedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ]
+      },
+    },
     commissionPaymentVoucher: {
       "APPROVALREQUESTED": {
         state: 'APPROVALREQUESTED',

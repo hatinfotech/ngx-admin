@@ -154,7 +154,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.cashVoucher[value || ''];
+              const processMap = AppModule.processMaps.otherBusinessVoucher[value || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
@@ -296,6 +296,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
         id: typeof ids[0] === 'string' ? ids as any : null,
         data: typeof ids[0] !== 'string' ? ids as any : null,
         idKey: ['Code'],
+        sourceOfDialog: 'list',
         // approvedConfirm: true,
         onClose: (data: OtherBusinessVoucherModel) => {
           this.refresh();
