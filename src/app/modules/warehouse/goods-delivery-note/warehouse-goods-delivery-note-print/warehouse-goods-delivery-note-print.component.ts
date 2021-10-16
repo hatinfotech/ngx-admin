@@ -24,6 +24,7 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
   env = environment;
   apiPath = '/warehouse/goods-delivery-notes';
   processMapList: ProcessMap[] = [];
+  idKey: ['Code'];
 
   constructor(
     public commonService: CommonService,
@@ -190,6 +191,10 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
         },
       },
     ]);
+  }
+
+  getItemDescription(item: WarehouseGoodsDeliveryNoteModel) {
+    return item?.Description;
   }
 
 }

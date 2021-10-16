@@ -1,6 +1,7 @@
+import { WarehouseGoodsReceiptNoteModel } from './../../../../models/warehouse.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { WarehouseGoodsReceiptNoteDetailModel, WarehouseGoodsReceiptNoteModel } from '../../../../models/warehouse.model';
+import { WarehouseGoodsReceiptNoteDetailModel } from '../../../../models/warehouse.model';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
@@ -196,6 +197,10 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
         },
       },
     ]);
+  }
+
+  getItemDescription(item: WarehouseGoodsReceiptNoteModel) {
+    return item?.Description;
   }
 
 }

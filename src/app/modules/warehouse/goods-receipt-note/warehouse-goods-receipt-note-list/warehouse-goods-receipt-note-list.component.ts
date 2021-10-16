@@ -183,7 +183,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.warehouseDeliveryGoodsNote[value || ''];
+              const processMap = AppModule.processMaps.warehouseReceiptGoodsNote[value || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
