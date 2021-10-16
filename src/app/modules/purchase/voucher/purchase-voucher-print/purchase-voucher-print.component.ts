@@ -188,4 +188,8 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
     ]);
   }
 
+  getItemDescription(item: PurchaseVoucherModel) {
+    return item?.Title;
+  }
+
 }

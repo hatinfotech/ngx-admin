@@ -72,7 +72,7 @@
         <div>
           <div class="">{{renderValue(data.Note)}}</div>
           <!-- <div class="under-line">{{'Purchase.deliveryAddress' | translate | headtitlecase}}: -->
-            <!-- {{renderValue(data.DeliveryAddress)}} -->
+          <!-- {{renderValue(data.DeliveryAddress)}} -->
           <!-- </div> -->
           <!-- <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:
             {{renderValue(data.DirectReceiverName)}}</div> -->
@@ -93,12 +93,19 @@
     </nb-card-body>
     <nb-card-footer>
       <div class="buttons-row">
-        <button nbButton hero status="warning" (click)="prepareCopy(data);"><nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}</button>
-        <button nbButton hero status="danger" (click)="approvedConfirm(data, i);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button>
-        <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
-            <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+        <button nbButton hero status="warning" (click)="prepareCopy(data);">
+          <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
         </button>
-    </div>
+        <!-- <button nbButton hero status="danger" (click)="approvedConfirm(data, i);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
+
+        <!--State process buttons-->
+        <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.confirmLabel | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward'}}"></nb-icon></button>
+        <!--End State process buttons-->
+
+        <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
+          <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+        </button>
+      </div>
     </nb-card-footer>
   </nb-card>
 </div>
