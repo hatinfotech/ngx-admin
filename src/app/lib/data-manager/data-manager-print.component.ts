@@ -288,7 +288,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         },
       },
       {
-        label: this.commonService.translateText(nextState.label),
+        label: this.commonService.translateText(nextState.confirmLabel),
         status: nextState.status,
         action: () => {
           this.loading = true;

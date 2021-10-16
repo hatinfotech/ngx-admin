@@ -623,8 +623,13 @@ export class AppModule {
   static notJustApprodedState: ProcessMap = {
     state: 'NOTJUSTAPPROVED',
     label: 'Common.notJustApproved',
-    status: 'danger',
+    confirmLabel: 'Common.unApprove',
+    status: 'warning',
     outline: false,
+    confirmTitle: 'Common.unApprove',
+    confirmText: 'Common.unApproveConfirmText',
+    responseTitle: 'Common.unApprove',
+    responseText: 'Common.unApproveSuccessText',
   };
   static confirmationRequestedState: ProcessMap = {
     state: 'CONFIRMATIONREQUESTED',
@@ -636,6 +641,42 @@ export class AppModule {
     confirmText: 'Common.confirmationRequesetedConfirmText',
     responseTitle: 'Common.confirmationRequeseted',
     responseText: 'Common.confirmationRequesetedResponseText',
+  };
+  static acceptanceState: ProcessMap = {
+    state: 'ACCEPTANCE',
+    label: 'Common.acceptance',
+    confirmLabel: 'Common.acceptance',
+    status: 'info',
+    outline: false,
+    confirmTitle: 'Common.acceptance',
+    nextStateLabel: 'Common.acceptance',
+    confirmText: 'Common.acceptanceConfirm',
+    responseTitle: 'Common.acceptanced',
+    responseText: 'Common.acceptanceSuccess',
+  };
+  static completeState: ProcessMap = {
+    state: 'COMPLETE',
+    label: 'Common.completed',
+    confirmLabel: 'Common.complete',
+    status: 'basic',
+    outline: true,
+    nextState: '',
+    nextStateLabel: '',
+    confirmText: 'Common.completeConfirm',
+    responseTitle: 'Common.completed',
+    responseText: 'Common.completeSuccess',
+  };
+  static depploymentState: ProcessMap = {
+    state: 'DEPLOYMENT',
+    label: 'Common.deployed',
+    confirmLabel: 'Common.deploy',
+    status: 'primary',
+    outline: false,
+    confirmTitle: 'Common.deploy',
+    nextStateLabel: 'Common.deploy',
+    confirmText: 'Common.deployedConfirm',
+    responseTitle: 'Common.deployed',
+    responseText: 'Common.deployedSuccess',
   };
 
   static processMaps: { [key: string]: { [key: string]: ProcessMap } } = {
@@ -986,60 +1027,50 @@ export class AppModule {
       },
     },
     deploymentVoucher: {
-      "APPROVE": {
-        state: 'APPROVE',
-        label: 'Common.approved',
-        status: 'success',
-        outline: false,
-        nextState: 'COMPLETE',
-        nextStateLabel: 'Common.complete',
-        confirmText: 'Common.completeConfirm',
-        responseTitle: 'Common.completed',
-        responseText: 'Common.completeSuccess',
+      "APPROVED": {
+        ...AppModule.approvedState,
+        nextState: 'DEPLOYEMNT',
+        nextStates: [
+          {...AppModule.depploymentState, status: 'danger'},
+          AppModule.notJustApprodedState,
+        ],
       },
       "DEPLOYMENT": {
-        state: 'DEPLOYMENT',
-        label: 'Common.implement',
-        status: 'warning',
-        outline: false,
-        nextState: 'ACCEPTANCE',
-        nextStateLabel: 'Common.acceptance',
-        confirmText: 'Common.acceptanceConfirm',
-        responseTitle: 'Common.acceptanced',
-        responseText: 'Common.acceptanceSuccess',
+        ...AppModule.depploymentState,
+        nextState: 'COMPLETE',
+        nextStates: [
+          {...AppModule.completeState, status: 'success'},
+          AppModule.notJustApprodedState,
+        ],
       },
       "ACCEPTANCE": {
-        state: 'ACCEPTANCE',
-        label: 'Common.acceptance',
-        status: 'info',
-        outline: false,
+        ...AppModule.acceptanceState,
         nextState: 'COMPLETE',
-        nextStateLabel: 'Common.complete',
-        confirmText: 'Common.completeConfirm',
-        responseTitle: 'Common.completed',
-        responseText: 'Common.completeSuccess',
+        nextStates: [
+          {...AppModule.completeState, status: 'success'},
+          AppModule.notJustApprodedState,
+        ],
       },
       "COMPLETE": {
-        state: 'COMPLETE',
-        label: 'Common.completed',
-        status: 'success',
-        outline: true,
-        nextState: '',
-        nextStateLabel: '',
-        confirmText: 'Common.completeConfirm',
-        responseTitle: 'Common.completed',
-        responseText: 'Common.completeSuccess',
+        ...AppModule.completeState,
+        nextState: 'NOTJUSTAPPROVED',
+        nextStates: [
+          AppModule.notJustApprodedState,
+        ],
+      },
+      "NOTJUSTAPPROVED": {
+        ...AppModule.notJustApprodedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
       },
       "": {
-        state: 'NOTJUSTAPPROVE',
-        label: 'Common.notJustApproved',
-        status: 'danger',
-        outline: false,
-        nextState: 'APPROVE',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        ...AppModule.notJustApprodedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
       },
     },
     accMasterBook: {

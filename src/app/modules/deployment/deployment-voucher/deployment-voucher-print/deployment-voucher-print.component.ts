@@ -25,6 +25,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   env = environment;
   apiPath = '/deployment/vouchers';
   processMapList: ProcessMap[] = [];
+  idKey: ['Code'];
 
   constructor(
     public commonService: CommonService,
@@ -270,6 +271,10 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
       }
       return rs;
     });
+  }
+
+  getItemDescription(item: DeploymentVoucherModel) {
+    return item?.Title;
   }
 
 }

@@ -375,7 +375,14 @@
         "unrecordedConfirm": "bạn có muốn bỏ ghi phiếu này không ?",
         "unrecordedResponse": "bỏ ghi thành công",
         "confirmRequested": "yêu cầu xác nhận",
-        "confirmationRequest": "yêu cầu xác nhận"
+        "confirmationRequest": "yêu cầu xác nhận",
+        "deployed": "đã triển khai",
+        "deploy": "triển khai",
+        "deployedConfirm": "bạn có muốn triển khai phiếu này không ?",
+        "deployedSuccess": "đã chuyển sang trạn thái triển khai",
+        "unApprove": "bỏ duyệt",
+        "unApproveConfirmText": "bạn có muốn bỏ duyệt phiếu này không ?",
+        "unApproveSuccessText": "đã chuyển sang trạng thái bỏ duyệt"
     },
     "Contact": {
         "Customer": {
