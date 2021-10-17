@@ -12,6 +12,7 @@ import { CommonService } from './services/common.service';
 import { NbAuthService } from '@nebular/auth';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, take } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'ngx-app',
@@ -39,6 +40,7 @@ export class AppComponent implements OnInit {
     public authService: NbAuthService,
     public translate: TranslateService,
     public notificatinoSerivce: NotificationService,
+    private titleService: Title,
   ) {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'far ' });
@@ -49,6 +51,13 @@ export class AppComponent implements OnInit {
           this.commonService.languageLoaded$.pipe(filter(f => f)).subscribe(() => this.menu = this.translateMenu(menuTree));
         });
       }
+    });
+
+    // Set title
+    this.commonService.systemConfigs$.pipe(filter(f => !!f), take(1)).toPromise().then(systemConfigs => {
+      if (systemConfigs?.ROOT_CONFIGS?.coreName) {
+        this.titleService.setTitle(systemConfigs.ROOT_CONFIGS.coreName);
+      };
     });
 
     // translate.use('vi');

@@ -50,6 +50,7 @@ import { WarehouseGoodsDeliveryNotePrintComponent } from '../modules/warehouse/g
 import { WarehouseGoodsReceiptNotePrintComponent } from '../modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { NotificationModel } from '../models/notification.model';
+import { RootConfigModel, SystemConfigModel } from '../models/model';
 
 @Injectable({
   providedIn: 'root',
@@ -113,6 +114,7 @@ export class CommonService {
 
   notificationMessage: BehaviorSubject<any>;
   timezones$ = new BehaviorSubject<any>(null);
+  systemConfigs$ = new BehaviorSubject<SystemConfigModel>(null);
 
   constructor(
     public authService: NbAuthService,
@@ -302,6 +304,11 @@ export class CommonService {
           }
           break;
       }
+    });
+
+    this.apiService.getPromise<SystemConfigModel>('/system/settings', {}).then(systemConfigs => {
+      console.log(systemConfigs);
+      this.systemConfigs$.next(systemConfigs);
     });
   }
 
