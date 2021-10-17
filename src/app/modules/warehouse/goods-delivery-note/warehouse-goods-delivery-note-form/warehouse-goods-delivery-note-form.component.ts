@@ -498,7 +498,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               // get purchase order
               const salesVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-              if (this.commonService.getObjectId(salesVoucher.State) != 'APPROVE') {
+              if (this.commonService.getObjectId(salesVoucher.State) != 'APPROVED') {
                 this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                 continue;
               }
@@ -559,7 +559,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
   
-                if (this.commonService.getObjectId(refVoucher.State) != 'APPROVE') {
+                if (this.commonService.getObjectId(refVoucher.State) != 'APPROVED') {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
@@ -601,7 +601,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/deployment/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
   
-                if (['APPROVE','COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
+                if (['APPROVED','COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }

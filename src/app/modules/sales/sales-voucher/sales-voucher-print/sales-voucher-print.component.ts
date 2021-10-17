@@ -234,13 +234,13 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
         },
       },
       {
-        label: this.commonService.translateText(!data.State ? 'Common.approve' : (data.State === 'APPROVE' ? 'Common.complete' : '')),
+        label: this.commonService.translateText(!data.State ? 'Common.approve' : (data.State === 'APPROVED' ? 'Common.complete' : '')),
         status: 'danger',
         action: () => {
           const params = { id: [data.Code] };
           if (!data.State) {
             params['approve'] = true;
-          } else if (data.State === 'APPROVE') {
+          } else if (data.State === 'APPROVED') {
             params['complete'] = true;
           }
           this.apiService.putPromise<SalesVoucherModel[]>('/sales/sales-vouchers', params, [{ Code: data.Code }]).then(rs => {

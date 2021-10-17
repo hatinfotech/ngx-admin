@@ -970,7 +970,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true }).then(rs => rs[0]);
 
-                if (['APPROVE', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
+                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu báo giá chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }

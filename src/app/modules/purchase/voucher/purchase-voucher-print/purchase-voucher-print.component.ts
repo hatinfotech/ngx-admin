@@ -160,7 +160,7 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        label: this.commonService.translateText(data.State == 'APPROVED' ? 'Common.complete' : 'Common.approve'),
         status: 'danger',
         action: () => {
           this.loading = true;
