@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '5.0.2.3',
+  version: '5.0.2.4',
   // 5.0.2.1: redefined voucher state
   // 5.0.1.1: redev Calculate collaborator commission and award
   // 5.0: Upgrade ngx-admin 8, angular 12
