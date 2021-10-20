@@ -107,7 +107,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       });
     }
   }];
-  
+
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -968,7 +968,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
               if (index < 0) {
                 const details = this.getDetails(formGroup);
                 // get purchase order
-                const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true }).then(rs => rs[0]);
+                const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu báo giá chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
@@ -994,6 +994,11 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
+                if (refVoucher.RelativeVouchers && refVoucher.RelativeVouchers.length > 0) {
+                  for (const relativeVoucher of refVoucher.RelativeVouchers) {
+                    insertList.push(relativeVoucher);
+                  }
+                }
 
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
@@ -1012,7 +1017,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
           }
         },
       }

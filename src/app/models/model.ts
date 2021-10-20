@@ -2,6 +2,7 @@ export abstract class Model {
     [key: string]: any;
     id?: string;
     text?: string;
+    RelativeVouchers?: { id: StaticRange, text: string, type: string }[];
 }
 
 export interface RootConfigModel {

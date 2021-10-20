@@ -716,6 +716,14 @@ export class AppModule {
     salesVoucher: {
       "APPROVED": {
         ...AppModule.approvedState,
+        nextState: 'COMPLETE',
+        nextStates: [
+          { ...AppModule.completeState, status: 'success' },
+          AppModule.unrecordedState,
+        ],
+      },
+      "COMPLETE": {
+        ...AppModule.completeState,
         nextState: 'UNRECORDED',
         nextStates: [
           AppModule.unrecordedState,
@@ -1258,48 +1266,41 @@ export class AppModule {
     },
     collaboratoOrder: {
       "APPROVED": {
-        state: 'APPROVED',
-        label: 'Common.approved',
-        status: 'success',
-        outline: true,
+        ...AppModule.approvedState,
+        nextState: 'COMPLETE',
+        nextStates: [
+          { ...AppModule.completeState, status: 'success' },
+          AppModule.unrecordedState,
+        ],
+      },
+      "COMPLETE": {
+        ...AppModule.completeState,
         nextState: 'UNRECORDED',
-        nextStateLabel: 'Common.unbookkeeping',
-        confirmText: 'Common.unbookkeepingConfirm',
-        responseTitle: 'Common.unbookkeeping',
-        responseText: 'Common.unbookkeepingSuccess',
+        nextStates: [
+          AppModule.unrecordedState,
+        ],
       },
       "UNRECORDED": {
-        state: 'UNRECORDED',
-        label: 'Common.unbookkeeped',
-        status: 'warning',
-        outline: true,
+        ...AppModule.unrecordedState,
         nextState: 'APPROVED',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
       },
       "NOTJUSTAPPROVED": {
-        state: 'NOTJUSTAPPROVED',
-        label: 'Common.notJustApproved',
-        status: 'danger',
-        outline: false,
+        ...AppModule.notJustApprodedState,
         nextState: 'APPROVED',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        nextStates: [
+          AppModule.approvedState,
+        ],
       },
       "": {
-        state: 'NOTJUSTAPPROVED',
-        label: 'Common.notJustApproved',
-        status: 'danger',
-        outline: false,
-        nextState: 'APPROVE',
-        nextStateLabel: 'Common.approve',
-        confirmText: 'Common.approvedConfirm',
-        responseTitle: 'Common.approved',
-        responseText: 'Common.approveSuccess',
+        ...AppModule.notJustApprodedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
       },
     },
   };

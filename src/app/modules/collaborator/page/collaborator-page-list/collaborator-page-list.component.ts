@@ -181,18 +181,18 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
             instance.title = this.commonService.translateText('Collaborator.Page.pushProductLabel');
             instance.label = this.commonService.translateText('Collaborator.Page.pushProductLabel');
             instance.init.subscribe((page: PageModel) => {
-              if (!page.PlatformApiUrl || !page.PlatformApiToken) {
-                instance.disabled = true;
-              }
+              // if (!page.PlatformApiUrl || !page.PlatformApiToken) {
+                // instance.disabled = true;
+              // }
               // const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
               // instance.label = this.commonService.translateText(processMap?.label);
               // instance.status = processMap?.status;
               // instance.outline = processMap?.outline;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
-              if (!rowData.PlatformApiUrl || !rowData.PlatformApiToken) {
-                return false;
-              }
+              // if (!rowData.PlatformApiUrl || !rowData.PlatformApiToken) {
+              //   return false;
+              // }
               this.commonService.openDialog(ShowcaseDialogComponent, {
                 closeOnBackdropClick: false,
                 closeOnEsc: false,

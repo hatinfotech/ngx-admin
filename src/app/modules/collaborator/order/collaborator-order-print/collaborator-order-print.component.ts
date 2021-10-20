@@ -275,6 +275,8 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     });
   }
 
-
+  getItemDescription(item: CollaboratorOrderModel) {
+    return item?.Description;
+  }
 
 }

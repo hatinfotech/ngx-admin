@@ -248,15 +248,16 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     }
 
     /** Load and cache unit list */
-    if (!DeploymentVoucherFormComponent._unitList) {
-      this.unitList = DeploymentVoucherFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
-        tax['id'] = tax.Code;
-        tax['text'] = tax.Name;
-        return tax;
-      });
-    } else {
-      this.taxList = DeploymentVoucherFormComponent._taxList;
-    }
+    // if (!DeploymentVoucherFormComponent._unitList) {
+    //   this.unitList = DeploymentVoucherFormComponent._unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
+    //     tax['id'] = tax.Code;
+    //     tax['text'] = tax.Name;
+    //     return tax;
+    //   });
+    // } else {
+    //   this.taxList = DeploymentVoucherFormComponent._taxList;
+    // }
+    this.unitList = this.commonService.unitList;
     return rs;
   }
 
