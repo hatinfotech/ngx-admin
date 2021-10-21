@@ -41,12 +41,12 @@
                                 </div>
                             </div>
                             <div class="col-sm-2">
-                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('BreakOnFail'), 'warning')">
+                                <div class="form-group" [attr.state]="formControlValidate(formItem.get('BreakOnFinal'), 'warning')">
                                     <label class="label">
-                                      <span class="valid">Dừng khi thất bại (*)</span>
+                                      <span class="valid">Dừng khi kết thúc (*)</span>
                                       <span class="invalid">Trạng thái là bắt buộc (*)</span>
                                     </label>
-                                    <nb-checkbox formControlName="BreakOnFail" title="Kích hoạt">Dừng khi thất bại</nb-checkbox>
+                                    <nb-checkbox formControlName="BreakOnFinal" title="Kích hoạt">Dừng khi kết thúc</nb-checkbox>
                                 </div>
                             </div>
                             <div class="col-sm-1">

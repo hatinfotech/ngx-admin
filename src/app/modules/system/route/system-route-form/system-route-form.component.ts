@@ -250,7 +250,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
       Type: [{ disabled: true, value: '' }, Validators.required],
       State: [{ disabled: true, value: '' }],
       Enable: [true],
-      BreakOnFail: [true],
+      BreakOnFinal: [true],
       RouteIndex: [''],
       Name: ['', Validators.required],
       Description: ['', Validators.required],
