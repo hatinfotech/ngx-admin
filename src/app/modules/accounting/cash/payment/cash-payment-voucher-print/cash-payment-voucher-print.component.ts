@@ -1,3 +1,4 @@
+import { CashPaymentVoucherFormComponent } from './../cash-payment-voucher-form/cash-payment-voucher-form.component';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -25,6 +26,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   // approvedConfirm?: boolean;
   env = environment;
   processMapList: ProcessMap[] = [];
+  formDialog = CashPaymentVoucherFormComponent;
 
   constructor(
     public commonService: CommonService,
@@ -209,5 +211,4 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   getItemDescription(item: CashVoucherModel) {
     return item?.Description;
   }
-
 }

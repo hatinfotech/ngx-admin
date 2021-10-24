@@ -308,6 +308,30 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     ]);
   }
 
+  prepareCopy(data: M) {
+    this.close();
+    if (!this.formDialog) {
+      console.error('Form Dialog was not defined');
+      return;
+    }
+    this.commonService.openDialog(this.formDialog, {
+      context: {
+        inputMode: 'dialog',
+        inputId: [this.makeId(data)],
+        isDuplicate: true,
+        onDialogSave: (newData: M[]) => {
+          // if (onDialogSave) onDialogSave(row);
+          this.onClose(newData[0]);
+        },
+        onDialogClose: () => {
+          // if (onDialogClose) onDialogClose();
+          this.refresh();
+
+        },
+      },
+    });
+  }
+
   async refresh() {
     if (this.id) {
       this.data = await this.getFormData(this.id);

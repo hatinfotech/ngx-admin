@@ -10,6 +10,7 @@ import { ProcessMap } from '../../../../../models/process-map.model';
 import { SalesPriceReportDetailModel } from '../../../../../models/sales.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { CashReceiptVoucherFormComponent } from '../cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -25,6 +26,7 @@ export class CashReceiptVoucherPrintComponent extends DataManagerPrintComponent<
   apiPath = '/accounting/cash-vouchers';
   env = environment;
   processMapList: ProcessMap[] = [];
+  formDialog = CashReceiptVoucherFormComponent;
 
   constructor(
     public commonService: CommonService,

@@ -294,16 +294,18 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       return accBusiness;
     }));
     return super.init().then(rs => {
-      // this.getRequestId(id => {
-      //   if (!id || id.length === 0) {
-      //     this.addDetailFormGroup(0);
-      //   }
-      //   // else {
-      //   //   for (const mainForm of this.array.controls) {
-      //   //     this.toMoney(mainForm as FormGroup);
-      //   //   }
-      //   // }
-      // });
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          formItem.get('Description').setValue('Copy of: ' + formItem.get('Description').value);
+          this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
+            // Clear id
+            conditonFormGroup.get('Id').setValue('');
+          });
+        });
+      }
       return rs;
     });
   }

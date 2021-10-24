@@ -12,7 +12,18 @@
                     <div class="under-title">{{ data.Code }} - {{ data.CommissionTo | date:'short' }}</div>
                 </div>
                 <div>
-                    <div class="under-line">{{'Common.contact' | translate | headtitlecase}} : {{renderValue(data.PublisherName)}}</div>
+                    <div style="display: flex;">
+                        <div style="flex: 1;">
+                            <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+                                {{renderValue(data.PublisherName)}}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
+                                {{renderValue(data.Publisher | objectid)}}
+                            </div>
+                        </div>
+                    </div>
                     <!-- <div class="under-line">{{'Common.amount' | translate | headtitlecase}} : {{renderValue(data.Amount)}}</div> -->
                 </div>
                 <div>

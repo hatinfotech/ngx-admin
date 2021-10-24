@@ -382,7 +382,8 @@
         "deployedSuccess": "đã chuyển sang trạn thái triển khai",
         "unApprove": "bỏ duyệt",
         "unApproveConfirmText": "bạn có muốn bỏ duyệt phiếu này không ?",
-        "unApproveSuccessText": "đã chuyển sang trạng thái bỏ duyệt"
+        "unApproveSuccessText": "đã chuyển sang trạng thái bỏ duyệt",
+        "customerId": "ID khách"
     },
     "Contact": {
         "Customer": {

@@ -300,21 +300,33 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { select: 'id=>Code,text=>Name,DebitAccount=>DebitAccount,CreditAccount=>CreditAccount,Name=>Name,Code=>Code', limit: 'nolimit', eq_Type: 'PAYMENT' });
     this.bankAccountList = await this.apiService.getPromise<AccBankAccountModel[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;'/';AccountNumber;'/';Bank;'/';Branch)" });
     return super.init().then(rs => {
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          formItem.get('Description').setValue('Copy of: ' + formItem.get('Description').value);
+          this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
+            // Clear id
+            conditonFormGroup.get('Id').setValue('');
+          });
+        });
+      }
       return rs;
     });
-    return super.init().then(rs => {
-      // this.getRequestId(id => {
-      //   if (!id || id.length === 0) {
-      //     this.addDetailFormGroup(0);
-      //   }
-      //   // else {
-      //   //   for (const mainForm of this.array.controls) {
-      //   //     this.toMoney(mainForm as FormGroup);
-      //   //   }
-      //   // }
-      // });
-      return rs;
-    });
+    // return super.init().then(rs => {
+    //   // this.getRequestId(id => {
+    //   //   if (!id || id.length === 0) {
+    //   //     this.addDetailFormGroup(0);
+    //   //   }
+    //   //   // else {
+    //   //   //   for (const mainForm of this.array.controls) {
+    //   //   //     this.toMoney(mainForm as FormGroup);
+    //   //   //   }
+    //   //   // }
+    //   // });
+    //   return rs;
+    // });
   }
 
   /** Get form data by id from api */
