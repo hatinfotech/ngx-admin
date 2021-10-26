@@ -234,6 +234,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   edit(data: M) {
     try {
+      if (!this.formDialog) {
+        console.error('Form Dialog was not defined');
+        return;
+      }
       this.commonService.openDialog<DataManagerFormComponent<M>>(this.formDialog || this.formDialog, {
         context: {
           showLoadinng: true,

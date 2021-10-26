@@ -19,9 +19,14 @@
                                     <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="{{'Common.Object.name' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.Object.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.Object.phone' | translate | headtitlecase)}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-2">
+                                <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{formItem.get('Code').placeholder || ('Common.code' | translate | headtitlecase)}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-8">

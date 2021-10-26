@@ -383,7 +383,8 @@
         "unApprove": "bỏ duyệt",
         "unApproveConfirmText": "bạn có muốn bỏ duyệt phiếu này không ?",
         "unApproveSuccessText": "đã chuyển sang trạng thái bỏ duyệt",
-        "customerId": "ID khách"
+        "customerId": "ID khách",
+        "dateOfVoucher": "ngày chứng từ"
     },
     "Contact": {
         "Customer": {

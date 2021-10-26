@@ -107,8 +107,8 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           type: 'string',
           width: '10%',
         },
-        Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+        DateOfVoucher: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfVoucher'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -301,7 +301,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
     source.prepareParams = (params: any) => {
       params['includeParent'] = true;
       params['includeRelativeVouchers'] = true;
-      params['sort_Created'] = 'desc';
+      params['sort_DateOfVoucher'] = 'desc';
       params['eq_Type'] = 'PAYMENT';
       return params;
     };

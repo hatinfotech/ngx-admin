@@ -1,3 +1,4 @@
+import { PurchaseVoucherFormComponent } from './../purchase-voucher-form/purchase-voucher-form.component';
 // import { PurchaseModule } from './../../purchase.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
@@ -24,6 +25,7 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
   env = environment;
   apiPath = '/purchase/vouchers';
   processMapList: ProcessMap[] = [];
+  formDialog = PurchaseVoucherFormComponent;
 
   constructor(
     public commonService: CommonService,

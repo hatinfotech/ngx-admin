@@ -63,6 +63,9 @@
         </nb-card-body>
         <nb-card-footer>
             <div class="buttons-row">
+                <button *ngIf="mode === 'print'" nbButton hero status="warning" (click)="edit(data);">
+                    <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
+                </button>
                 <button nbButton hero status="warning" (click)="prepareCopy(data);">
                     <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
                 </button>

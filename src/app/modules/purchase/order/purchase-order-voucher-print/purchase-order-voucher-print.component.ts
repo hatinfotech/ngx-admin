@@ -1,3 +1,4 @@
+import { PurchaseOrderVoucherFormComponent } from './../purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -24,6 +25,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   env = environment;
   apiPath = '/purchase/order-vouchers';
   processMapList: ProcessMap[] = [];
+  formDialog = PurchaseOrderVoucherFormComponent;
 
   constructor(
     public commonService: CommonService,

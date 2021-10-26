@@ -1,3 +1,4 @@
+import { WarehouseGoodsReceiptNoteFormComponent } from './../warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
 import { WarehouseGoodsReceiptNoteModel } from './../../../../models/warehouse.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
@@ -25,6 +26,7 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   env = environment;
   apiPath = '/warehouse/goods-receipt-notes';
   processMapList: ProcessMap[] = [];
+  formDialog = WarehouseGoodsReceiptNoteFormComponent;
 
   constructor(
     public commonService: CommonService,
