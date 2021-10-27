@@ -29,15 +29,20 @@ export class AccountingReportComponent extends BaseComponent {
   ) {
     super(commonService, router, apiService, ref);
 
+    const reportToDate = localStorage.getItem('Accounting.ReportToDate');
     this.formItem = this.formBuilder.group({
       GlobalAccField1: [],
       GlobalAccField2: [],
       GlobalAccField3: [],
-      ToDate: [new Date()],
+      ToDate: [reportToDate ? new Date(parseInt(reportToDate)) : new Date()],
     });
-    this.formItem.get('ToDate').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+    const toDateFormConttol = this.formItem.get('ToDate');
+    toDateFormConttol.valueChanges.pipe(takeUntil(this.destroy$), filter(f => (f as Date).getTime() != this.accountingService.reportToDate$?.value.getTime())).subscribe(value => {
       console.log(value);
       this.accountingService.reportToDate$.next(value);
+    });
+    this.accountingService.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(reportToDate => {
+      toDateFormConttol.setValue(reportToDate);
     });
   }
 

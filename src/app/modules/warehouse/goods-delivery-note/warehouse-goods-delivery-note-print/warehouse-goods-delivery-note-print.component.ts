@@ -47,16 +47,17 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
     const result = await super.init();
     // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
-    for (const i in this.data) {
-      const data = this.data[i];
-      this.setDetailsNo(data?.Details, (detail: WarehouseGoodsDeliveryNoteDetailModel) => detail.Type === 'PRODUCT');
-      data['Total'] = 0;
-      data['Title'] = this.renderTitle(data);
-      for (const detail of data.Details) {
-        data['Total'] += detail['ToMoney'] = this.toMoney(detail);
-      }
-      this.processMapList[i] = AppModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
-    }
+    // for (const i in this.data) {
+    //   const data = this.data[i];
+    //   this.setDetailsNo(data?.Details, (detail: WarehouseGoodsDeliveryNoteDetailModel) => detail.Type === 'PRODUCT');
+    //   data['Total'] = 0;
+    //   data['Title'] = this.renderTitle(data);
+    //   for (const detail of data.Details) {
+    //     data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+    //   }
+    //   this.processMapList[i] = AppModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
+    // }
+    this.summaryCalculate(this.data);
 
     return result;
   }
@@ -123,6 +124,7 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsDeliveryNoteDetailModel) => detail.Type === 'PRODUCT');
       }
+      this.summaryCalculate(rs);
       return rs;
     });
   }
@@ -197,6 +199,19 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
 
   getItemDescription(item: WarehouseGoodsDeliveryNoteModel) {
     return item?.Description;
+  }
+
+  summaryCalculate(data: WarehouseGoodsDeliveryNoteModel[]) {
+    for (const i in data) {
+      const item = data[i];
+      item['Total'] = 0;
+      item['Title'] = this.renderTitle(item);
+      for (const detail of item.Details) {
+        item['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      }
+      this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
+    }
+    return data;
   }
 
 }

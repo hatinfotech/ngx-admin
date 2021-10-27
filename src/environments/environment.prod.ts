@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '5.0.3.6',
+  version: '5.0.4.3',
+  // 5.0.4.2: update accounting report by date
   // 5.0.3: collaborator sales processing
   // 5.0.2.1: redefined voucher state
   // 5.0.1.1: redev Calculate collaborator commission and award

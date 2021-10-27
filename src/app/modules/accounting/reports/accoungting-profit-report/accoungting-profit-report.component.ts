@@ -150,10 +150,13 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
 
         };
       }
+
+      // Auto refresh list on reportToDate changed
       this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
         console.log(toDate);
         this.refresh();
       });
+      
       return rs;
     });
   }
@@ -255,7 +258,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
     // params['includeParent'] = true;
     params['reportProfit'] = true;
     if (this.accountingService?.reportToDate$?.value) {
-      const choosedDate = (this.accountingService.reportToDate$.value as Date);
+      const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
       const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 21, 0, 0);
       params['toDate'] = toDate.toISOString();
     }

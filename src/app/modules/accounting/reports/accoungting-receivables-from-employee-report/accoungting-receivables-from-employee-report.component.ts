@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
@@ -10,6 +10,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
+import { AccountingService } from '../../accounting.service';
 import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 
 @Component({
@@ -43,6 +44,7 @@ export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManag
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccoungtingReceivablesFromEmployeeReportComponent>,
+    public accountingService: AccountingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -82,6 +84,13 @@ export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManag
     return super.init().then(rs => {
       this.actionButtonList = this.actionButtonList.filter(f => ['delete','edit','add','choose','preview'].indexOf(f.name) < 0);
       this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
+
+      // Auto refresh list on reportToDate changed
+      this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
+        console.log(toDate);
+        this.refresh();
+      });
+      
       return rs;
     });
   }
@@ -184,6 +193,9 @@ export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManag
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
     // params['includeParent'] = true;
     params['reportReceivablesFromEmployee'] = true;
+    const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+    const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59);
+    params['toDate'] = toDate.toISOString();
     super.executeGet(params, success, error, complete);
   }
 

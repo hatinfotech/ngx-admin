@@ -48,27 +48,28 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   async init() {
     const result = await super.init();
     // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
-    for (const i in this.data) {
-      const data = this.data[i];
-      data['Total'] = 0;
-      data['Title'] = this.renderTitle(data);
-      const taxMap = this.commonService.taxList.reduce(function (map, obj) {
-        map[obj.Code] = obj;
-        return map;
-      }, {});
-      const unitMap = this.commonService.unitList.reduce(function (map, obj) {
-        map[obj.Code] = obj;
-        return map;
-      }, {});
-      for (const detail of data.Details) {
-        if (detail.Type !== 'CATEGORT') {
-          // detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
-          // detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
-          data['Total'] += detail['ToMoney'] = this.toMoney(detail);
-        }
-      }
-      this.processMapList[i] = AppModule.processMaps.collaboratoOrder[data.State || ''];
-    }
+    // for (const i in this.data) {
+    //   const data = this.data[i];
+    //   data['Total'] = 0;
+    //   data['Title'] = this.renderTitle(data);
+    //   const taxMap = this.commonService.taxList.reduce(function (map, obj) {
+    //     map[obj.Code] = obj;
+    //     return map;
+    //   }, {});
+    //   const unitMap = this.commonService.unitList.reduce(function (map, obj) {
+    //     map[obj.Code] = obj;
+    //     return map;
+    //   }, {});
+    //   for (const detail of data.Details) {
+    //     if (detail.Type !== 'CATEGORT') {
+    //       // detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
+    //       // detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
+    //       data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+    //     }
+    //   }
+    //   this.processMapList[i] = AppModule.processMaps.collaboratoOrder[data.State || ''];
+    // }
+    this.summaryCalculate(this.data);
     return result;
   }
 
@@ -226,7 +227,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<CollaboratorOrderModel[]>(this.apiPath, params, [{Page: data.Page, Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<CollaboratorOrderModel[]>(this.apiPath, params, [{ Page: data.Page, Code: data.Code }]).then(rs => {
             this.loading = true;
             this.onChange && this.onChange(data);
             this.close();
@@ -271,12 +272,49 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
         }
         // rs[0]['Total'] = total;
       }
+      this.summaryCalculate(rs);
       return rs;
     });
   }
 
   getItemDescription(item: CollaboratorOrderModel) {
     return item?.Description;
+  }
+
+  summaryCalculate(data: CollaboratorOrderModel[]) {
+    
+    for (const i in data) {
+      const datanium = data[i];
+      datanium['Total'] = 0;
+      datanium['Title'] = this.renderTitle(datanium);
+      const taxMap = this.commonService.taxList.reduce(function (map, obj) {
+        map[obj.Code] = obj;
+        return map;
+      }, {});
+      const unitMap = this.commonService.unitList.reduce(function (map, obj) {
+        map[obj.Code] = obj;
+        return map;
+      }, {});
+      for (const detail of datanium.Details) {
+        if (detail.Type !== 'CATEGORT') {
+          // detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
+          // detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
+          datanium['Total'] += detail['ToMoney'] = this.toMoney(detail);
+        }
+      }
+      this.processMapList[i] = AppModule.processMaps.collaboratoOrder[datanium.State || ''];
+    }
+    
+    // for (const i in data) {
+    //   const item = this.data[i];
+    //   item['Total'] = 0;
+    //   item['Title'] = this.renderTitle(item);
+    //   for (const detail of item.Details) {
+    //     item['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);
+    //   }
+    //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
+    // }
+    return data;
   }
 
 }

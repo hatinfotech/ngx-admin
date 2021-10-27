@@ -31,6 +31,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   apiPath?: string;
   formDialog: Type<DataManagerFormComponent<M>>;
+  processMapList: ProcessMap[] = [];
 
   constructor(
     public commonService: CommonService,
@@ -300,7 +301,8 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
             this.loading = false;
             this.onChange && this.onChange(item);
             this.onClose && this.onClose(item);
-            this.close();
+            // this.close();
+            this.refresh();
             this.commonService.toastService.show(this.commonService.translateText(nextState?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), this.commonService.translateText(nextState?.responseTitle), {
               status: 'success',
             });
@@ -339,7 +341,15 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   async refresh() {
     if (this.id) {
       this.data = await this.getFormData(this.id);
+      for (const i in this.data) {
+        const data = this.data[i];
+        this.processMapList[i] = AppModule.processMaps.cashVoucher[data['State'] || ''];
+      }
     }
     return true;
+  }
+
+  summaryCalculate(data: M[]) {
+    
   }
 }

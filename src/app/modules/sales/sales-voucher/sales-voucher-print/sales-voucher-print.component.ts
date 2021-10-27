@@ -49,17 +49,18 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     const result = await super.init();
     // this.title = `SalesVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
 
-    if (this.data && this.data.length > 0) {
-      for (const i in this.data) {
-        const data = this.data[i];
-        data['Total'] = 0;
-        data['Title'] = this.renderTitle(data);
-        for (const detail of data.Details) {
-          data['Total'] += detail['ToMoney'] = this.toMoney(detail);
-        }
-        this.processMapList[i] = AppModule.processMaps.salesVoucher[data.State || ''];
-      }
-    }
+    // if (this.data && this.data.length > 0) {
+    //   for (const i in this.data) {
+    //     const data = this.data[i];
+    //     data['Total'] = 0;
+    //     data['Title'] = this.renderTitle(data);
+    //     for (const detail of data.Details) {
+    //       data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+    //     }
+    //     this.processMapList[i] = AppModule.processMaps.salesVoucher[data.State || ''];
+    //   }
+    // }
+    this.summaryCalculate(this.data);
 
     return result;
   }
@@ -266,16 +267,30 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: SalesVoucherDetailModel) => detail.Type !== 'CATEGORY');
-        for(const detail of rs[0].Details) {
+        for (const detail of rs[0].Details) {
           rs[0]['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
+      this.summaryCalculate(rs);
       return rs;
     });
   }
 
   getItemDescription(item: SalesVoucherModel) {
     return item?.Description;
+  }
+
+  summaryCalculate(data: SalesVoucherModel[]) {
+    for (const i in data) {
+      const item = data[i];
+      item['Total'] = 0;
+      item['Title'] = this.renderTitle(item);
+      for (const detail of item.Details) {
+        item['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      }
+      this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
+    }
+    return data;
   }
 
 }

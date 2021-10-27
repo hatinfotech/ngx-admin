@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { filter, takeUntil } from 'rxjs/operators';
 import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -9,6 +10,7 @@ import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
+import { AccountingService } from '../../accounting.service';
 
 @Component({
   selector: 'ngx-accoungting-detail-by-object-report',
@@ -47,6 +49,7 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccoungtingDetailByObjectReportComponent>,
+    public accountingService: AccountingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -86,6 +89,13 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
     return super.init().then(rs => {
       // this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
+
+      // Auto refresh list on reportToDate changed
+      this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
+        console.log(toDate);
+        this.refresh();
+      });
+
       return rs;
     });
   }
@@ -184,11 +194,12 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
-            // instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-            //   this.getFormData([rowData.Code]).then(rs => {
-            //     this.preview(rs);
-            //   });
-            // });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+              // this.getFormData([rowData.Code]).then(rs => {
+              //   this.preview(rs);
+              // });
+              this.commonService.previewVoucher(rowData['VoucherType'], rowData['Voucher']);
+            });
           },
         }
       },
@@ -220,6 +231,12 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
         params['reportDetailByObject'] = true;
       }
       params['includeIncrementAmount'] = true;
+
+      if (this.accountingService?.reportToDate$?.value) {
+        const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+        const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 21, 0, 0);
+        params['toDate'] = toDate.toISOString();
+      }
 
       return params;
     };

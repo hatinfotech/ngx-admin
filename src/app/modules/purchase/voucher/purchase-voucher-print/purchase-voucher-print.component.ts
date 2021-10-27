@@ -46,15 +46,16 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
     const result = await super.init();
     // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
-    for (const i in this.data) {
-      const data = this.data[i];
-      data['Total'] = 0;
-      data['Title'] = this.renderTitle(data);
-      for (const detail of data.Details) {
-        data['Total'] += detail['ToMoney'] = this.toMoney(detail);
-      }
-      this.processMapList[i] = AppModule.processMaps.purchaseVoucher[data.State || ''];
-    }
+    // for (const i in this.data) {
+    //   const data = this.data[i];
+    //   data['Total'] = 0;
+    //   data['Title'] = this.renderTitle(data);
+    //   for (const detail of data.Details) {
+    //     data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+    //   }
+    //   this.processMapList[i] = AppModule.processMaps.purchaseVoucher[data.State || ''];
+    // }
+    this.summaryCalculate(this.data);
 
     return result;
   }
@@ -117,7 +118,10 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
   }
   
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
+    return this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(data => {
+      this.summaryCalculate(data);
+      return data;
+    });
   }
 
 
@@ -192,6 +196,19 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
 
   getItemDescription(item: PurchaseVoucherModel) {
     return item?.Title;
+  }
+
+  summaryCalculate(data: PurchaseVoucherModel[]) {
+    for (const i in data) {
+      const item = data[i];
+      item['Total'] = 0;
+      item['Title'] = this.renderTitle(item);
+      for (const detail of item.Details) {
+        item['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      }
+      this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
+    }
+    return data;
   }
 
 }
