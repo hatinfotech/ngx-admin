@@ -1,6 +1,6 @@
 import { takeUntil, filter } from 'rxjs/operators';
 import { AccountingService } from './../accounting.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
@@ -31,16 +31,28 @@ export class AccountingReportComponent extends BaseComponent {
 
     const reportToDate = localStorage.getItem('Accounting.ReportToDate');
     this.formItem = this.formBuilder.group({
-      GlobalAccField1: [],
+      GlobalAccField1: [null, Validators.required],
       GlobalAccField2: [],
       GlobalAccField3: [],
-      ToDate: [reportToDate ? new Date(parseInt(reportToDate)) : new Date()],
+      ToDate: [reportToDate ? new Date(parseInt(reportToDate)) : new Date(), (control: FormControl) => {
+        // console.log(control);
+        if (control.value) {
+          const currentDate = new Date();
+          if ((currentDate.getFullYear() + currentDate.getMonth() + currentDate.getDate()) !== (control.value?.getFullYear() + control.value?.getMonth() + control.value?.getDate())) {
+            return {invalidName: true, required: true, text: 'chú ý: không phải ngày hiện tại'};
+          }
+        }
+        return null;
+      }],
     });
     const toDateFormConttol = this.formItem.get('ToDate');
-    toDateFormConttol.valueChanges.pipe(takeUntil(this.destroy$), filter(f => (f as Date).getTime() != this.accountingService.reportToDate$?.value.getTime())).subscribe(value => {
+
+    toDateFormConttol.valueChanges.pipe(takeUntil(this.destroy$), filter(f => !this.accountingService.reportToDate$?.value || (f as Date).getTime() != this.accountingService.reportToDate$?.value.getTime())).subscribe((value: Date) => {
       console.log(value);
       this.accountingService.reportToDate$.next(value);
+      const currentDate = new Date();
     });
+
     this.accountingService.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(reportToDate => {
       toDateFormConttol.setValue(reportToDate);
     });

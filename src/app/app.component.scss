@@ -13,6 +13,13 @@
 Mini erp
 Global style
 */
+// @include nb-install-component() { 
+//   .form-group.warning input {
+//     background-color: #f7f9fc !important;
+//     border-color: nb-theme(color-warning-500) !important;
+//     color: #222b45 !important;
+//   }
+// }
 
 /* style inject  */
 
@@ -1205,7 +1212,7 @@ body .form-group[state="warning"] textarea,
 body .form-group[state="warning"] input:focus,
 body .form-group[state="warning"] select:focus,
 body .form-group[state="warning"] textarea:focus {
-  border-color: #ffaa00;
+  border-color: #ffaa00 !important;
 }
 
 .form-group {
@@ -1910,3 +1917,5 @@ nb-action {
   z-index: 1040 !important;
 }
 /** End CKeditor */
+
+

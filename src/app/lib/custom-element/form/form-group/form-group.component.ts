@@ -31,6 +31,9 @@ export class FormGroupComponent implements OnInit {
   @Input() customIconTitle?: string;
   @Input() customIconSttaus?: string;
   @Input() customIconAction?: string;
+  @Input() touchedValidate = true;
+
+  warningText = null;
   constructor(
     public commonService: CommonService,
   ) { }
@@ -42,9 +45,13 @@ export class FormGroupComponent implements OnInit {
   formControlValidate(formControl: AbstractControl, invalidText: string, valideText?: string): string {
     // console.info('Form control validate', formControl);
     try {
-      if (formControl.touched && formControl.errors && formControl.errors.required) {
+      if ((!this.touchedValidate || formControl.touched) && formControl.errors && formControl.errors.required) {
+        if (formControl.errors?.text) {
+          this.warningText = formControl.errors.text;
+        }
         return invalidText;
       }
+      this.warningText = null;
       return valideText ? valideText : '';
     } catch (err) {
       console.error(`Form control ${this.name} error`, err);

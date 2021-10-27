@@ -7,17 +7,17 @@
                 </ngx-form-group>
             </div>
             <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="GlobalAccField1" label="Global accouting field 2" [index]="0" [allowCopy]="false" [required]="false">
-                    <input type="text"  nbInput fullWidth formControlName="GlobalAccField1" placeholder="{{'Global accouting field 2' | translate | headtitlecase}}">
+                <ngx-form-group [formGroup]="formItem" name="GlobalAccField2" label="Global accouting field 2" [index]="0" [allowCopy]="false" [required]="false">
+                    <input type="text"  nbInput fullWidth formControlName="GlobalAccField2" placeholder="{{'Global accouting field 2' | translate | headtitlecase}}">
                 </ngx-form-group>
             </div>
             <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="GlobalAccField1" label="Global accouting field 3" [index]="0" [allowCopy]="false" [required]="false">
-                    <input type="text"  nbInput fullWidth formControlName="GlobalAccField1" placeholder="{{'Global accouting field 3' | translate | headtitlecase}}">
+                <ngx-form-group [formGroup]="formItem" name="GlobalAccField3" label="Global accouting field 3" [index]="0" [allowCopy]="false" [required]="false">
+                    <input type="text"  nbInput fullWidth formControlName="GlobalAccField3" placeholder="{{'Global accouting field 3' | translate | headtitlecase}}">
                 </ngx-form-group>
             </div>
             <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="ToDate" label="Báo cáo đến ngày" [index]="0" [allowCopy]="false" [required]="true">
+                <ngx-form-group [formGroup]="formItem" name="ToDate" label="Báo cáo đến ngày" [index]="0" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                     <input type="text" [owlDateTime]="ToDate" [owlDateTimeTrigger]="ToDate" nbInput fullWidth formControlName="ToDate" placeholder="{{'Báo cáo đến ngày' | translate | headtitlecase}}">
                     <owl-date-time #ToDate [pickerType]="'calendar'"></owl-date-time>
                 </ngx-form-group>

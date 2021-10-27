@@ -350,8 +350,8 @@ export class CommonService {
       this.mainSocket.emit('register', {
         token: this.apiService.getAccessToken(),
         user: {
-          id: this.loginInfo.user.Code,
-          name: this.loginInfo.user.Name,
+          id: this.loginInfo?.user?.Code,
+          name: this.loginInfo?.user?.Name,
         },
       }).then(rs2 => {
         console.log('Main socket registerd');
