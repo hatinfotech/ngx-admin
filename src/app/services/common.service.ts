@@ -909,4 +909,11 @@ export class CommonService {
   async getAvailableFileStores(option?: { weight?: number, limit?: number }) {
     return this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', eq_IsAvailable: true, eq_IsUpload: true, requestUploadToken: true, weight: option?.weight, limit: option?.limit || 1 });
   }
+
+  getBeginOfDate(date: Date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 59, 999)
+  }
+  getEndOfDate(date: Date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0)
+  }
 }

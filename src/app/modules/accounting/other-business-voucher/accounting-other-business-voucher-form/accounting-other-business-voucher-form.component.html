@@ -8,7 +8,7 @@
                 <nb-card-body>
                     <div [formGroup]="formItem">
                         <div class="row">
-                            <input type="hidden" formControlName="Code">
+                            <!-- <input type="hidden" formControlName="Code"> -->
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="Object" label="Common.Object.title" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <ngx-select2 formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>

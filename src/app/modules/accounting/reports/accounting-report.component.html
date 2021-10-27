@@ -1,3 +1,30 @@
+<nb-card style="margin-bottom: 1rem;">
+    <nb-card-body>
+        <div class="row">
+            <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="GlobalAccField1" label="Global accouting field 1" [index]="0" [allowCopy]="false" [required]="false">
+                    <input type="text"  nbInput fullWidth formControlName="GlobalAccField1" placeholder="{{'Global accouting field 1' | translate | headtitlecase}}">
+                </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="GlobalAccField1" label="Global accouting field 2" [index]="0" [allowCopy]="false" [required]="false">
+                    <input type="text"  nbInput fullWidth formControlName="GlobalAccField1" placeholder="{{'Global accouting field 2' | translate | headtitlecase}}">
+                </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="GlobalAccField1" label="Global accouting field 3" [index]="0" [allowCopy]="false" [required]="false">
+                    <input type="text"  nbInput fullWidth formControlName="GlobalAccField1" placeholder="{{'Global accouting field 3' | translate | headtitlecase}}">
+                </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="ToDate" label="Báo cáo đến ngày" [index]="0" [allowCopy]="false" [required]="true">
+                    <input type="text" [owlDateTime]="ToDate" [owlDateTimeTrigger]="ToDate" nbInput fullWidth formControlName="ToDate" placeholder="{{'Báo cáo đến ngày' | translate | headtitlecase}}">
+                    <owl-date-time #ToDate [pickerType]="'calendar'"></owl-date-time>
+                </ngx-form-group>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
 <nb-card>
     <nb-route-tabset [tabs]="tabs" fullWidth></nb-route-tabset>
 </nb-card>

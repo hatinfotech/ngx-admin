@@ -3,7 +3,6 @@
         <nb-card-header>
             <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('Accounting.ProfitReport.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase))" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
-
         <nb-card-body>
             <div class="ng2-smart-table-wrap">
                 <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)" (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">

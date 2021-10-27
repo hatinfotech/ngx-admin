@@ -1,10 +1,11 @@
+import { FormControl } from '@angular/forms';
 import { OtherBusinessVoucherModel, OtherBusinessVoucherDetailModel } from './../../../../models/accounting.model';
 import { AccountingOtherBusinessVoucherFormComponent } from './../../other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
@@ -12,6 +13,9 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 import { CurrencyPipe } from '@angular/common';
+import { Icon } from '../../../../lib/custom-element/card-header/card-header.component';
+import { ActionControl, ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { AccountingService } from '../../accounting.service';
 
 @Component({
   selector: 'ngx-accoungting-profit-report',
@@ -48,8 +52,10 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
     public _http: HttpClient,
     public ref: NbDialogRef<AccoungtingProfitReportComponent>,
     public currencyPipe: CurrencyPipe,
+    public accountingService: AccountingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
+
   }
 
   async init() {
@@ -94,7 +100,6 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
         addActionButton.label = this.commonService.translateText('Accounting.profitForward');
         addActionButton.click = () => {
 
-
           this.getList(rs => {
             const details: OtherBusinessVoucherDetailModel[] = [];
             let profit = true;
@@ -111,14 +116,29 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
                 profit = false;
                 profitAmount = Math.abs(detail['TailCredit'] - detail['TailDebit']);
               };
+              if (detail['CreditAccount'] === '4212') {
+                profit = true;
+                profitAmount = Math.abs(detail['TailCredit'] - detail['TailDebit']);
+              };
             }
+
+            const toDate = this.accountingService?.reportToDate$?.value || new Date();
             this.commonService.openDialog(AccountingOtherBusinessVoucherFormComponent, {
               context: {
                 showLoadinng: true,
                 inputMode: 'dialog',
                 // inputId: ids,
-                data: [{ Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.commonService.datePipe.transform(new Date(), 'short') + ' => ' + (profit ? 'Lãi' : 'Lỗ') + ' ' + this.currencyPipe.transform(profitAmount, 'VND'), Details: details }],
+                data: [{
+                  DateOfVoucher: new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 21, 0, 0) as any,
+                  Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.commonService.datePipe.transform(new Date(), 'short') + ' => ' + (profit ? 'Lãi' : 'Lỗ') + ' ' + this.currencyPipe.transform(profitAmount, 'VND'),
+                  Details: details,
+                }],
                 onDialogSave: (newData: OtherBusinessVoucherModel[]) => {
+                  if (newData[0]?.Code) {
+                    this.commonService.previewVoucher('OTHERBUSINESSVOUCHER', newData[0].Code, () => {
+                      this.refresh();
+                    });
+                  }
                 },
                 onDialogClose: () => {
                 },
@@ -130,6 +150,10 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
 
         };
       }
+      this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
+        console.log(toDate);
+        this.refresh();
+      });
       return rs;
     });
   }
@@ -230,6 +254,12 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
     // params['includeParent'] = true;
     params['reportProfit'] = true;
+    if (this.accountingService?.reportToDate$?.value) {
+      const choosedDate = (this.accountingService.reportToDate$.value as Date);
+      const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 21, 0, 0);
+      params['toDate'] = toDate.toISOString();
+    }
+
     super.executeGet(params, success, error, complete);
   }
 

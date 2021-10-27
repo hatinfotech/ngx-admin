@@ -1,4 +1,7 @@
+import { takeUntil, filter } from 'rxjs/operators';
+import { AccountingService } from './../accounting.service';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { BaseComponent } from '../../../lib/base-component';
@@ -14,14 +17,28 @@ export class AccountingReportComponent extends BaseComponent {
   componentName = 'AccountingReportComponent';
 
   tabs: any[];
+  formItem: FormGroup;
 
   constructor(
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<AccountingReportComponent>,
+    public accountingService?: AccountingService,
+    public formBuilder?: FormBuilder,
   ) {
     super(commonService, router, apiService, ref);
+
+    this.formItem = this.formBuilder.group({
+      GlobalAccField1: [],
+      GlobalAccField2: [],
+      GlobalAccField3: [],
+      ToDate: [new Date()],
+    });
+    this.formItem.get('ToDate').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      console.log(value);
+      this.accountingService.reportToDate$.next(value);
+    });
   }
 
   async init() {

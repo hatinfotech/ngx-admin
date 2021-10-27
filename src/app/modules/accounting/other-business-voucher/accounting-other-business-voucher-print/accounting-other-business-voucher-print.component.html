@@ -9,7 +9,7 @@
                 <div>
                     <div class="print-title">{{ 'Accounting.OtherBusinessVoucher.printTitle' | translate:{action: '', definition: ''} | uppercase }}
                     </div>
-                    <div class="under-title">{{ data.Code }} - {{ data.DateOfImplement | date:'short' }}</div>
+                    <div class="under-title">{{ data.Code }} - {{ data.DateOfVoucher | date:'short' }}</div>
                 </div>
                 <div>
                     <div class="under-line">{{'Common.contact' | translate | headtitlecase}} : {{renderValue(data.ObjectName)}}
