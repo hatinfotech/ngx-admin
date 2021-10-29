@@ -146,8 +146,25 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   }
 
   async init() {
-    this.paramList = (await this.apiService.getPromise<SystemParamModel[]>('/system/params', { includeOptions: true, limit: 'nolimit' })).map(item => ({ ...item, id: item.Name, text: item.Description + ' (' + item.Name + ')' }));
-    this.actionList = (await this.apiService.getPromise<SystemActionModel[]>('/system/actions', { includeParams: true, limit: 'nolimit' })).map(item => ({ ...item, id: item.Name, text: `${item.Description} (${item.ActionFunction})`, Params: item.Params.map(param => ({ ...param, id: param.Name, text: param.Description + ' (' + param.Name + ')' })) }));
+    this.paramList = (await this.apiService.getPromise<SystemParamModel[]>('/system/params', { includeOptions: true, limit: 'nolimit' })).map(item => ({
+      ...item,
+      id: item.Name,
+      text: item.Description + ' (' + item.Name + ')',
+      Options: item.Options.map((option: any) => ({
+        ...option,
+        text: `${option.text} (${option.Param})`,
+      })),
+    }));
+    this.actionList = (await this.apiService.getPromise<SystemActionModel[]>('/system/actions', { includeParams: true, limit: 'nolimit' })).map(item => ({
+      ...item,
+      id: item.Name,
+      text: `${item.Description} (${item.ActionFunction})`,
+      Params: item.Params.map(param => ({
+        ...param,
+        id: param.Name,
+        text: param.Description + ' (' + param.Name + ')',
+      })),
+    }));
     return super.init().then(status => {
       if (this.isDuplicate) {
         this.id = [];
@@ -583,6 +600,14 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     };
   }
   makeNewActionParameterFormGroup(data?: SystemRouteActionParameterModel): FormGroup {
+
+    if (data.Type == 'ENV_PARAM' && data.Data && typeof data.Data !== 'object') {
+      const param = this.paramList.find(f => f.id == data.Data);
+      if (param) {
+        data.Data = this.paramList.find(f => f.id == data.Data) as any;
+      }
+    }
+
     const newForm = this.formBuilder.group({
       Id: [''],
       Parameter: [''],
