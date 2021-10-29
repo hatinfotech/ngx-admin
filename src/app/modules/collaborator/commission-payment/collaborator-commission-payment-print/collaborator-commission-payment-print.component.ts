@@ -222,7 +222,7 @@ export class CollaboratorCommissionPaymentPrintComponent extends DataManagerPrin
       for (const detail of item.Details) {
         item['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);
       }
-      this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
+      this.processMapList[i] = AppModule.processMaps.commissionPaymentVoucher[item.State || ''];
     }
     return data;
   }

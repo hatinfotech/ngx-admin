@@ -19,6 +19,7 @@ import { PurchaseVoucherListComponent } from '../../../../purchase/voucher/purch
 import { PurchaseVoucherModel } from '../../../../../models/purchase.model';
 import { PurchaseVoucherPrintComponent } from '../../../../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { CustomIcon } from '../../../../../lib/custom-element/form/form-group/form-group.component';
+import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-form',
@@ -106,7 +107,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // multiple: true,
-    tags: true,
+    tags: false,
     keyMap: {
       id: 'id',
       text: 'text',
@@ -256,6 +257,28 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   accountList: AccountModel[] = [];
   accountDebitList: AccountModel[] = [];
   accountCreditList: AccountModel[] = [];
+
+  objectControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   ngOnInit() {
     this.restrict();

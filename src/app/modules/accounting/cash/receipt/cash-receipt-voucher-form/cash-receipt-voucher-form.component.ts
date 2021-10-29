@@ -18,6 +18,7 @@ import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/
 import { TaxModel } from '../../../../../models/tax.model';
 import { CustomIcon } from '../../../../../lib/custom-element/form/form-group/form-group.component';
 import { AccBusinessFormComponent } from '../../../acc-business/acc-business-form/acc-business-form.component';
+import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-form',
@@ -108,7 +109,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // multiple: true,
-    tags: true,
+    tags: false,
     keyMap: {
       id: 'id',
       text: 'text',
@@ -248,6 +249,27 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     },
   };
 
+  objectControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   ngOnInit() {
     this.restrict();

@@ -691,7 +691,7 @@ export class AppModule {
     responseText: 'Common.approvedRequest',
   };
 
-  static processMaps: { [key: string]: { [key: string]: ProcessMap } } = {
+  static processMaps = {
     priceReport: {
       "APPROVED": {
         ...AppModule.approvedState,

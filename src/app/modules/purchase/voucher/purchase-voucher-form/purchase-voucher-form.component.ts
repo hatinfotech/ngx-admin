@@ -24,6 +24,7 @@ import { PurchaseOrderVoucherPrintComponent } from '../../order/purchase-order-v
 import { BusinessModel } from '../../../../models/accounting.model';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
+import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-form',
@@ -223,6 +224,50 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     { id: 'PRODUCT', text: 'Sản phẩm' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
+
+  objectControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'SUPPLIER', text: this.commonService.translateText('Common.supplier') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+
+  contactControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Contact').patchValue(newContact);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   ngOnInit() {
     this.restrict();
@@ -474,6 +519,26 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
           formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
           formGroup.get('ObjectBankName').setValue(selectedData.BankName);
           formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
+  }
+
+  onContactChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('ContactName').setValue(selectedData.Name);
+          formGroup.get('ContactPhone').setValue(selectedData.Phone);
+          formGroup.get('ContactEmail').setValue(selectedData.Email);
+          formGroup.get('ContactAddress').setValue(selectedData.Address);
+          // formGroup.get('ContactTaxCode').setValue(selectedData.TaxCode);
+          // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
         }
       }
     }

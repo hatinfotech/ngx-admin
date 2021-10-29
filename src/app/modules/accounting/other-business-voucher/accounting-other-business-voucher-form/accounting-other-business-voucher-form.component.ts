@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { OtherBusinessVoucherModel, AccountModel, BusinessModel, CashVoucherDetailModel } from '../../../../models/accounting.model';
 import { ContactModel } from '../../../../models/contact.model';
@@ -12,6 +13,7 @@ import { SalesVoucherModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { CashReceiptVoucherPrintComponent } from '../../cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
@@ -82,7 +84,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // multiple: true,
-    tags: true,
+    tags: false,
     keyMap: {
       id: 'id',
       text: 'text',
@@ -207,6 +209,29 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       text: 'text',
     },
   };
+
+  objectControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+
 
 
   ngOnInit() {

@@ -209,7 +209,7 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
+      this.processMapList[i] = AppModule.processMaps.warehouseDeliveryGoodsNote[item.State || ''];
     }
     return data;
   }

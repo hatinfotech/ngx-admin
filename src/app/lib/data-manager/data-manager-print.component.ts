@@ -341,10 +341,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   async refresh() {
     if (this.id) {
       this.data = await this.getFormData(this.id);
-      for (const i in this.data) {
-        const data = this.data[i];
-        this.processMapList[i] = AppModule.processMaps.cashVoucher[data['State'] || ''];
-      }
+      // for (const i in this.data) {
+      //   const data = this.data[i];
+      //   this.processMapList[i] = AppModule.processMaps.cashVoucher[data['State'] || ''];
+      // }
     }
     return true;
   }

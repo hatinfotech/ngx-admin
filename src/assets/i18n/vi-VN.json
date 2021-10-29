@@ -384,6 +384,7 @@
         "unApproveConfirmText": "bạn có muốn bỏ duyệt phiếu này không ?",
         "unApproveSuccessText": "đã chuyển sang trạng thái bỏ duyệt",
         "customerId": "ID khách",
+        "supplierId": "ID NCC",
         "dateOfVoucher": "ngày chứng từ"
     },
     "Contact": {
