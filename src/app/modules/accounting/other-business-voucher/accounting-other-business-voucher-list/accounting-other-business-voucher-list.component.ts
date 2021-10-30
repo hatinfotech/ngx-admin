@@ -257,7 +257,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
     source.prepareParams = (params: any) => {
       params['includeParent'] = true;
       params['includeRelativeVouchers'] = true;
-      params['sort_Created'] = 'desc';
+      params['sort_Id'] = 'desc';
       params['eq_Type'] = 'RECEIPT';
       return params;
     };

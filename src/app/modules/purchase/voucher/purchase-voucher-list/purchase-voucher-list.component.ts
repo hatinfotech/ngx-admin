@@ -15,6 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 // import { PurchaseModule } from '../../purchase.module';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { AppModule } from '../../../../app.module';
+import { SmartTableDateRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-list',
@@ -69,6 +70,12 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
       delete: this.configDeleteButton(),
       pager: this.configPaging(),
       columns: {
+        No: {
+          title: 'No.',
+          type: 'string',
+          width: '1%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
         Code: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
           type: 'string',
@@ -82,27 +89,27 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
           type: 'string',
-          width: '20%',
-        },
-        DateOfPurchase: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfPurchase'), 'head-title'),
-          type: 'custom',
-          width: '15%',
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
+          width: '24%',
         },
         Creator: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
-          // filter: {
-          //   type: 'custom',
-          //   component: SmartTableDateTimeRangeFilterComponent,
-          // },
           valuePrepareFunction: (cell: string, row?: any) => {
             return this.commonService.getObjectText(cell);
+          },
+        },
+        DateOfPurchase: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfPurchase'), 'head-title'),
+          type: 'custom',
+          width: '15%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
           },
         },
         RelativeVouchers: {
@@ -112,7 +119,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
           },
-          width: '20%',
+          width: '10%',
         },
         Copy: {
           title: 'Copy',
@@ -154,7 +161,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
           },
         },
         State: {
-          title: this.commonService.translateText('Common.approve'),
+          title: this.commonService.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -265,6 +272,8 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
+      params['includeObject'] = true;
+      params['includeContact'] = true;
       params['includeCreator'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';

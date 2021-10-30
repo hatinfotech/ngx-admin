@@ -13,7 +13,7 @@ import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-f
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { take, takeUntil, filter } from 'rxjs/operators';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { AppModule } from '../../../../app.module';
@@ -83,50 +83,41 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
         No: {
           title: 'No.',
           type: 'string',
-          width: '5%',
+          width: '1%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '5%',
         },
         ObjectName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
-          width: '20%',
+          width: '15%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
           type: 'string',
-          width: '30%',
+          width: '24%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        },
-        // RelationVoucher: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        //   type: 'string',
-        //   width: '20%',
-        // },
-        Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
-          width: '10%',
         },
         Creator: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
-          // filter: {
-          //   type: 'custom',
-          //   component: SmartTableDateTimeRangeFilterComponent,
-          // },
           valuePrepareFunction: (cell: string, row?: any) => {
             return this.commonService.getObjectText(cell);
           },
         },
-        Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+        DateOfSale: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Sales.dateOfSales'), 'head-title'),
           type: 'custom',
-          width: '10%',
+          width: '15%',
           filter: {
             type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
+            component: SmartTableDateRangeFilterComponent,
           },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
@@ -152,12 +143,12 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
           },
-          width: '20%',
+          width: '10%',
         },
         Copy: {
           title: 'Copy',
           type: 'custom',
-          width: '10%',
+          width: '5%',
           exclude: this.isChoosedMode,
           renderComponent: SmartTableButtonComponent,
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
@@ -194,7 +185,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           },
         },
         State: {
-          title: this.commonService.translateText('Common.approve'),
+          title: this.commonService.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -316,6 +307,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCreator'] = true;
+      params['includeContact'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
       // params['eq_Type'] = 'PAYMENT';

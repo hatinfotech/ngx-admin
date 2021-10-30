@@ -640,7 +640,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
   // }
 
   initDataSource() {
-    this.source = new CustomServerDataSource<GoodsModel>(this.apiService, '/warehouse/goods');
+    this.source = new CustomServerDataSource<GoodsModel>(this.apiService, this.commonService, '/warehouse/goods');
 
     // Set DataSource: prepareData
     this.source.prepareData = (data: GoodsModel[]) => {

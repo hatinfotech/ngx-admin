@@ -82,7 +82,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
       },
     ];
     return super.init().then(rs => {
-      this.actionButtonList = this.actionButtonList.filter(f => ['delete','edit','add','choose','preview'].indexOf(f.name) < 0);
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
       this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
 
       // Auto refresh list on reportToDate changed
@@ -90,7 +90,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
         console.log(toDate);
         this.refresh();
       });
-      
+
       return rs;
     });
   }
@@ -107,23 +107,23 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
           type: 'string',
           width: '10%',
         },
-        // CreditAccount: {
-        //   title: this.commonService.translateText('Common.contraAccount'),
-        //   type: 'string',
-        //   width: '5%',
-        // },
         AccountName: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
-          width: '20%',
+          width: '40%',
         },
-        HeadDebit: {
-          title: '[' + this.commonService.translateText('Accounting.headDebit'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        HeadCredit: {
-          title: this.commonService.translateText('Accounting.headCredit') + ']',
+        // HeadDebit: {
+        //   title: '[' + this.commonService.translateText('Accounting.headDebit'),
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
+        // HeadCredit: {
+        //   title: this.commonService.translateText('Accounting.headCredit') + ']',
+        //   type: 'acc-currency',
+        //   width: '10%',
+        // },
+        HeadAmount: {
+          title: '[' + this.commonService.translateText('Accounting.headAmount') + ']',
           type: 'acc-currency',
           width: '10%',
         },
@@ -137,42 +137,21 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
           type: 'acc-currency',
           width: '10%',
         },
-        TailDebit: {
-          title: '[' + this.commonService.translateText('Accounting.tailDebit'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        TailCredit: {
-          title: this.commonService.translateText('Accounting.tailCredit') + ']',
-          type: 'acc-currency',
-          width: '10%',
-        },
-        // TailAmount: {
-        //   title: this.commonService.translateText('Accounting.tailAmount'),
+        // TailDebit: {
+        //   title: '[' + this.commonService.translateText('Accounting.tailDebit'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
-        // Property: {
-        //   title: this.commonService.translateText('Common.property'),
-        //   type: 'string',
-        //   width: '8%',
+        // TailCredit: {
+        //   title: this.commonService.translateText('Accounting.tailCredit') + ']',
+        //   type: 'acc-currency',
+        //   width: '10%',
         // },
-        // Type: {
-        //   title: this.commonService.translateText('Common.type'),
-        //   type: 'string',
-        //   width: '5%',
-        //   // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-        // },
-        // Level: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.level'), 'head-title'),
-        //   type: 'string',
-        //   width: '5%',
-        // },
-        // Group: {
-        //   title: this.commonService.translateText('Common.group'),
-        //   type: 'string',
-        //   width: '8%',
-        // },
+        TailAmount: {
+          title: '[' + this.commonService.translateText('Accounting.tailAmount') + ']',
+          type: 'acc-currency',
+          width: '10%',
+        },
         Preview: {
           title: this.commonService.translateText('Common.detail'),
           type: 'custom',

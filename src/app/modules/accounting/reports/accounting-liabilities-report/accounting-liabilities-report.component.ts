@@ -105,12 +105,12 @@ export class AccountingLiabilitiesReportComponent extends DataManagerListCompone
       actions: false,
       columns: {
         Object: {
-          title: this.commonService.translateText('Common.customer'),
+          title: this.commonService.translateText('Common.supplier'),
           type: 'string',
           width: '10%',
         },
         ObjectName: {
-          title: this.commonService.translateText('Common.customerName'),
+          title: this.commonService.translateText('Common.supplierName'),
           type: 'string',
           width: '20%',
         },

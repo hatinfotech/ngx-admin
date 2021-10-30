@@ -393,7 +393,8 @@
         "processedConfirmText": "bạn có chắc là muốn xử lý phiếu này không ?",
         "processingResponseTitle": "xử lý phiếu",
         "processingResponseText": "đã chuyển sang trạng thái đang xử lý",
-        "addProduct": "thêm hàng hoá/dịch vụ"
+        "addProduct": "thêm hàng hoá/dịch vụ",
+        "dateOfSale": "ngày bán"
     },
     "Contact": {
         "Customer": {

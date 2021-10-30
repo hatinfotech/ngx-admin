@@ -5,7 +5,7 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../../app.module';
 import { SmartTableCurrencyComponent, SmartTableDateTimeComponent, SmartTableBaseComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -73,8 +73,13 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         No: {
           title: 'No.',
           type: 'string',
-          width: '5%',
+          width: '1%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '5%',
         },
         ObjectName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
@@ -85,7 +90,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
         Description: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
           type: 'string',
-          width: '20%',
+          width: '25%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         RelativeVouchers: {
@@ -95,11 +100,6 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
           },
-          width: '20%',
-        },
-        Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
           width: '10%',
         },
         DateOfVoucher: {
@@ -108,7 +108,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
           width: '10%',
           filter: {
             type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
+            component: SmartTableDateRangeFilterComponent,
           },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
@@ -128,7 +128,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
           },
         },
         State: {
-          title: this.commonService.translateText('Common.approve'),
+          title: this.commonService.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -246,7 +246,7 @@ export class CashReceiptVoucherListComponent extends ServerDataManagerListCompon
     source.prepareParams = (params: any) => {
       params['includeParent'] = true;
       params['includeRelativeVouchers'] = true;
-      params['sort_DateOfVoucher'] = 'desc';
+      params['sort_Id'] = 'desc';
       params['eq_Type'] = 'RECEIPT';
       return params;
     };

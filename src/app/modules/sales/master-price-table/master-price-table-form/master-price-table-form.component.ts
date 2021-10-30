@@ -904,7 +904,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   // }
 
   initDataSource() {
-    this.source = new CustomServerDataSource<ProductModel>(this.apiService, '/sales/master-price-table-details');
+    this.source = new CustomServerDataSource<ProductModel>(this.apiService, this.commonService, '/sales/master-price-table-details');
 
     // Set DataSource: prepareData
     this.source.prepareData = (data: ProductModel[]) => {

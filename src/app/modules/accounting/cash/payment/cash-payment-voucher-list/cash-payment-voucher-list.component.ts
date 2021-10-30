@@ -5,7 +5,7 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../../app.module';
 import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent } from '../../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -78,8 +78,13 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
         No: {
           title: 'No.',
           type: 'string',
-          width: '5%',
+          width: '1%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '5%',
         },
         ObjectName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
@@ -100,20 +105,15 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
           },
-          width: '20%',
-        },
-        Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
           width: '10%',
         },
         DateOfVoucher: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfVoucher'), 'head-title'),
           type: 'custom',
-          width: '10%',
+          width: '15%',
           filter: {
             type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
+            component: SmartTableDateRangeFilterComponent,
           },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
@@ -225,56 +225,6 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
             });
           },
         }
-        //   State: {
-        //     title: this.commonService.translateText('Common.approve'),
-        //     type: 'custom',
-        //     width: '5%',
-        //     class: 'align-right',
-        //     renderComponent: SmartTableButtonComponent,
-        //     onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //       instance.iconPack = 'eva';
-        //       instance.icon = 'checkmark-circle';
-        //       instance.display = true;
-        //       instance.status = 'warning';
-        //       instance.style = 'text-align: right';
-        //       instance.class = 'align-right';
-        //       instance.title = this.commonService.translateText('Common.approve');
-        //       instance.valueChange.subscribe(value => {
-        //         // instance.icon = value ? 'unlock' : 'lock';
-        //         // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-        //         instance.disabled = value !== 'REQUEST';
-        //       });
-        //       instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-        //         // this.commonService.openDialog(ShowcaseDialogComponent, {
-        //         //   context: {
-        //         //     title: this.commonService.translateText('Common.confirm'),
-        //         //     content: 'Accounting.CashPayment.approveConfirmText',
-        //         //     actions: [
-        //         //       {
-        //         //         label: this.commonService.translateText('Common.close'),
-        //         //         status: 'primary',
-        //         //       },
-        //         //       {
-        //         //         label: this.commonService.translateText('Common.approve'),
-        //         //         status: 'danger',
-        //         //         action: () => {
-        //         //           this.apiService.putPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: [rowData.Code], approve: true }, [{ Code: rowData.Code }]).then(rs => {
-        //         //             this.refresh();
-        //         //           });
-        //         //         }
-        //         //       },
-        //         //     ],
-        //         //   },
-        //         // });
-
-        //         this.apiService.getPromise('/accounting/cash-vouchers', { id: [rowData.Code], includeDetails: true, includeContact: true }).then(rs => {
-        //           this.preview(rs[0]);
-        //         });
-
-
-        //       });
-        //     },
-        //   }
       },
     });
   }
@@ -301,7 +251,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
     source.prepareParams = (params: any) => {
       params['includeParent'] = true;
       params['includeRelativeVouchers'] = true;
-      params['sort_DateOfVoucher'] = 'desc';
+      params['sort_Id'] = 'desc';
       params['eq_Type'] = 'PAYMENT';
       return params;
     };

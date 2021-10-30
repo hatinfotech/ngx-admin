@@ -93,19 +93,13 @@ export class CustomServerDataSource<M> extends LocalDataSource {
                 if (!(fieldConf['search']['range'][1] instanceof Date)) {
                   throw new Error('Search to not instance of date');
                 }
-                // fieldConf['search']['range'][0] = this.commonService.getBeginOfDate(fieldConf['search']['range'][0]).toISOString();
-                // fieldConf['search']['range'][1] = this.commonService.getEndOfDate(fieldConf['search']['range'][1]).toISOString();
               }
               params[`ge_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getBeginOfDate(fieldConf['search']['range'][0]).toISOString());
               params[`le_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getEndOfDate(fieldConf['search']['range'][1]).toISOString());
             } else {
-              // condition = fieldConf['search']['condition'];
-              // value = fieldConf['search']['value'];
               params[`filter_${fieldConf['search']['condition']}`] = this.encodeFilterQuery(fieldConf['search']['value']);
             }
           } else {
-            // let condition = 'filter';
-            // let value = fieldConf['search'];
             if (fieldConf['search'] !== null) {
               params[`filter_${fieldConf['field']}`] = this.encodeFilterQuery(fieldConf['search']);
             }
