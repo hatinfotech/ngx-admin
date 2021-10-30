@@ -139,7 +139,7 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Amount" label="Common.amount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [align]="'rignt'" [required]="true" [touchedValidate]="false">
-                                                        <input type="text" (keyup)="toMoney(formItem)" nbInput fullWidth formControlName="Amount" placeholder="{{'Common.amount' | translate | headtitlecase}}" currencyMask [options]="curencyFormat" style="text-align: right;">
+                                                        <input type="text" (keyup)="toMoney(formItem)" nbInput fullWidth formControlName="Amount" placeholder="{{'Common.amount' | translate | headtitlecase}}" currencyMask [options]="toMoneyCurencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney', ic)" (focus)="currencyMaskFocus($event, toMoneyCurencyFormat)" (keydown)="currencyMastKeydown($event, toMoneyCurencyFormat)" (paste)="onPasteNumber($event, toMoneyCurencyFormat)" style="text-align: right;">
                                                     </ngx-form-group>
                                                 </div>
                                             </div>
@@ -168,7 +168,7 @@
                                                 </div>
                                                 <div class="col-sm-6" style="text-align: right; font-weight: bold;">Tổng cộng:</div>
                                                 <div class="col-sm-2" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">
-                                                    {{formItem.get('_total').value | currency:'VND'}}
+                                                    {{formItem.get('_total').value | currency:'VND':'':'1.2-2'}}
                                                 </div>
                                             </div>
                                         </div>

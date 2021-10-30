@@ -96,7 +96,6 @@ export interface Select2Option {
 })
 export class Select2Component implements ControlValueAccessor, Validator, OnChanges, AfterViewInit, OnInit {
 
-  formControl = new FormControl();
   touchedChanges: Subject<boolean> = new Subject<boolean>();
   statusChanges$: Subscription;
   currentValue = null;
@@ -152,7 +151,6 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   }
 
   ngOnInit() {
-    console.log(this.formControl);
   }
 
   ngAfterViewInit() {
@@ -167,7 +165,6 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     // };
     //   this._select2Option = this.select2Option;
     // })();
-    console.log(this.formControl);
     // this.formControl.valueChanges.subscribe(value => {
     //   console.log(value); 
     // });

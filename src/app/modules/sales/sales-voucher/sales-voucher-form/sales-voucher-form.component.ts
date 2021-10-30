@@ -48,8 +48,9 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 2 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 2 };
+  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
@@ -457,7 +458,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+          this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         }
         // itemFormData.Details.forEach(detail => {
         // });
@@ -521,7 +522,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     });
 
     newForm.get('DateOfSale').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfSate => {
-      if(dateOfSate) {
+      if (dateOfSate) {
         this.commonService.lastVoucherDate = dateOfSate;
       }
     });
@@ -575,16 +576,36 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {
-        if (newForm && newForm.get('Type').value === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
       Description: ['', Validators.required],
-      Quantity: [1, Validators.required],
-      Price: ['', Validators.required],
-      Unit: ['', Validators.required],
-      Tax: ['NOTAX', Validators.required],
+      Quantity: [1,  (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Price: ['',  (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Unit: ['',  (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Tax: ['NOTAX',  (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       ToMoney: [0],
       Image: [[]],
       // Reason: [''],
@@ -594,7 +615,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
     if (data) {
       newForm.patchValue(data);
-      this.toMoney(parentFormGroup, newForm);
+      
       if (data.Product?.Units && data.Product?.Units?.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
@@ -616,7 +637,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     if (!noFormControl.value) {
       noFormControl.setValue(detailsFormArray.length);
     }
-    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
+    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
@@ -624,8 +645,9 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
-  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
+  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
     this.updateInitialFormPropertiesCache(newChildFormGroup);
+    this.toMoney(parentFormGroup, newChildFormGroup, null, index);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -862,31 +884,23 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     return false;
   }
 
-  calculatToMoney(detail: FormGroup) {
-    let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
-    }
-    return toMoney;
-  }
+  // calculatToMoney(detail: FormGroup) {
+  //   let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+  //   let tax = detail.get('Tax').value;
+  //   if (tax) {
+  //     if (typeof tax === 'string') {
+  //       tax = this.taxList.filter(t => t.Code === tax)[0];
+  //     }
+  //     toMoney += toMoney * tax.Tax / 100;
+  //   }
+  //   return toMoney;
+  // }
 
-  toMoney(formItem: FormGroup, detail: FormGroup) {
-    detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-
-    // Call culate total
-    // const details = this.getDetails(formItem);
-    // let total = 0;
-    // for (let i = 0; i < details.controls.length; i++) {
-    //   total += this.calculatToMoney(details.controls[i] as FormGroup);
-    // }
-    // formItem.get('_total').setValue(total);
-    this.calulateTotal(formItem);
-    return false;
-  }
+  // toMoney(formItem: FormGroup, detail: FormGroup) {
+  //   detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+  //   this.calulateTotal(formItem);
+  //   return false;
+  // }
 
   calulateTotal(formItem: FormGroup) {
     this.commonService.takeUntil('calulcate_sales_voucher', 300).then(rs => {
@@ -895,10 +909,53 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       for (let i = 0; i < details.controls.length; i++) {
         total += this.calculatToMoney(details.controls[i] as FormGroup);
       }
-      formItem.get('_total').setValue(total);
+      formItem.get('_total').setValue(this.commonService.roundUsing(total, Math.floor, 2));
     });
   }
 
+  calculatToMoney(detail: FormGroup, source?: string) {
+    let tax = detail.get('Tax').value;
+    if (typeof tax === 'string') {
+      tax = this.taxList.filter(t => t.Code === tax)[0];
+    }
+    if (source === 'ToMoney') {
+      let price = detail.get('ToMoney').value / detail.get('Quantity').value;
+      if (tax) {
+        price = price / (1 + parseFloat(tax.Tax) / 100);
+      }
+      // console.log(detail.value);
+      return price;
+    } else {
+      let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+
+      if (tax) {
+        if (typeof tax === 'string') {
+          tax = this.taxList.filter(t => t.Code === tax)[0];
+        }
+        toMoney += toMoney * tax.Tax / 100;
+      }
+      // console.log(detail.value);
+      return toMoney;
+    }
+  }
+
+  toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
+    this.commonService.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
+      if (source === 'ToMoney') {
+        detail.get('Price').setValue(this.calculatToMoney(detail, source));
+      } else {
+        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+      }
+      // Call culate total
+      const details = this.getDetails(formItem);
+      let total = 0;
+      for (let i = 0; i < details.controls.length; i++) {
+        total += this.calculatToMoney(details.controls[i] as FormGroup);
+      }
+      formItem.get('_total').setValue(total);
+    });
+    return false;
+  }
 
   preview(formItem: FormGroup) {
     const data: SalesVoucherModel = formItem.value;

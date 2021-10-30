@@ -343,7 +343,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
           const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+          this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         });
       }
 
@@ -442,17 +442,42 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         return null;
       }],
       Description: ['', Validators.required],
-      Quantity: [1, Validators.required],
-      Price: ['', Validators.required],
-      Unit: ['', Validators.required],
-      Tax: ['NOTAX', Validators.required],
+      Quantity: [1, (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Price: ['', (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Unit: ['', (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Tax: ['NOTAX', (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       ToMoney: [0],
       Image: [[]],
       // Business: {
       //   value: this.accountingBusinessList.filter(f => f.id === 'PURCHASEWAREHOUSE' || f.id === 'NETREVENUE'),
       //   disabled: false,
       // },
-      Business: [null, Validators.required]
+      Business: [null, (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }]
     });
 
     if (data) {
@@ -464,7 +489,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       if (!data['Type']) {
         data["Type"] = 'PRODUCT';
       }
-      this.toMoney(parentFormGroup, newForm);
+
     }
 
     return newForm;
@@ -480,7 +505,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     if (!noFormControl.value) {
       noFormControl.setValue(detailsFormArray.length);
     }
-    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
+    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
@@ -488,8 +513,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
-  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
+  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
     this.updateInitialFormPropertiesCache(newChildFormGroup);
+    this.toMoney(parentFormGroup, newChildFormGroup, null, index);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -596,10 +622,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     if (source === 'ToMoney') {
       let price = detail.get('ToMoney').value / detail.get('Quantity').value;
       if (tax) {
-        price = price / (1 + parseFloat(tax.Tax));
+        price = price / (1 + parseFloat(tax.Tax) / 100);
       }
       console.log(detail.value);
-      // price = this.commonService.roundUsing(price, Math.floor, 4);
       return price;
     } else {
       let toMoney = detail.get('Quantity').value * detail.get('Price').value;
@@ -615,8 +640,8 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     }
   }
 
-  toMoney(formItem: FormGroup, detail: FormGroup, source?: string) {
-    this.commonService.takeUntil(this.componentName + '_ToMoney', 300).then(() => {
+  toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
+    this.commonService.takeUntil(this.componentName + '_ToMoney_' + index, 300).then(() => {
       if (source === 'ToMoney') {
         detail.get('Price').setValue(this.calculatToMoney(detail, source));
       } else {

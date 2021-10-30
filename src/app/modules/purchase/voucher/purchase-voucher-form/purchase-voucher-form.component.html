@@ -209,7 +209,7 @@
                                         <div class="row">
                                             <div class="col-md-{{getFieldValue(detail, 'Type') === 'PRODUCT' ? '4' : '12'}} col-sm-12 col-xs-12">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Type" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
-                                                    <ngx-select2 [data]="select2DataForType" formControlName="Type" (selectChange)="toMoney(formItem, detail, 'Type')" [select2Option]="select2OptionForType"></ngx-select2>
+                                                    <ngx-select2 [data]="select2DataForType" formControlName="Type" (selectChange)="toMoney(formItem, detail, 'Type', ic)" [select2Option]="select2OptionForType"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-8 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
@@ -219,7 +219,7 @@
                                             </div>
                                             <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Business" label="Common.business" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false">
-                                                    <ngx-select2 [data]="accountingBusinessList" formControlName="Business" (selectChange)="toMoney(formItem, detail, 'Business')" [select2Option]="select2OptionForAccountingBusiness"></ngx-select2>
+                                                    <ngx-select2 [data]="accountingBusinessList" formControlName="Business" (selectChange)="toMoney(formItem, detail, 'Business', id)" [select2Option]="select2OptionForAccountingBusiness"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                         </div>
@@ -228,7 +228,7 @@
                                         <div class="row">
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity')" currencyMask [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (keydown)="currencyMastKeydown($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
+                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity', ic)" currencyMask [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (keydown)="currencyMastKeydown($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
@@ -238,17 +238,17 @@
                                             </div>
                                             <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Price" label="Voucher.price" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Price')" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
+                                                    <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Price', ic)" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Tax" label="Voucher.tax" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true">
-                                                    <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(formItem, detail, 'Tax')" [select2Option]="select2OptionForTax"></ngx-select2>
+                                                    <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(formItem, detail, 'Tax', ic)" [select2Option]="select2OptionForTax"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="toMoneyCurencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney')" (focus)="currencyMaskFocus($event, toMoneyCurencyFormat)" (keydown)="currencyMastKeydown($event, toMoneyCurencyFormat)" (paste)="onPasteNumber($event, toMoneyCurencyFormat)">
+                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="toMoneyCurencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney', ic)" (focus)="currencyMaskFocus($event, toMoneyCurencyFormat)" (keydown)="currencyMastKeydown($event, toMoneyCurencyFormat)" (paste)="onPasteNumber($event, toMoneyCurencyFormat)">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-12 col-sm-12">
@@ -274,7 +274,7 @@
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                         <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">{{'Voucher.total' | translate | headtitlecase}}</div>
-                                        <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{formItem.get('_total').value | currency:'VND'}}</div>
+                                        <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{formItem.get('_total').value | currency:'VND':'':'1.2-2'}}</div>
                                     </div>
                                 </div>
                             </div>
