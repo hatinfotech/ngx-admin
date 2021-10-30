@@ -13,7 +13,7 @@
 Mini erp
 Global style
 */
-// @include nb-install-component() { 
+// @include nb-install-component() {
 //   .form-group.warning input {
 //     background-color: #f7f9fc !important;
 //     border-color: nb-theme(color-warning-500) !important;
@@ -1258,7 +1258,7 @@ body .form-group[state="warning"] textarea:focus {
 .dialog-wrap.popup {
   padding-bottom: 2rem;
 
-  max-width: 80vw;
+  max-width: 97vw;
   .smart-table {
     min-height: 80vh;
   }
@@ -1347,16 +1347,70 @@ nb-card-footer [nbButton]:first-child {
 }
 
 @media (min-width: 768px) {
-  .cdk-overlay-container .popup {
-    max-width: 90%;
-    margin: auto;
-  }
+  // .cdk-overlay-container .popup {
+  //   max-width: 90%;
+  //   margin: auto;
+  // }
   .cdk-overlay-container .dialog-list {
     max-width: 95%;
     margin: auto;
   }
   .cdk-global-overlay-wrapper.dialog .cdk-overlay-pane {
     width: 100%;
+  }
+}
+
+.dialog-wrap.dialog,
+.dialog-wrap.popup {
+  padding-bottom: 2rem;
+  max-width: 90vw;
+  .smart-table {
+    min-height: 90vh;
+  }
+}
+
+@media (max-width: 1920px) {
+  
+}
+@media (max-width: 1600px) {
+  .dialog-wrap.dialog,
+  .dialog-wrap.popup {
+    max-width: 95vw;
+    .smart-table {
+      min-height: 95vh;
+    }
+  }
+}
+@media (max-width: 1400px) {
+  
+}
+@media (max-width: 1368px) {
+  .dialog-wrap.dialog,
+  .dialog-wrap.popup {
+    max-width: 97vw;
+    .smart-table {
+      min-height: 97vh;
+    }
+  }
+}
+@media (max-width: 1024px) {
+  .dialog-wrap.dialog,
+  .dialog-wrap.popup {
+    max-width: 97vw;
+    .smart-table {
+      min-height: 97vh;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .dialog-wrap.dialog,
+  .dialog-wrap.popup {
+    padding-bottom: 2rem;
+
+    max-width: 99vw;
+    .smart-table {
+      min-height: 99vh;
+    }
   }
 }
 
@@ -1917,5 +1971,3 @@ nb-action {
   z-index: 1040 !important;
 }
 /** End CKeditor */
-
-
