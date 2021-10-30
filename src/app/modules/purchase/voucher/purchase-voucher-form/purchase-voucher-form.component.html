@@ -3,8 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Purchase.Voucher.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
-                        [controls]="actionButtonList"></ngx-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Purchase.Voucher.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
                     <div [formGroup]="formItem">
@@ -117,7 +116,7 @@
                                     </button>
                                 </ngx-form-group>
                             </div>
-                            
+
                             <div class="col-sm-12" *ngIf="formItem.get('RelativeVouchers').value?.length > 0">
                                 <div class="form-group">
                                     <label class="label"><span class="valid">{{'Common.relativeVoucher' | translate | headtitlecase}}: </span></label>
@@ -132,7 +131,7 @@
                             </div>
 
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="true"  [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
@@ -153,7 +152,7 @@
                                 </ngx-form-group>
                             </div>
                         </div>
-  
+
                         <!-- Detail form -->
                         <label class="label">{{'Voucher.productOrservice' | translate | headtitlecase}}</label>
                         <div class="row">
@@ -175,7 +174,7 @@
                                 </div>
                             </div>
                         </div>
-  
+
                         <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
                             <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail" [ngClass]="{'category': getFieldValue(detail, 'Type') == 'CATEGORY'}">
                                 <hr>
@@ -190,11 +189,11 @@
                                                 <div class="form-group">
                                                     <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
                                                     <button nbButton status="{{getFieldValue(detail, 'Type') === 'PRODUCT' ? 'danger' : 'primary'}}" hero size="medium" (click)="removeDetailGroup(formItem, detail, ic)" style="width: 100%; margin-bottom: 3px; padding: 0">
-                                                      <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                                                     </button>
                                                 </div>
                                             </div>
-  
+
                                             <div class="col-md-9 col-sm-9 col-xs-9">
                                                 <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="Image" label="Common.image" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem'}}"></ngx-files-input>
@@ -229,7 +228,7 @@
                                         <div class="row">
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity')" currencyMask [options]="numberFormat">
+                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity')" currencyMask [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (keydown)="currencyMastKeydown($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
@@ -237,19 +236,19 @@
                                                     <ngx-select2 formControlName="Unit" [data]="detail.get('Unit')['UnitList'] || unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
-                                            <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
+                                            <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Price" label="Voucher.price" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Price')" currencyMask [options]="priceCurencyFormat">
+                                                    <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Price')" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
                                                 </ngx-form-group>
                                             </div>
-                                            <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
+                                            <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Tax" label="Voucher.tax" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true">
                                                     <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(formItem, detail, 'Tax')" [select2Option]="select2OptionForTax"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="toMoneyCurencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney')">
+                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="toMoneyCurencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney')" (focus)="currencyMaskFocus($event, toMoneyCurencyFormat)" (keydown)="currencyMastKeydown($event, toMoneyCurencyFormat)" (paste)="onPasteNumber($event, toMoneyCurencyFormat)">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-12 col-sm-12">
@@ -282,17 +281,17 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12" style="text-align: right;">
-  
+
                             </div>
                         </div>
                         <!-- End Detail form -->
-  
+
                     </div>
                 </nb-card-body>
                 <nb-card-footer>
                     <div class="buttons-row" style="text-align: right;">
                         <button nbButton hero status="primary" (click)="preview(formItem)" [disabled]="!form.valid || isProcessing">
-                            <nb-icon   on  b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                            <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
                         </button>
                         <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
                         <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
@@ -301,4 +300,4 @@
             </nb-card>
         </div>
     </div>
-  </form>
+</form>

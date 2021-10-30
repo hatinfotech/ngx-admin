@@ -1,6 +1,4 @@
 import { takeUntil } from 'rxjs/operators';
-import { WarehouseGoodsReceiptNoteModel } from './../../../../models/warehouse.model';
-import { WarehouseGoodsReceiptNotePrintComponent } from './../../../warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { PurchaseVoucherPrintComponent } from './../purchase-voucher-print/purchase-voucher-print.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -19,18 +17,20 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-// import { SalesVoucherFormComponent } from '../../../sales/sales-voucher/sales-voucher-form/sales-voucher-form.component';
 import { PurchaseOrderVoucherListComponent } from '../../order/purchase-order-voucher-list/purchase-order-voucher-list.component';
-import { PurchaseOrderVoucherPrintComponent } from '../../order/purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { BusinessModel } from '../../../../models/accounting.model';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-purchase-voucher-form',
   templateUrl: './purchase-voucher-form.component.html',
   styleUrls: ['./purchase-voucher-form.component.scss'],
+  providers: [
+    CurrencyPipe,
+  ]
 })
 export class PurchaseVoucherFormComponent extends DataManagerFormComponent<PurchaseVoucherModel> implements OnInit {
 
@@ -42,9 +42,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
-  priceCurencyFormat: CurrencyMaskConfig = {...this.commonService.getCurrencyMaskConfig(), precision: 2};
-  toMoneyCurencyFormat: CurrencyMaskConfig = {...this.commonService.getCurrencyMaskConfig(), precision: 0};
-  numberFormat: CurrencyMaskConfig = {...this.commonService.getNumberMaskConfig(), precision: 0};
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 2 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 2 };
+  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
@@ -138,6 +138,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<PurchaseVoucherFormComponent>,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -598,7 +599,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         price = price / (1 + parseFloat(tax.Tax));
       }
       console.log(detail.value);
-      price = this.commonService.roundUsing(price, Math.floor, 4);
+      // price = this.commonService.roundUsing(price, Math.floor, 4);
       return price;
     } else {
       let toMoney = detail.get('Quantity').value * detail.get('Price').value;

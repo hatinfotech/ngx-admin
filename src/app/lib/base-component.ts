@@ -7,6 +7,7 @@ import { Subscription, Subject } from 'rxjs';
 import { NbDialogRef } from '@nebular/theme';
 import { Icon } from './custom-element/card-header/card-header.component';
 import { ActionControl } from './custom-element/action-control-list/action-control.interface';
+import { CurrencyMaskConfig } from 'ng2-currency-mask';
 
 @Component({ template: '' })
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent, AfterViewInit {
@@ -220,6 +221,55 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
 
   decodeId(id: string) {
     return id.replace(/~!/, '-');
+  }
+
+  // Fix currency mask
+
+
+  onPasteNumber(event, numberFormat: CurrencyMaskConfig) {
+    console.log(event);
+    let clipboardData = event.clipboardData || window['clipboardData'];
+    let pastedText: string = clipboardData.getData('text');
+    console.log(pastedText);
+    const decimalSymbol = numberFormat.decimal;
+    const thousandsSymbol = numberFormat.thousands;
+    pastedText = pastedText.replace(new RegExp(`\\${thousandsSymbol}`, 'g'), '');
+    pastedText = pastedText.replace(new RegExp(`\\${decimalSymbol}`, 'g'), '.');
+    pastedText = parseFloat(pastedText) as any;
+    pastedText = this.commonService.roundUsing(pastedText, Math.floor, 2) as any;
+    event.target.value = pastedText;
+    return false;
+  }
+
+  public currencyMaskFocus($event, numberFormat: CurrencyMaskConfig) {
+    //getting current value
+    var value = $event.currentTarget.value;
+    //splitting by the value by the decimal separator
+    var splitted = value.split(numberFormat.decimal);
+    //selecting the integer part, which will be replaced with what the user will type
+    //For example: 100,82 - where , is the decimal separator
+    //We would select 100
+    $event.currentTarget.selectionStart = 0;
+    $event.currentTarget.selectionEnd = splitted[0].length;
+  }
+
+  public currencyMastKeydown($event, numberFormat: CurrencyMaskConfig) {
+    //When the user presses ,
+    //We want to select the decimal part to allow editting only the decimal part
+    if ($event.key == numberFormat.decimal) {
+      //First of all, we cancel all event propagation and the default behavior!
+      $event.stopPropagation();
+      $event.preventDefault();
+      //Then we get the value itself
+      var value = $event.currentTarget.value;
+      //Find out where the decimal separator ist
+      var start = value.indexOf(numberFormat.decimal) + 1;
+      //select only the decimal part
+      //For example: 100,82 - where , is the decimal separator
+      //Would select only 82
+      $event.currentTarget.selectionStart = start;
+      $event.currentTarget.selectionEnd = start + numberFormat.precision;
+    }
   }
 
 }
