@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import { ChatRoomModel } from './../../../../models/chat-room.model';
 import { ChatRoom } from './../../../../lib/nam-chat/chat-room';
 import { SalesMasterPriceTableModel, SalesPriceReportModel } from './../../../../models/sales.model';
@@ -8,7 +9,7 @@ import { environment } from '../../../../../environments/environment';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -475,7 +476,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     const newForm = this.formBuilder.group({
       Code: [''],
       Object: ['', Validators.required],
-      ObjectName: [''],
+      ObjectName: ['', Validators.required],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
@@ -500,7 +501,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      DateOfSale: ['', Validators.required],
+      DateOfSale: [this.commonService.lastVoucherDate, Validators.required],
       _total: [''],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
@@ -511,6 +512,19 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     } else {
       this.addDetailFormGroup(newForm);
     }
+
+    const titleControl = newForm.get('Title');
+    newForm.get('ObjectName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
+      if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Bán hàng: /.test(titleControl.value))) {
+        titleControl.setValue(`Bán hàng: ${objectName}`);
+      }
+    });
+
+    newForm.get('DateOfSale').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfSate => {
+      if(dateOfSate) {
+        this.commonService.lastVoucherDate = dateOfSate;
+      }
+    });
     return newForm;
   }
 
@@ -555,19 +569,25 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesVoucherDetailModel): FormGroup {
-    const newForm = this.formBuilder.group({
+    let newForm = null;
+    newForm = this.formBuilder.group({
       Id: [''],
       No: [''],
-      Type: ['PRODUCT'],
-      Product: [''],
-      Description: [''],
-      Quantity: [1],
-      Price: [0],
-      Unit: [''],
-      Tax: ['VAT10'],
+      Type: ['PRODUCT', Validators.required],
+      Product: ['', (control: FormControl) => {
+        if (newForm && newForm.get('Type').value === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Description: ['', Validators.required],
+      Quantity: [1, Validators.required],
+      Price: ['', Validators.required],
+      Unit: ['', Validators.required],
+      Tax: ['NOTAX', Validators.required],
       ToMoney: [0],
       Image: [[]],
-      Reason: [''],
+      // Reason: [''],
       // Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
       Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
     });

@@ -1,7 +1,10 @@
 import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
-import { Select2Options, Select2AjaxOptions, Select2QueryOptions, Select2SelectionObject, IdTextPair } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
+// import { Select2Options, Select2AjaxOptions, Select2QueryOptions, Select2SelectionObject, IdTextPair } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import * as _ from 'lodash';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { Select2AjaxOptions } from '../../../../vendor/ng2select2 copy/lib/ng2-select2.interface';
+import { IdTextPair, Select2Options, Select2QueryOptions, Select2SelectionObject } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 
 // declare var Search: any;
 
@@ -93,6 +96,11 @@ export interface Select2Option {
 })
 export class Select2Component implements ControlValueAccessor, Validator, OnChanges, AfterViewInit, OnInit {
 
+  formControl = new FormControl();
+  touchedChanges: Subject<boolean> = new Subject<boolean>();
+  statusChanges$: Subscription;
+  currentValue = null;
+
   private provinceData: { id: number, name: string, type: 'central' | 'province' };
   onChange: (item: any) => void;
   onTouched: () => void;
@@ -132,7 +140,19 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     }
   }
 
+  constructor() {
+
+    // Override
+    // const markAsTouched = this.formControl.markAsTouched;
+    // this.formControl.markAsTouched = ({ onlySelf }: { onlySelf?: boolean } = {}) => {
+    //   markAsTouched({ onlySelf });
+    //   // this.touchedChanges.next(true);
+    //   this.onTouched();
+    // };
+  }
+
   ngOnInit() {
+    console.log(this.formControl);
   }
 
   ngAfterViewInit() {
@@ -147,7 +167,10 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     // };
     //   this._select2Option = this.select2Option;
     // })();
-
+    console.log(this.formControl);
+    // this.formControl.valueChanges.subscribe(value => {
+    //   console.log(value); 
+    // });
   }
 
   select2Value = '';
@@ -306,6 +329,9 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     this.isDisabled = isDisabled;
   }
 
+  handleOnTouched(e) {
+    this.onTouched();
+  }
   handleOnChange(e) {
     // const id = parseInt(e.value);
     // const itemSelect = this.data.find(item => item['id'] === id);
@@ -325,10 +351,12 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
         i[this._select2Option['keyMap'][k]] = i[k];
       });
     });
+    // this.value = changedValue;
     this.selectChange.emit(changedValue);
+    this.currentValue = changedValue;
   }
 
-  validate(c: FormControl) {
+  validate(formControl: FormControl) {
     // if (!this.type || !this.provinceData) {
     //   return null;
     // }
@@ -338,6 +366,22 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     //     actual: c.value,
     //   },
     // };
+    // control.value
+    // if(!this.currentValue) {
+    //   return { invalidName: true, required: true, text: 'Select2: trường bắt buộc' };
+    // }
+    // try {
+    //   if ((formControl.touched) && !formControl.value) {
+    //     // if (formControl.errors?.text) {
+    //       // this.warningText = formControl.errors.text;
+    //     // }
+    //     return { invalidName: true, required: true, text: 'Select2: trường bắt buộc' };
+    //   }
+    //   // this.warningText = null;
+    //   return null;
+    // } catch (err) {
+    //   console.error(`Form control Select2 error`, err);
+    // }
     return null;
   }
 }

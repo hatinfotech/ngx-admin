@@ -1,4 +1,4 @@
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { SalesVoucherPrintComponent } from './../../../../sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { SalesVoucherModel } from './../../../../../models/sales.model';
 import { SalesVoucherListComponent } from './../../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
@@ -347,14 +347,14 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       Description: ['', Validators.required],
       RelatedUserName: [''],
       DateOfImplement: [''],
-      Object: [''],
-      ObjectName: [''],
+      Object: ['', Validators.required],
+      ObjectName: ['', Validators.required],
       ObjectPhone: [''],
       ObjectEmail: [''],
       ObjectAddress: [''],
       ObjectTaxCode: [''],
       // Currency: ['VND', Validators.required],
-      DateOfVoucher: [new Date()],
+      DateOfVoucher: [this.commonService.lastVoucherDate, Validators.required],
       RelativeVouchers: [''],
       BankAccount: [''],
       Details: this.formBuilder.array([]),
@@ -370,6 +370,20 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       newForm['debitAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
       this.addDetailFormGroup(newForm);
     }
+
+    const titleControl = newForm.get('Description');
+    newForm.get('ObjectName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
+      if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Thu tiền: /.test(titleControl.value))) {
+        titleControl.setValue(`Thu tiền: ${objectName}`);
+      }
+    });
+
+    newForm.get('DateOfVoucher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfPurchase => {
+      if(dateOfPurchase) {
+        this.commonService.lastVoucherDate = dateOfPurchase;
+      }
+    });
+
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: CashVoucherModel): void {
@@ -420,6 +434,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   getDetails(parentFormGroup: FormGroup) {
+    if(!parentFormGroup) return null;
     return parentFormGroup.get('Details') as FormArray;
   }
 
@@ -434,10 +449,10 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   onAddDetailFormGroup(parentFormGroup: FormGroup, index: number, newFormGroup: FormGroup) {
   }
 
-  removeDetail(parentFormGroup: FormGroup, index: number) {
-    this.getDetails(parentFormGroup).removeAt(index);
+  removeDetail(formGroup: FormGroup, index: number) {
+    this.getDetails(formGroup).removeAt(index);
     // this.componentList[formGroupIndex].splice(index, 1);
-    this.onRemoveDetailFormGroup(parentFormGroup, index);
+    this.onRemoveDetailFormGroup(formGroup, index);
     return false;
   }
 

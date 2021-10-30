@@ -10,6 +10,7 @@
         }
     },
     "Sales": {
+        "dateOfSales":"Ngày bán hàng",
         "PriceReport": {
             "title": "{{definition}}{{action}} phiếu báo giá",
             "List": {
@@ -385,7 +386,14 @@
         "unApproveSuccessText": "đã chuyển sang trạng thái bỏ duyệt",
         "customerId": "ID khách",
         "supplierId": "ID NCC",
-        "dateOfVoucher": "ngày chứng từ"
+        "dateOfVoucher": "ngày chứng từ",
+        "processing": "đang xử lý",
+        "process": "xử lý",
+        "processingConfirmTitle": "xác nhận đang xủ lý",
+        "processedConfirmText": "bạn có chắc là muốn xử lý phiếu này không ?",
+        "processingResponseTitle": "xử lý phiếu",
+        "processingResponseText": "đã chuyển sang trạng thái đang xử lý",
+        "addProduct": "thêm hàng hoá/dịch vụ"
     },
     "Contact": {
         "Customer": {

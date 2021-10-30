@@ -514,6 +514,13 @@ export class CommonService {
         }, 300);
       }
     }
+
+    if (userConfig?.context) {
+      if (!userConfig?.context['inputMode']) {
+        userConfig.context['inputMode'] = 'dialog';
+      }
+    }
+
     const dialogRef = this.dialogService.open<T>(content, userConfig);
     if (dialogRef['overlayRef'] && dialogRef['overlayRef']['_pane'] && userConfig.context['showLoadinng']) {
 
@@ -915,5 +922,20 @@ export class CommonService {
   }
   getEndOfDate(date: Date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0)
+  }
+
+  get lastVoucherDate(): Date {
+    const tmp: any = localStorage.getItem('Voucher.lastVoucherDate');
+    let current: Date;
+    if (tmp) current = new Date(tmp);
+    if (!current) {
+      current = new Date();
+      localStorage.setItem('Voucher.lastVoucherDate', current.toISOString());
+    }
+    return current;
+  }
+
+  set lastVoucherDate(date: Date) {
+    localStorage.setItem('Voucher.lastVoucherDate', date.toISOString());
   }
 }

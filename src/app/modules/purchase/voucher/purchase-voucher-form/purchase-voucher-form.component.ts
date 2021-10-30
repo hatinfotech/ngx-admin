@@ -1,9 +1,10 @@
+import { takeUntil } from 'rxjs/operators';
 import { WarehouseGoodsReceiptNoteModel } from './../../../../models/warehouse.model';
 import { WarehouseGoodsReceiptNotePrintComponent } from './../../../warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { PurchaseVoucherPrintComponent } from './../purchase-voucher-print/purchase-voucher-print.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
@@ -355,8 +356,8 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   makeNewFormGroup(data?: PurchaseVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
-      Object: [''],
-      ObjectName: [''],
+      Object: ['', Validators.required],
+      ObjectName: ['', Validators.required],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
@@ -376,10 +377,10 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
       DateOfReceived: [''],
       DeliveryAddress: [''],
-      Title: [''],
+      Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      DateOfPurchase: [new Date()],
+      DateOfPurchase: [this.commonService.lastVoucherDate, Validators.required],
       RelativeVouchers: [],
       _total: [''],
       Details: this.formBuilder.array([]),
@@ -390,6 +391,18 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     } else {
       this.addDetailFormGroup(newForm);
     }
+    const titleControl = newForm.get('Title');
+    newForm.get('ObjectName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
+      if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Mua hàng: /.test(titleControl.value))) {
+        titleControl.setValue(`Mua hàng: ${objectName}`);
+      }
+    });
+
+    newForm.get('DateOfPurchase').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfPurchase => {
+      if(dateOfPurchase) {
+        this.commonService.lastVoucherDate = dateOfPurchase;
+      }
+    });
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PurchaseVoucherModel): void {
@@ -415,19 +428,29 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: PurchaseVoucherDetailModel): FormGroup {
-    const newForm = this.formBuilder.group({
+    let newForm = null;
+    newForm = this.formBuilder.group({
       Id: [''],
       No: [''],
-      Type: ['PRODUCT'],
-      Product: [''],
-      Description: [''],
-      Quantity: [1],
-      Price: [0],
-      Unit: [''],
-      Tax: ['VAT10'],
+      Type: ['PRODUCT', Validators.required],
+      Product: ['', (control: FormControl) => {
+        if (newForm && newForm.get('Type').value === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Description: ['', Validators.required],
+      Quantity: [1, Validators.required],
+      Price: ['', Validators.required],
+      Unit: ['', Validators.required],
+      Tax: ['NOTAX', Validators.required],
       ToMoney: [0],
       Image: [[]],
-      Business: { value: this.accountingBusinessList.filter(f => f.id === 'PURCHASEWAREHOUSE' || f.id === 'NETREVENUE'), disabled: true },
+      // Business: {
+      //   value: this.accountingBusinessList.filter(f => f.id === 'PURCHASEWAREHOUSE' || f.id === 'NETREVENUE'),
+      //   disabled: false,
+      // },
+      Business: [null, Validators.required]
     });
 
     if (data) {
@@ -463,6 +486,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     return false;
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
+    this.updateInitialFormPropertiesCache(newChildFormGroup);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -659,7 +683,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                     delete orderDetail.Voucher;
                     delete orderDetail.No;
                     const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, orderDetail);
-                    details.push(newDtailFormGroup); 
+                    details.push(newDtailFormGroup);
                   }
                 }
               }

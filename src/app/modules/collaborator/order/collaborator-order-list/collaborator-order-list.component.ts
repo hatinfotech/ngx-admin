@@ -1,3 +1,4 @@
+import { CollaboratorOrderTeleCommitFormComponent } from './../collaborator-order-tele-commit/collaborator-order-tele-commit.component';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -6,6 +7,7 @@ import { filter, take, takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
 import { SmartTableDateTimeComponent, SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -193,7 +195,20 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           type: 'custom',
           renderComponent: SmartTableTagsComponent,
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => {
+              if (tag.type === 'PRICEREPORT') {
+                this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+                  context: {
+                    inputId: [tag.id],
+                    // inputMode: 'dialog',
+                    onDialogSave: () => { },
+                    onDialogClose: () => { },
+                  }
+                });
+              } else {
+                this.commonService.previewVoucher(tag.type, tag.id);
+              }
+            });
           },
           width: '20%',
         },
@@ -319,8 +334,29 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         mode: 'print',
         idKey: ['Code'],
         // approvedConfirm: true,
-        onChange: (data: CollaboratorOrderModel) => {
+        onChange: async (data: CollaboratorOrderModel, printComponent: CollaboratorOrderPrintComponent) => {
           this.refresh();
+          printComponent.close();
+          if (data.State === 'PROCESSING') {
+            // Get relative vouchers
+            // const order = await this.apiService.getPromise('/collaborator/orders/' + data.Code, {includeRelativeVouchers : true});
+            if (data.RelativeVouchers && data.RelativeVouchers.length > 0) {
+              const priceReportRef = data.RelativeVouchers.find(f => f.type === 'PRICEREPORT');
+              if (priceReportRef) {
+                this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+                  context: {
+                    inputId: [priceReportRef.id],
+                    inputMode: 'dialog',
+                    onDialogSave: (data) => {
+                      console.log(data);
+                    },
+                    onDialogClose: () => { },
+                  }
+                });
+              }
+            }
+          }
+
         },
         onSaveAndClose: () => {
           this.refresh();

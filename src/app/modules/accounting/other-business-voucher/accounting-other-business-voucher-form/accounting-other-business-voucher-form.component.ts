@@ -390,10 +390,10 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   onAddDetailFormGroup(parentFormGroup: FormGroup, index: number, newFormGroup: FormGroup) {
   }
 
-  removeDetail(parentFormGroup: FormGroup, index: number) {
-    this.getDetails(parentFormGroup).removeAt(index);
+  removeDetail(formGroup: FormGroup, index: number) {
+    this.getDetails(formGroup).removeAt(index);
     // this.componentList[formGroupIndex].splice(index, 1);
-    this.onRemoveDetailFormGroup(parentFormGroup, index);
+    this.onRemoveDetailFormGroup(formGroup, index);
     return false;
   }
 

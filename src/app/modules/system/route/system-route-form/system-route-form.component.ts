@@ -601,7 +601,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   }
   makeNewActionParameterFormGroup(data?: SystemRouteActionParameterModel): FormGroup {
 
-    if (data.Type == 'ENV_PARAM' && data.Data && typeof data.Data !== 'object') {
+    if (data?.Type == 'ENV_PARAM' && data?.Data && typeof data.Data !== 'object') {
       const param = this.paramList.find(f => f.id == data.Data);
       if (param) {
         data.Data = this.paramList.find(f => f.id == data.Data) as any;

@@ -224,6 +224,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { AngularFireModule } from '@angular/fire/compat';
 import { ProcessMap } from './models/process-map.model';
 import { DynamicListDialogComponent } from './modules/dialog/dynamic-list-dialog/dynamic-list-dialog.component';
+import { CollaboratorOrderTeleCommitFormComponent } from './modules/collaborator/order/collaborator-order-tele-commit/collaborator-order-tele-commit.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -392,6 +393,7 @@ export class DynamicLocaleId extends String {
     CollaboratorPublisherComponent,
     CollaboratorProductPreviewListComponent,
     CollaboratorSubscriptionProductComponent,
+    CollaboratorOrderTeleCommitFormComponent,
     DashboardComponent,
     StatusCardComponent,
     TemperatureDraggerComponent,
@@ -599,6 +601,17 @@ export class AppModule {
     confirmText: 'Common.approvedConfirm',
     responseTitle: 'Common.approved',
     responseText: 'Common.approved',
+  };
+  static proccessingState: ProcessMap = {
+    state: 'PROCESSING',
+    label: 'Common.processing',
+    confirmLabel: 'Common.process',
+    status: 'primary',
+    outline: false,
+    confirmTitle: 'Common.processingConfirmTitle',
+    confirmText: 'Common.processedConfirmText',
+    responseTitle: 'Common.processingResponseTitle',
+    responseText: 'Common.processingResponseText',
   };
   static unrecordedState: ProcessMap = {
     state: 'UNRECORDED',
@@ -1265,6 +1278,14 @@ export class AppModule {
       },
     },
     collaboratoOrder: {
+      "PROCESSING": {
+        ...AppModule.proccessingState,
+        nextState: 'APPROVED',
+        nextStates: [
+          { ...AppModule.approvedState, status: 'success' },
+          AppModule.unrecordedState,
+        ],
+      },
       "APPROVED": {
         ...AppModule.approvedState,
         nextState: 'COMPLETE',
@@ -1284,22 +1305,23 @@ export class AppModule {
         ...AppModule.unrecordedState,
         nextState: 'APPROVED',
         nextStates: [
+          AppModule.proccessingState,
           AppModule.approvedState,
           AppModule.unrecordedState,
         ],
       },
       "NOTJUSTAPPROVED": {
         ...AppModule.notJustApprodedState,
-        nextState: 'APPROVED',
+        nextState: 'PROCESSING',
         nextStates: [
-          AppModule.approvedState,
+          AppModule.proccessingState,
         ],
       },
       "": {
         ...AppModule.notJustApprodedState,
-        nextState: 'APPROVED',
+        nextState: 'PROCESSING',
         nextStates: [
-          AppModule.approvedState,
+          AppModule.proccessingState,
         ],
       },
     },

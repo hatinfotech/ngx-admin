@@ -1,7 +1,7 @@
 <div class="form-group" [attr.state]="formControlValidate(formGroup.get(name), 'warning')">
   <label class="label" *ngIf="!hideLabel">
     <span class="valid" [ngStyle]="{'text-align': align && align || 'left', 'margin-right': align && align === 'right' && allowCopy ? '25px' : '0'}">{{label | translate | headtitlecase}}</span>
-    <span class="invalid">{{ warningText ? (label + ': (' + warningText + ')') : ('Form.requireLabel' | translate:{field: commonService.translate.instant(label)} | headtitlecase)}}</span>
+    <span class="invalid">{{ warningText ? ((label | translate:{field: commonService.translate.instant(label)} | headtitlecase) + ': (' + warningText + ')') : ('Form.requireLabel' | translate:{field: commonService.translate.instant(label)} | headtitlecase)}}</span>
     <span *ngIf="required" class="text-danger">&nbsp;(*)</span>
     &nbsp;
     <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" title="{{customIcon.title || ''}}"></nb-icon>

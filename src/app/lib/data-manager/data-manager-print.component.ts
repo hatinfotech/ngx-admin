@@ -8,6 +8,7 @@ import { DataManagerFormComponent } from './data-manager-form.component';
 import { Type } from '@angular/core';
 import { ProcessMap } from '../../models/process-map.model';
 import { AppModule } from '../../app.module';
+import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 
 declare var $: JQueryStatic;
 
@@ -18,10 +19,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   @Input() data: M[];
   @Input() id?: string[];
   @ViewChildren('printContent', { read: ViewContainerRef }) printContent: QueryList<ViewContainerRef>;
-  @Input() onSaveAndClose?: (data: M) => void;
-  @Input() onSaveAndPrint?: (data: M) => void;
-  @Input() onClose?: (data: M) => void;
-  @Input() onChange?: (data: M) => void;
+  @Input() onSaveAndClose?: (data: M, instance?: DataManagerPrintComponent<M>) => void;
+  @Input() onSaveAndPrint?: (data: M, instance?: DataManagerPrintComponent<M>) => void;
+  @Input() onClose?: (data: M, instance?: DataManagerPrintComponent<M>) => void;
+  @Input() onChange?: (data: M, instance?: DataManagerPrintComponent<M>) => void;
 
   favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
   @Input() idKey?: string[];
@@ -207,7 +208,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   saveAndClose(data: M) {
     if (this.onSaveAndClose) {
-      this.onSaveAndClose(data);
+      this.onSaveAndClose(data, this);
     }
     this.close();
     return false;
@@ -297,12 +298,20 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         status: nextState.status,
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<M[]>(this.apiPath, params, [putData]).then(rs => {
+          this.apiService.putPromise<M[]>(this.apiPath, params, [putData]).then(async rs => {
             this.loading = false;
-            this.onChange && this.onChange(item);
-            this.onClose && this.onClose(item);
+            // this.refresh();
+            const newstId = this.makeId(item);
+            const newestItem = (await this.getFormData([newstId]))[0];
+            this.data = this.data.map(m => {
+              if(this.makeId(m) == newstId) {
+                return newestItem;
+              }
+              return m;
+            });
+            this.onChange && this.onChange(newestItem, this);
+            this.onClose && this.onClose(newestItem, this);
             // this.close();
-            this.refresh();
             this.commonService.toastService.show(this.commonService.translateText(nextState?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), this.commonService.translateText(nextState?.responseTitle), {
               status: 'success',
             });
@@ -341,10 +350,6 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   async refresh() {
     if (this.id) {
       this.data = await this.getFormData(this.id);
-      // for (const i in this.data) {
-      //   const data = this.data[i];
-      //   this.processMapList[i] = AppModule.processMaps.cashVoucher[data['State'] || ''];
-      // }
     }
     return true;
   }

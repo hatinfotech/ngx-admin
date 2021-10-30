@@ -20,6 +20,7 @@ import { PurchaseVoucherModel } from '../../../../../models/purchase.model';
 import { PurchaseVoucherPrintComponent } from '../../../../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { CustomIcon } from '../../../../../lib/custom-element/form/form-group/form-group.component';
 import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-form',
@@ -367,14 +368,14 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       Description: ['', Validators.required],
       RelatedUserName: [''],
       DateOfImplement: [''],
-      Object: [''],
-      ObjectName: [''],
+      Object: ['', Validators.required],
+      ObjectName: ['', Validators.required],
       ObjectPhone: [''],
       ObjectEmail: [''],
       ObjectAddress: [''],
       ObjectTaxCode: [''],
       // Currency: ['VND', Validators.required],
-      DateOfVoucher: [new Date()],
+      DateOfVoucher: [this.commonService.lastVoucherDate, Validators.required],
       RelativeVouchers: [''],
       BankAccount: [''],
       Details: this.formBuilder.array([]),
@@ -390,6 +391,19 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       newForm['creditAccounts'] = this.accountList.filter(f => f.Group === 'CASH');
       this.addDetailFormGroup(newForm);
     }
+
+    const titleControl = newForm.get('Description');
+    newForm.get('ObjectName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
+      if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Chi tiền: /.test(titleControl.value))) {
+        titleControl.setValue(`Chi tiền: ${objectName}`);
+      }
+    });
+    
+    newForm.get('DateOfVoucher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfPurchase => {
+      if(dateOfPurchase) {
+        this.commonService.lastVoucherDate = dateOfPurchase;
+      }
+    });
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: CashVoucherModel): void {

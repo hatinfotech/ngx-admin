@@ -4,11 +4,13 @@
     {{item.text}}</option>
 </select> -->
 <!-- <input type="hidden" [value]="fieldValue"> -->
-<select2 *ngIf="_select2Option" #controls [disabled]="isDisabled" [ngClass]="{'disabled': isDisabled}"
+<select2 *ngIf="_select2Option" [formControl]="formControl" #controls [disabled]="isDisabled" [ngClass]="{'disabled': isDisabled}"
   [value]="value"
   [data]="data"
   [options]="_select2Option"
   [cssImport]=true
   [disabled]="isDisabled"
-  (valueChanged)="handleOnChange($event)">
+  (valueChanged)="handleOnChange($event)"
+  (onTouched)="handleOnTouched($event)"
+  >
 </select2>
