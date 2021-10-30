@@ -288,7 +288,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
+      this.processMapList[i] = AppModule.processMaps.salesVoucher[item.State || ''];
     }
     return data;
   }
