@@ -42,8 +42,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  priceCurencyFormat: CurrencyMaskConfig = {...this.commonService.getCurrencyMaskConfig(), precision: 2};
+  toMoneyCurencyFormat: CurrencyMaskConfig = {...this.commonService.getCurrencyMaskConfig(), precision: 0};
+  numberFormat: CurrencyMaskConfig = {...this.commonService.getNumberMaskConfig(), precision: 0};
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
@@ -399,7 +400,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     });
 
     newForm.get('DateOfPurchase').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfPurchase => {
-      if(dateOfPurchase) {
+      if (dateOfPurchase) {
         this.commonService.lastVoucherDate = dateOfPurchase;
       }
     });
@@ -428,7 +429,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: PurchaseVoucherDetailModel): FormGroup {
-    let newForm = null;
+    let newForm: FormGroup;
     newForm = this.formBuilder.group({
       Id: [''],
       No: [''],
@@ -464,6 +465,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       }
       this.toMoney(parentFormGroup, newForm);
     }
+
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {
@@ -585,28 +587,48 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     return false;
   }
 
-  calculatToMoney(detail: FormGroup) {
-    let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+  calculatToMoney(detail: FormGroup, source?: string) {
     let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
+    if (typeof tax === 'string') {
+      tax = this.taxList.filter(t => t.Code === tax)[0];
     }
-    return toMoney;
+    if (source === 'ToMoney') {
+      let price = detail.get('ToMoney').value / detail.get('Quantity').value;
+      if (tax) {
+        price = price / (1 + parseFloat(tax.Tax));
+      }
+      console.log(detail.value);
+      price = this.commonService.roundUsing(price, Math.floor, 4);
+      return price;
+    } else {
+      let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+
+      if (tax) {
+        if (typeof tax === 'string') {
+          tax = this.taxList.filter(t => t.Code === tax)[0];
+        }
+        toMoney += toMoney * tax.Tax / 100;
+      }
+      console.log(detail.value);
+      return toMoney;
+    }
   }
 
-  toMoney(formItem: FormGroup, detail: FormGroup) {
-    detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-
-    // Call culate total
-    const details = this.getDetails(formItem);
-    let total = 0;
-    for (let i = 0; i < details.controls.length; i++) {
-      total += this.calculatToMoney(details.controls[i] as FormGroup);
-    }
-    formItem.get('_total').setValue(total);
+  toMoney(formItem: FormGroup, detail: FormGroup, source?: string) {
+    this.commonService.takeUntil(this.componentName + '_ToMoney', 300).then(() => {
+      if (source === 'ToMoney') {
+        detail.get('Price').setValue(this.calculatToMoney(detail, source));
+      } else {
+        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+      }
+      // Call culate total
+      const details = this.getDetails(formItem);
+      let total = 0;
+      for (let i = 0; i < details.controls.length; i++) {
+        total += this.calculatToMoney(details.controls[i] as FormGroup);
+      }
+      formItem.get('_total').setValue(total);
+    });
     return false;
   }
 

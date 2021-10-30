@@ -936,6 +936,14 @@ export class CommonService {
   }
 
   set lastVoucherDate(date: Date) {
-    localStorage.setItem('Voucher.lastVoucherDate', date.toISOString());
+    if (date instanceof Date) {
+      localStorage.setItem('Voucher.lastVoucherDate', date.toISOString());
+    }
+  }
+
+  roundUsing(number, func, prec) {
+    var temp = number * Math.pow(10, prec)
+    temp = func(temp);
+    return temp / Math.pow(10, prec);
   }
 }
