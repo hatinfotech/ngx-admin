@@ -92,6 +92,56 @@ export class SmartTableDateTimeRangeFilterComponent extends SmartTableFilterComp
 
 @Component({
   template: `
+    <input nbInput size="medium" style="height: 2.5rem;"
+      [owlDateTime]="datetimepicker" [owlDateTimeTrigger]="datetimepicker" [selectMode]="'range'"
+      #number
+      [ngClass]="inputClass"
+      [formControl]="inputControl"
+      class="form-control"
+      [placeholder]="column.title"
+      type="text">
+      <owl-date-time #datetimepicker [pickerType]="'calendar'"></owl-date-time>
+  `,
+})
+export class SmartTableDateRangeFilterComponent extends SmartTableFilterComponent implements OnInit, OnChanges {
+  inputControl = new FormControl();
+
+  constructor() {
+    super();
+  }
+
+  ngOnInit() {
+    this.inputControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(this.delay),
+      )
+      .subscribe((value: number) => {
+        const dateVal: Date[] = this.inputControl.value;
+        if (dateVal[0] && dateVal[1]) {
+          this.query = {
+            dataType: 'date',
+            searchType: 'range',
+            range: dateVal,
+          } as any;
+          // this.query = value !== null ? (dateVal[0].toISOString() + '/' + dateVal[1].toISOString()) : '';
+          this.setFilter();
+        }
+      });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.query) {
+      this.query = changes.query.currentValue;
+      let range: any[] = changes.query.currentValue.split('/');
+      range = range.map(item => new Date(item));
+      this.inputControl.setValue(range);
+    }
+  }
+}
+
+@Component({
+  template: `
     <button nbButton status="danger" hero size="small" (click)="clearFilter()" style="float: right;"
               title="{{'Common.clearFilter' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="funnel"></nb-icon>

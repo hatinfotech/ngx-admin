@@ -8,7 +8,7 @@ import { ActionControlListComponent } from './action-control-list/action-control
 import { AgListComponent } from './ag-list/ag-list.component';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { HeadTitlePipe } from '../pipes/head-title.pipe';
-import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableFilterComponent, SmartTableSelect2FilterComponent, SmartTableSelectFilterComponent } from './smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableClearingFilterComponent, SmartTableFilterComponent, SmartTableSelect2FilterComponent, SmartTableSelectFilterComponent, SmartTableDateRangeFilterComponent } from './smart-table/smart-table.filter.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
@@ -42,6 +42,7 @@ import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
     ObjectsIdPipe,
     SmartTableDateTimeComponent,
     SmartTableDateTimeRangeFilterComponent,
+    SmartTableDateRangeFilterComponent,
     SmartTableClearingFilterComponent,
     SmartTableFilterComponent,
     SmartTableSelect2FilterComponent,

@@ -1,3 +1,4 @@
+import { CommonService } from './../../../services/common.service';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ApiService } from '../../../services/api.service';
@@ -18,7 +19,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
   isLocalUpdate = false;
   state$ = new BehaviorSubject<string>('INIT');
 
-  constructor(protected apiService: ApiService, protected url: string, filterConf?: any, sortConf?: any, pagingConf?: any) {
+  constructor(protected apiService: ApiService, protected commonService: CommonService, protected url: string, filterConf?: any, sortConf?: any, pagingConf?: any) {
     super();
     if (filterConf && filterConf.length > 0) {
       filterConf.init = true;
@@ -79,20 +80,39 @@ export class CustomServerDataSource<M> extends LocalDataSource {
     }
 
     if (this.filterConf.filters) {
-      this.filterConf.filters.forEach((fieldConf) => {
+      // this.filterConf.filters.forEach((fieldConf) => {
+      for (const fieldConf of this.filterConf.filters) {
         if (fieldConf['search']) {
           // params[`filter_${fieldConf['field']}`] = fieldConf['search'];
-          let condition = 'filter';
-          let value = fieldConf['search'];
           if (typeof fieldConf['search'] === 'object') {
-            condition = fieldConf['search']['condition'];
-            value = fieldConf['search']['value'];
-          }
-          if (value !== null) {
-            params[`${condition}_${fieldConf['field']}`] = this.encodeFilterQuery(value);
+            if (fieldConf['search']['searchType'] === 'range') {
+              if (fieldConf['search']['dataType'] === 'date') {
+                if (!(fieldConf['search']['range'][0] instanceof Date)) {
+                  throw new Error('Search from not instance of date');
+                }
+                if (!(fieldConf['search']['range'][1] instanceof Date)) {
+                  throw new Error('Search to not instance of date');
+                }
+                // fieldConf['search']['range'][0] = this.commonService.getBeginOfDate(fieldConf['search']['range'][0]).toISOString();
+                // fieldConf['search']['range'][1] = this.commonService.getEndOfDate(fieldConf['search']['range'][1]).toISOString();
+              }
+              params[`ge_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getBeginOfDate(fieldConf['search']['range'][0]).toISOString());
+              params[`le_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getEndOfDate(fieldConf['search']['range'][1]).toISOString());
+            } else {
+              // condition = fieldConf['search']['condition'];
+              // value = fieldConf['search']['value'];
+              params[`filter_${fieldConf['search']['condition']}`] = this.encodeFilterQuery(fieldConf['search']['value']);
+            }
+          } else {
+            // let condition = 'filter';
+            // let value = fieldConf['search'];
+            if (fieldConf['search'] !== null) {
+              params[`filter_${fieldConf['field']}`] = this.encodeFilterQuery(fieldConf['search']);
+            }
+
           }
         }
-      });
+      }
     }
 
     return this.apiService.getObservable<M[]>(this.url, params).pipe(
@@ -115,7 +135,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
 
   }
 
-  encodeFilterQuery(query: { instance: any, value: any }) {
+  encodeFilterQuery(query: { instance: any, value: any } | any) {
     if (typeof query === 'object' && query?.instance) {
       return query.instance.encodeFilterQuery(query.value);
     } else {

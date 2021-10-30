@@ -45,7 +45,7 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   }
 
   initDataSource() {
-    return this.source = new CustomServerDataSource<M>(this.apiService, this.getApiPath());
+    return this.source = new CustomServerDataSource<M>(this.apiService, this.commonService, this.getApiPath());
   }
 
   /** Get data from api and push to list */
