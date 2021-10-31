@@ -909,6 +909,11 @@ export class CommonService {
         },
       });
       return true;
+    } else {
+      if (type == 'TASK' || type == 'CHATROOM') {
+        this.openMobileSidebar();
+        this.mobileService.openChatRoom({ ChatRoom: relativeVocher });
+      }
     }
     return false;
   }

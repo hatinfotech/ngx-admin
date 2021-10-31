@@ -55,6 +55,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
     public ref: NbDialogRef<SalesPriceReportListComponent>,
     public mobileAppService: MobileAppService,
     public collaboratorService: CollaboratorService,
+    public mobileService: MobileAppService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -211,6 +212,62 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             });
           },
           width: '20%',
+        },
+        Task: {
+          title: 'Task',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'message-circle';
+            instance.display = true;
+            instance.status = 'info';
+            instance.valueChange.subscribe(value => {
+            });
+
+            instance.click.subscribe(async (row: CollaboratorOrderModel) => {
+              const task = row.RelativeVouchers?.find(f => f.type == 'TASK');
+              if (task) {
+                this.commonService.openMobileSidebar();
+                this.mobileService.openChatRoom({ ChatRoom: task.id });
+              }
+            });
+            //   this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
+            //     const priceReport = rs[0];
+            //     if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
+            //       this.commonService.openMobileSidebar();
+            //       this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
+            //     } else {
+            //       this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+            //         {
+            //           label: this.commonService.translateText('Common.goback'),
+            //           status: 'danger',
+            //           icon: 'arrow-ios-back',
+            //         },
+            //         {
+            //           label: this.commonService.translateText('Common.create'),
+            //           status: 'success',
+            //           icon: 'message-circle-outline',
+            //           action: () => {
+            //             this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
+            //               if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
+            //                 this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
+            //                   this.commonService.translateText('Common.notification'), {
+            //                   status: 'success',
+            //                 });
+            //               this.commonService.openMobileSidebar();
+            //               this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
+            //             });
+            //           }
+            //         },
+            //       ]);
+            //     }
+            //   }).catch(err => {
+            //     return Promise.reject(err);
+            //   });
+            // });
+          },
         },
         State: {
           title: this.commonService.translateText('Common.state'),

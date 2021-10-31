@@ -166,30 +166,12 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
             instance.icon = 'message-circle';
-            // instance.label = this.commonService.translateText('Common.copy');
             instance.display = true;
             instance.status = 'info';
             instance.valueChange.subscribe(value => {
-              // if (value) {
-              //   instance.disabled = false;
-              // } else {
-              //   instance.disabled = true;
-              // }
             });
 
-            // instance.valueChange.subscribe(rowData => {
-
-            //   if (instance.rowData?.Code === 'PBG09721100') {
-            //     setInterval(() => {
-            //       console.log(instance.disabled);
-            //       // this.disabled = !this.disabled;
-            //     }, 1000);
-            //   }
-            // });
-
-
             instance.click.subscribe(async (row: SalesPriceReportModel) => {
-
               this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
                 const priceReport = rs[0];
                 if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
@@ -220,26 +202,9 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
                     },
                   ]);
                 }
-
               }).catch(err => {
                 return Promise.reject(err);
               });
-
-              // this.commonService.openDialog(SalesPriceReportFormComponent, {
-              //   context: {
-              //     inputMode: 'dialog',
-              //     inputId: [row.Code],
-              //     isDuplicate: true,
-              //     onDialogSave: (newData: SalesPriceReportModel[]) => {
-              //       // if (onDialogSave) onDialogSave(row);
-              //     },
-              //     onDialogClose: () => {
-              //       // if (onDialogClose) onDialogClose();
-              //       this.refresh();
-              //     },
-              //   },
-              // });
-
             });
           },
         },
