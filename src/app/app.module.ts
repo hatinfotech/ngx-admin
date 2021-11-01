@@ -1288,6 +1288,7 @@ export class AppModule {
       },
       "APPROVED": {
         ...AppModule.approvedState,
+        label: 'Collaborator.Order.approved',
         nextState: 'COMPLETE',
         nextStates: [
           { ...AppModule.completeState, status: 'success' },

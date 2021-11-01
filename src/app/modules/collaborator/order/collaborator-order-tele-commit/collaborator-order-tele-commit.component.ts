@@ -1,25 +1,10 @@
-import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
-import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { Component, OnInit } from '@angular/core';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
+import { SalesPriceReportModel } from '../../../../models/sales.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { PromotionActionModel } from '../../../../models/promotion.model';
-import { ContactModel } from '../../../../models/contact.model';
-import { ProductModel } from '../../../../models/product.model';
-import { TaxModel } from '../../../../models/tax.model';
-import { UnitModel } from '../../../../models/unit.model';
-import { environment } from '../../../../../environments/environment';
-import { CurrencyMaskConfig } from 'ng2-currency-mask';
-import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
-import { SalesPriceReportPrintComponent } from '../../../sales/price-report/sales-price-report-print/sales-price-report-print.component';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
 
 
@@ -31,7 +16,7 @@ import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales
 export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFormComponent implements OnInit {
 
   componentName: string = 'CollaboratorOrderTeleCommitFormComponent';
-  
+  apiPath = '/collaborator/price-reports';
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -44,8 +29,91 @@ export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFo
     public ref: NbDialogRef<CollaboratorOrderTeleCommitFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
-    
-    
   }
-  
+
+  makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      Code: [''],
+      Object: [''],
+      ObjectName: [''],
+      ObjectEmail: [''],
+      // ObjectPhone: [''],
+      Click2Call: [],
+      ObjectAddress: [''],
+      ObjectIdentifiedNumber: [''],
+      ObjectBankName: [''],
+      ObjectBankCode: [''],
+      Contact: [''],
+      ContactName: [''],
+      ContactPhone: [''],
+      ContactEmail: [''],
+      ContactAddress: [''],
+      ContactIdentifiedNumber: [''],
+      // ObjectTaxCode: [''],
+      // DirectReceiverName: [''],
+      // PaymentStep: [''],
+      PriceTable: [''],
+      DeliveryAddress: [''],
+      Title: ['', Validators.required],
+      Note: [''],
+      SubNote: [''],
+      Reported: [''],
+      _total: [''],
+      RelativeVouchers: [''],
+      Details: this.formBuilder.array([]),
+    });
+    if (data) {
+      // data['Code_old'] = data['Code'];
+      // newForm.patchValue(data);
+      this.patchFormGroupValue(newForm, data);
+      // this.toMoney(newForm);
+    } else {
+      this.addDetailFormGroup(newForm);
+    }
+    return newForm;
+  }
+
+  click2callConnecting = false;
+  click2call(formItem: FormGroup) {
+    console.log(formItem.get('Object').value);
+    const priceReport = formItem.get('Code').value;
+    this.click2callConnecting = true;
+    if (priceReport) {
+      this.apiService.putPromise('/collaborator/price-reports/' + priceReport, { click2call: true }, [{ Code: priceReport }]).then(rs => {
+        console.log(rs);
+        this.click2callConnecting = false;
+      }).catch(err => {
+        this.click2callConnecting = false;
+      });
+    }
+    return false;
+  }
+
+  saveAndClose() {
+    this.commonService.showDiaplog('Chốt đơn', 'Bạn có chắc là muốn chốt đơn hàng này không ? sau khi chốt đơn, báo giá liên quan cũng sẽ được duyệt.', [
+      {
+        status: 'basic',
+        label: 'Trở về',
+      },
+      {
+        status: 'success',
+        label: 'Chốt đơn',
+        action: () => {
+          // const result = super.saveAndClose();
+          this.save().then(rs => {
+            if (rs[0]?.Code) {
+              this.apiService.putPromise('/collaborator/price-reports', { changeState: 'APPROVED' }, [{ Code: rs[0]?.Code }]).then(rs => {
+                this.goback();
+                // this.onDialogClose();
+              });
+            }
+          });
+        },
+      }
+    ])
+
+    return false;
+  }
+
+
 }

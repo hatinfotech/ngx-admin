@@ -916,7 +916,10 @@
             "label": "đơn hàng",
             "title": "{{action}}{{definition}} đơn hàng",
             "dateOforder": "ngày đặt hàng",
-            "dateOfDelivery": "ngày giao hàng"
+            "dateOfDelivery": "ngày giao hàng",
+            "telesale": "gọi chốt đơn",
+            "approve": "chốt đơn",
+            "approved": "đã chốt đơn"
         },
         "Commission": {
             "label": "kết chuyển chiết khấu",

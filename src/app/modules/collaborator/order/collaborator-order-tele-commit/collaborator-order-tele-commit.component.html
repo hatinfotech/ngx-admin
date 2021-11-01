@@ -25,9 +25,16 @@
                                                     <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="{{'Common.name' | translate | headtitlecase}}">
                                                 </ngx-form-group>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <!-- <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.phone' | translate | headtitlecase)}}">
+                                                </ngx-form-group>
+                                            </div> -->
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="Click2Call" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <button [disabled]="click2callConnecting" class="fit-control-button" [outline]="false" nbButton status="danger" fullWidth (click)="click2call(formItem)" size="medium" hero>
+                                                        <nb-icon pack="eva" icon="phone-call-outline"></nb-icon>{{'Collaborator.Order.telesale' | translate | headtitlecase}}
+                                                    </button>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
@@ -282,8 +289,8 @@
                         <button nbButton hero status="primary" (click)="preview(formItem)" [disabled]="!form.valid || isProcessing">
                             <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.preview' | translate | headtitlecase}}
                         </button>
-                        <button nbButton status="primary" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
-                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Collaborator.Order.approve' | translate | headtitlecase}}<nb-icon on b-icon pack="eva" icon="skip-forward-outline"></nb-icon></button>
+                        <button nbButton status="primary" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
                     </div>
                 </nb-card-footer>
             </nb-card>

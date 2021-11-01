@@ -213,6 +213,42 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
           width: '20%',
         },
+        Call: {
+          title: 'Call',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'phone-call-outline';
+            instance.display = true;
+            instance.status = 'success';
+            instance.valueChange.subscribe(value => {
+            });
+
+            instance.click.subscribe(async (row: CollaboratorOrderModel) => {
+              const priceReportRef = row.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
+              if (priceReportRef) {
+                this.commonService.showDiaplog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
+                  {
+                    status: 'basic',
+                    label: 'Trở về',
+                  },
+                  {
+                    status: 'success',
+                    icon: 'phone-call-outline',
+                    label: 'Gọi ngay',
+                    action: () => {
+                      this.apiService.putPromise('/collaborator/price-reports/' + priceReportRef.id, { click2call: true }, [{ Code: priceReportRef.id }]).then(rs => {
+                        console.log(rs);
+                      });
+                    },
+                  }
+                ]);
+              }
+            });
+          },
+        },
         Task: {
           title: 'Task',
           type: 'custom',
@@ -233,40 +269,6 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
                 this.mobileService.openChatRoom({ ChatRoom: task.id });
               }
             });
-            //   this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
-            //     const priceReport = rs[0];
-            //     if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
-            //       this.commonService.openMobileSidebar();
-            //       this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
-            //     } else {
-            //       this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
-            //         {
-            //           label: this.commonService.translateText('Common.goback'),
-            //           status: 'danger',
-            //           icon: 'arrow-ios-back',
-            //         },
-            //         {
-            //           label: this.commonService.translateText('Common.create'),
-            //           status: 'success',
-            //           icon: 'message-circle-outline',
-            //           action: () => {
-            //             this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
-            //               if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-            //                 this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
-            //                   this.commonService.translateText('Common.notification'), {
-            //                   status: 'success',
-            //                 });
-            //               this.commonService.openMobileSidebar();
-            //               this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
-            //             });
-            //           }
-            //         },
-            //       ]);
-            //     }
-            //   }).catch(err => {
-            //     return Promise.reject(err);
-            //   });
-            // });
           },
         },
         State: {
@@ -297,7 +299,25 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorOrderModel) => {
               // this.apiService.getPromise<CollaboratorOrderModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-              this.preview([rowData]);
+              if (rowData.State == 'PROCESSING') {
+                const priceReportRef = rowData.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
+                if (priceReportRef) {
+                  this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+                    context: {
+                      inputId: [priceReportRef.id],
+                      inputMode: 'dialog',
+                      showLoadinng: true,
+                      onDialogSave: () => {
+                        this.refresh();
+                      },
+                      onDialogClose: () => { },
+                    }
+                  });
+                }
+              } else {
+                this.preview([rowData]);
+              }
+
               // });
             });
           },
@@ -392,7 +412,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         idKey: ['Code'],
         // approvedConfirm: true,
         onChange: async (data: CollaboratorOrderModel, printComponent: CollaboratorOrderPrintComponent) => {
-          this.refresh();
+
           printComponent.close();
           if (data.State === 'PROCESSING') {
             // Get relative vouchers
@@ -406,12 +426,17 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
                     inputMode: 'dialog',
                     onDialogSave: (data) => {
                       console.log(data);
+                      setTimeout(() => {
+                        this.refresh();
+                      }, 300);
                     },
                     onDialogClose: () => { },
                   }
                 });
               }
             }
+          } else {
+            this.refresh();
           }
 
         },
