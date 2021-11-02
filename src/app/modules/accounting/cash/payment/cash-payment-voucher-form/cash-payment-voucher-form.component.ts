@@ -37,7 +37,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
   // variables
   locale = this.commonService.getCurrentLoaleDataset();
-  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 2 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
   // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
   accountingBusinessList: BusinessModel[] = [];

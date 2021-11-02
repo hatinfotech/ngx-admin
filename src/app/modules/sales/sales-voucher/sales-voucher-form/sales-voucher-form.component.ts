@@ -31,6 +31,7 @@ import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choo
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
@@ -48,8 +49,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
-  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 2 };
-  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 2 };
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
   quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
 
   /** Tax list */
@@ -325,7 +326,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    tags: true,
+    tags: false,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -509,6 +510,9 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     });
     if (data) {
       // data['Code_old'] = data['Code'];
+      if (!((data.DateOfSale as any) instanceof Date)) {
+        data.DateOfSale = new Date(data.DateOfSale) as any;
+      }
       this.patchFormGroupValue(newForm, data);
     } else {
       this.addDetailFormGroup(newForm);
@@ -582,25 +586,25 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         return null;
       }],
       Description: ['', Validators.required],
-      Quantity: [1,  (control: FormControl) => {
+      Quantity: [1, (control: FormControl) => {
         if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
-      Price: ['',  (control: FormControl) => {
+      Price: ['', (control: FormControl) => {
         if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
-      Unit: ['',  (control: FormControl) => {
+      Unit: ['', (control: FormControl) => {
         if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
-      Tax: ['NOTAX',  (control: FormControl) => {
+      Tax: ['NOTAX', (control: FormControl) => {
         if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
@@ -615,7 +619,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
     if (data) {
       newForm.patchValue(data);
-      
+
       if (data.Product?.Units && data.Product?.Units?.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
@@ -835,7 +839,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   /** Choose product event */
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup, detailForm?: FormGroup) {
     console.log(selectedData);
     const priceTable = this.commonService.getObjectId(parentForm.get('PriceTable').value);
     detail.get('Description').setValue(selectedData.Name);
@@ -866,9 +870,73 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       } else {
         detail.get('Unit').setValue(detaultUnit);
       }
+
     } else {
       // detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
+    }
+    // Callculate: Doanh thu bán lẻ dựa triên thu chi
+    if (selectedData && this.commonService.getObjectId(selectedData) == 'BANLE' && detailForm) {
+      this.apiService.getPromise('/accounting/reports', {
+        reportSummary: true,
+        Accounts: '1111',
+        toDate: this.commonService.getEndOfDate(parentForm.get('DateOfSale')?.value).toISOString(),
+      }).then(rs => {
+        console.log(rs);
+        this.commonService.openDialog(DialogFormComponent, {
+          context: {
+            title: 'Tính doanh thu bán lẻ',
+            onInit: (form, dialog) => {
+              const reatilRevenue = form.get('RetailRevenue');
+              form.get('RealCash').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(realCashValue => {
+                reatilRevenue.setValue(realCashValue - rs[0]['TailAmount']);
+              });
+            },
+            controls: [
+              {
+                name: 'RealCash',
+                label: 'Tiền mặt cuối ngày',
+                placeholder: 'Tiền đếm được cuối ngày',
+                type: 'currency',
+                initValue: 0,
+              },
+              {
+                name: 'CurrentCash',
+                label: 'Tiền mặt hiện tại trên phền mềm',
+                placeholder: 'Tiền đếm được cuối ngày',
+                type: 'currency',
+                initValue: rs[0]['TailAmount'],
+                disabled: true,
+              },
+              {
+                name: 'RetailRevenue',
+                label: 'Doanh thu bán lẻ',
+                placeholder: 'Doanh thu bán lẻ',
+                type: 'currency',
+                disabled: true,
+              },
+            ],
+            actions: [
+              {
+                label: 'Trở về',
+                icon: 'back',
+                status: 'basic',
+                action: () => { },
+              },
+              {
+                label: 'Tính doanh thu bán lẻ',
+                icon: 'generate',
+                status: 'success',
+                action: (form: FormGroup) => {
+                  console.log(rs);
+                  detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
+                  this.toMoney(parentForm, detail, 'Product');
+                },
+              },
+            ],
+          },
+        });
+      });
     }
     return false;
   }

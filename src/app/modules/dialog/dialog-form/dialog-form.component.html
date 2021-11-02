@@ -6,7 +6,8 @@
         <div class="col-sm-12" *ngFor="let control of controls">
           <div class="form-group">
             <label class="label"><span class="valid">{{ control.label }}</span></label>
-            <input type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder">
+            <input *ngIf="!control.type || control.type == 'text'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder">
+            <input *ngIf="control.type == 'currency'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder" currencyMask [options]="curencyFormat">
           </div>
         </div>
       </div>

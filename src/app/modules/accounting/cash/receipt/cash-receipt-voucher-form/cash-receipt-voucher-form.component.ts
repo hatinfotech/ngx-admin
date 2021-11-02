@@ -35,7 +35,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   // variables
   locale = this.commonService.getCurrentLoaleDataset();
-  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 2 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
   // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
   accountDebitList: AccountModel[] = [];
