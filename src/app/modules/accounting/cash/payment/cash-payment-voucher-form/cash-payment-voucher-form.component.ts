@@ -355,7 +355,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
   /** Get form data by id from api */
   getFormData(callback: (data: CashVoucherModel[]) => void) {
-    this.apiService.get<CashVoucherModel[]>(this.apiPath, { id: this.id, multi: true, includeDetails: true, includeContact: true, includeRelativeVouchers: true },
+    this.apiService.get<CashVoucherModel[]>(this.apiPath, { id: this.id, eq_Type: 'PAYMENT', multi: true, includeDetails: true, includeContact: true, includeRelativeVouchers: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);

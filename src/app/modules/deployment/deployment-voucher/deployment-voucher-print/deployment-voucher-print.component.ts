@@ -265,7 +265,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(rs => {
+    return this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: DeploymentVoucherModel) => detail.Type === 'PRODUCT');
       }

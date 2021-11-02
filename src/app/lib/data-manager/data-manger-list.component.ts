@@ -14,6 +14,8 @@ import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-t
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
 import { DataManagerFormComponent } from './data-manager-form.component';
+import { DataManagerPrintComponent } from './data-manager-print.component';
+import { ThisReceiver } from '@angular/compiler';
 
 export class SmartTableSetting {
   mode?: string;
@@ -57,7 +59,7 @@ export class SmartTableSetting {
   };
 }
 
-@Component({template: ''})
+@Component({ template: '' })
 export abstract class DataManagerListComponent<M> extends BaseComponent implements OnInit, AfterViewInit, ReuseComponent {
 
   editing = {};
@@ -65,6 +67,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   hasSelect = 'none';
   settings: SmartTableSetting;
   formDialog: Type<DataManagerFormComponent<M>>;
+  printDialog: Type<DataManagerPrintComponent<M>>;
   @ViewChild('table') table: Ng2SmartTableComponent;
 
   /** Seleted ids */
@@ -106,9 +109,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return [];
   }
 
-  preview(data: any[]) {
-    return true;
-  }
+  // preview(data: any[]) {
+  //   return true;
+  // }
 
   async init(): Promise<boolean> {
 
@@ -356,7 +359,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   makeId(item: M) {
-    if(typeof item === 'string') return item;
+    if (typeof item === 'string') return item;
     if (Array.isArray(this.idKey)) {
       return this.idKey.map(key => this.encodeId(item[key])).join('-');
     }
@@ -812,5 +815,30 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   get isChoosedMode() {
     return this.ref && Object.keys(this.ref).length > 0;
+  }
+
+  preview(data: M[], source?: string) {
+    if (!this.printDialog) {
+      console.log('Print dialog was not set');
+      return false;
+    };
+    this.commonService.openDialog(this.printDialog, {
+      context: {
+        showLoadinng: true,
+        title: 'Xem trước',
+        id: data.map(m => this.makeId(m)),
+        sourceOfDialog: 'list',
+        mode: 'print',
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onChange: (data: M) => {
+          this.refresh();
+        },
+        onSaveAndClose: () => {
+          this.refresh();
+        },
+      },
+    });
+    return false;
   }
 }

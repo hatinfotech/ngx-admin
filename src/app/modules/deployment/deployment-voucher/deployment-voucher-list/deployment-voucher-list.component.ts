@@ -30,6 +30,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
   apiPath = '/deployment/vouchers';
   idKey = 'Code';
   formDialog = DeploymentVoucherFormComponent;
+  printDialog = DeploymentVoucherPrintComponent;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<DeploymentVoucherListComponent>;
@@ -295,9 +296,9 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
-              this.getFormData([rowData.Code]).then(rs => {
-                this.preview(rs, 'list');
-              });
+              // this.getFormData([rowData.Code]).then(rs => {
+                this.preview([rowData], 'list');
+              // });
               // this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
               //   this.preview(rs);
               // });
@@ -362,9 +363,9 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
-              this.getFormData([rowData.Code]).then(rs => {
-                this.preview(rs, 'list');
-              });
+              // this.getFormData([rowData.Code]).then(rs => {
+                this.preview([rowData], 'list');
+              // });
             });
           },
         }
@@ -415,24 +416,24 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
     });
   }
 
-  preview(data: DeploymentVoucherModel[], source?: string) {
-    this.commonService.openDialog(DeploymentVoucherPrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        data: data,
-        sourceOfDialog: source,
-        idKey: ['Code'],
-        // approvedConfirm: true,
-        onChange: (data: DeploymentVoucherModel) => {
-          this.refresh();
-        },
-        // onSaveAndClose: () => {
-        //   this.refresh();
-        // },
-      },
-    });
-    return false;
-  }
+  // preview(data: DeploymentVoucherModel[], source?: string) {
+  //   this.commonService.openDialog(DeploymentVoucherPrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       data: data,
+  //       sourceOfDialog: source,
+  //       idKey: ['Code'],
+  //       // approvedConfirm: true,
+  //       onChange: (data: DeploymentVoucherModel) => {
+  //         this.refresh();
+  //       },
+  //       // onSaveAndClose: () => {
+  //       //   this.refresh();
+  //       // },
+  //     },
+  //   });
+  //   return false;
+  // }
 
 }

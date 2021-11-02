@@ -29,6 +29,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
   apiPath = '/accounting/cash-vouchers';
   idKey = 'Code';
   formDialog = CashPaymentVoucherFormComponent;
+  printDialog = CashPaymentVoucherPrintComponent;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<CashPaymentVoucherListComponent>;
@@ -154,9 +155,9 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
               instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-              this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-                this.preview(rs);
-              });
+              // this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview([rowData]);
+              // });
             });
           },
         },
@@ -219,9 +220,9 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-              this.getFormData([rowData.Code]).then(rs => {
-                this.preview(rs);
-              });
+              // this.getFormData([rowData.Code]).then(rs => {
+                this.preview([rowData]);
+              // });
             });
           },
         }
@@ -282,21 +283,21 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
     return this.apiService.getPromise<CashVoucherModel[]>('/accounting/cash-vouchers', { id: ids, includeContact: true, includeDetails: true, eq_Type: 'PAYMENT' });
   }
 
-  preview(data: CashVoucherModel[]) {
-    this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        data: data,
-        idKey: ['Code'],
-        sourceOfDialog: 'list',
-        // approvedConfirm: true,
-        onClose: (data: CashVoucherModel) => {
-          this.refresh();
-        },
-      },
-    });
-    return false;
-  }
+  // preview(data: CashVoucherModel[]) {
+  //   this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       data: data,
+  //       idKey: ['Code'],
+  //       sourceOfDialog: 'list',
+  //       // approvedConfirm: true,
+  //       onClose: (data: CashVoucherModel) => {
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
 }

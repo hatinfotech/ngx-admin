@@ -357,4 +357,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   summaryCalculate(data: M[]) {
     
   }
+
+  openRelativeVoucher(relativeVocher: any) {
+    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    return false;
+  }
+  
 }

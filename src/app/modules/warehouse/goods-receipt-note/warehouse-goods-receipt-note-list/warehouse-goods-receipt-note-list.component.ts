@@ -193,9 +193,9 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsReceiptNoteModel) => {
-              this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-                this.preview(rs);
-              });
+              // this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview([rowData]);
+              // });
             });
           },
         },
@@ -258,9 +258,9 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsReceiptNoteModel) => {
-              this.getFormData([rowData.Code]).then(rs => {
-                this.preview(rs);
-              });
+              // this.getFormData([rowData.Code]).then(rs => {
+                this.preview([rowData]);
+              // });
             });
           },
         }
@@ -298,21 +298,21 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
     return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(data: WarehouseGoodsReceiptNoteModel[]) {
-    this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        data: data,
-        idKey: ['Code'],
-        sourceOfDialog: 'list',
-        // approvedConfirm: true,
-        onClose: (data: WarehouseGoodsReceiptNoteModel) => {
-          this.refresh();
-        },
-      },
-    });
-    return false;
-  }
+  // preview(data: WarehouseGoodsReceiptNoteModel[]) {
+  //   this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       data: data,
+  //       idKey: ['Code'],
+  //       sourceOfDialog: 'list',
+  //       // approvedConfirm: true,
+  //       onClose: (data: WarehouseGoodsReceiptNoteModel) => {
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
 }

@@ -30,6 +30,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
   idKey = 'Code';
 
   formDialog = PurchaseVoucherFormComponent;
+  printDialog = PurchaseVoucherPrintComponent;
   reuseDialog = true;
   static _dialog: NbDialogRef<PurchaseVoucherListComponent>;
 
@@ -181,9 +182,9 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
               instance.outline = processMap?.outline;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
-              this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-                this.preview(rs);
-              });
+              // this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+                this.preview([rowData]);
+              // });
             });
           },
         },
@@ -246,9 +247,9 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
-              this.getFormData([rowData.Code]).then(rs => {
-                this.preview(rs);
-              });
+              // this.getFormData([rowData.Code]).then(rs => {
+                this.preview([rowData]);
+              // });
             });
           },
         }
@@ -288,20 +289,26 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
     return this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(data: PurchaseVoucherModel[]) {
-    this.commonService.openDialog(PurchaseVoucherPrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        data: data,
-        idKey: ['Code'],
-        // approvedConfirm: true,
-        onClose: (data: PurchaseVoucherModel) => {
-          this.refresh();
-        },
-      },
-    });
-    return false;
-  }
+  // preview(data: PurchaseVoucherModel[], source?: string) {
+  //   this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       data: data,
+  //       idKey: ['Code'],
+  //       id: data.map(m => m[this.idKey]),
+  //       sourceOfDialog: 'list',
+  //       mode: 'print',
+  //       // approvedConfirm: true,
+  //       onChange: (data: PurchaseVoucherModel) => {
+  //         this.refresh();
+  //       },
+  //       onSaveAndClose: () => {
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
 }

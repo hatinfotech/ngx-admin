@@ -36,6 +36,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
   apiPath = '/collaborator/orders';
   idKey = 'Code';
   formDialog = CollaboratorOrderFormComponent;
+  printDialog = CollaboratorOrderPrintComponent;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<CollaboratorOrderListComponent>;
@@ -134,9 +135,12 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         },
         ObjectName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
-          type: 'string',
+          type: 'html',
           width: '20%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          valuePrepareFunction: (cell, row) => {
+            return cell + (row.ObjectPhone ? ` <br>SĐT: ${row.ObjectPhone}` : '');
+          },
         },
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -154,7 +158,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           type: 'string',
           width: '10%',
         },
-        Publisher: {
+        PublisherName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Publisher.label'), 'head-title'),
           type: 'string',
           width: '10%',
@@ -162,9 +166,9 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           //   type: 'custom',
           //   component: SmartTableDateTimeRangeFilterComponent,
           // },
-          valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
-          },
+          // valuePrepareFunction: (cell: string, row?: any) => {
+          //   return this.commonService.getObjectText(cell);
+          // },
         },
         DateOfOrder: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
@@ -370,6 +374,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeCreator'] = true;
+      params['includePublisher'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
       params['page'] = this.collaboratorService?.currentpage$?.value || null;

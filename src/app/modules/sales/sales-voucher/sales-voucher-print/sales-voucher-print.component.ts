@@ -264,7 +264,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true }).then(rs => {
+    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: SalesVoucherDetailModel) => detail.Type !== 'CATEGORY');
         for (const detail of rs[0].Details) {

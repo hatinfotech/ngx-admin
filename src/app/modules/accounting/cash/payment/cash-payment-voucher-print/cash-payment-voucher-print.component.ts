@@ -206,7 +206,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(data => {
+    return this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: ids, eq_Type: 'PAYMENT', includeContact: true, includeDetails: true, includeRelativeVouchers: true }).then(data => {
       this.summaryCalculate(data);
       return data;
     });

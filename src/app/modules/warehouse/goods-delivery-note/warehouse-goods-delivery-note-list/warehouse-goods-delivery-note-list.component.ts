@@ -30,6 +30,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
   idKey = 'Code';
 
   formDialog = WarehouseGoodsDeliveryNoteFormComponent;
+  printDialog = WarehouseGoodsDeliveryNotePrintComponent;
 
   constructor(
     public apiService: ApiService,
@@ -196,9 +197,9 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsDeliveryNoteModel) => {
-              this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-                this.preview(rs);
-              });
+              // this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
+              this.preview([rowData]);
+              // });
             });
           },
         },
@@ -261,9 +262,9 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsDeliveryNoteModel) => {
-              this.getFormData([rowData.Code]).then(rs => {
-                this.preview(rs);
-              });
+              // this.getFormData([rowData.Code]).then(rs => {
+              this.preview([rowData]);
+              // });
             });
           },
         }
@@ -301,21 +302,21 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
     return this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(data: WarehouseGoodsDeliveryNoteModel[]) {
-    this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        data: data,
-        idKey: ['Code'],
-        sourceOfDialog: 'list',
-        // approvedConfirm: true,
-        onClose: (data: WarehouseGoodsDeliveryNoteModel) => {
-          this.refresh();
-        },
-      },
-    });
-    return false;
-  }
+  // preview(data: WarehouseGoodsDeliveryNoteModel[]) {
+  //   this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       data: data,
+  //       idKey: ['Code'],
+  //       sourceOfDialog: 'list',
+  //       // approvedConfirm: true,
+  //       onClose: (data: WarehouseGoodsDeliveryNoteModel) => {
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
 }

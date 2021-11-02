@@ -912,7 +912,7 @@ export class CommonService {
     } else {
       if (type == 'TASK' || type == 'CHATROOM') {
         this.openMobileSidebar();
-        this.mobileService.openChatRoom({ ChatRoom: relativeVocher });
+        this.mobileService.openChatRoom({ ChatRoom: this.getObjectId(relativeVocher) });
       }
     }
     return false;

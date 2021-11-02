@@ -84,6 +84,12 @@
                 </div>
             </div>
         </nb-card-body>
+        <nb-card-footer *ngIf="data.RelativeVouchers && data.RelativeVouchers.length > 0" class="print-relative-vouchers">
+            <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher | objectstext}}" nbTooltipStatus="primary">
+              <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
+              <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
+          </span>
+        </nb-card-footer>
         <nb-card-footer>
             <div class="buttons-row">
                 <!-- <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier"><nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}</button> -->

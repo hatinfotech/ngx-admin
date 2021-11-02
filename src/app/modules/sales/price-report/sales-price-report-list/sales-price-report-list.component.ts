@@ -34,6 +34,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   apiPath = '/sales/price-reports';
   idKey = 'Code';
   formDialog = SalesPriceReportFormComponent;
+  printDialog = SalesPriceReportPrintComponent;
 
   reuseDialog = true;
   static _dialog: NbDialogRef<SalesPriceReportListComponent>;
@@ -172,7 +173,13 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             });
 
             instance.click.subscribe(async (row: SalesPriceReportModel) => {
-              this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
+              const task = row.RelativeVouchers?.find(f => f.type == 'TASK');
+              if (task) {
+                this.commonService.openMobileSidebar();
+                this.mobileAppService.openChatRoom({ ChatRoom: task.id });
+              }
+              
+              if(false) this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
                 const priceReport = rs[0];
                 if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
                   this.commonService.openMobileSidebar();
@@ -272,9 +279,9 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
-              this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-                this.preview(rs);
-              });
+              // this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
+                this.preview([rowData]);
+              // });
             });
           },
         },
@@ -392,29 +399,29 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     });
   }
 
-  preview(data: SalesPriceReportModel[], source?: string) {
-    this.commonService.openDialog(SalesPriceReportPrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        // data: data,
-        id: data.map(m => m[this.idKey]),
-        sourceOfDialog: 'list',
-        mode: 'print',
-        idKey: ['Code'],
-        // approvedConfirm: true,
-        onChange: (data: SalesPriceReportModel) => {
-          this.refresh();
-        },
-        onSaveAndClose: () => {
-          this.refresh();
-        },
-        // onSaveAndClose: () => {
-        //   this.refresh();
-        // },
-      },
-    });
-    return false;
-  }
+  // preview(data: SalesPriceReportModel[], source?: string) {
+  //   this.commonService.openDialog(SalesPriceReportPrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       // data: data,
+  //       id: data.map(m => m[this.idKey]),
+  //       sourceOfDialog: 'list',
+  //       mode: 'print',
+  //       idKey: ['Code'],
+  //       // approvedConfirm: true,
+  //       onChange: (data: SalesPriceReportModel) => {
+  //         this.refresh();
+  //       },
+  //       onSaveAndClose: () => {
+  //         this.refresh();
+  //       },
+  //       // onSaveAndClose: () => {
+  //       //   this.refresh();
+  //       // },
+  //     },
+  //   });
+  //   return false;
+  // }
 
 }
