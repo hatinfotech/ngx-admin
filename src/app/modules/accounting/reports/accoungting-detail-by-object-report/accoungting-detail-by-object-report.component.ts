@@ -22,7 +22,7 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
   componentName: string = 'AccoungtingDetailByObjectReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
-  idKey = 'Code';
+  idKey = ['Voucher', 'WriteNo'];
   formDialog = AccAccountFormComponent;
 
   reuseDialog = true;

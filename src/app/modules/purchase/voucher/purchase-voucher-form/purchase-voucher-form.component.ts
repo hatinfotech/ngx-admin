@@ -1,3 +1,4 @@
+import { ProductUnitFormComponent } from './../../../admin-product/unit/product-unit-form/product-unit-form.component';
 import { takeUntil } from 'rxjs/operators';
 import { PurchaseVoucherPrintComponent } from './../purchase-voucher-print/purchase-voucher-print.component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -38,6 +39,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   idKey = 'Code';
   apiPath = '/purchase/vouchers';
   baseFormUrl = '/purchase/vouchers/form';
+
+  previewAfterCreate = true;
+  printDialog = PurchaseVoucherPrintComponent;
 
   env = environment;
 
@@ -121,6 +125,29 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
           },
           onDialogClose: () => {
 
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+
+  unitCustomIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ProductUnitFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          showLoadinng: true,
+          onDialogSave: (newData: UnitModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newUnit: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Unit').patchValue(newUnit);
+          },
+          onDialogClose: () => {
+            
           },
         },
         closeOnEsc: false,
@@ -659,32 +686,32 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   }
 
 
-  preview(formItem: FormGroup) {
-    const data: PurchaseVoucherModel = formItem.value;
-    // data.Details.forEach(detail => {
-    //   if (typeof detail['Tax'] === 'string') {
-    //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-    //     if (this.unitList) {
-    //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-    //     }
-    //   }
-    // });
-    this.commonService.openDialog(PurchaseVoucherPrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        data: [data],
-        idKey: ['Code'],
-        onSaveAndClose: (priceReport: PurchaseVoucherModel) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (priceReport: PurchaseVoucherModel) => {
-          this.save();
-        },
-      },
-    });
-    return false;
-  }
+  // async preview(formItem: FormGroup) {
+  //   const data: PurchaseVoucherModel = formItem.value;
+  //   // data.Details.forEach(detail => {
+  //   //   if (typeof detail['Tax'] === 'string') {
+  //   //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+  //   //     if (this.unitList) {
+  //   //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
+  //   //     }
+  //   //   }
+  //   // });
+  //   this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       data: [data],
+  //       idKey: ['Code'],
+  //       onSaveAndClose: (priceReport: PurchaseVoucherModel) => {
+  //         this.saveAndClose();
+  //       },
+  //       onSaveAndPrint: (priceReport: PurchaseVoucherModel) => {
+  //         this.save();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
   getRawFormData() {
     return super.getRawFormData();

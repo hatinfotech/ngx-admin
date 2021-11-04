@@ -156,7 +156,7 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
     return this.apiService.getPromise<M[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(ids: any[]) {
+  async preview(ids: any[]) {
     this.commonService.openDialog(CollaboratorCommissionPrintComponent, {
       context: {
         showLoadinng: true,

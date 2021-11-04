@@ -356,7 +356,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: CollaboratorCommissionVoucherModel = formItem.value;
     this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
       context: {

@@ -125,7 +125,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: AccMasterBookModel) => {
               if (!rowData.State) {
-                this.commonService.showDiaplog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.openConfirm'), [
+                this.commonService.showDialog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.openConfirm'), [
                   {
                     label: this.commonService.translateText('Common.goback'),
                     status: 'danger',
@@ -141,7 +141,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                 ]);
               }
               if (rowData.State === 'OPEN') {
-                this.commonService.showDiaplog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmLockOrClose'), [
+                this.commonService.showDialog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmLockOrClose'), [
                   {
                     label: this.commonService.translateText('Common.goback'),
                     status: 'danger',
@@ -164,7 +164,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                 ]);
               }
               if (rowData.State === 'LOCK') {
-                this.commonService.showDiaplog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmUnlockOrClose'), [
+                this.commonService.showDialog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmUnlockOrClose'), [
                   {
                     label: this.commonService.translateText('Common.goback'),
                     status: 'danger',

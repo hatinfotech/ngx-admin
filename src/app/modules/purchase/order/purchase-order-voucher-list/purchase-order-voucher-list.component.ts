@@ -292,7 +292,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
     return this.apiService.getPromise<PurchaseOrderVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(data: PurchaseVoucherModel[]) {
+  async preview(data: PurchaseVoucherModel[]) {
     this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
       context: {
         showLoadinng: true,

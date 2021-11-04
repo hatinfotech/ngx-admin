@@ -337,21 +337,21 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
     });
   }
 
-  preview(data: SalesVoucherModel[]) {
-    this.commonService.openDialog(SalesVoucherPrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        id: data.map(m => m[this.idKey]),
-        mode: 'print',
-        idKey: ['Code'],
-        // approvedConfirm: true,
-        onClose: (data: SalesVoucherModel) => {
-          this.refresh();
-        },
-      },
-    });
-    return false;
-  }
+  // async preview(data: SalesVoucherModel[]) {
+  //   this.commonService.openDialog(SalesVoucherPrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       id: data.map(m => m[this.idKey]),
+  //       mode: 'print',
+  //       idKey: ['Code'],
+  //       // approvedConfirm: true,
+  //       onClose: (data: SalesVoucherModel) => {
+  //         this.refresh();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
 }

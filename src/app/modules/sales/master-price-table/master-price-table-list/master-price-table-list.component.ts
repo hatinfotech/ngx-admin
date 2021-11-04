@@ -170,7 +170,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   //   return false;
   // }
 
-  preview(data: SalesMasterPriceTableModel[]) {
+  async preview(data: SalesMasterPriceTableModel[]) {
 
     this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[]>(
       '/sales/master-price-table-details',

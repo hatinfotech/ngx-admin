@@ -34,4 +34,8 @@
   .same-height-chart {
     height: 34.55rem;
   }
+
+  nb-list {
+    height: calc(34.55rem - 57px);
+  }
 }

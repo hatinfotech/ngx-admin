@@ -165,7 +165,7 @@ export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<
     return this.apiService.getPromise<ZaloOaTemplateModel[]>(this.apiPath, { id: ids });
   }
 
-  preview(data: ZaloOaTemplateModel[]) {
+  async preview(data: ZaloOaTemplateModel[]) {
     this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
       context: {
         showLoadinng: true,

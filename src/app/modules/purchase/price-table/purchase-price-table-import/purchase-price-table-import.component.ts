@@ -684,7 +684,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
     return false;
   }
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: PurchasePriceTableModel = formItem.value;
     data.Details.forEach(detail => {
       if (typeof detail['Tax'] === 'string') {

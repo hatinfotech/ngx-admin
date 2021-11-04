@@ -1,5 +1,5 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()"
-  (keydown.enter)="$event.preventDefault()" class="popup">
+  (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
@@ -29,14 +29,14 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
                   <label class="label"><span class="valid">Mã</span><span class="invalid">Mã là bắt buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Code" placeholder="Tạo thủ công">
+                      <input type="text" nbInput fullWidth formControlName="Code" placeholder="Viết không dấu, in hoa và không có khoản trắng">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
                       (*)</span></label>
-                      <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên danh mục">
+                      <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
                 </div>
               </div>
               <div class="col-sm-6">

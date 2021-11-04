@@ -26,7 +26,7 @@ export class SystemLibraryIconComponent implements OnInit {
   }
 
   showIconInfo(icon: string, pack?: string) {
-    this.commonService.showDiaplog('Icon info', `Pack: ${pack}<br>Name: ${icon}<br><span class="tag">&lt;nb-icon icon=&quot;${icon}&quot; pack=&quot;${pack}&quot;&gt;&lt;/nb-icon&gt;</span>`, []);
+    this.commonService.showDialog('Icon info', `Pack: ${pack}<br>Name: ${icon}<br><span class="tag">&lt;nb-icon icon=&quot;${icon}&quot; pack=&quot;${pack}&quot;&gt;&lt;/nb-icon&gt;</span>`, []);
   }
 
   icons = {

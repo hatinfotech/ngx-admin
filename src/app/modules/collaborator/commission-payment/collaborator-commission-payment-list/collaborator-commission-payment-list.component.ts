@@ -333,7 +333,7 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
     return this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, eq_Type: 'PAYMENT' });
   }
 
-  preview(data: CashVoucherModel[]) {
+  async preview(data: CashVoucherModel[]) {
     this.commonService.openDialog(CollaboratorCommissionPaymentPrintComponent, {
       context: {
         showLoadinng: true,

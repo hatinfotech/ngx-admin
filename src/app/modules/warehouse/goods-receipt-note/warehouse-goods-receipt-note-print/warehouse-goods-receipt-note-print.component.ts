@@ -166,7 +166,7 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
     //     break;
     // }
 
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',

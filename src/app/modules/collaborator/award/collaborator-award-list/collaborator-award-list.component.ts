@@ -265,7 +265,7 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
     return this.apiService.getPromise<CollaboratorAwardVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(ids: any[]) {
+  async preview(ids: any[]) {
     this.commonService.openDialog(CollaboratorAwardPrintComponent, {
       context: {
         showLoadinng: true,

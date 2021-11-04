@@ -35,6 +35,9 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   apiPath = '/accounting/cash-vouchers';
   baseFormUrl = '/accouting/cash-payment-voucher/form';
 
+  previewAfterCreate = true;
+  printDialog = CashPaymentVoucherPrintComponent;
+
   // variables
   locale = this.commonService.getCurrentLoaleDataset();
   toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
@@ -398,9 +401,9 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
         titleControl.setValue(`Chi tiền: ${objectName}`);
       }
     });
-    
+
     newForm.get('DateOfVoucher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfPurchase => {
-      if(dateOfPurchase) {
+      if (dateOfPurchase) {
         this.commonService.lastVoucherDate = dateOfPurchase;
       }
     });
@@ -562,27 +565,27 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
 
-  preview(formItem: FormGroup) {
-    const data: CashVoucherModel = formItem.value;
-    data.Details.forEach(detail => {
-      // if (typeof detail['Tax'] === 'string') {
-      //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-      // }
-    });
-    this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
-      context: {
-        title: 'Xem trước',
-        data: [data],
-        onSaveAndClose: (rs: CashVoucherModel) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (rs: CashVoucherModel) => {
-          this.save();
-        },
-      },
-    });
-    return false;
-  }
+  // async preview(formItem: FormGroup) {
+  //   const data: CashVoucherModel = formItem.value;
+  //   data.Details.forEach(detail => {
+  //     // if (typeof detail['Tax'] === 'string') {
+  //     //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+  //     // }
+  //   });
+  //   this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
+  //     context: {
+  //       title: 'Xem trước',
+  //       data: [data],
+  //       onSaveAndClose: (rs: CashVoucherModel) => {
+  //         this.saveAndClose();
+  //       },
+  //       onSaveAndPrint: (rs: CashVoucherModel) => {
+  //         this.save();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
   onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
     if (!this.isProcessing) {
@@ -600,63 +603,128 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
         inputMode: 'dialog',
         onDialogChoose: async (chooseItems: PurchaseVoucherModel[]) => {
           console.log(chooseItems);
-          const relationVoucher = formGroup.get('RelativeVouchers');
-          const relationVoucherValue: any[] = (relationVoucher.value || []);
-          const insertList = [];
+          // const relationVoucher = formGroup.get('RelativeVouchers');
+          // const relationVoucherValue: any[] = (relationVoucher.value || []);
+          // const insertList = [];
           for (let i = 0; i < chooseItems.length; i++) {
-            const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
-            if (index < 0) {
-              const details = this.getDetails(formGroup);
-              // get purchase order
-              const purchaseVoucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+            this.addRelativeVoucher(chooseItems[0], 'PURCHASE', formGroup);
+            // const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
+            // if (index < 0) {
+            //   const details = this.getDetails(formGroup);
+            //   // get purchase order
+            //   const purchaseVoucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-              if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
-                this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-                continue;
-              }
-              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-                  continue;
-                }
-              } else {
-                delete purchaseVoucher.Id;
-                formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
-                formGroup.get('Description').patchValue('Thanh toán cho ' + purchaseVoucher.Title);
-                details.clear();
-              }
+            //   if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
+            //     this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+            //     continue;
+            //   }
+            //   if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+            //     if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+            //       this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+            //       continue;
+            //     }
+            //   } else {
+            //     delete purchaseVoucher.Id;
+            //     formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
+            //     formGroup.get('Description').patchValue('Thanh toán cho ' + purchaseVoucher.Title);
+            //     details.clear();
+            //   }
 
-              insertList.push(chooseItems[i]);
+            //   insertList.push(chooseItems[i]);
 
-              // Insert order details into voucher details
-              if (purchaseVoucher?.Details) {
-                // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
-                let totalMoney = 0;
-                const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
-                for (const voucherDetail of purchaseVoucher.Details) {
-                  if (voucherDetail.Type !== 'CATEGORY') {
-                    const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
-                    totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
-                  }
-                }
-                const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
-                  AccountingBusiness: 'PAYMENTSUPPPLIER',
-                  Description: purchaseVoucher.Title,
-                  DebitAccount: '331',
-                  CreditAccount: '1111',
-                  Amount: totalMoney,
-                });
-                details.push(newDtailFormGroup);
-              }
-            }
+            //   // Insert order details into voucher details
+            //   if (purchaseVoucher?.Details) {
+            //     // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
+            //     let totalMoney = 0;
+            //     const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
+            //     for (const voucherDetail of purchaseVoucher.Details) {
+            //       if (voucherDetail.Type !== 'CATEGORY') {
+            //         const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
+            //         totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
+            //       }
+            //     }
+            //     const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+            //       AccountingBusiness: 'PAYMENTSUPPPLIER',
+            //       Description: purchaseVoucher.Title,
+            //       DebitAccount: '331',
+            //       CreditAccount: '1111',
+            //       Amount: totalMoney,
+            //     });
+            //     details.push(newDtailFormGroup);
+            //   }
+            // }
           }
-          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+          // relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
         },
         onDialogClose: () => {
         },
       }
     })
     return false;
+  }
+
+  async addRelativeVoucher(relativeVoucher: any, relativeVoucherType: string, formGroup?: FormGroup) {
+    if (!formGroup) {
+      formGroup = this.array.controls[0] as FormGroup;
+    }
+    const insertList = [];
+    const relationVoucher = formGroup.get('RelativeVouchers');
+    const relationVoucherValue: any[] = (relationVoucher.value || []);
+    const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;
+    if (index < 0) {
+      const details = this.getDetails(formGroup);
+      // get purchase order
+      let purchaseVoucher;
+      switch (relativeVoucherType) {
+        case 'PURCHASE':
+          purchaseVoucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + relativeVoucher.Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+          break;
+        default:
+          return false;
+      }
+
+      if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
+        this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+        return false;
+      }
+      if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+        if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+          this.commonService.toastService.show(this.commonService.translateText('Liên hệ trong phiếu thanh toán không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+          return false;
+        }
+      } else {
+        delete purchaseVoucher.Id;
+        formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
+        formGroup.get('Description').patchValue('Chi tiền cho ' + purchaseVoucher.Title);
+        details.clear();
+      }
+
+      // insertList.push(chooseItems[i]);
+
+      // Insert order details into voucher details
+      if (purchaseVoucher?.Details) {
+        // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
+        let totalMoney = 0;
+        const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
+        for (const voucherDetail of purchaseVoucher.Details) {
+          if (voucherDetail.Type !== 'CATEGORY') {
+            const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
+            totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
+          }
+        }
+        const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+          AccountingBusiness: 'PAYMENTSUPPPLIER',
+          Description: purchaseVoucher.Title,
+          DebitAccount: '331',
+          CreditAccount: '1111',
+          Amount: totalMoney,
+        });
+        details.push(newDtailFormGroup);
+      }
+    }
+    insertList.push(relativeVoucher);
+    relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+    return relativeVoucher;
   }
 
   openRelativeVoucher(relativeVocher: any) {

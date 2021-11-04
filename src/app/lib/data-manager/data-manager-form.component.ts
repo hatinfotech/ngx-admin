@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy, Input, AfterViewInit, Component, Injectable } from '@angular/core';
+import { OnInit, OnDestroy, Input, AfterViewInit, Component, Injectable, Type } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbGlobalPhysicalPosition, NbDialogService, NbDialogRef } from '@nebular/theme';
@@ -10,8 +10,9 @@ import { CommonService } from '../../services/common.service';
 import { BaseComponent } from '../base-component';
 import { ActionControl, ActionControlListOption } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
+import { DataManagerPrintComponent } from './data-manager-print.component';
 
-@Component({template: ''})
+@Component({ template: '' })
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   mode: 'dialog' | 'page' | 'inline' = 'page';
@@ -29,6 +30,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     ]),
   });
 
+  @Input() previewAfterSave = false;
+  @Input() previewAfterCreate = false;
   @Input() inputMode: 'dialog' | 'page' | 'inline';
   @Input() inputId: string[];
   @Input() onDialogSave?: (newData: M[]) => void;
@@ -39,6 +42,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   @Input() title?: string;
   @Input() size?: string = 'medium';
   actionButtonList: ActionControl[];
+  printDialog: Type<DataManagerPrintComponent<M>>;
 
   /** Form unique id = current time as milisecond */
   formUniqueId: string;
@@ -184,7 +188,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         }
       });
     });
-    this.onAfterInit && this.onAfterInit();
+    this.onAfterInit && this.onAfterInit(this);
     return true;
   }
 
@@ -557,7 +561,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   saveAndClose() {
-    this.save().then(rs => this.goback());
+    const createMode = !this.isEditMode;
+    this.save().then(rs => {
+      this.goback();
+      if (this.previewAfterSave || (this.previewAfterCreate && createMode)) {
+        this.preview(rs, 'list', 'print');
+      }
+    });
     return false;
   }
 
@@ -695,6 +705,44 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       console.log('sort udpate: ', event);
       this.setNoForArray(details, (detail) => detail.get('Type').value === 'PRODUCT');
     };
+  }
+
+  async preview(data: (M[]) | FormGroup, source?: string, mode?: string) {
+    if (!this.printDialog) {
+      console.log('Print dialog was not set');
+      return false;
+    };
+    const context = {
+      showLoadinng: true,
+      title: 'Xem trước',
+      // id: data.map(m => this.makeId(m)),
+      // sourceOfDialog: 'form',
+      mode: mode || 'print',
+      closeAfterStateActionConfirm: true,
+      idKey: ['Code'],
+      // approvedConfirm: true,
+      onChange: (data: M) => {
+        // if (source == 'list') {
+        //   this.refresh();
+        // }
+        this.onDialogSave([data]);
+      },
+      onSaveAndClose: () => {
+        // this.refresh();
+      },
+    };
+    if (data && typeof data[0] === 'string') {
+      context['id'] = data;
+      context['sourceOfDialog'] = source || 'list';
+    } else {
+      context['data'] = data;
+      context['sourceOfDialog'] = source || 'form';
+    }
+
+    this.commonService.openDialog(this.printDialog, {
+      context: context as any,
+    });
+    return false;
   }
 
 }

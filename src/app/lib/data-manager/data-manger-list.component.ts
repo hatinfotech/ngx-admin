@@ -817,7 +817,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return this.ref && Object.keys(this.ref).length > 0;
   }
 
-  preview(data: M[], source?: string) {
+  async preview(data: M[], source?: string) {
     if (!this.printDialog) {
       console.log('Print dialog was not set');
       return false;

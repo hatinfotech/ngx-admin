@@ -29,6 +29,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   @Input() title?: string;
   @Input() size?: string = 'medium';
   @Input() mode?: 'print' | 'preview' = 'print';
+  @Input() closeAfterStateActionConfirm = false;
 
   apiPath?: string;
   formDialog: Type<DataManagerFormComponent<M>>;
@@ -52,7 +53,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       hidden: () => false,
       click: (event?: any, option?: ActionControlListOption) => {
         if (this.data.length > 1) {
-          this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText('Print.multiPrintConfirm?'), [
+          this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText('Print.multiPrintConfirm?'), [
             {
               label: this.commonService.translateText('Common.close'),
               status: 'primary',
@@ -114,7 +115,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
           this.close();
         }
       }
-      this.onAfterInit && this.onAfterInit();
+      this.onAfterInit && this.onAfterInit(this);
       return rs;
     });
   }
@@ -152,6 +153,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     if (this.onSaveAndPrint) {
       this.onSaveAndPrint(this.identifier);
     }
+
     const printFrame = document.createElement('iframe');
     printFrame.name = 'printFrame';
     printFrame.style.position = 'absolute';
@@ -167,6 +169,12 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     if (index !== undefined) {
       printContent += printContentEles[index].element.nativeElement.innerHTML;
       const data = this.data[index];
+      // Todo: restrict only print created voucher  
+      // if(!data['Id']) {
+      //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
+      //   console.error('voucher not just created');
+      //   return false;
+      // }
       if (data) {
         title += ' - ' + data['Title'];
       }
@@ -285,7 +293,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       putData[this.idKey] = item[this.idKey];
     }
 
-    this.commonService.showDiaplog(this.commonService.translateText(nextState.confirmText), this.commonService.translateText(nextState.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText(nextState.confirmText), this.commonService.translateText(nextState.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -304,14 +312,16 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
             const newstId = this.makeId(item);
             const newestItem = (await this.getFormData([newstId]))[0];
             this.data = this.data.map(m => {
-              if(this.makeId(m) == newstId) {
+              if (this.makeId(m) == newstId) {
                 return newestItem;
               }
               return m;
             });
             this.onChange && this.onChange(newestItem, this);
             this.onClose && this.onClose(newestItem, this);
-            // this.close();
+            if (this.closeAfterStateActionConfirm) {
+              this.close();
+            }
             this.commonService.toastService.show(this.commonService.translateText(nextState?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), this.commonService.translateText(nextState?.responseTitle), {
               status: 'success',
             });
@@ -355,12 +365,12 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   }
 
   summaryCalculate(data: M[]) {
-    
+
   }
 
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
     return false;
   }
-  
+
 }

@@ -1,3 +1,4 @@
+import { CashVoucherModel } from './../../../../models/accounting.model';
 import { PurchaseVoucherFormComponent } from './../purchase-voucher-form/purchase-voucher-form.component';
 // import { PurchaseModule } from './../../purchase.module';
 import { Component, OnInit } from '@angular/core';
@@ -11,6 +12,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { CashPaymentVoucherFormComponent } from '../../../accounting/cash/payment/cash-payment-voucher-form/cash-payment-voucher-form.component';
 
 @Component({
   selector: 'ngx-purchase-voucher-print',
@@ -157,7 +159,7 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
     //     break;
     // }
 
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -209,6 +211,21 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
       this.processMapList[i] = AppModule.processMaps.purchaseVoucher[item.State || ''];
     }
     return data;
+  }
+
+  payment(item: PurchaseVoucherModel) {
+    this.commonService.openDialog(CashPaymentVoucherFormComponent, {
+      context: {
+        onDialogSave: (items: CashVoucherModel[]) => {
+          this.refresh();
+          this.onChange && this.onChange(item, this);
+        },
+        onAfterInit: (formComponent: CashPaymentVoucherFormComponent) => {
+          formComponent.addRelativeVoucher(item, 'PURCHASE');
+        },
+      }
+    })
+    return false;
   }
 
 }

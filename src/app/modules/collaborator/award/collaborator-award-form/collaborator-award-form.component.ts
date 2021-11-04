@@ -356,7 +356,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: CollaboratorAwardVoucherModel = formItem.value;
     this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
       context: {

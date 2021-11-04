@@ -45,6 +45,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   idKey = 'Code';
   apiPath = '/sales/sales-vouchers';
   baseFormUrl = '/sales/sales-voucher/form';
+  previewAfterCreate = true;
+  printDialog = SalesVoucherPrintComponent;
 
   env = environment;
 
@@ -298,7 +300,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       disabled: () => this.isProcessing,
       hidden: () => false,
       click: (event: any, option: ActionControlListOption) => {
-        this.preview(option.form);
+        this.preview([option.form?.value], 'form');
       },
     });
     // this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
@@ -1025,28 +1027,28 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     return false;
   }
 
-  preview(formItem: FormGroup) {
-    const data: SalesVoucherModel = formItem.value;
-    data.Details.forEach(detail => {
-      detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');
-      detail['Unit'] = this.commonService.getObjectText(this.unitList.find(f => f.id === this.commonService.getObjectId(detail['Unit'])));
-    });
-    this.commonService.openDialog(SalesVoucherPrintComponent, {
-      context: {
-        title: 'Xem trước',
-        data: [data],
-        mode: 'preview',
-        idKey: ['Code'],
-        onSaveAndClose: (rs: SalesVoucherModel) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (rs: SalesVoucherModel) => {
-          this.save();
-        },
-      },
-    });
-    return false;
-  }
+  // preview(formItem: FormGroup) {
+  //   const data: SalesVoucherModel = formItem.value;
+  //   data.Details.forEach(detail => {
+  //     detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');
+  //     detail['Unit'] = this.commonService.getObjectText(this.unitList.find(f => f.id === this.commonService.getObjectId(detail['Unit'])));
+  //   });
+  //   this.commonService.openDialog(SalesVoucherPrintComponent, {
+  //     context: {
+  //       title: 'Xem trước',
+  //       data: [data],
+  //       mode: 'preview',
+  //       idKey: ['Code'],
+  //       onSaveAndClose: (rs: SalesVoucherModel) => {
+  //         this.saveAndClose();
+  //       },
+  //       onSaveAndPrint: (rs: SalesVoucherModel) => {
+  //         this.save();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
   getRawFormData() {
     return super.getRawFormData();

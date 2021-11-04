@@ -32,6 +32,9 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   idKey = 'Code';
   apiPath = '/accounting/cash-vouchers';
   baseFormUrl = '/accouting/cash-receipt-voucher/form';
+  // previewAfterSave = true;
+  previewAfterCreate = true;
+  printDialog = CashReceiptVoucherPrintComponent;
 
   // variables
   locale = this.commonService.getCurrentLoaleDataset();
@@ -379,7 +382,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     });
 
     newForm.get('DateOfVoucher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfPurchase => {
-      if(dateOfPurchase) {
+      if (dateOfPurchase) {
         this.commonService.lastVoucherDate = dateOfPurchase;
       }
     });
@@ -434,7 +437,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   getDetails(parentFormGroup: FormGroup) {
-    if(!parentFormGroup) return null;
+    if (!parentFormGroup) return null;
     return parentFormGroup.get('Details') as FormArray;
   }
 
@@ -536,23 +539,23 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
 
-  preview(formItem: FormGroup) {
-    const data: CashVoucherModel = formItem.value;
-    this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
-      context: {
-        title: 'Xem trước',
-        data: [data],
-        idKey: ['Code'],
-        onSaveAndClose: (rs: CashVoucherModel) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (rs: CashVoucherModel) => {
-          this.save();
-        },
-      },
-    });
-    return false;
-  }
+  // async preview(formItem: FormGroup) {
+  //   const data: CashVoucherModel = formItem.value;
+  //   this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
+  //     context: {
+  //       title: 'Xem trước',
+  //       data: [data],
+  //       idKey: ['Code'],
+  //       onSaveAndClose: (rs: CashVoucherModel) => {
+  //         this.saveAndClose();
+  //       },
+  //       onSaveAndPrint: (rs: CashVoucherModel) => {
+  //         this.save();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
   onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
     if (!this.isProcessing) {
@@ -572,55 +575,11 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
           console.log(chooseItems);
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
-          const insertList = [];
+          // const insertList = [];
           for (let i = 0; i < chooseItems.length; i++) {
-            const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
-            if (index < 0) {
-              const details = this.getDetails(formGroup);
-              // get purchase order
-              const purchaseVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
-
-              if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
-                this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-                continue;
-              }
-              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-                  continue;
-                }
-              } else {
-                delete purchaseVoucher.Id;
-                formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
-                formGroup.get('Description').patchValue('Thu tiền cho ' + purchaseVoucher.Title);
-                details.clear();
-              }
-
-              insertList.push(chooseItems[i]);
-
-              // Insert order details into voucher details
-              if (purchaseVoucher?.Details) {
-                // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
-                let totalMoney = 0;
-                const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
-                for (const voucherDetail of purchaseVoucher.Details) {
-                  if (voucherDetail.Type !== 'CATEGORY') {
-                    const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
-                    totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
-                  }
-                }
-                const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
-                  AccountingBusiness: 'RECEIPTCUSTOMERDEBT',
-                  Description: purchaseVoucher.Title,
-                  DebitAccount: '1111',
-                  CreditAccount: '131',
-                  Amount: totalMoney,
-                });
-                details.push(newDtailFormGroup);
-              }
-            }
+            await this.addRelativeVoucher(chooseItems[i], 'SALES', formGroup);
           }
-          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+          // relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
         },
         onDialogClose: () => {
         },
@@ -629,23 +588,72 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     return false;
   }
 
+  async addRelativeVoucher(relativeVoucher: any, relativeVoucherType: string, formGroup?: FormGroup) {
+    if (!formGroup) {
+      formGroup = this.array.controls[0] as FormGroup;
+    }
+    const insertList = [];
+    const relationVoucher = formGroup.get('RelativeVouchers');
+    const relationVoucherValue: any[] = (relationVoucher.value || []);
+    const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;
+    if (index < 0) {
+      const details = this.getDetails(formGroup);
+      // get purchase order
+      let purchaseVoucher;
+      switch (relativeVoucherType) {
+        case 'SALES':
+          purchaseVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + relativeVoucher.Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+          break;
+        default:
+          return false;
+      }
+
+      if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
+        this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+        return false;
+      }
+      if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+        if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+          this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+          return false;
+        }
+      } else {
+        delete purchaseVoucher.Id;
+        formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
+        formGroup.get('Description').patchValue('Thu tiền cho ' + purchaseVoucher.Title);
+        details.clear();
+      }
+
+      // insertList.push(chooseItems[i]);
+
+      // Insert order details into voucher details
+      if (purchaseVoucher?.Details) {
+        // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
+        let totalMoney = 0;
+        const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
+        for (const voucherDetail of purchaseVoucher.Details) {
+          if (voucherDetail.Type !== 'CATEGORY') {
+            const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
+            totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
+          }
+        }
+        const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+          AccountingBusiness: 'RECEIPTCUSTOMERDEBT',
+          Description: purchaseVoucher.Title,
+          DebitAccount: '1111',
+          CreditAccount: '131',
+          Amount: totalMoney,
+        });
+        details.push(newDtailFormGroup);
+      }
+    }
+    insertList.push(relativeVoucher);
+    relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+    return relativeVoucher;
+  }
+
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
-    // if (relativeVocher && relativeVocher.type == 'SALES') {
-    //   this.commonService.openDialog(SalesVoucherPrintComponent, {
-    //     context: {
-    //       showLoadinng: true,
-    //       title: 'Xem trước',
-    //       id: [this.commonService.getObjectId(relativeVocher)],
-    //       // data: data,
-    //       idKey: ['Code'],
-    //       // approvedConfirm: true,
-    //       onClose: (data: SalesVoucherModel) => {
-    //         this.refresh();
-    //       },
-    //     },
-    //   });
-    // }
     return false;
   }
 

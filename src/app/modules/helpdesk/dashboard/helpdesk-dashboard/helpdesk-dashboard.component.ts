@@ -713,7 +713,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     if (ticket && ticket.Code && ticket.ObjectPhone) {
 
 
-      this.commonService.showDiaplog(this.commonService.translateText('Click2Call'), this.commonService.translateText('Gọi lại khách hàng, hệ thống sẽ kết nối tới số SIP của bạn trước vì vậy hãy online số SIP của bạn trước khi thưc hiên click2call !'), [
+      this.commonService.showDialog(this.commonService.translateText('Click2Call'), this.commonService.translateText('Gọi lại khách hàng, hệ thống sẽ kết nối tới số SIP của bạn trước vì vậy hãy online số SIP của bạn trước khi thưc hiên click2call !'), [
         {
           label: this.commonService.translateText('Common.cancel'),
           status: 'danger',

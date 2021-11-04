@@ -248,7 +248,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
               this.apiService.putPromise<PageModel[]>(this.apiPath, { generateToken: true }, [{ Code: rowData.Code }]).then(rs => {
-                this.commonService.showDiaplog('Collaborator', rs[0].PlatformApiToken, [
+                this.commonService.showDialog('Collaborator', rs[0].PlatformApiToken, [
                   {
                     label: 'Close',
                     status: 'danger',
@@ -384,7 +384,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
     params['changeState'] = processMap?.nextState;
 
     return new Promise(resolve => {
-      this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
           label: this.commonService.translateText('Common.goback'),
           status: 'primary',

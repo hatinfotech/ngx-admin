@@ -820,7 +820,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: SalesPriceReportModel = formItem.value;
     for (const detail of data.Details) {
       detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');

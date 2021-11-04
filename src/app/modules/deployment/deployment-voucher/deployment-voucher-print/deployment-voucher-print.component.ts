@@ -163,7 +163,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   approvedConfirm(data: DeploymentVoucherModel, index: number) {
 
     if (['COMPLETE'].indexOf(data.State) > -1) {
-      this.commonService.showDiaplog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.commonService.showDialog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
           label: this.commonService.translateText('Common.close'),
           status: 'success',
@@ -211,7 +211,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
     //     responseText = 'Common.approvedSuccess';
     //     break;
     // }
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(this.processMapList[index]?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(this.processMapList[index]?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',

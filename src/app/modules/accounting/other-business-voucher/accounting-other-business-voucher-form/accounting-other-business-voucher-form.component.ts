@@ -314,7 +314,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       ObjectAddress: [''],
       ObjectTaxCode: [''],
       // Currency: ['VND', Validators.required],
-      DateOfVoucher: [new Date()],
+      DateOfVoucher: [this.commonService.lastVoucherDate, Validators.required],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
       _total: [''],
@@ -461,7 +461,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: OtherBusinessVoucherModel = formItem.value;
     this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
       context: {

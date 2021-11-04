@@ -182,7 +182,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
                   this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
                 } else {
 
-                  this.commonService.showDiaplog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+                  this.commonService.showDialog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
                     {
                       label: this.commonService.translateText('Common.goback'),
                       status: 'danger',

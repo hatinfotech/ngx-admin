@@ -119,7 +119,7 @@
                 <button *ngIf="mode === 'preview'" nbButton hero status="danger" (click)="close()">
                     <nb-icon pack="eva" icon="chevron-left"></nb-icon>{{'Common.goback' | translate | headtitlecase}}
                 </button>
-                <button *ngIf="mode === 'print'" nbButton hero status="primary" (click)="prepareCopy(data);">
+                <button *ngIf="mode === 'print'" nbButton hero status="primary" (click)="prepareCopy(data);" style="float: left">
                     <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
                 </button>
                 <!-- <button nbButton hero status="info" (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>

@@ -288,7 +288,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
     return this.apiService.getPromise<OtherBusinessVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(ids: any[]) {
+  async preview(ids: any[]) {
     this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
       context: {
         showLoadinng: true,

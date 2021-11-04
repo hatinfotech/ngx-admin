@@ -468,7 +468,7 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: SalesVoucherModel = formItem.value;
     data.Details.forEach(detail => {
       if (typeof detail['Tax'] === 'string') {

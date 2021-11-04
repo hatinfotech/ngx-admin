@@ -362,7 +362,7 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: CashVoucherModel = formItem.value;
     this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
       context: {

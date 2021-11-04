@@ -262,7 +262,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
     return this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
-  preview(ids: any[]) {
+  async preview(ids: any[]) {
     this.commonService.openDialog(CollaboratorCommissionPrintComponent, {
       context: {
         showLoadinng: true,

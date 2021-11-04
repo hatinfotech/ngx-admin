@@ -734,7 +734,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     return false;
   }
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: SalesPriceTableModel = formItem.value;
     data.Details = [];
     this.gridApi.forEachNode(node => {

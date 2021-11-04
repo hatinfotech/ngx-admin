@@ -63,10 +63,10 @@
         </nb-card-body>
         <nb-card-footer>
             <div class="buttons-row">
-                <button *ngIf="mode === 'print'" nbButton hero status="warning" (click)="edit(data);">
+                <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="edit(data);">
                     <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
                 </button>
-                <button nbButton hero status="warning" (click)="prepareCopy(data);">
+                <button nbButton hero status="info" (click)="prepareCopy(data);">
                     <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
                 </button>
                 <!-- <button nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->

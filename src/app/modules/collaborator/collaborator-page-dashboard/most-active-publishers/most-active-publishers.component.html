@@ -1,20 +1,21 @@
 <nb-card size="giant" class="same-height-chart">
   <nb-tabset fullWidth>
 
-    <nb-tab tabTitle="CTV tích cực">
-      <nb-list>
-        <nb-list-item class="contact" *ngFor="let c of recent">
-          <nb-user [picture]="c.user.picture" [name]="c.user.name" [title]="c.type" size="large"></nb-user>
-          <span class="caption">{{ c.time | date: 'shortTime' }}</span>
+    <nb-tab tabTitle="TOP 10 CTV bán hàng">
+      <nb-list class="scrollable-container">
+        <nb-list-item class="contact" *ngFor="let c of publishers">
+          <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.Name" [title]="c.Publisher" size="large" style="flex: 8"></nb-user>
+          <span class="caption" style="flex: 1;">{{ c.SumOfOrderDetail | number }}đơn</span>
+          <nb-icon style="flex: 1" style="cursor: pointer" icon="message-circle-outline" pack="eva" nbTooltip="Tạo task trao đổi với {{c.Name}}" nbTooltipStatus="info" (click)="createTask($event, c)"></nb-icon>
         </nb-list-item>
       </nb-list>
     </nb-tab>
 
-    <nb-tab tabTitle="Bán chạy">
-      <nb-list>
-        <nb-list-item class="contact" *ngFor="let c of contacts">
-          <nb-user [picture]="c.user.picture" [name]="c.user.name" [title]="c.type" size="large"></nb-user>
-          <nb-icon icon="phone-outline" pack="eva"></nb-icon>
+    <nb-tab tabTitle="TOP 10 sản phẩm sản lượng nhiều">
+      <nb-list class="scrollable-container">
+        <nb-list-item class="contact" *ngFor="let c of products">
+          <nb-user style="flex: 9;" [picture]="c.FeaturePicture?.Thumbnail" [name]="c.Name" [title]="c.Product" size="large"></nb-user>
+          <span style="flex: 1;" class="caption">{{ c.SumOfOrderDetail | number }}đơn</span>
         </nb-list-item>
       </nb-list>
     </nb-tab>

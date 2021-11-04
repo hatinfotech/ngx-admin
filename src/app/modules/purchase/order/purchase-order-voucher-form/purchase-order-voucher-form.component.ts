@@ -533,7 +533,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: PurchaseOrderVoucherModel = formItem.value;
     // data.Details.forEach(detail => {
     //   if (typeof detail['Tax'] === 'string') {

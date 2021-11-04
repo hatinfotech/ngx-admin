@@ -486,7 +486,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: PurchaseVoucherModel = formItem.getRawValue();
     data.Details.forEach(detail => {
       if (typeof detail['Tax'] === 'string') {

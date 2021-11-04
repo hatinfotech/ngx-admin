@@ -45,6 +45,9 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
     NetVenueAmount?: number,
   };
 
+  publishers = [];
+  products = [];
+
   constructor(
     private themeService: NbThemeService,
     private solarService: SolarData,
@@ -348,6 +351,36 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
           ],
         };
       });
+    });
+
+    // Publisher summary report
+    this.apiService.getPromise<any>('/collaborator/statistics', {
+      // summaryReport: 'PUBLISHER',
+      page: pages,
+      reportBy: 'PUBLISHERSUMMARY',
+      groupBy: 'Publisher',
+      sort_NetRevenue: 'desc',
+      le_VoucherDate: toDate,
+      ge_VoucherDate: fromDate,
+      limit: 10,
+    }).then(publishers => {
+      this.publishers = publishers;
+      console.log(publishers);
+    });
+
+    // Product summary report
+    this.apiService.getPromise<any>('/collaborator/statistics', {
+      // summaryReport: 'PUBLISHER',
+      page: pages,
+      reportBy: 'PRODUCTSUMMARY',
+      groupBy: 'Product',
+      sort_NetRevenue: 'desc',
+      le_VoucherDate: toDate,
+      ge_VoucherDate: fromDate,
+      limit: 10,
+    }).then(products => {
+      this.products = products;
+      console.log(products);
     });
   }
 

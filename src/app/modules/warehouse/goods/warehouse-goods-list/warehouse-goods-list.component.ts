@@ -315,7 +315,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
   }
 
   async calculateCostOfGoodsSold() {
-    this.commonService.showDiaplog(this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), this.commonService.translateText('Warehouse.calculateCostOfGoodsSoldConfirm'), [
+    this.commonService.showDialog(this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), this.commonService.translateText('Warehouse.calculateCostOfGoodsSoldConfirm'), [
       {
         label: this.commonService.translateText('Common.goback'),
         status: 'primary',

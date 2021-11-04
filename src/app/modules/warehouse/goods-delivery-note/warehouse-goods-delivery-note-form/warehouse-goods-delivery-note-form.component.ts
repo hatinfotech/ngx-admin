@@ -514,7 +514,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: WarehouseGoodsDeliveryNoteModel = formItem.value;
     // data.Details.forEach(detail => {
     //   if (typeof detail['Tax'] === 'string') {

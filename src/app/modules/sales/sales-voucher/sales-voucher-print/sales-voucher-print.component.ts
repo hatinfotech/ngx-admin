@@ -1,3 +1,5 @@
+import { CashVoucherModel } from './../../../../models/accounting.model';
+import { CashReceiptVoucherFormComponent } from './../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 // import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
@@ -179,7 +181,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     //     break;
     // }
 
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -218,7 +220,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
 
   approvedConfirmX(data: SalesVoucherModel) {
     if (data.State === 'COMPLETE') {
-      this.commonService.showDiaplog(this.commonService.translateText('Common.notice'), this.commonService.translateText('Common.completedNotice', { resource: this.commonService.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
+      this.commonService.showDialog(this.commonService.translateText('Common.notice'), this.commonService.translateText('Common.completedNotice', { resource: this.commonService.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
         {
           label: this.commonService.translateText('Common.ok'),
           status: 'success',
@@ -226,7 +228,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
       ]);
       return;
     }
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.commonService.translateText('Sales.SalesVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.commonService.translateText('Sales.SalesVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -245,7 +247,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
             params['complete'] = true;
           }
           this.apiService.putPromise<SalesVoucherModel[]>('/sales/sales-vouchers', params, [{ Code: data.Code }]).then(rs => {
-            this.commonService.showDiaplog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            this.commonService.showDialog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
                 label: this.commonService.translateText('Common.close'),
                 status: 'success',
@@ -291,6 +293,21 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
       this.processMapList[i] = AppModule.processMaps.salesVoucher[item.State || ''];
     }
     return data;
+  }
+
+  receipt(item: SalesVoucherModel) {
+    this.commonService.openDialog(CashReceiptVoucherFormComponent, {
+      context: {
+        onDialogSave: (items: CashVoucherModel[]) => {
+          this.refresh();
+          this.onChange && this.onChange(item, this);
+        },
+        onAfterInit: (formComponent: CashReceiptVoucherFormComponent) => {
+          formComponent.addRelativeVoucher(item, 'SALES');
+        },
+      }
+    })
+    return false;
   }
 
 }

@@ -10,6 +10,7 @@
         }
     },
     "Sales": {
+        "receipt": "thu tiền",
         "dateOfSales":"Ngày bán hàng",
         "PriceReport": {
             "title": "{{definition}}{{action}} phiếu báo giá",
@@ -394,7 +395,8 @@
         "processingResponseTitle": "xử lý phiếu",
         "processingResponseText": "đã chuyển sang trạng thái đang xử lý",
         "addProduct": "thêm hàng hoá/dịch vụ",
-        "dateOfSale": "ngày bán"
+        "dateOfSale": "ngày bán",
+        "addUnit": "thêm đvt"
     },
     "Contact": {
         "Customer": {
@@ -556,6 +558,7 @@
         "noRegisterDevices": "không có thiết bị nào đăng ký"
     },
     "Purchase": {
+        "payment": "thannh toán",
         "PriceTable": {
             "title": "{{definition}}{{action}} bảng giá mua vào"
         },

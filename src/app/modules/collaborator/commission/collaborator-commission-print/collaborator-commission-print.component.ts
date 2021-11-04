@@ -117,7 +117,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     const processMap = AppModule.processMaps.commissionVoucher[data.State || ''];
     params['changeState'] = processMap?.nextState;
 
-    this.commonService.showDiaplog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',

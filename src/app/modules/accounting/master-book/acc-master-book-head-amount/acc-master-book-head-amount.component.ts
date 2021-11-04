@@ -383,7 +383,7 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
       if (debit != credit) {
         this.loading = false;
         const confirm = await new Promise(resolve => {
-          this.commonService.showDiaplog(this.commonService.translateText('Accounting.headAmount'), this.commonService.translateText('Accounting.Warning.headAmountNotBalanced'), [
+          this.commonService.showDialog(this.commonService.translateText('Accounting.headAmount'), this.commonService.translateText('Accounting.Warning.headAmountNotBalanced'), [
             {
               label: this.commonService.translateText('Common.goback'),
               status: 'primary',

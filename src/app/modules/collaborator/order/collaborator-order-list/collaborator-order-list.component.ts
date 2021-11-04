@@ -1,3 +1,4 @@
+import { Title } from '@angular/platform-browser';
 import { CollaboratorOrderTeleCommitFormComponent } from './../collaborator-order-tele-commit/collaborator-order-tele-commit.component';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -6,7 +7,7 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
 import { SmartTableDateTimeComponent, SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -133,35 +134,38 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        ObjectName: {
+        // Code: {
+        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+        //   type: 'string',
+        //   width: '10%',
+        // },
+        ObjectPhone: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'html',
           width: '20%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
           valuePrepareFunction: (cell, row) => {
-            return cell + (row.ObjectPhone ? ` <br>SĐT: ${row.ObjectPhone}` : '');
+            return 'KH: ' + row.ObjectName + (row.ObjectPhone ? ` <br>SĐT: ${row.ObjectPhone}` : '');
           },
         },
-        Title: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
-          type: 'string',
-          width: '20%',
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Order.label'), 'head-title'),
+          type: 'html',
+          width: '25%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          valuePrepareFunction: (cell, row) => {
+            return  'Mã Đơn Hàng: ' + row.Code + '<br>' + row.Title;
+          },
         },
         // RelationVoucher: {
         //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
         //   type: 'string',
         //   width: '20%',
         // },
-        Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
-          width: '10%',
-        },
         PublisherName: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Publisher.label'), 'head-title'),
           type: 'string',
-          width: '10%',
+          width: '15%',
           // filter: {
           //   type: 'custom',
           //   component: SmartTableDateTimeRangeFilterComponent,
@@ -171,12 +175,12 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           // },
         },
         DateOfOrder: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Order.dateOforder'), 'head-title'),
           type: 'custom',
           width: '15%',
           filter: {
             type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
+            component: SmartTableDateRangeFilterComponent,
           },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
@@ -233,7 +237,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             instance.click.subscribe(async (row: CollaboratorOrderModel) => {
               const priceReportRef = row.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
               if (priceReportRef) {
-                this.commonService.showDiaplog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
+                this.commonService.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
                   {
                     status: 'basic',
                     label: 'Trở về',
@@ -404,7 +408,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
     });
   }
 
-  preview(data: CollaboratorOrderModel[], source?: string) {
+  async preview(data: CollaboratorOrderModel[], source?: string) {
     this.commonService.openDialog(CollaboratorOrderPrintComponent, {
       context: {
         showLoadinng: true,

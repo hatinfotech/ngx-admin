@@ -232,7 +232,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [customIcons]="unitCustomIcons">
                                                     <ngx-select2 formControlName="Unit" [data]="detail.get('Unit')['UnitList'] || unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
@@ -274,7 +274,7 @@
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                         <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">{{'Voucher.total' | translate | headtitlecase}}</div>
-                                        <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{formItem.get('_total').value | currency:'VND':'':'1.2-2'}}</div>
+                                        <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{formItem.get('_total').value | currency:'VND'}}</div>
                                     </div>
                                 </div>
                             </div>

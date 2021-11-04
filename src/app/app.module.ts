@@ -705,6 +705,18 @@ export class AppModule {
     responseTitle: 'Common.approvedRequest',
     responseText: 'Common.approvedRequest',
   };
+  // static paymentState: ProcessMap = {
+  //   state: 'PAYMENT',
+  //   label: 'Common.payment',
+  //   confirmLabel: 'Common.approvedRequest',
+  //   status: 'warning',
+  //   outline: false,
+  //   nextState: '',
+  //   nextStateLabel: 'Common.approvedRequest',
+  //   confirmText: 'Common.approvedRequest',
+  //   responseTitle: 'Common.approvedRequest',
+  //   responseText: 'Common.approvedRequest',
+  // };
 
   static processMaps = {
     priceReport: {
@@ -774,6 +786,14 @@ export class AppModule {
     purchaseVoucher: {
       "APPROVED": {
         ...AppModule.approvedState,
+        nextState: 'COMPLETE',
+        nextStates: [
+          { ...AppModule.completeState, status: 'success' },
+          AppModule.unrecordedState,
+        ],
+      },
+      "COMPLETE": {
+        ...AppModule.completeState,
         nextState: 'UNRECORDED',
         nextStates: [
           AppModule.unrecordedState,

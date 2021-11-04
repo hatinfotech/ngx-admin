@@ -603,7 +603,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   // }
 
 
-  preview(formItem: FormGroup) {
+  async preview(formItem: FormGroup) {
     const data: DeploymentVoucherModel = formItem.value;
     data.Details.forEach(detail => {
       if (typeof detail['Tax'] === 'string') {

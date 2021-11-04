@@ -90,7 +90,7 @@ export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFo
   }
 
   saveAndClose() {
-    this.commonService.showDiaplog('Chốt đơn', 'Bạn có chắc là muốn chốt đơn hàng này không ? sau khi chốt đơn, báo giá liên quan cũng sẽ được duyệt.', [
+    this.commonService.showDialog('Chốt đơn', 'Bạn có chắc là muốn chốt đơn hàng này không ? sau khi chốt đơn, báo giá liên quan cũng sẽ được duyệt.', [
       {
         status: 'basic',
         label: 'Trở về',
