@@ -102,7 +102,7 @@
       </div>
     </nb-card-body>
     <nb-card-footer *ngIf="data.RelativeVouchers && data.RelativeVouchers.length > 0" class="print-relative-vouchers">
-        <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher | objectstext}}" nbTooltipStatus="primary">
+        <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher | objectstext}}">
           <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
           <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
       </span>
