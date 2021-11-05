@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '5.0.7.1',
+  version: '5.0.8.2',
+  // 5.0.8: collaborator dashboard chart
   // 5.0.7: update UI/UX
   // 5.0.6: publishers and products revenue report
   // 5.0.5: collaborator telesale processing
@@ -14,7 +15,7 @@ export const environment = {
   // 5.0.2.1: redefined voucher state
   // 5.0.1.1: redev Calculate collaborator commission and award
   // 5.0: Upgrade ngx-admin 8, angular 12
-  // 4.0.2.1: Add KPI config for collaborator > productÎ
+  // 4.0.2.1: Add KPI config for collaborator > product
   // 4.0.1.1: Update CKeditor support upload image to file store, support more toolbar: image style, image resize,...
   // 3.0.0: Upgrade: support multi core connection
   // 2.3.10: Dev Commerce service by cycle module

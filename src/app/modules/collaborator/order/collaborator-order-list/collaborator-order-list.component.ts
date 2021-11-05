@@ -154,7 +154,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           width: '25%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
           valuePrepareFunction: (cell, row) => {
-            return  '<b>Mã Đơn Hàng: ' + row.Code + '<br>' + row.Title + '</b>';
+            return  '<b>Mã Đơn Hàng: ' + row.Code + '</b><br>' + row.Title + '';
           },
         },
         // RelationVoucher: {

@@ -36,6 +36,9 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   apiPath = '/warehouse/goods-delivery-notes';
   baseFormUrl = '/warehouse/goods-delivery-note/form';
 
+  previewAfterCreate = true;
+  printDialog = WarehouseGoodsDeliveryNotePrintComponent;
+
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
@@ -514,32 +517,32 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   }
 
 
-  async preview(formItem: FormGroup) {
-    const data: WarehouseGoodsDeliveryNoteModel = formItem.value;
-    // data.Details.forEach(detail => {
-    //   if (typeof detail['Tax'] === 'string') {
-    //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-    //     if (this.unitList) {
-    //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-    //     }
-    //   }
-    // });
-    this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        data: [data],
-        idKey: ['Code'],
-        onSaveAndClose: (priceReport: WarehouseGoodsDeliveryNoteModel) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (priceReport: WarehouseGoodsDeliveryNoteModel) => {
-          this.save();
-        },
-      },
-    });
-    return false;
-  }
+  // async preview(formItem: FormGroup) {
+  //   const data: WarehouseGoodsDeliveryNoteModel = formItem.value;
+  //   // data.Details.forEach(detail => {
+  //   //   if (typeof detail['Tax'] === 'string') {
+  //   //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+  //   //     if (this.unitList) {
+  //   //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
+  //   //     }
+  //   //   }
+  //   // });
+  //   this.commonService.openDialog(WarehouseGoodsDeliveryNotePrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       data: [data],
+  //       idKey: ['Code'],
+  //       onSaveAndClose: (priceReport: WarehouseGoodsDeliveryNoteModel) => {
+  //         this.saveAndClose();
+  //       },
+  //       onSaveAndPrint: (priceReport: WarehouseGoodsDeliveryNoteModel) => {
+  //         this.save();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
   getRawFormData() {
     return super.getRawFormData();

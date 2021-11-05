@@ -40,6 +40,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   apiPath = '/warehouse/goods-receipt-notes';
   baseFormUrl = '/warehouse/goods-receipt-note/form';
 
+  previewAfterCreate = true;
+  printDialog = WarehouseGoodsReceiptNotePrintComponent;
+
   env = environment;
 
   locale = this.commonService.getCurrentLoaleDataset();
@@ -547,32 +550,32 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
 
-  async preview(formItem: FormGroup) {
-    const data: WarehouseGoodsReceiptNoteModel = formItem.value;
-    // data.Details.forEach(detail => {
-    //   if (typeof detail['Tax'] === 'string') {
-    //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-    //     if (this.unitList) {
-    //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-    //     }
-    //   }
-    // });
-    this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
-      context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        data: [data],
-        idKey: ['Code'],
-        onSaveAndClose: (priceReport: WarehouseGoodsReceiptNoteModel) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (priceReport: WarehouseGoodsReceiptNoteModel) => {
-          this.save();
-        },
-      },
-    });
-    return false;
-  }
+  // async preview(formItem: FormGroup) {
+  //   const data: WarehouseGoodsReceiptNoteModel = formItem.value;
+  //   // data.Details.forEach(detail => {
+  //   //   if (typeof detail['Tax'] === 'string') {
+  //   //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
+  //   //     if (this.unitList) {
+  //   //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
+  //   //     }
+  //   //   }
+  //   // });
+  //   this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
+  //     context: {
+  //       showLoadinng: true,
+  //       title: 'Xem trước',
+  //       data: [data],
+  //       idKey: ['Code'],
+  //       onSaveAndClose: (priceReport: WarehouseGoodsReceiptNoteModel) => {
+  //         this.saveAndClose();
+  //       },
+  //       onSaveAndPrint: (priceReport: WarehouseGoodsReceiptNoteModel) => {
+  //         this.save();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
   getRawFormData() {
     return super.getRawFormData();

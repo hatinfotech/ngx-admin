@@ -27,6 +27,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
   idKey = 'Code';
 
   formDialog = WarehouseGoodsReceiptNoteFormComponent;
+  printDialog = WarehouseGoodsReceiptNotePrintComponent;
 
   constructor(
     public apiService: ApiService,
