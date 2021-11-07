@@ -118,7 +118,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<PurchaseOrderVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(data => {
+    return this.apiService.getPromise<PurchaseOrderVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeUnit: true }).then(data => {
       this.summaryCalculate(data);
       return data;
     });
@@ -206,7 +206,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = AppModule.processMaps.purchaseVoucher[item.State || ''];
+      this.processMapList[i] = AppModule.processMaps.purchaseOrder[item.State || ''];
     }
     return data;
   }

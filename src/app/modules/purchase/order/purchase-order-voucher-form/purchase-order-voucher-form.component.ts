@@ -304,8 +304,8 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   makeNewFormGroup(data?: PurchaseOrderVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
-      Object: [''],
-      ObjectName: [''],
+      Object: ['', Validators.required],
+      ObjectName: ['', Validators.required],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
@@ -325,10 +325,10 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
       DateOfReceived: [''],
       DeliveryAddress: [''],
-      Title: [''],
+      Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      DateOfPurchase: [''],
+      DateOfOrder: [this.commonService.lastVoucherDate, Validators.required],
       // RelativeVouchers: [],
       _total: [''],
       RelativeVouchers: [],

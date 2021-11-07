@@ -570,6 +570,7 @@
             "title": "{{definition}}{{action}} phiếu đặt mua hàng"
         },
         "dateOfPurchase": "ngày mua hàng",
+        "dateOfPurchaseOrder": "ngày đặt hàng",
         "deliveryPerson": "người giao hàng",
         "costOfGoodsSold": "giá nhập"
     },

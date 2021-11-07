@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
+<form [formGroup]="form" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
     <div formArrayName="array">
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
@@ -168,8 +168,8 @@
                                 <div class="row">
                                     <div class="col-sm-2 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
                                     <div class="col-sm-2 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
-                                    <div class="col-sm-2 label align-right">{{'Voucher.price' | translate | headtitlecase}}</div>
-                                    <div class="col-sm-3 label">{{'Voucher.tax' | translate | headtitlecase}}</div>
+                                    <div class="col-sm-3 label align-right">{{'Voucher.price' | translate | headtitlecase}}</div>
+                                    <div class="col-sm-2 label">{{'Voucher.tax' | translate | headtitlecase}}</div>
                                     <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div>
                                 </div>
                             </div>
@@ -294,7 +294,7 @@
                             <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
                         </button>
                         <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
-                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="save()">{{'Common.save' | translate | headtitlecase}}</button>
                     </div>
                 </nb-card-footer>
             </nb-card>

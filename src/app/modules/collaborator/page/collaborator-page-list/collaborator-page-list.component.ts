@@ -182,7 +182,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
             instance.label = this.commonService.translateText('Collaborator.Page.pushProductLabel');
             instance.init.subscribe((page: PageModel) => {
               // if (!page.PlatformApiUrl || !page.PlatformApiToken) {
-                // instance.disabled = true;
+              // instance.disabled = true;
               // }
               // const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
               // instance.label = this.commonService.translateText(processMap?.label);
@@ -211,11 +211,16 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
                       icon: 'cloud-upload-outline',
                       action: async (item, dialog) => {
                         dialog.setLoading(true);
-                        await this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [rowData.Code], push: true }, [{ Code: rowData.Code }]).then(rs => {
-                          this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Page.pushProductSuccessText'), {
-                            status: 'success',
-                          })
-                        });
+                        try {
+                          await this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [rowData.Code], push: true }, [{ Code: rowData.Code }]).then(rs => {
+                            this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Page.pushProductSuccessText'), {
+                              status: 'success',
+                            });
+                          });
+                        } catch (err) {
+                          dialog.setLoading(false);
+                          this.commonService.toastService.show('Lỗi đồng bộ', err?.logs?.join(', '), { status: 'dander' });
+                        }
                         dialog.setLoading(false);
                         this.refresh();
                       }
