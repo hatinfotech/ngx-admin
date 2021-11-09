@@ -19,21 +19,21 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfStart" label="Accounting.MasterBook.dateOfStart" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfStart" label="Accounting.MasterBook.dateOfStart" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                     <input type="text" [owlDateTime]="DateOfStart" [owlDateTimeTrigger]="DateOfStart" nbInput fullWidth formControlName="DateOfStart" placeholder="{{'Accounting.MasterBook.dateOfStart' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfStart></owl-date-time>
+                                    <owl-date-time #DateOfStart [pickerType]="'calendar'"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfEnd" label="Accounting.MasterBook.dateOfEnd" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfEnd" label="Accounting.MasterBook.dateOfEnd" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                     <input type="text" [owlDateTime]="DateOfEnd" [owlDateTimeTrigger]="DateOfEnd" nbInput fullWidth formControlName="DateOfEnd" placeholder="{{'Accounting.MasterBook.dateOfEnd' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfEnd></owl-date-time>
+                                    <owl-date-time #DateOfEnd [pickerType]="'calendar'"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfBeginning" label="Accounting.MasterBook.dateOfBeginning" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfBeginning" label="Accounting.MasterBook.dateOfBeginning" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                     <input type="text" [owlDateTime]="DateOfBeginning" [owlDateTimeTrigger]="DateOfBeginning" nbInput fullWidth formControlName="DateOfBeginning" placeholder="{{'Accounting.MasterBook.dateOfBeginning' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfBeginning></owl-date-time>
+                                    <owl-date-time #DateOfBeginning [pickerType]="'calendar'"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                         </div>

@@ -2,7 +2,7 @@ import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.mod
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { WarehouseBookModel, WarehouseModel, GoodsModel } from '../../../../models/warehouse.model';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
@@ -98,6 +98,9 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
   makeNewFormGroup(data?: WarehouseBookModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [{ disabled: true, value: '' }],
+      DateOfStart: [null, Validators.required],
+      DateOfEnd: [null, Validators.required],
+      DateOfBeginning: [null, Validators.required],
       // PreviousBook: [''],
       // Warehouse: [''],
       Note: [''],
