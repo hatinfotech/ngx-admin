@@ -443,6 +443,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   /** Execute api get */
   executeGet(params: any, success: (resources: SalesVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
+    params['includeObject'] = true;
     params['includeDetails'] = true;
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
@@ -1084,8 +1085,9 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                     continue;
                   }
                 } else {
-                  // delete goodsDeliveryNote.Id;
-                  formGroup.patchValue({ ...refVoucher, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Id: null, Code: null, Details: [] });
+                  delete refVoucher.Id;
+                  delete refVoucher.Code;
+                  formGroup.patchValue({ ...refVoucher, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -1137,7 +1139,9 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                   //     Name: priceReport.ObjectName,
                   //   };
                   // }
-                  formGroup.patchValue({ ...refVoucher, Id: null, Code: null, Details: [] });
+                  delete refVoucher.Id;
+                  delete refVoucher.Code;
+                  formGroup.patchValue({ ...refVoucher, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);

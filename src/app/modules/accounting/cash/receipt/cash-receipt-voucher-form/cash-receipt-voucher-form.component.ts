@@ -595,43 +595,48 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     const insertList = [];
     const relationVoucher = formGroup.get('RelativeVouchers');
     const relationVoucherValue: any[] = (relationVoucher.value || []);
+    if(relationVoucherValue.some(s => s.id == relativeVoucher.Code)) {
+      this.commonService.toastService.show('Chứng từ liên quan đã được thêm vào trước đó','Thông báo', {status: 'warning'});
+      return;
+    }
     const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;
     if (index < 0) {
       const details = this.getDetails(formGroup);
       // get purchase order
-      let purchaseVoucher;
+      let salesVoucher;
       switch (relativeVoucherType) {
         case 'SALES':
-          purchaseVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + relativeVoucher.Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+          salesVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + relativeVoucher.Code, { includeObject: true, includeDetails: true }).then(rs => rs[0]);
           break;
         default:
           return false;
       }
 
-      if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
+      if (this.commonService.getObjectId(salesVoucher.State) != 'APPROVED') {
         this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
         return false;
       }
       if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-        if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+        if (this.commonService.getObjectId(salesVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
           this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
           return false;
         }
       } else {
-        delete purchaseVoucher.Id;
-        formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
-        formGroup.get('Description').patchValue('Thu tiền cho ' + purchaseVoucher.Title);
+        delete salesVoucher.Id;
+        delete salesVoucher.Code;
+        formGroup.patchValue({ ...salesVoucher, Details: [] });
+        formGroup.get('Description').patchValue('Thu tiền cho ' + salesVoucher.Title);
         details.clear();
       }
 
       // insertList.push(chooseItems[i]);
 
       // Insert order details into voucher details
-      if (purchaseVoucher?.Details) {
+      if (salesVoucher?.Details) {
         // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
         let totalMoney = 0;
         const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
-        for (const voucherDetail of purchaseVoucher.Details) {
+        for (const voucherDetail of salesVoucher.Details) {
           if (voucherDetail.Type !== 'CATEGORY') {
             const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
             totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
@@ -639,7 +644,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
         }
         const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
           AccountingBusiness: 'RECEIPTCUSTOMERDEBT',
-          Description: purchaseVoucher.Title,
+          Description: salesVoucher.Title,
           DebitAccount: '1111',
           CreditAccount: '131',
           Amount: totalMoney,

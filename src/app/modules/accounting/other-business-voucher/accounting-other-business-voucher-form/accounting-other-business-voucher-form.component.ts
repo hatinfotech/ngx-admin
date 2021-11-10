@@ -514,7 +514,8 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
                 }
               } else {
                 delete purchaseVoucher.Id;
-                formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
+                delete purchaseVoucher.Code;
+                formGroup.patchValue({ ...purchaseVoucher, Details: [] });
                 formGroup.get('Description').patchValue('Thu tiền cho ' + purchaseVoucher.Title);
                 details.clear();
               }

@@ -608,7 +608,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 }
               } else {
                 delete salesVoucher.Id;
-                formGroup.patchValue({ ...salesVoucher, Code: null, Details: [] });
+                delete salesVoucher.Code;
+                formGroup.patchValue({ ...salesVoucher, Details: [] });
                 details.clear();
               }
               insertList.push(chooseItems[i]);

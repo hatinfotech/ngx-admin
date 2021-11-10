@@ -354,6 +354,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   /** Execute api get */
   executeGet(params: any, success: (resources: PurchaseVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
+    params['includeObject'] = true;
     params['includeDetails'] = true;
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
@@ -744,7 +745,8 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                 }
               } else {
                 delete purchaseOrder.Id;
-                formGroup.patchValue({ ...purchaseOrder, Code: null, Details: [] });
+                delete purchaseOrder.Code;
+                formGroup.patchValue({ ...purchaseOrder, Details: [] });
                 details.clear();
               }
               insertList.push(chooseItems[i]);

@@ -668,8 +668,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       formGroup = this.array.controls[0] as FormGroup;
     }
     const insertList = [];
-    const relationVoucher = formGroup.get('RelativeVouchers');
-    const relationVoucherValue: any[] = (relationVoucher.value || []);
+    const relativeVouchers = formGroup.get('RelativeVouchers');
+    const relationVoucherValue: any[] = (relativeVouchers.value || []);
+    if(relationVoucherValue.some(s => s.id == relativeVoucher.Code)) {
+      this.commonService.toastService.show('Chứng từ liên quan đã được thêm vào trước đó','Thông báo', {status: 'warning'});
+      return;
+    }
     const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;
     if (index < 0) {
       const details = this.getDetails(formGroup);
@@ -677,7 +681,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       let purchaseVoucher;
       switch (relativeVoucherType) {
         case 'PURCHASE':
-          purchaseVoucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + relativeVoucher.Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+          purchaseVoucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + relativeVoucher.Code, { includeContact: true, includeObject: true, includeDetails: true }).then(rs => rs[0]);
           break;
         default:
           return false;
@@ -688,13 +692,15 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
         return false;
       }
       if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-        if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+        if (this.commonService.getObjectId(this.commonService.getObjectId(purchaseVoucher.Object), 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
           this.commonService.toastService.show(this.commonService.translateText('Liên hệ trong phiếu thanh toán không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
           return false;
         }
       } else {
         delete purchaseVoucher.Id;
-        formGroup.patchValue({ ...purchaseVoucher, Code: null, Details: [] });
+        delete purchaseVoucher.Code;
+        formGroup.patchValue({ ...purchaseVoucher, Details: [] });
+        formGroup.get('Object').setValue(purchaseVoucher.Object);
         formGroup.get('Description').patchValue('Chi tiền cho ' + purchaseVoucher.Title);
         details.clear();
       }
@@ -723,7 +729,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       }
     }
     insertList.push(relativeVoucher);
-    relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+    relativeVouchers.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
     return relativeVoucher;
   }
 

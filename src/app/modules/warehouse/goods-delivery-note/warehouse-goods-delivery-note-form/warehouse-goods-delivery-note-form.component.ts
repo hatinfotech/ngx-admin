@@ -575,7 +575,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 }
               } else {
                 delete salesVoucher.Id;
-                formGroup.patchValue({ ...salesVoucher, Code: null, Details: [] });
+                delete salesVoucher.Code;
+                formGroup.patchValue({ ...salesVoucher, Details: [] });
                 details.clear();
               }
               insertList.push(chooseItems[i]);
@@ -636,7 +637,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                   }
                 } else {
                   delete refVoucher.Id;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
+                  delete refVoucher.Code;
+                  formGroup.patchValue({ ...refVoucher, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);

@@ -307,10 +307,12 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   }
 
   protected getItemId(item: any) {
+    if(!item) return item;
     return item['id'] ? item['id'] : item[this._select2Option['keyMap']['id']];
   }
 
   protected getItemText(item: any) {
+    if(!item) return item;
     return item['text'] ? item['text'] : item[this._select2Option['keyMap']['text']];
   }
 
@@ -340,7 +342,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     //   }
     // }
     // const changedValue = this.select2Option.multiple ? dataChanged : dataChanged[0];
-    const changedValue = this._select2Option.multiple ? e.data : e.data[0];
+    const changedValue = this._select2Option.multiple ? e.data : (typeof e.data[0] !== 'undefined' ? e.data[0] : null );
     // if (this.onChange) this.onChange(Array.isArray(changedValue) ? changedValue.map(v => v.id) : changedValue.id);
     if (this.onChange) this.onChange(this._select2Option.multiple ? (changedValue ? changedValue : []) : (changedValue ? changedValue : null));
     Object.keys(this._select2Option['keyMap']).forEach(k => {
@@ -351,6 +353,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     // this.value = changedValue;
     this.selectChange.emit(changedValue);
     this.currentValue = changedValue;
+    this.value = this.getItemId(changedValue);
   }
 
   validate(formControl: FormControl) {
