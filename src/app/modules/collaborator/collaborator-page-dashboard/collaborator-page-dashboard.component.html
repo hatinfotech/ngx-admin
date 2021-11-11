@@ -64,27 +64,41 @@
     <div class="col-xxxl-12 col-md-12">
       <nb-card>
         <nb-card-body>
-          <div class="row">
-            <div class="col-sm-3">
-              <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [index]="0" [allowCopy]="false" [required]="true">
-                <ngx-select2 formControlName="DateReport" [select2Option]="select2DateReportOption" [data]="dateReportList" (selectChange)="onDateReportChange($event)"></ngx-select2>
-              </ngx-form-group>
+          <div style="display: flex;">
+            <div style="flex: 1;">
+              <div class="row">
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [index]="0" [allowCopy]="false" [required]="true">
+                    <ngx-select2 formControlName="DateReport" [select2Option]="select2DateReportOption" [data]="dateReportList" (selectChange)="onDateReportChange($event)"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
+                    <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
+                    <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value" (selectChange)="onChangePage($event)"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+              </div>
             </div>
-            <div class="col-sm-3">
-              <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
-                <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
-                <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
-              </ngx-form-group>
-            </div>
-            <div class="col-sm-3">
-              <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [index]="0" [allowCopy]="false" [required]="false">
-                <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value" (selectChange)="onChangePage($event)"></ngx-select2>
-              </ngx-form-group>
-            </div>
-            <div class="col-sm-3">
-              <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
-                <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
-              </ngx-form-group>
+            <div style="margin-left: 1rem;">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label class="label">Action</label>
+                    <button nbButton fullWidth status="success" (click)="refresh()">{{'Common.refresh' | translate | headtitlecase}}</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </nb-card-body>
@@ -100,12 +114,29 @@
 
     <div class="col-xxxl-9 col-xxl-9 col-lg-9 col-md-12">
       <nb-card class="size-giant chart small-header">
-        <nb-card-header>
-          <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Order.title' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
-        </nb-card-header>
-        <nb-card-body class="commission-statistics-wrapper">
-          <chart type="line" [data]="data" [options]="options"></chart>
-        </nb-card-body>
+        <nb-tabset fullWidth>
+          <nb-tab tabTitle="Đơn hàng">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="orderStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Doanh thu">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="commissionStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Cộng tác viên">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="publisherRegisteredStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+        </nb-tabset>
       </nb-card>
     </div>
   </div>

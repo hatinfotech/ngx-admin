@@ -30,7 +30,9 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
   title?: string = 'Phát sinh doanh thu/hoa hồng';
   actionButtonList: ActionControl[];
 
-  data: {};
+  commissionStatisticsData: {};
+  orderStatisticsData: {};
+  publisherRegisteredStatisticsData: {};
   options: any;
   colors: any;
   chartjs: any;
@@ -308,50 +310,154 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
       console.log(summaryReport);
     });
 
-    this.apiService.getPromise<any[]>('/collaborator/statistics', { reportTempNetRevenue: true, page: pages, reportBy: reportType, ge_DateOfOrder: fromDate, le_DateOfOrder: toDate, limit: 'nolimit' }).then(tempNetREvenues => {
-      this.apiService.getPromise<any[]>('/collaborator/statistics', { page: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' }).then(rs => {
-        this.data = {
-          labels: reportType === 'MONTH' ? tempNetREvenues.map(statistic => statistic['Month'] + '/' + statistic['Year'])
-            : (reportType === 'DAY' ? tempNetREvenues.map(statistic => statistic['Day'] + '/' + statistic['Month'])
-              : (reportType === 'HOUR' ? tempNetREvenues.map(statistic => statistic['Hour']) : tempNetREvenues.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
-          datasets: [
-            {
-              label: 'Doanh thu tạm tính',
-              data: tempNetREvenues.map(statistic => parseInt(statistic.NetRevenue)),
-              borderColor: this.colors.info,
-              // backgroundColor: colors.danger,
-              backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.3),
-              // fill: true,
-              borderDash: [5, 5],
-              pointRadius: 8,
-              pointHoverRadius: 10,
-            },
-            {
-              label: 'Doanh thu đã duyệt',
-              data: rs.map(statistic => parseInt(statistic.NetRevenue)),
-              borderColor: this.colors.danger,
-              // backgroundColor: colors.primary,
-              backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
-              // fill: true,
-              // borderDash: [5, 5],
-              pointRadius: 8,
-              pointHoverRadius: 10,
-            },
-            {
-              label: 'Hoa hồng',
-              data: rs.map(statistic => parseInt(statistic.CommissionAmount)),
-              borderColor: this.colors.success,
-              // backgroundColor: colors.success,
-              backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
-              // fill: true,
-              // borderDash: [5, 5],
-              pointRadius: 8,
-              pointHoverRadius: 10,
-            }
-          ],
-        };
-      });
-    });
+    const tmpRevenueStatistics = await this.apiService.getPromise<any[]>('/collaborator/statistics', { reportTempNetRevenue: true, page: pages, reportBy: reportType, ge_DateOfOrder: fromDate, le_DateOfOrder: toDate, limit: 'nolimit' });
+    const commissionStatistics = await this.apiService.getPromise<any[]>('/collaborator/statistics', { page: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    
+    this.commissionStatisticsData = {
+      labels: reportType === 'MONTH' ? tmpRevenueStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
+        : (reportType === 'DAY' ? tmpRevenueStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
+          : (reportType === 'HOUR' ? tmpRevenueStatistics.map(statistic => statistic['Hour']) : tmpRevenueStatistics.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
+      datasets: [
+        {
+          label: 'Doanh thu tạm tính',
+          data: tmpRevenueStatistics.map(statistic => parseInt(statistic.NetRevenue)),
+          borderColor: this.colors.info,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.3),
+          // fill: true,
+          borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Doanh thu đã duyệt',
+          data: commissionStatistics.map(statistic => parseInt(statistic.NetRevenue)),
+          borderColor: this.colors.danger,
+          // backgroundColor: colors.primary,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Hoa hồng',
+          data: commissionStatistics.map(statistic => parseInt(statistic.CommissionAmount)),
+          borderColor: this.colors.success,
+          // backgroundColor: colors.success,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        }
+      ],
+    };
+
+    this.orderStatisticsData = {
+      labels: reportType === 'MONTH' ? tmpRevenueStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
+        : (reportType === 'DAY' ? tmpRevenueStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
+          : (reportType === 'HOUR' ? tmpRevenueStatistics.map(statistic => statistic['Hour']) : tmpRevenueStatistics.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
+      datasets: [
+        {
+          label: 'Hoàn tất',
+          data: tmpRevenueStatistics.map(statistic => parseInt(statistic.NumOfCompleteOrder)),
+          borderColor: this.colors.success,
+          // backgroundColor: colors.primary,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
+          fill: false,
+          // borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Chốt đơn',
+          data: tmpRevenueStatistics.map(statistic => parseInt(statistic.NumOfApprovedOrder) + parseInt(statistic.NumOfCompleteOrder)),
+          borderColor: this.colors.primary,
+          // backgroundColor: colors.primary,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.3),
+          fill: false,
+          // borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Đang xử lý',
+          data: tmpRevenueStatistics.map(statistic => parseInt(statistic.NumOfProcessingOrder)),
+          borderColor: this.colors.danger,
+          // backgroundColor: colors.success,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
+          fill: false,
+          borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Chưa xử lý',
+          data: tmpRevenueStatistics.map  (statistic => parseInt(statistic.NumOfNotProcessingOrder)),
+          borderColor: this.colors.warning,
+          // backgroundColor: colors.success,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
+          fill: false,
+          borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Tổng',
+          data: tmpRevenueStatistics.map(statistic => parseInt(statistic.NumOfOrder)),
+          borderColor: this.colors.info,
+          // backgroundColor: colors.info,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.05),
+          fill: true,
+          borderDash: [1, 1],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+      ],
+    };
+
+    const publisherRegisteredStatistics = await this.apiService.getPromise<any[]>('/collaborator/statistics', { reportPublisherRegisterd: true, page: pages, reportBy: reportType, ge_Assigned: fromDate, le_Assigned: toDate, limit: 'nolimit' });
+    this.publisherRegisteredStatisticsData = {
+      labels: reportType === 'MONTH' ? tmpRevenueStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
+        : (reportType === 'DAY' ? tmpRevenueStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
+          : (reportType === 'HOUR' ? tmpRevenueStatistics.map(statistic => statistic['Hour']) : tmpRevenueStatistics.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
+      datasets: [
+        {
+          label: 'Đã đăng ký',
+          data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfRegisteredPublisher)),
+          borderColor: this.colors.success,
+          // backgroundColor: colors.primary,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Hủy đăng ký',
+          data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfApprovedOrder) + parseInt(statistic.NumOfUnregisteredPublisher)),
+          borderColor: this.colors.danger,
+          // backgroundColor: colors.primary,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.3),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Tổng',
+          data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfPublisher)),
+          borderColor: this.colors.info,
+          // backgroundColor: colors.info,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.3),
+          // fill: true,
+          borderDash: [1, 1],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        },
+      ],
+    };
 
     // Publisher summary report
     this.apiService.getPromise<any>('/collaborator/statistics', {
