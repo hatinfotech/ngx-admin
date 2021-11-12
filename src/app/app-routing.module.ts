@@ -1,3 +1,4 @@
+import { CollaboratorEducationArticleListComponent } from './modules/collaborator/education-article/education-article-list/collaborator-education-article-list.component';
 import { CollaboratorCommissionListComponent } from './modules/collaborator/commission/collaborator-commission-list/collaborator-commission-list.component';
 import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
 import { CollaboratorOrderListComponent } from './modules/collaborator/order/collaborator-order-list/collaborator-order-list.component';
@@ -937,6 +938,14 @@ const routes: Routes = [
         },
       },
     ]
+  },
+  {
+    path: 'collaborator/education/article/list',
+    canActivate: [AuthGuardService],
+    component: CollaboratorEducationArticleListComponent,
+    data: {
+      reuse: true,
+    },
   },
   {
     path: 'collaborator/publisher/dashboard',

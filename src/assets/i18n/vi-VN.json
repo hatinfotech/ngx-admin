@@ -111,6 +111,7 @@
             }
         },
         "create": "tạo",
+        "createNew": "tạo mới",
         "update": "cập nhật",
         "delete": "xoá",
         "remove": "gở bỏ",
@@ -902,6 +903,13 @@
             "pushProductConfirmText": "bạn có chắc là muốn đẩy sản phẩm lên trang này ?",
             "pushProductSuccessText": "thông tin sản phẩm đã được đẩy lên sàn thành công",
             "pushProductLabel": "đẩy thông tin"
+        },
+        "EducationArticle": {
+            "label": "bài viết đào tạo",
+            "title": "{{action}}{{definition}} bài viết đào tạo",
+            "contentBlock1": "Content block 1",
+            "contentBlock2": "Content block 2",
+            "contentBlock3": "Content block 3"
         },
         "Publisher": {
             "label": "cộng tác viên",

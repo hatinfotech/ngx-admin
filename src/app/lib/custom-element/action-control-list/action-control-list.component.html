@@ -5,16 +5,18 @@
       <button type="button" class="action-list-item"
         *ngIf="(!control.type || control.type == 'button') && (!control.hidden || !control.hidden(option))" nbButton
         [status]="control.status" hero [size]="control.size" [disabled]="control.disabled && control.disabled(option)"
-        [title]="control.title" (click)="control.click($event, option)">
+        [nbTooltip]="control.title" nbTooltipPlacement="bottom" (click)="control.click($event, option)">
         <nb-icon *ngIf="!hideIcon" [pack]="control.iconPack || 'eva'" [icon]="control.icon"></nb-icon>
         <span *ngIf="!!control.label && !hideLabel">{{control.label}}</span>
       </button>
       <input class="action-list-item" *ngIf="control.type == 'text' && (!control.hidden || !control.hidden(option))"
         nbInput type="text" [fieldSize]="control.size" [status]="control?.status"
+        [nbTooltip]="control.title" nbTooltipPlacement="bottom"
         [disabled]="control.disabled && control.disabled()" [placeholder]="control.title"
         (change)="control.change($event, option)" (keyup)="control.typing($event, option)"
         (key.enter)="control.change($event, option)" [value]="control.value()">
       <ngx-select2 class="action-list-item select2" *ngIf="control.type === 'select2'" [status]="control?.status"
+        [nbTooltip]="control.title" nbTooltipPlacement="bottom"
         [data]="control.select2.data" [value]="control.value()" [select2Option]="control.select2.option"
         (selectChange)="control?.change($event, option)">
       </ngx-select2>

@@ -71,7 +71,7 @@ export class SmartTableCheckboxComponent extends SmartTableBaseComponent impleme
   selector: 'ngx-smart-table-button',
   template: `
   <div [style]="style" [class]="class">
-    <button *ngIf="display" [outline]="outline" [disabled]="disabled" nbButton [status]="status" hero size="small" (click)="onClick()" title="{{title}}">
+    <button *ngIf="display" [outline]="outline" [disabled]="disabled" nbButton [status]="status" hero size="small" (click)="onClick()" nbTooltip="{{title || 'undefined'}}">
       <nb-icon [pack]="iconPack" [icon]="icon"></nb-icon><ng-container *ngIf="label">{{label}}</ng-container>
     </button>
   </div>`,

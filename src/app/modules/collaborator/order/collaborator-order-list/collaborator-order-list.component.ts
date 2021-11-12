@@ -72,7 +72,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           status: 'success',
           label: 'Select page',
           icon: 'plus',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Page.title', {action: this.commonService.translateText('Common.choose'), definition: ''}), 'head-title'),
           size: 'medium',
           select2: {
             data: pageList, option: {

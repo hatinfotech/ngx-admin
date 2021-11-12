@@ -1,0 +1,63 @@
+<form [formGroup]="form" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
+    <div formArrayName="array">
+        <div *ngFor="let formItem of array.controls; let i = index">
+            <nb-card class="small-header popup">
+                <nb-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.EducationArticle.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+                </nb-card-header>
+                <nb-card-body>
+                    <div [formGroup]="formItem">
+                        <input type="hidden" formControlName="Code">
+                        <div class="row dashed-radius-border">
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons">
+                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                    <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Summary" label="Common.summary" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <ckeditor [editor]="Editor" formControlName="Summary" [config]="ckEditorConfig" (ready)="onCkeditorReady($event)"></ckeditor>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="ContentBlock1" label="Collaborator.EducationArticle.contentBlock1" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <ckeditor [editor]="Editor" formControlName="ContentBlock1" [config]="ckEditorConfig" (ready)="onCkeditorReady($event)"></ckeditor>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="ContentBlock3" label="Collaborator.EducationArticle.contentBlock2" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <ckeditor [editor]="Editor" formControlName="ContentBlock2" [config]="ckEditorConfig" (ready)="onCkeditorReady($event)"></ckeditor>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="ContentBlock3" label="Collaborator.EducationArticle.contentBlock3" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <ckeditor [editor]="Editor" formControlName="ContentBlock3" [config]="ckEditorConfig" (ready)="onCkeditorReady($event)"></ckeditor>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Product" label="Common.product" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                        </div>
+
+                    </div>
+                </nb-card-body>
+                <nb-card-footer>
+                    <div class="buttons-row" style="text-align: right;">
+                        <button nbButton hero status="primary" (click)="preview(formItem)" [disabled]="!form.valid || isProcessing">
+                            <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                        </button>
+                        <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="save()">{{'Common.save' | translate | headtitlecase}}</button>
+                    </div>
+                </nb-card-footer>
+            </nb-card>
+        </div>
+    </div>
+</form>

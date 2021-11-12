@@ -1,3 +1,5 @@
+import { IdTextModel } from "./common.model";
+
 export interface CollaboratorPublisherModel {
     [key: string]: any;
     Id?: string;
@@ -233,4 +235,22 @@ export interface CollaboratorAwardVoucherDetailRefOrderModel {
     TaxLabel?: string;
     Quantity?: string;
     Price?: string;
+}
+export interface CollaboratorEducationArticleModel {
+    // [key: string]: any;
+    id?: string; text?: string;
+    Id?: string;
+    Code?: string;
+    Title?: string;
+    Summary?: string;
+    ContentBlock1?: string;
+    ContentBlock2?: string;
+    ContentBlock3?: string;
+    Creator?: string;
+    DateOfCreated?: string;
+    Product?: string & IdTextModel;
+    ProductName?: string;
+    Page?: string & IdTextModel;
+    PageName?: string;
+    State?: string;
 }

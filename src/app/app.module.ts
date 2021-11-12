@@ -225,6 +225,9 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { ProcessMap } from './models/process-map.model';
 import { DynamicListDialogComponent } from './modules/dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { CollaboratorOrderTeleCommitFormComponent } from './modules/collaborator/order/collaborator-order-tele-commit/collaborator-order-tele-commit.component';
+import { CollaboratorEducationArticleListComponent } from './modules/collaborator/education-article/education-article-list/collaborator-education-article-list.component';
+import { CollaboratorEducationArticleFormComponent } from './modules/collaborator/education-article/education-article-form/collaborator-education-article-form.component';
+import { CollaboratorEducationArticlePrintComponent } from './modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -439,6 +442,9 @@ export class DynamicLocaleId extends String {
     CollaboratorAwardPrintComponent,
     CollaboartorAwardDetailComponent,
     CollaboratorAwardDetailPrintComponent,
+    CollaboratorEducationArticleListComponent,
+    CollaboratorEducationArticleFormComponent,
+    CollaboratorEducationArticlePrintComponent,
     DynamicListDialogComponent,
 
   ],
@@ -1345,6 +1351,30 @@ export class AppModule {
         nextState: 'PROCESSING',
         nextStates: [
           AppModule.proccessingState,
+        ],
+      },
+    },
+    collaboratorEdutcationArticle: {
+      "APPROVED": {
+        ...AppModule.approvedState,
+        label: 'Common.approved',
+        nextState: 'NOTJUSTAPPROVED',
+        nextStates: [
+          AppModule.notJustApprodedState,
+        ],
+      },
+      "NOTJUSTAPPROVED": {
+        ...AppModule.notJustApprodedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+      "": {
+        ...AppModule.notJustApprodedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
         ],
       },
     },
