@@ -119,11 +119,11 @@ export class CollaboratorEducationArticleListComponent extends ServerDataManager
             instance.display = true;
             instance.status = 'primary';
             instance.init.pipe(takeUntil(this.destroy$)).subscribe((row: CollaboratorEducationArticleModel) => {
-              const link = `https://probox.center/${row.Page && row.Page.id || row.Page}/ctvbanhang/product/${row.Product && row.Product.id || row.Product}`;
+              const link = `https://probox.center/${row.Page && row.Page.id || row.Page}/ctvbanhang/article/${row.Code}`;
               instance.title = link;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (row: CollaboratorEducationArticleModel) => {
-              const link = `https://probox.center/${row.Page && row.Page.id || row.Page}/ctvbanhang/product/${row.Product && row.Product.id || row.Product}`;
+              const link = `https://probox.center/${row.Page && row.Page.id || row.Page}/ctvbanhang/article/${row.Code}`;
               this.commonService.copyTextToClipboard(link);
             });
           },
