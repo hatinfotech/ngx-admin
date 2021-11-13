@@ -342,6 +342,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     //   }
     // }
     // const changedValue = this.select2Option.multiple ? dataChanged : dataChanged[0];
+    console.log('handleOnChange...');
     const changedValue = this._select2Option.multiple ? e.data : (typeof e.data[0] !== 'undefined' ? e.data[0] : null );
     // if (this.onChange) this.onChange(Array.isArray(changedValue) ? changedValue.map(v => v.id) : changedValue.id);
     if (this.onChange) this.onChange(this._select2Option.multiple ? (changedValue ? changedValue : []) : (changedValue ? changedValue : null));
@@ -353,7 +354,10 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     // this.value = changedValue;
     this.selectChange.emit(changedValue);
     this.currentValue = changedValue;
-    this.value = this.getItemId(changedValue);
+    if(e.value === null) {
+      this.value = null;
+      // this.value = Array.isArray(changedValue) ? changedValue.map(item => this.getItemId(item)) : this.getItemId(changedValue);
+    }
   }
 
   validate(formControl: FormControl) {

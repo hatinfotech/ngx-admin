@@ -700,7 +700,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
         delete purchaseVoucher.Id;
         delete purchaseVoucher.Code;
         formGroup.patchValue({ ...purchaseVoucher, Details: [] });
-        formGroup.get('Object').setValue(purchaseVoucher.Object);
+        // formGroup.get('Object').setValue(purchaseVoucher.Object);
         formGroup.get('Description').patchValue('Chi tiền cho ' + purchaseVoucher.Title);
         details.clear();
       }
