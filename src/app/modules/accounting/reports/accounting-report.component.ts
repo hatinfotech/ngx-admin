@@ -38,8 +38,10 @@ export class AccountingReportComponent extends BaseComponent {
         // console.log(control);
         if (control.value) {
           const currentDate = new Date();
-          if ((currentDate.getFullYear() + currentDate.getMonth() + currentDate.getDate()) > (control.value?.getFullYear() + control.value?.getMonth() + control.value?.getDate())) {
-            return {invalidName: true, required: true, text: 'trước ngày hiện tại'};
+          currentDate.setHours(0, 0, 0, 0);
+          control.value.setHours(0, 0, 0, 0);
+          if (control.value.getTime() < currentDate.getTime()) {
+            return { invalidName: true, required: true, text: 'trước ngày hiện tại' };
           }
         }
         return null;

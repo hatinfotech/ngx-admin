@@ -11,6 +11,8 @@ import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccountingService } from '../../accounting.service';
 import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { AccoungtingReceivablesFromCustomersDetailsReportPrintComponent } from '../print/accoungting-receivables-from-customers-details-report-print/accoungting-receivables-from-customers-details-report-print.component';
+import { AccoungtingReceivablesFromCustomersReportPrintComponent } from '../print/accoungting-receivables-from-customers-report-print/accoungting-receivables-from-customers-report-print.component';
 
 @Component({
   selector: 'ngx-accoungting-receivables-from-customers-report',
@@ -22,7 +24,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
   componentName: string = 'AccoungtingReceivablesFromCustomersReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
-  idKey = 'Code';
+  idKey = 'Object';
   formDialog = AccAccountFormComponent;
 
   reuseDialog = true;
@@ -81,8 +83,57 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
       },
     ];
     return super.init().then(rs => {
-      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
-      this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose'].indexOf(f.name) < 0);
+      this.actionButtonList.find(f => f.name === 'refresh').label = null;
+      const summaryReportBtn = this.actionButtonList.find(f => f.name == 'preview');
+      summaryReportBtn.label = summaryReportBtn.title = 'In báo cáo';
+      summaryReportBtn.icon = 'printer';
+      summaryReportBtn.status = 'info';
+      summaryReportBtn.disabled = () => false;
+      summaryReportBtn.click = () => {
+        this.commonService.openDialog(AccoungtingReceivablesFromCustomersReportPrintComponent, {
+          context: {
+            showLoadinng: true,
+            // title: 'Xem trước',
+            mode: 'print',
+            id: ['all']
+          },
+        });
+      };
+
+      const detailsReportBtn = {...summaryReportBtn};
+      detailsReportBtn.status = 'primary';
+      detailsReportBtn.name = 'detailReport';
+      detailsReportBtn.label = detailsReportBtn.title = 'In báo cáo chi tiết';
+      detailsReportBtn.disabled = () => this.selectedIds.length <= 0;
+      detailsReportBtn.click = () => {
+        this.commonService.openDialog(AccoungtingReceivablesFromCustomersDetailsReportPrintComponent, {
+          context: {
+            showLoadinng: true,
+            // title: 'Xem trước',
+            mode: 'print',
+            id: ['all'],
+            objects: this.selectedIds,
+          },
+        });
+      };
+      this.actionButtonList.unshift(detailsReportBtn);
+
+      // const printDebtConfirmBtn = {...summaryReportBtn};
+      // printDebtConfirmBtn.status = 'danger';
+      // printDebtConfirmBtn.name = 'detailReport';
+      // printDebtConfirmBtn.label = printDebtConfirmBtn.title = 'In phiếu xác nhận công nợ';
+      // printDebtConfirmBtn.click = () => {
+      //   this.commonService.openDialog(AccoungtingReceivablesFromCustomersReportPrintComponent, {
+      //     context: {
+      //       showLoadinng: true,
+      //       // title: 'Xem trước',
+      //       mode: 'print',
+      //       id: ['all']
+      //     },
+      //   });
+      // };
+      // this.actionButtonList.unshift(printDebtConfirmBtn);
 
       // Auto refresh list on reportToDate changed
       this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {

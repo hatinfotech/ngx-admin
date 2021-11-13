@@ -203,7 +203,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
     // params['includeParent'] = true;
     params['reportSummary'] = true;
-    params['Accounts'] = '111,112,131,141,331,511,632,6421,4222,811,156,1331,3331,4212,,4111,4112,4118,3341,3348,3349,3350,6411,4211,3412,2288';
+    params['Accounts'] = '111,112,131,141,331,511,632,6421,4222,811,156,1331,3331,4212,,4111,4112,4118,3341,3411,3348,3349,3350,6411,4211,3412,2288';
 
     const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
     const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59);

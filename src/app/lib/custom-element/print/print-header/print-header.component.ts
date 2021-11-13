@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'ngx-print-header',
@@ -7,10 +8,23 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['./print-header.component.scss']
 })
 export class PrintHeaderComponent implements OnInit {
-  
+
   env = environment;
-  
-  constructor() { }
+  registerInfo: any = {
+    voucherInfo: this.commonService.translateText('Information.Voucher.register'),
+    voucherLogo: environment.register.logo.voucher,
+  };
+
+  constructor(
+    public commonService: CommonService,
+  ) {
+    this.commonService.systemConfigs$.subscribe(settings => {
+      if (settings.LICENSE_INFO && settings.LICENSE_INFO.register && settings.LICENSE_INFO.register) {
+        this.registerInfo.voucherInfo = settings.LICENSE_INFO.register.voucherInfo.replace(/\\n/g, '<br>');
+        this.registerInfo.voucherLogo = settings.LICENSE_INFO.register.voucherLogo;
+      }
+    });
+  }
 
   ngOnInit() {
   }

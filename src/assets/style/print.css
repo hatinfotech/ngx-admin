@@ -28,7 +28,8 @@
 }
 
 #print-area * {
-  font-size: 0.9rem;
+  /* font-size: 0.9rem; */
+  font-size: 12px;
   text-shadow: initial !important;
   font-family: Open Sans, sans-serif;
 }
@@ -253,4 +254,11 @@
 }
 .text-label {
   font-weight: bold;
+}
+
+.print-voucher-detail-table thead {
+  font-weight: bold;
+}
+.print-voucher-detail-table thead td {
+  border-bottom: 1px solid #ccc;
 }

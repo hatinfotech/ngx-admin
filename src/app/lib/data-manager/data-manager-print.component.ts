@@ -166,9 +166,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     let printContent = '';
     const printContentEles = this.printContent.toArray();
     let title = 'ProBox one ®';
+    let data: M;
     if (index !== undefined) {
       printContent += printContentEles[index].element.nativeElement.innerHTML;
-      const data = this.data[index];
+      data = this.data[index];
       // Todo: restrict only print created voucher  
       // if(!data['Id']) {
       //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
@@ -197,7 +198,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       </body>
     </html>`);
     const currentTitle = document.title;
-    document.title = this.title;
+    document.title = data ? this.renderTitle(data) : this.title;
     frameDoc.document.close();
     printFrame.onload = () => {
       window.frames['printFrame'].focus();

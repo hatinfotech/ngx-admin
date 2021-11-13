@@ -228,6 +228,10 @@ import { CollaboratorOrderTeleCommitFormComponent } from './modules/collaborator
 import { CollaboratorEducationArticleListComponent } from './modules/collaborator/education-article/education-article-list/collaborator-education-article-list.component';
 import { CollaboratorEducationArticleFormComponent } from './modules/collaborator/education-article/education-article-form/collaborator-education-article-form.component';
 import { CollaboratorEducationArticlePrintComponent } from './modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
+import { AccoungtingReceivablesFromCustomersReportPrintComponent } from './modules/accounting/reports/print/accoungting-receivables-from-customers-report-print/accoungting-receivables-from-customers-report-print.component';
+import { AccoungtingReceivablesFromCustomersDetailsReportPrintComponent } from './modules/accounting/reports/print/accoungting-receivables-from-customers-details-report-print/accoungting-receivables-from-customers-details-report-print.component';
+import { AccountingLiabilitiesReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-report-print/accounting-liabilities-report-print.component';
+import { AccountingLiabilitiesDetailsReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-details-report-print/accounting-liabilities-details-report-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -344,6 +348,11 @@ export class DynamicLocaleId extends String {
     AccMasterBookHeadAmountComponent,
     AccMasterBookHeadObjectAmountComponent,
     AccMasterBookHeadBankAccountAmountComponent,
+    AccoungtingReceivablesFromCustomersReportPrintComponent,
+    AccoungtingReceivablesFromCustomersDetailsReportPrintComponent,
+    AccountingLiabilitiesReportPrintComponent,
+    AccountingLiabilitiesDetailsReportPrintComponent,
+
 
     // Deployment components
     DeploymentVoucherListComponent,

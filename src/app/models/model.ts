@@ -23,4 +23,10 @@ export interface SystemConfigModel {
         to: string,
     };
     ROOT_CONFIGS: RootConfigModel;
+    LICENSE_INFO: {
+        register: {
+            voucherInfo: string,
+            voucherLogo: string,
+        }
+    },
 }

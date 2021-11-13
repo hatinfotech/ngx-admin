@@ -903,6 +903,7 @@ export class CommonService {
           // data: data,
           idKey: ['Code'],
           // approvedConfirm: true,
+          sourceOfDialog: 'any',
           onClose: (data: M) => {
             onClose && onClose(data);
           },

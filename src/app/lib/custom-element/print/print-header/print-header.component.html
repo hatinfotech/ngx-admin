@@ -1,6 +1,6 @@
 <table width="100%">
   <tr>
-    <td><pre>{{'Information.Voucher.register' | translate }}</pre></td>
-    <td align="right"><img class="voucher-logo-image" [src]="env.register.logo.voucher"></td>
+    <td [innerHtml]="registerInfo.voucherInfo"></td>
+    <td align="right"><img class="voucher-logo-image" [src]="registerInfo.voucherLogo"></td>
   </tr>
 </table>
