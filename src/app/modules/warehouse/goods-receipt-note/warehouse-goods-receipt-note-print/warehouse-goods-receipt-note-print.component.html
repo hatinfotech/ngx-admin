@@ -73,7 +73,7 @@
           </div>
         </div>
         <div>
-          <div class="under-line"><span [innerHTML]="renderValue(data.Note)"></span></div>
+          <div class="under-line" *ngIf="data.Note"><span [innerHTML]="renderValue(data.Note)"></span></div>
           <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
             {{renderValue(data.DeliveryAddress)}}
           </div>

@@ -932,12 +932,14 @@ export class CommonService {
 
   get lastVoucherDate(): Date {
     const tmp: any = localStorage.getItem('Voucher.lastVoucherDate');
+    const now = new Date();
     let current: Date;
     if (tmp) current = new Date(tmp);
     if (!current) {
-      current = new Date();
+      current = now;
       localStorage.setItem('Voucher.lastVoucherDate', current.toISOString());
     }
+    current.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
     return current;
   }
 
