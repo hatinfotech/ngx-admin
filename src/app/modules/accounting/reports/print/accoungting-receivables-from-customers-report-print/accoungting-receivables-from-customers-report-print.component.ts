@@ -147,6 +147,7 @@ export class AccoungtingReceivablesFromCustomersReportPrintComponent extends Dat
       toDate: toDate.toISOString(),
       limit: 'nolimit',
       excludeZeroDebt: true,
+      includeObjectInfo: true,
       sort_ObjectName: 'asc'
     }).then(data => {
       const list = [{ 'ToDate': toDate, Details: data }];

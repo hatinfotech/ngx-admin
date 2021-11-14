@@ -290,7 +290,7 @@
         "unbookkeepingConfirm": "bạn có chắc là muốn bỏ ghi",
         "unbookkeeped": "bỏ ghi",
         "unbookkeepingSuccess": "bỏ ghi thành công",
-        "goodsOrService": "Hàng hóa/dịch vụ",
+        "goodsOrService": "hàng hóa/dịch vụ",
         "dateOfDelivered": "ngày giao hàng",
         "dateOfCreated": "ngày tạo",
         "object": "Công ty",
@@ -397,7 +397,8 @@
         "processingResponseText": "đã chuyển sang trạng thái đang xử lý",
         "addProduct": "thêm hàng hoá/dịch vụ",
         "dateOfSale": "ngày bán",
-        "addUnit": "thêm đvt"
+        "addUnit": "thêm đvt",
+        "debt": "công nợ"
     },
     "Contact": {
         "Customer": {

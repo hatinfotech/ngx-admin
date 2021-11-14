@@ -13,6 +13,7 @@ export class PrintHeaderComponent implements OnInit {
   registerInfo: any = {
     voucherInfo: this.commonService.translateText('Information.Voucher.register'),
     voucherLogo: environment.register.logo.voucher,
+    voucherLogoHeight: 60,
   };
 
   constructor(
@@ -22,6 +23,7 @@ export class PrintHeaderComponent implements OnInit {
       if (settings.LICENSE_INFO && settings.LICENSE_INFO.register && settings.LICENSE_INFO.register) {
         this.registerInfo.voucherInfo = settings.LICENSE_INFO.register.voucherInfo.replace(/\\n/g, '<br>');
         this.registerInfo.voucherLogo = settings.LICENSE_INFO.register.voucherLogo;
+        this.registerInfo.voucherLogoHeight = settings.LICENSE_INFO.register.voucherLogoHeight;
       }
     });
   }

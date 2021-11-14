@@ -147,7 +147,8 @@ export class AccountingLiabilitiesReportPrintComponent extends DataManagerPrintC
       toDate: toDate.toISOString(),
       limit: 'nolimit',
       excludeZeroDebt: true,
-      sort_ObjectName: 'asc'
+      sort_ObjectName: 'asc',
+      includeObjectInfo: true,
     }).then(data => {
       const list = [{ 'ToDate': toDate, Details: data }];
       this.summaryCalculate(list);

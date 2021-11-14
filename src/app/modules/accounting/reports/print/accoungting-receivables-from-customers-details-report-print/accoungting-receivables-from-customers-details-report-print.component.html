@@ -12,15 +12,44 @@
                     <div class="under-title">Đến ngày: {{ data.ToDate | date:'short' }}</div>
                 </div>
                 <div>
+                    <div style="display: flex;">
+                        <div style="flex: 1;">
+                            <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+                                {{renderValue(data.ObjectName)}}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
+                                {{renderValue(data.Object | objectid)}}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex;">
+                        <div style="flex: 1;">
+                            <div class="under-line">{{'Common.phone' | translate | headtitlecase}} :
+                                {{renderValue(data.ObjectPhone)}}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="under-line">{{'Common.email' | translate | headtitlecase}} :
+                                {{renderValue(data.ObjectEmail)}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
+                        {{renderValue(data.ObjectAddress)}}
+                    </div>
+                </div>
+                <div>
                     <div>
                         <table style="width: 100%;" class="print-voucher-detail-table ">
                             <thead class="print-voucher-detail-header">
                                 <td>#</td>
                                 <td class="" style="white-space: nowrap">{{'Common.voucher' | translate | headtitlecase}}</td>
-                                <td class="" style="white-space: nowrap">{{'Common.description' | translate | headtitlecase}}</td>
+                                <td class="" style="white-space: nowrap">{{'Common.goodsOrService' | translate | headtitlecase}}</td>
                                 <td class="" style="white-space: nowrap">{{'Common.dateOfVoucher' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Common.numOfMoney' | translate | headtitlecase}}</td>
-                                <td class="text-align-right" style="white-space: nowrap">{{'Accounting.increment' | translate | headtitlecase}}</td>
+                                <td class="text-align-right" style="white-space: nowrap">{{'Common.debt' | translate | headtitlecase}}</td>
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
@@ -43,10 +72,10 @@
                 </div>
                 <div style="display: flex; flex-wrap: wrap">
                     <div style="text-align: center; flex: 0 0 50%;">
-                        <br> {{'Người lập báo cáo' | translate | headtitlecase}}
+                        <br>Bên bán
                     </div>
                     <div style="text-align: center; flex: 0 0 50%;">
-
+                        <br>Khách hàng
                     </div>
                 </div>
             </div>

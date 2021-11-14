@@ -27,6 +27,7 @@ export interface SystemConfigModel {
         register: {
             voucherInfo: string,
             voucherLogo: string,
+            voucherLogoHeight: number,
         }
     },
 }

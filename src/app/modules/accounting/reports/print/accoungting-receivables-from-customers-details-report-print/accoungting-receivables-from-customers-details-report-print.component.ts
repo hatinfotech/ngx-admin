@@ -152,10 +152,11 @@ export class AccoungtingReceivablesFromCustomersDetailsReportPrintComponent exte
         eq_Account: '131',
         eq_Object: object,
         includeIncrementAmount: true,
+        includeObjectInfo: true,
         toDate: toDate.toISOString(),
         limit: 'nolimit',
       }).then(data => {
-        const item = { 'ToDate': toDate, 'Object': object, ObjectName: data[0]['ObjectName'], Details: data };
+        const item = { 'ToDate': toDate, 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data };
         return item;
       }));
     }

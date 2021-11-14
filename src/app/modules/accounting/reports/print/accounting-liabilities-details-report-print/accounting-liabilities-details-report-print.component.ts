@@ -152,6 +152,7 @@ export class AccountingLiabilitiesDetailsReportPrintComponent extends DataManage
         eq_Account: '331',
         eq_Object: object,
         includeIncrementAmount: true,
+        includeObjectInfo: true,
         toDate: toDate.toISOString(),
         limit: 'nolimit',
       }).then(data => {
