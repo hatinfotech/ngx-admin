@@ -138,7 +138,7 @@ export class CollaboratorEducationArticleFormComponent extends DataManagerFormCo
   baseFormUrl = '/collaborator/education-article/form';
   apiPath = '/collaborator/education-articles';
 
-  previewAfterCreate = true;
+  previewAfterCreate = true;  
   printDialog = CollaboratorEducationArticlePrintComponent;
 
   env = environment;

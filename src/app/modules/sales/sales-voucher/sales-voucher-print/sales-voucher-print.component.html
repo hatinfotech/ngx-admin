@@ -32,32 +32,15 @@
         <div>
           <div>
             <table style="width: 100%;" class="print-voucher-detail-table">
-              <colgroup>
-                <!--STT-->
-                <col span="1" style="width: 0.5cm;">
-                <!--Dien giai-->
-                <col span="1" style="width: 6cm;">
-                <!--DVT-->
-                <col span="1" style="width: 1cm;">
-                <!--So luong-->
-                <col span="1" style="width: 2cm; text-align: right;">
-                <!--Don gia-->
-                <col span="1" style="width: 2.8cm; text-align: right;">
-                <!--Thue-->
-                <col span="1" style="width: 2cm;">
-                <!--Thanh tien-->
-                <col span="1" style="width: 2.7cm; text-align: right;">
-              </colgroup>
-              <tr class="print-voucher-detail-header">
-                <th>#</th>
-                <th>{{'Sales.technicalDescription' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}
-                </th>
-                <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</th>
-              </tr>
+              <thead class="print-voucher-detail-header">
+                <td>#</td>
+                <td>{{'Sales.technicalDescription' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
+              </thead>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
                   <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>

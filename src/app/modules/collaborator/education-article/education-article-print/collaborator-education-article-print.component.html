@@ -13,7 +13,7 @@
             <br>
             <div [innerHtml]="data.Summary" style="font-style: italic;"></div>
             <br>
-            <div [innerHtml]="data.ContentBlock1"></div>
+            <div [innerHtml]="this.sanitizer.bypassSecurityTrustHtml(data.ContentBlock1)"></div>
             <div [innerHtml]="data.ContentBlock2"></div>
             <div [innerHtml]="data.ContentBlock3"></div>
             <div>Sản phẩm: {{data.Product | objecttext}}</div>

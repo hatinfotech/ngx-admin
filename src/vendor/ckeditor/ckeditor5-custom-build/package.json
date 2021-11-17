@@ -38,5 +38,8 @@
   },
   "scripts": {
     "build": "webpack --mode production"
+  },
+  "dependencies": {
+    "ckeditor-youtube-plugin": "^2.1.19"
   }
 }

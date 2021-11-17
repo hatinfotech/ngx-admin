@@ -52,6 +52,7 @@
     "@asymmetrik/ngx-leaflet": "3.0.1",
     "@ckeditor/ckeditor5-angular": "^2.0.2",
     "@ckeditor/ckeditor5-theme-lark": "^30.0.0",
+    "@iframely/embed.js": "^1.4.0",
     "@nebular/auth": "8.0.0",
     "@nebular/eva-icons": "8.0.0",
     "@nebular/security": "8.0.0",

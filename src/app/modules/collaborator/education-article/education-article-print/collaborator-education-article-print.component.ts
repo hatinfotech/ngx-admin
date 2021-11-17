@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
@@ -10,13 +10,16 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { CollaboratorEducationArticleFormComponent } from '../education-article-form/collaborator-education-article-form.component';
 import { CollaboratorEducationArticleModel } from '../../../../models/collaborator.model';
+// import { iframely } from "@iframely/embed.js";
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'ngx-collaborator-education-article-print',
   templateUrl: './collaborator-education-article-print.component.html',
   styleUrls: ['./collaborator-education-article-print.component.scss'],
 })
-export class CollaboratorEducationArticlePrintComponent extends DataManagerPrintComponent<CollaboratorEducationArticleModel> implements OnInit {
+export class CollaboratorEducationArticlePrintComponent extends DataManagerPrintComponent<CollaboratorEducationArticleModel> implements OnInit, AfterViewInit {
 
   /** Component name */
   componentName = 'CollaboratorEducationArticlePrintComponent';
@@ -33,6 +36,7 @@ export class CollaboratorEducationArticlePrintComponent extends DataManagerPrint
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorEducationArticlePrintComponent>,
     public datePipe: DatePipe,
+    public sanitizer: DomSanitizer
   ) {
     super(commonService, router, apiService, ref);
   }
@@ -40,6 +44,11 @@ export class CollaboratorEducationArticlePrintComponent extends DataManagerPrint
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
+  }
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    // iframely.load();
   }
 
   async init() {
@@ -97,6 +106,7 @@ export class CollaboratorEducationArticlePrintComponent extends DataManagerPrint
   summaryCalculate(data: CollaboratorEducationArticleModel[]) {
     for (const i in data) {
       const item = data[i];
+      // item.ContentBlock1 = this.sanitizer.bypassSecurityTrustHtml(item.ContentBlock1) as any;
       this.processMapList[i] = AppModule.processMaps.collaboratorEdutcationArticle[item.State || ''];
     }
     return data;

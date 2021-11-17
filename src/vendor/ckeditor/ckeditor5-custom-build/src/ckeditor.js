@@ -113,7 +113,12 @@ Editor.defaultConfig = {
         'tableCellProperties',
         'tableProperties'
       ]
-    }
+    },
+    mediaEmbed: {
+      previewsInData: true
+  }
   };
-
+  
+// Editor.builtinPlugins.addExternal('youtube', '../node_modules/ckeditor-youtube-plugin/youtube/');  
+// Editor.defaultConfig.extraPlugins = 'youtube';
 export default Editor;

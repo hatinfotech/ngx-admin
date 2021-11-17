@@ -216,7 +216,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   encodeId(id: string) {
-    return id.replace(/-/, '~!');
+    return this.commonService.getObjectId(id).replace(/-/, '~!');
   }
 
   decodeId(id: string) {

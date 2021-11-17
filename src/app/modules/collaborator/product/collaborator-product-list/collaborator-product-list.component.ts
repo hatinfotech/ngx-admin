@@ -1,4 +1,4 @@
-import { take, filter } from 'rxjs/operators';
+import { take, filter, takeUntil } from 'rxjs/operators';
 import { CollaboratorService } from '../../collaborator.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, OnInit, ViewChild } from '@angular/core';
@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
-import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -333,6 +333,28 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
           title: 'Trang',
           type: 'string',
           width: '15%',
+        },
+        Link: {
+          title: 'Link',
+          type: 'custom',
+          width: '5%',
+          exclude: this.isChoosedMode,
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'link-2-outline';
+            // instance.label = this.commonService.translateText('Common.copy');
+            instance.display = true;
+            instance.status = 'primary';
+            instance.init.pipe(takeUntil(this.destroy$)).subscribe((row: any) => {
+              const link = `/${(row.Page && row.Page.id || row.Page).toLowerCase()}/ctvbanhang/product/${row?.Product?.toLowerCase()}`;
+              instance.title = link;
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (row: any) => {
+              const link = `/${(row.Page && row.Page.id || row.Page).toLowerCase()}/ctvbanhang/product/${row?.Product?.toLowerCase()}`;
+              this.commonService.copyTextToClipboard(link);
+            });
+          },
         },
       },
     });
