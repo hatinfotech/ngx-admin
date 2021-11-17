@@ -110,11 +110,17 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   _select2Option: Select2Options;
   @Input('select2Option') set select2Option(option: Select2Options) {
     option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
-      if (object?.id === object?.text) {
+      if (this._select2Option.tags && object?.id === object?.text) {
         $(container).addClass('new');
       }
       return object?.text;
     };
+    if(option.tags === true) {
+      option['insertTag'] = function (data, tag) {
+        // Insert the tag at the end of the results
+        data.push(tag);
+      };
+    }
     this._select2Option = option;
   }
   // @Input('select2Option') set select2Option(option: Select2Options){

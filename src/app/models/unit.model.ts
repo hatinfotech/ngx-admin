@@ -1,5 +1,6 @@
 export class UnitModel {
-  [key: string]: any;
+  id?: string; text?: string;
+  Price?: number;
   Code: string;
   Name?: string;
   FullName?: string;

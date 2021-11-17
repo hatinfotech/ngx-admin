@@ -5,6 +5,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-warehouse-goods-form',
@@ -27,6 +28,7 @@ export class WarehouseGoodsFormComponent extends ProductFormComponent implements
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref?: NbDialogRef<WarehouseGoodsFormComponent>,
+    public adminProductService?: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
   }

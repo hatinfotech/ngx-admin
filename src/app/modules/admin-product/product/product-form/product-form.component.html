@@ -32,16 +32,18 @@
                 </div>
               </div>
               <div class="col-sm-2">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')">
+                <!-- <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')" [customIcons]="unitControlIcons">
                   <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt
                       buộc
                       (*)</span>
                     <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'WarehouseUnit')" pack="eva" icon="copy-outline">
                     </nb-icon>
                   </label>
-                  <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList">
-                  </ngx-select2>
-                </div>
+                  <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList"></ngx-select2>
+                </div> -->
+                <ngx-form-group [formGroup]="formItem" name="WarehouseUnit" label="Đơn vị tính cơ bản (*)" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [customIcons]="unitControlIcons">
+                  <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList"></ngx-select2>
+                </ngx-form-group>
               </div>
               <div class="col-sm-2">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">

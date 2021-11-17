@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AdminProductService } from '../../admin-product.service';
 
 @Component({
   selector: 'ngx-product-group-form',
@@ -30,6 +31,7 @@ export class ProductGroupFormComponent extends DataManagerFormComponent<ProductG
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<ProductGroupFormComponent>,
+    public adminProductService: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -107,4 +109,10 @@ export class ProductGroupFormComponent extends DataManagerFormComponent<ProductG
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+  async save(): Promise<ProductGroupModel[]> {
+    return super.save().then(rs => {
+      this.adminProductService.updateGroupList();
+      return rs;
+    });
+  };
 }

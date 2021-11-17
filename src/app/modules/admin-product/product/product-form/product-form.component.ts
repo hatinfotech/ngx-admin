@@ -1,3 +1,6 @@
+import { take, takeUntil, filter } from 'rxjs/operators';
+import { UnitModel } from './../../../../models/unit.model';
+import { ProductUnitFormComponent } from './../../unit/product-unit-form/product-unit-form.component';
 // import { SimpleUploadAdapter } from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductGroupModel } from './../../../../models/product.model';
@@ -19,6 +22,8 @@ import { Select2Option } from '../../../../lib/custom-element/select2/select2.co
 // import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic/build/ckeditor.js';
 // import * as ClassicEditorBuild from '../../../../../vendor/ckeditor5-build-classic/build/ckeditor.js'; 
 import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
+import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { AdminProductService } from '../../admin-product.service';
 
 class MyUploadAdapter {
   xhr: XMLHttpRequest;
@@ -144,9 +149,34 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   unitList: ProductUnitModel[] = [];
 
   // Category list for select2
-  categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+  categoryList: (ProductCategoryModel)[] = [];
   // Group list for select2
   groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
+
+  constructor(
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref?: NbDialogRef<ProductFormComponent>,
+    public adminProductService?: AdminProductService,
+  ) {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** ngx-uploader */
+    this.options = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
+    this.files = []; // local uploading files array
+    this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
+    this.humanizeBytes = humanizeBytes;
+    /** End ngx-uploader */
+
+
+    // Config editor
+    // this.Editor;
+  }
 
   public Editor = ClassicEditorBuild;
   public ckEditorConfig = {
@@ -206,34 +236,12 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     // }
   };
 
-  constructor(
-    public activeRoute: ActivatedRoute,
-    public router: Router,
-    public formBuilder: FormBuilder,
-    public apiService: ApiService,
-    public toastrService: NbToastrService,
-    public dialogService: NbDialogService,
-    public commonService: CommonService,
-    public ref?: NbDialogRef<ProductFormComponent>,
-  ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-
-    /** ngx-uploader */
-    this.options = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
-    this.files = []; // local uploading files array
-    this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
-    this.humanizeBytes = humanizeBytes;
-    /** End ngx-uploader */
-
-
-    // Config editor
-    // this.Editor;
-  }
-
   async loadCache() {
-    // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    await Promise.all([
+      this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.unitList = list),
+      this.adminProductService.categoryList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.categoryList = list),
+      this.adminProductService.groupList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.groupList = list),
+    ]);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -243,6 +251,26 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       callback(this.inputId);
     }
   }
+
+  unitControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ProductUnitFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          onDialogSave: (newData: UnitModel[]) => {
+            console.log(newData);
+            const newUnit: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('WarehouseUnit').patchValue(newUnit);
+          },
+          onDialogClose: () => {
+
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
 
   select2OptionForCategories: Select2Option = {
     placeholder: 'Chọn danh mục...',
@@ -281,6 +309,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       text: 'text',
     },
     multiple: true,
+    tags: true,
   };
 
   ngOnInit() {
@@ -289,8 +318,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   async init() {
-    await this.loadCache();
-    this.unitList = await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { select: 'id=>Code,text=>Name', limit: 'nolimit' });
+    // await this.loadCache();
     return super.init();
   }
 
@@ -356,7 +384,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Code_old: [''],
       Code: [''],
       Sku: [''],
-      WarehouseUnit: ['CAI'],
+      WarehouseUnit: ['n/a'],
       Name: ['', Validators.required],
       FeaturePicture: [''],
       Description: [''],
@@ -646,4 +674,12 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   onCkeditorReady(editor: any) {
     console.log(editor);
   }
+
+  async save(): Promise<ProductModel[]> {
+    return super.save().then(rs => {
+      this.adminProductService.updateGroupList();
+      this.adminProductService.updateCategoryList();
+      return rs;
+    });
+  };
 }

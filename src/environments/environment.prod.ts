@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '5.0.9.11',
+  version: '5.0.9.12',
   // 5.0.9.4: Hot update accounting summary and detail debt report, hotfix select2 loop on change value
   // 5.0.9: Collaborator education article
   // 5.0.8: collaborator dashboard chart

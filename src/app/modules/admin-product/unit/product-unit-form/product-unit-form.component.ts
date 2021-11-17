@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AdminProductService } from '../../admin-product.service';
 
 @Component({
   selector: 'ngx-product-unit-form',
@@ -29,6 +30,7 @@ export class ProductUnitFormComponent extends DataManagerFormComponent<ProductUn
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<ProductUnitFormComponent>,
+    public adminProductService: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -97,4 +99,10 @@ export class ProductUnitFormComponent extends DataManagerFormComponent<ProductUn
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+  async save(): Promise<ProductUnitModel[]> {
+    return super.save().then(async rs => {
+      this.adminProductService.updateUnitList();
+      return rs;
+    });
+  };
 }

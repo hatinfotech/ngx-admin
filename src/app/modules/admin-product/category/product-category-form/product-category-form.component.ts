@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AdminProductService } from '../../admin-product.service';
 
 @Component({
   selector: 'ngx-product-category-form',
@@ -58,6 +59,7 @@ export class ProductCategoryFormComponent extends DataManagerFormComponent<Produ
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<ProductCategoryFormComponent>,
+    public adminProductService: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -126,4 +128,10 @@ export class ProductCategoryFormComponent extends DataManagerFormComponent<Produ
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+  async save(): Promise<ProductCategoryModel[]> {
+    return super.save().then(rs => {
+      this.adminProductService.updateCategoryList();
+      return rs;
+    });
+  };
 }

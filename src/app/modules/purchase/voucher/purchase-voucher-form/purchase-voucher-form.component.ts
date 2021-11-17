@@ -1,5 +1,6 @@
+import { ProductUnitModel } from './../../../../models/product.model';
 import { ProductUnitFormComponent } from './../../../admin-product/unit/product-unit-form/product-unit-form.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { PurchaseVoucherPrintComponent } from './../purchase-voucher-print/purchase-voucher-print.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -24,6 +25,7 @@ import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { CurrencyPipe } from '@angular/common';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-purchase-voucher-form',
@@ -50,13 +52,43 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
   quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
 
+  constructor(
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref: NbDialogRef<PurchaseVoucherFormComponent>,
+    public currencyPipe: CurrencyPipe,
+    public adminProductService: AdminProductService,
+  ) {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+    /** Append print button to head card */
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
+  }
+
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
   taxList: (TaxModel & { id?: string, text?: string })[];
 
   /** Unit list */
-  static _unitList: (UnitModel & { id?: string, text?: string })[];
-  unitList: (UnitModel & { id?: string, text?: string })[];
+  // static _unitList: (UnitModel & { id?: string, text?: string })[];
+  unitList: ProductUnitModel[];
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -112,10 +144,11 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   customIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
       this.commonService.openDialog(ProductFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
+          inputId: currentProduct ? [currentProduct] : null,
           showLoadinng: true,
           onDialogSave: (newData: ProductModel[]) => {
             console.log(newData);
@@ -147,7 +180,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
             formGroup.get('Unit').patchValue(newUnit);
           },
           onDialogClose: () => {
-            
+
           },
         },
         closeOnEsc: false,
@@ -155,35 +188,6 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       });
     }
   }];
-
-  constructor(
-    public activeRoute: ActivatedRoute,
-    public router: Router,
-    public formBuilder: FormBuilder,
-    public apiService: ApiService,
-    public toastrService: NbToastrService,
-    public dialogService: NbDialogService,
-    public commonService: CommonService,
-    public ref: NbDialogRef<PurchaseVoucherFormComponent>,
-    public currencyPipe: CurrencyPipe,
-  ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-
-    /** Append print button to head card */
-    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
-      name: 'print',
-      status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
-      icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.isProcessing,
-      hidden: () => false,
-      click: (event: any, option: ActionControlListOption) => {
-        this.preview(option.form);
-      },
-    });
-  }
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
@@ -220,6 +224,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    // tags: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
@@ -304,8 +309,13 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     super.ngOnInit();
   }
 
-  async init(): Promise<boolean> {
+  // unitList: ProductUnitModel[] = null;
+  async loadCache() {
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.unitList = list);
+  }
 
+  async init(): Promise<boolean> {
+    // await this.loadCache();
     /** Load and cache tax list */
     this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
       tax['id'] = tax.Code;
@@ -318,11 +328,11 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
-      tax['id'] = tax.Code;
-      tax['text'] = tax.Name;
-      return tax;
-    });
+    // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
+    //   tax['id'] = tax.Code;
+    //   tax['text'] = tax.Name;
+    //   return tax;
+    // });
     // if (!SalesVoucherFormComponent._unitList) {
     // } else {
     //   this.taxList = SalesVoucherFormComponent._taxList;

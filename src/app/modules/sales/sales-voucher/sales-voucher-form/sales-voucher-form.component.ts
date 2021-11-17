@@ -1,4 +1,5 @@
-import { takeUntil } from 'rxjs/operators';
+import { ProductUnitModel } from './../../../../models/product.model';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { ChatRoomModel } from './../../../../models/chat-room.model';
 import { ChatRoom } from './../../../../lib/nam-chat/chat-room';
 import { SalesMasterPriceTableModel, SalesPriceReportModel } from './../../../../models/sales.model';
@@ -32,6 +33,7 @@ import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
@@ -61,7 +63,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
-  unitList: (UnitModel & { id?: string, text?: string })[];
+  unitList: ProductUnitModel[];
 
 
 
@@ -286,6 +288,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<SalesVoucherFormComponent>,
+    public adminProductService?: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -397,8 +400,13 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     super.ngOnInit();
   }
 
-  async init(): Promise<boolean> {
+  async loadCache() {
+    await Promise.all([
+      this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.unitList = list),
+    ]);
+  }
 
+  async init(): Promise<boolean> {
     /** Load and cache tax list */
     this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
       tax['id'] = tax.Code;
@@ -411,11 +419,11 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
-      tax['id'] = tax.Code;
-      tax['text'] = tax.Name;
-      return tax;
-    });
+    // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
+    //   tax['id'] = tax.Code;
+    //   tax['text'] = tax.Name;
+    //   return tax;
+    // });
     // if (!SalesVoucherFormComponent._unitList) {
     // } else {
     //   this.taxList = SalesVoucherFormComponent._taxList;
