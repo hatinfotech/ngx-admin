@@ -97,7 +97,9 @@ export class CustomServerDataSource<M> extends LocalDataSource {
               params[`ge_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getBeginOfDate(fieldConf['search']['range'][0]).toISOString());
               params[`le_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getEndOfDate(fieldConf['search']['range'][1]).toISOString());
             } else {
-              params[`filter_${fieldConf['search']['condition']}`] = this.encodeFilterQuery(fieldConf['search']['value']);
+              if (fieldConf['search']['value']) {
+                params[`${fieldConf?.search?.condition || 'filter'}_${fieldConf?.field}`] = this.encodeFilterQuery(fieldConf['search']['value']);
+              }
             }
           } else {
             if (fieldConf['search'] !== null) {

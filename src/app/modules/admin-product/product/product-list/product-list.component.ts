@@ -148,6 +148,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             component: SmartTableSelect2FilterComponent,
             config: {
               delay: 0,
+              condition: 'eq',
               select2Option: {
                 placeholder: 'Chọn danh mục...',
                 allowClear: true,
