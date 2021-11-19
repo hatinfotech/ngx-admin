@@ -1,3 +1,4 @@
+import { delay } from 'rxjs/operators';
 import { FileModel, FileStoreModel } from './../../../../models/file.model';
 import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChanges, Input, ViewChild, ElementRef, forwardRef, Output } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
@@ -121,19 +122,26 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         }
         // this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', eq_IsAvailable: true, eq_IsUpload: true, requestUploadToken: true, weight, limit: 1 }).then(fileStores => {
         this.commonService.getAvailableFileStores().then(fileStores => {
-          const event: UploadInput = {
-            type: 'uploadAll',
-            url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', { token: fileStores[0]['UploadToken'] }),
-            method: 'POST',
-            data: { foo: 'bar' },
-          };
-          this.uploadInput.emit(event);
+          if (fileStores && fileStores.length > 0) {
+            const event: UploadInput = {
+              type: 'uploadAll',
+              url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', { token: fileStores[0]['UploadToken'] }),
+              method: 'POST',
+              data: { foo: 'bar' },
+            };
+            this.uploadInput.emit(event);
+          } else {
+            this.commonService.toastService.show('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
+          }
         });
 
         break;
       case 'addedToQueue':
         if (typeof output.file !== 'undefined') {
           this.files.push(output.file);
+          if(!Array.isArray(this.value)) this.value = [];
+          this.value.push({ Thumbnail: 'assets/images/no-image-available.png', progress: { percentage: 0 }, uploading: true, file: output.file });
+          // output.file['index'] = this.value.length - 1;
         }
         break;
       case 'uploading':
@@ -142,6 +150,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
           const index = this.files.findIndex((file) => typeof output.file !== 'undefined' && file.id === output.file.id);
           this.files[index] = output.file;
           console.log(`[${output.file.progress.data.percentage}%] Upload file ${output.file.name}`);
+          this.value.find(f => f.file.id === output.file.id)['progress'] = output.file.progress.data;
         }
         break;
       case 'removed':
@@ -159,9 +168,13 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         // The file is downloaded
         console.log('Upload complete', output);
         const respFile: FileModel = output.file.response[0];
+        const imageIndex = this.value.findIndex(f => f.file?.id === output.file.id);
         if (respFile) {
           if (!this.value) this.value = [];
-          this.value.push(respFile);
+          this.value[imageIndex] = respFile;
+        } else {
+          this.value.splice(imageIndex, 1);
+          this.commonService.toastService.show(output.file.response?.logs?.join(', '), 'Hệ thống không thể upload file', {status: 'danger', duration: 5000});
         }
         // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
 

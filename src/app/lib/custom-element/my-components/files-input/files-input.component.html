@@ -1,11 +1,14 @@
 <div class="thumbnail input-full-width size-medium status-basic shape-rectangle scrollable-container" ngFileDrop (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }" [ngStyle]="style" fullWidth nbInput>
-  <div class="row">
-    <div ngClass="col-md-{{config.colSize || 6}}" *ngFor="let image of value; let i=index">
-      <div class="image" [ngStyle]="buildThumbnailStyle(image)" (click)="onFileClick(image)">
-        <nb-icon [pack]="'eva'" [icon]="'close-circle'" [status]="'danger'" (click)="remove(i)"></nb-icon>
+  <div class="rowx images">
+    <!-- <div class="image-wrap" ngClass="x-col-md-{{config.colSize || 6}}" *ngFor="let image of value; let i=index"> -->
+    <div *ngFor="let image of value; let i=index" class="image" [ngStyle]="buildThumbnailStyle(image)" (click)="onFileClick(image)">
+      <div class="progress-wrap">
+        <nb-progress-bar *ngIf="image.uploading" size="tiny" [value]="image.progress.percentage" status="danger">{{image.progress.percentage}}%</nb-progress-bar>
       </div>
+      <nb-icon [pack]="'eva'" [icon]="'close-circle'" [status]="'danger'" (click)="remove(i)"></nb-icon>
     </div>
-    <div class="col-md-{{config.colSize || 6}}">
+    <!-- </div> -->
+    <div class="upload-btn-wrap zcol-md-{{config.colSize || 6}}">
       <button class="upload-btn" nbButton size="tiny" (click)="chooseFile()">upload</button>
     </div>
   </div>

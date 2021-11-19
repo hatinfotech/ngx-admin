@@ -166,12 +166,6 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
-    /** ngx-uploader */
-    this.options = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
-    this.files = []; // local uploading files array
-    this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
-    this.humanizeBytes = humanizeBytes;
-    /** End ngx-uploader */
 
 
     // Config editor
@@ -394,10 +388,32 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Pictures: [''],
       UnitConversions: this.formBuilder.array([]),
     });
+    const unitConversions = this.getUnitConversions(newForm);
     if (data) {
-      data['Code_old'] = data['Code'];
+      // data['Code_old'] = data['Code'];
       newForm.patchValue(data);
+    } else {
+      const newUnitConversion = this.makeNewUnitConversionFormGroup({}, newForm);
+      unitConversions.push(newUnitConversion);
+      this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
     }
+    
+    newForm.get('WarehouseUnit').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if(unitConversions.controls.length === 0) {
+        const newUnitConversion = this.makeNewUnitConversionFormGroup({}, newForm);
+        unitConversions.push(newUnitConversion);
+        this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);        
+      } else {
+        unitConversions.controls[0].get('Unit').setValue(value);
+      }
+    });
+
+    const featurePictureFormControl = newForm.get('FeaturePicture');
+    newForm.get('Pictures').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if(!featurePictureFormControl.value && value && value.length > 0) {
+        featurePictureFormControl.setValue(value[0]);
+      }
+    });
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: ProductModel): void {
@@ -461,14 +477,14 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   onRemovePictureFormGroup(mainIndex: number, index: number) {
     // this.componentList[mainIndex].splice(index, 1);
   }
-  previewPicture(pictureFormGroup: FormGroup) {
-    let link = pictureFormGroup.get('DownloadLink').value;
-    if (!link && pictureFormGroup.get('ProgressId').value) {
-      link = this.filesIndex[pictureFormGroup.get('ProgressId').value].response[0].DownloadLink;
-    }
-    window.open(link + '?token=' + this.apiService.getAccessToken(), '_blank');
-    return false;
-  }
+  // previewPicture(pictureFormGroup: FormGroup) {
+  //   let link = pictureFormGroup.get('DownloadLink').value;
+  //   if (!link && pictureFormGroup.get('ProgressId').value) {
+  //     link = this.filesIndex[pictureFormGroup.get('ProgressId').value].response[0].DownloadLink;
+  //   }
+  //   window.open(link + '?token=' + this.apiService.getAccessToken(), '_blank');
+  //   return false;
+  // }
   setAsFeaturePicture(formIndex: number, pictureFormGroup: FormGroup) {
     this.array.controls[formIndex].get('FeaturePicture').setValue(pictureFormGroup.get('Image').value);
     return false;
@@ -516,107 +532,6 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
   /** End Picture Form */
 
-  /** ngx-uploader */
-  options: UploaderOptions;
-  formData: FormData;
-  files: UploadFile[];
-  uploadInput: EventEmitter<UploadInput>;
-  humanizeBytes: Function;
-  dragOver: { [key: string]: boolean } = {};
-  filesIndex: { [key: string]: UploadFile } = {};
-  pictureFormIndex: { [key: string]: FormGroup } = {};
-
-  onUploadOutput(output: UploadOutput, formItem: FormGroup, formItemIndex: number): void {
-    // console.log(output);
-    // console.log(this.files);
-    switch (output.type) {
-      case 'allAddedToQueue':
-        // uncomment this if you want to auto upload files when added
-        const event: UploadInput = {
-          type: 'uploadAll',
-          url: this.apiService.buildApiUrl('/file/files'),
-          method: 'POST',
-          data: { foo: 'bar' },
-        };
-        this.uploadInput.emit(event);
-        break;
-      case 'addedToQueue':
-        if (typeof output.file !== 'undefined') {
-          this.files.push(output.file);
-          this.filesIndex[output.file.id] = output.file;
-
-          // const fileResponse: FileModel = output.file.response[0];
-          const newPictureFormGroup = this.makeNewPictureFormGroup();
-          this.pictureFormIndex[output.file.id] = newPictureFormGroup;
-          newPictureFormGroup['file'] = output.file;
-          newPictureFormGroup.get('ProgressId').setValue(output.file.id);
-          this.getPictures(formItemIndex).push(newPictureFormGroup);
-        }
-        break;
-      case 'uploading':
-        if (typeof output.file !== 'undefined') {
-          // update current data in files array for uploading file
-          const index = this.files.findIndex((file) => typeof output.file !== 'undefined' && file.id === output.file.id);
-          this.files[index] = output.file;
-          console.log(`[${output.file.progress.data.percentage}%] Upload file ${output.file.name}`);
-        }
-        break;
-      case 'removed':
-        // remove file from array when removed
-        this.files = this.files.filter((file: UploadFile) => file !== output.file);
-        break;
-      case 'dragOver':
-        this.dragOver[formItemIndex] = true;
-        break;
-      case 'dragOut':
-      case 'drop':
-        this.dragOver[formItemIndex] = false;
-        break;
-      case 'done':
-        // The file is downloaded
-        console.log('Upload complete');
-        const fileResponse: FileModel = output.file.response[0];
-        // const newPictureFormGroup = this.makeNewPictureFormGroup({ Image: fileResponse.Store + '/' + fileResponse.Id + '.' + fileResponse.Extension });
-        // newPictureFormGroup.get('Thumbnail').setValue(fileResponse.Thumbnail);
-        // newPictureFormGroup['file'] = output.file;
-        // this.getPictures(0).push(newPictureFormGroup);
-        // const beforeCount = this.getPictures(formItemIndex).controls.length;
-        const pictureFormGroup = this.pictureFormIndex[output.file.id];
-        pictureFormGroup.get('Image').setValue(fileResponse.Store + '/' + fileResponse.Id + '.' + fileResponse.Extension);
-        pictureFormGroup.get('Thumbnail').setValue(fileResponse.Thumbnail + '?token=' + this.apiService.getAccessToken());
-        this.files.splice(this.files.findIndex(f => f.id === output.file.id), 1);
-
-        if (!formItem.get('FeaturePicture').value) {
-          this.setAsFeaturePicture(formItemIndex, pictureFormGroup);
-        }
-
-        break;
-    }
-  }
-
-  startUpload(): void {
-    const event: UploadInput = {
-      type: 'uploadAll',
-      url: this.apiService.buildApiUrl('/file/files'),
-      method: 'POST',
-      data: { foo: 'bar' },
-    };
-
-    this.uploadInput.emit(event);
-  }
-
-  cancelUpload(id: string): void {
-    this.uploadInput.emit({ type: 'cancel', id: id });
-  }
-
-  removeFile(id: string): void {
-    this.uploadInput.emit({ type: 'remove', id: id });
-  }
-
-  removeAllFiles(): void {
-    this.uploadInput.emit({ type: 'removeAll' });
-  }
-  /** End ngx-uploader */
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
     if (formControlName === 'Pictures') {

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
 import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent, SmartTableAccCurrencyComponent } from './smart-table/smart-table.component';
-import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule } from '@nebular/theme';
+import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
 import { AgListComponent } from './ag-list/ag-list.component';
@@ -67,6 +67,7 @@ import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
     NbIconModule,
     NbButtonModule,
     NbTooltipModule,
+    NbProgressBarModule,
     FormsModule,
     NbInputModule,
     AgGridModule,

@@ -4,20 +4,37 @@
   background-size: contain;
   background-position: center;
   overflow-y: auto;
-
+  .images {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--gray);
+    margin: 0.3rem;
+  }
+  .image-wrap {
+  }
+  .progress-wrap {
+    padding: 1rem;
+  }
   button {
     background-color: #edf1f7a8;
     border-color: #edf1f7;
     color: var(--gray-dark);
   }
-
+  .upload-btn-wrap {
+  }
   button.upload-btn {
     margin-right: 0.5rem;
+    margin-left: 0.5rem;
   }
 
   .row {
-      margin-left: -16px;
-      margin-right: -16px;
+    margin-left: -16px;
+    margin-right: -16px;
   }
   .col-md-6 {
     padding-right: 5px;
@@ -26,11 +43,12 @@
 
   .image {
     border-radius: 0.25rem;
-    width: 100%;
+    // width: 100%;
     height: 3rem;
     float: left;
     position: relative;
     margin-bottom: 10px;
+    cursor: pointer;
     nb-icon {
       position: absolute;
       right: 0;

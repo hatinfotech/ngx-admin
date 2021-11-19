@@ -98,18 +98,18 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       delete: this.configDeleteButton(),
       pager: this.configPaging(),
       columns: {
-        FeaturePictureThumbnail: {
+        FeaturePicture: {
           title: 'Hình',
           type: 'custom',
           width: '5%',
-          valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['FeaturePicture']['Thumbnail'];
-          },
+          // valuePrepareFunction: (value: any, product: ProductModel) => {
+          //   return value['Thumbnail'];
+          // },
           renderComponent: SmartTableThumbnailComponent,
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
             instance.valueChange.subscribe(value => {
             });
-            instance.click.subscribe(async (row: ProductModel) => {
+            instance.click.subscribe((row: ProductModel) => {
               if (this.files.length === 0) {
                 this.uploadForProduct = row;
                 this.uploadBtn.nativeElement.click();
@@ -326,13 +326,19 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     switch (output.type) {
       case 'allAddedToQueue':
         // uncomment this if you want to auto upload files when added
-        const event: UploadInput = {
-          type: 'uploadAll',
-          url: this.apiService.buildApiUrl('/file/files'),
-          method: 'POST',
-          data: { foo: 'bar' },
-        };
-        this.uploadInput.emit(event);
+        this.commonService.getAvailableFileStores().then(fileStores => {
+          if (fileStores && fileStores.length > 0) {
+            const event: UploadInput = {
+              type: 'uploadAll',
+              url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', { token: fileStores[0]['UploadToken'] }),
+              method: 'POST',
+              data: { foo: 'bar' },
+            };
+            this.uploadInput.emit(event);
+          } else {
+            this.commonService.toastService.show('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
+          }
+        });
         break;
       case 'addedToQueue':
         if (typeof output.file !== 'undefined') {
@@ -371,15 +377,16 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             // get product
             const product = (await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { id: [this.uploadForProduct.Code], includePictures: true }))[0];
             if (product) {
-              product.Pictures.push({ Image: fileResponse.Store + '/' + fileResponse.Id });
+              if (!Array.isArray(product.Pictures)) product.Pictures = [];
+              product.Pictures.push(fileResponse);
               await this.apiService.putPromise<ProductModel[]>('/admin-product/products', {}, [{
                 Code: this.uploadForProduct.Code,
-                FeaturePicture: fileResponse.Store + '/' + fileResponse.Id,
+                FeaturePicture: fileResponse,
                 Pictures: product.Pictures,
               }]);
 
               this.source['isLocalUpdate'] = true; // local reload
-              await this.source.update(this.uploadForProduct, { ...this.uploadForProduct, FeaturePictureThumbnail: fileResponse['Thumbnail'] });
+              await this.source.update(this.uploadForProduct, { ...this.uploadForProduct, FeaturePicture: fileResponse });
               this.source['isLocalUpdate'] = true;
 
               this.files = [];

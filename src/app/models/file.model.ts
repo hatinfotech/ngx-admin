@@ -1,5 +1,6 @@
 
 export class FileModel {
+  [key: string]: any;
   Id?: number;
   Name?: string;
   Description?: string;

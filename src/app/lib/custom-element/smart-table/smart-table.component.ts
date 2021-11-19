@@ -166,6 +166,7 @@ export class SmartTableIconComponent extends SmartTableBaseComponent implements 
     .thumbnail {
       background-size: cover;
       background-repeat: no-repeat;
+      background-color: var(--gray);
       width: 3rem;
       min-height: 3rem;
       border-radius: 50%;
@@ -198,10 +199,11 @@ export class SmartTableThumbnailComponent extends SmartTableBaseComponent implem
 
   onClick() {
     this.click.emit(this.rowData);
+    return false;
   }
 
   get renderValue() {
-    return `url(${this.value})`;
+    return `url(${this.value && this.value['Thumbnail'] || this.value || 'assets/images/no-image-available.png'})`;
   }
 
 }

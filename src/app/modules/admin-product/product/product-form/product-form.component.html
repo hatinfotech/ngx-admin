@@ -1,15 +1,15 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event, formItem, i)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver[i] }">
+      <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.Product.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <input type="hidden" formControlName="Code_old">
-              <input type="hidden" formControlName="FeaturePicture">
+              <!-- <input type="hidden" formControlName="Code_old"> -->
+              <!-- <input type="hidden" formControlName="FeaturePicture"> -->
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
@@ -153,9 +153,14 @@
             </div>
             <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
             <div class="row">
+              <div class="col-xs-12 col-lg-3">
+                <ngx-form-group [formGroup]="formItem" name="FeaturePicture" label="Common.featurePicture" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-file-input formControlName="FeaturePicture"></ngx-file-input>
+                </ngx-form-group>
+              </div>
               <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="Pictures" label="Common.pictures" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
-                  <ngx-files-input formControlName="Pictures" [config]="{style: {height: '10rem'}, thumbnailStype: {height: '8rem'}, colSize: 3}" (onThumbnailClick)="onThumbnailPcitureClick($event, formItem)"></ngx-files-input>
+                  <ngx-files-input formControlName="Pictures" [config]="{style: {height: '10rem'}, thumbnailStype: {height: '7rem', width: '8rem'}, colSize: 3}" (onThumbnailClick)="onThumbnailPcitureClick($event, formItem)"></ngx-files-input>
                 </ngx-form-group>
               </div>
               <div class="col-sm-12">

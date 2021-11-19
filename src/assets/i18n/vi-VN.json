@@ -401,7 +401,8 @@
         "debt": "công nợ",
         "addNewProduct": "thêm sản phẩm mới",
         "editProduct": "chỉnh thông tin sản phẩm",
-        "amount": "số tiền"
+        "amount": "số tiền",
+        "featurePicture": "hình đại diện"
     },
     "Contact": {
         "Customer": {

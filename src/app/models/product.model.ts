@@ -1,3 +1,4 @@
+import { FileModel } from './file.model';
 import { UnitModel } from './unit.model';
 
 export class ProductModel {
@@ -11,7 +12,7 @@ export class ProductModel {
   WarehouseUnit?: string & UnitModel;
   Description?: string;
   Technical?: string;
-  FeaturePicture?: string | number;
+  FeaturePicture?: FileModel;
 
   Units?: UnitModel[];
 

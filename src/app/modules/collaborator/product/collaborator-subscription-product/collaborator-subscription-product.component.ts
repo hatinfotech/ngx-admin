@@ -202,7 +202,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
       delete: this.configDeleteButton(),
       pager: this.configPaging(),
       columns: {
-        FeaturePictureThumbnail: {
+        FeaturePicture: {
           title: 'Hình',
           type: 'custom',
           width: '5%',
@@ -213,26 +213,26 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
             instance.valueChange.subscribe(value => {
             });
-            instance.click.subscribe(async (row: ProductModel) => {
-              if (this.files.length === 0) {
-                this.uploadForProduct = row;
-                this.uploadBtn.nativeElement.click();
-              } else {
-                this.commonService.toastService.show(
-                  this.commonService.translateText('Common.uploadInProcess'),
-                  this.commonService.translateText('Common.upload'),
-                  {
-                    status: 'warning',
-                  });
-                // this.commonService.openDialog(ShowcaseDialogComponent, {
-                //   context: {
-                //     title: this.commonService.translateText('Common.upload'),
-                //     content: this.commonService.translateText('Common.uploadInProcess'),
-                //   },
-                // });
-              }
-            });
-            instance.title = this.commonService.translateText('click to change main product picture');
+            // instance.click.subscribe(async (row: ProductModel) => {
+            //   if (this.files.length === 0) {
+            //     this.uploadForProduct = row;
+            //     this.uploadBtn.nativeElement.click();
+            //   } else {
+            //     this.commonService.toastService.show(
+            //       this.commonService.translateText('Common.uploadInProcess'),
+            //       this.commonService.translateText('Common.upload'),
+            //       {
+            //         status: 'warning',
+            //       });
+            //     // this.commonService.openDialog(ShowcaseDialogComponent, {
+            //     //   context: {
+            //     //     title: this.commonService.translateText('Common.upload'),
+            //     //     content: this.commonService.translateText('Common.uploadInProcess'),
+            //     //   },
+            //     // });
+            //   }
+            // });
+            // instance.title = this.commonService.translateText('click to change main product picture');
           },
         },
         Name: {
@@ -450,124 +450,6 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
     }
   }
 
-  /** ngx-uploader */
-  options: UploaderOptions = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
-  formData: FormData;
-  files: UploadFile[] = [];
-  uploadInput: EventEmitter<UploadInput> = new EventEmitter<UploadInput>();
-  humanizeBytes: Function = humanizeBytes;
-  dragOver: { [key: string]: boolean } = {};
-  filesIndex: { [key: string]: UploadFile } = {};
-  pictureFormIndex: { [key: string]: FormGroup } = {};
-  uploadForProduct: ProductModel;
-  @ViewChild('uploadBtn') uploadBtn: ElementRef;
-
-  async onUploadOutput(output: UploadOutput): Promise<void> {
-    // console.log(output);
-    // console.log(this.files);
-    switch (output.type) {
-      case 'allAddedToQueue':
-        // uncomment this if you want to auto upload files when added
-        const event: UploadInput = {
-          type: 'uploadAll',
-          url: this.apiService.buildApiUrl('/file/files'),
-          method: 'POST',
-          data: { foo: 'bar' },
-        };
-        this.uploadInput.emit(event);
-        break;
-      case 'addedToQueue':
-        if (typeof output.file !== 'undefined') {
-          this.files.push(output.file);
-          this.filesIndex[output.file.id] = output.file;
-        }
-        break;
-      case 'uploading':
-        if (typeof output.file !== 'undefined') {
-          // update current data in files array for uploading file
-          const index = this.files.findIndex((file) => typeof output.file !== 'undefined' && file.id === output.file.id);
-          this.files[index] = output.file;
-          console.log(`[${output.file.progress.data.percentage}%] Upload file ${output.file.name}`);
-        }
-        break;
-      case 'removed':
-        // remove file from array when removed
-        this.files = this.files.filter((file: UploadFile) => file !== output.file);
-        break;
-      case 'dragOver':
-        // this.dragOver[formItemIndex] = true;
-        break;
-      case 'dragOut':
-      case 'drop':
-        // this.dragOver[formItemIndex] = false;
-        break;
-      case 'done':
-        // The file is downloaded
-        console.log('Upload complete');
-        const fileResponse: FileModel = output.file.response[0];
-
-        try {
-
-          if (fileResponse) {
-
-            // get product
-            const product = (await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { id: [this.uploadForProduct.Code], includePictures: true }))[0];
-            if (product) {
-              product.Pictures.push({ Image: fileResponse.Store + '/' + fileResponse.Id });
-              await this.apiService.putPromise<ProductModel[]>('/admin-product/products', {}, [{
-                Code: this.uploadForProduct.Code,
-                FeaturePicture: fileResponse.Store + '/' + fileResponse.Id,
-                Pictures: product.Pictures,
-              }]);
-
-              this.source['isLocalUpdate'] = true; // local reload
-              await this.source.update(this.uploadForProduct, { ...this.uploadForProduct, FeaturePictureThumbnail: fileResponse['Thumbnail'] });
-              this.source['isLocalUpdate'] = true;
-
-              this.files = [];
-              this.uploadBtn.nativeElement.value = '';
-
-            } else {
-              throw Error('Get product failed');
-            }
-
-          } else {
-            throw Error('upload failed');
-          }
-
-          console.log(output);
-        } catch (e) {
-          this.files = [];
-          this.uploadBtn.nativeElement.value = '';
-        }
-
-        break;
-    }
-  }
-
-  startUpload(): void {
-    const event: UploadInput = {
-      type: 'uploadAll',
-      url: this.apiService.buildApiUrl('/file/files'),
-      method: 'POST',
-      data: { foo: 'bar' },
-    };
-
-    this.uploadInput.emit(event);
-  }
-
-  cancelUpload(id: string): void {
-    this.uploadInput.emit({ type: 'cancel', id: id });
-  }
-
-  removeFile(id: string): void {
-    this.uploadInput.emit({ type: 'remove', id: id });
-  }
-
-  removeAllFiles(): void {
-    this.uploadInput.emit({ type: 'removeAll' });
-  }
-  /** End ngx-uploader */
 
   onChangePage(page: PageModel) {
     // this.currentPage = page;
