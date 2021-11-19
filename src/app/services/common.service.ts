@@ -53,6 +53,7 @@ import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ti
 import { NotificationModel } from '../models/notification.model';
 import { RootConfigModel, SystemConfigModel } from '../models/model';
 import { AdminProductService } from '../modules/admin-product/admin-product.service';
+import { CollaboratorEducationArticlePrintComponent } from '../modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
 
 @Injectable({
   providedIn: 'root',
@@ -887,6 +888,7 @@ export class CommonService {
     'CLBRTMONTHLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTQUARTERLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTYEARLYAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTEXTENDTERM': CollaboratorEducationArticlePrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {

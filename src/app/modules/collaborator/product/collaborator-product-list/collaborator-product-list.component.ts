@@ -219,7 +219,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
         Categories: {
           title: 'Danh mục',
           type: 'html',
-          width: '15%',
+          width: '10%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -257,7 +257,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
         Groups: {
           title: 'Nhóm',
           type: 'html',
-          width: '15%',
+          width: '10%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -299,9 +299,9 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
           valuePrepareFunction: (cell: any, row?: any) => {
             return (cell || []).map(m => {
               let text = `${this.currencyPipe.transform(m.Price, 'VND')}/${m.text}`;
-              if(row.Unit == m.id) text = `<b>${text}</b>`;
+              if (row.Unit == m.id) text = `<b>${text}</b>`;
               return text;
-            } ).join('<br>');
+            }).join('<br>');
           },
         },
         Product: {
@@ -333,6 +333,31 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
           title: 'Trang',
           type: 'string',
           width: '15%',
+        },
+        ExtendTerm: {
+          title: 'ĐK Tăng cường',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'external-link-outline';
+            instance.display = true;
+            instance.status = 'success';
+            instance.init.pipe(takeUntil(this.destroy$)).subscribe((row: any) => {
+              if (row.ExtendTerm) {
+                instance.title = row.ExtendTermLabel;
+              } else {
+                instance.disabled = true;
+              }
+
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (row: any) => {
+              if (row.ExtendTerm) {
+                this.commonService.previewVoucher('CLBRTEXTENDTERM', row.ExtendTerm);
+              }
+            });
+          },
         },
         Link: {
           title: 'Link',

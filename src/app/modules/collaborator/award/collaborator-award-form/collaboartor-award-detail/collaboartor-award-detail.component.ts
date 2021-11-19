@@ -150,6 +150,23 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           type: 'currency',
           width: '7%',
         },
+        ExtendTermRatio: {
+          title: this.commonService.translateText('TL CK Tăng cường'),
+          width: '5%',
+          valuePrepareFunction:(value) => value + '%',
+          type: 'custom',
+          renderComponent: SmartTableBaseComponent,
+          class: 'align-right',
+          position: 'right',
+          onComponentInitFunction: (instance: SmartTableBaseComponent) => {
+            instance.style = 'text-align: right';
+          }
+        },
+        ExtendTermAmount: {
+          title: this.commonService.translateText('Tiền CK tăng cường'),
+          type: 'currency',
+          width: '7%',
+        },
         ExtSumOfNetRevenue: {
           title: this.commonService.translateText('D.Số học trò'),
           type: 'currency',

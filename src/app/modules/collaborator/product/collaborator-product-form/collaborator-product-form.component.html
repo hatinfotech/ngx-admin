@@ -407,6 +407,44 @@
                 </div>
               </div>
 
+              <label class="label">III/ CÀI ĐẶT CHIẾC KHẤU TĂNG CƯỜNG</label>
+              <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <div class="row">
+                  <div class="col-sm-3 label column">Điều khoản tăng cường</div>
+                  <div class="col-sm-3 label column">Mô tả</div>
+                  <div class="col-sm-3 label column">Cộng tác viên</div>
+                  <div class="col-sm-3 label column align-right">Tỷ lệ chiết khấu tăng cường (%)</div>
+                </div>
+
+                <div class="form-details">
+                  <hr>
+                  <div class="form-detail-item">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <ngx-form-group [formGroup]="formItem" name="ExtendTerm" label="CTV Bán Hàng Đồng 1" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                          <ngx-select2 formControlName="ExtendTerm" [select2Option]="select2ExtendTerm" (selectChange)="onAdvanceTermChange(formItem, $event, i)"></ngx-select2>
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="ExtendTermLabel" label="Cấp độ CTV Bán Hàng " [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="ExtendTermLabel" placeholder="Mô tả">
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="ExtendTermPublishers" label="Cộng tác viên" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <ngx-select2 formControlName="ExtendTermPublishers" [select2Option]="select2ExtendTermPublishers"></ngx-select2>
+                        </ngx-form-group>
+                      </div>
+                      <div class="col-sm-3">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="ExtendTermRatio" label="Tỷ lệ % chiết khấu tăng cường" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                          <input type="text" nbInput fullWidth formControlName="ExtendTermRatio" placeholder="Tỷ lệ % chiết khấu tăng cường" [inputMask]="currencyInputMask">
+                        </ngx-form-group>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
           </div>

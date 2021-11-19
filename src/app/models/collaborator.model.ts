@@ -174,29 +174,10 @@ export interface CollaboratorAwardVoucherDetailModel {
     SumOfQuantity?: string;
     ExtSumOfNetRevenue?: string;
     TotalAwardAmount?: string;
-    DirectOrders?: CollaboratorAwardVoucherDetailDirectOrderModel[];
-    RefOrders?: CollaboratorAwardVoucherDetailRefOrderModel[];
+    // DirectOrders?: CollaboratorAwardVoucherDetailDirectOrderModel[];
+    // RefOrders?: CollaboratorAwardVoucherDetailRefOrderModel[];
     CommissionVouchers?: CollaboratorAwardVoucherDetailCommissionModel[];
     ExtCommissionVouchers?: CollaboratorAwardVoucherDetailCommissionModel[];
-}
-export interface CollaboratorAwardVoucherDetailDirectOrderModel {
-    [key: string]: any;
-    Id?: string;
-    AwardVoucher?: string;
-    DetailNo?: string;
-    No?: string;
-    Voucher?: string;
-    VoucherDetailNo?: string;
-    VoucherTitle?: string;
-    Product?: string;
-    Unit?: string;
-    UnitLabel?: string;
-    Description?: string;
-    Tax?: string;
-    TaxValue?: string;
-    TaxLabel?: string;
-    Quantity?: string;
-    Price?: string;
 }
 export interface CollaboratorAwardVoucherDetailCommissionModel {
     [key: string]: any;
@@ -217,25 +198,44 @@ export interface CollaboratorAwardVoucherDetailCommissionModel {
     Quantity?: string;
     Price?: string;
 }
-export interface CollaboratorAwardVoucherDetailRefOrderModel {
-    [key: string]: any;
-    Id?: string;
-    AwardVoucher?: string;
-    DetailNo?: string;
-    No?: string;
-    Voucher?: string;
-    VoucherDetailNo?: string;
-    VoucherTitle?: string;
-    Product?: string;
-    Unit?: string;
-    UnitLabel?: string;
-    Description?: string;
-    Tax?: string;
-    TaxValue?: string;
-    TaxLabel?: string;
-    Quantity?: string;
-    Price?: string;
-}
+// export interface CollaboratorAwardVoucherDetailDirectOrderModel {
+//     [key: string]: any;
+//     Id?: string;
+//     AwardVoucher?: string;
+//     DetailNo?: string;
+//     No?: string;
+//     Voucher?: string;
+//     VoucherDetailNo?: string;
+//     VoucherTitle?: string;
+//     Product?: string;
+//     Unit?: string;
+//     UnitLabel?: string;
+//     Description?: string;
+//     Tax?: string;
+//     TaxValue?: string;
+//     TaxLabel?: string;
+//     Quantity?: string;
+//     Price?: string;
+// }
+// export interface CollaboratorAwardVoucherDetailRefOrderModel {
+//     [key: string]: any;
+//     Id?: string;
+//     AwardVoucher?: string;
+//     DetailNo?: string;
+//     No?: string;
+//     Voucher?: string;
+//     VoucherDetailNo?: string;
+//     VoucherTitle?: string;
+//     Product?: string;
+//     Unit?: string;
+//     UnitLabel?: string;
+//     Description?: string;
+//     Tax?: string;
+//     TaxValue?: string;
+//     TaxLabel?: string;
+//     Quantity?: string;
+//     Price?: string;
+// }
 export interface CollaboratorEducationArticleModel {
     // [key: string]: any;
     id?: string; text?: string;
@@ -253,4 +253,76 @@ export interface CollaboratorEducationArticleModel {
     Page?: string & IdTextModel;
     PageName?: string;
     State?: string;
+}
+
+
+export interface CollaboratorExtendCommissionVoucherModel {
+    [key: string]: any;
+    Id?: string;
+    Code?: string;
+    Page?: string;
+    Publisher?: string;
+    PublisherName?: string;
+    PublisherPhone?: string;
+    PublisherEmail?: string;
+    PublisherAddress?: string;
+    PublisherIdentifiedNumber?: string;
+    Bank?: string;
+    BankName?: string;
+    BankAccount?: string;
+    Amount?: number;
+    Created?: string;
+    CommissionFrom?: string;
+    CommissionTo?: string;
+    Description?: string;
+    State?: string;
+    Details?: CollaboratorExtendCommissionVoucherDetailModel[];
+}
+export interface CollaboratorExtendCommissionVoucherDetailModel {
+    [key: string]: any;
+    Id?: string;
+    ExtendCommissionVoucher?: string;
+    No?: string;
+    Image?: string;
+    Product?: string;
+    ProductName?: string;
+    Unit?: string;
+    UnitLabel?: string;
+    Kpi?: string;
+    Okr?: string;
+    ExtendCommissionAmount?: string;
+    RelativeVouchers?: string;
+    Level1ExtendCommissionRatio?: string;
+    Level1ExtendCommissionAmount?: string;
+    Level1Kpi?: string;
+    Level2ExtExtendCommissionRatio?: string;
+    Level2ExtExtendCommissionAmount?: string;
+    Level3ExtExtendCommissionRatio?: string;
+    Level3ExtExtendCommissionAmount?: string;
+    SumOfQuantity?: string;
+    ExtSumOfNetRevenue?: string;
+    TotalExtendCommissionAmount?: string;
+    // DirectOrders?: CollaboratorExtendCommissionVoucherDetailDirectOrderModel[];
+    // RefOrders?: CollaboratorExtendCommissionVoucherDetailRefOrderModel[];
+    CommissionVouchers?: CollaboratorExtendCommissionVoucherDetailCommissionModel[];
+    ExtCommissionVouchers?: CollaboratorExtendCommissionVoucherDetailCommissionModel[];
+}
+export interface CollaboratorExtendCommissionVoucherDetailCommissionModel {
+    [key: string]: any;
+    Id?: string;
+    ExtendCommissionVoucher?: string;
+    DetailNo?: string;
+    No?: string;
+    Voucher?: string;
+    VoucherDetailNo?: string;
+    VoucherTitle?: string;
+    Product?: string;
+    Unit?: string;
+    UnitLabel?: string;
+    Description?: string;
+    Tax?: string;
+    TaxValue?: string;
+    TaxLabel?: string;
+    Quantity?: string;
+    Price?: string;
 }

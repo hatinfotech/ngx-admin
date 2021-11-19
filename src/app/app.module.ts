@@ -454,6 +454,7 @@ export class DynamicLocaleId extends String {
     CollaboratorEducationArticleListComponent,
     CollaboratorEducationArticleFormComponent,
     CollaboratorEducationArticlePrintComponent,
+
     DynamicListDialogComponent,
 
   ],

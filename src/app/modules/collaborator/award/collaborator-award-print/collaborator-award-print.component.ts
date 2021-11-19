@@ -8,12 +8,11 @@ import { AppModule } from '../../../../app.module';
 import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherDetailModel } from '../../../../models/accounting.model';
-import { CollaboratorAwardVoucherDetailCommissionModel, CollaboratorAwardVoucherDetailDirectOrderModel, CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel } from '../../../../models/collaborator.model';
+import { CollaboratorAwardVoucherDetailCommissionModel, CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel } from '../../../../models/collaborator.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { DynamicListDialogComponent } from '../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
-import { CollaboratorAwardDetailPrintComponent } from '../collaborator-award-detail-print/collaborator-award-detail-print.component';
 
 @Component({
   selector: 'ngx-collaborator-award-print',
@@ -426,15 +425,15 @@ export class CollaboratorAwardPrintComponent extends DataManagerPrintComponent<C
   }
 
   summaryCalculate(data: CollaboratorAwardVoucherModel[]) {
-    for (const i in data) {
-      const item = data[i];
-      item['Total'] = 0;
-      item['Title'] = this.renderTitle(item);
-      for (const detail of item.Details) {
-        item['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);
-      }
-      this.processMapList[i] = AppModule.processMaps.awardVoucher[item.State || ''];
-    }
+    // for (const i in data) {
+    //   const item = data[i];
+    //   item['Total'] = 0;
+    //   item['Title'] = this.renderTitle(item);
+    //   for (const detail of item.Details) {
+    //     item['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);
+    //   }
+    //   this.processMapList[i] = AppModule.processMaps.awardVoucher[item.State || ''];
+    // }
     return data;
   }
 

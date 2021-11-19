@@ -188,6 +188,85 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       text: 'text',
     },
   };
+
+  select2ExtendTerm = {
+    placeholder: 'Chọn điều khoản tăng cường...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Title',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/collaborator/education-articles', { onlyIdText: true, filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data,
+        };
+      },
+    },
+  };
+
+  // select2AdvandeTermPublishers = {
+  //   placeholder: 'Chọn cộng tác viên...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   // tags: true,
+  //   keyMap: {
+  //     id: 'Code',
+  //     text: 'Title',
+  //   },
+  //   ajax: {
+  //     url: params => {
+  //       return this.apiService.buildApiUrl('/collaborator/education-articles', { onlyIdText:true, filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       // console.info(data, params);
+  //       return {
+  //         results: data,
+  //       };
+  //     },
+  //   },
+  // };
+
+  select2ExtendTermPublishers = {
+    placeholder: 'Chọn cộng tác viên...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: params => {
+        return this.apiService.buildApiUrl('/collaborator/publishers', { onlyIdText: true, filter_Name: params['term'] });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data,
+        };
+      },
+    },
+  };
+
   onLevelChange(level: any, formGroup: FormGroup) {
     if (level && level.text) {
       formGroup.get('Description').setValue(level.text);
@@ -252,6 +331,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     params['includeProduct'] = true;
     params['includeLevels'] = true;
     params['includeKpis'] = true;
+    params['includeExtendTerm'] = true;
     // params['page'] = this.collaboratorService?.currentpage$?.value;
     super.executeGet(params, success, error);
   }
@@ -355,6 +435,10 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       Level3ExtAwardRatio: [],
       Level3ExtDescription: [],
 
+      ExtendTerm: [],
+      ExtendTermLabel: [],
+      ExtendTermPublishers: [],
+      ExtendTermRatio: [],
 
 
     });
@@ -469,166 +553,6 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
   }
   /** End Levels Form */
 
-  /** ngx-uploader */
-  // options: UploaderOptions;
-  // formData: FormData;
-  // files: UploadFile[];
-  // uploadInput: EventEmitter<UploadInput>;
-  // humanizeBytes: Function;
-  // dragOver: { [key: string]: boolean } = {};
-  // filesIndex: { [key: string]: UploadFile } = {};
-  // pictureFormIndex: { [key: string]: FormGroup } = {};
-
-  // onUploadOutput(output: UploadOutput, formItem: FormGroup, formItemIndex: number): void {
-  //   // console.log(output);
-  //   // console.log(this.files);
-  //   switch (output.type) {
-  //     case 'allAddedToQueue':
-  //       // uncomment this if you want to auto upload files when added
-  //       const event: UploadInput = {
-  //         type: 'uploadAll',
-  //         url: this.apiService.buildApiUrl('/file/files'),
-  //         method: 'POST',
-  //         data: { foo: 'bar' },
-  //       };
-  //       this.uploadInput.emit(event);
-  //       break;
-  //     case 'addedToQueue':
-  //       if (typeof output.file !== 'undefined') {
-  //         this.files.push(output.file);
-  //         this.filesIndex[output.file.id] = output.file;
-
-  //         // const fileResponse: FileModel = output.file.response[0];
-  //         const newPictureFormGroup = this.makeNewPictureFormGroup();
-  //         this.pictureFormIndex[output.file.id] = newPictureFormGroup;
-  //         newPictureFormGroup['file'] = output.file;
-  //         newPictureFormGroup.get('ProgressId').setValue(output.file.id);
-  //         this.getPictures(formItemIndex).push(newPictureFormGroup);
-  //       }
-  //       break;
-  //     case 'uploading':
-  //       if (typeof output.file !== 'undefined') {
-  //         // update current data in files array for uploading file
-  //         const index = this.files.findIndex((file) => typeof output.file !== 'undefined' && file.id === output.file.id);
-  //         this.files[index] = output.file;
-  //         console.log(`[${output.file.progress.data.percentage}%] Upload file ${output.file.name}`);
-  //       }
-  //       break;
-  //     case 'removed':
-  //       // remove file from array when removed
-  //       this.files = this.files.filter((file: UploadFile) => file !== output.file);
-  //       break;
-  //     case 'dragOver':
-  //       this.dragOver[formItemIndex] = true;
-  //       break;
-  //     case 'dragOut':
-  //     case 'drop':
-  //       this.dragOver[formItemIndex] = false;
-  //       break;
-  //     case 'done':
-  //       // The file is downloaded
-  //       console.log('Upload complete');
-  //       const fileResponse: FileModel = output.file.response[0];
-  //       // const newPictureFormGroup = this.makeNewPictureFormGroup({ Image: fileResponse.Store + '/' + fileResponse.Id + '.' + fileResponse.Extension });
-  //       // newPictureFormGroup.get('Thumbnail').setValue(fileResponse.Thumbnail);
-  //       // newPictureFormGroup['file'] = output.file;
-  //       // this.getPictures(0).push(newPictureFormGroup);
-  //       // const beforeCount = this.getPictures(formItemIndex).controls.length;
-  //       const pictureFormGroup = this.pictureFormIndex[output.file.id];
-  //       pictureFormGroup.get('Image').setValue(fileResponse.Store + '/' + fileResponse.Id + '.' + fileResponse.Extension);
-  //       pictureFormGroup.get('Thumbnail').setValue(fileResponse.Thumbnail + '?token=' + this.apiService.getAccessToken());
-  //       this.files.splice(this.files.findIndex(f => f.id === output.file.id), 1);
-
-  //       if (!formItem.get('FeaturePicture').value) {
-  //         this.setAsFeaturePicture(formItemIndex, pictureFormGroup);
-  //       }
-
-  //       break;
-  //   }
-  // }
-
-  // startUpload(): void {
-  //   const event: UploadInput = {
-  //     type: 'uploadAll',
-  //     url: this.apiService.buildApiUrl('/file/files'),
-  //     method: 'POST',
-  //     data: { foo: 'bar' },
-  //   };
-
-  //   this.uploadInput.emit(event);
-  // }
-
-  // cancelUpload(id: string): void {
-  //   this.uploadInput.emit({ type: 'cancel', id: id });
-  // }
-
-  // removeFile(id: string): void {
-  //   this.uploadInput.emit({ type: 'remove', id: id });
-  // }
-
-  // removeAllFiles(): void {
-  //   this.uploadInput.emit({ type: 'removeAll' });
-  // }
-  /** End ngx-uploader */
-
-  // copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
-  //   if (formControlName === 'Pictures') {
-  //     const currentFormItem = array.controls[i];
-  //     const currentValue = currentFormItem.get(formControlName).value;
-  //     const featurePicture = currentFormItem.get('FeaturePicture').value;
-  //     array.controls.forEach((formItem, index) => {
-  //       if (index !== i) {
-  //         const picturesFormArray = (formItem.get('Pictures') as FormArray);
-  //         picturesFormArray.controls = [];
-  //         currentValue.forEach(pic => {
-  //           const newPictireForm = this.makeNewPictureFormGroup(pic);
-  //           picturesFormArray.controls.push(newPictireForm);
-  //         });
-  //         formItem.get('FeaturePicture').patchValue(featurePicture);
-  //       }
-  //     });
-  //   } else {
-  //     super.copyFormControlValueToOthers(array, i, formControlName);
-  //   }
-  // }
-
-  // onThumbnailPcitureClick(file: FileModel, form: FormGroup) {
-  //   console.log(file);
-  //   this.commonService.openDialog(ShowcaseDialogComponent, {
-  //     context: {
-  //       title: this.commonService.translateText('Common.action'),
-  //       actions: [
-  //         {
-  //           label: this.commonService.translateText('Common.close'),
-  //           status: 'danger',
-  //           action: () => {
-
-  //           },
-  //         },
-  //         {
-  //           label: this.commonService.translateText('Common.preview'),
-  //           status: 'success',
-  //           action: () => {
-  //             window.open(file.OriginImage, '_blank');
-  //           },
-  //         },
-  //         {
-  //           label: this.commonService.translateText('Common.setFeaturePicture'),
-  //           status: 'primary',
-  //           action: () => {
-  //             form.get('FeaturePicture').setValue(file);
-  //           },
-  //         },
-  //       ],
-  //     }
-  //   });
-  // }
-
-  // onCkeditorReady(editor: any) {
-  //   console.log(editor);
-  // }
-
-
   /** Execute api put */
   executePut(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
     // params['page'] = this.collaboratorService?.currentpage$?.value;
@@ -674,4 +598,8 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
   //   e.preventDefault();
   //   return false;
   // }
+
+  onAdvanceTermChange(formItem: FormGroup, data: any, index: number) {
+    formItem.get('ExtendTermLabel').setValue(this.commonService.getObjectText(data));
+  }
 }
