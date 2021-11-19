@@ -400,7 +400,8 @@
         "addUnit": "thêm đvt",
         "debt": "công nợ",
         "addNewProduct": "thêm sản phẩm mới",
-        "editProduct": "chỉnh thông tin sản phẩm"
+        "editProduct": "chỉnh thông tin sản phẩm",
+        "amount": "số tiền"
     },
     "Contact": {
         "Customer": {

@@ -146,6 +146,13 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           },
           width: '10%',
         },
+        Amount: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.amount'), 'head-title'),
+          type: 'currency',
+          width: '5%',
+          class: 'align-right',
+          position: 'right',
+        },
         Copy: {
           title: 'Copy',
           type: 'custom',

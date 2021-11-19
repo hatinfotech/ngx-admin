@@ -122,6 +122,13 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
           },
           width: '10%',
         },
+        Amount: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.amount'), 'head-title'),
+          type: 'currency',
+          width: '5%',
+          class: 'align-right',
+          position: 'right',
+        },
         Copy: {
           title: 'Copy',
           type: 'custom',
@@ -183,7 +190,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
               // this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-                this.preview([rowData]);
+              this.preview([rowData]);
               // });
             });
           },
@@ -248,7 +255,7 @@ export class PurchaseVoucherListComponent extends ServerDataManagerListComponent
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
               // this.getFormData([rowData.Code]).then(rs => {
-                this.preview([rowData]);
+              this.preview([rowData]);
               // });
             });
           },
