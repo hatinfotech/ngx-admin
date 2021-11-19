@@ -169,6 +169,11 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
             // instance.format$.next('medium');
           },
         },
+        Note: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.note'), 'head-title'),
+          type: 'string',
+          width: '10%',
+        },
         Merge: {
           title: this.commonService.translateText('Common.preview'),
           type: 'custom',

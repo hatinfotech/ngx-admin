@@ -130,7 +130,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
                 // inputId: ids,
                 data: [{
                   DateOfVoucher: new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 21, 0, 0) as any,
-                  Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.commonService.datePipe.transform(new Date(), 'short') + ' => ' + (profit ? 'Lãi' : 'Lỗ') + ' ' + this.currencyPipe.transform(profitAmount, 'VND'),
+                  Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.commonService.datePipe.transform(toDate, 'short') + ' => ' + (profit ? 'Lãi' : 'Lỗ') + ' ' + this.currencyPipe.transform(profitAmount, 'VND'),
                   Details: details,
                 }],
                 onDialogSave: (newData: OtherBusinessVoucherModel[]) => {

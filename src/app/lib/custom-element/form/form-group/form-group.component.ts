@@ -1,20 +1,31 @@
-import { FormGroup, FormArray, AbstractControl } from '@angular/forms';
-import { Component, OnInit, Input } from '@angular/core';
+import { Observable, Observer, Subject } from 'rxjs';
+import { FormGroup, FormArray, AbstractControl, FormControl } from '@angular/forms';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonService } from '../../../../services/common.service';
+import { takeUntil } from 'rxjs/operators';
 
 export interface CustomIcon {
   pack?: string;
   icon: string;
   title?: string;
   status: string;
+  states?: {
+    [key: string]: {
+      pack?: string,
+      icon?: string,
+      title?: string,
+      status?: string,
+    }
+  };
   action: (formGroup: FormGroup, array: FormArray, index: number, option: any) => void;
+  onInit?: (formGroupComponent: FormGroupComponent, customIcon: CustomIcon) => void;
 };
 @Component({
   selector: 'ngx-form-group',
   templateUrl: './form-group.component.html',
   styleUrls: ['./form-group.component.scss'],
 })
-export class FormGroupComponent implements OnInit {
+export class FormGroupComponent implements OnInit, OnDestroy {
 
   @Input() option?: any;
   @Input() formGroup?: FormGroup;
@@ -33,6 +44,8 @@ export class FormGroupComponent implements OnInit {
   @Input() customIconAction?: string;
   @Input() touchedValidate = true;
 
+  protected destroy$: Subject<void> = new Subject<void>();
+
   warningText = null;
   constructor(
     public commonService: CommonService,
@@ -40,6 +53,38 @@ export class FormGroupComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log('Form Group Component Init');
+    if (this.customIcons) {
+      for (const customIcon of this.customIcons) {
+        if (customIcon.states) {
+          const newState = this.getState(this.formControl.value, customIcon.states);
+          if (newState) {
+            customIcon.pack = newState.pack || customIcon.pack;
+            customIcon.icon = newState.icon || customIcon.icon;
+            customIcon.status = newState.status || customIcon.status;
+            customIcon.title = newState.title || customIcon.title;
+          }
+          this.formControl?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(vaule => {
+            const newState = this.getState(vaule, customIcon.states);
+            if (newState) {
+              customIcon.pack = newState.pack || customIcon.pack;
+              customIcon.icon = newState.icon || customIcon.icon;
+              customIcon.status = newState.status || customIcon.status;
+              customIcon.title = newState.title || customIcon.title;
+            }
+          });
+        }
+        if (customIcon.onInit) {
+          customIcon.onInit(this, customIcon);
+        }
+      }
+    }
+  }
+
+  getState(value: string, states: any) {
+    if (states['<>'] && this.commonService.getObjectId(value)) {
+      return states['<>'];
+    }
+    return states[this.commonService.getObjectId(value) || ''];
   }
 
   formControlValidate(formControl: AbstractControl, invalidText: string, valideText?: string): string {
@@ -65,6 +110,15 @@ export class FormGroupComponent implements OnInit {
         formItem.get(formControlName).patchValue(currentValue);
       }
     });
+  }
+
+  get formControl() {
+    return this.formGroup.get(this.name);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }

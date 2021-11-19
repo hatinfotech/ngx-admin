@@ -4,11 +4,11 @@
     <span class="invalid">{{ warningText ? ((label | translate:{field: commonService.translate.instant(label)} | headtitlecase) + ': (' + warningText + ')') : ('Form.requireLabel' | translate:{field: commonService.translate.instant(label)} | headtitlecase)}}</span>
     <span *ngIf="required" class="text-danger">&nbsp;(*)</span>
     &nbsp;
-    <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" title="{{customIcon.title || ''}}"></nb-icon>
+    <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" nbTooltip="{{customIcon.title || ''}}"></nb-icon>
     <nb-icon *ngIf="allowCopy" class="copy-btn" (click)="copyFormControlValueToOthers(array, index, name)" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon>
   </label>
   <div *ngIf="hideLabel" class="float-icon-area{{hideLabel && ' hide-label' || ' show-label'}}">
-    <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" title="{{customIcon.title || ''}}"></nb-icon>
+    <nb-icon *ngFor="let customIcon of customIcons" class="custom-icon" (click)="customIcon.action(formGroup, array, index, option)" title="{{customIcon.title}}" pack="{{customIcon.pack || 'eva'}}" [icon]="customIcon.icon" status="{{customIcon.status || 'primary'}}" nbTooltip="{{customIcon.title || ''}}"></nb-icon>
     <nb-icon *ngIf="allowCopy" class="copy-btn" (click)="copyFormControlValueToOthers(array, index, name)" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon>
   </div>
   <div style="position: relative;">

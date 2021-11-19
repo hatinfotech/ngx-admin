@@ -12,6 +12,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
 import { CollaboratorService } from '../../collaborator.service';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-collaborator-order-print',
@@ -36,6 +37,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     public ref: NbDialogRef<CollaboratorOrderPrintComponent>,
     public collaboratorService: CollaboratorService,
     private datePipe: DatePipe,
+    public adminProductService: AdminProductService,
   ) {
     super(commonService, router, apiService, ref);
   }
@@ -291,7 +293,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
         map[obj.Code] = obj;
         return map;
       }, {});
-      const unitMap = this.commonService.unitList.reduce(function (map, obj) {
+      const unitMap = this.adminProductService.unitList$.value.reduce(function (map, obj) {
         map[obj.Code] = obj;
         return map;
       }, {});

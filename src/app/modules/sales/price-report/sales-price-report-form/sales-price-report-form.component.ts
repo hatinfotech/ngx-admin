@@ -21,6 +21,7 @@ import { ActionControlListOption } from '../../../../lib/custom-element/action-c
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { threadId } from 'worker_threads';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 
 @Component({
@@ -58,6 +59,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<SalesPriceReportFormComponent>,
+    public adminProductService: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -466,10 +468,10 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       if (data.Product && data.Product.Units && data.Product.Units.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
-        newForm['unitList'] = this.commonService.unitList;
+        newForm['unitList'] = this.adminProductService.unitList$.value;
       }
     } else {
-      newForm['unitList'] = this.commonService.unitList;
+      newForm['unitList'] = this.adminProductService.unitList$.value;
     }
     return newForm;
   }
@@ -605,11 +607,11 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
               }, 0);
             }
           } else {
-            detail['unitList'] = this.commonService.unitList;
+            detail['unitList'] = this.adminProductService.unitList$.value;
           }
         });
       } else {
-        detail['unitList'] = this.commonService.unitList;
+        detail['unitList'] = this.adminProductService.unitList$.value;
         const detaultUnit = selectedData.Units?.find(f => f['IsDefaultSales'] === true);
         if (detaultUnit) {
           detail.get('Unit').setValue(detaultUnit);

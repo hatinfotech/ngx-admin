@@ -398,7 +398,9 @@
         "addProduct": "thêm hàng hoá/dịch vụ",
         "dateOfSale": "ngày bán",
         "addUnit": "thêm đvt",
-        "debt": "công nợ"
+        "debt": "công nợ",
+        "addNewProduct": "thêm sản phẩm mới",
+        "editProduct": "chỉnh thông tin sản phẩm"
     },
     "Contact": {
         "Customer": {

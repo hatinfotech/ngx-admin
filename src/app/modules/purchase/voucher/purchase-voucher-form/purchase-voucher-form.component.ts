@@ -21,7 +21,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { PurchaseOrderVoucherListComponent } from '../../order/purchase-order-voucher-list/purchase-order-voucher-list.component';
 import { BusinessModel } from '../../../../models/accounting.model';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { CurrencyPipe } from '@angular/common';
@@ -143,7 +143,31 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   accountingBusinessList: BusinessModel[] = [];
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewProduct'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editProduct'),
+      },
+    },
+    // onInit: (formGroupComponent: FormGroupComponent, customIcon: CustomIcon) => {
+    //   if (this.commonService.getObjectId(formGroupComponent.formControl.value)) {
+    //     customIcon.icon = 'edit-outline';
+    //   } else {
+    //     customIcon.icon = 'plus-square-outline';
+    //   }
+    //   formGroupComponent.formControl?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(product => {
+    //     if (this.commonService.getObjectId(product)) {
+    //       customIcon.icon = 'edit-outline';
+    //     } else {
+    //       customIcon.icon = 'plus-square-outline';
+    //     }
+    //   });
+    // },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
       this.commonService.openDialog(ProductFormComponent, {
         context: {

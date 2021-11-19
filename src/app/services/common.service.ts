@@ -1,3 +1,4 @@
+import { ProductUnitModel } from './../models/product.model';
 import { diacritic } from './../lib/diacritic';
 import { timezones } from './../lib/timezones';
 import { HelpdeskTicketModel } from './../models/helpdesk.model';
@@ -51,6 +52,7 @@ import { WarehouseGoodsReceiptNotePrintComponent } from '../modules/warehouse/go
 import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { NotificationModel } from '../models/notification.model';
 import { RootConfigModel, SystemConfigModel } from '../models/model';
+import { AdminProductService } from '../modules/admin-product/admin-product.service';
 
 @Injectable({
   providedIn: 'root',
@@ -108,7 +110,7 @@ export class CommonService {
   mainSocketInfo$ = new BehaviorSubject<{ protocol?: string, domain: string; port: number; url?: string }>(null);
 
   taxList: TaxModel[];
-  unitList: UnitModel[];
+  // unitList: ProductUnitModel[];
 
   // localStorageAvailable$: BehaviorSubject<WindowLocalStorage> = new BehaviorSubject<WindowLocalStorage>(null);
 
@@ -251,11 +253,7 @@ export class CommonService {
             tax['text'] = tax.Name;
             return tax;
           });
-          this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
-            tax['id'] = tax.Code;
-            tax['text'] = tax.Name;
-            return tax;
-          });
+          // this.unitList = this.adminProductService.unitList$.value;
         });
 
         // Notification
@@ -975,9 +973,9 @@ export class CommonService {
       var successful = document.execCommand('copy');
       var msg = successful ? 'successful' : 'unsuccessful';
       console.log('Copying text command was ' + msg);
-      this.toastService.show('Đã copy vào clipboard', 'Clipboard', {status: 'success'});
+      this.toastService.show('Đã copy vào clipboard', 'Clipboard', { status: 'success' });
     } catch (err) {
-      this.toastService.show('Không thể copy vào clipboard', 'Clipboard', {status: 'warning'});
+      this.toastService.show('Không thể copy vào clipboard', 'Clipboard', { status: 'warning' });
     }
     document.body.removeChild(textArea);
 

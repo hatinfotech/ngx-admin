@@ -1,3 +1,4 @@
+import { ProductUnitModel } from './../../../../models/product.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
@@ -16,6 +17,7 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { DeploymentVoucherPrintComponent } from '../deployment-voucher-print/deployment-voucher-print.component';
 
@@ -43,7 +45,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
-  unitList: (UnitModel & { id?: string, text?: string })[];
+  unitList: (ProductUnitModel & { id?: string, text?: string })[];
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -118,6 +120,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<DeploymentVoucherFormComponent>,
+    public adminProductService: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -257,7 +260,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     // } else {
     //   this.taxList = DeploymentVoucherFormComponent._taxList;
     // }
-    this.unitList = this.commonService.unitList;
+    this.unitList = this.adminProductService.unitList$.value;
     return rs;
   }
 
@@ -400,10 +403,10 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       if (data.Product && data.Product.Units && data.Product.Units.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
-        newForm['unitList'] = this.commonService.unitList;
+        newForm['unitList'] = this.adminProductService.unitList$.value;
       }
     } else {
-      newForm['unitList'] = this.commonService.unitList;
+      newForm['unitList'] = this.adminProductService.unitList$.value;
     }
     return newForm;
   }

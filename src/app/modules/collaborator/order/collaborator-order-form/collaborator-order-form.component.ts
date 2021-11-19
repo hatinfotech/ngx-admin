@@ -17,6 +17,7 @@ import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { CollaboratorService } from '../../collaborator.service';
@@ -58,6 +59,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     public commonService: CommonService,
     public ref: NbDialogRef<CollaboratorOrderFormComponent>,
     public collaboratorService: CollaboratorService,
+    public adminProductService: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -615,10 +617,10 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       if (data.Product && data.Product.Units && data.Product.Units.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
-        newForm['unitList'] = this.commonService.unitList;
+        newForm['unitList'] = this.adminProductService.unitList$.value;
       }
     } else {
-      newForm['unitList'] = this.commonService.unitList;
+      newForm['unitList'] = this.adminProductService.unitList$.value;
     }
     return newForm;
   }
@@ -756,7 +758,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
           }, 0);
           // }
         } else {
-          detail['unitList'] = this.commonService.unitList;
+          detail['unitList'] = this.adminProductService.unitList$.value;
         }
       // });
       // } else {

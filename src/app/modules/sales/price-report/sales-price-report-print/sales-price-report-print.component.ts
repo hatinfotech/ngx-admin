@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-price-report-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 declare var $: JQueryStatic;
 
@@ -36,6 +37,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     public apiService: ApiService,
     public ref: NbDialogRef<SalesPriceReportPrintComponent>,
     private datePipe: DatePipe,
+    public adminProductService: AdminProductService,
   ) {
     super(commonService, router, apiService, ref);
   }
@@ -289,7 +291,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         map[obj.Code] = obj;
         return map;
       }, {});
-      const unitMap = this.commonService.unitList.reduce(function (map, obj) {
+      const unitMap = this.adminProductService.unitList$.value.reduce(function (map, obj) {
         map[obj.Code] = obj;
         return map;
       }, {});

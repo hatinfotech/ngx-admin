@@ -634,10 +634,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       if (data.Product?.Units && data.Product?.Units?.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
-        newForm['unitList'] = this.commonService.unitList;
+        newForm['unitList'] = this.adminProductService.unitList$.value;
       }
     } else {
-      newForm['unitList'] = this.commonService.unitList;
+      newForm['unitList'] = this.adminProductService.unitList$.value;
     }
     return newForm;
   }

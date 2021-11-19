@@ -11,6 +11,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { DeploymentVoucherFormComponent } from '../deployment-voucher-form/deployment-voucher-form.component';
 import { AppModule } from '../../../../app.module';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-deployment-voucher-print',
@@ -33,6 +34,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
     public apiService: ApiService,
     public ref: NbDialogRef<DeploymentVoucherPrintComponent>,
     private datePipe: DatePipe,
+    public adminProductService: AdminProductService,
   ) {
     super(commonService, router, apiService, ref);
   }
@@ -53,7 +55,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
         map[obj.Code] = obj;
         return map;
       }, {});
-      const unitMap = this.commonService.unitList.reduce(function (map, obj) {
+      const unitMap = this.adminProductService.unitList$.value.reduce(function (map, obj) {
         map[obj.Code] = obj;
         return map;
       }, {});
