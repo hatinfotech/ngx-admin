@@ -1,0 +1,23 @@
+@import "../../../../../assets/style/print.css";
+
+#print-area {
+  display: flex;
+  flex-wrap: wrap;
+}
+.goods-container-label {
+  /* padding: 3px; */
+  width: 25%;
+}
+.goods-container-label .wrap {
+  display: flex;
+  border: 1px solid;
+  overflow: hidden;
+  border-radius: 5px;
+  /* padding: 3px; */
+  margin: 3px;
+}
+.goods-container-label .wrap .qr-code {
+}
+.goods-container-label .wrap .info {
+  margin: 3px;
+}

@@ -707,7 +707,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     };
   }
 
-  async preview(data: (M[]) | FormGroup, source?: string, mode?: string) {
+  async preview(data: M[] | FormGroup, source?: string, mode?: string) {
     if (!this.printDialog) {
       console.log('Print dialog was not set');
       return false;

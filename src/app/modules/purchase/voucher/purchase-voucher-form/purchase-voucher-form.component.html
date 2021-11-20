@@ -196,7 +196,7 @@
 
                                             <div class="col-md-9 col-sm-9 col-xs-9">
                                                 <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="Image" label="Common.image" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem'}}"></ngx-files-input>
+                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem', padding: '0'}, thumbnailStype: {height: '5rem', width: '100%'}}"></ngx-files-input>
                                                 </ngx-form-group>
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">
                                                     <label class="label">Stt</label>
@@ -213,7 +213,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-8 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)" [customIcons]="customIcons" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)" [customIcons]="getCustomIcons(i + ic)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
                                                     <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
@@ -290,8 +290,8 @@
                 </nb-card-body>
                 <nb-card-footer>
                     <div class="buttons-row" style="text-align: right;">
-                        <button nbButton hero status="primary" (click)="preview(formItem)" [disabled]="!form.valid || isProcessing">
-                            <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                        <button nbButton hero status="primary" (click)="preview([formItem.value])" [disabled]="!form.valid || isProcessing">
+                            <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.preview' | translate | headtitlecase}}
                         </button>
                         <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
                         <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="save()">{{'Common.save' | translate | headtitlecase}}</button>

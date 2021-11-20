@@ -1,15 +1,172 @@
-import { Component, OnInit } from '@angular/core';
+import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.model';
+import { DatePipe } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NbDialogRef } from '@nebular/theme';
+import { environment } from '../../../../../environments/environment';
+import { AppModule } from '../../../../app.module';
+import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
+import { ProcessMap } from '../../../../models/process-map.model';
+import { WarehouseGoodsDeliveryNoteModel, WarehouseGoodsDeliveryNoteDetailModel } from '../../../../models/warehouse.model';
+import { ApiService } from '../../../../services/api.service';
+import { CommonService } from '../../../../services/common.service';
+import { WarehouseGoodsDeliveryNoteFormComponent } from '../../goods-delivery-note/warehouse-goods-delivery-note-form/warehouse-goods-delivery-note-form.component';
+import { WarehouseGoodsDeliveryNotePrintComponent } from '../../goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
+import { WarehouseGoodsContainerFormComponent } from '../warehouse-goods-container-form/warehouse-goods-container-form.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-container-print',
   templateUrl: './warehouse-goods-container-print.component.html',
-  styleUrls: ['./warehouse-goods-container-print.component.scss'],
+  styleUrls: ['./warehouse-goods-container-print.component.css'],
 })
-export class WarehouseGoodsContainerPrintComponent implements OnInit {
+export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintComponent<any> implements OnInit {
 
-  constructor() { }
+  /** Component name */
+  componentName = 'WarehouseGoodsContainerPrintComponent';
+  title: string = 'QRCode chỗ chứa hàng hóa ';
+  env = environment;
+  apiPath = '/warehouse/goods-containers';
+  processMapList: ProcessMap[] = [];
+  idKey: ['Code'];
+  formDialog = WarehouseGoodsContainerFormComponent;
 
-  ngOnInit(): void {
+  @Input() printForType: string;
+
+  style = /*css*/`
+    #print-area {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .goods-container-label {
+      width: 25%;
+    }
+    .goods-container-label .wrap {
+      display: flex;
+      border: 1px solid;
+      overflow: hidden;
+      border-radius: 5px;
+      margin: 3px;
+    }
+    .goods-container-label .wrap .qr-code {
+    }
+    .goods-container-label .wrap .info {
+      margin: 3px;
+    }
+  `;
+
+  constructor(
+    public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
+    public ref: NbDialogRef<WarehouseGoodsContainerPrintComponent>,
+    public datePipe: DatePipe,
+  ) {
+    super(commonService, router, apiService, ref);
+  }
+
+  ngOnInit() {
+    this.restrict();
+    super.ngOnInit();
+  }
+
+  async init() {
+    const result = await super.init();
+    // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
+
+    // for (const i in this.data) {
+    //   const data = this.data[i];
+    //   this.setDetailsNo(data?.Details, (detail: WarehouseGoodsDeliveryNoteDetailModel) => detail.Type === 'PRODUCT');
+    //   data['Total'] = 0;
+    //   data['Title'] = this.renderTitle(data);
+    //   for (const detail of data.Details) {
+    //     data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+    //   }
+    //   this.processMapList[i] = AppModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
+    // }
+    this.summaryCalculate(this.data);
+
+    return result;
+  }
+
+  renderTitle(data: WarehouseGoodsDeliveryNoteModel) {
+    return `QRCode_Kho_Ngan_Ke_${this.getIdentified(data).join('-')}` + (data.DateOfDelivered ? ('_' + this.datePipe.transform(data.DateOfDelivered, 'short')) : '');
+  }
+
+  close() {
+    this.ref.close();
+  }
+
+  renderValue(value: any) {
+    if (value && value['text']) {
+      return value['text'];
+    }
+    return value;
+  }
+
+  toMoney(detail: WarehouseGoodsDeliveryNoteDetailModel) {
+    if (detail.Type === 'PRODUCT') {
+      let toMoney = detail['Quantity'] * detail['Price'];
+      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      if (detail.Tax) {
+        if (typeof detail.Tax.Tax == 'undefined') {
+          throw Error('tax not as tax model');
+        }
+        toMoney += toMoney * detail.Tax.Tax / 100;
+      }
+      return toMoney;
+    }
+    return 0;
+  }
+
+  getTotal() {
+    let total = 0;
+    // const details = this.data.Details;
+    // for (let i = 0; i < details.length; i++) {
+    //   total += this.toMoney(details[i]);
+    // }
+    return total;
+  }
+
+  saveAndClose() {
+    if (this.onSaveAndClose) {
+      // this.onSaveAndClose(this.data.Code);
+    }
+    this.close();
+    return false;
+  }
+
+  exportExcel(type: string) {
+    this.close();
+    return false;
+  }
+
+  get identifier() {
+    // return this.data.Code;
+    return '';
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<WarehouseGoodsContainerModel[]>(this.apiPath, {
+      includeWarehouse: true,
+      renderQrCode: true,
+      eq_Type: this.printForType,
+      limit: 'nolimit'
+    }).then(rs => {
+      rs.map(item => {
+        if(item.Path) {
+          const parts = item.Path.split('/');
+          parts.shift();
+          item.Path = parts.join('/');
+        }
+        return item;
+      });
+      return rs;
+    });
+  }
+
+
+  getItemDescription(item: WarehouseGoodsDeliveryNoteModel) {
+    return item?.Description;
   }
 
 }

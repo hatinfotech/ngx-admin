@@ -495,6 +495,22 @@ ngx-header ngx-action-control-list {
             content: " - new";
           }
         }
+        .item-wrap {
+          display: flex;
+        }
+        .item-thumbnail {
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center;
+          width: 1.5rem;
+          height: 1.5rem;
+          border-radius: 50%;
+          border: 1px solid var(--gray);
+          margin-right: 0.5rem;
+        }
+        .item-text {
+          flex: 1;
+        }
       }
     }
     // }

@@ -65,12 +65,12 @@ export class FormGroupComponent implements OnInit, OnDestroy {
           }
           this.formControl?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(vaule => {
             const newState = this.getState(vaule, customIcon.states);
-            if (newState) {
-              customIcon.pack = newState.pack || customIcon.pack;
-              customIcon.icon = newState.icon || customIcon.icon;
-              customIcon.status = newState.status || customIcon.status;
-              customIcon.title = newState.title || customIcon.title;
-            }
+            // if (newState) {
+            customIcon.pack = newState?.pack || customIcon.pack;
+            customIcon.icon = newState?.icon || customIcon.icon;
+            customIcon.status = newState?.status || customIcon.status;
+            customIcon.title = newState?.title || customIcon.title;
+            // }
           });
         }
         if (customIcon.onInit) {

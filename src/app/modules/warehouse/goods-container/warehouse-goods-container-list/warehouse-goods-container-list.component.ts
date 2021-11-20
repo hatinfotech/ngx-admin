@@ -1,3 +1,5 @@
+import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
+import { WarehouseGoodsContainerPrintComponent } from './../warehouse-goods-container-print/warehouse-goods-container-print.component';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
@@ -35,6 +37,66 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
   editing = {};
   rows = [];
 
+  async init() {
+    return super.init().then(rs => {
+      const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
+      previewBtn.label = 'Print QR Code';
+      previewBtn.disabled = () => false;
+      previewBtn.click = () => {
+        this.commonService.openDialog(ShowcaseDialogComponent, {
+          context: {
+            title: 'Print QR Code',
+            content: 'Chọn loại chỗ chứa cần in QR Code:',
+            actions: [
+              {
+                status: 'basic',
+                label: 'Trở về',
+                action: () => { },
+              },
+              {
+                status: 'success',
+                label: 'In ngăn',
+                action: () => {
+                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+                    context: {
+                      id: [],
+                      printForType: 'DRAWERS',
+                    }
+                  });
+                 },
+              },
+              {
+                status: 'primary',
+                label: 'In tầng',
+                action: () => {
+                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+                    context: {
+                      id: [],
+                      printForType: 'FLOOR',
+                    }
+                  });
+                 },
+              },
+              {
+                status: 'info',
+                label: 'In kệ',
+                action: () => {
+                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+                    context: {
+                      id: [],
+                      printForType: 'SHELF',
+                    }
+                  });
+                },
+              },
+            ]
+          }
+        })
+      };
+      return rs;
+    });
+  }
+
   loadListSetting(): SmartTableSetting {
     return this.configSetting({
       mode: 'external',
@@ -50,7 +112,7 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
         Path: {
           title: this.commonService.translateText('Common.path'),
           type: 'string',
-          width: '40%',
+          width: '30%',
         },
         // Name: {
         //   title: this.commonService.translateText('Common.name'),
@@ -66,6 +128,11 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
           title: this.commonService.translateText('Common.findOrder'),
           type: 'string',
           width: '20%',
+        },
+        Type: {
+          title: this.commonService.translateText('Common.type'),
+          type: 'string',
+          width: '10%',
         },
         Code: {
           title: this.commonService.translateText('Common.code'),

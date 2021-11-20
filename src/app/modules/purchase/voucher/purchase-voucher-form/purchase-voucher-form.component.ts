@@ -142,53 +142,48 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   accountingBusinessList: BusinessModel[] = [];
 
-  customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline',
-    title: this.commonService.translateText('Common.addNewProduct'),
-    status: 'success',
-    states: {
-      '<>': {
-        icon: 'edit-outline',
-        status: 'primary',
-        title: this.commonService.translateText('Common.editProduct'),
-      },
-    },
-    // onInit: (formGroupComponent: FormGroupComponent, customIcon: CustomIcon) => {
-    //   if (this.commonService.getObjectId(formGroupComponent.formControl.value)) {
-    //     customIcon.icon = 'edit-outline';
-    //   } else {
-    //     customIcon.icon = 'plus-square-outline';
-    //   }
-    //   formGroupComponent.formControl?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(product => {
-    //     if (this.commonService.getObjectId(product)) {
-    //       customIcon.icon = 'edit-outline';
-    //     } else {
-    //       customIcon.icon = 'plus-square-outline';
-    //     }
-    //   });
-    // },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-      this.commonService.openDialog(ProductFormComponent, {
-        context: {
-          inputMode: 'dialog',
-          inputId: currentProduct ? [currentProduct] : null,
-          showLoadinng: true,
-          onDialogSave: (newData: ProductModel[]) => {
-            console.log(newData);
-            // const formItem = formGroupComponent.formGroup;
-            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
-            formGroup.get('Product').patchValue(newProduct);
-          },
-          onDialogClose: () => {
-
-          },
+  customIcons: {[key: string]: CustomIcon[]} = {};
+  getCustomIcons(name: string): CustomIcon[] {
+    if(this.customIcons[name]) return this.customIcons[name];
+    return this.customIcons[name] = [{
+      icon: 'plus-square-outline',
+      title: this.commonService.translateText('Common.addNewProduct'),
+      status: 'success',
+      states: {
+        '<>': {
+          icon: 'edit-outline',
+          status: 'primary',
+          title: this.commonService.translateText('Common.editProduct'),
         },
-        closeOnEsc: false,
-        closeOnBackdropClick: false,
-      });
-    }
-  }];
+        '': {
+          icon: 'plus-square-outline',
+          status: 'success',
+          title: this.commonService.translateText('Common.addNewProduct'),
+        },
+      },
+      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
+        this.commonService.openDialog(ProductFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            inputId: currentProduct ? [currentProduct] : null,
+            showLoadinng: true,
+            onDialogSave: (newData: ProductModel[]) => {
+              console.log(newData);
+              // const formItem = formGroupComponent.formGroup;
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              formGroup.get('Product').patchValue(newProduct);
+            },
+            onDialogClose: () => {
+
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    }];
+  }
 
   unitCustomIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
@@ -223,6 +218,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
+    withThumbnail: true,
     // tags: true,
     keyMap: {
       id: 'id',
@@ -230,16 +226,28 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,Sku=>Sku", includeSearchResultLabel: true, includeUnits: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,Sku=>Sku,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeSearchResultLabel: true, includeUnits: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
-          results: data
+          results: data.map(item => {
+            item.thumbnail = item?.FeaturePicture?.Thumbnail;
+            return item;
+          })
         };
       },
     },
+    // templateResult: (state: any, container?: JQuery) => {
+    //   if (!state.id) {
+    //     return state.text;
+    //   }
+    //   var $state = $(
+    //     `<div class="item-wrap"><div class="item-thumbnail" style="background-image: url(${state?.FeaturePicture?.Thumbnail || 'assets/images/no-image-available.png'})"></div><div class="item-text">${state.text}</div></div>`
+    //   );
+    //   return $state;
+    // },
   };
 
   select2OptionForUnit = {
@@ -252,7 +260,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     keyMap: {
       id: 'Code',
       text: 'Name',
-    },
+    }
   };
 
   select2OptionForTax = {
@@ -553,6 +561,17 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       }
 
     }
+
+    const imagesFormControl = newForm.get('Image');
+    newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if (value) {
+        if (value.Pictures && value.Pictures.length > 0) {
+          imagesFormControl.setValue(value.Pictures);
+        } else {
+          imagesFormControl.setValue([]);
+        }
+      }
+    });
 
     return newForm;
   }

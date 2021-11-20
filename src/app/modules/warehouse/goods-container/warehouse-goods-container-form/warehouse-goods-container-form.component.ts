@@ -36,10 +36,10 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     },
     multiple: false,
     ajax: {
-      url: (params: any) => {
+      url: (params: any, select2Option: Select2Option) => {
         const option: any = { 'filter_Path': params['term'], includeIdText: true, includeWarehouse: true, select: 'Parent=>Parent,Code=>Code,Name=>Name,Warehouse=>Warehouse,Path=>Path' };
-        if (this.activeFormGroup) {
-          const warehouseFormControl = this.activeFormGroup.get('Warehouse');
+        if (select2Option.formItem) {
+          const warehouseFormControl = select2Option.formItem.get('Warehouse');
           if (warehouseFormControl) {
             option.eq_Warehouse = this.commonService.getObjectId(warehouseFormControl.value);
           }
@@ -59,6 +59,12 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     },
   };
 
+  select2OptionForParents: {[key: string]: Select2Option} = {};
+  getSelect2OptionForParent(name: string, formItem: FormGroup) {
+    if(this.select2OptionForParents[name]) return this.select2OptionForParents[name];
+    return this.select2OptionForParents[name] = {...this.select2OptionForParent, formItem};
+  }
+
   static _warehouseList: WarehouseModel[];
   get warehouseList() { return WarehouseGoodsContainerFormComponent._warehouseList; }
   select2OptionForWarehouse = {
@@ -71,6 +77,22 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
       id: 'id',
       text: 'text',
     },
+  };
+  select2OptionForType = {
+    placeholder: this.commonService.translateText('Common.choose'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    data: [
+      {id: 'SHELF', text: 'Kệ'},
+      {id: 'FLOOR', text: 'Tầng'},
+      {id: 'DRAWERS', text: 'Ngăn'},
+    ],
   };
 
   constructor(
@@ -122,12 +144,13 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   makeNewFormGroup(data?: WarehouseGoodsContainerModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Code_old: [''],
-      Code: [{ disabled: true, value: '' }],
+      Code: ['', Validators.required],
       Parent: [''],
       Name: ['', Validators.required],
       FindOrder: [999],
       Warehouse: ['', Validators.required],
       Description: [''],
+      Type: ['', Validators.required],
       X: [''],
       Y: [''],
       Z: [''],

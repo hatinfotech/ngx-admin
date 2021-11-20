@@ -34,6 +34,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   apiPath?: string;
   formDialog: Type<DataManagerFormComponent<M>>;
   processMapList: ProcessMap[] = [];
+  style: string;
 
   constructor(
     public commonService: CommonService,
@@ -158,6 +159,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     printFrame.name = 'printFrame';
     printFrame.style.position = 'absolute';
     printFrame.style.top = '-1000000px';
+    // printFrame.style.top = '20px';
     printFrame.style.width = '21cm';
     printFrame.style.height = '29.7cm';
     document.body.appendChild(printFrame);
@@ -184,6 +186,10 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         printContent += item.element.nativeElement.innerHTML;
       }
     }
+    let style = '';
+    if(this.style) {
+      style = `<style>${this.style}</style>`;
+    }
     frameDoc.document.write(`
     <html>
       <head>
@@ -191,6 +197,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
         <link href="assets/style/print.css" rel="stylesheet" type="text/css" />
+        ${style}
         <title>${title}</title>
       </head>
       <body>
