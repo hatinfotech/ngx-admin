@@ -30,40 +30,20 @@
         <div>
           <div>
             <table style="width: 100%;" class="print-voucher-detail-table">
-              <colgroup>
-                <!--STT-->
-                <col span="1" style="width: 1cm;">
-                <!--Dien giai-->
-                <col span="1" style="width: 5.5cm;">
-                <!--DVT-->
-                <col span="1" style="width: 1cm;">
-                <!--So luong-->
-                <col span="1" style="width: 2cm; text-align: right;">
-                <!--Don gia-->
-                <col span="1" style="width: 2.8cm; text-align: right;">
-                <!--Thue-->
-                <col span="1" style="width: 2cm;">
-                <!--Thanh tien-->
-                <col span="1" style="width: 2.7cm; text-align: right;">
-              </colgroup>
-              <tr class="print-voucher-detail-header">
-                <th>{{'Common.noNumber' | translate | headtitlecase}}</th>
-                <th>{{'Common.productOrService' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</th>
-              </tr>
+              <thead class="print-voucher-detail-header">
+                <td>#</td>
+                <td>{{'Common.prodId' | translate | headtitlecase}}</td>
+                <td>{{'Common.productOrService' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
+              </thead>
               <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                 <td>{{i + 1}}</td>
-                <td>{{renderValue(detail.Description)}} <br>
-                  <!-- <span style="font-size: 10px; font-style: italic;">
-                    {{'Common.note' | translate}} : {{detail.Product?.Code}},
-                    {{'Common.code' | translate}} : {{detail.Product?.Code}},
-                    {{'Common.sort' | translate | headtitlecase}}: {{detail.No}}
-                  </span> -->
-                </td>
+                <td>{{renderValue(detail.Product | objectid)}}</td>
+                <td>{{renderValue(detail.Description)}}</td>
                 <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                 <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                 <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
@@ -72,7 +52,7 @@
               </tr>
               <tr>
                 <td colspan="2">{{'Common.note' | translate | headtitlecase}}</td>
-                <td colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                <td colspan="5" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
               </tr>
             </table>
@@ -89,12 +69,12 @@
         <div style="display: flex; flex-wrap: wrap">
           <div style="text-align: center; flex: 0 0 50%;">
             <br>
-            {{'Common.employee' | translate | headtitlecase}}
+            Bên mua
             <br><br><br>
           </div>
           <div style="text-align: center; flex: 0 0 50%;">
             <br>
-            {{'Purchase.deliveryPerson' | translate | headtitlecase}}
+            Bên bán
             <br><br><br>
           </div>
         </div>

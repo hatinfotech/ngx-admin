@@ -34,19 +34,21 @@
             <table style="width: 100%;" class="print-voucher-detail-table">
               <thead class="print-voucher-detail-header">
                 <td>#</td>
+                <td>{{'Common.prodId' | translate | headtitlecase}}</td>
                 <td>{{'Sales.technicalDescription' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td>
-                <td class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
+                <td class="text-align-right nowrap">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
               </thead>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
-                  <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
+                  <td colspan="8" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
                 </tr>
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <td>{{detail.No}}</td>
+                  <td>{{renderValue(detail.Product | objectid)}}</td>
                   <td [innerHTML]="renderValue(detail.Description)"></td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                   <td class="text-align-right">{{detail.Unit | objecttext}}</td>
@@ -57,7 +59,7 @@
               </ng-container>
               <tr>
                 <td colspan="2">{{'Common.note' | translate | headtitlecase}}</td>
-                <td colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                <td colspan="5" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
               </tr>
             </table>

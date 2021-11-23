@@ -402,7 +402,8 @@
         "addNewProduct": "thêm sản phẩm mới",
         "editProduct": "chỉnh thông tin sản phẩm",
         "amount": "số tiền",
-        "featurePicture": "hình đại diện"
+        "featurePicture": "hình đại diện",
+        "prodId": "ID SP"
     },
     "Contact": {
         "Customer": {

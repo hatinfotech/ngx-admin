@@ -22,6 +22,8 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { threadId } from 'worker_threads';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { takeUntil } from 'rxjs/operators';
+import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 
 
 @Component({
@@ -41,6 +43,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   locale = this.commonService.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
@@ -202,21 +205,23 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    tags: false,
+    withThumbnail: true,
+    // tags: false,
     keyMap: {
       id: 'Code',
       text: 'Name',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
           results: data.map(product => {
-            product['text'] = `${product['text']} - ${product['id']}`;
+            // product['text'] = `${product['text']}`;
+            product.thumbnail = product?.FeaturePicture?.Thumbnail;
             return product;
           })
         };
@@ -339,7 +344,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+          this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         });
       }
 
@@ -355,7 +360,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     const newForm = this.formBuilder.group({
       Code: [''],
       Object: [''],
-      ObjectName: [''],
+      ObjectName: ['', Validators.required],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
@@ -473,6 +478,18 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     } else {
       newForm['unitList'] = this.adminProductService.unitList$.value;
     }
+
+    const imagesFormControl = newForm.get('Image');
+    newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if (value) {
+        if (value.Pictures && value.Pictures.length > 0) {
+          imagesFormControl.setValue(value.Pictures);
+        } else {
+          imagesFormControl.setValue([]);
+        }
+      }
+    });
+    
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {
@@ -480,8 +497,9 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
   addDetailFormGroup(parentFormGroup: FormGroup) {
     const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
-    this.getDetails(parentFormGroup).push(newChildFormGroup);
-    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
+    const details = this.getDetails(parentFormGroup);
+    details.push(newChildFormGroup);
+    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, details.length - 1);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
@@ -490,7 +508,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     this.calulateTotal(parentFormGroup);
     return false;
   }
-  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
+  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
+    this.toMoney(parentFormGroup, newChildFormGroup, null, index);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -633,29 +652,77 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     return false;
   }
 
-  calculatToMoney(detail: FormGroup) {
-    let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+  // calculatToMoney(detail: FormGroup) {
+  //   let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+  //   let tax = detail.get('Tax').value;
+  //   if (tax) {
+  //     if (typeof tax === 'string') {
+  //       tax = this.taxList.filter(t => t.Code === tax)[0];
+  //     }
+  //     toMoney += toMoney * tax.Tax / 100;
+  //   }
+  //   return toMoney;
+  // }
+
+
+
+  calculatToMoney(detail: FormGroup, source?: string) {
     let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
+    if (typeof tax === 'string') {
+      tax = this.taxList.filter(t => t.Code === tax)[0];
     }
-    return toMoney;
+    if (source === 'ToMoney') {
+      let price = detail.get('ToMoney').value / detail.get('Quantity').value;
+      if (tax) {
+        price = price / (1 + parseFloat(tax.Tax) / 100);
+      }
+      // console.log(detail.value);
+      return price;
+    } else {
+      let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+
+      if (tax) {
+        if (typeof tax === 'string') {
+          tax = this.taxList.filter(t => t.Code === tax)[0];
+        }
+        toMoney += toMoney * tax.Tax / 100;
+      }
+      // console.log(detail.value);
+      return toMoney;
+    }
   }
 
-  toMoney(formItem: FormGroup, detail: FormGroup) {
-    detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+  // toMoney(formItem: FormGroup, detail: FormGroup) {
+  //   detail.get('ToMoney').setValue(this.calculatToMoney(detail));
 
-    // Call culate total
-    // const details = this.getDetails(formItem);
-    // let total = 0;
-    // for (let i = 0; i < details.controls.length; i++) {
-    //   total += this.calculatToMoney(details.controls[i] as FormGroup);
-    // }
-    // formItem.get('_total').setValue(total);
-    this.calulateTotal(formItem);
+  //   // Call culate total
+  //   // const details = this.getDetails(formItem);
+  //   // let total = 0;
+  //   // for (let i = 0; i < details.controls.length; i++) {
+  //   //   total += this.calculatToMoney(details.controls[i] as FormGroup);
+  //   // }
+  //   // formItem.get('_total').setValue(total);
+  //   this.calulateTotal(formItem);
+  //   return false;
+  // }
+
+
+
+  toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
+    this.commonService.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
+      if (source === 'ToMoney') {
+        detail.get('Price').setValue(this.calculatToMoney(detail, source));
+      } else {
+        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+      }
+      // Call culate total
+      const details = this.getDetails(formItem);
+      let total = 0;
+      for (let i = 0; i < details.controls.length; i++) {
+        total += this.calculatToMoney(details.controls[i] as FormGroup);
+      }
+      formItem.get('_total').setValue(total);
+    });
     return false;
   }
 
@@ -700,18 +767,84 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     return data;
   }
 
-  customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ProductFormComponent, {
+  // customIcons: CustomIcon[] = [{
+  //   icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+  //     this.commonService.openDialog(ProductFormComponent, {
+  //       context: {
+  //         inputMode: 'dialog',
+  //         // inputId: ids,
+  //         onDialogSave: (newData: ProductModel[]) => {
+  //           console.log(newData);
+  //           // const formItem = formGroupComponent.formGroup;
+  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+  //           formGroup.get('Product').patchValue(newProduct);
+  //           this.onSelectProduct(formGroup, newProduct, option.parentForm)
+  //         },
+  //         onDialogClose: () => {
+
+  //         },
+  //       },
+  //       closeOnEsc: false,
+  //       closeOnBackdropClick: false,
+  //     });
+  //   }
+  // }];
+
+  customIcons: {[key: string]: CustomIcon[]} = {};
+  getCustomIcons(name: string): CustomIcon[] {
+    if(this.customIcons[name]) return this.customIcons[name];
+    return this.customIcons[name] = [{
+      icon: 'plus-square-outline',
+      title: this.commonService.translateText('Common.addNewProduct'),
+      status: 'success',
+      states: {
+        '<>': {
+          icon: 'edit-outline',
+          status: 'primary',
+          title: this.commonService.translateText('Common.editProduct'),
+        },
+        '': {
+          icon: 'plus-square-outline',
+          status: 'success',
+          title: this.commonService.translateText('Common.addNewProduct'),
+        },
+      },
+      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
+        this.commonService.openDialog(ProductFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            inputId: currentProduct ? [currentProduct] : null,
+            showLoadinng: true,
+            onDialogSave: (newData: ProductModel[]) => {
+              console.log(newData);
+              // const formItem = formGroupComponent.formGroup;
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              formGroup.get('Product').patchValue(newProduct);
+            },
+            onDialogClose: () => {
+
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    }];
+  }
+
+  unitCustomIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          onDialogSave: (newData: ProductModel[]) => {
+          showLoadinng: true,
+          onDialogSave: (newData: UnitModel[]) => {
             console.log(newData);
             // const formItem = formGroupComponent.formGroup;
-            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
-            formGroup.get('Product').patchValue(newProduct);
-            this.onSelectProduct(formGroup, newProduct, option.parentForm)
+            const newUnit: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Unit').patchValue(newUnit);
           },
           onDialogClose: () => {
 

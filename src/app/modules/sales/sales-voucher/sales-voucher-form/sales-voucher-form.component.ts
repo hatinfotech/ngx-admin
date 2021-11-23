@@ -34,6 +34,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
@@ -257,17 +258,83 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     },
   };
 
-  customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ProductFormComponent, {
+  // customIcons: CustomIcon[] = [{
+  //   icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+  //     this.commonService.openDialog(ProductFormComponent, {
+  //       context: {
+  //         inputMode: 'dialog',
+  //         // inputId: ids,
+  //         onDialogSave: (newData: ProductModel[]) => {
+  //           console.log(newData);
+  //           // const formItem = formGroupComponent.formGroup;
+  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+  //           formGroup.get('Product').patchValue(newProduct);
+  //         },
+  //         onDialogClose: () => {
+
+  //         },
+  //       },
+  //       closeOnEsc: false,
+  //       closeOnBackdropClick: false,
+  //     });
+  //   }
+  // }];
+
+  customIcons: {[key: string]: CustomIcon[]} = {};
+  getCustomIcons(name: string): CustomIcon[] {
+    if(this.customIcons[name]) return this.customIcons[name];
+    return this.customIcons[name] = [{
+      icon: 'plus-square-outline',
+      title: this.commonService.translateText('Common.addNewProduct'),
+      status: 'success',
+      states: {
+        '<>': {
+          icon: 'edit-outline',
+          status: 'primary',
+          title: this.commonService.translateText('Common.editProduct'),
+        },
+        '': {
+          icon: 'plus-square-outline',
+          status: 'success',
+          title: this.commonService.translateText('Common.addNewProduct'),
+        },
+      },
+      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
+        this.commonService.openDialog(ProductFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            inputId: currentProduct ? [currentProduct] : null,
+            showLoadinng: true,
+            onDialogSave: (newData: ProductModel[]) => {
+              console.log(newData);
+              // const formItem = formGroupComponent.formGroup;
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              formGroup.get('Product').patchValue(newProduct);
+            },
+            onDialogClose: () => {
+
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    }];
+  }
+
+  unitCustomIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          onDialogSave: (newData: ProductModel[]) => {
+          showLoadinng: true,
+          onDialogSave: (newData: UnitModel[]) => {
             console.log(newData);
             // const formItem = formGroupComponent.formGroup;
-            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
-            formGroup.get('Product').patchValue(newProduct);
+            const newUnit: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Unit').patchValue(newUnit);
           },
           onDialogClose: () => {
 
@@ -331,21 +398,23 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    tags: false,
+    withThumbnail: true,
+    // tags: false,
     keyMap: {
       id: 'Code',
       text: 'Name',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
           results: data.map(product => {
-            product['text'] = `${product['text']} - ${product['id']}`;
+            // product['text'] = `${product['text']} - ${product['id']}`;
+            product.thumbnail = product?.FeaturePicture?.Thumbnail;
             return product;
           })
         };
@@ -639,6 +708,18 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     } else {
       newForm['unitList'] = this.adminProductService.unitList$.value;
     }
+
+    const imagesFormControl = newForm.get('Image');
+    newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if (value) {
+        if (value.Pictures && value.Pictures.length > 0) {
+          imagesFormControl.setValue(value.Pictures);
+        } else {
+          imagesFormControl.setValue([]);
+        }
+      }
+    });
+
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {

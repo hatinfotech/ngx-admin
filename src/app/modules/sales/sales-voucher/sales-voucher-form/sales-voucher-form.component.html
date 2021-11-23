@@ -211,7 +211,7 @@
 
                                                     <div class="col-md-9 col-sm-9 col-xs-9">
                                                         <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'" [formGroup]="detail" name="Image" label="Common.image" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                            <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem'}}"></ngx-files-input>
+                                                            <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem', padding: '0'}, thumbnailStype: {height: '5rem', width: '100%'}}"></ngx-files-input>
                                                         </ngx-form-group>
                                                         <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">
                                                             <label class="label">#</label>
@@ -228,7 +228,7 @@
                                                         </ngx-form-group>
                                                     </div>
                                                     <div class="col-md-8 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="trie" [touchedValidate]="false" [customIcons]="customIcons" [option]="{parentForm: formItem}">
+                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="trie" [touchedValidate]="false" [customIcons]="getCustomIcons(i + ic)" [option]="{parentForm: formItem}">
                                                             <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event, formItem, detail)"></ngx-select2>
                                                         </ngx-form-group>
                                                     </div>
@@ -247,7 +247,7 @@
                                                         </ngx-form-group>
                                                     </div>
                                                     <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [customIcons]="unitCustomIcons">
                                                             <ngx-select2 formControlName="Unit" [data]="detail['unitList']" [select2Option]="select2OptionForUnit" (selectChange)="onSelectUnit(detail, $event, formItem)"></ngx-select2>
                                                         </ngx-form-group>
                                                     </div>

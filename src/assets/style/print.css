@@ -67,6 +67,15 @@
   line-height: 1rem;
 }
 
+#print-area .print-voucher-detail-line td,
+#print-area .print-voucher-detail-header td {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+#print-area .nowrap {
+  white-space: nowrap;
+}
+
 #print-area .print-voucher-detail-thumnail {
   background-repeat: no-repeat;
   background-size: cover;

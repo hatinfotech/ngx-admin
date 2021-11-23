@@ -787,7 +787,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
               // get purchase order
               const purchaseOrder = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-              if (this.commonService.getObjectId(purchaseOrder.State) != 'APPROVE') {
+              if (this.commonService.getObjectId(purchaseOrder.State) != 'APPROVED') {
                 this.commonService.toastService.show(this.commonService.translateText('Đơn đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                 continue;
               }
