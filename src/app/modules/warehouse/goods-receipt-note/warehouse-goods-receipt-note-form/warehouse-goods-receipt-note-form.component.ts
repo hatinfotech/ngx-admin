@@ -1,7 +1,7 @@
 import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validator, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
@@ -17,16 +17,13 @@ import { UnitModel } from '../../../../models/unit.model';
 import { WarehouseGoodsReceiptNoteModel, WarehouseGoodsReceiptNoteDetailModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { PurchaseOrderVoucherFormComponent } from '../../../purchase/order/purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { PurchaseVoucherListComponent } from '../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
-import { PurchaseVoucherPrintComponent } from '../../../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
-import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
-import { SalesVoucherPrintComponent } from '../../../sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { BusinessModel } from '../../../../models/accounting.model';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-form',
@@ -170,20 +167,24 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    tags: true,
+    // tags: true,
+    withThumbnail: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
     },
     ajax: {
       url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'filter_Name': params['term'] });
+        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeUnit: true, 'filter_Name': params['term'] });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
         return {
-          results: data
+          results: data.map(item => {
+            item.thumbnail = item?.FeaturePicture?.Thumbnail;
+            return item;
+          })
         };
       },
     },
@@ -443,6 +444,18 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       }
       this.toMoney(parentFormGroup, newForm);
     }
+
+    const imagesFormControl = newForm.get('Image');
+    newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if (value) {
+        if (value.Pictures && value.Pictures.length > 0) {
+          imagesFormControl.setValue(value.Pictures);
+        } else {
+          imagesFormControl.setValue([]);
+        }
+      }
+    });
+    
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {

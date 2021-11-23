@@ -38,7 +38,6 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
       flex-wrap: wrap;
     }
     .goods-container-label {
-      width: 25%;
     }
     .goods-container-label .wrap {
       display: flex;
@@ -51,6 +50,9 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
     }
     .goods-container-label .wrap .info {
       margin: 3px;
+    }
+    .print-voucher-detail-table tr td {
+      border: none;
     }
   `;
 
@@ -66,7 +68,7 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
 
   ngOnInit() {
     this.restrict();
-    super.ngOnInit();
+    super.ngOnInit();``
   }
 
   async init() {
@@ -153,14 +155,23 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
       limit: 'nolimit'
     }).then(rs => {
       rs.map(item => {
-        if(item.Path) {
+        if (item.Path) {
           const parts = item.Path.split('/');
           parts.shift();
           item.Path = parts.join('/');
         }
         return item;
       });
-      return rs;
+      const table = [];
+      let row = [];
+      for (let i = 0; i < rs.length; i++) {
+        row.push(rs[i]);
+        if ((i+1) % 4 === 0) {
+          table.push(row);
+          row = [];
+        }
+      }
+      return table;
     });
   }
 
