@@ -253,6 +253,8 @@ export interface CollaboratorEducationArticleModel {
     Page?: string & IdTextModel;
     PageName?: string;
     State?: string;
+    IsNewFeed?: boolean;
+    IsSync?: boolean;
 }
 
 

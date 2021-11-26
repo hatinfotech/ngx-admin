@@ -1,3 +1,4 @@
+import { CollaboratorOrderModel } from './../../../../models/collaborator.model';
 import { Component, OnInit } from '@angular/core';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ApiService } from '../../../../services/api.service';
@@ -10,7 +11,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { takeUntil } from 'rxjs/operators';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { AppModule } from '../../../../app.module';
-import { SmartTableDateRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { CollaboratorEducationArticleFormComponent } from '../education-article-form/collaborator-education-article-form.component';
 import { CollaboratorEducationArticlePrintComponent } from '../education-article-print/collaborator-education-article-print.component';
 import { CollaboratorEducationArticleModel } from '../../../../models/collaborator.model';
@@ -104,6 +105,30 @@ export class CollaboratorEducationArticleListComponent extends ServerDataManager
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
             // instance.format$.next('medium');
+          },
+        },
+        IsNewFeed: {
+          title: 'Lên trang chủ',
+          type: 'boolean',
+          editable: true,
+          width: '5%',
+          onChange: (value, rowData: CollaboratorEducationArticleModel) => {
+            // rowData.AutoUpdate = value;
+            this.apiService.putPromise<CollaboratorEducationArticleModel[]>(`${this.apiPath}/${rowData.Code}`, {}, [{ Code: rowData.Code, IsNewFeed: value }]).then(rs => {
+              console.info(rs);
+            });
+          },
+        },
+        IsSync: {
+          title: 'Đồng bộ/thu hồi',
+          type: 'boolean',
+          editable: true,
+          width: '5%',
+          onChange: (value, rowData: CollaboratorEducationArticleModel) => {
+            // rowData.AutoUpdate = value;
+            this.apiService.putPromise<CollaboratorEducationArticleModel[]>(`${this.apiPath}/${rowData.Code}`, {}, [{ Code: rowData.Code, IsSync: value }]).then(rs => {
+              console.info(rs);
+            });
           },
         },
         Link: {

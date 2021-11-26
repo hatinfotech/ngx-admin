@@ -437,8 +437,8 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
 
       ExtendTerm: [],
       ExtendTermLabel: [],
-      ExtendTermPublishers: [],
-      ExtendTermRatio: [],
+      // ExtendTermPublishers: [],
+      // ExtendTermRatio: [],
 
 
     });

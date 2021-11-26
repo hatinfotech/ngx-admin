@@ -425,12 +425,12 @@
                           <ngx-select2 formControlName="ExtendTerm" [select2Option]="select2ExtendTerm" (selectChange)="onAdvanceTermChange(formItem, $event, i)"></ngx-select2>
                         </ngx-form-group>
                       </div>
-                      <div class="col-sm-3">
+                      <div class="col-sm-9">
                         <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="ExtendTermLabel" label="Cấp độ CTV Bán Hàng " [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                           <input type="text" nbInput fullWidth formControlName="ExtendTermLabel" placeholder="Mô tả">
                         </ngx-form-group>
                       </div>
-                      <div class="col-sm-3">
+                      <!-- <div class="col-sm-3">
                         <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="ExtendTermPublishers" label="Cộng tác viên" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                           <ngx-select2 formControlName="ExtendTermPublishers" [select2Option]="select2ExtendTermPublishers"></ngx-select2>
                         </ngx-form-group>
@@ -439,7 +439,7 @@
                         <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="ExtendTermRatio" label="Tỷ lệ % chiết khấu tăng cường" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                           <input type="text" nbInput fullWidth formControlName="ExtendTermRatio" placeholder="Tỷ lệ % chiết khấu tăng cường" [inputMask]="currencyInputMask">
                         </ngx-form-group>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>

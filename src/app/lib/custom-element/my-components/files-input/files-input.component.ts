@@ -147,10 +147,10 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
       case 'uploading':
         if (typeof output.file !== 'undefined') {
           // update current data in files array for uploading file
-          const index = this.files.findIndex((file) => typeof output.file !== 'undefined' && file.id === output.file.id);
+          const index = this.files.findIndex((file) => typeof output?.file !== 'undefined' && file?.id === output?.file?.id);
           this.files[index] = output.file;
-          console.log(`[${output.file.progress.data.percentage}%] Upload file ${output.file.name}`);
-          this.value.find(f => f.file.id === output.file.id)['progress'] = output.file.progress.data;
+          console.log(`[${output.file.progress.data.percentage}%] Upload file ${output?.file?.name}`);
+          this.value.find(f => f.file?.id === output?.file?.id)['progress'] = output?.file?.progress?.data;
         }
         break;
       case 'removed':
@@ -168,7 +168,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         // The file is downloaded
         console.log('Upload complete', output);
         const respFile: FileModel = output.file.response[0];
-        const imageIndex = this.value.findIndex(f => f.file?.id === output.file.id);
+        const imageIndex = this.value.findIndex(f => f.file?.id === output?.file?.id);
         if (respFile) {
           if (!this.value) this.value = [];
           this.value[imageIndex] = respFile;
