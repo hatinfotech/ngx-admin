@@ -1,3 +1,4 @@
+import { SalesPriceTableModel } from './../../../../models/sales.model';
 import { Component, OnInit, Type } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { SalesMasterPriceTableModel, SalesPriceTableDetailModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
@@ -11,7 +12,6 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { DecimalPipe } from '@angular/common';
-import { SalesPriceReportFormComponent } from '../../price-report/sales-price-report-form/sales-price-report-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntil } from 'rxjs/operators';
 import { ContactModel } from '../../../../models/contact.model';
@@ -24,6 +24,7 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
+import { MasterPriceTableQrCodePrintComponent } from '../master-price-table-qrcode-print/master-price-table-qrcode-print.component';
 
 @Component({
   selector: 'ngx-master-price-table-form',
@@ -241,7 +242,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;
@@ -578,8 +579,8 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/groups', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
   }
 
   editing = {};
@@ -933,6 +934,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       params['includeUnit'] = true;
       params['includeFeaturePicture'] = true;
       params['sort_Id'] = 'desc';
+      params['group_Unit'] = true;
       return params;
     };
 
@@ -1021,4 +1023,17 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   }
 
   /** End Common function for ng2-smart-table */
+
+  makeDetailId(item: SalesPriceTableDetailModel) {
+    return ['Code', 'WarehouseUnit'].map(key => this.encodeId(item[key])).join('-');
+  }
+
+  printQrcode(priceTable: SalesPriceTableModel) {
+    this.commonService.openDialog(MasterPriceTableQrCodePrintComponent, {
+      context: {
+        priceTable: priceTable.Code,
+        id: this.selectedItems.map(item => this.makeDetailId(item as any)),
+      }
+    });
+  }
 }

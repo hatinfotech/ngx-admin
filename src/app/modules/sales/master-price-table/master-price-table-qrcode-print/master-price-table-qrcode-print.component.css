@@ -1,0 +1,39 @@
+@import "../../../../../assets/style/print.css";
+
+#print-area {
+  display: flex;
+  flex-wrap: wrap;
+  width: 29.7cm;
+}
+.goods-container-label {
+}
+.goods-container-label .wrap {
+  display: flex;
+  border: 1px solid;
+  overflow: hidden;
+  border-radius: 5px;
+  /* padding: 3px; */
+  margin: 3px;
+}
+.goods-container-label .wrap .qr-code {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+.goods-container-label .wrap .info {
+  margin: 3px;
+}
+
+.print-voucher-detail-table tr td {
+  border: none;
+}
+
+#print-area .print-voucher-detail-line td {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+#print-area .print-voucher-detail-line td, #print-area .print-voucher-detail-header td {
+  padding-left: 0px;
+  padding-right: 0px;
+}

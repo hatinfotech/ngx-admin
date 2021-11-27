@@ -610,7 +610,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
               // get purchase order
               const salesVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-              if (this.commonService.getObjectId(salesVoucher.State) != 'APPROVED') {
+              if (['APPROVED','COMPLETE'].indexOf(this.commonService.getObjectId(salesVoucher.State)) < 0) {
                 this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                 continue;
               }

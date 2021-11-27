@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
+<form [formGroup]="form" (keydown.shift.enter)="onControlEnter($event)"
   (keydown.enter)="onControlEnter($event)" class="popup">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
@@ -85,14 +85,14 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <button nbButton hero status="primary" (click)="preview(formItem)" [disabled]="!form.valid || isProcessing">
+            <button nbButton hero status="primary" (click)="printQrcode(formItem.value)" [disabled]="!form.valid || isProcessing">
               <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
             </button>
             <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
             <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero
               (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
             <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;"
-              hero>{{'Common.save' | translate | headtitlecase}}</button>
+              hero (click)="save()">{{'Common.save' | translate | headtitlecase}}</button>
           </div>
         </nb-card-footer>
       </nb-card>

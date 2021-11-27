@@ -333,19 +333,23 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     super.executeGet(params, success, error);
   }
 
-  async formLoad(formData: SalesPriceReportModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesPriceReportModel) => void) {
+  async formLoad(formData: SalesPriceReportModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesPriceReportModel) => Promise<void>) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         details.clear();
-        itemFormData.Details.forEach(condition => {
-          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
+        for (const ic in itemFormData.Details) {
+          const detail = itemFormData.Details[ic];
+          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
-        });
+          this.onAddDetailFormGroup(newForm, newDetailFormGroup, parseInt(ic));
+        }
+        // itemFormData.Details.forEach(detail => {
+
+        // });
       }
 
       // Direct callback
@@ -480,8 +484,9 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     }
 
     const imagesFormControl = newForm.get('Image');
+    // setTimeout(() => {
     newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if (value) {
+      if (!this.isProcessing && value) {
         if (value.Pictures && value.Pictures.length > 0) {
           imagesFormControl.setValue(value.Pictures);
         } else {
@@ -489,7 +494,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         }
       }
     });
-    
+    // }, 1000);
+
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {
@@ -790,9 +796,9 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   //   }
   // }];
 
-  customIcons: {[key: string]: CustomIcon[]} = {};
+  customIcons: { [key: string]: CustomIcon[] } = {};
   getCustomIcons(name: string): CustomIcon[] {
-    if(this.customIcons[name]) return this.customIcons[name];
+    if (this.customIcons[name]) return this.customIcons[name];
     return this.customIcons[name] = [{
       icon: 'plus-square-outline',
       title: this.commonService.translateText('Common.addNewProduct'),

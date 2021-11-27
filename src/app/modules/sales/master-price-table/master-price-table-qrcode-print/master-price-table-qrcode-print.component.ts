@@ -8,27 +8,25 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { WarehouseGoodsDeliveryNoteModel, WarehouseGoodsDeliveryNoteDetailModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { WarehouseGoodsContainerFormComponent } from '../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
-import { WarehouseGoodsContainerPrintComponent } from '../../goods-container/warehouse-goods-container-print/warehouse-goods-container-print.component';
-import { WarehouseGoodsFormComponent } from '../warehouse-goods-form/warehouse-goods-form.component';
 
 @Component({
-  selector: 'ngx-warehouse-goods-print',
-  templateUrl: './warehouse-goods-print.component.html',
-  styleUrls: ['./warehouse-goods-print.component.css'],
+  selector: 'ngx-master-price-table-qrcode-print',
+  templateUrl: './master-price-table-qrcode-print.component.html',
+  styleUrls: ['./master-price-table-qrcode-print.component.css'],
 })
-export class WarehouseGoodsPrintComponent extends DataManagerPrintComponent<any> implements OnInit {
+export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintComponent<any> implements OnInit {
 
   /** Component name */
-  componentName = 'WarehouseGoodsPrintComponent';
+  componentName = 'MasterPriceTableQrCodePrintComponent';
   title: string = 'QRCode hàng hóa ';
   env = environment;
-  apiPath = '/warehouse/goods';
+  apiPath = '/sales/master-price-table-details';
   processMapList: ProcessMap[] = [];
   idKey: ['Code', 'WarehouseUnit'];
-  formDialog = WarehouseGoodsFormComponent;
+  // formDialog = WarehouseGoodsFormComponent;
 
   @Input() printForType: string;
+  @Input() priceTable: string;
 
   style = /*css*/`
     #print-area {
@@ -43,8 +41,12 @@ export class WarehouseGoodsPrintComponent extends DataManagerPrintComponent<any>
       overflow: hidden;
       border-radius: 5px;
       margin: 3px;
+      align-items: flex-start;
     }
     .goods-container-label .wrap .qr-code {
+      min-width: 80px;
+      min-height: 80px;
+      object-fit: contain;
     }
     .goods-container-label .wrap .info {
       margin: 3px;
@@ -52,13 +54,23 @@ export class WarehouseGoodsPrintComponent extends DataManagerPrintComponent<any>
     .print-voucher-detail-table tr td {
       border: none;
     }
+
+    #print-area .print-voucher-detail-line td {
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+    
+    #print-area .print-voucher-detail-line td, #print-area .print-voucher-detail-header td {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
   `;
 
   constructor(
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<WarehouseGoodsPrintComponent>,
+    public ref: NbDialogRef<MasterPriceTableQrCodePrintComponent>,
     public datePipe: DatePipe,
   ) {
     super(commonService, router, apiService, ref);
@@ -149,7 +161,13 @@ export class WarehouseGoodsPrintComponent extends DataManagerPrintComponent<any>
     return this.apiService.getPromise<WarehouseGoodsContainerModel[]>(this.apiPath, {
       includeWarehouse: true,
       renderQrCode: true,
+      masterPriceTable: this.priceTable,
+      includeGroups: true,
+      includeUnit: true,
+      includeFeaturePicture: true,
+      group_Unit: true,
       // eq_Type: this.printForType,
+      includeContainers: true,
       id: this.id,
       limit: 'nolimit'
     }).then(rs => {

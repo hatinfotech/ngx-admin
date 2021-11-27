@@ -13,6 +13,8 @@ import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { WarehouseGoodsPrintComponent } from '../warehouse-goods-print/warehouse-goods-print.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -256,6 +258,62 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         }
         return button;
       });
+
+      const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
+      previewBtn.label = 'Print QR Code';
+      previewBtn.disabled = () => false;
+      previewBtn.click = () => {
+        this.commonService.openDialog(ShowcaseDialogComponent, {
+          context: {
+            title: 'Print QR Code',
+            content: 'Chọn hàng hóa cần in QR Code:',
+            actions: [
+              {
+                status: 'basic',
+                label: 'Trở về',
+                action: () => { },
+              },
+              {
+                status: 'success',
+                label: 'In QRCode',
+                action: () => {
+                  this.commonService.openDialog(WarehouseGoodsPrintComponent, {
+                    context: {
+                      id: this.selectedItems.map(item => this.makeId(item)),
+                      // printForType: 'DRAWERS',
+                    }
+                  });
+                 },
+              },
+              // {
+              //   status: 'primary',
+              //   label: 'In tầng',
+              //   action: () => {
+              //     this.commonService.openDialog(WarehouseGoodsPrintComponent, {
+              //       context: {
+              //         id: [],
+              //         printForType: 'FLOOR',
+              //       }
+              //     });
+              //    },
+              // },
+              // {
+              //   status: 'info',
+              //   label: 'In kệ',
+              //   action: () => {
+              //     this.commonService.openDialog(WarehouseGoodsPrintComponent, {
+              //       context: {
+              //         id: [],
+              //         printForType: 'SHELF',
+              //       }
+              //     });
+              //   },
+              // },
+            ]
+          }
+        })
+      };
+      
       return rs;
     });
   }

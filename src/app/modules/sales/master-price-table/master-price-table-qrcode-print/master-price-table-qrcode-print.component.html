@@ -1,5 +1,5 @@
 <div class="dialog-wrap {{inputMode}}" #dialogWrap>
-    <nb-card [nbSpinner]="loading" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+    <nb-card [nbSpinner]="loading" style="max-height: initial; margin: 0 auto; width: 30.7cm;" class="small-header">
         <nb-card-header>
             <ngx-card-header [option]="{controlOption: {}}" [size]="size" [icon]="favicon" [title]="(title | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
@@ -24,9 +24,10 @@
                                 <div class="wrap">
                                     <img class="qr-code" src="{{item.QrCode}}">
                                     <div class="info">
-                                        <div>{{item.Name}}</div>
-                                        <div>{{item.WarehouseUnit}}</div>
-                                        <div>{{item.Code}}_{{item.WarehouseUnit}}</div>
+                                        <div style="font-weight: bold;">{{item.Name}}</div>
+                                        <div>{{item.Price | currency:'VND'}}/{{item.WarehouseUnit | objecttext}}</div>
+                                        <div>{{item.Code}}-{{item.WarehouseUnit | objectid}}</div>
+                                        <div *ngFor="let container of item?.Containers">{{container.Container | objecttext}}</div>
                                     </div>
                                 </div>
                             </div>
