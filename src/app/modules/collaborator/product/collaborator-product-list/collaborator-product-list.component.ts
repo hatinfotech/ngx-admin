@@ -1,3 +1,4 @@
+import { CollaboratorEducationArticleModel } from './../../../../models/collaborator.model';
 import { take, filter, takeUntil } from 'rxjs/operators';
 import { CollaboratorService } from '../../collaborator.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -355,6 +356,33 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
             instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (row: any) => {
               if (row.ExtendTerm) {
                 this.commonService.previewVoucher('CLBRTEXTENDTERM', row.ExtendTerm);
+              }
+            });
+          },
+        },
+        Copy: {
+          title: 'Copy',
+          type: 'custom',
+          width: '5%',
+          exclude: this.isChoosedMode,
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'copy-outline';
+            // instance.label = this.commonService.translateText('Common.copy');
+            instance.display = true;
+            instance.status = 'info';
+            instance.title = 'Copy nội dung thỏa thuận';
+            instance.init.pipe(takeUntil(this.destroy$)).subscribe((row: any) => {
+              if (!row.ExtendTerm) {
+                instance.disabled = true;
+              }
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (row: any) => {
+              if (row.ExtendTerm) {
+                this.apiService.getPromise<CollaboratorEducationArticleModel[]>('/collaborator/education-articles/' + row.ExtendTerm).then(rs => rs[0]).then(edutArticle => {
+                  this.commonService.copyHtmlToClipboard(edutArticle.Summary + '<br>' + edutArticle.ContentBlock1 + '<br>' + edutArticle.ContentBlock2 + '<br>' + edutArticle.ContentBlock3);
+                });
               }
             });
           },

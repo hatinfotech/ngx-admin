@@ -55,6 +55,32 @@ import { RootConfigModel, SystemConfigModel } from '../models/model';
 import { AdminProductService } from '../modules/admin-product/admin-product.service';
 import { CollaboratorEducationArticlePrintComponent } from '../modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
 
+interface ClipboardItem {
+  readonly types: string[];
+  readonly presentationStyle: "unspecified" | "inline" | "attachment";
+  getType(): Promise<Blob>;
+}
+
+interface ClipboardItemData {
+  [mimeType: string]: Blob | string | Promise<Blob | string>;
+}
+
+declare var ClipboardItem: {
+  prototype: ClipboardItem;
+  new(itemData: ClipboardItemData): ClipboardItem;
+};
+
+interface Clipboard extends EventTarget {
+  read(): Promise<ClipboardItem[]>;
+  readText(): Promise<string>;
+  write(data: ClipboardItem[]): Promise<void>;
+  writeText(data: string): Promise<void>;
+}
+
+declare var navigator: {
+  clipboard: Clipboard,
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -980,6 +1006,73 @@ export class CommonService {
       this.toastService.show('Không thể copy vào clipboard', 'Clipboard', { status: 'warning' });
     }
     document.body.removeChild(textArea);
+
+  }
+
+  copyHtmlToClipboard(html: string) {
+    // var type = "text/html";
+    // var blob = new Blob([html], { type });
+    // var data = [new ClipboardItem({ [type]: blob } as any)];
+
+    // navigator.clipboard.writeText(html).then(
+    //     function () {
+    //     /* success */
+    //     console.log('copy sucesss');
+    //   },
+    //   function () {
+    //     /* failure */
+    //     console.log('copy failure');
+    //     }
+    // );
+
+    // Create container for the HTML
+    // [1]
+    var container = document.createElement('div');
+    container.innerHTML = html
+
+    // Hide element
+    // [2]
+    container.style.position = 'fixed';
+    container.style.pointerEvents = 'none';
+    container.style.opacity = '0';
+
+    // Detect all style sheets of the page
+    // var activeSheets = Array.prototype.slice.call(document.styleSheets)
+    //   .filter(function (sheet) {
+    //     return !sheet.disabled
+    //   });
+
+    // Mount the container to the DOM to make `contentWindow` available
+    // [3]
+    document.body.appendChild(container);
+
+    // Copy to clipboard
+    // [4]
+    window.getSelection().removeAllRanges();
+
+    var range = document.createRange();
+    range.selectNode(container);
+    window.getSelection().addRange(range);
+
+    // [5.1]
+    if (document.execCommand('copy')) {
+      this.toastService.show('Đã copy vào clipboard', 'Clipboard', { status: 'success' });
+    } else {
+      this.toastService.show('Không thể copy vào clipboard', 'Clipboard', { status: 'warning' });
+    }
+
+    // [5.2]
+    // for (var i = 0; i < activeSheets.length; i++) activeSheets[i].disabled = true
+
+    // [5.3]
+    // document.execCommand('copy')
+
+    // [5.4]
+    // for (var i = 0; i < activeSheets.length; i++) activeSheets[i].disabled = false
+
+    // Remove the container
+    // [6]
+    document.body.removeChild(container);
 
   }
 }
