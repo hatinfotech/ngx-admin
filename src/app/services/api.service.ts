@@ -63,45 +63,45 @@ export class ApiService {
       }
     });
 
-    this.autoRefeshToken();
-    setInterval(() => {
-      this.autoRefeshToken();
-    }, 60000);
+    // this.autoRefeshToken();
+    // setInterval(() => {
+    //   this.autoRefeshToken();
+    // }, 60000);
   }
 
-  public tokenExpired(token: string) {
-    const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
-    return (Math.floor((new Date).getTime() / 1000)) >= expiry;
-  }
+  // public tokenExpired(token: string) {
+  //   const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+  //   return (Math.floor((new Date).getTime() / 1000)) >= expiry;
+  // }
 
-  async refreshToken() {
-    return this.authService.refreshToken('email', { token: this.token }).pipe(take(1)).toPromise().then(authResult => {
+  // async refreshToken() {
+  //   return this.authService.refreshToken('email', { token: this.token }).pipe(take(1)).toPromise().then(authResult => {
 
-      // this.refreshTokenInProgress = false;
-      if (authResult.isSuccess) {
-        this.setToken(authResult.getToken());
-        // this.refreshTokenSubject.next(true);
-        console.log('Refresh token success');
-        return authResult;
-        // return this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token);
-      }
-      this.onUnauthorizied();
-      return false;
+  //     // this.refreshTokenInProgress = false;
+  //     if (authResult.isSuccess) {
+  //       this.setToken(authResult.getToken());
+  //       // this.refreshTokenSubject.next(true);
+  //       console.log('Refresh token success');
+  //       return authResult;
+  //       // return this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token);
+  //     }
+  //     this.onUnauthorizied();
+  //     return false;
 
-    }, catchError((error2: HttpErrorResponse) => {
-      // this.refreshTokenInProgress = false;
-      console.log(error2);
-      return throwError(error2);
-    }));
-  }
+  //   }, catchError((error2: HttpErrorResponse) => {
+  //     // this.refreshTokenInProgress = false;
+  //     console.log(error2);
+  //     return throwError(error2);
+  //   }));
+  // }
 
-  async autoRefeshToken() {
-    const expiry = (JSON.parse(atob(this.getAccessToken().split('.')[1]))).exp;
-    if ((Math.floor((new Date).getTime() / 1000)) >= expiry - 10) {
-      return this.refreshToken();
-    }
-    return true;
-  }
+  // async autoRefeshToken() {
+  //   const expiry = (JSON.parse(atob(this.getAccessToken().split('.')[1]))).exp;
+  //   if ((Math.floor((new Date).getTime() / 1000)) >= expiry - 10) {
+  //     return this.refreshToken();
+  //   }
+  //   return true;
+  // }
 
   getBaseApiUrl() {
     return this.baseApiUrl;
@@ -739,7 +739,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
     // console.log('Http intercept: ', req.url);
 
-    if (req.url.includes('v1/user/login')) {
+    if (req.url.includes('v1/user/login') || !/^https?:\/\/[^\/]+\/v\d+\//i.test(req.url)) {
       return next.handle(req);
     }
 
