@@ -576,9 +576,11 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           // const insertList = [];
+          this.onProcessing();
           for (let i = 0; i < chooseItems.length; i++) {
             await this.addRelativeVoucher(chooseItems[i], 'SALES', formGroup);
           }
+          this.onProcessed();
           // relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
         },
         onDialogClose: () => {

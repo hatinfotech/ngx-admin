@@ -1156,6 +1156,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
+          this.onProcessing();
           if (type === 'GOODSDELIVERY') {
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
@@ -1259,6 +1260,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
           }
+          this.onProcessed();
         },
       }
     });

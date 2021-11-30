@@ -607,6 +607,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
           // const relationVoucher = formGroup.get('RelativeVouchers');
           // const relationVoucherValue: any[] = (relationVoucher.value || []);
           // const insertList = [];
+          this.onProcessing();
           for (let i = 0; i < chooseItems.length; i++) {
             this.addRelativeVoucher(chooseItems[0], 'PURCHASE', formGroup);
             // const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
@@ -655,6 +656,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
             //   }
             // }
           }
+          this.onProcessed();
           // relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
         },
         onDialogClose: () => {
