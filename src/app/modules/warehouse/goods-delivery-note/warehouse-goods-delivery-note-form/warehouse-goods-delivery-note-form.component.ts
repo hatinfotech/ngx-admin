@@ -618,6 +618,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
+          this.onProcessing();
           if (type === 'SALES') {
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
@@ -703,6 +704,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'DEPLOYMENT' }))]);
           }
+          this.onProcessed();
         },
       }
     });

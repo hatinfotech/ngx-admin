@@ -780,6 +780,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
+          this.onProcessing();
           for (let i = 0; i < chooseItems.length; i++) {
             const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
             if (index < 0) {
@@ -821,6 +822,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);
+          this.onProcessed();
         },
         onDialogClose: () => {
         },
