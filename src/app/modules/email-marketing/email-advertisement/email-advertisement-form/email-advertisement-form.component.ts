@@ -41,8 +41,18 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/email-marketing/templates', { filter_Name: params['term'] ? params['term'] : '' });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/email-marketing/templates', { filter_Name: params['term'] ? params['term'] : '' });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/email-marketing/templates', { filter_Name: params['term'] ? params['term'] : '' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -70,8 +80,18 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/email-marketing/gateway-groups', { filter_Name: params['term'] ? params['term'] : '' });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/email-marketing/gateway-groups', { filter_Name: params['term'] ? params['term'] : '' });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/email-marketing/gateway-groups', { filter_Name: params['term'] ? params['term'] : '' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -98,8 +118,18 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/email-marketing/address-lists', { filter_Name: params['term'] ? params['term'] : '' });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/email-marketing/address-lists', { filter_Name: params['term'] ? params['term'] : '' });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/email-marketing/address-lists', { filter_Name: params['term'] ? params['term'] : '' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

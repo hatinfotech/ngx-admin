@@ -47,9 +47,19 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return environment.api.baseUrl + '/contact/contacts?token='
-          + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+      // url: params => {
+      //   return environment.api.baseUrl + '/contact/contacts?token='
+      //     + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/contact/contacts', { search: params['term'] ? params['term'] : '' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -76,9 +86,19 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return environment.api.baseUrl + '/helpdesk/procedures?token='
-          + localStorage.getItem('api_access_token') + '&filter_Name=' + (params['term'] || '');
+      // url: params => {
+      //   return environment.api.baseUrl + '/helpdesk/procedures?token='
+      //     + localStorage.getItem('api_access_token') + '&filter_Name=' + (params['term'] || '');
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/helpdesk/procedures', { filter_Name: params['term'] ? params['term'] : '' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

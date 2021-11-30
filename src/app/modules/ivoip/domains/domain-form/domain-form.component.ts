@@ -34,10 +34,20 @@ export class DomainFormComponent extends IvoipBaseFormComponent<PbxDomainModel> 
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/user/users', {filter_Name: params['term']});
-        // return environment.api.baseUrl + '/contact/contacts?token='
-        //   + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/user/users', {filter_Name: params['term']});
+      //   // return environment.api.baseUrl + '/contact/contacts?token='
+      //   //   + localStorage.getItem('api_access_token') + '&filter_Name=' + params['term'];
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/user/users', {filter_Name: params['term']}).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

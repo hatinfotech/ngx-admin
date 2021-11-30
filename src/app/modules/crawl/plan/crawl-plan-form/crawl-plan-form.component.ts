@@ -50,8 +50,18 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       text: 'text',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/network/proxies', { filter_Name: params['term'], filter_Enabled: true });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/network/proxies', { filter_Name: params['term'], filter_Enabled: true });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/network/proxies', { filter_Name: params['term'], filter_Enabled: true }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

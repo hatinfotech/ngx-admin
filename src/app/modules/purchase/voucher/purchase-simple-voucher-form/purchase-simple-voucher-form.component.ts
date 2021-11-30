@@ -60,8 +60,18 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '' });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '' });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -107,7 +117,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
     callback(this.inputId);
   }
 
-  select2OptionForProduct: Select2Option = {
+  select2OptionForProduct = {
     placeholder: 'Chọn Hàng hoá/dịch vụ...',
     allowClear: true,
     width: '100%',
@@ -118,8 +128,18 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/purchase/products', { includeUnit: true, 'filter_Name': params['term'], limit: 20, includeFeaturePicture: true });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/purchase/products', { includeUnit: true, 'filter_Name': params['term'], limit: 20, includeFeaturePicture: true });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/purchase/products', { includeUnit: true, 'filter_Name': params['term'], limit: 20, includeFeaturePicture: true }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

@@ -60,8 +60,18 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       text: 'text',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '', limit: 40 });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '', limit: 40 });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '', limit: 40 }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -90,8 +100,18 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       text: 'Description',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/chat/rooms', { filter_Description: params['term'] ? params['term'] : '', limit: 20, eq_Type: 'DEPLOYMENT', eq_State: '[ACCEPT,OPEN]' });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/chat/rooms', { filter_Description: params['term'] ? params['term'] : '', limit: 20, eq_Type: 'DEPLOYMENT', eq_State: '[ACCEPT,OPEN]' });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/chat/rooms', { filter_Description: params['term'] ? params['term'] : '', limit: 20, eq_Type: 'DEPLOYMENT', eq_State: '[ACCEPT,OPEN]' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -156,8 +176,18 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

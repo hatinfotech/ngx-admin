@@ -212,8 +212,18 @@ export class CollaboratorEducationArticleFormComponent extends DataManagerFormCo
       text: 'Name',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/collaborator/page-products', { select: "id=>Product,text=>ProductName,Product=>Product,ProductName=>ProductName", limit: 40, includeUnit: false, includeUnits: true, unitPrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/collaborator/page-products', { select: "id=>Product,text=>ProductName,Product=>Product,ProductName=>ProductName", limit: 40, includeUnit: false, includeUnits: true, unitPrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/collaborator/page-products', { select: "id=>Product,text=>ProductName,Product=>Product,ProductName=>ProductName", limit: 40, includeUnit: false, includeUnits: true, unitPrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {

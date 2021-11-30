@@ -202,8 +202,18 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       text: 'Title',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/collaborator/education-articles', { onlyIdText: true, filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/collaborator/education-articles', { onlyIdText: true, filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/collaborator/education-articles', { onlyIdText: true, filter_Title: params['term'] ? params['term'] : '', limit: 20 }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -254,8 +264,18 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
       text: 'text',
     },
     ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/collaborator/publishers', { onlyIdText: true, filter_Name: params['term'] });
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/collaborator/publishers', { onlyIdText: true, filter_Name: params['term'] });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/collaborator/publishers', { onlyIdText: true, filter_Name: params['term'] }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
       delay: 300,
       processResults: (data: any, params: any) => {
