@@ -1,6 +1,6 @@
 // import { Icon } from '../../../lib/custom-element/card-header/card-header.component';
 import { NotificationModel } from './../models/notification.model';
-import { take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { CommonService } from './common.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
@@ -45,7 +45,7 @@ export class NotificationService {
       }
     );
 
-    this.authService.onAuthenticationChange().subscribe(async state => {
+    this.authService.onAuthenticationChange().pipe(filter(state => state === true), take(1)).toPromise().then(async state => {
       console.info('Authentication change with state ' + state);
       if (state) {
 

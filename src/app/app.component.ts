@@ -62,7 +62,7 @@ export class AppComponent implements OnInit {
 
     // translate.use('vi');
 
-    this.authService.onAuthenticationChange().subscribe(state => {
+    this.authService.onAuthenticationChange().pipe(filter(state => state === true), take(1)).toPromise().then(state => {
       if (state) {
         this.commonService.getMenuTree(menuTree => this.menu = this.translateMenu(menuTree));
         // this.commonService.langCode$.subscribe(langCode => {

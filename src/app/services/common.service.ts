@@ -234,7 +234,7 @@ export class CommonService {
 
     }).catch(e => console.error(e));
 
-    this.authService.onAuthenticationChange().subscribe(async state => {
+    this.authService.onAuthenticationChange().pipe(filter(state => state === true), take(1)).toPromise().then(async state => {
       console.info('Authentication change with state ' + state);
       if (state) {
         this.loadPermissionToCache();

@@ -62,6 +62,45 @@ export class ApiService {
         this.setToken(token);
       }
     });
+
+    this.autoRefeshToken();
+    setInterval(() => {
+      this.autoRefeshToken();
+    }, 60000);
+  }
+
+  public tokenExpired(token: string) {
+    const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+    return (Math.floor((new Date).getTime() / 1000)) >= expiry;
+  }
+
+  async refreshToken() {
+    return this.authService.refreshToken('email', { token: this.token }).pipe(take(1)).toPromise().then(authResult => {
+
+      // this.refreshTokenInProgress = false;
+      if (authResult.isSuccess) {
+        this.setToken(authResult.getToken());
+        // this.refreshTokenSubject.next(true);
+        console.log('Refresh token success');
+        return authResult;
+        // return this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token);
+      }
+      this.onUnauthorizied();
+      return false;
+
+    }, catchError((error2: HttpErrorResponse) => {
+      // this.refreshTokenInProgress = false;
+      console.log(error2);
+      return throwError(error2);
+    }));
+  }
+
+  async autoRefeshToken() {
+    const expiry = (JSON.parse(atob(this.getAccessToken().split('.')[1]))).exp;
+    if ((Math.floor((new Date).getTime() / 1000)) >= expiry - 10) {
+      return this.refreshToken();
+    }
+    return true;
   }
 
   getBaseApiUrl() {
@@ -108,7 +147,7 @@ export class ApiService {
   }
 
   buildApiUrl(path: string, params?: Object) {
-    this.refreshToken(() => { });
+    // this.refreshToken(() => { });
     const token = (params && params['token']) || this.getAccessToken();
     let paramsStr = '';
 
@@ -153,12 +192,12 @@ export class ApiService {
     return httpParams;
   }
 
-  refreshToken(success: () => void, error?: () => void) {
-    this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-      console.info(result);
-      success();
-    });
-  }
+  // refreshToken(success: () => void, error?: () => void) {
+  //   this.authService.isAuthenticatedOrRefresh().subscribe(result => {
+  //     console.info(result);
+  //     success();
+  //   });
+  // }
 
   /** Restful api getting request */
   get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
@@ -521,7 +560,7 @@ export class ApiService {
     if (e.status === 401 && !silent) {
       console.warn('API: Bạn chưa đăng nhập');
       // this.router.navigate(['/auth/login']);
-      this.onUnauthorizied();
+      // this.onUnauthorizied();
     }
     if (e.status === 405) {
       // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
@@ -728,8 +767,9 @@ export class ApiInterceptor implements HttpInterceptor {
   }
 
   refreshToken(req: HttpRequest<any>, next: HttpHandler) {
+    console.log('Refresh token...');
     if (this.refreshTokenInProgress) {
-      // console.log('Refresh token in progress');
+      console.log('Refresh token in progress');
       return this.refreshTokenSubject
         .pipe(filter(result => result === true),
           take(1), switchMap(() => this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token)));
@@ -744,7 +784,7 @@ export class ApiInterceptor implements HttpInterceptor {
       if (authResult.isSuccess) {
         this.apiService.setToken(authResult.getToken());
         this.refreshTokenSubject.next(true);
-        // console.log('Refresh token success');
+        console.log('Refresh token success');
         return this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token);
       }
       this.apiService.onUnauthorizied();

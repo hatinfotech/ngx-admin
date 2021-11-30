@@ -553,15 +553,16 @@ export class DynamicLocaleId extends String {
               failure: null, // stay on the same page
             },
           },
-          refreshToken: {
-            method: 'post',
-            endpoint: '/user/login/refresh',
-            requireValidToken: false,
-            redirect: {
-              success: null,
-              failure: null,
-            },
-          }
+          refreshToken: false
+          // refreshToken: {
+          //   method: 'post',
+          //   endpoint: '/user/login/refresh',
+          //   requireValidToken: false,
+          //   redirect: {
+          //     success: null,
+          //     failure: null,
+          //   },
+          // }
           ,
           logout: {
             // ...

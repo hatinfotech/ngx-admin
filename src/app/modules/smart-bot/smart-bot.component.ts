@@ -55,7 +55,7 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
         });
 
         this.authService.onAuthenticationChange().subscribe(status => {
-          if (!status) {
+          if (status === false) {
             this.frameSocket.emit('remove-token', {}).then(rsp => {
               console.debug(rsp);
             });
