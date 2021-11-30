@@ -583,7 +583,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      DateOfSale: [this.commonService.lastVoucherDate, Validators.required],
+      DateOfSale: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),

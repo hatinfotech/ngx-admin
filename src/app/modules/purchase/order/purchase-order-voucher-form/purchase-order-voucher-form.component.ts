@@ -328,7 +328,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      DateOfOrder: [this.commonService.lastVoucherDate, Validators.required],
+      DateOfOrder: [null, Validators.required],
       // RelativeVouchers: [],
       _total: [''],
       RelativeVouchers: [],

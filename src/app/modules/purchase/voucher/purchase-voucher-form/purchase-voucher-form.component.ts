@@ -452,7 +452,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      DateOfPurchase: [this.commonService.lastVoucherDate, Validators.required],
+      DateOfPurchase: [null, Validators.required],
       RelativeVouchers: [],
       _total: [''],
       Details: this.formBuilder.array([]),

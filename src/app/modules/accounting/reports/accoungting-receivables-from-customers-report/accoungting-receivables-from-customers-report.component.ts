@@ -13,6 +13,7 @@ import { AccountingService } from '../../accounting.service';
 import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
 import { AccoungtingReceivablesFromCustomersDetailsReportPrintComponent } from '../print/accoungting-receivables-from-customers-details-report-print/accoungting-receivables-from-customers-details-report-print.component';
 import { AccoungtingReceivablesFromCustomersReportPrintComponent } from '../print/accoungting-receivables-from-customers-report-print/accoungting-receivables-from-customers-report-print.component';
+import { AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent } from '../print/accoungting-receivables-from-customers-vouchers-report-print/accoungting-receivables-from-customers-vouchers-report-print.component';
 
 @Component({
   selector: 'ngx-accoungting-receivables-from-customers-report',
@@ -118,6 +119,24 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
         });
       };
       this.actionButtonList.unshift(detailsReportBtn);
+
+      const vouchersReportBtn = {...summaryReportBtn};
+      vouchersReportBtn.status = 'primary';
+      vouchersReportBtn.name = 'vouchersReport';
+      vouchersReportBtn.label = vouchersReportBtn.title = 'In báo cáo chứng từ';
+      vouchersReportBtn.disabled = () => this.selectedIds.length <= 0;
+      vouchersReportBtn.click = () => {
+        this.commonService.openDialog(AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent, {
+          context: {
+            showLoadinng: true,
+            // title: 'Xem trước',
+            mode: 'print',
+            id: ['all'],
+            objects: this.selectedIds,
+          },
+        });
+      };
+      this.actionButtonList.unshift(vouchersReportBtn);
 
       // const printDebtConfirmBtn = {...summaryReportBtn};
       // printDebtConfirmBtn.status = 'danger';

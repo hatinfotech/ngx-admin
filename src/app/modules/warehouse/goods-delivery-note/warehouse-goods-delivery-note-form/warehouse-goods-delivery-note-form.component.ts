@@ -352,7 +352,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       ContactAddress: [],
       ContactIdentifiedNumber: [],
 
-      DateOfDelivered: [new Date()],
+      DateOfDelivered: [null, Validators.required],
       DeliveryAddress: [''],
       Title: [''],
       Note: [''],

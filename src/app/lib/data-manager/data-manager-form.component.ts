@@ -745,4 +745,18 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     return false;
   }
 
+  validateVoucherDate(control: FormControl, label: string) {
+    // console.log(control);
+    if (control.value instanceof Date) {
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      const controlValue = new Date(control.value.getTime());
+      controlValue.setHours(0, 0, 0, 0); 
+      if (controlValue.getTime() < currentDate.getTime()) {
+        return this.commonService.translateText(label) + ' trước ngày hiện tại';
+      }
+    }
+    return label;
+  }
+
 }

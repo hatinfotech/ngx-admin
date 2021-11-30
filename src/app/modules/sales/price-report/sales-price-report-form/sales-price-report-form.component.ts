@@ -385,7 +385,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      Reported: [''],
+      Reported: [null],
       _total: [''],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),

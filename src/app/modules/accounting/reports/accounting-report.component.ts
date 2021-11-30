@@ -39,8 +39,9 @@ export class AccountingReportComponent extends BaseComponent {
         if (control.value) {
           const currentDate = new Date();
           currentDate.setHours(0, 0, 0, 0);
-          control.value.setHours(0, 0, 0, 0);
-          if (control.value.getTime() < currentDate.getTime()) {
+          const controlValue = new Date(control.value.getTime());
+          controlValue.setHours(0, 0, 0, 0); 
+          if (controlValue.getTime() < currentDate.getTime()) {
             return { invalidName: true, required: true, text: 'trước ngày hiện tại' };
           }
         }

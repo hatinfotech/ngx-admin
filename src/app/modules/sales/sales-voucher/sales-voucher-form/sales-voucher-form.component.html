@@ -99,9 +99,9 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfSale" label="Sales.dateOfSales" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfSale" label="{{validateVoucherDate(formItem.get('DateOfSale'), 'Sales.dateOfSales')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                     <input type="text" [owlDateTime]="DateOfSale" [owlDateTimeTrigger]="DateOfSale" nbInput fullWidth formControlName="DateOfSale" placeholder="{{'Sales.dateOfSales' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfSale></owl-date-time>
+                                    <owl-date-time #DateOfSale [startAt]="this.commonService.lastVoucherDate"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-9">

@@ -357,7 +357,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       ObjectAddress: [''],
       ObjectTaxCode: [''],
       // Currency: ['VND', Validators.required],
-      DateOfVoucher: [this.commonService.lastVoucherDate, Validators.required],
+      DateOfVoucher: [null, Validators.required],
       RelativeVouchers: [''],
       BankAccount: [''],
       Details: this.formBuilder.array([]),

@@ -380,7 +380,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       ContactAddress: [],
       ContactIdentifiedNumber: [],
 
-      DateOfReceipted: [new Date()],
+      DateOfReceipted: [null, Validators.required],
       ReceiptAddress: [''],
       Title: [''],
       Note: [''],

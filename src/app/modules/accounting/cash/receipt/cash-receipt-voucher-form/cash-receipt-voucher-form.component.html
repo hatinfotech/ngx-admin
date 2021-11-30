@@ -45,9 +45,9 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfVoucher" label="Accounting.dateOfReceipt" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
-                                    <input type="text" [owlDateTime]="DateOfVoucher" [owlDateTimeTrigger]="DateOfVoucher" nbInput fullWidth formControlName="DateOfVoucher" placeholder="{{'Common.dateOfReceipt' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfVoucher></owl-date-time>
+                                <ngx-form-group [formGroup]="formItem" name="DateOfVoucher" label="{{validateVoucherDate(formItem.get('DateOfVoucher'), 'Accounting.dateOfReceipt')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                    <input type="text" [owlDateTime]="DateOfVoucher" [owlDateTimeTrigger]="DateOfVoucher" nbInput fullWidth formControlName="DateOfVoucher" placeholder="{{'Accounting.dateOfReceipt' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfVoucher [startAt]="this.commonService.lastVoucherDate"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-8">

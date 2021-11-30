@@ -956,22 +956,26 @@ export class CommonService {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0)
   }
 
+  private _lastVoucherDate: Date;
   get lastVoucherDate(): Date {
-    const tmp: any = localStorage.getItem('Voucher.lastVoucherDate');
+    // const tmp: any = localStorage.getItem('Voucher.lastVoucherDate');
     const now = new Date();
-    let current: Date;
-    if (tmp) current = new Date(tmp);
-    if (!current) {
-      current = now;
-      localStorage.setItem('Voucher.lastVoucherDate', current.toISOString());
+    // let current: Date;
+    // if (tmp) current = new Date(tmp);
+    // if (this._lastVoucherDate) current = this._lastVoucherDate;
+    if (!this._lastVoucherDate) {
+      this._lastVoucherDate = now;
+      // localStorage.setItem('Voucher.lastVoucherDate', current.toISOString());
+      // this._lastVoucherDate = current;
     }
-    current.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
-    return current;
+    this._lastVoucherDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+    return this._lastVoucherDate;
   }
 
   set lastVoucherDate(date: Date) {
     if (date instanceof Date) {
-      localStorage.setItem('Voucher.lastVoucherDate', date.toISOString());
+      // localStorage.setItem('Voucher.lastVoucherDate', date.toISOString());
+      this._lastVoucherDate = date;
     }
   }
 
