@@ -29,18 +29,20 @@ export class AccountingReportComponent extends BaseComponent {
   ) {
     super(commonService, router, apiService, ref);
 
+    const reportFromDate = localStorage.getItem('Accounting.ReportFromDate');
     const reportToDate = localStorage.getItem('Accounting.ReportToDate');
     this.formItem = this.formBuilder.group({
       GlobalAccField1: [null, Validators.required],
       GlobalAccField2: [],
       GlobalAccField3: [],
+      FromDate: [reportToDate ? new Date(parseInt(reportFromDate)) : new Date()],
       ToDate: [reportToDate ? new Date(parseInt(reportToDate)) : new Date(), (control: FormControl) => {
         // console.log(control);
         if (control.value) {
           const currentDate = new Date();
           currentDate.setHours(0, 0, 0, 0);
           const controlValue = new Date(control.value.getTime());
-          controlValue.setHours(0, 0, 0, 0); 
+          controlValue.setHours(0, 0, 0, 0);
           if (controlValue.getTime() < currentDate.getTime()) {
             return { invalidName: true, required: true, text: 'trước ngày hiện tại' };
           }
@@ -48,12 +50,24 @@ export class AccountingReportComponent extends BaseComponent {
         return null;
       }],
     });
+    const fromDateFormConttol = this.formItem.get('FromDate');
     const toDateFormConttol = this.formItem.get('ToDate');
+
+    fromDateFormConttol.valueChanges.pipe(takeUntil(this.destroy$), filter(f => !this.accountingService.reportFromDate$?.value || (f as Date).getTime() != this.accountingService.reportFromDate$?.value.getTime())).subscribe((value: Date) => {
+      console.log(value);
+      this.accountingService.reportFromDate$.next(value);
+      // const currentDate = new Date();
+    });
+
+    this.accountingService.reportFromDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(reportFromDate => {
+      fromDateFormConttol.setValue(reportFromDate);
+    });
+
 
     toDateFormConttol.valueChanges.pipe(takeUntil(this.destroy$), filter(f => !this.accountingService.reportToDate$?.value || (f as Date).getTime() != this.accountingService.reportToDate$?.value.getTime())).subscribe((value: Date) => {
       console.log(value);
       this.accountingService.reportToDate$.next(value);
-      const currentDate = new Date();
+      // const currentDate = new Date();
     });
 
     this.accountingService.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(reportToDate => {

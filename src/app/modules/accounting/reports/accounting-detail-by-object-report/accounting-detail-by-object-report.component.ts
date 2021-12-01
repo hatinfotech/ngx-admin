@@ -266,9 +266,14 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
       params['includeIncrementAmount'] = true;
 
       if (this.accountingService?.reportToDate$?.value) {
-        const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-        const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59, 999);
+        const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+        const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+
+        const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+        const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+        
         params['toDate'] = toDate.toISOString();
+        params['fromDate'] = fromDate.toISOString();
       }
 
       return params;

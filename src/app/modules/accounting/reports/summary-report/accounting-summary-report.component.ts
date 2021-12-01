@@ -90,6 +90,10 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
         console.log(toDate);
         this.refresh();
       });
+      this.accountingService?.reportFromDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(fromDate => {
+        console.log(fromDate);
+        this.refresh();
+      });
 
       return rs;
     });
@@ -205,9 +209,14 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
     params['reportSummary'] = true;
     params['Accounts'] = '111,112,131,141,331,511,632,6421,4222,811,156,1331,3331,4212,,4111,4112,4118,3341,3411,3348,3349,3350,6411,4211,3412,2288';
 
-    const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-    const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59);
+    const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+    const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 999);
+
+    const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+    const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59);
+
     params['toDate'] = toDate.toISOString();
+    params['fromDate'] = fromDate.toISOString();
 
     super.executeGet(params, success, error, complete);
   }

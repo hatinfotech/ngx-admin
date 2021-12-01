@@ -150,8 +150,11 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
 
 
   async getFormData(ids: string[]) {
-    const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-    const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59);
+    const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+    const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+    const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+    const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+
     const promiseAll = [];
     for (const object of this.objects) {
       promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
@@ -161,10 +164,11 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
         includeIncrementAmount: true,
         includeObjectInfo: true,
         balance: 'both',
+        fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
       }).then(data => {
-        const item = { 'ToDate': toDate, 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data };
+        const item = { 'FromDate': fromDate, 'ToDate': toDate, 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data };
         return item;
       }));
     }
@@ -186,8 +190,8 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
       item['TotalCredit'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
-        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] as any);
-        item['TotalCredit'] += parseFloat(detail['GenerateCredit'] as any);
+        item['TotalDebit'] += parseFloat(detail['HeadDebit'] as any) + parseFloat(detail['GenerateDebit'] as any);
+        item['TotalCredit'] += parseFloat(detail['HeadCredit'] as any) + parseFloat(detail['GenerateCredit'] as any);
         // item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
 
         if (detail['IncrementAmount'] >= 0) {

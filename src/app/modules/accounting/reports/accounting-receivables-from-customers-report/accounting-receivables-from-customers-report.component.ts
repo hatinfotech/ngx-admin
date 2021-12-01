@@ -159,6 +159,10 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
         console.log(toDate);
         this.refresh();
       });
+      this.accountingService?.reportFromDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(fromDate => {
+        console.log(fromDate);
+        this.refresh();
+      });
       
       return rs;
     });
@@ -248,9 +252,14 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
   /** Api get funciton */
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
     params['reportReceivablesFromCustomer'] = true;
-    const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-    const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59);
+    const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+    const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+
+    const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+    const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+
     params['toDate'] = toDate.toISOString();
+    params['fromDate'] = fromDate.toISOString();
     super.executeGet(params, success, error, complete);
   }
 
