@@ -739,7 +739,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
     // console.log('Http intercept: ', req.url);
 
-    if (req.url.includes('v1/user/login') || !/^https?:\/\/[^\/]+\/v\d+\//i.test(req.url)) {
+    if (req.url.includes('v1/user/login') || !/\/v\d+\//i.test(req.url)) {
       return next.handle(req);
     }
 
