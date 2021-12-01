@@ -30,7 +30,7 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
   // Smart table
   static filterConfig: any;
   static sortConf: any;
-  static pagingConf = { page: 1, perPage: 40 };
+  protected pagingConf = { display: true, page: 1, perPage: 40 };
 
   totalBalance: { Debit: number, Credit: number } = null;
   tabs: any[];
@@ -40,6 +40,7 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
   @Input() fromDate?: Date;
   @Input() toDate?: Date;
   @Input() report?: string;
+  @Input() balance?: 'debt' | 'credit' | 'both';
 
   constructor(
     public apiService: ApiService,
@@ -104,7 +105,7 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
   rows = [];
 
   loadListSetting(): SmartTableSetting {
-    const settings = this.configSetting({
+    let settings: SmartTableSetting = {
       actions: false,
       columns: {
         VoucherDate: {
@@ -139,6 +140,11 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
           },
           width: '10%',
         },
+        Account: {
+          title: this.commonService.translateText('Accounting.account'),
+          type: 'string',
+          width: '5%',
+        },
         HeadAmount: {
           title: this.commonService.translateText('Accounting.headAmount'),
           type: 'acc-currency',
@@ -154,56 +160,80 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
           type: 'acc-currency',
           width: '10%',
         },
-        // HeadAmount: {
-        //   title: this.commonService.translateText('Accounting.headAmount'),
-        //   type: 'acc-currency',
-        //   width: '10%',
-        // },
-        // GenerateAmount: {
-        //   title: this.commonService.translateText('Accounting.generate'),
-        //   type: 'acc-currency',
-        //   width: '10%',
-        // },
-        IncrementAmount: {
-          title: this.commonService.translateText('Accounting.increment'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        // TailAmount: {
-        //   title: this.commonService.translateText('Accounting.tailAmount'),
-        //   type: 'acc-currency',
-        //   width: '10%',
-        // },
-        Preview: {
-          title: this.commonService.translateText('Common.detail'),
-          type: 'custom',
-          width: '10%',
-          class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'external-link-outline';
-            instance.display = true;
-            instance.status = 'primary';
-            instance.style = 'text-align: right';
-            instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
-            // instance.label = this.commonService.translateText('Common.detail');
-            instance.valueChange.subscribe(value => {
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
-              // this.getFormData([rowData.Code]).then(rs => {
-              //   this.preview(rs);
-              // });
-              this.commonService.previewVoucher(rowData['VoucherType'], rowData['Voucher']);
-            });
-          },
-        }
       },
-    });
+    };
+    if (this.balance == 'debt') {
+      settings.columns['IncrementAmount'] = {
+        title: this.commonService.translateText('Accounting.increment'),
+        type: 'acc-currency',
+        width: '10%',
+      };
+    } else if (this.balance == 'credit') {
+      settings.columns['IncrementAmount'] = {
+        title: this.commonService.translateText('Accounting.increment'),
+        type: 'acc-currency',
+        width: '10%',
+      };
+    } else if (this.balance == 'both') {
+      settings.columns['DebitIncrementAmount'] = {
+        title: this.commonService.translateText('Accounting.tailDebit'),
+        type: 'acc-currency',
+        width: '10%',
+        valuePrepareFunction: (cel: string, row: any) => {
+          if (row.IncrementAmount >= 0) {
+            return row.IncrementAmount;
+          }
+          return '';
+        }
+      };
+      settings.columns['CreditIncrementAmount'] = {
+        title: this.commonService.translateText('Accounting.tailCredit'),
+        type: 'acc-currency',
+        width: '10%',
+        valuePrepareFunction: (cel: string, row: any) => {
+          if (row.IncrementAmount < 0) {
+            return parseFloat(-row.IncrementAmount as any).toString();
+          }
+          return '';
+        }
+      };
+    } else {
+      settings.columns['IncrementAmount'] = {
+        title: this.commonService.translateText('Accounting.increment'),
+        type: 'acc-currency',
+        width: '10%',
+      };
+    }
+    settings.columns['Preview'] = {
+      title: this.commonService.translateText('Common.detail'),
+      type: 'custom',
+      width: '10%',
+      class: 'align-right',
+      renderComponent: SmartTableButtonComponent,
+      onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        instance.iconPack = 'eva';
+        instance.icon = 'external-link-outline';
+        instance.display = true;
+        instance.status = 'primary';
+        instance.style = 'text-align: right';
+        instance.class = 'align-right';
+        instance.title = this.commonService.translateText('Common.preview');
+        // instance.label = this.commonService.translateText('Common.detail');
+        instance.valueChange.subscribe(value => {
+          // instance.icon = value ? 'unlock' : 'lock';
+          // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+          // instance.disabled = value !== 'REQUEST';
+        });
+        instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+          // this.getFormData([rowData.Code]).then(rs => {
+          //   this.preview(rs);
+          // });
+          this.commonService.previewVoucher(rowData['VoucherType'], rowData['Voucher']);
+        });
+      },
+    }
+    settings.pager = this.pagingConf;
+    settings = this.configSetting(settings);
     delete settings.columns['Choose'];
     return settings;
   }
@@ -225,6 +255,9 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
       if (this.accounts) {
         params['eq_Account'] = this.accounts.join(',');
       }
+      if (this.balance) {
+        params['balance'] = this.balance;
+      }
       if (this.report) {
         params[this.report] = true;
       } else {
@@ -245,20 +278,20 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
   }
 
   /** Api get funciton */
-  executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
-    if (this.object) {
-      params['eq_Object'] = this.object;
-    }
-    if (this.accounts) {
-      params['eq_Account'] = this.accounts.join(',');
-    }
-    if (this.report) {
-      params[this.report] = true;
-    } else {
-      params['reportDetailByObject'] = true;
-    }
-    super.executeGet(params, success, error, complete);
-  }
+  // executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
+  //   if (this.object) {
+  //     params['eq_Object'] = this.object;
+  //   }
+  //   if (this.accounts) {
+  //     params['eq_Account'] = this.accounts.join(',');
+  //   }
+  //   if (this.report) {
+  //     params[this.report] = true;
+  //   } else {
+  //     params['reportDetailByObject'] = true;
+  //   }
+  //   super.executeGet(params, success, error, complete);
+  // }
 
   // getList(callback: (list: AccountModel[]) => void) {
   //   super.getList((rs) => {

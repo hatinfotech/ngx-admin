@@ -100,6 +100,7 @@ import { PageFormComponent } from './modules/page/page-form/page-form.component'
 import { PageListComponent } from './modules/page/page-list/page-list.component';
 import { CollaboratorCommissionPaymentListComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-list/collaborator-commission-payment-list.component';
 import { CollaboratorAwardListComponent } from './modules/collaborator/award/collaborator-award-list/collaborator-award-list.component';
+import { AccountingCashFlowReportComponent } from './modules/accounting/reports/accounting-cash-flow-report/accounting-cash-flow-report.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -595,6 +596,13 @@ const routes: Routes = [
       {
         path: 'summary',
         component: AccountingSummaryReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'cash-flow',
+        component: AccountingCashFlowReportComponent,
         data: {
           reuse: true,
         },

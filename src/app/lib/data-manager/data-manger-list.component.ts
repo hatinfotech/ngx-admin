@@ -39,7 +39,8 @@ export class SmartTableSetting {
     confirmDelete: boolean,
   };
   pager?: {
-    display: boolean,
+    display?: boolean,
+    page?: number,
     perPage: number,
   };
   columns: {

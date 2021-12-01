@@ -45,18 +45,18 @@
                         <table style="width: 100%;" class="print-voucher-detail-table ">
                             <thead class="print-voucher-detail-header">
                                 <td>#</td>
+                                <td class="" style="white-space: nowrap">{{'Common.dateOfVoucher' | translate | headtitlecase}}</td>
                                 <td class="" style="white-space: nowrap">{{'Common.voucher' | translate | headtitlecase}}</td>
                                 <td class="" style="white-space: nowrap">{{'Common.description' | translate | headtitlecase}}</td>
-                                <td class="" style="white-space: nowrap">{{'Common.dateOfVoucher' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Giá trị hóa đơn' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Số đã thu' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Biến động công nợ' | translate | headtitlecase}}</td>
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
+                                <td class="nowrap">{{detail.VoucherDate | date:'short'}}</td>
                                 <td>{{detail.Voucher}}</td>
                                 <td>{{detail.Voucher === 'OPN' && 'Đầu kỳ' || detail.VoucherDescription}}</td>
-                                <td class="nowrap">{{detail.VoucherDate | date:'short'}}</td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateDebit)"></td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateCredit)"></td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
