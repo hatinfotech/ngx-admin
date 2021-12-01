@@ -1,4 +1,3 @@
-import { ProductUnitModel } from './../models/product.model';
 import { diacritic } from './../lib/diacritic';
 import { timezones } from './../lib/timezones';
 import { HelpdeskTicketModel } from './../models/helpdesk.model';
@@ -25,7 +24,6 @@ import { environment } from '../../environments/environment';
 import { MySocket } from '../lib/nam-socket/my-socket';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { filter, take } from 'rxjs/operators';
-import { UnitModel } from '../models/unit.model';
 import { DeviceModel } from '../models/device.model';
 import { v4 as uuidv4 } from 'uuid';
 import { NotificationService } from './notification.service';

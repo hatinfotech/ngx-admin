@@ -220,7 +220,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
               // this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-                this.preview([rowData]);
+              this.preview([rowData]);
               // });
               // this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
               //   this.preview(rs);
@@ -287,9 +287,9 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
-              this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-                this.preview(rs);
-              });
+              // this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
+              this.preview([rowData]);
+              // });
               // this.getFormData([rowData.Code]).then(rs => {
               //   this.preview(rs);
               // });

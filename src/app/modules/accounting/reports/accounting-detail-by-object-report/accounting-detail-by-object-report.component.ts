@@ -92,10 +92,10 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
 
       // Auto refresh list on reportToDate changed
-      this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
-        console.log(toDate);
-        this.refresh();
-      });
+      // this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
+      //   console.log(toDate);
+      //   this.refresh();
+      // });
 
       return rs;
     });
@@ -267,7 +267,7 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
 
       if (this.accountingService?.reportToDate$?.value) {
         const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-        const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 21, 0, 0);
+        const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59, 999);
         params['toDate'] = toDate.toISOString();
       }
 
