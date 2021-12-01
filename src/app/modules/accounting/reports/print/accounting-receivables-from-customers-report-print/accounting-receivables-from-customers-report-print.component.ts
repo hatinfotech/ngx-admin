@@ -1,6 +1,6 @@
 import { AccountingService } from '../../../accounting.service';
-import { DatePipe, CurrencyPipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { environment } from '../../../../../../environments/environment';
@@ -13,30 +13,27 @@ import { CommonService } from '../../../../../services/common.service';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
-  selector: 'ngx-accoungting-receivables-from-customers-vouchers-report-print',
-  templateUrl: './accoungting-receivables-from-customers-vouchers-report-print.component.html',
-  styleUrls: ['./accoungting-receivables-from-customers-vouchers-report-print.component.scss'],
-  providers: [CurrencyPipe]
+  selector: 'ngx-accounting-receivables-from-customers-report-print',
+  templateUrl: './accounting-receivables-from-customers-report-print.component.html',
+  styleUrls: ['./accounting-receivables-from-customers-report-print.component.scss']
 })
-export class AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent extends DataManagerPrintComponent<CashVoucherModel> implements OnInit {
+export class AccountingReceivablesFromCustomersReportPrintComponent extends DataManagerPrintComponent<CashVoucherModel> implements OnInit {
 
   /** Component name */
-  componentName = 'AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent';
-  title: string = 'Chi Tiết Công Nợ Phải Thu Theo Hóa Đơn';
+  componentName = 'AccountingReceivablesFromCustomersReportPrintComponent';
+  title: string = 'Tổng Hợp Công Nợ Phải Thu';
   apiPath = '/accounting/reports';
   // approvedConfirm?: boolean;
   env = environment;
   processMapList: ProcessMap[] = [];
   // formDialog = CashPaymentVoucherFormComponent;
-  @Input() objects: string[];
 
   constructor(
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent>,
+    public ref: NbDialogRef<AccountingReceivablesFromCustomersReportPrintComponent>,
     private datePipe: DatePipe,
-    private currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
     super(commonService, router, apiService, ref);
@@ -145,24 +142,17 @@ export class AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent ex
   async getFormData(ids: string[]) {
     const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
     const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59);
-    const promiseAll = [];
-    for(const object of this.objects) {
-      promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
-        reportVoucherByAccountAndObject: true,
-        eq_Account: '131',
-        eq_Object: object,
-        includeIncrementAmount: true,
-        includeObjectInfo: true,
-        toDate: toDate.toISOString(),
-        limit: 'nolimit',
-      }).then(data => {
-        const item = { 'ToDate': toDate, 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data };
-        return item;
-      }));
-    }
-    return Promise.all(promiseAll).then(all => {
-      this.summaryCalculate(all);
-      return all;
+    return this.apiService.getPromise<any[]>(this.apiPath, {
+      reportReceivablesFromCustomer: true,
+      toDate: toDate.toISOString(),
+      limit: 'nolimit',
+      excludeZeroDebt: true,
+      includeObjectInfo: true,
+      sort_ObjectName: 'asc'
+    }).then(data => {
+      const list = [{ 'ToDate': toDate, Details: data }];
+      this.summaryCalculate(list);
+      return list;
     });
   }
 
@@ -174,27 +164,13 @@ export class AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent ex
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;
-      item['TotalDebit'] = 0;
-      item['TotalCredit'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
-        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] as any);
-        item['TotalCredit'] += parseFloat(detail['GenerateCredit'] as any);
-        item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
+        item['Total'] += parseFloat(detail['TailAmount'] as any);
       }
       //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
     }
     return data;
-  }
-
-  renderCurrency(money: number) {
-    if(typeof money == 'undefined' || money === null) return this.currencyPipe.transform(0, 'VND');
-    if(money < 0) {
-      let text = this.currencyPipe.transform(-money, 'VND');
-      return `<span class="text-color-danger">(${text})</span>`;
-    } else {
-      return this.currencyPipe.transform(money, 'VND');
-    }
   }
 
 }

@@ -84,10 +84,10 @@ import { AccountingReportComponent } from './modules/accounting/reports/accounti
 import { AccountingLiabilitiesReportComponent } from './modules/accounting/reports/accounting-liabilities-report/accounting-liabilities-report.component';
 import { AccountingReceivablesReportComponent } from './modules/accounting/reports/accounting-receivables-report/accounting-receivables-report.component';
 import { AccountingSummaryReportComponent } from './modules/accounting/reports/summary-report/accounting-summary-report.component';
-import { AccoungtingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accoungting-receivables-from-employee-report/accoungting-receivables-from-employee-report.component';
-import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-receivables-from-customers-report/accoungting-receivables-from-customers-report.component';
-import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
-import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { AccountingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accounting-receivables-from-employee-report/accounting-receivables-from-employee-report.component';
+import { AccountingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accounting-receivables-from-customers-report/accounting-receivables-from-customers-report.component';
+import { AccountingProfitReportComponent } from './modules/accounting/reports/accounting-profit-report/accounting-profit-report.component';
+import { AccountingDetailByObjectReportComponent } from './modules/accounting/reports/accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 import { AccMasterBookListComponent } from './modules/accounting/master-book/acc-master-book-list/acc-master-book-list.component';
 import { ContactListComponent } from './modules/contact/contact/contact-list/contact-list.component';
 import { ClusterAuthorizedKeyListComponent } from './modules/cluster/authorized-key/cluster-authorized-key-list/cluster-authorized-key-list.component';
@@ -623,21 +623,21 @@ const routes: Routes = [
       },
       {
         path: 'receivables-from-employee-report',
-        component: AccoungtingReceivablesFromEmployeeReportComponent,
+        component: AccountingReceivablesFromEmployeeReportComponent,
         data: {
           reuse: true,
         },
       },
       {
         path: 'receivables-from-customers-report',
-        component: AccoungtingReceivablesFromCustomersReportComponent,
+        component: AccountingReceivablesFromCustomersReportComponent,
         data: {
           reuse: true,
         },
       },
       {
         path: 'profit-report',
-        component: AccoungtingProfitReportComponent,
+        component: AccountingProfitReportComponent,
         data: {
           reuse: true,
         },
@@ -646,7 +646,7 @@ const routes: Routes = [
   },
   {
     path: 'accounting/reports/detail-by-object-report',
-    component: AccoungtingDetailByObjectReportComponent,
+    component: AccountingDetailByObjectReportComponent,
     data: {
       reuse: true,
     },

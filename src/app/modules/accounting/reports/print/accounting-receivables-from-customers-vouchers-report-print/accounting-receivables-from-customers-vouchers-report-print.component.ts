@@ -13,16 +13,16 @@ import { CommonService } from '../../../../../services/common.service';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
-  selector: 'ngx-accoungting-receivables-from-customers-details-report-print',
-  templateUrl: './accoungting-receivables-from-customers-details-report-print.component.html',
-  styleUrls: ['./accoungting-receivables-from-customers-details-report-print.component.scss'],
+  selector: 'ngx-accounting-receivables-from-customers-vouchers-report-print',
+  templateUrl: './accounting-receivables-from-customers-vouchers-report-print.component.html',
+  styleUrls: ['./accounting-receivables-from-customers-vouchers-report-print.component.scss'],
   providers: [CurrencyPipe]
 })
-export class AccoungtingReceivablesFromCustomersDetailsReportPrintComponent extends DataManagerPrintComponent<CashVoucherModel> implements OnInit {
+export class AccountingReceivablesFromCustomersVoucherssReportPrintComponent extends DataManagerPrintComponent<CashVoucherModel> implements OnInit {
 
   /** Component name */
-  componentName = 'AccoungtingReceivablesFromCustomersDetailsReportPrintComponent';
-  title: string = 'Chi Tiết Công Nợ Phải Thu';
+  componentName = 'AccountingReceivablesFromCustomersVoucherssReportPrintComponent';
+  title: string = 'Chi Tiết Công Nợ Phải Thu Theo Hóa Đơn';
   apiPath = '/accounting/reports';
   // approvedConfirm?: boolean;
   env = environment;
@@ -34,7 +34,7 @@ export class AccoungtingReceivablesFromCustomersDetailsReportPrintComponent exte
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<AccoungtingReceivablesFromCustomersDetailsReportPrintComponent>,
+    public ref: NbDialogRef<AccountingReceivablesFromCustomersVoucherssReportPrintComponent>,
     private datePipe: DatePipe,
     private currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
@@ -148,7 +148,7 @@ export class AccoungtingReceivablesFromCustomersDetailsReportPrintComponent exte
     const promiseAll = [];
     for(const object of this.objects) {
       promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
-        reportDetailByAccountAndObject: true,
+        reportVoucherByAccountAndObject: true,
         eq_Account: '131',
         eq_Object: object,
         includeIncrementAmount: true,
@@ -174,8 +174,12 @@ export class AccoungtingReceivablesFromCustomersDetailsReportPrintComponent exte
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;
+      item['TotalDebit'] = 0;
+      item['TotalCredit'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
+        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] as any);
+        item['TotalCredit'] += parseFloat(detail['GenerateCredit'] as any);
         item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
       }
       //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];

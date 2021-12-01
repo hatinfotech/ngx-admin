@@ -15,7 +15,6 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
-import { CashReceiptVoucherPrintComponent } from '../../cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 
 @Component({

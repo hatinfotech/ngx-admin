@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
-import { OtherBusinessVoucherModel, OtherBusinessVoucherDetailModel } from './../../../../models/accounting.model';
-import { AccountingOtherBusinessVoucherFormComponent } from './../../other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
+import { OtherBusinessVoucherModel, OtherBusinessVoucherDetailModel } from '../../../../models/accounting.model';
+import { AccountingOtherBusinessVoucherFormComponent } from '../../other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,23 +11,23 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 import { CurrencyPipe } from '@angular/common';
 import { Icon } from '../../../../lib/custom-element/card-header/card-header.component';
 import { ActionControl, ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { AccountingService } from '../../accounting.service';
 
 @Component({
-  selector: 'ngx-accoungting-profit-report',
-  templateUrl: './accoungting-profit-report.component.html',
-  styleUrls: ['./accoungting-profit-report.component.scss'],
+  selector: 'ngx-accounting-profit-report',
+  templateUrl: './accounting-profit-report.component.html',
+  styleUrls: ['./accounting-profit-report.component.scss'],
   providers: [
     CurrencyPipe,
   ]
 })
-export class AccoungtingProfitReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
+export class AccountingProfitReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'AccoungtingProfitReportComponent';
+  componentName: string = 'AccountingProfitReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
   idKey = 'Code';
@@ -50,7 +50,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccoungtingProfitReportComponent>,
+    public ref: NbDialogRef<AccountingProfitReportComponent>,
     public currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
@@ -288,7 +288,7 @@ export class AccoungtingProfitReportComponent extends DataManagerListComponent<A
   }
 
   openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
+    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,

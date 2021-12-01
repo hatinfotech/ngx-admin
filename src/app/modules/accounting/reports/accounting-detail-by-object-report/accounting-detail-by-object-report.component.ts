@@ -13,13 +13,13 @@ import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-
 import { AccountingService } from '../../accounting.service';
 
 @Component({
-  selector: 'ngx-accoungting-detail-by-object-report',
-  templateUrl: './accoungting-detail-by-object-report.component.html',
-  styleUrls: ['./accoungting-detail-by-object-report.component.scss']
+  selector: 'ngx-accounting-detail-by-object-report',
+  templateUrl: './accounting-detail-by-object-report.component.html',
+  styleUrls: ['./accounting-detail-by-object-report.component.scss']
 })
-export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
+export class AccountingDetailByObjectReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'AccoungtingDetailByObjectReportComponent';
+  componentName: string = 'AccountingDetailByObjectReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
   idKey = ['Voucher', 'WriteNo'];
@@ -49,7 +49,7 @@ export class AccoungtingDetailByObjectReportComponent extends ServerDataManagerL
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccoungtingDetailByObjectReportComponent>,
+    public ref: NbDialogRef<AccountingDetailByObjectReportComponent>,
     public accountingService: AccountingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);

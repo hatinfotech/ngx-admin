@@ -11,7 +11,7 @@ import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
 import { AccountingService } from '../../accounting.service';
-import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 import { AccountingReportComponent } from '../accounting-report.component';
 
 @Component({
@@ -204,7 +204,7 @@ export class AccountingReceivablesReportComponent extends DataManagerListCompone
   }
 
   openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
+    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,

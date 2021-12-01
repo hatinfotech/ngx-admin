@@ -10,19 +10,19 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccountingService } from '../../accounting.service';
-import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
-import { AccoungtingReceivablesFromCustomersDetailsReportPrintComponent } from '../print/accoungting-receivables-from-customers-details-report-print/accoungting-receivables-from-customers-details-report-print.component';
-import { AccoungtingReceivablesFromCustomersReportPrintComponent } from '../print/accoungting-receivables-from-customers-report-print/accoungting-receivables-from-customers-report-print.component';
-import { AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent } from '../print/accoungting-receivables-from-customers-vouchers-report-print/accoungting-receivables-from-customers-vouchers-report-print.component';
+import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
+import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from '../print/accounting-receivables-from-customers-details-report-print/accounting-receivables-from-customers-details-report-print.component';
+import { AccountingReceivablesFromCustomersReportPrintComponent } from '../print/accounting-receivables-from-customers-report-print/accounting-receivables-from-customers-report-print.component';
+import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from '../print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
 
 @Component({
-  selector: 'ngx-accoungting-receivables-from-customers-report',
-  templateUrl: './accoungting-receivables-from-customers-report.component.html',
-  styleUrls: ['./accoungting-receivables-from-customers-report.component.scss']
+  selector: 'ngx-accounting-receivables-from-customers-report',
+  templateUrl: './accounting-receivables-from-customers-report.component.html',
+  styleUrls: ['./accounting-receivables-from-customers-report.component.scss']
 })
-export class AccoungtingReceivablesFromCustomersReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
+export class AccountingReceivablesFromCustomersReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'AccoungtingReceivablesFromCustomersReportComponent';
+  componentName: string = 'AccountingReceivablesFromCustomersReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
   idKey = 'Object';
@@ -45,7 +45,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccoungtingReceivablesFromCustomersReportComponent>,
+    public ref: NbDialogRef<AccountingReceivablesFromCustomersReportComponent>,
     public accountingService: AccountingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
@@ -92,7 +92,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
       summaryReportBtn.status = 'info';
       summaryReportBtn.disabled = () => false;
       summaryReportBtn.click = () => {
-        this.commonService.openDialog(AccoungtingReceivablesFromCustomersReportPrintComponent, {
+        this.commonService.openDialog(AccountingReceivablesFromCustomersReportPrintComponent, {
           context: {
             showLoadinng: true,
             // title: 'Xem trước',
@@ -108,7 +108,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
       detailsReportBtn.label = detailsReportBtn.title = 'In báo cáo chi tiết';
       detailsReportBtn.disabled = () => this.selectedIds.length <= 0;
       detailsReportBtn.click = () => {
-        this.commonService.openDialog(AccoungtingReceivablesFromCustomersDetailsReportPrintComponent, {
+        this.commonService.openDialog(AccountingReceivablesFromCustomersDetailsReportPrintComponent, {
           context: {
             showLoadinng: true,
             // title: 'Xem trước',
@@ -126,7 +126,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
       vouchersReportBtn.label = vouchersReportBtn.title = 'In báo cáo chứng từ';
       vouchersReportBtn.disabled = () => this.selectedIds.length <= 0;
       vouchersReportBtn.click = () => {
-        this.commonService.openDialog(AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent, {
+        this.commonService.openDialog(AccountingReceivablesFromCustomersVoucherssReportPrintComponent, {
           context: {
             showLoadinng: true,
             // title: 'Xem trước',
@@ -143,7 +143,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
       // printDebtConfirmBtn.name = 'detailReport';
       // printDebtConfirmBtn.label = printDebtConfirmBtn.title = 'In phiếu xác nhận công nợ';
       // printDebtConfirmBtn.click = () => {
-      //   this.commonService.openDialog(AccoungtingReceivablesFromCustomersReportPrintComponent, {
+      //   this.commonService.openDialog(AccountingReceivablesFromCustomersReportPrintComponent, {
       //     context: {
       //       showLoadinng: true,
       //       // title: 'Xem trước',
@@ -285,7 +285,7 @@ export class AccoungtingReceivablesFromCustomersReportComponent extends DataMana
   }
 
   openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
+    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,

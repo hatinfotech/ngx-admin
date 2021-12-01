@@ -11,16 +11,16 @@ import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
 import { AccountingService } from '../../accounting.service';
-import { AccoungtingDetailByObjectReportComponent } from '../accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
+import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 
 @Component({
-  selector: 'ngx-accoungting-receivables-from-employee-report',
-  templateUrl: './accoungting-receivables-from-employee-report.component.html',
-  styleUrls: ['./accoungting-receivables-from-employee-report.component.scss']
+  selector: 'ngx-accounting-receivables-from-employee-report',
+  templateUrl: './accounting-receivables-from-employee-report.component.html',
+  styleUrls: ['./accounting-receivables-from-employee-report.component.scss']
 })
-export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
+export class AccountingReceivablesFromEmployeeReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'AccoungtingReceivablesFromEmployeeReportComponent';
+  componentName: string = 'AccountingReceivablesFromEmployeeReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
   idKey = 'Code';
@@ -43,7 +43,7 @@ export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManag
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccoungtingReceivablesFromEmployeeReportComponent>,
+    public ref: NbDialogRef<AccountingReceivablesFromEmployeeReportComponent>,
     public accountingService: AccountingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
@@ -217,7 +217,7 @@ export class AccoungtingReceivablesFromEmployeeReportComponent extends DataManag
   }
 
   openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(AccoungtingDetailByObjectReportComponent, {
+    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,

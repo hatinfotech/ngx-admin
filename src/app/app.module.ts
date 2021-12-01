@@ -71,10 +71,10 @@ import { AccMasterBookListComponent } from './modules/accounting/master-book/acc
 import { AccountingOtherBusinessVoucherFormComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { AccountingOtherBusinessVoucherListComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-list/accounting-other-business-voucher-list.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from './modules/accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
-import { AccoungtingDetailByObjectReportComponent } from './modules/accounting/reports/accoungting-detail-by-object-report/accoungting-detail-by-object-report.component';
-import { AccoungtingProfitReportComponent } from './modules/accounting/reports/accoungting-profit-report/accoungting-profit-report.component';
-import { AccoungtingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accoungting-receivables-from-customers-report/accoungting-receivables-from-customers-report.component';
-import { AccoungtingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accoungting-receivables-from-employee-report/accoungting-receivables-from-employee-report.component';
+import { AccountingDetailByObjectReportComponent } from './modules/accounting/reports/accounting-detail-by-object-report/accounting-detail-by-object-report.component';
+import { AccountingProfitReportComponent } from './modules/accounting/reports/accounting-profit-report/accounting-profit-report.component';
+import { AccountingReceivablesFromCustomersReportComponent } from './modules/accounting/reports/accounting-receivables-from-customers-report/accounting-receivables-from-customers-report.component';
+import { AccountingReceivablesFromEmployeeReportComponent } from './modules/accounting/reports/accounting-receivables-from-employee-report/accounting-receivables-from-employee-report.component';
 import { AccountingLiabilitiesReportComponent } from './modules/accounting/reports/accounting-liabilities-report/accounting-liabilities-report.component';
 import { AccountingReceivablesReportComponent } from './modules/accounting/reports/accounting-receivables-report/accounting-receivables-report.component';
 import { AccountingReportComponent } from './modules/accounting/reports/accounting-report.component';
@@ -228,12 +228,12 @@ import { CollaboratorOrderTeleCommitFormComponent } from './modules/collaborator
 import { CollaboratorEducationArticleListComponent } from './modules/collaborator/education-article/education-article-list/collaborator-education-article-list.component';
 import { CollaboratorEducationArticleFormComponent } from './modules/collaborator/education-article/education-article-form/collaborator-education-article-form.component';
 import { CollaboratorEducationArticlePrintComponent } from './modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
-import { AccoungtingReceivablesFromCustomersReportPrintComponent } from './modules/accounting/reports/print/accoungting-receivables-from-customers-report-print/accoungting-receivables-from-customers-report-print.component';
-import { AccoungtingReceivablesFromCustomersDetailsReportPrintComponent } from './modules/accounting/reports/print/accoungting-receivables-from-customers-details-report-print/accoungting-receivables-from-customers-details-report-print.component';
+import { AccountingReceivablesFromCustomersReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-report-print/accounting-receivables-from-customers-report-print.component';
+import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-details-report-print/accounting-receivables-from-customers-details-report-print.component';
 import { AccountingLiabilitiesReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-report-print/accounting-liabilities-report-print.component';
 import { AccountingLiabilitiesDetailsReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-details-report-print/accounting-liabilities-details-report-print.component';
 import { MasterPriceTableQrCodePrintComponent } from './modules/sales/master-price-table/master-price-table-qrcode-print/master-price-table-qrcode-print.component';
-import { AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent } from './modules/accounting/reports/print/accoungting-receivables-from-customers-vouchers-report-print/accoungting-receivables-from-customers-vouchers-report-print.component';
+import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
 import { AccountingObjectCashFlowReportPrintComponent } from './modules/accounting/reports/print/accounting-object-cash-flow-report-print/accounting-object-cash-flow-report-print.component';
 import { AccountingCashFlowReportComponent } from './modules/accounting/reports/accounting-cash-flow-report/accounting-cash-flow-report.component';
 
@@ -337,10 +337,10 @@ export class DynamicLocaleId extends String {
     AccountingLiabilitiesReportComponent,
     AccountingReceivablesReportComponent,
     AccountingSummaryReportComponent,
-    AccoungtingReceivablesFromCustomersReportComponent,
-    AccoungtingReceivablesFromEmployeeReportComponent,
-    AccoungtingProfitReportComponent,
-    AccoungtingDetailByObjectReportComponent,
+    AccountingReceivablesFromCustomersReportComponent,
+    AccountingReceivablesFromEmployeeReportComponent,
+    AccountingProfitReportComponent,
+    AccountingDetailByObjectReportComponent,
     AccountingOtherBusinessVoucherListComponent,
     AccountingOtherBusinessVoucherFormComponent,
     AccountingOtherBusinessVoucherPrintComponent,
@@ -353,9 +353,9 @@ export class DynamicLocaleId extends String {
     AccMasterBookHeadAmountComponent,
     AccMasterBookHeadObjectAmountComponent,
     AccMasterBookHeadBankAccountAmountComponent,
-    AccoungtingReceivablesFromCustomersReportPrintComponent,
-    AccoungtingReceivablesFromCustomersDetailsReportPrintComponent,
-    AccoungtingReceivablesFromCustomersVoucherssReportPrintComponent,
+    AccountingReceivablesFromCustomersReportPrintComponent,
+    AccountingReceivablesFromCustomersDetailsReportPrintComponent,
+    AccountingReceivablesFromCustomersVoucherssReportPrintComponent,
     AccountingObjectCashFlowReportPrintComponent,
     AccountingCashFlowReportComponent,
     AccountingLiabilitiesReportPrintComponent,
