@@ -101,6 +101,7 @@ import { PageListComponent } from './modules/page/page-list/page-list.component'
 import { CollaboratorCommissionPaymentListComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-list/collaborator-commission-payment-list.component';
 import { CollaboratorAwardListComponent } from './modules/collaborator/award/collaborator-award-list/collaborator-award-list.component';
 import { AccountingCashFlowReportComponent } from './modules/accounting/reports/accounting-cash-flow-report/accounting-cash-flow-report.component';
+import { AccountingDashboardComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -517,6 +518,14 @@ const routes: Routes = [
     path: 'accounting/cash-receipt-voucher/list',
     canActivate: [AuthGuardService],
     component: CashReceiptVoucherListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'accounting/dashboard',
+    canActivate: [AuthGuardService],
+    component: AccountingDashboardComponent,
     data: {
       reuse: true,
     },

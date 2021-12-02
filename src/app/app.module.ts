@@ -236,6 +236,9 @@ import { MasterPriceTableQrCodePrintComponent } from './modules/sales/master-pri
 import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
 import { AccountingObjectCashFlowReportPrintComponent } from './modules/accounting/reports/print/accounting-object-cash-flow-report-print/accounting-object-cash-flow-report-print.component';
 import { AccountingCashFlowReportComponent } from './modules/accounting/reports/accounting-cash-flow-report/accounting-cash-flow-report.component';
+import { AccountingDashboardComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard.component';
+import { AccountingRevenueStatisticsComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard-statistics.component';
+import { AccountingMostOfDebtComponent } from './modules/accounting/accounting-dashboard/accounting-most-of-debt/accounting-most-of-debt.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -360,6 +363,9 @@ export class DynamicLocaleId extends String {
     AccountingCashFlowReportComponent,
     AccountingLiabilitiesReportPrintComponent,
     AccountingLiabilitiesDetailsReportPrintComponent,
+    AccountingDashboardComponent,
+    AccountingRevenueStatisticsComponent,
+    AccountingMostOfDebtComponent,
 
 
     // Deployment components
