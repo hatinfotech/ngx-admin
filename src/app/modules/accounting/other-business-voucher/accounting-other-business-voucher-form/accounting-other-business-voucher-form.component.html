@@ -50,9 +50,9 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfVoucher" label="Accounting.dateOfReceipt" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" [owlDateTime]="DateOfVoucher" [owlDateTimeTrigger]="DateOfVoucher" nbInput fullWidth formControlName="DateOfVoucher" placeholder="{{'Common.dateOfReceipt' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfVoucher></owl-date-time>
+                                <ngx-form-group [formGroup]="formItem" name="DateOfVoucher" label="Accounting.voucherDate" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" [owlDateTime]="DateOfVoucher" [owlDateTimeTrigger]="DateOfVoucher" nbInput fullWidth formControlName="DateOfVoucher" placeholder="{{'Accounting.voucherDate' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfVoucher [startAt]="formItem.get('DateOfVoucher')?.value || this.commonService.lastVoucherDate"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">

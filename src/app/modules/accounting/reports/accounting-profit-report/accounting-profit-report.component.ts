@@ -259,7 +259,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
     params['reportProfit'] = true;
     if (this.accountingService?.reportToDate$?.value) {
       const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-      const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 21, 0, 0);
+      const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 25, 59, 59, 999);
       params['toDate'] = toDate.toISOString();
     }
 

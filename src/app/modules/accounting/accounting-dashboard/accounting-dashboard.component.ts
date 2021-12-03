@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { ProductGroupModel } from '../../../models/product.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonService } from '../../../services/common.service';
@@ -18,7 +19,8 @@ interface CardSettings {
 @Component({
   selector: 'ngx-accounting-dashboard',
   templateUrl: './accounting-dashboard.component.html',
-  styleUrls: ['./accounting-dashboard.component.scss']
+  styleUrls: ['./accounting-dashboard.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class AccountingDashboardComponent implements OnDestroy {
 
@@ -37,6 +39,7 @@ export class AccountingDashboardComponent implements OnDestroy {
   orderStatisticsData: {};
   publisherRegisteredStatisticsData: {};
   options: any;
+  costAndRevenueStatisticsDataOptions: any;
   colors: any;
   chartjs: any;
 
@@ -50,8 +53,8 @@ export class AccountingDashboardComponent implements OnDestroy {
     NetVenueAmount?: number,
   };
 
-  publishers = [];
-  products = [];
+  customerReceivableDebt = [];
+  liabilitityDebt = [];
 
   constructor(
     private themeService: NbThemeService,
@@ -60,6 +63,7 @@ export class AccountingDashboardComponent implements OnDestroy {
     public formBuilder: FormBuilder,
     public accountingService: AccountingService,
     public apiService: ApiService,
+    public currencyPipe: CurrencyPipe,
   ) {
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
@@ -87,14 +91,14 @@ export class AccountingDashboardComponent implements OnDestroy {
                 display: true,
                 scaleLabel: {
                   display: true,
-                  labelString: 'Month',
+                  labelString: 'Thời gian',
                 },
                 gridLines: {
                   display: true,
                   color: this.chartjs.axisLineColor,
                 },
                 ticks: {
-                  fontColor: this.chartjs.textColor,
+                  fontColor: this.chartjs.textColor
                 },
               },
             ],
@@ -103,7 +107,7 @@ export class AccountingDashboardComponent implements OnDestroy {
                 display: true,
                 scaleLabel: {
                   display: true,
-                  labelString: 'Value',
+                  labelString: 'Giá trị',
                 },
                 gridLines: {
                   display: true,
@@ -111,11 +115,25 @@ export class AccountingDashboardComponent implements OnDestroy {
                 },
                 ticks: {
                   fontColor: this.chartjs.textColor,
+                  callback: (value, index, values) => {
+                    return this.currencyPipe.transform(value || 0, 'VND')
+                  }
                 },
               },
             ],
           },
+          tooltips: {
+            callbacks: {
+                label: (tooltipItem, data) => {
+                    return this.currencyPipe.transform(tooltipItem.yLabel, 'VND');
+                }
+            }
+        }
         };
+        // this.costAndRevenueStatisticsDataOptions = {
+        //   ...this.options,
+
+        // };
       });
 
     this.solarService.getSolarData()
@@ -130,8 +148,8 @@ export class AccountingDashboardComponent implements OnDestroy {
 
     // const currentDate = new Date();
     this.formItem = this.formBuilder.group({
-      DateReport: ['DAY', Validators.required],
-      DateRange: [this.dateReportList.find(f => f.id === 'DAY').range],
+      DateReport: ['MONTH', Validators.required],
+      DateRange: [this.dateReportList.find(f => f.id === 'MONTH').range],
       Page: [[]],
       ProductGroup: { value: '', disabled: true },
     });
@@ -140,9 +158,9 @@ export class AccountingDashboardComponent implements OnDestroy {
       this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
     });
 
-    // setTimeout(() => {
-    //   this.refresh();
-    // }, 1000);
+    setTimeout(() => {
+      this.refresh();
+    }, 1000);
     this.formItem.valueChanges.subscribe(() => {
       this.refresh();
     });
@@ -308,14 +326,18 @@ export class AccountingDashboardComponent implements OnDestroy {
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;
 
-    // this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'PAGE,PUBLISHER,PRODUCT,ORDER,NETVENUE', page: pages, reportBy: reportType, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
-    //   this.summaryReport = summaryReport;
-    //   console.log(summaryReport);
-    // });
+    this.apiService.getPromise<any>('/accounting/reports', { reportReceivablesFromCustomer: true, branch: pages, toDate: toDate, sort_TailDebit: 'desc' }).then(customerReceivableDebt => {
+      this.customerReceivableDebt = customerReceivableDebt;
+      console.log(customerReceivableDebt);
+    });
+    this.apiService.getPromise<any>('/accounting/reports', { reportLiabilities: true, branch: pages, toDate: toDate, sort_TailCredit: 'desc' }).then(liabilitityDebt => {
+      this.liabilitityDebt = liabilitityDebt;
+      console.log(liabilitityDebt);
+    });
 
-    
+
     const costStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632,6421,6422,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', {eq_Account: "[511,512,515]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     this.costAndRevenueStatisticsData = {
       labels: reportType === 'MONTH' ? costStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
         : (reportType === 'DAY' ? costStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
@@ -326,7 +348,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           data: revenueStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
           borderColor: this.colors.info,
           // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.3),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
           // fill: true,
           // borderDash: [5, 5],
           pointRadius: 1,
@@ -337,7 +359,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           data: costStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
           borderColor: this.colors.danger,
           // backgroundColor: colors.primary,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.1),
           // fill: true,
           borderDash: [5, 5],
           pointRadius: 1,
@@ -346,18 +368,42 @@ export class AccountingDashboardComponent implements OnDestroy {
       ],
     };
 
-    const cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const cashInBankFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1121]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const goldFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1113]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     this.cashFlowStatisticsData = {
       labels: reportType === 'MONTH' ? cashFlowStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
         : (reportType === 'DAY' ? cashFlowStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
           : (reportType === 'HOUR' ? cashFlowStatistics.map(statistic => statistic['Hour']) : cashFlowStatistics.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
       datasets: [
         {
-          label: 'Dòng tiền',
-          data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          label: 'Vàng',
+          data: goldFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          borderColor: this.colors.warning,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.1),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: 1,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Tiền trong ngân hàng',
+          data: cashInBankFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
           borderColor: this.colors.info,
           // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.3),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.1),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: 1,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Tiền mặt',
+          data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          borderColor: this.colors.success,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.1),
           // fill: true,
           // borderDash: [5, 5],
           pointRadius: 1,
@@ -365,9 +411,11 @@ export class AccountingDashboardComponent implements OnDestroy {
         },
       ],
     };
-    
+
     const customerReceivableStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[131]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const liabilitiesStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', {eq_Account: "[331]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const liabilitiesStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[331]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const loadStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3411]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const financialLeasingDebtStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3412]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     this.debtStatisticsData = {
       labels: reportType === 'MONTH' ? customerReceivableStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
@@ -377,9 +425,9 @@ export class AccountingDashboardComponent implements OnDestroy {
         {
           label: 'Công nợ phải thu',
           data: customerReceivableStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-          borderColor: this.colors.info,
+          borderColor: this.colors.success,
           // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.3),
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
           // fill: true,
           // borderDash: [5, 5],
           pointRadius: 1,
@@ -388,18 +436,40 @@ export class AccountingDashboardComponent implements OnDestroy {
         {
           label: 'Công nợ phải trả',
           data: liabilitiesStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
-          borderColor: this.colors.danger,
+          borderColor: this.colors.primary,
           // backgroundColor: colors.primary,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
           // fill: true,
           // borderDash: [5, 5],
+          pointRadius: 1,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Các khoản vay',
+          data: loadStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
+          borderColor: this.colors.warning,
+          // backgroundColor: colors.primary,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
+          // fill: true,
+          borderDash: [5, 5],
+          pointRadius: 1,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Nợ thuê tài chính',
+          data: financialLeasingDebtStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
+          borderColor: this.colors.danger,
+          // backgroundColor: colors.primary,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
+          // fill: true,
+          borderDash: [5, 5],
           pointRadius: 1,
           pointHoverRadius: 10,
         },
       ],
     };
 
-    const profitStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', {eq_Account: "[632,6421,6422,811,511,512,515]", statisticsProfit: true, increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const profitStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632,641,642,811,511,512,515]", statisticsProfit: true, increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     this.profitStatisticsData = {
       labels: reportType === 'MONTH' ? profitStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
         : (reportType === 'DAY' ? profitStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
@@ -410,7 +480,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           data: profitStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
           borderColor: this.colors.info,
           // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.3),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
           // fill: true,
           // borderDash: [5, 5],
           pointRadius: 1,

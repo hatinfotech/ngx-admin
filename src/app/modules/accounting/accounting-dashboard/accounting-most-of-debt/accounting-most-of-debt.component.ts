@@ -14,8 +14,8 @@ export class AccountingMostOfDebtComponent implements OnDestroy {
 
   private alive = true;
 
-  @Input('publishers') publishers: any[];
-  @Input('products') products: any[];
+  @Input('customerReceivableDebt') customerList: any[];
+  @Input('liabilitityDebt') supplierList: any[];
 
   constructor(
     private userService: UserData,

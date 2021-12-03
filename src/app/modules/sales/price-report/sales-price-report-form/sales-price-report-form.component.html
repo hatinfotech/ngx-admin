@@ -101,7 +101,7 @@
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="Reported" label="{{validateVoucherDate(formItem.get('Reported'), 'Sales.dateOfReported')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" [owlDateTime]="Reported" [owlDateTimeTrigger]="Reported" nbInput fullWidth formControlName="Reported" placeholder="{{'Common.dateTime' | translate | headtitlecase}}">
-                                    <owl-date-time #Reported [startAt]="this.commonService.lastVoucherDate"></owl-date-time>
+                                    <owl-date-time #Reported [startAt]="formItem.get('Reported')?.value || this.commonService.lastVoucherDate"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-9">

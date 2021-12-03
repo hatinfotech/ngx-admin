@@ -3,19 +3,18 @@
 
     <nb-tab tabTitle="CN phải thu">
       <nb-list class="scrollable-container">
-        <nb-list-item class="contact" *ngFor="let c of publishers">
-          <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.Name" [title]="c.Publisher" size="large" style="flex: 8"></nb-user>
-          <span class="caption" style="flex: 1;">{{ c.SumOfOrderDetail | number }}đơn</span>
-          <nb-icon style="flex: 1" style="cursor: pointer" icon="message-circle-outline" pack="eva" nbTooltip="Tạo task trao đổi với {{c.Name}}" nbTooltipStatus="info" (click)="createTask($event, c)"></nb-icon>
+        <nb-list-item class="contact" *ngFor="let c of customerList">
+          <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large" style="flex: 8"></nb-user>
+          <span class="caption" style="flex: 1;">{{ c.TailDebit | currency:'VND' }}</span>
         </nb-list-item>
       </nb-list>
     </nb-tab>
 
     <nb-tab tabTitle="CN phải trả">
       <nb-list class="scrollable-container">
-        <nb-list-item class="contact" *ngFor="let c of products">
-          <nb-user style="flex: 9;" [picture]="c.FeaturePicture?.Thumbnail" [name]="c.Name" [title]="c.Product" size="large"></nb-user>
-          <span style="flex: 1;" class="caption">{{ c.SumOfOrderDetail | number }}đơn</span>
+        <nb-list-item class="contact" *ngFor="let c of supplierList">
+          <nb-user style="flex: 9;" [picture]="c.FeaturePicture?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large"></nb-user>
+          <span style="flex: 1;" class="caption">{{ c.TailCredit | currency:'VND' }}</span>
         </nb-list-item>
       </nb-list>
     </nb-tab>
