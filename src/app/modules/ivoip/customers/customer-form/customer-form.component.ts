@@ -508,40 +508,37 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     });
   }
 
-  async deployMiniErpCronJob(hosting: string, domainId: string, command: string, run_min: string, run_hour: string, run_mday: string, run_month: string, run_wday: string) {
-    return new Promise<WhCronJobModel>((resolve, reject) => {
+  async deployMiniErpCronJob(hosting: string, domainId: string, command: string, run_min: string, run_hour: string, run_mday: string, run_month: string, run_wday: string): Promise<WhCronJobModel> {
 
-      this.apiService.get<WhCronJobModel[]>('/web-hosting/cron-jobs', { hosting: hosting, parent_domain_id: domainId, silent: true }, oldCronJobs => {
+    return this.apiService.getPromise<WhCronJobModel[]>('/web-hosting/cron-jobs', { hosting: hosting, parent_domain_id: domainId, silent: true }).then(oldCronJobs => {
 
-        let cronJob = oldCronJobs[0];
-        let menthod = 'POST';
-        if (cronJob) {
-          menthod = 'PUT';
+      let cronJob = oldCronJobs[0];
+      let menthod = 'POST';
+      if (cronJob) {
+        menthod = 'PUT';
+      } else {
+        cronJob = new WhCronJobModel();
+      }
+
+      cronJob.parent_domain_id = domainId;
+      cronJob.command = command;
+      cronJob.run_min = run_min;
+      cronJob.run_hour = run_hour;
+      cronJob.run_mday = run_mday;
+      cronJob.run_month = run_month;
+      cronJob.run_wday = run_wday;
+      cronJob.type = 'url';
+      cronJob.log = 'n';
+      cronJob.active = 'y';
+
+      return this.apiService.putPromise<WhCronJobModel[]>('/web-hosting/cron-jobs', { hosting: hosting }, [cronJob]).then(newCronJobs => {
+        const newCronJob = newCronJobs[0];
+        if (newCronJob) {
+          return newCronJob;
         } else {
-          cronJob = new WhCronJobModel();
+          return Promise.reject('no cron was created');
         }
-
-        cronJob.parent_domain_id = domainId;
-        cronJob.command = command;
-        cronJob.run_min = run_min;
-        cronJob.run_hour = run_hour;
-        cronJob.run_mday = run_mday;
-        cronJob.run_month = run_month;
-        cronJob.run_wday = run_wday;
-        cronJob.type = 'url';
-        cronJob.log = 'n';
-        cronJob.active = 'y';
-
-        this.apiService.postPut<WhCronJobModel[]>(menthod, '/web-hosting/cron-jobs', { hosting: hosting }, [cronJob], newCronJobs => {
-          const newCronJob = newCronJobs[0];
-          if (newCronJob) {
-            resolve(newCronJob);
-          } else {
-            reject('Lỗi khởi tạo cron job');
-          }
-        }, e => reject(e));
-      }, e => reject(e));
-
+      });
     });
   }
 
@@ -781,8 +778,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       Gateway: string,
     } = this.form.value['array'][0];
 
-    const hosting: WhHostingModel = this.hostingList.filter(w => w.Code === formData.Hosting)[0];
-    const pbx = this.pbxList.filter(p => p.Code === formData.Pbx)[0];
+    const hosting: WhHostingModel = this.hostingList.filter(w => w.Code === this.commonService.getObjectId(formData.Hosting))[0];
+    const pbx = this.pbxList.filter(p => p.Code === this.commonService.getObjectId(formData.Pbx))[0];
     // const domainParse = formData.DomainName.split('.');
     // const deployName = domainParse[0] + (domainParse.length > 1 ? domainParse[1] : '');
     const deployName = formData.DomainName.replace(/\.+/g, '').slice(0, 13);

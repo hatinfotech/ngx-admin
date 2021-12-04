@@ -44,13 +44,12 @@ export class AccountingDashboardComponent implements OnDestroy {
   chartjs: any;
 
   summaryReport: {
-    NumOfPage?: number,
-    NumOfPublisher?: number,
-    NumOfProduct?: number,
-    NumOfOrder?: number,
-    CommissionAmount?: number,
-    CommissionPaymentAmount?: number,
-    NetVenueAmount?: number,
+    Cash?: number,
+    Revenues?: number,
+    Cost?: number,
+    CustomerReceivableDebt?: number,
+    LiabilitiesDebt?: number,
+    Profit?: number,
   };
 
   customerReceivableDebt = [];
@@ -124,11 +123,11 @@ export class AccountingDashboardComponent implements OnDestroy {
           },
           tooltips: {
             callbacks: {
-                label: (tooltipItem, data) => {
-                    return this.currencyPipe.transform(tooltipItem.yLabel, 'VND');
-                }
+              label: (tooltipItem, data) => {
+                return this.currencyPipe.transform(tooltipItem.yLabel, 'VND');
+              }
             }
-        }
+          }
         };
         // this.costAndRevenueStatisticsDataOptions = {
         //   ...this.options,
@@ -326,6 +325,19 @@ export class AccountingDashboardComponent implements OnDestroy {
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;
 
+    this.apiService.getPromise<any[]>('/accounting/reports', { reportSummary: true, Accounts: "111,511,512,515,632,642,641,811,131,331", skipHeader: true, branch: pages, toDate: toDate, fromDate: fromDate }).then(summaryReport => {
+      console.log(summaryReport);
+      
+      this.summaryReport = {
+        Cash: summaryReport.filter(f => /^111/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
+        Revenues: summaryReport.filter(f => /^511|512|515/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
+        Cost: summaryReport.filter(f => /^632|642|641|811/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
+        CustomerReceivableDebt: summaryReport.filter(f => /^131/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
+        LiabilitiesDebt: summaryReport.filter(f => /^331/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
+        // Profit: summaryReport.filter(f => /^4212/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
+      };
+      this.summaryReport.Profit = this.summaryReport.Revenues - this.summaryReport.Cost;
+    });
     this.apiService.getPromise<any>('/accounting/reports', { reportReceivablesFromCustomer: true, branch: pages, toDate: toDate, sort_TailDebit: 'desc' }).then(customerReceivableDebt => {
       this.customerReceivableDebt = customerReceivableDebt;
       console.log(customerReceivableDebt);
@@ -334,6 +346,15 @@ export class AccountingDashboardComponent implements OnDestroy {
       this.liabilitityDebt = liabilitityDebt;
       console.log(liabilitityDebt);
     });
+
+    let pointRadius: number = 1;
+    if (reportType == 'MONTH') {
+      pointRadius = 3;
+    }
+
+    if (reportType == 'DAY') {
+      pointRadius = 2;
+    }
 
 
     const costStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632,6421,6422,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
@@ -351,7 +372,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
           // fill: true,
           // borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
         {
@@ -362,7 +383,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.1),
           // fill: true,
           borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
       ],
@@ -371,11 +392,23 @@ export class AccountingDashboardComponent implements OnDestroy {
     const cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const cashInBankFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1121]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const goldFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1113]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const voucherFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1114]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     this.cashFlowStatisticsData = {
       labels: reportType === 'MONTH' ? cashFlowStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
         : (reportType === 'DAY' ? cashFlowStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
           : (reportType === 'HOUR' ? cashFlowStatistics.map(statistic => statistic['Hour']) : cashFlowStatistics.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
       datasets: [
+        {
+          label: 'Voucher',
+          data: voucherFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          borderColor: this.colors.primary,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
         {
           label: 'Vàng',
           data: goldFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
@@ -384,7 +417,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.1),
           // fill: true,
           // borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
         {
@@ -395,7 +428,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.1),
           // fill: true,
           // borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
         {
@@ -406,7 +439,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.1),
           // fill: true,
           // borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
       ],
@@ -430,7 +463,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           // backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
           // fill: true,
           // borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
         {
@@ -441,7 +474,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           // backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
           // fill: true,
           // borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
         {
@@ -452,7 +485,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
           // fill: true,
           borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
         {
@@ -463,7 +496,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
           // fill: true,
           borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
       ],
@@ -483,7 +516,7 @@ export class AccountingDashboardComponent implements OnDestroy {
           backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
           // fill: true,
           // borderDash: [5, 5],
-          pointRadius: 1,
+          pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
       ],

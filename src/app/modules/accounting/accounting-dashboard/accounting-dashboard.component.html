@@ -6,13 +6,13 @@
         <div class="icon-container">
           <div class="icon status-primary" (click)="this.commonService.router.navigate(['accounting/report/summary'])">
             <!-- <i [ngClass]="'nb-lightbulb'"></i> -->
-            <nb-icon icon="ribbon-b" pack="ion"></nb-icon>
+            <nb-icon icon="ios-pie" pack="ion"></nb-icon>
           </div>
         </div>
 
         <div class="details">
           <div class="title h5">Tổng quan</div>
-          <div class="status paragraph-2">{{summaryReport?.NumOfPublisher | number}}</div>
+          <div class="status paragraph-2">Quỹ: {{summaryReport?.Cash | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
@@ -20,13 +20,13 @@
       <nb-card class="status-card">
         <div class="icon-container">
           <div class="icon status-info" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
-            <nb-icon icon="cube" pack="eva"></nb-icon>
+            <nb-icon icon="android-cart" pack="ion"></nb-icon>
           </div>
         </div>
 
         <div class="details">
           <div class="title h5">Doanh thu</div>
-          <div class="status paragraph-2">{{summaryReport?.NumOfProduct | number}}</div>
+          <div class="status paragraph-2">Doanh thu: {{summaryReport?.Revenues | currency:'VND'}}<br/>Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
@@ -34,13 +34,13 @@
       <nb-card class="status-card">
         <div class="icon-container">
           <div class="icon status-warning" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
-            <nb-icon icon="android-cart" pack="ion"></nb-icon>
+            <nb-icon icon="cube" pack="ion"></nb-icon>
           </div>
         </div>
 
         <div class="details">
           <div class="title h5">Công nợ</div>
-          <div class="status paragraph-2">{{summaryReport?.NumOfOrder | number}}</div>
+          <div class="status paragraph-2">Phải thu: {{summaryReport?.CustomerReceivableDebt | currency:'VND'}}<br/>Phải trả: {{summaryReport?.LiabilitiesDebt | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
@@ -48,13 +48,13 @@
       <nb-card class="status-card">
         <div class="icon-container">
           <div class="icon status-success" (click)="this.commonService.router.navigate(['accounting/report/profit-report'])">
-            <nb-icon icon="ios-paper" pack="ion"></nb-icon>
+            <nb-icon icon="arrow-graph-up-right" pack="ion"></nb-icon>
           </div>
         </div>
 
         <div class="details">
-          <div class="title h5">Lãi lỗ</div>
-          <div class="status paragraph-2">{{summaryReport?.NetVenueAmount | currency:'VND'}}</div>
+          <div class="title h5">Lãi/lỗ</div>
+          <div class="status paragraph-2">{{summaryReport?.Profit | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>

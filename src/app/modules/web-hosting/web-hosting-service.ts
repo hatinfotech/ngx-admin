@@ -42,7 +42,7 @@ export class WebHostingService {
   ) {
     const oldActiveHosting = this.activeHosting;
     // this.activeHosting = Date.now().toString();
-    this.apiService.get<WhHostingModel[]>('/web-hosting/hostings', {}, hostings => {
+    this.apiService.getPromise<WhHostingModel[]>('/web-hosting/hostings', {}).then(hostings => {
       this.hostingList = this.commonService.convertOptionList(hostings, 'Code', 'Host');
       // this.activeHosting = oldActiveHosting;
 
@@ -80,41 +80,47 @@ export class WebHostingService {
 
   reloadHostingData(callback?: () => void, force?: boolean) {
     this.commonService.takeUntil('webhosting_reload_hosting_data', force ? 0 : 300, () => {
-      this.apiService.get<WhWebsiteModel[]>('/web-hosting/websites', { hosting: this.activeHosting }, websites => {
+      this.apiService.getPromise<WhWebsiteModel[]>('/web-hosting/websites', { hosting: this.activeHosting }).then(websites => {
         this.websiteMap = {};
         websites.forEach(website => {
           this.websiteMap[website.domain_id] = website;
         });
 
-        this.apiService.get<WhDatabaseUserModel[]>('/web-hosting/database-users', { hosting: this.activeHosting }, dbUsers => {
+        this.apiService.getPromise<WhDatabaseUserModel[]>('/web-hosting/database-users', { hosting: this.activeHosting }).then(dbUsers => {
           this.databaseUserMap = {};
           dbUsers.forEach(dbUser => {
             this.databaseUserMap[dbUser.database_user_id] = dbUser;
           });
           if (callback) callback();
+        }).catch(err => {
+          console.error(err);
+          callback();
         });
-
+      }).catch(err => {
+        console.error(err);
+        callback();
       });
     });
   }
 
   async getWebsiteMap(): Promise<{ [key: string]: WhWebsiteModel }> {
-    return new Promise<{ [key: string]: WhWebsiteModel }>(resp => {
+    // return new Promise<{ [key: string]: WhWebsiteModel }>((resp) => {
 
-      if (this.websiteMap) {
-        resp(this.websiteMap);
-      } else {
+    if (this.websiteMap) {
+      // resp(this.websiteMap);
+      return this.websiteMap;
+    } else {
 
-        this.apiService.get<WhWebsiteModel[]>('/web-hosting/websites', { hosting: this.activeHosting }, websites => {
-          this.websiteMap = {};
-          websites.forEach(website => {
-            this.websiteMap[website.domain_id] = website;
-          });
-
-          resp(this.websiteMap);
+      return this.apiService.getPromise<WhWebsiteModel[]>('/web-hosting/websites', { hosting: this.activeHosting }).then(websites => {
+        this.websiteMap = {};
+        websites.forEach(website => {
+          this.websiteMap[website.domain_id] = website;
         });
-      }
-    });
+        return this.websiteMap;
+        // resp(this.websiteMap);
+      });
+    }
+    // });
   }
 
   async getWebsiteList(): Promise<WhWebsiteModel[]> {
@@ -131,15 +137,16 @@ export class WebHostingService {
     return new Promise<{ [key: string]: WhDatabaseUserModel }>(resp => {
 
       if (this.databaseUserMap) {
-        resp(this.databaseUserMap);
+        return this.databaseUserMap;
+        // resp(this.databaseUserMap);
       } else {
 
-        this.apiService.get<WhDatabaseUserModel[]>('/web-hosting/database-users', { hosting: this.activeHosting }, dbUsers => {
+        this.apiService.getPromise<WhDatabaseUserModel[]>('/web-hosting/database-users', { hosting: this.activeHosting }).then(dbUsers => {
           this.databaseUserMap = {};
           dbUsers.forEach(dbUser => {
             this.databaseUserMap[dbUser.database_user_id] = dbUser;
           });
-          resp(this.databaseUserMap);
+          return this.databaseUserMap;
         });
       }
     });
@@ -156,7 +163,7 @@ export class WebHostingService {
   }
 
   reloadCache() {
-    this.apiService.get<WhHostingModel[]>('/web-hosting/hostings', {}, hostings => {
+    this.apiService.getPromise<WhHostingModel[]>('/web-hosting/hostings', {}).then(hostings => {
       this.hostingList = this.commonService.convertOptionList(hostings, 'Code', 'Host');
       this.hostingList.forEach(hosting => {
         this.hostingMap[hosting.Code] = hosting;
