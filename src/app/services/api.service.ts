@@ -739,7 +739,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
     // console.log('Http intercept: ', req.url);
 
-    if (req.url.includes('v1/user/login') || !/\/v\d+\//i.test(req.url)) {
+    if (!/\/v\d+\//i.test(req.url) || /\/v\d+\/user\/login|register/i.test(req.url)) {
       return next.handle(req);
     }
 
@@ -750,7 +750,7 @@ export class ApiInterceptor implements HttpInterceptor {
       } else {
 
         return next.handle(req).pipe(catchError(error2 => {
-          if (req.url.includes('v1/user/login')) {
+          if (/\/v\d+\/user\/login|register/i.test(req.url)) {
             this.apiService.onUnauthorizied();
             return next.handle(error2);
           }

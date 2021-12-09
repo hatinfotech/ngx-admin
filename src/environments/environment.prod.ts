@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '5.0.13.1',
+  version: '6.0.0.1',
+  // 6.0: Working with api version v2
   // 5.0.12: Accounting statistics chart
   // 5.0.11: Accounting report update: cash flow report
   // 5.0.10: Fix auto refresh token loop
@@ -92,7 +93,7 @@ export const environment = {
     },
   },
   api: {
-    baseUrl: '/v1',
+    baseUrl: '/v2',
   },
   number: {
     // replace by system locale

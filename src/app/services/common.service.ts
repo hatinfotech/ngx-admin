@@ -224,11 +224,11 @@ export class CommonService {
       rs.url = `${rs.protocol || 'https'}://${rs.domain}:${rs.port}`;
       this.mainSocketInfo$.next(rs);
       // this.mainSocket = new MySocket(this.mainSocketInfo.url);
-      this.initMainSocket().then(sc => {
-        // this.mainSocket = sc;
-        // sc.on('Helpdesk_Had_New_Ticket').subscribe();
-        console.info('Conntect to local chat server success');
-      });
+      // this.initMainSocket().then(sc => {
+      //   // this.mainSocket = sc;
+      //   // sc.on('Helpdesk_Had_New_Ticket').subscribe();
+      //   console.info('Conntect to local chat server success');
+      // });
 
     }).catch(e => console.error(e));
 
@@ -357,7 +357,8 @@ export class CommonService {
     if (this.mainSocket) {
       return this.mainSocket;
     }
-    return this.initMainSocket();
+    // return this.initMainSocket();
+    return null;
   }
 
   async initMainSocket(): Promise<MySocket> {

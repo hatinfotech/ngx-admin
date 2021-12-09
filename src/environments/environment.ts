@@ -17,7 +17,7 @@ export const environment = {
   version: prodenv.version + '.dev',
   api: {
     // baseUrl: '/v1', // prod
-    baseUrl: 'http://local.namsoftware.com/v1',
+    baseUrl: 'http://local.namsoftware.com/v2',
   },
   localApp: {
     // enabled: true, // prod
