@@ -7,11 +7,12 @@
             <div id="print-area">
                 <ngx-print-header></ngx-print-header>
                 <div>
-                    <div class="print-title">{{ this.title | uppercase }}</div>
-                    <div class="under-title">Từ {{data.FromDate | date: 'short'}} đến {{ data.ToDate | date:'short' }}</div>
+                    <div class="print-title">{{ data.Title || this.title | uppercase }}
+                    </div>
+                    <div class="under-title">Tài khoản: {{data.Account}} - Từ {{data.FromDate | date: 'short'}} đến {{ data.ToDate | date:'short' }}</div>
                     <div class="under-title">Ngày giờ báo cáo: {{ data.ReportDate | date: 'short'}}</div>
                 </div>
-                <div>
+                <!-- <div>
                     <div style="display: flex;">
                         <div style="flex: 1;">
                             <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
@@ -39,7 +40,7 @@
                     <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
                         {{renderValue(data.ObjectAddress)}}
                     </div>
-                </div>
+                </div> -->
                 <div>
                     <div>
                         <table style="width: 100%;" class="print-voucher-detail-table ">
@@ -47,35 +48,31 @@
                                 <td>#</td>
                                 <td class="" style="white-space: nowrap">{{'Common.dateOfVoucher' | translate | headtitlecase}}</td>
                                 <td class="" style="white-space: nowrap">{{'Common.voucher' | translate | headtitlecase}}</td>
-                                <td class="" style="white-space: nowrap">{{'Common.goodsOrService' | translate | headtitlecase}}</td>
-                                <td class="text-align-right" style="white-space: nowrap">{{'Common.numOfMoney' | translate | headtitlecase}}</td>
-                                <td class="text-align-right" style="white-space: nowrap">{{'Common.debt' | translate | headtitlecase}}</td>
+                                <td class="" style="white-space: nowrap">{{'Common.description' | translate | headtitlecase}}</td>
+                                <!-- <td class="text-align-right" style="white-space: nowrap">{{'Accounting.headAmount' | translate | headtitlecase}}</td> -->
+                                <td class="text-align-right" style="white-space: nowrap">{{'Accounting.debitGenerate' | translate | headtitlecase}}</td>
+                                <td class="text-align-right" style="white-space: nowrap">{{'Accounting.creditGenerate' | translate | headtitlecase}}</td>
+                                <td class="text-align-right" style="white-space: nowrap">{{'Accounting.increment' | translate | headtitlecase}}</td>
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
-                                <td>{{detail.VoucherDate | date:'short'}}</td>
-                                <td>{{detail.Voucher}}</td>
+                                <td class="nowrap">{{detail.VoucherDate | date:'short'}}</td>
+                                <td><a href="#" (click)="this.commonService.previewVoucher(detail.VoucherType, detail.Voucher) && false">{{detail.Voucher}}</a></td>
                                 <td>{{detail.Description}}</td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateDebit - detail.GenerateCredit)"></td>
+                                <!-- <td class="text-align-right" [innerHtml]="renderCurrency(detail.HeadAmount)"></td>  -->
+                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.Voucher == 'OPN' ? (detail.HeadDebit - detail.HeadCredit + detail.GenerateDebit - detail.GenerateCredit > 0 ? (detail.HeadDebit - detail.HeadCredit + detail.GenerateDebit - detail.GenerateCredit) : 0) : detail.GenerateDebit)"></td>
+                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.Voucher == 'OPN' ? (detail.HeadDebit - detail.HeadCredit + detail.GenerateDebit - detail.GenerateCredit <  0 ? (-(detail.HeadDebit - detail.HeadCredit + detail.GenerateDebit - detail.GenerateCredit)) : 0) : detail.GenerateCredit)"></td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
-                            </tr>
-                            <tr style="font-weight: bold;">
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
-                                <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap">
                     <div style="text-align: center; flex: 0 0 50%;">
-                        <br>Bên bán
+                        <br />Kế toán<br /><br /><br />
                     </div>
                     <div style="text-align: center; flex: 0 0 50%;">
-                        <br>Khách hàng
+                        <br />Giám đốc<br /><br /><br />
                     </div>
                 </div>
             </div>

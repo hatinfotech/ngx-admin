@@ -140,17 +140,24 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
 
 
   async getFormData(ids: string[]) {
-    const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-    const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59);
+    const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+    const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+    const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+    const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
     return this.apiService.getPromise<any[]>(this.apiPath, {
       reportReceivablesFromCustomer: true,
+      fromDate: toDate.toISOString(),
       toDate: toDate.toISOString(),
       limit: 'nolimit',
       excludeZeroDebt: true,
       includeObjectInfo: true,
       sort_ObjectName: 'asc'
     }).then(data => {
-      const list = [{ 'ToDate': toDate, Details: data }];
+      const list = [{
+        FromDate: fromDate,
+        ToDate: toDate,
+        ReportDate: new Date(), Details: data
+      }];
       this.summaryCalculate(list);
       return list;
     });

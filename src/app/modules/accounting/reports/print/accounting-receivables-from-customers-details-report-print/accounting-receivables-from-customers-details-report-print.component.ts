@@ -143,20 +143,27 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
 
 
   async getFormData(ids: string[]) {
-    const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-    const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 23, 59, 59);
+    const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+    const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+    const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+    const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
     const promiseAll = [];
-    for(const object of this.objects) {
+    for (const object of this.objects) {
       promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
         reportDetailByAccountAndObject: true,
         eq_Account: '131',
         eq_Object: object,
         includeIncrementAmount: true,
         includeObjectInfo: true,
+        fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
       }).then(data => {
-        const item = { 'ToDate': toDate, 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data };
+        const item = {
+          FromDate: fromDate,
+          ToDate: toDate,
+          ReportDate: new Date(), 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data
+        };
         return item;
       }));
     }
@@ -184,8 +191,8 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
   }
 
   renderCurrency(money: number) {
-    if(typeof money == 'undefined' || money === null) return this.currencyPipe.transform(0, 'VND');
-    if(money < 0) {
+    if (typeof money == 'undefined' || money === null) return this.currencyPipe.transform(0, 'VND');
+    if (money < 0) {
       let text = this.currencyPipe.transform(-money, 'VND');
       return `<span class="text-color-danger">(${text})</span>`;
     } else {

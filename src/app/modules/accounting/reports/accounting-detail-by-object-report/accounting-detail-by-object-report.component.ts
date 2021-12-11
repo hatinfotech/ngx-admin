@@ -1,9 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, Type } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
@@ -41,6 +42,7 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
   @Input() toDate?: Date;
   @Input() report?: string;
   @Input() balance?: 'debt' | 'credit' | 'both';
+  @Input() reportComponent: Type<any> | TemplateRef<any>;
 
   constructor(
     public apiService: ApiService,
@@ -89,7 +91,29 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
     ];
     return super.init().then(rs => {
       // this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
-      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose'].indexOf(f.name) < 0);
+
+      if (this.reportComponent) {
+        const summaryReportBtn = this.actionButtonList.find(f => f.name == 'preview');
+        summaryReportBtn.label = summaryReportBtn.title = 'In báo cáo';
+        summaryReportBtn.icon = 'printer';
+        summaryReportBtn.status = 'info';
+        summaryReportBtn.disabled = () => false;
+        summaryReportBtn.click = () => {
+          this.commonService.openDialog(this.reportComponent, {
+            context: {
+              showLoadinng: true,
+              // title: 'Xem trước',
+              accounts: this.accounts,
+              objects: [this.object],
+              mode: 'print',
+              id: ['all']
+            },
+          });
+        };
+      } else {
+        this.actionButtonList = this.actionButtonList.filter(f => ['preview'].indexOf(f.name) < 0);
+      }
 
       // Auto refresh list on reportToDate changed
       // this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
@@ -265,16 +289,16 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
       }
       params['includeIncrementAmount'] = true;
 
-      if (this.accountingService?.reportToDate$?.value) {
-        const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
-        const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+      // if (this.accountingService?.reportToDate$?.value) {
+      const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+      const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
 
-        const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-        const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
-        
-        params['toDate'] = toDate.toISOString();
-        params['fromDate'] = fromDate.toISOString();
-      }
+      const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+      const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+
+      params['toDate'] = toDate.toISOString();
+      params['fromDate'] = fromDate.toISOString();
+      // }
 
       return params;
     };

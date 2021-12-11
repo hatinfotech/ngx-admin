@@ -1,3 +1,4 @@
+import { AccountingAccountDetailsReportPrintComponent } from './../print/accounting-account-details-report-print/accounting-account-details-report-print.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -9,7 +10,6 @@ import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
-import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
 import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 
@@ -23,7 +23,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
   componentName: string = 'AccountingSummaryReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
-  idKey = 'Code';
+  idKey = 'Account';
   formDialog = AccAccountFormComponent;
 
   reuseDialog = true;
@@ -82,8 +82,43 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
       },
     ];
     return super.init().then(rs => {
-      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose', 'preview'].indexOf(f.name) < 0);
+      this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose'].indexOf(f.name) < 0);
       this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
+
+      const summaryReportBtn = this.actionButtonList.find(f => f.name == 'preview');
+      summaryReportBtn.label = summaryReportBtn.title = 'In báo cáo sổ chi tiết tài khoản';
+      summaryReportBtn.icon = 'printer';
+      summaryReportBtn.status = 'info';
+      summaryReportBtn.disabled = () => this.selectedIds.length <= 0;
+      summaryReportBtn.click = () => {
+        this.commonService.openDialog(AccountingAccountDetailsReportPrintComponent, {
+          context: {
+            showLoadinng: true,
+            // title: 'Xem trước',
+            accounts: this.selectedIds,
+            mode: 'print',
+            id: ['all']
+          },
+        });
+      };
+
+      // const detailsReportBtn = {...summaryReportBtn};
+      // detailsReportBtn.status = 'primary';
+      // detailsReportBtn.name = 'detailReport';
+      // detailsReportBtn.label = detailsReportBtn.title = 'In báo cáo chi tiết';
+      // detailsReportBtn.disabled = () => this.selectedIds.length <= 0;
+      // detailsReportBtn.click = () => {
+      //   this.commonService.openDialog(AccountingAccountDetailsReportPrintComponent, {
+      //     context: {
+      //       showLoadinng: true,
+      //       // title: 'Xem trước',
+      //       mode: 'print',
+      //       id: ['all'],
+      //       objects: this.selectedIds,
+      //     },
+      //   });
+      // };
+      // this.actionButtonList.unshift(detailsReportBtn);
 
       // Auto refresh list on reportToDate changed
       this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
@@ -247,6 +282,7 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
         report: 'reportDetailByAccountAndObject',
         fromDate: null,
         toDate: null,
+        reportComponent: AccountingAccountDetailsReportPrintComponent,
       },
       closeOnEsc: false,
     })

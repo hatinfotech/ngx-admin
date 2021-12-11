@@ -302,6 +302,7 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
         fromDate: null,
         toDate: null,
         report: 'reportDetailByAccountAndObject',
+        reportComponent: AccountingReceivablesFromCustomersDetailsReportPrintComponent,
       },
       closeOnEsc: false,
     })

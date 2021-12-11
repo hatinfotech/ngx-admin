@@ -1,4 +1,3 @@
-import { SystemConfigModel } from './../../../../../models/model';
 import { AccountingService } from '../../../accounting.service';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
@@ -14,39 +13,33 @@ import { CommonService } from '../../../../../services/common.service';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
-  selector: 'ngx-accounting-object-cash-flow-report-print',
-  templateUrl: './accounting-object-cash-flow-report-print.component.html',
-  styleUrls: ['./accounting-object-cash-flow-report-print.component.scss'],
+  selector: 'ngx-accounting-account-details-report-print',
+  templateUrl: './accounting-account-details-report-print.component.html',
+  styleUrls: ['./accounting-account-details-report-print.component.scss'],
   providers: [CurrencyPipe]
 })
-export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPrintComponent<CashVoucherModel> implements OnInit {
+export class AccountingAccountDetailsReportPrintComponent extends DataManagerPrintComponent<CashVoucherModel> implements OnInit {
 
   /** Component name */
-  componentName = 'AccountingObjectCashFlowReportPrintComponent';
-  title: string = 'ĐỐI SOÁT CÔNG NỢ';
+  componentName = 'AccountingAccountDetailsReportPrintComponent';
+  title: string = 'Sổ kế toán chi tiết theo tài khoản';
   apiPath = '/accounting/reports';
   // approvedConfirm?: boolean;
   env = environment;
   processMapList: ProcessMap[] = [];
-  systemConfigs: SystemConfigModel;
   // formDialog = CashPaymentVoucherFormComponent;
-  @Input() objects: string[];
-
+  @Input() accounts: string[];
 
   constructor(
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<AccountingObjectCashFlowReportPrintComponent>,
+    public ref: NbDialogRef<AccountingAccountDetailsReportPrintComponent>,
     private datePipe: DatePipe,
     private currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
     super(commonService, router, apiService, ref);
-    this.commonService.systemConfigs$.subscribe(systemConfigs => {
-      this.systemConfigs = systemConfigs;
-      // this.systemConfigs.LICENSE_INFO.register.companyName
-    });
   }
 
   ngOnInit() {
@@ -154,24 +147,42 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
     const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
     const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
     const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
-
     const promiseAll = [];
-    for (const object of this.objects) {
+    // for(const object of this.objects) {
+    // return this.apiService.getPromise<any[]>(this.apiPath, {
+    //   reportDetailByObject: true,
+    //   // eq_Account: '131',
+    //   eq_Account: this.accounts,
+    //   includeIncrementAmount: true,
+    //   includeObjectInfo: true,
+    //   fromDate: fromDate.toISOString(),
+    //   toDate: toDate.toISOString(),
+    //   limit: 'nolimit',
+    // }).then(data => {
+    //   const item = { 'FromDate': fromDate, 'ToDate': toDate, 'Account': this.accounts.join(', '), Details: data };
+    //   return [item];
+    // }).then(data => {
+    //   this.summaryCalculate(data);
+    //   return data;
+    // });
+
+    for (const account of this.accounts) {
       promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
-        reportObjectCashFlow: true,
-        eq_Account: ['131', '331'],
-        eq_Object: object,
+        reportVoucherByAccountAndObject: true,
+        eq_Account: account,
         includeIncrementAmount: true,
         includeObjectInfo: true,
-        balance: 'both',
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
       }).then(data => {
         const item = {
+          Account: account,
+          Title: 'Sổ kế toán chi tiết ' + this.accountingService.accountList$.value?.find(f => f.Code === account)?.Name || 'unknow',
           FromDate: fromDate,
           ToDate: toDate,
-          ReportDate: new Date(), 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data
+          ReportDate: new Date(),
+          Details: data
         };
         return item;
       }));
@@ -190,26 +201,9 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;
-      item['TotalDebit'] = 0;
-      item['TotalCredit'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
-        item['TotalDebit'] += parseFloat(detail['HeadDebit'] as any) + parseFloat(detail['GenerateDebit'] as any);
-        item['TotalCredit'] += parseFloat(detail['HeadCredit'] as any) + parseFloat(detail['GenerateCredit'] as any);
-        // item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
-
-        if (detail['IncrementAmount'] >= 0) {
-          detail['DebitIncrementAmount'] = detail['IncrementAmount'];
-          detail['CreditIncrementAmount'] = 0;
-        } else {
-          detail['DebitIncrementAmount'] = 0;
-          detail['CreditIncrementAmount'] = -detail['IncrementAmount'];
-        }
-      }
-      if (item['TotalDebit'] >= item['TotalCredit']) {
-        item['TailTotalDebit'] = item['TotalDebit'] - item['TotalCredit'];
-      } else {
-        item['TailTotalCredit'] = item['TotalCredit'] - item['TotalDebit'];
+        item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
       }
       //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
     }

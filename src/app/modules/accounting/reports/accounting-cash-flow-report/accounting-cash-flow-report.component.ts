@@ -91,7 +91,7 @@ export class AccountingCashFlowReportComponent extends DataManagerListComponent<
       summaryReportBtn.label = summaryReportBtn.title = 'In báo cáo';
       summaryReportBtn.icon = 'printer';
       summaryReportBtn.status = 'info';
-      summaryReportBtn.disabled = () => false;
+      summaryReportBtn.disabled = () => true;
       summaryReportBtn.click = () => {
         this.commonService.openDialog(AccountingReceivablesFromCustomersReportPrintComponent, {
           context: {

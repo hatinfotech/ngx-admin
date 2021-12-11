@@ -7,9 +7,9 @@
             <div id="print-area">
                 <ngx-print-header></ngx-print-header>
                 <div>
-                    <div class="print-title">{{ this.title | uppercase }}
-                    </div>
-                    <div class="under-title">Đến ngày: {{ data.ToDate | date:'short' }}</div>
+                    <div class="print-title">{{ this.title | uppercase }}</div>
+                    <div class="under-title">Từ {{data.FromDate | date: 'short'}} đến {{ data.ToDate | date:'short' }}</div>
+                    <div class="under-title">Ngày giờ báo cáo: {{ data.ReportDate | date: 'short'}}</div>
                 </div>
                 <div>
                     <div style="display: flex;">
