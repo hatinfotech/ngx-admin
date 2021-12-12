@@ -23,6 +23,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
   static instances: LoginDialogComponent[] = [];
 
   qrCodeImgData: string;
+  qrCodeExpried: boolean = null;
   isLoginByApp: boolean = false
   env = environment;
 
@@ -63,7 +64,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
         const secondLoginToken = request.data && request.data.secondLoginToken;
         if (secondLoginToken) {
 
-          
+
           this.user.secondLoginToken = secondLoginToken;
           this.login();
 
@@ -97,7 +98,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
     });
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.onAfterInit && this.onAfterInit();
   }
 
@@ -207,5 +208,34 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
         console.log(compoentNativeEle);
       }
     }
+  }
+
+  switchToLoginByApp() {
+    if (this.qrCodeExpried === false) {
+      this.commonService.toastService.show('Bạn chỉ được gửi yêu cầu scan2login mỗi lần trong vòng 30 giây, hãy thủ lại sau khi token hết hạn !', 'Scan2Login', { status: 'warning' })
+      return false;
+    }
+    this.apiService.postPromise<any>('/user/login/requestAuthByQrCode', {}, []).then(rs => {
+      this.qrCodeImgData = rs.QrCode;
+      // const expired = new Date(rs.Expried);
+      this.isLoginByApp = true;
+      this.qrCodeExpried = false;
+
+
+      // Listen second login token
+      this.apiService.getPromise<any>('/user/login/listenSecondLoginToken', { uuid: rs.Uuid }).then(rs => {
+        this.user.secondLoginToken = rs.SecondLoginToken;
+        this.login();
+        this.qrCodeExpried = null;
+      }).catch(err => {
+        console.log(err);
+        this.qrCodeExpried = true;
+      });
+
+      return rs;
+    });
+  }
+  switchToLoginByCredential() {
+    this.isLoginByApp = false;
   }
 }

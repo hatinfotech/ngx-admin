@@ -1,20 +1,24 @@
 nb-card {
-    width: 100%;
+  width: 100%;
 }
 @media (min-width: 768px) {
-    nb-card {
-        width: 28rem;
-    }
+  nb-card {
+    width: 28rem;
   }
+}
 .logo {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 
 nb-card {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 .sub-title {
-    font-weight: bold;
-    font-size: 1rem;
-    color: #4ac4f3;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #4ac4f3;
+}
+
+.qrcode.expried {
+  opacity: 0.5;
 }

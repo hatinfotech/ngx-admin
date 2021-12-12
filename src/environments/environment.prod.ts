@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.0.1.3',
+  version: '6.0.2.1',
+  // 6.0.2: Update scan2login without socket
   // 6.0.1: Accounting report update: report from and to date, account detail report
   // 6.0: Working with api version v2
   // 5.0.12: Accounting statistics chart
