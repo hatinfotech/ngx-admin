@@ -18,7 +18,10 @@ nb-card {
   font-size: 1rem;
   color: #4ac4f3;
 }
-
+.qrcode {
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+}
 .qrcode.expried {
   opacity: 0.5;
 }

@@ -91,6 +91,7 @@
                     <nb-icon pack="eva" icon="menu-outline"></nb-icon>Menu > Quét mã
                 </div>
                 <img class="qrcode {{qrCodeExpried ? 'expried' : ''}}" src="{{qrCodeImgData}}" style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                <div *ngIf="!qrCodeExpried" style="text-align: center">Mã QRCode sẽ hết hạn trong <span style="color: red;">{{countdown}}</span>s</div>
                 <div *ngIf="qrCodeExpried === true" style="text-align: center; color: red;">Mã QR đã đã hết hạn, <a style="cursor: pointer; text-decoration: underline;" class="text-link" (click)="switchToLoginByApp() && false">thử lại</a></div>
             </section>
 

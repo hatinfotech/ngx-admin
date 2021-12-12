@@ -1,4 +1,5 @@
-import { NbDialogRef } from '@nebular/theme';
+import { take } from 'rxjs/operators';
+import { NbDialogRef, NbToastRef } from '@nebular/theme';
 import { Component, OnInit, ChangeDetectorRef, Inject, OnDestroy, Input, AfterViewInit } from '@angular/core';
 import { NbLoginComponent, NbAuthService, NB_AUTH_OPTIONS, NbAuthResult } from '@nebular/auth';
 import { Router } from '@angular/router';
@@ -26,6 +27,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
   qrCodeExpried: boolean = null;
   isLoginByApp: boolean = false
   env = environment;
+  countdown = 0;
 
   constructor(
     service: NbAuthService,
@@ -121,7 +123,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
     //   }
     // });
 
-    this.service.authenticate(this.strategy, this.user).subscribe((result: NbAuthResult) => {
+    return this.service.authenticate(this.strategy, this.user).pipe(take(1)).toPromise().then((result: NbAuthResult) => {
       this.submitted = false;
 
       if (result.isSuccess()) {
@@ -150,6 +152,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
       //   }, this.redirectDelay);
       // }
       this.cd.detectChanges();
+      return true;
     });
   }
 
@@ -211,8 +214,9 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
   }
 
   switchToLoginByApp() {
+    let toastDialog: NbToastRef = null;
     if (this.qrCodeExpried === false) {
-      this.commonService.toastService.show('Bạn chỉ được gửi yêu cầu scan2login mỗi lần trong vòng 30 giây, hãy thủ lại sau khi token hết hạn !', 'Scan2Login', { status: 'warning' })
+      toastDialog = this.commonService.toastService.show('Bạn chỉ được gửi yêu cầu scan2login mỗi lần trong vòng 30 giây, hãy thủ lại sau khi token hết hạn !', 'Scan2Login', { status: 'warning' })
       return false;
     }
     this.apiService.postPromise<any>('/user/login/requestAuthByQrCode', {}, []).then(rs => {
@@ -220,15 +224,32 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
       // const expired = new Date(rs.Expried);
       this.isLoginByApp = true;
       this.qrCodeExpried = false;
+      this.countdown = parseInt((new Date(rs.Expried).getTime() - new Date().getTime()) / 1000 as any);
+
+      const loop = setInterval(() => {
+        this.countdown--;
+        if (this.countdown <= 0) {
+          clearInterval(loop);
+        }
+      }, 1000);
 
 
       // Listen second login token
       this.apiService.getPromise<any>('/user/login/listenSecondLoginToken', { uuid: rs.Uuid }).then(rs => {
+        toastDialog && toastDialog.close();
+        toastDialog = this.commonService.toastService.show('Đang đăng nhập bằng Scan2Login... !', 'Scan2Login', { status: 'info' })
         this.user.secondLoginToken = rs.SecondLoginToken;
-        this.login();
+        this.login().then(status => {
+          if (status) {
+            toastDialog && toastDialog.close();
+            toastDialog = this.commonService.toastService.show('Đăng nhập bằng Scan2Login thành công!', 'Scan2Login', { status: 'success' })
+          }
+        });
         this.qrCodeExpried = null;
       }).catch(err => {
         console.log(err);
+        toastDialog && toastDialog.close();
+        toastDialog = this.commonService.toastService.show('Không thể đăng nhập bằng Scan2Login', 'Scan2Login', { status: 'danger' });
         this.qrCodeExpried = true;
       });
 
