@@ -13,6 +13,7 @@ import { ActionControl } from '../../../lib/custom-element/action-control-list/a
 import { PageModel } from '../../../models/page.model';
 import { AccountingService } from '../accounting.service';
 import { from } from 'rxjs';
+import { lab } from 'd3-color';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -192,7 +193,7 @@ export class AccountingDashboardComponent implements OnDestroy {
         const current = new Date();
         let fromDate = new Date(this.masterBook.DateOfBeginning);
         this.dateReportList = [
-          { id: 'DAY', text: 'Phân tích theo tháng', range: [new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), 31, 23, 59, 59)] },
+          { id: 'DAY', text: 'Phân tích theo tháng', range: [new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), current.getDate(), current.getHours(), current.getMinutes(), current.getSeconds())] },
           { id: 'MONTH', text: 'Phân tích theo năm', range: [new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()), new Date(new Date().getFullYear(), 11, 31)] },
           { id: 'DAYOFWEEK', text: 'Phân tích theo tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
           { id: 'HOUR', text: 'Phân tích theo giờ', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
@@ -337,7 +338,20 @@ export class AccountingDashboardComponent implements OnDestroy {
     if (reportType === 'DAY') {
       return (item['Day']).toString().padStart(2, "0") + '/' + (item['Month']).toString().padStart(2, "0");
     }
+    if (reportType === 'HOUR') {
+      return (item['Hour']).toString().padStart(2, "0");
+    }
+    return (item['DayOfWeek']).toString().padStart(2, "0");
+  }
+
+  makeTimeline(item: any, reportType: string) {
+    if (reportType === 'MONTH') {
+      return (item['Year']).toString().padStart(2, "0") + '/' + (item['Month']).toString().padStart(2, "0");
+    }
     if (reportType === 'DAY') {
+      return (item['Month']).toString().padStart(2, "0") + '/' + (item['Day']).toString().padStart(2, "0");
+    }
+    if (reportType === 'HOUR') {
       return (item['Hour']).toString().padStart(2, "0");
     }
     return (item['DayOfWeek']).toString().padStart(2, "0");
@@ -385,21 +399,27 @@ export class AccountingDashboardComponent implements OnDestroy {
       pointRadius = 2;
     }
 
-    let line1Data: any[], line2Data: any[], line3Data: any[], line4Data: any[], labels: any[], mergeData: any[];
+    let line1Data: any[], line2Data: any[], line3Data: any[], line4Data: any[], labels: any[], timeline: any[], mergeData: any[];
 
     /** Load data */
     let costStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632,641,642,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
-    line1Data = revenueStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    line2Data = costStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    labels = [...new Set([...line1Data.map(item => item['Label']), ...line2Data.map(item => item['Label'])].sort())];
-    mergeData = labels.map(l => ({
-      Label: l,
-      Line1: line1Data.find(f => f.Label == l) || { Value: 0 },
-      Line2: line2Data.find(f => f.Label == l) || { Value: 0 },
-    }));
+    line1Data = revenueStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    line2Data = costStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    timeline = [...new Set([...line1Data.map(item => item['Timeline']), ...line2Data.map(item => item['Timeline'])].sort())];
+    labels = [];
+    mergeData = timeline.map(t => {
+      const point1 = line1Data.find(f => f.Timeline == t);
+      const point2 = line2Data.find(f => f.Timeline == t);
+      labels.push(point1?.Label || point2?.Label);
+      return {
+        Label: t,
+        Line1: point1 || { Value: 0 },
+        Line2: point2 || { Value: 0 },
+      };
+    });
 
 
     this.costAndRevenueStatisticsData = {
@@ -438,24 +458,26 @@ export class AccountingDashboardComponent implements OnDestroy {
     const voucherFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1114]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
-    line1Data = voucherFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line2Data = goldFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line3Data = cashInBankFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line4Data = cashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    labels = [
-      ...new Set([
-        ...line1Data.map(item => item['Label']),
-        ...line2Data.map(item => item['Label']),
-        ...line3Data.map(item => item['Label']),
-        ...line4Data.map(item => item['Label']),
-      ].sort())];
-    mergeData = labels.map(l => ({
-      Label: l,
-      Line1: line1Data.find(f => f.Label == l) || { Value: 0 },
-      Line2: line2Data.find(f => f.Label == l) || { Value: 0 },
-      Line3: line3Data.find(f => f.Label == l) || { Value: 0 },
-      Line4: line4Data.find(f => f.Label == l) || { Value: 0 },
-    }));
+    line1Data = voucherFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line2Data = goldFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line3Data = cashInBankFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line4Data = cashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    timeline = [...new Set([...line1Data.map(item => item['Timeline']), ...line2Data.map(item => item['Timeline'])].sort())];
+    labels = [];
+    mergeData = timeline.map(t => {
+      const point1 = line1Data.find(f => f.Timeline == t);
+      const point2 = line2Data.find(f => f.Timeline == t);
+      const point3 = line3Data.find(f => f.Timeline == t);
+      const point4 = line4Data.find(f => f.Timeline == t);
+      labels.push(point1?.Label || point2?.Label || point3?.Label || point4?.Label);
+      return {
+        Label: t,
+        Line1: point1 || { Value: 0 },
+        Line2: point2 || { Value: 0 },
+        Line3: point3 || { Value: 0 },
+        Line4: point4 || { Value: 0 },
+      };
+    });
 
 
     this.cashFlowStatisticsData = {
@@ -518,24 +540,26 @@ export class AccountingDashboardComponent implements OnDestroy {
     const financialLeasingDebtStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3412]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
-    line1Data = customerReceivableStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line2Data = liabilitiesStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    line3Data = loadStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    line4Data = financialLeasingDebtStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    labels = [
-      ...new Set([
-        ...line1Data.map(item => item['Label']),
-        ...line2Data.map(item => item['Label']),
-        ...line3Data.map(item => item['Label']),
-        ...line4Data.map(item => item['Label']),
-      ].sort())];
-    mergeData = labels.map(l => ({
-      Label: l,
-      Line1: line1Data.find(f => f.Label == l) || { Value: 0 },
-      Line2: line2Data.find(f => f.Label == l) || { Value: 0 },
-      Line3: line3Data.find(f => f.Label == l) || { Value: 0 },
-      Line4: line4Data.find(f => f.Label == l) || { Value: 0 },
-    }));
+    line1Data = customerReceivableStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line2Data = liabilitiesStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    line3Data = loadStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    line4Data = financialLeasingDebtStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    timeline = [...new Set([...line1Data.map(item => item['Timeline']), ...line2Data.map(item => item['Timeline'])].sort())];
+    labels = [];
+    mergeData = timeline.map(t => {
+      const point1 = line1Data.find(f => f.Timeline == t);
+      const point2 = line2Data.find(f => f.Timeline == t);
+      const point3 = line3Data.find(f => f.Timeline == t);
+      const point4 = line4Data.find(f => f.Timeline == t);
+      labels.push(point1?.Label || point2?.Label || point3?.Label || point4?.Label);
+      return {
+        Label: t,
+        Line1: point1 || { Value: 0 },
+        Line2: point2 || { Value: 0 },
+        Line3: point3 || { Value: 0 },
+        Line4: point4 || { Value: 0 },
+      };
+    });
 
     this.debtStatisticsData = {
       labels,
@@ -594,15 +618,17 @@ export class AccountingDashboardComponent implements OnDestroy {
     const profitStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632,641,642,811,511,512,515,711]", statisticsProfit: true, increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
-    line1Data = profitStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    labels = [
-      ...new Set([
-        ...line1Data.map(item => item['Label']),
-      ].sort())];
-    mergeData = labels.map(l => ({
-      Label: l,
-      Line1: line1Data.find(f => f.Label == l) || { Value: 0 },
-    }));
+    line1Data = profitStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    timeline = [...new Set([...line1Data.map(item => item['Timeline']), ...line2Data.map(item => item['Timeline'])].sort())];
+    labels = [];
+    mergeData = timeline.map(t => {
+      const point = line1Data.find(f => f.Timeline == t);
+      labels.push(point?.Label);
+      return {
+        Label: t,
+        Line1: point || { Value: 0 },
+      };
+    });
 
     this.profitStatisticsData = {
       labels,
