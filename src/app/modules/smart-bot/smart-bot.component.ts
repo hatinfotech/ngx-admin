@@ -1,3 +1,4 @@
+import { environment } from './../../../environments/environment';
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NbAuthService } from '@nebular/auth';
@@ -22,6 +23,7 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
   frame: HTMLIFrameElement;
 
   protected frameSocket: FrameSocket;
+  env = environment;
 
   constructor(
     public sanitizer: DomSanitizer,
@@ -33,7 +35,7 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.commonService.theme$.pipe(filter(f => !!f), take(1)).toPromise().then(config => {
-      this.frameSafeSource = this.sanitizer.bypassSecurityTrustResourceUrl(this.frameSource + '?id=' + this.id + '&theme=' + config.theme);
+      this.frameSafeSource = this.sanitizer.bypassSecurityTrustResourceUrl(`${this.frameSource}?id=${this.id}&theme=${config.theme}&version=${this.env.version}`);
     });
   }
 
