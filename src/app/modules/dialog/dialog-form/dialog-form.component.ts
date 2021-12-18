@@ -5,6 +5,44 @@ import { ShowcaseDialogComponent } from '../showcase-dialog/showcase-dialog.comp
 import { FormGroup, AbstractControl, FormControl } from '@angular/forms';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 
+/**
+this.commonService.openDialog(DialogFormComponent, {
+  context: {
+    title: 'Cập nhật phiên bản phát hành',
+    controls: [
+      {
+        name: 'Version',
+        label: 'Phiên bản sẽ được cập nhật',
+        initValue: this.moduleSettings['MINIERP_RELEASE_VERSION'],
+        placeholder: 'Phiên bản sẽ được cập nhật tự động',
+        type: 'text',
+      },
+    ],
+    actions: [
+      {
+        label: 'Trở về',
+        icon: 'back',
+        status: 'info',
+        action: () => { },
+      },
+      {
+        label: 'Cập nhật',
+        icon: 'generate',
+        status: 'success',
+        action: (form: FormGroup) => {
+          this.apiService.putPromise(this.apiPath + '/settings', {}, [{
+            Name: 'MINIERP_RELEASE_VERSION',
+            Value: form.value['Version'],
+          }]).then(rs => {
+            this.refresh();
+          });
+
+        },
+      },
+    ],
+  },
+});
+ */
 @Component({
   selector: 'ngx-dialog-form',
   templateUrl: './dialog-form.component.html',
@@ -14,6 +52,8 @@ export class DialogFormComponent implements OnInit {
 
 
   @Input() title: string;
+  @Input() cardStyle?: any;
+
   @Input() controls: {
     name: string,
     type?: string,
