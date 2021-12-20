@@ -152,9 +152,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   accountingBusinessList: BusinessModel[] = [];
 
-  customIcons: {[key: string]: CustomIcon[]} = {};
+  customIcons: { [key: string]: CustomIcon[] } = {};
   getCustomIcons(name: string): CustomIcon[] {
-    if(this.customIcons[name]) return this.customIcons[name];
+    if (this.customIcons[name]) return this.customIcons[name];
     return this.customIcons[name] = [{
       icon: 'plus-square-outline',
       title: this.commonService.translateText('Common.addNewProduct'),
@@ -700,17 +700,22 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
+    const unitControl = detail.get('Unit');
     if (selectedData) {
       detail.get('Description').setValue(selectedData.Name);
-      if (selectedData.Units) {
-        const unitControl = detail.get('Unit');
+      if (selectedData.Units && selectedData.Units.length > 0) {
         unitControl['UnitList'] = selectedData.Units;
         unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
+      } else {
+        unitControl['UnitList'] = [];
+        unitControl['UnitList'] = null;
       }
       detail.get('Description').setValue(selectedData.Name);
     } else {
       detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
+      unitControl['UnitList'] = [];
+      unitControl['UnitList'] = null;
     }
     return false;
   }

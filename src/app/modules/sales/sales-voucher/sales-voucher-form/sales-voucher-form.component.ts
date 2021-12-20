@@ -441,9 +441,6 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       text: 'Name',
     },
     ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': params['term'] });
-      // },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
         this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
@@ -455,10 +452,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       },
       delay: 300,
       processResults: (data: any, params: any) => {
-        // console.info(data, params);
         return {
           results: data.map(product => {
-            // product['text'] = `${product['text']} - ${product['id']}`;
             product.thumbnail = product?.FeaturePicture?.Thumbnail;
             return product;
           })
@@ -979,6 +974,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup, detailForm?: FormGroup) {
     console.log(selectedData);
     const priceTable = this.commonService.getObjectId(parentForm.get('PriceTable').value);
+    const unitControl = detail.get('Unit');
     detail.get('Description').setValue(selectedData.Name);
     if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
       const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true) || selectedData.Units[0];
@@ -989,7 +985,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           includeUnit: true,
         }).then(rs => {
           console.log(rs);
-          detail['unitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
+          unitControl['UnitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
           // if (selectedData.Units) {
           if (detaultUnit) {
             const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
@@ -1005,12 +1001,17 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           // }
         });
       } else {
-        detail.get('Unit').setValue(detaultUnit);
+        unitControl['UnitList'] = selectedData.Units;
+        // unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
+        unitControl.setValue(detaultUnit);
       }
 
     } else {
       // detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
+
+      unitControl['UnitList'] = [];
+      unitControl['UnitList'] = null;
     }
     // Callculate: Doanh thu bán lẻ dựa triên thu chi
     if (selectedData && this.commonService.getObjectId(selectedData) == 'BANLE' && detailForm) {

@@ -4,19 +4,21 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { filter, take } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { BusinessModel } from '../../../../models/accounting.model';
 import { ContactModel } from '../../../../models/contact.model';
-import { ProductModel } from '../../../../models/product.model';
+import { ProductModel, ProductUnitModel } from '../../../../models/product.model';
 import { SalesVoucherModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { WarehouseGoodsContainerModel, WarehouseGoodsDeliveryNoteDetailModel, WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 // import { PurchaseOrderVoucherFormComponent } from '../../../purchase/order/purchase-order-voucher-form/purchase-order-voucher-form.component';
@@ -51,8 +53,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   taxList: (TaxModel & { id?: string, text?: string })[];
 
   /** Unit list */
-  static _unitList: (UnitModel & { id?: string, text?: string })[];
-  unitList: (UnitModel & { id?: string, text?: string })[];
+  // static _unitList: (UnitModel & { id?: string, text?: string })[];
+  unitList: ProductUnitModel[];
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -125,6 +127,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<WarehouseGoodsDeliveryNoteFormComponent>,
+    public adminProductService: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -154,19 +157,15 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    tags: true,
+    withThumbnail: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
     },
     ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'search': params['term'] });
-      // },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", includeUnit: true, 'search': params['term'] }).then(rs => {
+        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
           success(rs);
         }).catch(err => {
           console.error(err);
@@ -175,9 +174,11 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       },
       delay: 300,
       processResults: (data: any, params: any) => {
-        // console.info(data, params);
         return {
-          results: data
+          results: data.map(product => {
+            product.thumbnail = product?.FeaturePicture?.Thumbnail;
+            return product;
+          })
         };
       },
     },
@@ -287,11 +288,12 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
-      tax['id'] = tax.Code;
-      tax['text'] = tax.Name;
-      return tax;
-    });
+    // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
+    //   tax['id'] = tax.Code;
+    //   tax['text'] = tax.Name;
+    //   return tax;
+    // });
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.unitList = list);
     // if (!PurchaseOrderVoucherFormComponent._unitList) {
     // } else {
     //   this.unitList = PurchaseOrderVoucherFormComponent._unitList;
@@ -501,11 +503,22 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
+    const unitControl = detail.get('Unit');
     if (selectedData) {
       detail.get('Description').setValue(selectedData.Name);
+      if (selectedData.Units && selectedData.Units.length > 0) {
+        unitControl['UnitList'] = selectedData.Units;
+        unitControl.patchValue(selectedData.Units.find(f => f['DefaultExport'] === true || f['IsDefaultSales'] === true));
+      } else {
+        unitControl['UnitList'] = [];
+        unitControl['UnitList'] = null;
+      }
     } else {
       detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
+
+      unitControl['UnitList'] = [];
+      unitControl['UnitList'] = null;
     }
     return false;
   }
@@ -646,8 +659,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
-  
-                if ( ['APPROVED','COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
+
+                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
@@ -663,7 +676,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
-  
+
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
@@ -677,7 +690,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                     }
                   }
                 }
-  
+
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
@@ -689,8 +702,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/deployment/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
-  
-                if (['APPROVED','COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
+
+                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
@@ -705,7 +718,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
-  
+
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
@@ -719,7 +732,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                     }
                   }
                 }
-  
+
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'DEPLOYMENT' }))]);
