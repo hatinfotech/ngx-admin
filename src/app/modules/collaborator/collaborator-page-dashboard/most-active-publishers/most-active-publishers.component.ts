@@ -1,3 +1,4 @@
+import { ContactModel } from './../../../../models/contact.model';
 import { MobileAppService } from './../../../mobile-app/mobile-app.service';
 import { ApiService } from './../../../../services/api.service';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
@@ -70,7 +71,14 @@ export class MostActivePublishersComponent implements OnDestroy {
             label: 'Tạo task',
             icon: 'generate',
             status: 'success',
-            action: (form: FormGroup) => {
+            action: async (form: FormGroup) => {
+              // let contact = await this.apiService.getPromise<ContactModel[]>('/contact/contacts', { searchByOutsideReference: true, eq_RefUserId: publisher.Publisher }).then(rs => rs[0]);
+              // if(!contact) {
+              //   contact = await this.apiService.postPromise<ContactModel[]>('/contact/contacts', { }, [{
+              //     Name: publisher.Name,
+              //     Name: publisher.Name,
+              //   }]).then(rs => rs[0]);
+              // }
               this.apiService.postPromise('/chat/rooms', { createRefCoreChatRoom: true }, [{
                 Description: form.value['Description'],
                 Members: [{
@@ -78,7 +86,7 @@ export class MostActivePublishersComponent implements OnDestroy {
                   RefType: 'PUBLISHER',
                   RefPlatform: 'PROBOXONE',
                   Page: publisher.Page,
-                  Contact: `${publisher.Publisher}_${publisher.Page}`,
+                  RefUserUuid: publisher.Publisher,
                   Name: publisher.Name,
                 }],
               }]).then(rs => {
