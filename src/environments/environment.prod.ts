@@ -6,6 +6,7 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
   version: '6.0.3.2',
+  // 6.0.4.1: dev multi core chat feature: add chat room member and connect/disconnect function
   // 6.0.3.2: hotfix unit of vouchers
   // 6.0.3: dev multi core chat feature: base of technology
   // 6.0.2.7: Fix accounting statistics daskboard
