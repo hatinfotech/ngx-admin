@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.0.3.2',
+  version: '6.0.4.4',
+  // 6.0.4.4: hotfix product form copy function
   // 6.0.4.1: dev multi core chat feature: add chat room member and connect/disconnect function
   // 6.0.3.2: hotfix unit of vouchers
   // 6.0.3: dev multi core chat feature: base of technology

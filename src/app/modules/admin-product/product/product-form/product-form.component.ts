@@ -375,7 +375,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   makeNewFormGroup(data?: ProductModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code_old: [''],
+      // Code_old: [''],
       Code: [''],
       Sku: [''],
       WarehouseUnit: ['n/a'],
