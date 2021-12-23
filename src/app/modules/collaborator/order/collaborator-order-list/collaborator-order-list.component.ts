@@ -274,7 +274,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             });
 
             instance.click.subscribe(async (row: CollaboratorOrderModel) => {
-              let task = row.RelativeVouchers?.find(f => f.type == 'TASK');
+              let task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
               if (task) {
                 this.commonService.openMobileSidebar();
                 this.mobileAppService.openChatRoom({ ChatRoom: task.id });
