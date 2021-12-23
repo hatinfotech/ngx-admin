@@ -1,7 +1,8 @@
+import { ChatRoomMemberModel } from './../../../../models/chat-room.model';
 import { Title } from '@angular/platform-browser';
 import { CollaboratorOrderTeleCommitFormComponent } from './../collaborator-order-tele-commit/collaborator-order-tele-commit.component';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { filter, take, takeUntil } from 'rxjs/operators';
@@ -24,6 +25,7 @@ import { SalesPriceReportPrintComponent } from '../../../sales/price-report/sale
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorOrderFormComponent } from '../collaborator-order-form/collaborator-order-form.component';
 import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
+import { ChatRoomModel } from '../../../../models/chat-room.model';
 
 @Component({
   selector: 'ngx-collaborator-order-list',
@@ -57,7 +59,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
     public ref: NbDialogRef<SalesPriceReportListComponent>,
     public mobileAppService: MobileAppService,
     public collaboratorService: CollaboratorService,
-    public mobileService: MobileAppService,
+    // public mobileService: MobileAppService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -72,7 +74,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           status: 'success',
           label: 'Select page',
           icon: 'plus',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Page.title', {action: this.commonService.translateText('Common.choose'), definition: ''}), 'head-title'),
+          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Page.title', { action: this.commonService.translateText('Common.choose'), definition: '' }), 'head-title'),
           size: 'medium',
           select2: {
             data: pageList, option: {
@@ -154,7 +156,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           width: '25%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
           valuePrepareFunction: (cell, row) => {
-            return  '<b>Mã Đơn Hàng: ' + row.Code + '</b><br>' + row.Title + '';
+            return '<b>Mã Đơn Hàng: ' + row.Code + '</b><br>' + row.Title + '';
           },
         },
         // RelationVoucher: {
@@ -267,14 +269,59 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             instance.icon = 'message-circle';
             instance.display = true;
             instance.status = 'info';
+            instance.title = 'Tạo task trao đổi với CTV';
             instance.valueChange.subscribe(value => {
             });
 
             instance.click.subscribe(async (row: CollaboratorOrderModel) => {
-              const task = row.RelativeVouchers?.find(f => f.type == 'TASK');
+              let task = row.RelativeVouchers?.find(f => f.type == 'TASK');
               if (task) {
                 this.commonService.openMobileSidebar();
-                this.mobileService.openChatRoom({ ChatRoom: task.id });
+                this.mobileAppService.openChatRoom({ ChatRoom: task.id });
+              } else {
+                // Assign resource to chat room
+                task = await this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
+                  Code: null,
+                  Resources: [
+                    {
+                      ResourceType: 'CLBRTORDER',
+                      Resource: row.Code,
+                      Title: row.Title,
+                      Date: row.DateOfOrder,
+                    }
+                  ]
+                }]).then(rs => {
+                  if (rs && rs.length > 0) {
+                    // const link = rs[0].Resources[0];
+                    // if (link && link.ChatRoom) {
+
+                    // Add publisher to chat room
+                    this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code }, [{
+                      ChatRoom: rs[0].Code as any,
+                      Type: 'CONTACT',
+                      RefUserUuid: this.commonService.getObjectId(row.Publisher),
+                      Name: row.PublisherName,
+                      Page: row.Page,
+                      RefPlatform: 'PROBOXONE',
+                      RefType: 'PUBLISHER',
+                      id: this.commonService.getObjectId(row.Publisher),
+                    }]).then(rs2 => {
+
+                      // Connect publisher
+                      this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code, connectRefContactMember: true }, [{
+                        Type: 'CONTACT',
+                        Contact: rs2[0].Contact,
+                      }]).then(rs3 => {
+                        this.commonService.openMobileSidebar();
+                        this.mobileAppService.openChatRoom({ ChatRoom: rs[0].Code });
+                      });
+
+                    });
+
+                    // }
+                    return { id: rs[0].Code, text: row.Title, type: 'TASK' };
+                  }
+                });
               }
             });
           },
