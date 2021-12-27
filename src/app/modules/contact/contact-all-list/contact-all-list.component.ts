@@ -235,7 +235,7 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['sort_Id'] = 'desc';
-      params['includeOrganizations'] = true;
+      // params['includeOrganizations'] = true;
       params['includeGroups'] = true;
       params['eq_IsDeleted'] = false;
       return params;
