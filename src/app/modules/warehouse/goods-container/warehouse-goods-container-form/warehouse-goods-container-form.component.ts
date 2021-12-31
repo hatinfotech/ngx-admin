@@ -144,7 +144,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   makeNewFormGroup(data?: WarehouseGoodsContainerModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Code_old: [''],
-      Code: ['', Validators.required],
+      Code: [''],
       Parent: [''],
       Name: ['', Validators.required],
       FindOrder: [999],

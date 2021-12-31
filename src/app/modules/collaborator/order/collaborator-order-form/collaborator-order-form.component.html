@@ -26,7 +26,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                                <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.phone' | translate | headtitlecase)}}">
                                                 </ngx-form-group>
                                             </div>
@@ -147,7 +147,7 @@
                                 <div class="form-group">
                                     <label class="label"><span class="valid">{{'Common.relativeVoucher' | translate | headtitlecase}}: </span></label>
                                     <div>
-                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" title="{{relationVoucher | objectstext}}">
+                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
                                             <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
                                             <nb-icon pack="eva" icon="close-outline" class="close-btn" (click)="removeRelativeVoucher(formItem, relationVoucher)"></nb-icon>
                                         </span>

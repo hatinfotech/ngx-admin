@@ -480,11 +480,11 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
                   context: {
                     inputId: [priceReportRef.id],
                     inputMode: 'dialog',
-                    onDialogSave: (data) => {
+                    onDialogSave: async (data) => {
                       console.log(data);
-                      setTimeout(() => {
-                        this.refresh();
-                      }, 300);
+                      // setTimeout(() => {
+                      this.refresh();
+                      // }, 1000);
                     },
                     onDialogClose: () => { },
                   }

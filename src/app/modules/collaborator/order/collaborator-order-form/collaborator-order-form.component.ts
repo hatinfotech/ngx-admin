@@ -541,7 +541,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Object: [''],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
-      ObjectPhone: ['', Validators.required],
+      ObjectPhone: [''],
       ObjectAddress: [''],
       ObjectBankName: [''],
       ObjectBankAccount: [''],

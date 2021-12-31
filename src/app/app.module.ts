@@ -240,6 +240,7 @@ import { AccountingAccountDetailsReportPrintComponent } from './modules/accounti
 import { AccountingDashboardComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard.component';
 import { AccountingRevenueStatisticsComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard-statistics.component';
 import { AccountingMostOfDebtComponent } from './modules/accounting/accounting-dashboard/accounting-most-of-debt/accounting-most-of-debt.component';
+import { CollaboratorOrderTeleCommitPrintComponent } from './modules/collaborator/order/collaborator-order-tele-commit-print/collaborator-order-tele-commit-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -422,6 +423,7 @@ export class DynamicLocaleId extends String {
     CollaboratorProductPreviewListComponent,
     CollaboratorSubscriptionProductComponent,
     CollaboratorOrderTeleCommitFormComponent,
+    CollaboratorOrderTeleCommitPrintComponent,
     DashboardComponent,
     StatusCardComponent,
     TemperatureDraggerComponent,

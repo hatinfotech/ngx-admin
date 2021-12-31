@@ -106,13 +106,15 @@ export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFo
             if (rs[0]?.Code) {
               this.apiService.putPromise('/collaborator/price-reports', { changeState: 'APPROVED' }, [{ Code: rs[0]?.Code }]).then(rs => {
                 this.goback();
-                // this.onDialogClose();
+              }).then(rs3 => {
+                this.onAfterUpdateSubmit(rs);
               });
             }
+            return rs;
           });
         },
       }
-    ])
+    ]);
 
     return false;
   }

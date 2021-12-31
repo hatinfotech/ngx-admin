@@ -140,7 +140,7 @@
                                 <div class="form-group">
                                     <label class="label"><span class="valid">{{'Common.relativeVoucher' | translate | headtitlecase}}: </span></label>
                                     <div>
-                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" title="{{relationVoucher | objectstext}}">
+                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
                                             <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
                                             <nb-icon pack="eva" icon="close-outline" class="close-btn" (click)="removeRelativeVoucher(formItem, relationVoucher)"></nb-icon>
                                         </span>
@@ -206,7 +206,7 @@
                                             <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12">
                                                 <div class="row">
                                                     <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false" [customIcons]="customIcons" [option]="{parentForm: formItem}">
+                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false" [customIcons]="getCustomIcons(i + ic)" [option]="{parentForm: formItem}">
                                                             <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event, formItem)"></ngx-select2>
                                                         </ngx-form-group>
                                                     </div>

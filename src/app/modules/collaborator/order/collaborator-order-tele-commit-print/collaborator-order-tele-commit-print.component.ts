@@ -1,44 +1,41 @@
-import { SalesPriceReportModel } from './../../../../models/sales.model';
-import { CollaboratorOrderModel, CollaboratorOrderDetailModel } from './../../../../models/collaborator.model';
-import { DatePipe } from '@angular/common';
+// import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { NbDialogRef } from '@nebular/theme';
-import { environment } from '../../../../../environments/environment.prod';
-import { AppModule } from '../../../../app.module';
-import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { ProcessMap } from '../../../../models/process-map.model';
-import { SalesPriceReportDetailModel } from '../../../../models/sales.model';
-import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
-import { CollaboratorService } from '../../collaborator.service';
+import { Router } from '@angular/router';
+import { ApiService } from '../../../../services/api.service';
+import { NbDialogRef } from '@nebular/theme';
+import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
+import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
+import { environment } from '../../../../../environments/environment';
+import { DatePipe } from '@angular/common';
+import { ProcessMap } from '../../../../models/process-map.model';
+import { AppModule } from '../../../../app.module';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
-import { CollaboratorOrderTeleCommitPrintComponent } from '../collaborator-order-tele-commit-print/collaborator-order-tele-commit-print.component';
-import { CollaboratorOrderFormComponent } from '../collaborator-order-form/collaborator-order-form.component';
+import { CollaboratorOrderTeleCommitFormComponent } from '../collaborator-order-tele-commit/collaborator-order-tele-commit.component';
+
+declare var $: JQueryStatic;
 
 @Component({
-  selector: 'ngx-collaborator-order-print',
-  templateUrl: './collaborator-order-print.component.html',
-  styleUrls: ['./collaborator-order-print.component.scss']
+  selector: 'ngx-collaborator-order-tele-commit-print',
+  templateUrl: './collaborator-order-tele-commit-print.component.html',
+  styleUrls: ['./collaborator-order-tele-commit-print.component.scss'],
 })
-export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<CollaboratorOrderModel> implements OnInit {
+export class CollaboratorOrderTeleCommitPrintComponent extends DataManagerPrintComponent<SalesPriceReportModel> implements OnInit {
 
   /** Component name */
-  componentName = 'CollaboratorOrderPrintComponent';
-  title: string = 'Xem trước đơn hàng';
-  apiPath = '/collaborator/orders';
+  componentName = 'CollaboratorOrderTeleCommitPrintComponent';
+  title: string = 'Xem trước phiếu báo giá';
+  apiPath = '/sales/price-reports';
   env = environment;
   processMapList: ProcessMap[] = [];
-  idKey = ['Code'];
-  formDialog = CollaboratorOrderFormComponent;
+  formDialog = CollaboratorOrderTeleCommitFormComponent;
+  idKey: ['Code'];
 
   constructor(
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<CollaboratorOrderPrintComponent>,
-    public collaboratorService: CollaboratorService,
+    public ref: NbDialogRef<CollaboratorOrderTeleCommitPrintComponent>,
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
   ) {
@@ -67,18 +64,16 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     //   }, {});
     //   for (const detail of data.Details) {
     //     if (detail.Type !== 'CATEGORT') {
-    //       // detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
-    //       // detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
     //       data['Total'] += detail['ToMoney'] = this.toMoney(detail);
     //     }
     //   }
-    //   this.processMapList[i] = AppModule.processMaps.collaboratoOrder[data.State || ''];
+    //   this.processMapList[i] = AppModule.processMaps.priceReport[data.State || ''];
     // }
     this.summaryCalculate(this.data);
     return result;
   }
 
-  // getIdentified(data: CollaboratorOrderModel): string[] {
+  // getIdentified(data: SalesPriceReportModel): string[] {
   //   if (this.idKey && this.idKey.length > 0) {
   //     return this.idKey.map(key => data[key]);
   //   } else {
@@ -86,7 +81,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   //   }
   // }
 
-  renderTitle(data: CollaboratorOrderModel) {
+  renderTitle(data: SalesPriceReportModel) {
     return `PhieuBaoGia_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
   }
 
@@ -107,7 +102,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     }
   }
 
-  toMoney(detail: CollaboratorOrderDetailModel) {
+  toMoney(detail: SalesPriceReportDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
       if (detail.Tax) {
@@ -121,7 +116,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     return 0;
   }
 
-  getTotal(data: CollaboratorOrderModel) {
+  getTotal(data: SalesPriceReportModel) {
     let total = 0;
     const details = data.Details;
     let no = 1;
@@ -135,7 +130,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     return total;
   }
 
-  saveAndClose(data: CollaboratorOrderModel) {
+  saveAndClose(data: SalesPriceReportModel) {
     if (this.onSaveAndClose) {
       this.onSaveAndClose(data);
     }
@@ -153,28 +148,28 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     return '';
   }
 
-  prepareCopy(data: CollaboratorOrderModel) {
+  prepareCopy(data: SalesPriceReportModel) {
     this.close();
-    this.commonService.openDialog(SalesPriceReportFormComponent, {
-      context: {
-        showLoadinng: true,
-        inputMode: 'dialog',
-        inputId: [data.Code],
-        isDuplicate: true,
-        onDialogSave: (newData: CollaboratorOrderModel[]) => {
-          // if (onDialogSave) onDialogSave(row);
-          this.onClose && this.onClose(newData[0]);
-          this.onSaveAndClose && this.onSaveAndClose(newData[0]);
-        },
-        onDialogClose: () => {
-          // if (onDialogClose) onDialogClose();
-          this.refresh();
-        },
-      },
-    });
+    // this.commonService.openDialog(CollaboratorOrderTeleCommitPrintComponent, {
+    //   context: {
+    //     showLoadinng: true,
+    //     inputMode: 'dialog',
+    //     inputId: [data.Code],
+    //     isDuplicate: true,
+    //     onDialogSave: (newData: SalesPriceReportModel[]) => {
+    //       // if (onDialogSave) onDialogSave(row);
+    //       this.onClose && this.onClose(newData[0]);
+    //       this.onSaveAndClose && this.onSaveAndClose(newData[0]);
+    //     },
+    //     onDialogClose: () => {
+    //       // if (onDialogClose) onDialogClose();
+    //       this.refresh();
+    //     },
+    //   },
+    // });
   }
 
-  approvedConfirm(data: CollaboratorOrderModel, index: number) {
+  approvedConfirm(data: SalesPriceReportModel, index: number) {
     if (['COMPLETE'].indexOf(data.State) > -1) {
       this.commonService.showDialog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
@@ -187,7 +182,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
       ]);
       return;
     }
-    const params = { id: [this.makeId(data)], page: this.collaboratorService.currentpage$.value };
+    const params = { id: [data.Code] };
     // const processMap = SalesModule.processMaps.priceReport[data.State || ''];
     params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
@@ -232,7 +227,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<CollaboratorOrderModel[]>(this.apiPath, params, [{ Page: data.Page, Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<SalesPriceReportModel[]>('/sales/price-reports', params, [{ Code: data.Code }]).then(rs => {
             this.loading = true;
             this.onChange && this.onChange(data);
             this.close();
@@ -258,7 +253,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CollaboratorOrderModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => {
+    return this.apiService.getPromise<SalesPriceReportModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: SalesPriceReportDetailModel) => detail.Type !== 'CATEGORY');
         // let total = 0;
@@ -282,12 +277,12 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     });
   }
 
-  getItemDescription(item: CollaboratorOrderModel) {
-    return item?.Description;
+  getItemDescription(item: SalesPriceReportModel) {
+    return item?.Title;
   }
 
-  summaryCalculate(data: CollaboratorOrderModel[]) {
-
+  summaryCalculate(data: SalesPriceReportModel[]) {
+    
     for (const i in data) {
       const datanium = data[i];
       datanium['Total'] = 0;
@@ -302,14 +297,12 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
       }, {});
       for (const detail of datanium.Details) {
         if (detail.Type !== 'CATEGORT') {
-          // detail.Tax = typeof detail.Tax === 'string' ? taxMap[detail.Tax] : detail.Tax;
-          // detail.Unit = typeof detail.Unit === 'string' ? unitMap[detail.Unit] : detail.Unit;
           datanium['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
-      this.processMapList[i] = AppModule.processMaps.collaboratoOrder[datanium.State || ''];
+      this.processMapList[i] = AppModule.processMaps.priceReport[datanium.State || ''];
     }
-
+    
     // for (const i in data) {
     //   const item = this.data[i];
     //   item['Total'] = 0;
@@ -320,33 +313,6 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
     // }
     return data;
-  }
-
-  openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) {
-      if (relativeVocher.type == 'PRICEREPORT') {
-        this.commonService.openDialog(CollaboratorOrderTeleCommitPrintComponent, {
-          context: {
-            showLoadinng: true,
-            title: 'Xem trước',
-            id: [this.commonService.getObjectId(relativeVocher)],
-            inputMode: 'dialog',
-            mode: 'print',
-            // inputId: [this.commonService.getObjectId(relativeVocher)],
-            // data: data,
-            idKey: ['Code'],
-            // approvedConfirm: true,
-            sourceOfDialog: 'any',
-            onClose: (data: SalesPriceReportModel) => {
-              // onClose && onClose(data);
-            },
-          },
-        });
-      } else {
-        this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
-      }
-    }
-    return false;
   }
 
 }

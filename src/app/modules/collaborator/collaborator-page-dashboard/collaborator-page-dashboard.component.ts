@@ -319,7 +319,7 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
           : (reportType === 'HOUR' ? tmpRevenueStatistics.map(statistic => statistic['Hour']) : tmpRevenueStatistics.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
       datasets: [
         {
-          label: 'Doanh thu tạm tính',
+          label: 'Doanh số tạm tính',
           data: tmpRevenueStatistics.map(statistic => parseInt(statistic.NetRevenue)),
           borderColor: this.colors.info,
           // backgroundColor: colors.danger,
@@ -330,7 +330,7 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
           pointHoverRadius: 10,
         },
         {
-          label: 'Doanh thu đã duyệt',
+          label: 'Doanh số đã duyệt',
           data: commissionStatistics.map(statistic => parseInt(statistic.NetRevenue)),
           borderColor: this.colors.danger,
           // backgroundColor: colors.primary,

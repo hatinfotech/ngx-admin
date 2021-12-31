@@ -13,7 +13,7 @@
             <div class="row">
               <div class="col-sm-3">
                 <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i"
-                  [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                  [allowCopy]="true" [required]="false" [touchedValidate]="false" placeholder="Auto...">
                   <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Common.code' | translate | headtitlecase}}" style="text-transform:uppercase">
                 </ngx-form-group>
               </div>

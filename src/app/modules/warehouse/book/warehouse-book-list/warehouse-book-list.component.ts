@@ -91,6 +91,11 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
       // delete: this.configDeleteButton(),
       // pager: this.configPaging(),
       columns: {
+        Code: {
+          title: this.commonService.translateText('Common.code'),
+          type: 'string',
+          width: '5%',
+        },
         Warehouse: {
           title: this.commonService.translateText('Common.warehouse'),
           type: 'string',
