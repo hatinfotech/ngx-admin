@@ -626,7 +626,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       DateOfSale: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],
-      RequireInvoice: [true],
+      RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });
     if (data) {

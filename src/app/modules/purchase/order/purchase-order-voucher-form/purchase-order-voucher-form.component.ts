@@ -39,6 +39,11 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
+  // locale = this.commo nService.getCurrentLoaleDataset();
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
+  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
+
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
   taxList: (TaxModel & { id?: string, text?: string })[];
@@ -352,6 +357,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       // RelativeVouchers: [],
       _total: [''],
       RelativeVouchers: [],
+      RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -394,7 +400,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: ['VAT10'],
+      // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
@@ -529,13 +535,13 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   calculatToMoney(detail: FormGroup) {
     let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
-    }
+    // let tax = detail.get('Tax').value;
+    // if (tax) {
+    //   if (typeof tax === 'string') {
+    //     tax = this.taxList.filter(t => t.Code === tax)[0];
+    //   }
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
     return toMoney;
   }
 
