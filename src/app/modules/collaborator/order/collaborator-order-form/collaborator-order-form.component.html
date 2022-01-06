@@ -102,11 +102,20 @@
                                     <input type="text" nbInput fullWidth formControlName="ObjectBankAccount" placeholder="{{'Bank.code' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfOrder" label="Collaborator.Order.dateOforder" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                                    <input type="text" [owlDateTime]="DateOfOrder" [owlDateTimeTrigger]="DateOfOrder" nbInput fullWidth formControlName="DateOfOrder" placeholder="{{'Collaborator.Order.dateOforder' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfOrder></owl-date-time>
-                                </ngx-form-group>
+                            <div class="col-lg-3">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <ngx-form-group [formGroup]="formItem" name="DateOfOrder" label="Collaborator.Order.dateOforder" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                            <input type="text" [owlDateTime]="DateOfOrder" [owlDateTimeTrigger]="DateOfOrder" nbInput fullWidth formControlName="DateOfOrder" placeholder="{{'Collaborator.Order.dateOforder' | translate | headtitlecase}}">
+                                            <owl-date-time #DateOfOrder></owl-date-time>
+                                        </ngx-form-group>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <ngx-form-group [formGroup]="formItem" name="RequireInvoice" label="Yêu cầu xuất hóa đơn" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                            <nb-checkbox formControlName="RequireInvoice" nbTooltip="Khách yêu cầuxuất hóa đơn VAT">Y/C xuất hóa đơn</nb-checkbox>
+                                        </ngx-form-group>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="Province" label="Common.province" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
@@ -171,11 +180,11 @@
                                     <div class="col-sm-3 label">{{'Common.productOrService' | translate | headtitlecase}}</div>
                                     <div class="col-sm-7 label">
                                         <div class="row">
-                                            <div class="col-sm-2 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
+                                            <div class="col-sm-3 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
                                             <div class="col-sm-2 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
-                                            <div class="col-sm-2 label align-right">{{'Voucher.price' | translate | headtitlecase}}</div>
-                                            <div class="col-sm-3 label">{{'Voucher.tax' | translate | headtitlecase}}</div>
-                                            <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div>
+                                            <div class="col-sm-3 label align-right">{{'Giá EU' | translate | headtitlecase}}</div>
+                                            <!-- <div class="col-sm-3 label">{{'Voucher.tax' | translate | headtitlecase}}</div> -->
+                                            <div class="col-sm-4 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -226,7 +235,7 @@
                                             </div>
                                             <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
                                                 <div class="row">
-                                                    <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                                    <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                             <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" currencyMask [options]="numberFormat">
                                                         </ngx-form-group>
@@ -236,17 +245,17 @@
                                                             <ngx-select2 formControlName="Unit" [data]="detail['unitList']" [select2Option]="select2OptionForUnit" (selectChange)="onSelectUnit(detail, $event, formItem)"></ngx-select2>
                                                         </ngx-form-group>
                                                     </div>
-                                                    <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                                    <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Price" label="Voucher.price" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                             <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" currencyMask [options]="curencyFormat">
                                                         </ngx-form-group>
                                                     </div>
-                                                    <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                                    <!-- <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Tax" label="Voucher.tax" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false">
                                                             <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForTax"></ngx-select2>
                                                         </ngx-form-group>
-                                                    </div>
-                                                    <div class="col-md-3 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                                    </div> -->
+                                                    <div class="col-md-4 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                             <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="curencyFormat">
                                                         </ngx-form-group>

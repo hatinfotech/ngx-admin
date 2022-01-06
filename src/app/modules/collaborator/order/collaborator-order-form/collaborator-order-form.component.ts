@@ -566,6 +566,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Note: [''],
       SubNote: [''],
       Reported: [''],
+      RequireInvoice: [false],
       _total: [''],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
@@ -645,7 +646,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: ['VAT10'],
+      // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
@@ -826,13 +827,13 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   calculatToMoney(detail: FormGroup) {
     let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
-    }
+    // let tax = detail.get('Tax').value;
+    // if (tax) {
+    //   if (typeof tax === 'string') {
+    //     tax = this.taxList.filter(t => t.Code === tax)[0];
+    //   }
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
     return toMoney;
   }
 
