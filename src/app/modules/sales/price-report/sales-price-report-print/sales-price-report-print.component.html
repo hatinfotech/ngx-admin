@@ -39,7 +39,7 @@
                                 <td class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
-                                <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td>
+                                <!-- <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td> -->
                                 <td class="text-align-right nowrap">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
                             </thead>
                             <ng-container *ngFor="let detail of data.Details; let i = index;">
@@ -53,13 +53,13 @@
                                     <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                                     <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                                     <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
-                                    <td class="text-align-right nowrap">{{detail.Tax | objecttext}}</td>
+                                    <!-- <td class="text-align-right nowrap">{{detail.Tax | objecttext}}</td> -->
                                     <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td>
                                 </tr>
                             </ng-container>
                             <tr>
                                 <td colspan="2">{{'Common.note' | translate | headtitlecase}}</td>
-                                <td colspan="5" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
                             </tr>
                         </table>

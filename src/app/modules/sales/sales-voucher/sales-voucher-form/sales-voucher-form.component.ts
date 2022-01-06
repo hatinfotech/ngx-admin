@@ -626,6 +626,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       DateOfSale: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],
+      RequireInvoice: [true],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -724,12 +725,12 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         }
         return null;
       }],
-      Tax: ['NOTAX', (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
+      // Tax: ['NOTAX', (control: FormControl) => {
+      //   if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+      //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
+      //   }
+      //   return null;
+      // }],
       ToMoney: [0],
       Image: [[]],
       // Reason: [''],
@@ -1120,26 +1121,26 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   calculatToMoney(detail: FormGroup, source?: string) {
-    let tax = detail.get('Tax').value;
-    if (typeof tax === 'string') {
-      tax = this.taxList.filter(t => t.Code === tax)[0];
-    }
+    // let tax = detail.get('Tax').value;
+    // if (typeof tax === 'string') {
+    //   tax = this.taxList.filter(t => t.Code === tax)[0];
+    // }
     if (source === 'ToMoney') {
       let price = detail.get('ToMoney').value / detail.get('Quantity').value;
-      if (tax) {
-        price = price / (1 + parseFloat(tax.Tax) / 100);
-      }
+      // if (tax) {
+      //   price = price / (1 + parseFloat(tax.Tax) / 100);
+      // }
       // console.log(detail.value);
       return price;
     } else {
       let toMoney = detail.get('Quantity').value * detail.get('Price').value;
 
-      if (tax) {
-        if (typeof tax === 'string') {
-          tax = this.taxList.filter(t => t.Code === tax)[0];
-        }
-        toMoney += toMoney * tax.Tax / 100;
-      }
+      // if (tax) {
+      //   if (typeof tax === 'string') {
+      //     tax = this.taxList.filter(t => t.Code === tax)[0];
+      //   }
+      //   toMoney += toMoney * tax.Tax / 100;
+      // }
       // console.log(detail.value);
       return toMoney;
     }

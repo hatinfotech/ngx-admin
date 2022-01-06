@@ -150,6 +150,18 @@
                 <!-- End Detail form -->
               </div>
 
+              <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <label class="label">{{'Cài đặt thuế' | translate | headtitlecase}}</label>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <ngx-form-group [formGroup]="formItem" name="RequireVatTax" label="Thuế VAT (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                      <nb-checkbox class="form-group-icon-control" formControlName="RequireVatTax"></nb-checkbox>
+                      <input class="form-group-input-control" type="text" nbInput fullWidth formControlName="VatTax" placeholder="{{'Thuế VAT' | translate | headtitlecase}}" [inputMask]="towDigitsInputMask">
+                    </ngx-form-group>
+                  </div>
+                </div>
+              </div>
+
             </div>
             <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
             <div class="row">

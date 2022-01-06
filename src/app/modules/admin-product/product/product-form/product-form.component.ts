@@ -148,6 +148,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   unitList: ProductUnitModel[] = [];
 
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
   // Category list for select2
   categoryList: (ProductCategoryModel)[] = [];
   // Group list for select2
@@ -386,6 +391,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Categories: [''],
       Groups: [''],
       Pictures: [''],
+      VatTax: [''],
+      RequireVatTax: [false],
       UnitConversions: this.formBuilder.array([]),
     });
     const unitConversions = this.getUnitConversions(newForm);

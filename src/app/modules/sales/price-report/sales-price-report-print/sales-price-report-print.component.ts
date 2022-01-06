@@ -105,12 +105,12 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   toMoney(detail: SalesPriceReportDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      if (detail.Tax) {
-        if (typeof detail.Tax?.Tax == 'undefined') {
-          throw Error('tax not as tax model');
-        }
-        toMoney += toMoney * detail.Tax.Tax / 100;
-      }
+      // if (detail.Tax) {
+      //   if (typeof detail.Tax?.Tax == 'undefined') {
+      //     throw Error('tax not as tax model');
+      //   }
+      //   toMoney += toMoney * detail.Tax.Tax / 100;
+      // }
       return toMoney;
     }
     return 0;

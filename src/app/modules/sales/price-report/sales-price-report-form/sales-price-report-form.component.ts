@@ -418,6 +418,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       Reported: [null],
       _total: [''],
       RelativeVouchers: [''],
+      RequireInvoice: [true],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -495,7 +496,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: ['VAT10'],
+      // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
@@ -703,27 +704,25 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
 
   calculatToMoney(detail: FormGroup, source?: string) {
-    let tax = detail.get('Tax').value;
-    if (typeof tax === 'string') {
-      tax = this.taxList.filter(t => t.Code === tax)[0];
-    }
+    // let tax = detail.get('Tax').value;
+    // if (typeof tax === 'string') {
+    //   tax = this.taxList.filter(t => t.Code === tax)[0];
+    // }
     if (source === 'ToMoney') {
       let price = detail.get('ToMoney').value / detail.get('Quantity').value;
-      if (tax) {
-        price = price / (1 + parseFloat(tax.Tax) / 100);
-      }
-      // console.log(detail.value);
+      // if (tax) {
+      //   price = price / (1 + parseFloat(tax.Tax) / 100);
+      // }
       return price;
     } else {
       let toMoney = detail.get('Quantity').value * detail.get('Price').value;
 
-      if (tax) {
-        if (typeof tax === 'string') {
-          tax = this.taxList.filter(t => t.Code === tax)[0];
-        }
-        toMoney += toMoney * tax.Tax / 100;
-      }
-      // console.log(detail.value);
+      // if (tax) {
+      //   if (typeof tax === 'string') {
+      //     tax = this.taxList.filter(t => t.Code === tax)[0];
+      //   }
+        // toMoney += toMoney * tax.Tax / 100;
+      // }
       return toMoney;
     }
   }

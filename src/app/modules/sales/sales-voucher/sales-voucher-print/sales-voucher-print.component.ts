@@ -91,13 +91,13 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   toMoney(detail: SalesVoucherDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
-      if (detail.Tax) {
-        if (typeof detail.Tax.Tax == 'undefined') {
-          throw Error('tax not as tax model');
-        }
-        toMoney += toMoney * detail.Tax.Tax / 100;
-      }
+      // detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      // if (detail.Tax) {
+      //   if (typeof detail.Tax.Tax == 'undefined') {
+      //     throw Error('tax not as tax model');
+      //   }
+      //   toMoney += toMoney * detail.Tax.Tax / 100;
+      // }
       return toMoney;
     }
     return 0;
