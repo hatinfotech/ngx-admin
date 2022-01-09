@@ -8,72 +8,41 @@
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <!-- <input type="hidden" formControlName="Code_old"> -->
-              <!-- <input type="hidden" formControlName="FeaturePicture"> -->
               <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
-                  <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
-                      (*)</span>
-                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Name')" pack="eva" icon="copy-outline">
-                    </nb-icon>
-                  </label>
+                <ngx-form-group [formGroup]="formItem" name="Name" label="Tên sản phẩm" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [touchedValidate]="false">
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên sản phẩm">
-                </div>
+                </ngx-form-group>
               </div>
               <div class="col-sm-2">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
-                  <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt
-                      buộc
-                      (*)</span>
-                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Sku')" pack="eva" icon="copy-outline">
-                    </nb-icon>
-                  </label>
+                <ngx-form-group [formGroup]="formItem" name="Sku" label="Sku" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
                   <input type="text" nbInput fullWidth formControlName="Sku" placeholder="Sku">
-                </div>
+                </ngx-form-group>
               </div>
               <div class="col-sm-2">
-                <!-- <div class="form-group" [attr.state]="formControlValidate(formItem.get('WarehouseUnit'), 'warning')" [customIcons]="unitControlIcons">
-                  <label class="label"><span class="valid">Đơn vị tính cơ bản (*)</span><span class="invalid">ĐVT là bắt
-                      buộc
-                      (*)</span>
-                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'WarehouseUnit')" pack="eva" icon="copy-outline">
-                    </nb-icon>
-                  </label>
-                  <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList"></ngx-select2>
-                </div> -->
-                <ngx-form-group [formGroup]="formItem" name="WarehouseUnit" label="Đơn vị tính cơ bản (*)" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [customIcons]="unitControlIcons">
+                <ngx-form-group [formGroup]="formItem" name="WarehouseUnit" label="Đơn vị tính cơ bản" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [customIcons]="unitControlIcons" [touchedValidate]="false">
                   <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList"></ngx-select2>
                 </ngx-form-group>
               </div>
               <div class="col-sm-2">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                  <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt
-                      buộc
-                      (*)</span></label>
+                <ngx-form-group [formGroup]="formItem" name="Code" label="Id Sản phẩm" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
                   <input type="text" nbInput fullWidth formControlName="Code" maxlength="30" placeholder="Tự động tạo mã">
-                </div>
+                </ngx-form-group>
               </div>
               <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Categories'), 'warning')">
-                  <label class="label"><span class="valid">Danh mục</span><span class="invalid">Danh mục là bắt buộc
-                      (*)</span>
-                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Categories')" pack="eva" icon="copy-outline">
-                    </nb-icon>
-                  </label>
-                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList">
-                  </ngx-select2>
-                </div>
+                <ngx-form-group [formGroup]="formItem" name="Categories" label="Danh mục" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList"></ngx-select2>
+                </ngx-form-group>
               </div>
-              <div class="col-sm-6">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Groups'), 'warning')">
-                  <label class="label"><span class="valid">Nhóm</span><span class="invalid">Nhóm là bắt buộc
-                      (*)</span>
-                    <nb-icon class="parent-copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Groups')" pack="eva" icon="copy-outline">
-                    </nb-icon>
-                  </label>
+              <div class="col-sm-2">
+                <ngx-form-group [formGroup]="formItem" name="Type" label="Loại" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Type" [select2Option]="select2OptionForType"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="Groups" label="Nhóm" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
                   <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups" [data]="groupList">
                   </ngx-select2>
-                </div>
+                </ngx-form-group>
               </div>
 
               <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">

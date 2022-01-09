@@ -297,7 +297,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   };
   select2DataForType = [
     { id: 'PRODUCT', text: 'Sản phẩm' },
-    { id: 'SERVICE', text: 'Dịch vụ' },
+    // { id: 'SERVICE', text: 'Dịch vụ' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
@@ -418,7 +418,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       Reported: [null],
       _total: [''],
       RelativeVouchers: [''],
-      RequireInvoice: [true],
+      RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });
     if (data) {

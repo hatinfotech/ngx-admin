@@ -500,7 +500,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   };
   select2DataForType = [
     { id: 'PRODUCT', text: 'Sản phẩm' },
-    { id: 'SERVICE', text: 'Dịch vụ' },
+    // { id: 'SERVICE', text: 'Dịch vụ' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 

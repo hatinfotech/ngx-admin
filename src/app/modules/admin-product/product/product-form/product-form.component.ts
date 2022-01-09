@@ -8,7 +8,7 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ProductModel, ProductUnitModel, ProductPictureModel, ProductUnitConversoinModel, ProductCategoryModel } from '../../../../models/product.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -311,6 +311,24 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     tags: true,
   };
 
+  select2OptionForType = {
+    placeholder: 'Chọn loại...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    // multiple: true,
+    // tags: true,
+    data: [
+      { id: 'PRODUCT', text: 'Hàng hóa' },
+      { id: 'SERVICE', text: 'Dịch vụ' },
+    ],
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -379,16 +397,28 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   makeNewFormGroup(data?: ProductModel): FormGroup {
-    const newForm = this.formBuilder.group({
+    let newForm = null;
+    newForm = this.formBuilder.group({
       // Code_old: [''],
       Code: [''],
       Sku: [''],
-      WarehouseUnit: ['n/a'],
+      WarehouseUnit: ['n/a', (control: FormControl) => {
+        if (newForm && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       Name: ['', Validators.required],
       FeaturePicture: [''],
       Description: [''],
       Technical: [''],
       Categories: [''],
+      Type: ['PRODUCT', (control: FormControl) => {
+        if (newForm && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       Groups: [''],
       Pictures: [''],
       VatTax: [''],
@@ -404,12 +434,12 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       unitConversions.push(newUnitConversion);
       this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
     }
-    
+
     newForm.get('WarehouseUnit').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if(unitConversions.controls.length === 0) {
+      if (unitConversions.controls.length === 0) {
         const newUnitConversion = this.makeNewUnitConversionFormGroup({}, newForm);
         unitConversions.push(newUnitConversion);
-        this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);        
+        this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
       } else {
         unitConversions.controls[0].get('Unit').setValue(value);
       }
@@ -417,7 +447,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
     const featurePictureFormControl = newForm.get('FeaturePicture');
     newForm.get('Pictures').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if(!featurePictureFormControl.value && value && value.length > 0) {
+      if (!featurePictureFormControl.value && value && value.length > 0) {
         featurePictureFormControl.setValue(value[0]);
       }
     });
