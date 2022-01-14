@@ -173,45 +173,50 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             });
 
             instance.click.subscribe(async (row: SalesPriceReportModel) => {
-              const task = row.RelativeVouchers?.find(f => f.type == 'TASK');
+              const task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
               if (task) {
                 this.commonService.openMobileSidebar();
                 this.mobileAppService.openChatRoom({ ChatRoom: task.id });
-              }
-              
-              if(false) this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
-                const priceReport = rs[0];
-                if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
-                  this.commonService.openMobileSidebar();
-                  this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
-                } else {
-                  this.commonService.showDialog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
-                    {
-                      label: this.commonService.translateText('Common.goback'),
-                      status: 'danger',
-                      icon: 'arrow-ios-back',
-                    },
-                    {
-                      label: this.commonService.translateText('Common.create'),
-                      status: 'success',
-                      icon: 'message-circle-outline',
-                      action: () => {
-                        this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
-                          if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                            this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
-                              this.commonService.translateText('Common.notification'), {
-                              status: 'success',
+              } else {
+                this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
+                  const priceReport = rs[0];
+                  if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
+                    this.commonService.openMobileSidebar();
+                    this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.id });
+                  } else {
+                    this.commonService.showDialog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+                      {
+                        label: this.commonService.translateText('Common.goback'),
+                        status: 'danger',
+                        icon: 'arrow-ios-back',
+                      },
+                      {
+                        label: this.commonService.translateText('Common.create'),
+                        status: 'success',
+                        icon: 'message-circle-outline',
+                        action: () => {
+                          this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
+                            if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
+                              this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
+                                this.commonService.translateText('Common.notification'), {
+                                status: 'success',
+                              });
+                            this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelativeVouchers: true }).then(rs => {
+                              this.updateGridItems([row], rs);
                             });
-                          this.commonService.openMobileSidebar();
-                          this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
-                        });
-                      }
-                    },
-                  ]);
-                }
-              }).catch(err => {
-                return Promise.reject(err);
-              });
+                            setTimeout(() => {
+                              this.commonService.openMobileSidebar();
+                              this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
+                            }, 500);
+                          });
+                        }
+                      },
+                    ]);
+                  }
+                }).catch(err => {
+                  return Promise.reject(err);
+                });
+              }
             });
           },
         },
@@ -280,7 +285,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
               // this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-                this.preview([rowData]);
+              this.preview([rowData]);
               // });
             });
           },
@@ -344,7 +349,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
               // this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-                this.preview([rowData]);
+              this.preview([rowData]);
               // });
               // this.getFormData([rowData.Code]).then(rs => {
               //   this.preview(rs, 'list');

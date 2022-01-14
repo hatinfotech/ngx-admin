@@ -8,6 +8,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { Icon } from './custom-element/card-header/card-header.component';
 import { ActionControl } from './custom-element/action-control-list/action-control.interface';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { environment } from '../../environments/environment';
 
 @Component({ template: '' })
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent, AfterViewInit {
@@ -24,6 +25,12 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
 
   public overlayWraper: JQuery;
   public overlayBackdrop: JQuery;
+
+  registerInfo: any = {
+    voucherInfo: this.commonService.translateText('Information.Voucher.register'),
+    voucherLogo: environment.register.logo.voucher,
+    voucherLogoHeight: 60,
+  };
 
 
   @Input() inputMode: 'dialog' | 'page' | 'inline';
@@ -73,6 +80,13 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     public ref?: NbDialogRef<BaseComponent>,
   ) {
     commonService.iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
+    this.commonService.systemConfigs$.subscribe(settings => {
+      if (settings.LICENSE_INFO && settings.LICENSE_INFO.register && settings.LICENSE_INFO.register) {
+        this.registerInfo.voucherInfo = settings.LICENSE_INFO.register.voucherInfo.replace(/\\n/g, '<br>');
+        this.registerInfo.voucherLogo = settings.LICENSE_INFO.register.voucherLogo;
+        this.registerInfo.voucherLogoHeight = settings.LICENSE_INFO.register.voucherLogoHeight;
+      }
+    });
   }
 
   // init() {

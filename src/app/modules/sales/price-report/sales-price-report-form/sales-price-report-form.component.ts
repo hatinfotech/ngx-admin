@@ -24,12 +24,14 @@ import { threadId } from 'worker_threads';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { takeUntil } from 'rxjs/operators';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
   selector: 'ngx-sales-price-report-form',
   templateUrl: './sales-price-report-form.component.html',
   styleUrls: ['./sales-price-report-form.component.scss'],
+  providers: [DatePipe]
 })
 export class SalesPriceReportFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
 
@@ -63,6 +65,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     public commonService: CommonService,
     public ref: NbDialogRef<SalesPriceReportFormComponent>,
     public adminProductService: AdminProductService,
+    public datePipe?: DatePipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -203,7 +206,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
-            item['text'] = item['Title'];
+            item['text'] = `[` + this.datePipe.transform(item['DateOfCreated'], 'short') + `] ${item['Title']}`;
             return item;
           }),
         };
@@ -721,7 +724,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       //   if (typeof tax === 'string') {
       //     tax = this.taxList.filter(t => t.Code === tax)[0];
       //   }
-        // toMoney += toMoney * tax.Tax / 100;
+      // toMoney += toMoney * tax.Tax / 100;
       // }
       return toMoney;
     }

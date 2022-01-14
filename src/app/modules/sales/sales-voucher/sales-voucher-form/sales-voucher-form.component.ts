@@ -35,12 +35,14 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
+import { DatePipe } from '@angular/common';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
   selector: 'ngx-sales-voucher-form',
   templateUrl: './sales-voucher-form.component.html',
   styleUrls: ['./sales-voucher-form.component.scss'],
+  providers: [DatePipe]
 })
 export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVoucherModel> implements OnInit {
 
@@ -192,7 +194,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         return {
           results: data.map(item => {
             item['id'] = item['id'] || item['Code'];
-            item['text'] = item['text'] || item['Title'];
+            item['text'] = (item['DateOfApproved'] ? ('['+this.datePipe.transform(item['DateOfApproved'], 'short') + '] ') : '') + (item['text'] || item['Title']);
             return item;
           }),
         };
@@ -392,6 +394,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     public commonService: CommonService,
     public ref: NbDialogRef<SalesVoucherFormComponent>,
     public adminProductService?: AdminProductService,
+    public datePipe?: DatePipe
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 

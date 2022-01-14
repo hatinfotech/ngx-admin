@@ -753,6 +753,31 @@ export class AppModule {
   // };
 
   static processMaps = {
+    masterPriceTable: {
+      "APPROVED": {
+        ...AppModule.approvedState,
+        nextState: 'NOTJUSTAPPROVED',
+        nextStates: [
+          { ...AppModule.notJustApprodedState, status: 'warning' },
+        ],
+      },
+      "NOTJUSTAPPROVED": {
+        ...AppModule.notJustApprodedState,
+        state: 'NOTJUSTAPPROVED',
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+      "": {
+        ...AppModule.notJustApprodedState,
+        state: 'NOTJUSTAPPROVED',
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+    },
     priceReport: {
       "APPROVED": {
         ...AppModule.approvedState,

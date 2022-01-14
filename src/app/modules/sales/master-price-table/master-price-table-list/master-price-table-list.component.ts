@@ -10,6 +10,8 @@ import { SmartTableDateTimeComponent, SmartTableButtonComponent } from '../../..
 import { MasterPriceTableFormComponent } from '../master-price-table-form/master-price-table-form.component';
 import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
 import { ProductModel } from '../../../../models/product.model';
+import { AppModule } from '../../../../app.module';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-master-price-table-list',
@@ -23,6 +25,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   apiPath = '/sales/master-price-tables';
   idKey = 'Code';
   formDialog = MasterPriceTableFormComponent;
+  printDialog = MasterPriceTablePrintComponent;
 
   constructor(
     public apiService: ApiService,
@@ -100,6 +103,31 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
           type: 'boolean',
           width: '5%',
         },
+        State: {
+          title: this.commonService.translateText('Common.state'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'checkmark-circle';
+            instance.display = true;
+            instance.status = 'success';
+            instance.disabled = this.isChoosedMode;
+            instance.title = '...';
+            instance.label = '...';
+            instance.valueChange.subscribe(value => {
+              const processMap = AppModule.processMaps.masterPriceTable[value || ''];
+              instance.label = this.commonService.translateText(processMap?.label);
+              instance.status = processMap?.status;
+              instance.outline = processMap?.outline;
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesMasterPriceTableModel) => {
+              this.preview([rowData]);
+            });
+          },
+        },
         PreviewCommand: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
           type: 'custom',
@@ -170,34 +198,34 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   //   return false;
   // }
 
-  async preview(data: SalesMasterPriceTableModel[]) {
+  // async preview(data: SalesMasterPriceTableModel[]) {
 
-    this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[]>(
-      '/sales/master-price-table-details',
-      {
-        excludeNoPrice: true,
-        masterPriceTable: data[0].Code,
-        includeUnit: true,
-        includeFeaturePicture: true,
-        sort_Id: 'desc',
-      }).then(rs => {
-        data[0].Details = rs;
-        this.commonService.openDialog(MasterPriceTablePrintComponent, {
-          context: {
-            showLoadinng: true,
-            title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
-            data: data,
-            onSaveAndClose: (rs: SalesMasterPriceTableModel) => {
-              this.refresh();
-            },
-            onSaveAndPrint: (rs: SalesMasterPriceTableModel) => {
-              this.refresh();
-            },
-          },
-        });
-      });
-    return true;
+  //   this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[]>(
+  //     '/sales/master-price-table-details',
+  //     {
+  //       excludeNoPrice: true,
+  //       masterPriceTable: data[0].Code,
+  //       includeUnit: true,
+  //       includeFeaturePicture: true,
+  //       sort_Id: 'desc',
+  //     }).then(rs => {
+  //       data[0].Details = rs;
+  //       this.commonService.openDialog(MasterPriceTablePrintComponent, {
+  //         context: {
+  //           showLoadinng: true,
+  //           title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
+  //           data: data,
+  //           onSaveAndClose: (rs: SalesMasterPriceTableModel) => {
+  //             this.refresh();
+  //           },
+  //           onSaveAndPrint: (rs: SalesMasterPriceTableModel) => {
+  //             this.refresh();
+  //           },
+  //         },
+  //       });
+  //     });
+  //   return true;
 
-  }
+  // }
 
 }
