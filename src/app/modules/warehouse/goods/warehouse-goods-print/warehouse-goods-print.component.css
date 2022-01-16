@@ -1,25 +1,30 @@
 @import "../../../../../assets/style/print.css";
 
-#print-area {
-  display: flex;
-  flex-wrap: wrap;
-}
-.goods-container-label {
-}
-.goods-container-label .wrap {
-  display: flex;
-  border: 1px solid;
-  overflow: hidden;
-  border-radius: 5px;
-  /* padding: 3px; */
-  margin: 3px;
-}
-.goods-container-label .wrap .qr-code {
-}
-.goods-container-label .wrap .info {
-  margin: 3px;
-}
 
-.print-voucher-detail-table tr td {
-  border: none;
+@media print {
+  body {
+    background: #fff !important;
+  }
+  #print-area {
+    page-break-after: initial;
+  }
+}
+.label {
+  /* padding: 5px; */
+  border: 1px #000 dashed;
+  float: left;
+  page-break-after:always;
+  width: 50mm;
+  height: 30mm;
+}
+.bar-code {
+  width: 35%;
+  padding: 1px;
+  border: 1px #000 solid;
+  border-radius: 5px;
+}
+.page-break {
+  clear: left;
+  display:block;
+  page-break-after:always;
 }

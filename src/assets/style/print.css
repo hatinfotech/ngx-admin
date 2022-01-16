@@ -54,6 +54,7 @@
 
 #print-area .under-line {
   border-bottom: 1px solid #ccc;
+  padding-right: 5px;
 }
 
 #print-area .text-align-right {

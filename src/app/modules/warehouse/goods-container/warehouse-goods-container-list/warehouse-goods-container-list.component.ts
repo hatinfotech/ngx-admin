@@ -1,3 +1,4 @@
+import { UnitModel } from './../../../../models/unit.model';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { WarehouseGoodsContainerPrintComponent } from './../warehouse-goods-container-print/warehouse-goods-container-print.component';
 import { Component, OnInit } from '@angular/core';
@@ -7,15 +8,16 @@ import { WarehouseGoodsContainerFormComponent } from '../warehouse-goods-contain
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-container-list',
   templateUrl: './warehouse-goods-container-list.component.html',
   styleUrls: ['./warehouse-goods-container-list.component.scss'],
 })
-export class WarehouseGoodsContainerListComponent extends DataManagerListComponent<WarehouseGoodsContainerModel> implements OnInit {
+export class WarehouseGoodsContainerListComponent extends ServerDataManagerListComponent<WarehouseGoodsContainerModel> implements OnInit {
 
   componentName: string = 'WarehouseGoodsContainerListComponent';
   formPath = '/warehouse/goods-container/form';
@@ -30,6 +32,7 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
+    public ref: NbDialogRef<WarehouseGoodsContainerListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService);
   }
@@ -131,12 +134,28 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
         Warehouse: {
           title: this.commonService.translateText('Common.warehouse'),
           type: 'string',
-          width: '30%',
+          width: '20%',
+          valuePrepareFunction: (cell, row) => {
+            return this.commonService.getObjectText(cell);
+          }
         },
         FindOrder: {
-          title: this.commonService.translateText('Common.findOrder'),
+          title: this.commonService.translateText('Số nhận thức'),
           type: 'string',
           width: '20%',
+        },
+        GoodsName: {
+          title: this.commonService.translateText('Common.goods'),
+          type: 'html',
+          width: '10%',
+          valuePrepareFunction: (cell: any, row) => {
+            return row['Goods'] && row['Goods'].map(goods => this.commonService.getObjectText(goods) + ' (' + goods.Unit + ')').join('<br>') || '';
+          },
+        },
+        Code: {
+          title: this.commonService.translateText('Common.code'),
+          type: 'string',
+          width: '10%',
         },
         Type: {
           title: this.commonService.translateText('Common.type'),
@@ -145,11 +164,6 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
           valuePrepareFunction: (cell: string, rơ: any) => {
             return this.containerTypes[cell];
           },
-        },
-        Code: {
-          title: this.commonService.translateText('Common.code'),
-          type: 'string',
-          width: '10%',
         },
       },
     });
@@ -162,19 +176,39 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
 
   /** Api get funciton */
   executeGet(params: any, success: (resources: WarehouseGoodsContainerModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: WarehouseGoodsContainerModel[] | HttpErrorResponse) => void) {
-    params['includeParent'] = true;
-    params['includePath'] = true;
-    params['includeWarehouse'] = true;
+    // params['includeParent'] = true;
+    // params['includePath'] = true;
+    // params['includeWarehouse'] = true;
+    // params['includeWarehouse'] = true;
     super.executeGet(params, success, error, complete);
   }
 
   getList(callback: (list: WarehouseGoodsContainerModel[]) => void) {
     super.getList((rs) => {
-      // rs.forEach(item => {
-      //   item.Content = item.Content.substring(0, 256) + '...';
-      // });
-      if (callback) callback(rs.map(item => ({ ...item, Warehouse: this.commonService.getObjectText(item.Warehouse) })));
+      if (callback) callback(rs);
     });
+  }
+
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['includeParent'] = true;
+      params['includePath'] = true;
+      params['includeWarehouse'] = true;
+      params['includeWarehouse'] = true;
+      params['includeGoods'] = true;
+      params['includeIdText'] = true;
+      // params['eq_Type'] = 'PAYMENT';
+      return params;
+    };
+
+    return source;
+  }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<WarehouseGoodsContainerModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
   }
 
   // /** Implement required */

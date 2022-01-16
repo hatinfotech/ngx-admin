@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { BusinessModel } from '../../../../models/accounting.model';
+import { AccountModel, BusinessModel } from '../../../../models/accounting.model';
 import { ContactDetailModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -21,6 +21,7 @@ export class AccBusinessFormComponent extends DataManagerFormComponent<BusinessM
   idKey = 'Code';
   baseFormUrl = '/accounting/business/form';
   apiPath = '/accounting/business';
+  accountList: AccountModel[] = [];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -35,6 +36,32 @@ export class AccBusinessFormComponent extends DataManagerFormComponent<BusinessM
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
 
+  select2ForDebitAccount = {
+    placeholder: 'Tài khản nợ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  select2ForCreditAccount = {
+    placeholder: 'Tài khản có...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -44,7 +71,13 @@ export class AccBusinessFormComponent extends DataManagerFormComponent<BusinessM
   }
 
   async init(): Promise<boolean> {
-    return super.init().then(status => {
+
+    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit' }).then(rs => rs.map(account => {
+      account['id'] = account.Code;
+      account['text'] = account.Code + ' - ' + account.Name;
+      return account;
+    }));
+    return super.init().then(async status => {
       if (this.isDuplicate) {
         // Clear id
         this.id = [];

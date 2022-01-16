@@ -14,18 +14,43 @@
         <div>
           <div style="display: flex;">
             <div style="flex: 1;">
-                <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+                <div class="under-line">{{'Voucher.dearSupplier' | translate | headtitlecase}} :
                     {{renderValue(data.ObjectName)}}
                 </div>
             </div>
             <div>
-                <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
+                <div class="under-line">{{'Common.phone' | translate | headtitlecase}} :
+                    {{renderValue(data.ObjectPhone)}}
+                </div>
+            </div>
+            <div>
+                <div class="under-line">{{'Common.supplierId' | translate | headtitlecase}} :
                     {{renderValue(data.Object | objectid)}}
                 </div>
             </div>
           </div>
-          <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}
-          </div>
+          <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}</div>
+          <ng-container *ngIf="data.Contact">
+            <div style="display: flex;">
+              <div style="flex: 1;">
+                  <div class="under-line">{{'Contact.name' | translate | headtitlecase}} :
+                      {{renderValue(data.ContactName)}}
+                  </div>
+              </div>
+              <div>
+                  <div class="under-line">{{'Contact.phone' | translate | headtitlecase}} :
+                      {{renderValue(data.ContactPhone)}}
+                  </div>
+              </div>
+              <div>
+                  <div class="under-line">{{'Contact.id' | translate | headtitlecase}} :
+                      {{renderValue(data.Contact | objectid)}}
+                  </div>
+              </div>
+            </div>
+            <div class="under-line">{{'Contact.address' | translate | headtitlecase}} : {{renderValue(data.ContactAddress)}}</div>
+
+          </ng-container>
         </div>
         <div>
           <div>

@@ -16,12 +16,12 @@
                                         <div class="row">
                                             <input type="hidden" formControlName="Code">
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons">
-                                                    <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-6">
-                                                <ngx-form-group [formGroup]="formItem" name="ObjectName" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                                <ngx-form-group [formGroup]="formItem" name="ObjectName" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                                     <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="{{'Common.name' | translate | headtitlecase}}">
                                                 </ngx-form-group>
                                             </div>
@@ -52,7 +52,7 @@
                                         <div class="row">
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Contact" label="Common.contact" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="contactControlIcons">
-                                                    <ngx-select2 formControlName="Contact" [select2Option]="select2ContactOption" (selectChange)="onContactChange(formItem, $event, i)"></ngx-select2>
+                                                    <ngx-select2 formControlName="Contact" [select2Option]="select2OptionForContact" (selectChange)="onContactChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-6">
@@ -99,8 +99,8 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfDelivered" label="{{validateVoucherDate(formItem.get('DateOfDelivered'), 'Common.dateOfDelivered')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" [owlDateTime]="DateOfDelivered" [owlDateTimeTrigger]="DateOfDelivered" nbInput fullWidth formControlName="DateOfDelivered" placeholder="{{'Common.dateTime' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfDelivered" label="{{validateVoucherDate(formItem.get('DateOfDelivered'), 'Common.dateOfDelivered')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                    <input type="text" [owlDateTime]="DateOfDelivered" [owlDateTimeTrigger]="DateOfDelivered" nbInput fullWidth formControlName="DateOfDelivered" placeholder="{{'Common.dateOfDelivered' | translate | headtitlecase}}">
                                     <owl-date-time #DateOfDelivered [startAt]="formItem.get('DateOfDelivered')?.value || this.commonService.lastVoucherDate"></owl-date-time>
                                 </ngx-form-group>
                             </div>
@@ -235,7 +235,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [customIcons]="unitCustomIcons">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [touchedValidate]="false" [customIcons]="unitCustomIcons">
                                                     <ngx-select2 formControlName="Unit" [data]="detail.get('Unit')['UnitList'] || unitList" [select2Option]="select2OptionForUnit" (selectChange)="onSelectUnit(detail, $event, formItem)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>

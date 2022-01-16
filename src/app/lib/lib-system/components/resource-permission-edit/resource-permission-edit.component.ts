@@ -81,35 +81,35 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
   //   }
   // }
 
-  select2OptionForContact = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    tags: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      url: params => {
-        return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
-        };
-      },
-    },
-  };
+  // select2OptionForContact = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   tags: true,
+  //   keyMap: {
+  //     id: 'Code',
+  //     text: 'Name',
+  //   },
+  //   ajax: {
+  //     url: params => {
+  //       return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Name'];
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
 
   ngOnInit() {
     this.restrict();

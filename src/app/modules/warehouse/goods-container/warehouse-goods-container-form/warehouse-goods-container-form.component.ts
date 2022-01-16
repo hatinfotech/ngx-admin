@@ -25,7 +25,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   // get goodsContainerList() { return WarehouseGoodsContainerFormComponent._goodsContainerList; }
   activeFormGroup: FormGroup;
   select2OptionForParent: Select2Option = {
-    placeholder: 'Chọn cha...',
+    placeholder: 'Chọn vị trí...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -68,7 +68,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   static _warehouseList: WarehouseModel[];
   get warehouseList() { return WarehouseGoodsContainerFormComponent._warehouseList; }
   select2OptionForWarehouse = {
-    placeholder: this.commonService.translateText('Common.choose'),
+    placeholder: this.commonService.translateText('Chọn kho...'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -79,7 +79,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     },
   };
   select2OptionForType = {
-    placeholder: this.commonService.translateText('Common.choose'),
+    placeholder: this.commonService.translateText('Chọn loại...'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -147,16 +147,16 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   makeNewFormGroup(data?: WarehouseGoodsContainerModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Code_old: [''],
-      Code: [''],
+      Code: [{value: '', disabled: true}],
       Parent: [''],
       Name: ['', Validators.required],
-      FindOrder: [999],
+      FindOrder: [''],
       Warehouse: ['', Validators.required],
       Description: [''],
       Type: ['', Validators.required],
-      X: [''],
-      Y: [''],
-      Z: [''],
+      // X: [''],
+      // Y: [''],
+      // Z: [''],
       // Branch: ['MAINBRANCH'],
     });
     if (data) {

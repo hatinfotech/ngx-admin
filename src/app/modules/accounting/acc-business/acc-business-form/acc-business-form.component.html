@@ -29,14 +29,14 @@
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="DebitAccount" label="Accounting.debitAccount" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                    <input type="text" nbInput fullWidth formControlName="DebitAccount" placeholder="{{'Accounting.debitAccount' | translate | headtitlecase}}">
-                  </ngx-form-group>
+                  <ngx-form-group [formGroup]="formItem" name="DebitAccount" label="Accounting.debitAccount" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
+                    <ngx-select2 formControlName="DebitAccount" [select2Option]="select2ForDebitAccount" [data]="accountList"></ngx-select2>
+                </ngx-form-group>
                 </div>
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="CreditAccount" label="Accounting.creditAccount" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                    <input type="text" nbInput fullWidth formControlName="CreditAccount" placeholder="{{'Accounting.creditAccount' | translate | headtitlecase}}">
-                  </ngx-form-group>
+                  <ngx-form-group [formGroup]="formItem" name="CreditAccount" label="Accounting.creditAccount" [array]="array" [index]="i" [allowCopy]="true" [required]="true">
+                    <ngx-select2 formControlName="CreditAccount" [select2Option]="select2ForCreditAccount" [data]="accountList"></ngx-select2>
+                </ngx-form-group>
                 </div>
               </div>
             </div>

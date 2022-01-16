@@ -17,7 +17,7 @@
                                             <input type="hidden" formControlName="Code">
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons">
-                                                    <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                    <ngx-select2 formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-6">
@@ -52,7 +52,7 @@
                                         <div class="row">
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Contact" label="Common.contact" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="contactControlIcons">
-                                                    <ngx-select2 formControlName="Contact" [select2Option]="select2ContactOption" (selectChange)="onContactChange(formItem, $event, i)"></ngx-select2>
+                                                    <ngx-select2 formControlName="Contact" [select2Option]="select2OptionForContact" (selectChange)="onContactChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-6">
