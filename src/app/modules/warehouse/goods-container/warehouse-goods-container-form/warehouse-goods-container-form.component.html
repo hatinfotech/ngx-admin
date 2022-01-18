@@ -16,7 +16,7 @@
                   <div class="col-md-12">
                     <ngx-form-group [formGroup]="formItem" name="Warehouse" label="Common.warehouse" [array]="array"
                       [index]="i" [allowCopy]="true" [required]="true" [touchedValidate]="false">
-                      <ngx-select2 formControlName="Warehouse" [select2Option]="select2OptionForWarehouse" [data]="warehouseList">
+                      <ngx-select2 formControlName="Warehouse" [select2Option]="select2OptionForWarehouse" [data]="warehouseList"  (selectChange)="onWarehouseChange(formItem, $event, i)">
                       </ngx-select2>
                     </ngx-form-group>
                   </div>
@@ -42,7 +42,7 @@
                   <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Tạo tự động' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-6">
                 <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i"
                   [allowCopy]="true" [required]="true">
                   <input type="text" nbInput fullWidth formControlName="Name"
@@ -50,9 +50,16 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="AccAccount" label="Warehouse.account" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                    <ngx-select2 formControlName="AccAccount" [select2Option]="select2OptionForAccAccount" [data]="accountList">
+                      </ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
                 <ngx-form-group [formGroup]="formItem" name="FindOrder" label="Số nhận thức" [array]="array" [index]="i"
                   [allowCopy]="true" [required]="false" [touchedValidate]="false">
-                  <input type="number" nbInput fullWidth formControlName="FindOrder"
+                  <input type="text" nbInput fullWidth formControlName="FindOrder"
                     placeholder="{{'Số nhận thức' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>

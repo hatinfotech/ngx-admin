@@ -297,7 +297,7 @@
                             <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
                         </button>
                         <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
-                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="save()">{{'Common.save' | translate | headtitlecase}}</button>
                     </div>
                 </nb-card-footer>
             </nb-card>

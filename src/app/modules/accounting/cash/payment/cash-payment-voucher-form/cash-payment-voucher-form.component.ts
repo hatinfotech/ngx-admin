@@ -663,7 +663,10 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
             //   }
             // }
           }
-          this.onProcessed();
+          
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
           // relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
         },
         onDialogClose: () => {

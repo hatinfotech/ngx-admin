@@ -846,7 +846,10 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);
-          this.onProcessed();
+          
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
         onDialogClose: () => {
         },

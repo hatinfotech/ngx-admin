@@ -62,7 +62,8 @@
                 "title": "{{action}} triển khai"
             }
         },
-        "deploymentTask": "task triển khai"
+        "deploymentTask": "task triển khai",
+        "date": "ngày triển khai"
     },
     "DateTime": {
         "weekend": "cuối tuần",
@@ -406,7 +407,8 @@
         "featurePicture": "hình đại diện",
         "prodId": "ID SP",
         "id": "ID",
-        "action": "hành động"
+        "action": "hành động",
+        "dateOfReceipted": "ngày nhập kho"
     },
     "Contact": {
         "Customer": {

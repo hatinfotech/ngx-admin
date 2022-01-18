@@ -99,8 +99,8 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfReceipted" label="{{validateVoucherDate(formItem.get('DateOfReceipted'), 'Common.dateOfReceipted')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
-                                    <input type="text" [owlDateTime]="DateOfReceipted" [owlDateTimeTrigger]="DateOfReceipted" nbInput fullWidth formControlName="DateOfReceipted" placeholder="{{'Common.dateOfReceipted' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="DateOfReceipted" label="{{validateVoucherDate(formItem.get('DateOfReceipted'), 'Warehouse.dateOfReceipted')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                    <input type="text" [owlDateTime]="DateOfReceipted" [owlDateTimeTrigger]="DateOfReceipted" nbInput fullWidth formControlName="DateOfReceipted" placeholder="{{'Warehouse.dateOfReceipted' | translate | headtitlecase}}">
                                     <owl-date-time #DateOfReceipted [startAt]="formItem.get('DateOfReceipted')?.value || this.commonService.lastVoucherDate"></owl-date-time>
                                 </ngx-form-group>
                             </div>
@@ -298,7 +298,7 @@
                             <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
                         </button>
                         <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
-                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="save()">{{'Common.save' | translate | headtitlecase}}</button>
                     </div>
                 </nb-card-footer>
             </nb-card>

@@ -1308,7 +1308,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
           }
-          this.onProcessed();
+          
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
       }
     });

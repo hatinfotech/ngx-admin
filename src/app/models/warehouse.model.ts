@@ -113,7 +113,7 @@ export class WarehouseGoodsDeliveryNoteDetailModel {
   ProductName?: string;
   Description?: string;
   Unit?: string & UnitModel;
-  Quantity?: string & number;
+  Quantity?: number;
   PriceOfDelivered?: number;
   Location?: string;
   ImageThumbnail?: string;
@@ -121,6 +121,7 @@ export class WarehouseGoodsDeliveryNoteDetailModel {
   DebitAccount?: number;
   CreaditAccount?: number;
   Tax?: string & TaxModel;
+  RelateDetail?: string;
 }
 
 export class WarehouseGoodsContainerModel {

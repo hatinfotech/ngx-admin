@@ -1,3 +1,4 @@
+import { DeploymentVoucherModel } from './../../../../models/deployment.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
@@ -425,6 +426,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       Image: [[]],
       Container: [''],
       Business: { value: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), disabled: true },
+      RelateDetail: ['']
     });
 
     if (data) {
@@ -587,6 +589,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
+          this.onProcessing();
           for (let i = 0; i < chooseItems.length; i++) {
             const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
             if (index < 0) {
@@ -628,6 +631,10 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
         onDialogClose: () => {
         },
@@ -642,6 +649,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         components: {
           'SALES': { title: 'Phiếu bán hàng' },
           'DEPLOYMENT': { title: 'Phiếu triển khai' },
+          'PRICEREPORT': { title: 'Phiếu báo giá' },
         },
         onDialogChoose: async (chooseItems: any[], type?: string) => {
           console.log(chooseItems, type);
@@ -692,13 +700,13 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
           }
-          if (type === 'DEPLOYMENT') {
+          if (type === 'PRICEREPORT') {
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
                 const details = this.getDetails(formGroup);
                 // get purchase order
-                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/deployment/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
@@ -710,8 +718,9 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                     continue;
                   }
                 } else {
-                  delete refVoucher.Id;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
+                  // delete refVoucher.Id;
+                  // delete refVoucher.Code;
+                  formGroup.patchValue({ ...refVoucher, Code: null, Id: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -721,10 +730,52 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
                     if (voucherDetail.Type === 'PRODUCT') {
-                      delete voucherDetail.Id;
-                      delete voucherDetail.Voucher;
-                      delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY') });
+                      // delete voucherDetail.Id;
+                      // delete voucherDetail.Voucher;
+                      // delete voucherDetail.No;
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), RelateDetail: `PRICEREPORT/${refVoucher.Code}/${voucherDetail.Id}` });
+                      details.push(newDtailFormGroup);
+                    }
+                  }
+                }
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PRICEREPORT' }))]);
+          }
+          if (type === 'DEPLOYMENT') {
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                const details = this.getDetails(formGroup);
+                // get purchase order
+                const refVoucher = await this.apiService.getPromise<DeploymentVoucherModel[]>('/deployment/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+
+                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(refVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu bán hàng không giống với phiếu xuất kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  // delete refVoucher.Id;
+                  formGroup.patchValue({ ...refVoucher, Id: null, Code: null, Details: [] });
+                  details.clear();
+                }
+                insertList.push(chooseItems[i]);
+
+                // Insert order details into voucher details
+                if (refVoucher?.Details) {
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+                  for (const voucherDetail of refVoucher.Details) {
+                    if (voucherDetail.Type === 'PRODUCT') {
+                      // delete voucherDetail.Id;
+                      // delete voucherDetail.Voucher;
+                      // delete voucherDetail.No;
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), RelateDetail: voucherDetail.RelateDetail });
                       details.push(newDtailFormGroup);
                     }
                   }
@@ -734,7 +785,9 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'DEPLOYMENT' }))]);
           }
-          this.onProcessed();
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
       }
     });

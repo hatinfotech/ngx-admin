@@ -9,7 +9,6 @@
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <input type="hidden" formControlName="Code_old">
               <div class="col-sm-6">
                 <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name"
                   [array]="array" [index]="i" [allowCopy]="false" [required]="true">
@@ -25,7 +24,7 @@
               <div class="col-sm-3">
                 <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code"
                   [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                    <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Common.code' | translate | headtitlecase}}">
+                    <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Tự động tạo...' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
               <div class="col-sm-9">
@@ -35,9 +34,10 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="AccAccount" label="Warehouse.account"
-                  [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                    <input type="text" nbInput fullWidth formControlName="AccAccount" placeholder="{{'Warehouse.account' | translate | headtitlecase}}">
+                <ngx-form-group [formGroup]="formItem" name="AccAccount" label="Warehouse.account" [array]="array" [index]="i"
+                  [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                    <ngx-select2 formControlName="AccAccount" [select2Option]="select2OptionForAccAccount" [data]="accountList">
+                      </ngx-select2>
                 </ngx-form-group>
               </div>
             </div>

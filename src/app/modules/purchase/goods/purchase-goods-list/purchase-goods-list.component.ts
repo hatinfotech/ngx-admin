@@ -264,7 +264,7 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
         status: 'danger',
         label: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
         icon: 'checkmark-square',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.calculateCostOfGoodsSold'), 'head-title'),
+        title: this.commonService.textTransform('Giá vốn sẽ được tính tự động cho mỗi lần nhập kho, nếu có sai lệch về số liệu thì có thể tính lại giá vốn cho tất cả hàng hóa trong kho bằng lệnh này. Phương thức tính giá vốn hiện tại là bình quân gia quyền.', 'head-title'),
         size: 'medium',
         disabled: () => false,
         hidden: () => this.isChoosedMode,
@@ -332,7 +332,7 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
   // }
 
   async calculateCostOfGoodsSold() {
-    this.commonService.showDialog(this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), this.commonService.translateText('Warehouse.calculateCostOfGoodsSoldConfirm'), [
+    this.commonService.showDialog(this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), this.commonService.translateText('Warehouse.calculateCostOfGoodsSoldConfirm') + ' Phương thức tính giá vốn hiện tại là bình quân gia quyền.', [
       {
         label: this.commonService.translateText('Common.goback'),
         status: 'primary',

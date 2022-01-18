@@ -350,7 +350,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       Title: [''],
       Note: [''],
       SubNote: [''],
-      Reported: [''],
+      DeploymentDate: [''],
       _total: [''],
       RelativeVouchers: [],
       Details: this.formBuilder.array([]),

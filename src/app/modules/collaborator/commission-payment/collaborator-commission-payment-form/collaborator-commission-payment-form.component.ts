@@ -683,7 +683,10 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Description, type: 'CLBRTAWARD' }))]);
           }
-          this.onProcessed();
+          
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
         // onDialogClose: () => {
         // },

@@ -502,6 +502,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
+          this.onProcessing();
           for (let i = 0; i < chooseItems.length; i++) {
             const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
             if (index < 0) {
@@ -551,6 +552,10 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
         onDialogClose: () => {
         },

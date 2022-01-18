@@ -46,6 +46,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
     'CUPBOARD': 'Tủ',
     'FLOOR': 'Tầng',
     'DRAWERS': 'Ngăn',
+    'BASKET': 'Rổ',
     'UNKNOW': 'Chưa biết',
   };
 
@@ -134,7 +135,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
         Warehouse: {
           title: this.commonService.translateText('Common.warehouse'),
           type: 'string',
-          width: '20%',
+          width: '15%',
           valuePrepareFunction: (cell, row) => {
             return this.commonService.getObjectText(cell);
           }
@@ -142,7 +143,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
         FindOrder: {
           title: this.commonService.translateText('Số nhận thức'),
           type: 'string',
-          width: '20%',
+          width: '15%',
         },
         GoodsName: {
           title: this.commonService.translateText('Common.goods'),
@@ -151,6 +152,11 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
           valuePrepareFunction: (cell: any, row) => {
             return row['Goods'] && row['Goods'].map(goods => this.commonService.getObjectText(goods) + ' (' + goods.Unit + ')').join('<br>') || '';
           },
+        },
+        AccAccountName: {
+          title: this.commonService.translateText('Warehouse.account'),
+          type: 'string',
+          width: '10%',
         },
         Code: {
           title: this.commonService.translateText('Common.code'),
