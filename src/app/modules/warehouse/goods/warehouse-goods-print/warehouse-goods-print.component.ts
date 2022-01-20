@@ -45,11 +45,14 @@ export class WarehouseGoodsPrintComponent extends DataManagerPrintComponent<any>
   .label {
     padding: 2px;
     page-break-after:always;
+    padding: 1mm;
+    padding-top: 2mm;
   }
   .bar-code {
     width: 35%;
     border: 1px #000 solid;
     border-radius: 5px;
+    margin-right: 1mm;
   }
   .page-break {
     clear: left;

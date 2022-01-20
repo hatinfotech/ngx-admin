@@ -222,6 +222,80 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     // }, 5000);
   }
 
+  printX(index?: number) {
+    if (this.onSaveAndPrint) {
+      this.onSaveAndPrint(this.identifier);
+    }
+
+    // const printFrame = document.createElement('iframe');
+    const printWindow = window.open();
+    const printFrame = printWindow.document;
+    // printFrame.name = 'printFrame';
+    // printFrame.style.position = 'absolute';
+    // printFrame.style.top = '-1000000px';
+    // printFrame.style.top = '20px';
+    // printFrame.style.width = '21cm';
+    // printFrame.style.height = '29.7cm';
+    // document.body.appendChild(printFrame);
+    // const frameDoc = printFrame.contentWindow ? printFrame.contentWindow : printFrame.contentDocument['document'] ? printFrame.contentDocument['document'] : printFrame.contentDocument;
+    // frameDoc.document.open();
+    let printContent = '';
+    const printContentEles = this.printContent.toArray();
+    let title = 'ProBox one ®';
+    let data: M;
+    if (index !== undefined) {
+      printContent += printContentEles[index].element.nativeElement.innerHTML;
+      data = this.data[index];
+      // Todo: restrict only print created voucher  
+      // if(!data['Id']) {
+      //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
+      //   console.error('voucher not just created');
+      //   return false;
+      // }
+      if (data) {
+        title += ' - ' + data['Title'];
+      }
+    } else {
+      for (const item of printContentEles) {
+        printContent += item.element.nativeElement.innerHTML;
+      }
+    }
+    let style = '';
+    if(this.style) {
+      style = `<style>${this.style}</style>`;
+    }
+    printFrame.write(`
+    <html>
+      <head>
+        <base href="/${environment.basePath}/">
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        <link href="assets/style/print.css" rel="stylesheet" type="text/css" />
+        ${style}
+        <title>${title}</title>
+      </head>
+      <body>
+        ${printContent}
+      </body>
+    </html>`);
+    const currentTitle = document.title;
+    printFrame.title = data ? this.renderTitle(data) : this.title;
+    // frameDoc.document.close();
+    printFrame.onload = () => {
+      printWindow.focus();
+      printWindow.print();
+      // document.body.removeChild(printFrame);
+      // document.title = currentTitle;
+    };
+
+    // setTimeout(function () {
+
+    //   // if (typeof onSuccess == 'function') {
+    //   //   onSuccess();
+    //   // }
+    // }, 5000);
+  }
+
   saveAndClose(data: M) {
     if (this.onSaveAndClose) {
       this.onSaveAndClose(data, this);

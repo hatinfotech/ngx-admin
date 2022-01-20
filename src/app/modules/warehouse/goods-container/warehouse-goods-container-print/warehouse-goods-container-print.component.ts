@@ -33,27 +33,34 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
   @Input() printForType: string;
 
   style = /*css*/`
+  body {
+    margin: 0;
+  }
+  @media print {
+    body {
+      background: #fff !important;
+    }
     #print-area {
-      display: flex;
-      flex-wrap: wrap;
+      page-break-after: initial;
     }
-    .goods-container-label {
-    }
-    .goods-container-label .wrap {
-      display: flex;
-      border: 1px solid;
-      overflow: hidden;
-      border-radius: 5px;
-      margin: 3px;
-    }
-    .goods-container-label .wrap .qr-code {
-    }
-    .goods-container-label .wrap .info {
-      margin: 3px;
-    }
-    .print-voucher-detail-table tr td {
-      border: none;
-    }
+  }
+  .label {
+    padding: 2px;
+    page-break-after:always;
+    padding: 1mm;
+    padding-top: 2mm;
+  }
+  .bar-code {
+    width: 35%;
+    border: 1px #000 solid;
+    border-radius: 5px;
+    margin-right: 1mm;
+  }
+  .page-break {
+    clear: left;
+    display:block;
+    page-break-after:always;
+  }
   `;
 
   constructor(
@@ -151,27 +158,29 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
     return this.apiService.getPromise<WarehouseGoodsContainerModel[]>(this.apiPath, {
       includeWarehouse: true,
       renderQrCode: true,
-      eq_Type: this.printForType,
+      // eq_Type: this.printForType,
+      id: this.id,
       limit: 'nolimit'
     }).then(rs => {
-      rs.map(item => {
-        if (item.Path) {
-          const parts = item.Path.split('/');
-          parts.shift();
-          item.Path = parts.join('/');
-        }
-        return item;
-      });
-      const table = [];
-      let row = [];
-      for (let i = 0; i < rs.length; i++) {
-        row.push(rs[i]);
-        if ((i+1) % 4 === 0) {
-          table.push(row);
-          row = [];
-        }
-      }
-      return table;
+      // rs.map(item => {
+      //   if (item.Path) {
+      //     const parts = item.Path.split('/');
+      //     parts.shift();
+      //     item.Path = parts.join('/');
+      //   }
+      //   return item;
+      // });
+      // const table = [];
+      // let row = [];
+      // for (let i = 0; i < rs.length; i++) {
+      //   row.push(rs[i]);
+      //   if ((i+1) % 4 === 0) {
+      //     table.push(row);
+      //     row = [];
+      //   }
+      // }
+      // return table;
+      return rs;
     });
   }
 

@@ -55,11 +55,62 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
       const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
       previewBtn.label = 'Print QR Code';
       previewBtn.disabled = () => false;
+      // previewBtn.click = () => {
+      //   this.commonService.openDialog(ShowcaseDialogComponent, {
+      //     context: {
+      //       title: 'Print QR Code',
+      //       content: 'Chọn loại chỗ chứa cần in QR Code:',
+      //       actions: [
+      //         {
+      //           status: 'basic',
+      //           label: 'Trở về',
+      //           action: () => { },
+      //         },
+      //         {
+      //           status: 'success',
+      //           label: 'In ngăn',
+      //           action: () => {
+      //             this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+      //               context: {
+      //                 id: [],
+      //                 printForType: 'DRAWERS',
+      //               }
+      //             });
+      //           },
+      //         },
+      //         {
+      //           status: 'primary',
+      //           label: 'In tầng',
+      //           action: () => {
+      //             this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+      //               context: {
+      //                 id: [],
+      //                 printForType: 'FLOOR',
+      //               }
+      //             });
+      //           },
+      //         },
+      //         {
+      //           status: 'info',
+      //           label: 'In kệ',
+      //           action: () => {
+      //             this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+      //               context: {
+      //                 id: [],
+      //                 printForType: 'SHELF',
+      //               }
+      //             });
+      //           },
+      //         },
+      //       ]
+      //     }
+      //   })
+      // };
       previewBtn.click = () => {
         this.commonService.openDialog(ShowcaseDialogComponent, {
           context: {
-            title: 'Print QR Code',
-            content: 'Chọn loại chỗ chứa cần in QR Code:',
+            title: 'Print Bar Code',
+            content: 'Chọn hàng hóa cần in Bar Code:',
             actions: [
               {
                 status: 'basic',
@@ -68,39 +119,15 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
               },
               {
                 status: 'success',
-                label: 'In ngăn',
+                label: 'In QRCode',
                 action: () => {
                   this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
                     context: {
-                      id: [],
+                      id: this.selectedItems.map(item => this.makeId(item)),
                       printForType: 'DRAWERS',
                     }
                   });
-                },
-              },
-              {
-                status: 'primary',
-                label: 'In tầng',
-                action: () => {
-                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
-                    context: {
-                      id: [],
-                      printForType: 'FLOOR',
-                    }
-                  });
-                },
-              },
-              {
-                status: 'info',
-                label: 'In kệ',
-                action: () => {
-                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
-                    context: {
-                      id: [],
-                      printForType: 'SHELF',
-                    }
-                  });
-                },
+                 },
               },
             ]
           }
@@ -127,6 +154,11 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
           type: 'string',
           width: '30%',
         },
+        Description: {
+          title: this.commonService.translateText('Common.description'),
+          type: 'string',
+          width: '20%',
+        },
         // Name: {
         //   title: this.commonService.translateText('Common.name'),
         //   type: 'string',
@@ -135,7 +167,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
         Warehouse: {
           title: this.commonService.translateText('Common.warehouse'),
           type: 'string',
-          width: '15%',
+          width: '10%',
           valuePrepareFunction: (cell, row) => {
             return this.commonService.getObjectText(cell);
           }
@@ -143,7 +175,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
         FindOrder: {
           title: this.commonService.translateText('Số nhận thức'),
           type: 'string',
-          width: '15%',
+          width: '10%',
         },
         GoodsName: {
           title: this.commonService.translateText('Common.goods'),
@@ -161,12 +193,12 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
         Code: {
           title: this.commonService.translateText('Common.code'),
           type: 'string',
-          width: '10%',
+          width: '5%',
         },
         Type: {
           title: this.commonService.translateText('Common.type'),
           type: 'string',
-          width: '10%',
+          width: '5%',
           valuePrepareFunction: (cell: string, rơ: any) => {
             return this.containerTypes[cell];
           },

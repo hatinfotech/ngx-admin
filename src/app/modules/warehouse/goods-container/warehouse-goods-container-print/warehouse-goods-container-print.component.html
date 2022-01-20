@@ -5,35 +5,14 @@
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
-                <!-- <div class="goods-container-label" *ngFor="let data of this.data; let i=index;">
-                    <div class="wrap">
-                        <img class="qr-code" src="{{data.QrCode}}">
-                        <div class="info">
-                            <div>{{data.Path}}</div>
-                            <div>{{data.Code}}</div>
-                            <div>{{data.Warehouse | objecttext}}</div>
-                            <div style="font-weight: bold; font-size: 16px;">{{data.Description}}</div>
-                        </div>
+                <div class="label" *ngFor="let item of this.data; let i = index;">
+                    <img class="bar-code" src="{{item.QrCode}}" style="float: left;">
+                    <div class="info">
+                        <span style="font-size: 8mm">{{item.FindOrder}}</span><br>
+                        {{item.Description || item.Name}}
                     </div>
-                </div> -->
-
-                <table style="width: 100%;" class="print-voucher-detail-table">
-                    <tr *ngFor="let row of this.data; let i = index;" class="print-voucher-detail-line">
-                        <td *ngFor="let item of row;">
-                            <div class="goods-container-label">
-                                <div class="wrap">
-                                    <img class="qr-code" src="{{item.QrCode}}">
-                                    <div class="info">
-                                        <div>{{item.Path}}</div>
-                                        <div>{{item.Code}}</div>
-                                        <div>{{item.Warehouse | objecttext}}</div>
-                                        <div style="font-weight: bold; font-size: 16px;">{{item.Description}}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                </div>
+                <div style="clear:both"></div>
             </div>
         </nb-card-body>
         <nb-card-footer>
