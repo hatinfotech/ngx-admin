@@ -42,12 +42,12 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       delete: this.configDeleteButton(),
       pager: this.configPaging(),
       columns: {
-        FeaturePictureThumbnail: {
+        FeaturePicture: {
           title: 'Hình',
           type: 'custom',
           width: '5%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['FeaturePictureThumbnail'] ? product['FeaturePictureThumbnail'] + '?token=' + this.apiService.getAccessToken() : '';
+            return product['FeaturePicture'] ? product['FeaturePicture']['Thumbnail'] : '';
           },
           renderComponent: SmartTableThumbnailComponent,
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
@@ -123,7 +123,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           type: 'html',
           width: '15%',
           valuePrepareFunction: (value: any, product: GoodsModel) => {
-            return value && value.map(container => this.commonService.getObjectText(container)).join('<br>') || '' ;
+            return value && value.map(container => '[' + container.ContainerFindOrder + '] ' + this.commonService.getObjectText(container)).join('<br>') || '';
             // try {
             //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
             // } catch (e) {
@@ -162,50 +162,50 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
         },
-        Goods: {
-          title: this.commonService.translateText('Hàng hóa', { action: '', definition: '' }),
-          type: 'html',
-          width: '15%',
-          valuePrepareFunction: (value: string, product: GoodsModel) => {
-            return this.commonService.getObjectText(value);
-            // try {
-            //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
-            // } catch (e) {
-            //   return '';
-            // }
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              select2Option: {
-                placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                multiple: true,
-                logic: 'OR',
-                ajax: {
-                  url: (params: any) => {
-                    return 'data:text/plan,[]';
-                  },
-                  delay: 0,
-                  processResults: (data: any, params: any) => {
-                    return {
-                      results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-                    };
-                  },
-                },
-              },
-            },
-          },
-        },
+        // Goods: {
+        //   title: this.commonService.translateText('Hàng hóa', { action: '', definition: '' }),
+        //   type: 'html',
+        //   width: '15%',
+        //   valuePrepareFunction: (value: string, product: GoodsModel) => {
+        //     return this.commonService.getObjectText(value);
+        //     // try {
+        //     //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
+        //     // } catch (e) {
+        //     //   return '';
+        //     // }
+        //   },
+        //   filter: {
+        //     type: 'custom',
+        //     component: SmartTableSelect2FilterComponent,
+        //     config: {
+        //       delay: 0,
+        //       select2Option: {
+        //         placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+        //         allowClear: true,
+        //         width: '100%',
+        //         dropdownAutoWidth: true,
+        //         minimumInputLength: 0,
+        //         keyMap: {
+        //           id: 'id',
+        //           text: 'text',
+        //         },
+        //         multiple: true,
+        //         logic: 'OR',
+        //         ajax: {
+        //           url: (params: any) => {
+        //             return 'data:text/plan,[]';
+        //           },
+        //           delay: 0,
+        //           processResults: (data: any, params: any) => {
+        //             return {
+        //               results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+        //             };
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
         ConversionUnit: {
           title: 'ĐVT',
           type: 'html',
@@ -366,13 +366,13 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                       // printForType: 'DRAWERS',
                     }
                   });
-                 },
+                },
               },
             ]
           }
         })
       };
-      
+
       return rs;
     });
   }

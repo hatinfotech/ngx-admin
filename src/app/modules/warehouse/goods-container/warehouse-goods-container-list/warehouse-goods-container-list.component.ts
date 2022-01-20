@@ -11,6 +11,7 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-container-list',
@@ -49,6 +50,15 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
     'BASKET': 'Rổ',
     'UNKNOW': 'Chưa biết',
   };
+  containerTypeList = [
+    { id: 'AREA', text: 'Khu' },
+    { id: 'SHELF', text: 'Kệ' },
+    { id: 'CUPBOARD', text: 'Tủ' },
+    { id: 'FLOOR', text: 'Tầng' },
+    { id: 'DRAWERS', text: 'Ngăn' },
+    { id: 'BASKET', text: 'Rổ' },
+    { id: 'UNKNOW', text: 'Chưa biết' },
+  ];
 
   async init() {
     return super.init().then(rs => {
@@ -127,7 +137,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
                       printForType: 'DRAWERS',
                     }
                   });
-                 },
+                },
               },
             ]
           }
@@ -175,7 +185,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
         FindOrder: {
           title: this.commonService.translateText('Số nhận thức'),
           type: 'string',
-          width: '10%',
+          width: '5%',
         },
         GoodsName: {
           title: this.commonService.translateText('Common.goods'),
@@ -198,9 +208,40 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
         Type: {
           title: this.commonService.translateText('Common.type'),
           type: 'string',
-          width: '5%',
+          width: '10%',
           valuePrepareFunction: (cell: string, rơ: any) => {
             return this.containerTypes[cell];
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              select2Option: {
+                placeholder: this.commonService.translateText('Loại vị trí', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                logic: 'OR',
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.containerTypeList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    };
+                  },
+                },
+              },
+            },
           },
         },
       },
