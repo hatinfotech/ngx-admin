@@ -594,6 +594,9 @@
         "GoodsDeliveryNote": {
             "title": "{{definition}}{{action}} phiếu xuất kho"
         },
+        "InventoryAdjustNote": {
+            "title": "{{definition}}{{action}} phiếu điều chỉnh tồn kho"
+        },
         "GoodsContainer": {
             "title": "{{definition}}{{action}} vị trí hàng hóa"
         },
@@ -621,6 +624,8 @@
         "assignContainer": "gán vị trí",
         "assign/unassignContainer": "gán/gở vị trí",
         "inventory": "tồn kho",
+        "theoryInventory": "tồn kho lý thuyết",
+        "realityInventory": "tồn kho thực tế",
         "account": "tài khoản kho",
         "warehousePrice": "giá kho",
         "costOfGoodsSold": "giá kho",

@@ -19,8 +19,8 @@
             "name": "Attach to Chrome web 4200",
             "port": 9222,
             "sourceMaps": true,
-            "url": "http://localhost:4200/",
-            "urlFilter": "http://localhost:4200/*",
+            "url": "http://local.namsoftware.com:4200/",
+            "urlFilter": "http://local.namsoftware.com:4200/*",
             "webRoot": "${workspaceRoot}"
       }
     ]

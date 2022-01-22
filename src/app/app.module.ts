@@ -241,6 +241,9 @@ import { AccountingDashboardComponent } from './modules/accounting/accounting-da
 import { AccountingRevenueStatisticsComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard-statistics.component';
 import { AccountingMostOfDebtComponent } from './modules/accounting/accounting-dashboard/accounting-most-of-debt/accounting-most-of-debt.component';
 import { CollaboratorOrderTeleCommitPrintComponent } from './modules/collaborator/order/collaborator-order-tele-commit-print/collaborator-order-tele-commit-print.component';
+import { WarehouseInventoryAdjustNoteFormComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-form/inventory-adjust-note-form.component';
+import { WarehouseInventoryAdjustNoteListComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-list/inventory-adjust-note-list.component';
+import { WarehouseInventoryAdjustNotePrintComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-print/inventory-adjust-note-print.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -313,6 +316,9 @@ export class DynamicLocaleId extends String {
     WarehouseGoodsContainerListComponent,
     WarehouseGoodsContainerFormComponent,
     WarehouseGoodsContainerPrintComponent,
+    WarehouseInventoryAdjustNoteListComponent,
+    WarehouseInventoryAdjustNoteFormComponent,
+    WarehouseInventoryAdjustNotePrintComponent,
     WarehouseListComponent,
     WarehouseFormComponent,
     WarehousePrintComponent,

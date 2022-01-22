@@ -6,7 +6,6 @@ import { CollaboratorPublisherReportComponent } from './modules/collaborator/col
 import { CollaboratorPublisherSummaryComponent } from './modules/collaborator/collaborator-publisher-summary/collaborator-publisher-summary.component';
 import { CollaboratorPageReportComponent } from './modules/collaborator/collaborator-page-report/collaborator-page-report.component';
 import { CollaboratorPageDashboardComponent } from './modules/collaborator/collaborator-page-dashboard/collaborator-page-dashboard.component';
-import { CollaboratorProductCategoryListComponent } from './modules/collaborator/product-category/collaborator-product-category-list/collaborator-product-category-list.component';
 import { CollaboratorProductListComponent } from './modules/collaborator/product/collaborator-product-list/collaborator-product-list.component';
 import { CollaboratorPublisherListComponent } from './modules/collaborator/publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CollaboratorPageListComponent } from './modules/collaborator/page/collaborator-page-list/collaborator-page-list.component';
@@ -14,7 +13,6 @@ import { ContactCustomerListComponent } from './modules/contact/contact-customer
 import { ContactRemovedListComponent } from './modules/contact/contact-removed-list/contact-removed-list.component';
 import { ContactEmployeeListComponent } from './modules/contact/contact-employee-list/contact-employee-list.component';
 import { ContactSupplierListComponent } from './modules/contact/contact-supplier-list/contact-supplier-list.component';
-import { CustomerListComponent } from './modules/ivoip/customers/customer-list/customer-list.component';
 import { ContactAllListComponent } from './modules/contact/contact-all-list/contact-all-list.component';
 import { CommerceServiceByCycleListComponent } from './modules/commerce-service-by-cycle/service-by-cycle/commerce-service-by-cycle-list/commerce-service-by-cycle-list.component';
 import { AccountingBankAccountFormComponent } from './modules/accounting/bank-account/accounting-bank-account-form/accounting-bank-account-form.component';
@@ -102,6 +100,7 @@ import { CollaboratorCommissionPaymentListComponent } from './modules/collaborat
 import { CollaboratorAwardListComponent } from './modules/collaborator/award/collaborator-award-list/collaborator-award-list.component';
 import { AccountingCashFlowReportComponent } from './modules/accounting/reports/accounting-cash-flow-report/accounting-cash-flow-report.component';
 import { AccountingDashboardComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard.component';
+import { WarehouseInventoryAdjustNoteListComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-list/inventory-adjust-note-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -279,6 +278,15 @@ const routes: Routes = [
     path: 'warehouse/goods-delivery-note/form/:id',
     canActivate: [AuthGuardService],
     component: WarehouseGoodsDeliveryNoteFormComponent,
+  },
+  // goods delivery note
+  {
+    path: 'warehouse/inventory-adjust-note/list',
+    canActivate: [AuthGuardService],
+    component: WarehouseInventoryAdjustNoteListComponent,
+    data: {
+      reuse: true,
+    },
   },
   // goods container
   {

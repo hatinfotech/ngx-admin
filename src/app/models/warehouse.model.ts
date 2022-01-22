@@ -69,6 +69,58 @@ export class WarehouseGoodsReceiptNoteDetailModel {
   CreaditAccount?: number;
   Tax?: string & TaxModel;
 }
+export class WarehouseInventoryAdjustNoteModel {
+  Id?: string | number;
+  Code?: string;
+  Title?: string;
+  Description?: string;
+  Note?: string;
+  SubNote?: string;
+  Object?: string & ContactModel;
+  ObjectName?: string;
+  ObjectPhone?: string;
+  ObjectEmail?: string;
+  ObjectAddress?: string;
+  ObjectIdentifiedNumber?: string;
+  Contact?: string & ContactModel;
+  ContactName?: string;
+  ContactPhone?: string;
+  ContactEmail?: string;
+  ContactAddress?: string;
+  ContactIdentifiedNumber?: string;
+  DateOfCreated?: string;
+  DateOfReceipted?: string;
+  Creator?: string & UserModel;
+  Executor?: string & UserModel;
+  RelateVoucher?: string;
+  Warehouse?: string;
+  Branch?: string;
+  State?: string;
+
+  Bookkeeping?: boolean;
+
+  Details?: WarehouseInventoryAdjustNoteDetailModel[];
+}
+
+export class WarehouseInventoryAdjustNoteDetailModel {
+  [key: string]: any;
+  Id?: string | number;
+  No?: number;
+  Voucher?: string & WarehouseInventoryAdjustNoteModel;
+  Type?: string;
+  Product?: string & ProductModel;
+  ProductName?: string;
+  Description?: string;
+  Unit?: string & UnitModel;
+  Quantity?: string & number;
+  PriceOfReceipted?: string;
+  Location?: string;
+  ImageThumbnail?: string;
+  Business?: BusinessModel[] | string;
+  DebitAccount?: number;
+  CreaditAccount?: number;
+  Tax?: string & TaxModel;
+}
 
 
 export class WarehouseGoodsDeliveryNoteModel {
