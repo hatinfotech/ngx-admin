@@ -89,7 +89,7 @@ export class WarehouseInventoryAdjustNoteModel {
   ContactAddress?: string;
   ContactIdentifiedNumber?: string;
   DateOfCreated?: string;
-  DateOfReceipted?: string;
+  DateOfAdjusted?: string;
   Creator?: string & UserModel;
   Executor?: string & UserModel;
   RelateVoucher?: string;
@@ -187,6 +187,7 @@ export class WarehouseGoodsContainerModel {
   Name?: string;
   Description?: string;
   Path?: string;
+  FindOrder?: string;
   X?: string;
   Y?: string;
   Z?: string;

@@ -345,6 +345,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
 
       const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
       previewBtn.label = 'Print QR Code';
+      previewBtn.icon = 'grid-outline';
       previewBtn.disabled = () => false;
       previewBtn.click = () => {
         this.commonService.openDialog(ShowcaseDialogComponent, {

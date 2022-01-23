@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.0.7.3',
+  version: '6.0.7.5',
+  // 6.0.7: update warehouse v3: inventory adjust note r2
   // 6.0.7: update warehouse v3: inventory adjust note
   // 6.0.6: update tax feature
   // 6.0.4.4: publisher create chat room from order and sync with core BM

@@ -64,9 +64,9 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="DateOfReceipted" label="{{validateVoucherDate(formItem.get('DateOfReceipted'), 'Warehouse.dateOfReceipted')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
-                                    <input type="text" [owlDateTime]="DateOfReceipted" [owlDateTimeTrigger]="DateOfReceipted" nbInput fullWidth formControlName="DateOfReceipted" placeholder="{{'Warehouse.dateOfReceipted' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfReceipted [startAt]="formItem.get('DateOfReceipted')?.value || this.commonService.lastVoucherDate"></owl-date-time>
+                                <ngx-form-group [formGroup]="formItem" name="DateOfAdjusted" label="{{validateVoucherDate(formItem.get('DateOfAdjusted'), 'Warehouse.dateOfAdjusted')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                    <input type="text" [owlDateTime]="DateOfReceipted" [owlDateTimeTrigger]="DateOfReceipted" nbInput fullWidth formControlName="DateOfAdjusted" placeholder="{{'Warehouse.dateOfAdjusted' | translate | headtitlecase}}">
+                                    <owl-date-time #DateOfReceipted [startAt]="formItem.get('DateOfAdjusted')?.value || this.commonService.lastVoucherDate"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-9">

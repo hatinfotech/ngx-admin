@@ -621,6 +621,7 @@
         "openBook": "mở sổ kho",
         "lockBook": "khóa sổ kho",
         "dateOfReceipted": "ngày nhập kho",
+        "dateOfAdjusted": "ngày điều chỉnh",
         "assignContainer": "gán vị trí",
         "assign/unassignContainer": "gán/gở vị trí",
         "inventory": "tồn kho",

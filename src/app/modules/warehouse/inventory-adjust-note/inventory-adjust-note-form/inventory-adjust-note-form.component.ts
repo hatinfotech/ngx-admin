@@ -400,7 +400,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       ObjectBankName: [''],
       ObjectBankCode: [''],
 
-      DateOfReceipted: [null, Validators.required],
+      DateOfAdjusted: [null, Validators.required],
       ReceiptAddress: [''],
       Title: [''],
       Note: [''],
@@ -454,7 +454,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       Image: [[]],
       Container: [''],
       RelateDetail: [''],
-      Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSRECEIPT')],
+      Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSINVENTORYADJUST')],
     });
 
     if (data) {

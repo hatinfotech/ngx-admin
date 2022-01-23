@@ -1,3 +1,4 @@
+import { ActionControl } from './../../../../lib/custom-element/action-control-list/action-control.interface';
 import { UnitModel } from './../../../../models/unit.model';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { WarehouseGoodsContainerPrintComponent } from './../warehouse-goods-container-print/warehouse-goods-container-print.component';
@@ -116,6 +117,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
       //     }
       //   })
       // };
+      previewBtn.icon = 'grid-outline';
       previewBtn.click = () => {
         this.commonService.openDialog(ShowcaseDialogComponent, {
           context: {
@@ -143,6 +145,34 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
           }
         })
       };
+      const copyBtn: ActionControl = {
+        ...previewBtn,
+        label: 'Copy',
+        title: 'Copy',
+        status: 'danger',
+        icon: 'copy-outline',
+        click: () => {
+          this.commonService.openDialog(WarehouseGoodsContainerFormComponent, {
+            context: {
+              showLoadinng: true,
+              inputMode: 'dialog',
+              inputId: this.selectedItems.map(item => this.makeId(item)),
+              isDuplicate: true,
+              onDialogSave: (newData: WarehouseGoodsContainerModel[]) => {
+                // if (onDialogSave) onDialogSave(row);
+                // this.onClose && this.onClose(newData[0]);
+                // this.onSaveAndClose && this.onSaveAndClose(newData[0]);
+              },
+              onDialogClose: () => {
+                // if (onDialogClose) onDialogClose();
+                this.refresh();
+              },
+            },
+          });
+        }
+      };
+
+      this.actionButtonList.unshift(copyBtn);
       return rs;
     });
   }

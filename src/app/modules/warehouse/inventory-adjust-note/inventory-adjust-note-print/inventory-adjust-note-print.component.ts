@@ -1,5 +1,5 @@
 import { WarehouseInventoryAdjustNoteFormComponent } from '../inventory-adjust-note-form/inventory-adjust-note-form.component';
-import { WarehouseGoodsReceiptNoteModel } from '../../../../models/warehouse.model';
+import { WarehouseGoodsReceiptNoteModel, WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { WarehouseGoodsReceiptNoteDetailModel } from '../../../../models/warehouse.model';
@@ -62,8 +62,8 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
     return result;
   }
 
-  renderTitle(data: WarehouseGoodsReceiptNoteModel) {
-    return `Phieu_Nhap_Kho_${this.getIdentified(data).join('-')}` + (data.DateOfReceipted ? ('_' + this.datePipe.transform(data.DateOfReceipted, 'short')) : '');
+  renderTitle(data: WarehouseInventoryAdjustNoteModel) {
+    return `Phieu_Dieu_Chinh_Ton_Kho_${this.getIdentified(data).join('-')}` + (data.DateOfAdjusted ? ('_' + this.datePipe.transform(data.DateOfAdjusted, 'short')) : '');
   }
 
   close() {
@@ -211,7 +211,7 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;
-      item['Title'] = this.renderTitle(item);
+      // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }

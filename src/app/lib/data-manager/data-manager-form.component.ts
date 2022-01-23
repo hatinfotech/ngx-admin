@@ -189,6 +189,16 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       });
     });
     this.onAfterInit && this.onAfterInit(this);
+    if (this.isDuplicate) {
+      // Clear id
+      this.id = [];
+      const keyList = Array.isArray(this.idKey) ? this.idKey : [this.idKey];
+      for (const formItem of this.array.controls) {
+        for (const key of keyList) {
+          formItem.get(key).setValue('');
+        }
+      }
+    }
     return true;
   }
 
@@ -404,7 +414,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Error event */
   onError(e: HttpErrorResponse) {
     // console.log(e);
-    if (e?.status === 500) {
+    if(false) if (e?.status === 500) {
       this.close();
     }
     if (e && e.error && e.error.logs) {
@@ -751,7 +761,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       const currentDate = new Date();
       currentDate.setHours(0, 0, 0, 0);
       const controlValue = new Date(control.value.getTime());
-      controlValue.setHours(0, 0, 0, 0); 
+      controlValue.setHours(0, 0, 0, 0);
       if (controlValue.getTime() < currentDate.getTime()) {
         return this.commonService.translateText(label) + ' trước ngày hiện tại';
       }

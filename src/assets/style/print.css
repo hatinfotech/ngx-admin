@@ -47,7 +47,8 @@
   page-break-after: auto;
 }
 
-.print-voucher-detail-table tr td {
+.print-voucher-detail-table tr td,
+.print-voucher-detail-table tr th {
   border-bottom: 1px solid #ccc;
   vertical-align: top;
 }
