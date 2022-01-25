@@ -24,7 +24,7 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-2">
-                <ngx-form-group [formGroup]="formItem" name="Code" label="Id Sản phẩm" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                <ngx-form-group [formGroup]="formItem" name="Code" label="Id Sản phẩm" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                   <input type="text" nbInput fullWidth formControlName="Code" maxlength="30" placeholder="Tự động tạo mã">
                 </ngx-form-group>
               </div>
@@ -47,7 +47,7 @@
 
               <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
                 <!-- Detail form -->
-                <label class="label">{{'AdminProduct.conversionRatio' | translate | headtitlecase}}</label>
+                <label class="label">{{'AdminProduct.conversionRatio' | translate | headtitlecase}} <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(array, i, 'UnitConversions')" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon></label>
                 <div class="row fit-row form-detail-header">
                   <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
                   <div class="row fit-content-column">

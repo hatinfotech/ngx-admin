@@ -571,10 +571,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
+    const currentFormItem = array.controls[i];
+    let copyItemData;
+    let currentValue = currentFormItem.get(formControlName).value;
     if (formControlName === 'Pictures') {
-      const currentFormItem = array.controls[i];
-      const currentValue = currentFormItem.get(formControlName).value;
-      const featurePicture = currentFormItem.get('FeaturePicture').value;
+      copyItemData = currentFormItem.get('FeaturePicture').value;
       array.controls.forEach((formItem, index) => {
         if (index !== i) {
           const picturesFormArray = (formItem.get('Pictures') as FormArray);
@@ -583,7 +584,20 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
             const newPictireForm = this.makeNewPictureFormGroup(pic);
             picturesFormArray.controls.push(newPictireForm);
           });
-          formItem.get('FeaturePicture').patchValue(featurePicture);
+          formItem.get('FeaturePicture').patchValue(copyItemData);
+        }
+      });
+    } if (formControlName === 'UnitConversions') {
+      copyItemData = currentFormItem.get('UnitConversions').value;
+      array.controls.forEach((formItem, index) => {
+        if (index !== i) {
+          const itemFormArray = (formItem.get('UnitConversions') as FormArray);
+          itemFormArray.controls = [];
+          currentValue.forEach(item => {
+            const newFormForm = this.makeNewUnitConversionFormGroup(item, formItem as FormGroup);
+            itemFormArray.controls.push(newFormForm);
+          });
+          formItem.get('UnitConversions').patchValue(copyItemData);
         }
       });
     } else {
