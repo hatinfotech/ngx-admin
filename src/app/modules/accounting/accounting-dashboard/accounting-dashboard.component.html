@@ -118,10 +118,17 @@
           <nb-tab tabTitle="Hoạt động kinh doanh">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
-                <chart type="line" [data]="costAndRevenueStatisticsData" [options]="options"></chart>
+                <chart type="bar" [data]="costAndRevenueStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>
+          <!-- <nb-tab tabTitle="Hàng hóa">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="pie" [data]="goodsStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab> -->
           <nb-tab tabTitle="Dòng tiền thuần">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">

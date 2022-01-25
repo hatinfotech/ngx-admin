@@ -36,6 +36,7 @@ export class AccountingDashboardComponent implements OnDestroy {
   actionButtonList: ActionControl[];
 
   costAndRevenueStatisticsData: {};
+  goodsStatisticsData: {};
   cashFlowStatisticsData: {};
   debtStatisticsData: {};
   profitStatisticsData: {};
@@ -407,38 +408,26 @@ export class AccountingDashboardComponent implements OnDestroy {
     let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[641,642,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
-    // let costStatistics642 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[642]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // let costStatistics811 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-
     /** Prepare data */
     line1Data = revenueStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
     line2Data = costStatistics632.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     line3Data = costStatistics641.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    // line4Data = grossProfitMargin.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    // line5Data = costStatistics811.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     timeline = [...new Set([
       ...line1Data.map(item => item['Timeline']),
       ...line2Data.map(item => item['Timeline']),
       ...line3Data.map(item => item['Timeline']),
-      // ...line4Data.map(item => item['Timeline']),
-      // ...line5Data.map(item => item['Timeline']),
     ].sort())];
-    // let grossProfitMargin = timeline.map();
     labels = [];
     mergeData = timeline.map(t => {
       const point1 = line1Data.find(f => f.Timeline == t);
       const point2 = line2Data.find(f => f.Timeline == t);
       const point3 = line3Data.find(f => f.Timeline == t);
-      // const point4 = { ...point1, Value: (point1?.Value || 0) - (point2?.Value || 0) };
-      // const point5 = line5Data.find(f => f.Timeline == t);
       labels.push(point1?.Label || point2?.Label);
       return {
         Label: t,
         Line1: point1 || { Value: 0 },
         Line2: point2 || { Value: 0 },
         Line3: point3 || { Value: 0 },
-        // Line4: point4 || { Value: 0 },
-        // Line5: point5 || { Value: 0 },
       };
     });
 
@@ -446,56 +435,65 @@ export class AccountingDashboardComponent implements OnDestroy {
     this.costAndRevenueStatisticsData = {
       labels: labels,
       datasets: [
-        // {
-        //   label: 'Lãi gộp',
-        //   // data: costStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-        //   data: mergeData.map(point => point.Line4['Value']),
-        //   borderColor: this.colors.primary,
-        //   // backgroundColor: colors.primary,
-        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.1),
-        //   // fill: true,
-        //   borderDash: [3, 3],
-        //   pointRadius: pointRadius,
-        //   pointHoverRadius: 10,
-        // },
+        {
+          label: 'Doanh số',
+          data: mergeData.map(point => point.Line1['Value']),
+          borderColor: this.colors.success,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
         {
           label: 'Giá vốn',
-          // data: costStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
           data: mergeData.map(point => point.Line2['Value']),
           borderColor: this.colors.danger,
-          // backgroundColor: colors.primary,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
-          // fill: true,
-          // borderDash: [5, 5],
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 1),
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
         {
           label: 'Chi phí',
-          // data: costStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
           data: mergeData.map(point => point.Line3['Value']),
           borderColor: this.colors.warning,
-          // backgroundColor: colors.primary,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.2),
-          // fill: true,
-          // borderDash: [5, 5],
-          pointRadius: pointRadius,
-          pointHoverRadius: 10,
-        },
-        {
-          label: 'Doanh số',
-          // data: revenueStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
-          data: mergeData.map(point => point.Line1['Value']),
-          borderColor: this.colors.success,
-          // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.5),
-          // fill: true,
-          // borderDash: [5, 5],
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 1),
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
       ],
     };
+
+    // /** Load goods data */
+    // let goodsStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsGoods: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+
+    // /** Prepare data */
+    // line1Data = goodsStatistics.map(statistic => { statistic.Label = `${statistic.GoodsName}/${statistic.GoodsUnit}`; statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    // timeline = [...new Set([
+    //   ...line1Data.map(item => item['Label']),
+    // ].sort())];
+    // labels = [];
+    // mergeData = timeline.map(t => {
+    //   const point1 = line1Data.find(f => f.Label == t);
+    //   labels.push(point1?.Label);
+    //   return {
+    //     Label: t,
+    //     Line1: point1 || { Value: 0 },
+    //   };
+    // });
+
+    // // Fill data
+    // this.goodsStatisticsData = {
+    //   labels: labels,
+    //   datasets: [
+    //     {
+    //       label: 'Nhập hàng',
+    //       data: mergeData.map(point => point.Line1['Value']),
+    //       borderColor: this.colors.success,
+    //       backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
+    //       pointRadius: pointRadius,
+    //       pointHoverRadius: 10,
+    //     },
+    //   ],
+    // };
 
     const cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const cashInBankFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1121]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
