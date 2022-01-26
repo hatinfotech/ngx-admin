@@ -37,6 +37,15 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
   editing = {};
   rows = [];
 
+  containerTypes = {
+    'AREA': 'Khu',
+    'SHELF': 'Kệ',
+    'CUPBOARD': 'Tủ',
+    'FLOOR': 'Tầng',
+    'DRAWERS': 'Ngăn',
+    'UNKNOW': 'Chưa biết',
+  };
+
   async init() {
     return super.init().then(rs => {
       const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
@@ -63,7 +72,7 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
                       printForType: 'DRAWERS',
                     }
                   });
-                 },
+                },
               },
               {
                 status: 'primary',
@@ -75,7 +84,7 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
                       printForType: 'FLOOR',
                     }
                   });
-                 },
+                },
               },
               {
                 status: 'info',
@@ -133,6 +142,9 @@ export class WarehouseGoodsContainerListComponent extends DataManagerListCompone
           title: this.commonService.translateText('Common.type'),
           type: 'string',
           width: '10%',
+          valuePrepareFunction: (cell: string, rơ: any) => {
+            return this.containerTypes[cell];
+          },
         },
         Code: {
           title: this.commonService.translateText('Common.code'),

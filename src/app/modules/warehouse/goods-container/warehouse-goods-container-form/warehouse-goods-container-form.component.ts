@@ -89,9 +89,12 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
       text: 'text',
     },
     data: [
+      {id: 'AREA', text: 'Khu'},
       {id: 'SHELF', text: 'Kệ'},
+      {id: 'SHELF', text: 'Tủ'},
       {id: 'FLOOR', text: 'Tầng'},
       {id: 'DRAWERS', text: 'Ngăn'},
+      {id: 'UNKNOW', text: 'Chưa biết'},
     ],
   };
 
