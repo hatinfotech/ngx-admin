@@ -41,4 +41,5 @@ export class DeploymentVoucherDetailModel extends Model  {
   Price: number & string;
   Unit: string & UnitModel;
   Image?: string;
+  RelateDetail?: string;
 }

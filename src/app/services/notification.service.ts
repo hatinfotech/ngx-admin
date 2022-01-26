@@ -174,7 +174,7 @@ export class NotificationService {
 
 
     // Listen service worker events
-    navigator.serviceWorker.addEventListener('message', event => {
+    navigator?.serviceWorker?.addEventListener('message', event => {
       console.log(event?.data?.name, event.data?.payload);
       if (event.data?.name === 'notificationclick') {
         const notification = this.prepareNotificaitonInfo({

@@ -35,12 +35,14 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
+import { DatePipe } from '@angular/common';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
   selector: 'ngx-sales-voucher-form',
   templateUrl: './sales-voucher-form.component.html',
   styleUrls: ['./sales-voucher-form.component.scss'],
+  providers: [DatePipe]
 })
 export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVoucherModel> implements OnInit {
 
@@ -117,45 +119,42 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }];
 
 
-  select2ContactOption = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '' });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: settings.data['term'] ? settings.data['term'] : '' }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        return { results: data };
-        //   // console.info(data, params);
-        //   return {
-        //     results: data.map(item => {
-        //       item['id'] = item['id'] || item['Code'];
-        //       item['text'] = item['text'] || item['Name'];
-        //       return item;
-        //     }),
-        //   };
-      },
-    },
-  };
+  // select2ContactOption = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   // tags: true,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
 
   uploadConfig = {
 
@@ -192,7 +191,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         return {
           results: data.map(item => {
             item['id'] = item['id'] || item['Code'];
-            item['text'] = item['text'] || item['Title'];
+            item['text'] = (item['DateOfApproved'] ? ('['+this.datePipe.transform(item['DateOfApproved'], 'short') + '] ') : '') + (item['text'] || item['Title']);
             return item;
           }),
         };
@@ -287,6 +286,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     minimumInputLength: 0,
     dropdownCssClass: 'is_tags',
     multiple: true,
+    maximumSelectionLength: 1,
     // tags: true,
     keyMap: {
       id: 'Code',
@@ -392,6 +392,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     public commonService: CommonService,
     public ref: NbDialogRef<SalesVoucherFormComponent>,
     public adminProductService?: AdminProductService,
+    public datePipe?: DatePipe
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -500,7 +501,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   };
   select2DataForType = [
     { id: 'PRODUCT', text: 'Sản phẩm' },
-    { id: 'SERVICE', text: 'Dịch vụ' },
+    // { id: 'SERVICE', text: 'Dịch vụ' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
@@ -626,6 +627,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       DateOfSale: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],
+      RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -724,12 +726,12 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         }
         return null;
       }],
-      Tax: ['NOTAX', (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
+      // Tax: ['NOTAX', (control: FormControl) => {
+      //   if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+      //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
+      //   }
+      //   return null;
+      // }],
       ToMoney: [0],
       Image: [[]],
       // Reason: [''],
@@ -1120,26 +1122,26 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   calculatToMoney(detail: FormGroup, source?: string) {
-    let tax = detail.get('Tax').value;
-    if (typeof tax === 'string') {
-      tax = this.taxList.filter(t => t.Code === tax)[0];
-    }
+    // let tax = detail.get('Tax').value;
+    // if (typeof tax === 'string') {
+    //   tax = this.taxList.filter(t => t.Code === tax)[0];
+    // }
     if (source === 'ToMoney') {
       let price = detail.get('ToMoney').value / detail.get('Quantity').value;
-      if (tax) {
-        price = price / (1 + parseFloat(tax.Tax) / 100);
-      }
+      // if (tax) {
+      //   price = price / (1 + parseFloat(tax.Tax) / 100);
+      // }
       // console.log(detail.value);
       return price;
     } else {
       let toMoney = detail.get('Quantity').value * detail.get('Price').value;
 
-      if (tax) {
-        if (typeof tax === 'string') {
-          tax = this.taxList.filter(t => t.Code === tax)[0];
-        }
-        toMoney += toMoney * tax.Tax / 100;
-      }
+      // if (tax) {
+      //   if (typeof tax === 'string') {
+      //     tax = this.taxList.filter(t => t.Code === tax)[0];
+      //   }
+      //   toMoney += toMoney * tax.Tax / 100;
+      // }
       // console.log(detail.value);
       return toMoney;
     }
@@ -1306,7 +1308,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
           }
-          this.onProcessed();
+          
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
       }
     });

@@ -75,7 +75,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
     // WarehouseBookFormComponent._goodsContainerList = null;
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true })).map(container => ({ ...container, text: container.Path })) as any;
+    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })) as any;
     this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
     return super.clearCache();
   }

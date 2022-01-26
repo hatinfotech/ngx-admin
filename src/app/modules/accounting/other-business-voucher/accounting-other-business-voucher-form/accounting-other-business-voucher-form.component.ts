@@ -89,13 +89,10 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       text: 'text',
     },
     ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] });
-      // },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
         const params = settings.data;
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: params['term'] }).then(rs => {
+        this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
           success(rs);
         }).catch(err => {
           console.error(err);
@@ -108,7 +105,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
-            item['text'] = item['Name'];
+            item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
             return item;
           }),
         };
@@ -505,6 +502,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
+          this.onProcessing();
           for (let i = 0; i < chooseItems.length; i++) {
             const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code) : -1;
             if (index < 0) {
@@ -554,6 +552,10 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
         onDialogClose: () => {
         },

@@ -1,69 +1,104 @@
-<form class="popup">
-  <div class="dialog-wrap" #dialogWrap>
-    <nb-card *ngFor="let data of this.data" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header popup">
-      <nb-card-header>
-        <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.MasterPriceTable.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
-      </nb-card-header>
-      <nb-card-body class="print-body" #printContent>
-        <div id="print-area">
-          <div>
-            <div class="under-line">{{renderValue(data.Title)}}
-            </div>
+<div class="dialog-wrap {{inputMode}}" #dialogWrap>
+  <nb-card [nbSpinner]="loading" *ngFor="let data of this.data; let i=index;" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+    <nb-card-header>
+      <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    </nb-card-header>
+    <nb-card-body class="print-body" #printContent>
+      <div id="print-area">
+        <ngx-print-header></ngx-print-header>
+        <div>
+          <div class="print-title">{{ 'Bảng giá' | translate:{action: '', definition: ''} |
+            uppercase }}
           </div>
-          <div>
-            <div class="row details page-break-after" *ngFor="let row of detailRows">
-              <ng-container *ngFor="let detail of row; let i = index">
-                <div class="col-sm-3">
-                  <div class="grid-item">
-                    <div class="image" style="background-position: center; background-repeat: no-repeat;"
-                      [ngStyle]="{backgroundImage: 'url(\''+detail.FeaturePictureLarge + '?token='+apiService.getAccessToken()+'\')'}">
-                    </div>
-                    <div class="price">{{detail.Price | currency:'VND'}}<span class="unit">1 {{detail?.WarehouseUnit?.Name}}</span>
-                    </div>
-                    <div class="name">{{detail.Name}}</div>
-                  </div>
+          <div class="under-title">{{ data.Code }} - {{ data.DateOfApproved | date:'short' }}</div>
+        </div>
+        <div>
+          <!-- <div style="display: flex;">
+            <div style="flex: 1;">
+                <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+                    {{renderValue(data.ObjectName)}}
                 </div>
-              </ng-container>
+            </div>
+            <div>
+                <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
+                    {{renderValue(data.Object | objectid)}}
+                </div>
             </div>
           </div>
+          <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
+            {{renderValue(data.ObjectAddress)}}
+          </div> -->
+        </div>
+        <div>
           <div>
-            <div class="under-line" *ngIf="data.Description">{{'Common.note' | translate | headtitlecase}}:
-              {{renderValue(data.Description)}}</div>
-            <!-- <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
-            {{renderValue(data.DeliveryAddress)}}</div> -->
-            <!-- <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:
-            {{renderValue(data.DirectReceiverName)}}</div> -->
+            <table style="width: 100%;" class="print-voucher-detail-table">
+              <thead class="print-voucher-detail-header">
+                <td>#</td>
+                <td>{{'Common.prodId' | translate | headtitlecase}}</td>
+                <td>{{'Common.goodsOrService' | translate | headtitlecase}}</td>
+                <!-- <td class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}</td> -->
+                <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
+                <!-- <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td> -->
+                <!-- <td class="text-align-right nowrap">{{'Voucher.toMoney' | translate | headtitlecase}}</td> -->
+              </thead>
+              <ng-container *ngFor="let detail of data.Details; let i = index;">
+                <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
+                  <td colspan="8" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
+                </tr>
+                <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
+                  <td>{{detail.No}}</td>
+                  <td>{{renderValue(detail.Code | objectid)}}</td>
+                  <td [innerHTML]="renderValue(detail.Name)"></td>
+                  <!-- <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td> -->
+                  <td class="text-align-right">{{detail.WarehouseUnit | objecttext}}</td>
+                  <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
+                  <!-- <td class="text-align-right">{{detail.Tax | objectstext}}</td> -->
+                  <!-- <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td> -->
+                </tr>
+              </ng-container>
+            </table>
           </div>
-          <!-- <div style="display: flex; flex-wrap: wrap">
+        </div>
+        <div>
+          <div class="under-line" *ngIf="data.Description"><span [innerHTML]="renderValue(data.Description)"></span></div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap">
           <div style="text-align: center; flex: 0 0 50%;">
-            <br>
-            {{'Common.employee' | translate | headtitlecase}}
+            <br> {{'Common.employee' | translate | headtitlecase}}
             <br><br><br>
           </div>
           <div style="text-align: center; flex: 0 0 50%;">
-            <br>
-            {{'Common.customer' | translate | headtitlecase}}
+            <br> {{'Common.customer' | translate | headtitlecase}}
             <br><br><br>
           </div>
-        </div> -->
         </div>
-      </nb-card-body>
-      <nb-card-footer>
-        <div class="buttons-row">
-          <button nbButton hero status="primary" (click)="print();" [disabled]="!identifier">
-            <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
-          </button>
-          <button nbButton hero status="danger" (click)="saveAndClose();">
-            <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
-          </button>
-          <button nbButton hero status="warning"
-            (click)="exportExcel('excel');">{{'Common.exportTo' | translate:{to: 'Excel'} | headtitlecase}}</button>
-          <button nbButton hero status="info"
-            (click)="exportExcel('pdf');">{{'Common.exportTo' | translate:{to: 'PDF'} | headtitlecase}}</button>
-          <button nbButton hero status="success" [disabled]="!this.data.Code"
-            (click)="approve(data);">{{'Common.approve' | translate | headtitlecase}}</button>
-        </div>
-      </nb-card-footer>
-    </nb-card>
-  </div>
-</form>
+      </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="data.RelativeVouchers && data.RelativeVouchers.length > 0" class="print-relative-vouchers">
+        <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
+          <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
+          <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
+      </span>
+    </nb-card-footer>
+    <nb-card-footer>
+      <div class="buttons-row">
+        <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="edit(data);">
+          <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
+        </button>
+        <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="prepareCopy(data);" style="float: left">
+          <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+        </button>
+        <!-- <button *ngIf="mode === 'print'" nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
+
+        <!--State process buttons-->
+        <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.confirmLabel | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward-outline'}}"></nb-icon></button>
+        <!--End State process buttons-->
+
+        <button *ngIf="mode === 'preview'" nbButton hero status="success" (click)="saveAndClose(data);">
+          <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</div>

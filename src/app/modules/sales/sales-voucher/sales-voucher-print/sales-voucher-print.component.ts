@@ -91,13 +91,13 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   toMoney(detail: SalesVoucherDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
-      if (detail.Tax) {
-        if (typeof detail.Tax.Tax == 'undefined') {
-          throw Error('tax not as tax model');
-        }
-        toMoney += toMoney * detail.Tax.Tax / 100;
-      }
+      // detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      // if (detail.Tax) {
+      //   if (typeof detail.Tax.Tax == 'undefined') {
+      //     throw Error('tax not as tax model');
+      //   }
+      //   toMoney += toMoney * detail.Tax.Tax / 100;
+      // }
       return toMoney;
     }
     return 0;
@@ -266,11 +266,15 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => {
-      if (rs[0] && rs[0].Details) {
-        this.setDetailsNo(rs[0].Details, (detail: SalesVoucherDetailModel) => detail.Type !== 'CATEGORY');
-        for (const detail of rs[0].Details) {
-          rs[0]['Total'] += detail['ToMoney'] = this.toMoney(detail);
+    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
+      for (const item of rs) {
+        const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
+        item.StateLabel = processMap.label;
+        if (item && item.Details) {
+          this.setDetailsNo(item.Details, (detail: SalesVoucherDetailModel) => detail.Type !== 'CATEGORY');
+          for (const detail of item.Details) {
+            item['Total'] += detail['ToMoney'] = this.toMoney(detail);
+          }
         }
       }
       this.summaryCalculate(rs);

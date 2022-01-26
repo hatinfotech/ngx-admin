@@ -55,22 +55,22 @@ export class WarehouseListComponent extends DataManagerListComponent<WarehouseMo
         Name: {
           title: this.commonService.translateText('Common.name'),
           type: 'string',
-          width: '30%',
+          width: '40%',
         },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
-          width: '20%',
+          width: '30%',
         },
-        Branch: {
-          title: this.commonService.translateText('Common.branch'),
+        // Branch: {
+        //   title: this.commonService.translateText('Common.branch'),
+        //   type: 'string',
+        //   width: '20%',
+        // },
+        AccAccountName: {
+          title: this.commonService.translateText('Warehouse.account'),
           type: 'string',
           width: '20%',
-        },
-        AccAccount: {
-          title: this.commonService.translateText('Common.accounting account'),
-          type: 'string',
-          width: '10%',
         },
       },
     });

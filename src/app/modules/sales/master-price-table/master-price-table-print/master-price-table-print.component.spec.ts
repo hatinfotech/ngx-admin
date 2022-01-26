@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MasterPriceTablePrintComponent } from './master-price-table-print.component';
 
-describe('MasterPriceTablePrintComponent', () => {
+
+describe('SalesVoucherPrintComponent', () => {
   let component: MasterPriceTablePrintComponent;
   let fixture: ComponentFixture<MasterPriceTablePrintComponent>;
 

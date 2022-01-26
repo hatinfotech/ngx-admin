@@ -47,6 +47,7 @@ import { SalesPriceReportPrintComponent } from '../modules/sales/price-report/sa
 import { SalesVoucherPrintComponent } from '../modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { WarehouseGoodsDeliveryNotePrintComponent } from '../modules/warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
+import { WarehouseInventoryAdjustNotePrintComponent } from '../modules/warehouse/inventory-adjust-note/inventory-adjust-note-print/inventory-adjust-note-print.component';
 import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { NotificationModel } from '../models/notification.model';
 import { RootConfigModel, SystemConfigModel } from '../models/model';
@@ -898,6 +899,7 @@ export class CommonService {
     'PURCHASEORDER': PurchaseOrderVoucherPrintComponent,
     'GOODSDELIVERY': WarehouseGoodsDeliveryNotePrintComponent,
     'GOODSRECEIPT': WarehouseGoodsReceiptNotePrintComponent,
+    'INVENTORYADJUST': WarehouseInventoryAdjustNotePrintComponent,
     'RECEIPT': CashReceiptVoucherPrintComponent,
     'PAYMENT': CashPaymentVoucherPrintComponent,
     'PRICEREPORT': SalesPriceReportPrintComponent,

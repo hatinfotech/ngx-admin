@@ -24,12 +24,14 @@ import { threadId } from 'worker_threads';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { takeUntil } from 'rxjs/operators';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
   selector: 'ngx-sales-price-report-form',
   templateUrl: './sales-price-report-form.component.html',
   styleUrls: ['./sales-price-report-form.component.scss'],
+  providers: [DatePipe]
 })
 export class SalesPriceReportFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
 
@@ -63,6 +65,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     public commonService: CommonService,
     public ref: NbDialogRef<SalesPriceReportFormComponent>,
     public adminProductService: AdminProductService,
+    public datePipe?: DatePipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -130,46 +133,42 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     }
   }];
 
-  select2ContactOption = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '', limit: 40 });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '', limit: 40 }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data
-          // .map(item => {
-          //   item['id'] = item['Code'];
-          //   item['text'] = item['Name'];
-          //   return item;
-          // }),
-        };
-      },
-    },
-  };
+  // select2ContactOption = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   // tags: true,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
 
   select2SalesPriceReportOption = {
     placeholder: 'Chọn bảng giá...',
@@ -203,7 +202,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
-            item['text'] = item['Title'];
+            item['text'] = `[` + this.datePipe.transform(item['DateOfCreated'], 'short') + `] ${item['Title']}`;
             return item;
           }),
         };
@@ -297,7 +296,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   };
   select2DataForType = [
     { id: 'PRODUCT', text: 'Sản phẩm' },
-    { id: 'SERVICE', text: 'Dịch vụ' },
+    // { id: 'SERVICE', text: 'Dịch vụ' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
@@ -418,6 +417,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       Reported: [null],
       _total: [''],
       RelativeVouchers: [''],
+      RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -495,7 +495,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: ['VAT10'],
+      // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
@@ -703,27 +703,25 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
 
   calculatToMoney(detail: FormGroup, source?: string) {
-    let tax = detail.get('Tax').value;
-    if (typeof tax === 'string') {
-      tax = this.taxList.filter(t => t.Code === tax)[0];
-    }
+    // let tax = detail.get('Tax').value;
+    // if (typeof tax === 'string') {
+    //   tax = this.taxList.filter(t => t.Code === tax)[0];
+    // }
     if (source === 'ToMoney') {
       let price = detail.get('ToMoney').value / detail.get('Quantity').value;
-      if (tax) {
-        price = price / (1 + parseFloat(tax.Tax) / 100);
-      }
-      // console.log(detail.value);
+      // if (tax) {
+      //   price = price / (1 + parseFloat(tax.Tax) / 100);
+      // }
       return price;
     } else {
       let toMoney = detail.get('Quantity').value * detail.get('Price').value;
 
-      if (tax) {
-        if (typeof tax === 'string') {
-          tax = this.taxList.filter(t => t.Code === tax)[0];
-        }
-        toMoney += toMoney * tax.Tax / 100;
-      }
-      // console.log(detail.value);
+      // if (tax) {
+      //   if (typeof tax === 'string') {
+      //     tax = this.taxList.filter(t => t.Code === tax)[0];
+      //   }
+      // toMoney += toMoney * tax.Tax / 100;
+      // }
       return toMoney;
     }
   }

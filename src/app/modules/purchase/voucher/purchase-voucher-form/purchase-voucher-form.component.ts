@@ -90,46 +90,42 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   // static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: ProductUnitModel[];
 
-  select2ContactOption = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '' });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '' }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data
-          // .map(item => {
-          //   item['id'] = item['Code'];
-          //   item['text'] = item['Name'];
-          //   return item;
-          // }),
-        };
-      },
-    },
-  };
+  // select2ContactOption = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   // tags: true,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
 
   select2OptionForAccountingBusiness = {
     placeholder: 'Nghiệp vụ kế toán...',
@@ -138,6 +134,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // dropdownCssClass: 'is_tags',
+    maximumSelectionLength: 1,
     multiple: true,
     // tags: true,
     keyMap: {
@@ -474,6 +471,8 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       SubNote: [''],
       DateOfPurchase: [null, Validators.required],
       RelativeVouchers: [],
+      IncludeInvoice: [false],
+      InvoiceNumber: [''],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -550,12 +549,12 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         }
         return null;
       }],
-      Tax: ['NOTAX', (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
+      // Tax: ['NOTAX', (control: FormControl) => {
+      //   if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+      //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
+      //   }
+      //   return null;
+      // }],
       ToMoney: [0],
       Image: [[]],
       // Business: {
@@ -721,26 +720,26 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   }
 
   calculatToMoney(detail: FormGroup, source?: string) {
-    let tax = detail.get('Tax').value;
-    if (typeof tax === 'string') {
-      tax = this.taxList.filter(t => t.Code === tax)[0];
-    }
+    // let tax = detail.get('Tax').value;
+    // if (typeof tax === 'string') {
+    //   tax = this.taxList.filter(t => t.Code === tax)[0];
+    // }
     if (source === 'ToMoney') {
       let price = detail.get('ToMoney').value / detail.get('Quantity').value;
-      if (tax) {
-        price = price / (1 + parseFloat(tax.Tax) / 100);
-      }
+      // if (tax) {
+      //   price = price / (1 + parseFloat(tax.Tax) / 100);
+      // }
       console.log(detail.value);
       return price;
     } else {
       let toMoney = detail.get('Quantity').value * detail.get('Price').value;
 
-      if (tax) {
-        if (typeof tax === 'string') {
-          tax = this.taxList.filter(t => t.Code === tax)[0];
-        }
-        toMoney += toMoney * tax.Tax / 100;
-      }
+      // if (tax) {
+      //   if (typeof tax === 'string') {
+      //     tax = this.taxList.filter(t => t.Code === tax)[0];
+      //   }
+      //   toMoney += toMoney * tax.Tax / 100;
+      // }
       console.log(detail.value);
       return toMoney;
     }
@@ -847,7 +846,10 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);
-          this.onProcessed();
+          
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
         onDialogClose: () => {
         },

@@ -26,6 +26,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-form',
@@ -59,42 +60,42 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   warehouseContainerList = [];
 
-  select2ContactOption = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '' }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
-        };
-      },
-    },
-  };
+  // select2ContactOption = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   // tags: true,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
 
   uploadConfig = {
 
@@ -384,8 +385,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   makeNewFormGroup(data?: WarehouseGoodsReceiptNoteModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
-      Object: [''],
-      ObjectName: [''],
+      Object: ['', Validators.required],
+      ObjectName: ['', Validators.required],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
@@ -626,60 +627,110 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.commonService.openDialog(PurchaseVoucherListComponent, {
+    this.commonService.openDialog(ReferenceChoosingDialogComponent, {
       context: {
-        inputMode: 'dialog',
-        onDialogChoose: async (chooseItems: PurchaseVoucherModel[]) => {
+        components: {
+          'PURCHASE': { title: 'Phiếu mua hàng' },
+          'GOODSDELIVERY': { title: 'Phiếu xuất kho' },
+        },
+        // inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: any[], type?: string) => {
           console.log(chooseItems);
           const relationVoucher = formGroup.get('RelativeVouchers');
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
           this.onProcessing();
-          for (let i = 0; i < chooseItems.length; i++) {
-            const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
-            if (index < 0) {
-              const details = this.getDetails(formGroup);
-              // get purchase order
-              const salesVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+          if (type === 'PURCHASE') {
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                const details = this.getDetails(formGroup);
+                // get purchase order
+                const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-              if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(salesVoucher.State)) < 0) {
-                this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-                continue;
-              }
-              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                if (this.commonService.getObjectId(salesVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-              } else {
-                delete salesVoucher.Id;
-                delete salesVoucher.Code;
-                formGroup.patchValue({ ...salesVoucher, Details: [] });
-                details.clear();
-              }
-              insertList.push(chooseItems[i]);
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete voucher.Id;
+                  // delete voucher.Code;
+                  formGroup.patchValue({ ...voucher, Code: null, Details: [] });
+                  details.clear();
+                }
+                insertList.push(chooseItems[i]);
 
-              // Insert order details into voucher details
-              if (salesVoucher?.Details) {
-                details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + salesVoucher.Code + ' - ' + salesVoucher.Title }));
-                for (const voucherDetail of salesVoucher.Details) {
-                  if (voucherDetail.Type === 'PRODUCT') {
-                    // delete orderDetail.Id;
-                    // delete orderDetail.Voucher;
-                    // delete orderDetail.No;
-                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${salesVoucher.Code}/${voucherDetail.Id}` });
-                    newDtailFormGroup.get('Business').disable();
-                    details.push(newDtailFormGroup);
+                // Insert order details into voucher details
+                if (voucher?.Details) {
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + voucher.Code + ' - ' + voucher.Title }));
+                  for (const voucherDetail of voucher.Details) {
+                    if (voucherDetail.Type === 'PRODUCT') {
+                      // delete orderDetail.Id;
+                      // delete orderDetail.Voucher;
+                      // delete orderDetail.No;
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${voucher.Code}/${voucherDetail.Id}` });
+                      newDtailFormGroup.get('Business').disable();
+                      details.push(newDtailFormGroup);
+                    }
                   }
                 }
-              }
 
+              }
             }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
           }
-          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
-          this.onProcessed();
-        },
-        onDialogClose: () => {
+          if (type === 'GOODSDELIVERY') {
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                const details = this.getDetails(formGroup);
+                // get purchase order
+                const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+
+                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.toastService.show(this.commonService.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete voucher.Id;
+                  // delete voucher.Code;
+                  formGroup.patchValue({ ...voucher, Code: null, Details: [] });
+                  details.clear();
+                }
+                insertList.push(chooseItems[i]);
+
+                // Insert order details into voucher details
+                if (voucher?.Details) {
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + voucher.Code + ' - ' + voucher.Title }));
+                  for (const voucherDetail of voucher.Details) {
+                    if (voucherDetail.Type === 'PRODUCT') {
+                      // delete orderDetail.Id;
+                      // delete orderDetail.Voucher;
+                      // delete orderDetail.No;
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `GOODSDELIVERY/${voucher.Code}/${voucherDetail.Id}` });
+                      newDtailFormGroup.get('Business').disable();
+                      details.push(newDtailFormGroup);
+                    }
+                  }
+                }
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+          }
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
       }
     })

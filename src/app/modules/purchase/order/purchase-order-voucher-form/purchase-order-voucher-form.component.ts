@@ -39,6 +39,11 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
 
+  // locale = this.commo nService.getCurrentLoaleDataset();
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
+  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
+
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
   taxList: (TaxModel & { id?: string, text?: string })[];
@@ -47,47 +52,42 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: (UnitModel & { id?: string, text?: string })[];
 
-  select2ContactOption = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '' });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '' }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data
-          // .map(item => {
-          //   item['id'] = item['Code'];
-          //   item['text'] = item['Name'];
-          //   return item;
-          // })
-          ,
-        };
-      },
-    },
-  };
+  // select2ContactOption = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   // tags: true,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
 
   uploadConfig = {
 
@@ -352,6 +352,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       // RelativeVouchers: [],
       _total: [''],
       RelativeVouchers: [],
+      RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -394,7 +395,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: ['VAT10'],
+      // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
@@ -529,13 +530,13 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   calculatToMoney(detail: FormGroup) {
     let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
-    }
+    // let tax = detail.get('Tax').value;
+    // if (tax) {
+    //   if (typeof tax === 'string') {
+    //     tax = this.taxList.filter(t => t.Code === tax)[0];
+    //   }
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
     return toMoney;
   }
 

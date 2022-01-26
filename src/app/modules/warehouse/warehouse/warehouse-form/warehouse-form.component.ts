@@ -32,6 +32,38 @@ export class WarehouseFormComponent extends DataManagerFormComponent<WarehouseMo
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
+  
+  accountList = [
+    {id: '156', text: 'Hàng hóa (156)', children: [
+      {id: '1561', text: 'Giá mua hàng hóa (1561)'},
+      {id: '1562', text: 'Chi phí thu mua hàng hóa (1562)'},
+      {id: '1563', text: 'Hàng hóa bất động sản (1563)'},
+    ]},
+    {id: '152', text: 'Nguyên liệu, vật liệu (152)'},
+    {id: '155', text: 'Thành phẩm nhập kho (155)', children: [
+      {id: '1551', text: 'Thành phẩm nhập kho (1551)'},
+      {id: '1557', text: 'Thành phẩm bất động sản (1557)'},
+    ]},
+    {id: '158', text: 'Hàng hoá kho bảo thuế (158)'},
+    {id: '153', text: 'Công cụ, dụng cụ (153)', children: [
+      {id: '1531', text: 'Công cụ, dụng cụ (1531)'},
+      {id: '1532', text: 'Bao bì luân chuyển (1532)'},
+      {id: '1533', text: 'Đồ dùng cho thuê (1533)'},
+      {id: '1534', text: 'Thiết bị, phụ tùng thay thế (1534)'},
+    ]},
+    {id: '157', text: 'Hàng gửi đi bán (157)'},
+  ];
+  select2OptionForAccAccount = {
+    placeholder: this.commonService.translateText('Chọn tài khoản kho...'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
@@ -54,8 +86,7 @@ export class WarehouseFormComponent extends DataManagerFormComponent<WarehouseMo
 
   makeNewFormGroup(data?: WarehouseModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code_old: [''],
-      Code: [''],
+      Code: { value: '', disabled: true },
       Name: ['', Validators.required],
       Description: [''],
       Branch: ['MAINBRANCH'],

@@ -79,6 +79,36 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           return false;
         },
       });
+      this.actionButtonList.unshift({
+        name: 'copyProducts',
+        status: 'danger',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Copy'), 'head-title'),
+        icon: 'copy-outline',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Copy'), 'head-title'),
+        size: 'medium',
+        disabled: () => this.selectedIds.length === 0,
+        hidden: () => false,
+        click: () => {
+          this.commonService.openDialog(ProductFormComponent, {
+            context: {
+              showLoadinng: true,
+              inputMode: 'dialog',
+              inputId: this.selectedItems.map(item => this.makeId(item)),
+              isDuplicate: true,
+              onDialogSave: (newData: ProductModel[]) => {
+                // if (onDialogSave) onDialogSave(row);
+                // this.onClose && this.onClose(newData[0]);
+                // this.onSaveAndClose && this.onSaveAndClose(newData[0]);
+              },
+              onDialogClose: () => {
+                // if (onDialogClose) onDialogClose();
+                this.refresh();
+              },
+            },
+          });
+          return false;
+        },
+      });
       return rs;
     });
   }

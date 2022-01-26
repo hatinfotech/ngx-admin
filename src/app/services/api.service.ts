@@ -186,7 +186,7 @@ export class ApiService {
     let httpParams = '';
     let first = true;
     Object.entries(params).forEach(([key, value]) => {
-      httpParams += `${!first ? '&' : ''}${key}=${typeof value !== 'undefined' ? value : ''}`;
+      httpParams += `${!first ? '&' : ''}${key}=${typeof value !== 'undefined' ? encodeURIComponent(value) : ''}`;
       first = false;
     });
     return httpParams;

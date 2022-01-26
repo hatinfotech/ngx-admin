@@ -25,7 +25,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   // get goodsContainerList() { return WarehouseGoodsContainerFormComponent._goodsContainerList; }
   activeFormGroup: FormGroup;
   select2OptionForParent: Select2Option = {
-    placeholder: 'Chọn cha...',
+    placeholder: 'Chọn vị trí...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -37,7 +37,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     multiple: false,
     ajax: {
       url: (params: any, select2Option: Select2Option) => {
-        const option: any = { 'filter_Path': params['term'], includeIdText: true, includeWarehouse: true, select: 'Parent=>Parent,Code=>Code,Name=>Name,Warehouse=>Warehouse,Path=>Path' };
+        const option: any = { 'search': params['term'], includeIdText: true, includeWarehouse: true, includeFindOrder: true, select: 'Parent,Code,Name,Warehouse,Path,FindOrder' };
         if (select2Option.formItem) {
           const warehouseFormControl = select2Option.formItem.get('Warehouse');
           if (warehouseFormControl) {
@@ -59,16 +59,48 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     },
   };
 
-  select2OptionForParents: {[key: string]: Select2Option} = {};
+  select2OptionForParents: { [key: string]: Select2Option } = {};
   getSelect2OptionForParent(name: string, formItem: FormGroup) {
-    if(this.select2OptionForParents[name]) return this.select2OptionForParents[name];
-    return this.select2OptionForParents[name] = {...this.select2OptionForParent, formItem};
+    if (this.select2OptionForParents[name]) return this.select2OptionForParents[name];
+    return this.select2OptionForParents[name] = { ...this.select2OptionForParent, formItem };
   }
+
+  accountList = [
+    {id: '156', text: 'Hàng hóa (156)', children: [
+      {id: '1561', text: 'Giá mua hàng hóa (1561)'},
+      {id: '1562', text: 'Chi phí thu mua hàng hóa (1562)'},
+      {id: '1563', text: 'Hàng hóa bất động sản (1563)'},
+    ]},
+    {id: '152', text: 'Nguyên liệu, vật liệu (152)'},
+    {id: '155', text: 'Thành phẩm nhập kho (155)', children: [
+      {id: '1551', text: 'Thành phẩm nhập kho (1551)'},
+      {id: '1557', text: 'Thành phẩm bất động sản (1557)'},
+    ]},
+    {id: '158', text: 'Hàng hoá kho bảo thuế (158)'},
+    {id: '153', text: 'Công cụ, dụng cụ (153)', children: [
+      {id: '1531', text: 'Công cụ, dụng cụ (1531)'},
+      {id: '1532', text: 'Bao bì luân chuyển (1532)'},
+      {id: '1533', text: 'Đồ dùng cho thuê (1533)'},
+      {id: '1534', text: 'Thiết bị, phụ tùng thay thế (1534)'},
+    ]},
+    {id: '157', text: 'Hàng gửi đi bán (157)'},
+  ];
+  select2OptionForAccAccount = {
+    placeholder: this.commonService.translateText('Chọn tài khoản kho...'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
   static _warehouseList: WarehouseModel[];
   get warehouseList() { return WarehouseGoodsContainerFormComponent._warehouseList; }
   select2OptionForWarehouse = {
-    placeholder: this.commonService.translateText('Common.choose'),
+    placeholder: this.commonService.translateText('Chọn kho...'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -79,7 +111,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     },
   };
   select2OptionForType = {
-    placeholder: this.commonService.translateText('Common.choose'),
+    placeholder: this.commonService.translateText('Chọn loại...'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -89,12 +121,13 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
       text: 'text',
     },
     data: [
-      {id: 'AREA', text: 'Khu'},
-      {id: 'SHELF', text: 'Kệ'},
-      {id: 'SHELF', text: 'Tủ'},
-      {id: 'FLOOR', text: 'Tầng'},
-      {id: 'DRAWERS', text: 'Ngăn'},
-      {id: 'UNKNOW', text: 'Chưa biết'},
+      { id: 'AREA', text: 'Khu' },
+      { id: 'SHELF', text: 'Kệ' },
+      { id: 'SHELF', text: 'Tủ' },
+      { id: 'FLOOR', text: 'Tầng' },
+      { id: 'DRAWERS', text: 'Ngăn' },
+      { id: 'BASKET', text: 'Rổ' },
+      { id: 'UNKNOW', text: 'Chưa biết' },
     ],
   };
 
@@ -141,22 +174,24 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   /** Execute api get */
   executeGet(params: any, success: (resources: WarehouseGoodsContainerModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeParent'] = true;
+    params['includeParentPath'] = true;
     super.executeGet(params, success, error);
   }
 
   makeNewFormGroup(data?: WarehouseGoodsContainerModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Code_old: [''],
-      Code: [''],
+      Code: [{ value: '', disabled: true }],
       Parent: [''],
       Name: ['', Validators.required],
-      FindOrder: [999],
+      FindOrder: [''],
       Warehouse: ['', Validators.required],
       Description: [''],
+      AccAccount: [''],
       Type: ['', Validators.required],
-      X: [''],
-      Y: [''],
-      Z: [''],
+      // X: [''],
+      // Y: [''],
+      // Z: [''],
       // Branch: ['MAINBRANCH'],
     });
     if (data) {
@@ -165,6 +200,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     }
     return newForm;
   }
+
   onAddFormGroup(index: number, newForm: FormGroup, formData?: WarehouseGoodsContainerModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
@@ -191,4 +227,13 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     this.activeFormGroup = formGroup;
   }
 
+  onWarehouseChange(formGroup: FormGroup, selectedData: WarehouseModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+        formGroup.get('AccAccount').setValue(selectedData.AccAccount);
+      }
+    }
+  }
 }

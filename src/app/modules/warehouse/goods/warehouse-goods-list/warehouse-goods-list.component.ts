@@ -8,13 +8,14 @@ import { HttpClient } from '@angular/common/http';
 import { WarehouseGoodsFormComponent } from '../warehouse-goods-form/warehouse-goods-form.component';
 import { AssignContainerFormComponent } from '../assign-containers-form/assign-containers-form.component';
 import { ProductModel, ProductUnitConversoinModel } from '../../../../models/product.model';
-import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { WarehouseGoodsPrintComponent } from '../warehouse-goods-print/warehouse-goods-print.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -41,12 +42,12 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       delete: this.configDeleteButton(),
       pager: this.configPaging(),
       columns: {
-        FeaturePictureThumbnail: {
+        FeaturePicture: {
           title: 'Hình',
           type: 'custom',
           width: '5%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['FeaturePictureThumbnail'] ? product['FeaturePictureThumbnail'] + '?token=' + this.apiService.getAccessToken() : '';
+            return product['FeaturePicture'] ? product['FeaturePicture']['Thumbnail'] : '';
           },
           renderComponent: SmartTableThumbnailComponent,
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
@@ -121,8 +122,9 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
           type: 'html',
           width: '15%',
-          valuePrepareFunction: (value: string, product: GoodsModel) => {
-            return this.commonService.getObjectText(value);
+          valuePrepareFunction: (value: any, product: GoodsModel) => {
+            // return value && value.map(container => '[' + container.ContainerFindOrder + '] ' + this.commonService.getObjectText(container)).join('<br>') || '';
+            return value && ('[' + value.ContainerFindOrder + '] ' + this.commonService.getObjectText(value)) || '';
             // try {
             //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
             // } catch (e) {
@@ -161,6 +163,50 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
         },
+        // Goods: {
+        //   title: this.commonService.translateText('Hàng hóa', { action: '', definition: '' }),
+        //   type: 'html',
+        //   width: '15%',
+        //   valuePrepareFunction: (value: string, product: GoodsModel) => {
+        //     return this.commonService.getObjectText(value);
+        //     // try {
+        //     //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
+        //     // } catch (e) {
+        //     //   return '';
+        //     // }
+        //   },
+        //   filter: {
+        //     type: 'custom',
+        //     component: SmartTableSelect2FilterComponent,
+        //     config: {
+        //       delay: 0,
+        //       select2Option: {
+        //         placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+        //         allowClear: true,
+        //         width: '100%',
+        //         dropdownAutoWidth: true,
+        //         minimumInputLength: 0,
+        //         keyMap: {
+        //           id: 'id',
+        //           text: 'text',
+        //         },
+        //         multiple: true,
+        //         logic: 'OR',
+        //         ajax: {
+        //           url: (params: any) => {
+        //             return 'data:text/plan,[]';
+        //           },
+        //           delay: 0,
+        //           processResults: (data: any, params: any) => {
+        //             return {
+        //               results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+        //             };
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
         ConversionUnit: {
           title: 'ĐVT',
           type: 'html',
@@ -215,6 +261,44 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           type: 'string',
           width: '10%',
         },
+        Action: {
+          title: this.commonService.translateText('Common.action'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'pricetags';
+            instance.display = true;
+            instance.status = 'success';
+            instance.disabled = this.ref && Object.keys(this.ref).length > 0;
+            // instance.style = 'text-align: right';
+            // instance.class = 'align-right';
+            instance.status = 'primary';
+            instance.title = this.commonService.translateText('Gán/gở hàng hóa vào chỗ chứa');
+            instance.label = this.commonService.translateText('Gán/gở chỗ chứa');
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
+              const editedItems = rowData;
+              this.commonService.openDialog(AssignContainerFormComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputGoodsList: [editedItems],
+                  onDialogSave: (newData: ProductModel[]) => {
+                    this.refresh();
+                    // this.updateGridItems(editedItems, newData);
+                  },
+                  onDialogClose: () => {
+                  },
+                },
+                closeOnEsc: false,
+                closeOnBackdropClick: false,
+              });
+            });
+          },
+        },
         // CostOfGoodsSold: {
         //   title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
         //   type: 'currency',
@@ -261,12 +345,13 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
 
       const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
       previewBtn.label = 'Print QR Code';
+      previewBtn.icon = 'grid-outline';
       previewBtn.disabled = () => false;
       previewBtn.click = () => {
         this.commonService.openDialog(ShowcaseDialogComponent, {
           context: {
-            title: 'Print QR Code',
-            content: 'Chọn hàng hóa cần in QR Code:',
+            title: 'Print Bar Code',
+            content: 'Chọn hàng hóa cần in Bar Code:',
             actions: [
               {
                 status: 'basic',
@@ -283,37 +368,13 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                       // printForType: 'DRAWERS',
                     }
                   });
-                 },
+                },
               },
-              // {
-              //   status: 'primary',
-              //   label: 'In tầng',
-              //   action: () => {
-              //     this.commonService.openDialog(WarehouseGoodsPrintComponent, {
-              //       context: {
-              //         id: [],
-              //         printForType: 'FLOOR',
-              //       }
-              //     });
-              //    },
-              // },
-              // {
-              //   status: 'info',
-              //   label: 'In kệ',
-              //   action: () => {
-              //     this.commonService.openDialog(WarehouseGoodsPrintComponent, {
-              //       context: {
-              //         id: [],
-              //         printForType: 'SHELF',
-              //       }
-              //     });
-              //   },
-              // },
             ]
           }
         })
       };
-      
+
       return rs;
     });
   }

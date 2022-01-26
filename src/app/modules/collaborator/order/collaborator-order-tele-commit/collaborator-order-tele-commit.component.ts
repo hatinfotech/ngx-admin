@@ -62,6 +62,7 @@ export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFo
       Reported: [''],
       _total: [''],
       RelativeVouchers: [''],
+      RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });
     if (data) {

@@ -47,13 +47,15 @@
   page-break-after: auto;
 }
 
-.print-voucher-detail-table tr td {
+.print-voucher-detail-table tr td,
+.print-voucher-detail-table tr th {
   border-bottom: 1px solid #ccc;
   vertical-align: top;
 }
 
 #print-area .under-line {
   border-bottom: 1px solid #ccc;
+  padding-right: 5px;
 }
 
 #print-area .text-align-right {

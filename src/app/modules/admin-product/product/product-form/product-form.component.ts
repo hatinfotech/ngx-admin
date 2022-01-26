@@ -8,7 +8,7 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ProductModel, ProductUnitModel, ProductPictureModel, ProductUnitConversoinModel, ProductCategoryModel } from '../../../../models/product.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -147,6 +147,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   baseFormUrl = '/admin-product/product/form';
 
   unitList: ProductUnitModel[] = [];
+
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
 
   // Category list for select2
   categoryList: (ProductCategoryModel)[] = [];
@@ -306,6 +311,24 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     tags: true,
   };
 
+  select2OptionForType = {
+    placeholder: 'Chọn loại...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    // multiple: true,
+    // tags: true,
+    data: [
+      { id: 'PRODUCT', text: 'Hàng hóa' },
+      { id: 'SERVICE', text: 'Dịch vụ' },
+    ],
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -374,18 +397,32 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   makeNewFormGroup(data?: ProductModel): FormGroup {
-    const newForm = this.formBuilder.group({
+    let newForm = null;
+    newForm = this.formBuilder.group({
       // Code_old: [''],
       Code: [''],
       Sku: [''],
-      WarehouseUnit: ['n/a'],
+      WarehouseUnit: ['n/a', (control: FormControl) => {
+        if (newForm && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       Name: ['', Validators.required],
       FeaturePicture: [''],
       Description: [''],
       Technical: [''],
       Categories: [''],
+      Type: ['PRODUCT', (control: FormControl) => {
+        if (newForm && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       Groups: [''],
       Pictures: [''],
+      VatTax: [''],
+      RequireVatTax: [false],
       UnitConversions: this.formBuilder.array([]),
     });
     const unitConversions = this.getUnitConversions(newForm);
@@ -397,12 +434,12 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       unitConversions.push(newUnitConversion);
       this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
     }
-    
+
     newForm.get('WarehouseUnit').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if(unitConversions.controls.length === 0) {
+      if (unitConversions.controls.length === 0) {
         const newUnitConversion = this.makeNewUnitConversionFormGroup({}, newForm);
         unitConversions.push(newUnitConversion);
-        this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);        
+        this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
       } else {
         unitConversions.controls[0].get('Unit').setValue(value);
       }
@@ -410,7 +447,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
     const featurePictureFormControl = newForm.get('FeaturePicture');
     newForm.get('Pictures').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if(!featurePictureFormControl.value && value && value.length > 0) {
+      if (!featurePictureFormControl.value && value && value.length > 0) {
         featurePictureFormControl.setValue(value[0]);
       }
     });
@@ -534,10 +571,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
+    const currentFormItem = array.controls[i];
+    let copyItemData;
+    let currentValue = currentFormItem.get(formControlName).value;
     if (formControlName === 'Pictures') {
-      const currentFormItem = array.controls[i];
-      const currentValue = currentFormItem.get(formControlName).value;
-      const featurePicture = currentFormItem.get('FeaturePicture').value;
+      copyItemData = currentFormItem.get('FeaturePicture').value;
       array.controls.forEach((formItem, index) => {
         if (index !== i) {
           const picturesFormArray = (formItem.get('Pictures') as FormArray);
@@ -546,7 +584,20 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
             const newPictireForm = this.makeNewPictureFormGroup(pic);
             picturesFormArray.controls.push(newPictireForm);
           });
-          formItem.get('FeaturePicture').patchValue(featurePicture);
+          formItem.get('FeaturePicture').patchValue(copyItemData);
+        }
+      });
+    } if (formControlName === 'UnitConversions') {
+      copyItemData = currentFormItem.get('UnitConversions').value;
+      array.controls.forEach((formItem, index) => {
+        if (index !== i) {
+          const itemFormArray = (formItem.get('UnitConversions') as FormArray);
+          itemFormArray.controls = [];
+          currentValue.forEach(item => {
+            const newFormForm = this.makeNewUnitConversionFormGroup(item, formItem as FormGroup);
+            itemFormArray.controls.push(newFormForm);
+          });
+          formItem.get('UnitConversions').patchValue(copyItemData);
         }
       });
     } else {

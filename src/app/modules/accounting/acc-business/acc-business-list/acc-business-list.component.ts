@@ -5,7 +5,7 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { BusinessModel } from '../../../../models/accounting.model';
+import { AccountModel, BusinessModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
@@ -45,7 +45,9 @@ export class AccBusinessListComponent extends ServerDataManagerListComponent<Bus
 
   async init() {
     // await this.loadCache();
-    return super.init();
+    return super.init().then(async rs => {
+      return rs;
+    });
   }
 
   editing = {};

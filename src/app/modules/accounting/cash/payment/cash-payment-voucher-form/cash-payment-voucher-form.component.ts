@@ -104,45 +104,42 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   //   }
   // }
 
-  select2OptionForContact = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    tags: false,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: params['term'] }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['Code'];
-            item['text'] = item['Name'];
-            return item;
-          }),
-        };
-      },
-    },
-  };
+  // select2OptionForContact = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   tags: false,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'], select: 'ShortName,Title' }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
 
   select2OptionForBankAccounting = {
     placeholder: this.commonService.translateText('Common.bankAccount'),
@@ -666,7 +663,10 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
             //   }
             // }
           }
-          this.onProcessed();
+          
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
           // relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
         },
         onDialogClose: () => {
@@ -683,8 +683,8 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     const insertList = [];
     const relativeVouchers = formGroup.get('RelativeVouchers');
     const relationVoucherValue: any[] = (relativeVouchers.value || []);
-    if(relationVoucherValue.some(s => s.id == relativeVoucher.Code)) {
-      this.commonService.toastService.show('Chứng từ liên quan đã được thêm vào trước đó','Thông báo', {status: 'warning'});
+    if (relationVoucherValue.some(s => s.id == relativeVoucher.Code)) {
+      this.commonService.toastService.show('Chứng từ liên quan đã được thêm vào trước đó', 'Thông báo', { status: 'warning' });
       return;
     }
     const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;

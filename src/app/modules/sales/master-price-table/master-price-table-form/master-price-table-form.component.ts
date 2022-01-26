@@ -17,7 +17,6 @@ import { takeUntil } from 'rxjs/operators';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel, ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
-import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
 import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
@@ -25,6 +24,7 @@ import { CustomServerDataSource } from '../../../../lib/custom-element/smart-tab
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { MasterPriceTableQrCodePrintComponent } from '../master-price-table-qrcode-print/master-price-table-qrcode-print.component';
+import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
 
 @Component({
   selector: 'ngx-master-price-table-form',

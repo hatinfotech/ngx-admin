@@ -127,46 +127,42 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     }
   }];
 
-  select2ContactOption = {
-    placeholder: 'Chọn liên hệ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '', limit: 40 });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, filter_Name: params['term'] ? params['term'] : '', limit: 40 }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data
-          // .map(item => {
-          //   item['id'] = item['Code'];
-          //   item['text'] = item['Name'];
-          //   return item;
-          // }),
-        };
-      },
-    },
-  };
+  // select2ContactOption = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   // tags: true,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
 
   select2SalesPriceReportOption = {
     placeholder: 'Chọn bảng giá...',
@@ -566,6 +562,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Note: [''],
       SubNote: [''],
       Reported: [''],
+      RequireInvoice: [false],
       _total: [''],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
@@ -645,7 +642,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Quantity: [1],
       Price: [0],
       Unit: [''],
-      Tax: ['VAT10'],
+      // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
@@ -826,13 +823,13 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   calculatToMoney(detail: FormGroup) {
     let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    let tax = detail.get('Tax').value;
-    if (tax) {
-      if (typeof tax === 'string') {
-        tax = this.taxList.filter(t => t.Code === tax)[0];
-      }
-      toMoney += toMoney * tax.Tax / 100;
-    }
+    // let tax = detail.get('Tax').value;
+    // if (tax) {
+    //   if (typeof tax === 'string') {
+    //     tax = this.taxList.filter(t => t.Code === tax)[0];
+    //   }
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
     return toMoney;
   }
 

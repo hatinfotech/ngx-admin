@@ -62,7 +62,8 @@
                 "title": "{{action}} triển khai"
             }
         },
-        "deploymentTask": "task triển khai"
+        "deploymentTask": "task triển khai",
+        "date": "ngày triển khai"
     },
     "DateTime": {
         "weekend": "cuối tuần",
@@ -208,7 +209,7 @@
         "findOrder": "thứ tự tìm kiếm",
         "copyToAllNextForm": "sao chép cho tất cả các biểu mẫu bên dưới",
         "path": "đường dẫn",
-        "container": "chố chứa",
+        "container": "vị trí",
         "suggest": "gợi ý",
         "lock": "khóa",
         "lockBook": "khóa sổ",
@@ -291,6 +292,7 @@
         "unbookkeeped": "bỏ ghi",
         "unbookkeepingSuccess": "bỏ ghi thành công",
         "goodsOrService": "hàng hóa/dịch vụ",
+        "goods": "hàng hóa",
         "dateOfDelivered": "ngày giao hàng",
         "dateOfCreated": "ngày tạo",
         "object": "Công ty",
@@ -403,7 +405,10 @@
         "editProduct": "chỉnh thông tin sản phẩm",
         "amount": "số tiền",
         "featurePicture": "hình đại diện",
-        "prodId": "ID SP"
+        "prodId": "ID SP",
+        "id": "ID",
+        "action": "hành động",
+        "dateOfReceipted": "ngày nhập kho"
     },
     "Contact": {
         "Customer": {
@@ -419,6 +424,7 @@
             "title": "{{definition}}{{action}} đã xóa"
         },
         "title": "{{definition}}{{action}} liên hệ",
+        "id": "ID liên hệ",
         "code": "mã liên hệ",
         "name": "tên liên hệ",
         "shortName": "Tên rút gọn",
@@ -588,8 +594,11 @@
         "GoodsDeliveryNote": {
             "title": "{{definition}}{{action}} phiếu xuất kho"
         },
+        "InventoryAdjustNote": {
+            "title": "{{definition}}{{action}} phiếu điều chỉnh tồn kho"
+        },
         "GoodsContainer": {
-            "title": "{{definition}}{{action}} chỗ chứa hàng hóa"
+            "title": "{{definition}}{{action}} vị trí hàng hóa"
         },
         "Goods": {
             "title": "{{definition}}{{action}} hàng hóa"
@@ -607,21 +616,24 @@
             "goodsReceiptNote": "phiếu nhập kho",
             "goodsDeliveryNote": "phiếu xuất kho",
             "warehouseList": "danh sách kho",
-            "goodsContainer": "chỗ chứa hàng hóa"
+            "goodsContainer": "vị trí hàng hóa"
         },
         "openBook": "mở sổ kho",
         "lockBook": "khóa sổ kho",
         "dateOfReceipted": "ngày nhập kho",
+        "dateOfAdjusted": "ngày điều chỉnh",
         "assignContainer": "gán vị trí",
         "assign/unassignContainer": "gán/gở vị trí",
         "inventory": "tồn kho",
+        "theoryInventory": "tồn kho lý thuyết",
+        "realityInventory": "tồn kho thực tế",
         "account": "tài khoản kho",
         "warehousePrice": "giá kho",
         "costOfGoodsSold": "giá kho",
         "inventoryCost": "tổng giá trị tồn",
         "calculateCostOfGoodsSold": "tính giá vốn hàng hóa",
         "calculateCostOfGoodsSoldConfirm": "bạn có chắc là muốn tính giá vốn hàng hóa trong kho?, lệnh này sẽ tính toán dựa trên phương pháp tính giá vốn trong cài đặt.",
-        "container": "chố chứa"
+        "container": "vị trí"
     },
     "AdminProduct": {
         "chooseProducts": "chọn sản phẩm",
