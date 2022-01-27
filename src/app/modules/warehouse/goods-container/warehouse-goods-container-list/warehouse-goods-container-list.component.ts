@@ -61,6 +61,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
     { id: 'UNKNOW', text: 'Chưa biết' },
   ];
 
+
   async init() {
     return super.init().then(rs => {
       const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
@@ -137,6 +138,30 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
                     context: {
                       id: this.selectedItems.map(item => this.makeId(item)),
                       printForType: 'DRAWERS',
+                    }
+                  });
+                },
+              },
+              {
+                status: 'primary',
+                label: 'In tầng',
+                action: () => {
+                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+                    context: {
+                      id: [],
+                      printForType: 'FLOOR',
+                    }
+                  });
+                },
+              },
+              {
+                status: 'info',
+                label: 'In kệ',
+                action: () => {
+                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+                    context: {
+                      id: [],
+                      printForType: 'SHELF',
                     }
                   });
                 },
@@ -229,6 +254,9 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
           title: this.commonService.translateText('Warehouse.account'),
           type: 'string',
           width: '10%',
+          valuePrepareFunction: (cell: string, rơ: any) => {
+            return this.containerTypes[cell];
+          },
         },
         Code: {
           title: this.commonService.translateText('Common.code'),
