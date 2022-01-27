@@ -8,7 +8,7 @@
                 <div class="label" *ngFor="let item of this.data; let i = index;">
                     <img class="bar-code" src="{{item.QrCode}}" style="float: left;">
                     <div class="info">
-                        <span style="font-size: 6mm">{{item.FindOrder}}</span><br>
+                        <span style="font-size: 4mm">{{item.FindOrder}}</span><br>
                         {{item.Description || item.Name}}
                     </div>
                 </div>
