@@ -58,7 +58,7 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
   }
   .label .find-order {
     font-weight: bold !important;
-    font-size: 55px !important;
+    font-size: 44px !important;
     line-height: 12mm;
   }
   .bar-code {

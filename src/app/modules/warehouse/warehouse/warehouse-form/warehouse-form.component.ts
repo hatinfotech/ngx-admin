@@ -89,6 +89,7 @@ export class WarehouseFormComponent extends DataManagerFormComponent<WarehouseMo
       Code: { value: '', disabled: true },
       Name: ['', Validators.required],
       Description: [''],
+      FindOrder: [''],
       Branch: ['MAINBRANCH'],
       AccAccount: ['156', Validators.required],
     });

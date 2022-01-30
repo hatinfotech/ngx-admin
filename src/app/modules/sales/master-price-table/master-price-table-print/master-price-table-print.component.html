@@ -37,6 +37,7 @@
                 <td>{{'Common.prodId' | translate | headtitlecase}}</td>
                 <td>{{'Common.goodsOrService' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}</td> -->
+                <td class="text-align-right">{{'Warehouse.container' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td> -->
@@ -51,6 +52,7 @@
                   <td>{{renderValue(detail.Code | objectid)}}</td>
                   <td [innerHTML]="renderValue(detail.Name)"></td>
                   <!-- <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td> -->
+                  <td class="text-align-right">{{detail.Containers | objectstext | objecttext}}</td>
                   <td class="text-align-right">{{detail.WarehouseUnit | objecttext}}</td>
                   <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                   <!-- <td class="text-align-right">{{detail.Tax | objectstext}}</td> -->

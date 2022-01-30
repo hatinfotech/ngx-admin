@@ -242,6 +242,11 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
           type: 'string',
           width: '5%',
         },
+        // Address: {
+        //   title: this.commonService.translateText('Địa chỉ'),
+        //   type: 'string',
+        //   width: '5%',
+        // },
         GoodsName: {
           title: this.commonService.translateText('Common.goods'),
           type: 'html',

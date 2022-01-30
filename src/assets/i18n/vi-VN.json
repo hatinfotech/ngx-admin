@@ -633,7 +633,8 @@
         "inventoryCost": "tổng giá trị tồn",
         "calculateCostOfGoodsSold": "tính giá vốn hàng hóa",
         "calculateCostOfGoodsSoldConfirm": "bạn có chắc là muốn tính giá vốn hàng hóa trong kho?, lệnh này sẽ tính toán dựa trên phương pháp tính giá vốn trong cài đặt.",
-        "container": "vị trí"
+        "container": "vị trí",
+        "findOrder": "số nhận thức"
     },
     "AdminProduct": {
         "chooseProducts": "chọn sản phẩm",

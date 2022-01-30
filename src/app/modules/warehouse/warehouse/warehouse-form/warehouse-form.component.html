@@ -27,7 +27,7 @@
                     <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Tự động tạo...' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-6">
                 <ngx-form-group [formGroup]="formItem" name="Description" label="Warehouse.account"
                   [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                     <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
@@ -38,6 +38,12 @@
                   [allowCopy]="true" [required]="false" [touchedValidate]="false">
                     <ngx-select2 formControlName="AccAccount" [select2Option]="select2OptionForAccAccount" [data]="accountList">
                       </ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="FindOrder" label="Warehouse.findOrder"
+                  [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                    <input type="text" nbInput fullWidth formControlName="FindOrder" placeholder="{{'Warehouse.findOrder' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
             </div>
