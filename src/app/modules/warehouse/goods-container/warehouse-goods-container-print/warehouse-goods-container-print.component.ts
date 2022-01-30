@@ -49,12 +49,24 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
     page-break-after:always;
     padding: 1mm;
     padding-top: 2mm;
+    color: #000;
+  }
+  .label .info {
+    clear: both;
+    height: 13mm;
+    overflow: hidden;
+  }
+  .label .find-order {
+    font-weight: bold !important;
+    font-size: 55px !important;
+    line-height: 12mm;
   }
   .bar-code {
-    width: 35%;
+    padding: 1px;
     border: 1px #000 solid;
     border-radius: 5px;
     margin-right: 1mm;
+    height: 12mm;
   }
   .page-break {
     clear: left;

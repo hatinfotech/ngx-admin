@@ -7,10 +7,9 @@
             <div id="print-area">
                 <div class="label" *ngFor="let item of this.data; let i = index;">
                     <img class="bar-code" src="{{item.QrCode}}" style="float: left;">
+                    <span class="find-order">{{item.Container.ContainerFindOrder}}</span><br>
                     <div class="info">
-                        {{item.Code}}<br>
-                        {{item.Name}}/{{item.WarehouseUnit | objecttext}}<br>
-                        Kệ 1/tầng 1/ngăn 1
+                        {{item.Name}}/{{item.WarehouseUnit | objecttext}}
                     </div>
                 </div>
                 <div style="clear:both"></div>
