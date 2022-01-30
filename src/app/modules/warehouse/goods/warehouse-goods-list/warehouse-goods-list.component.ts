@@ -123,13 +123,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           type: 'html',
           width: '15%',
           valuePrepareFunction: (value: any, product: GoodsModel) => {
-            // return value && value.map(container => '[' + container.ContainerFindOrder + '] ' + this.commonService.getObjectText(container)).join('<br>') || '';
             return value && (this.commonService.getObjectText(value)) || '';
-            // try {
-            //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
-            // } catch (e) {
-            //   return '';
-            // }
           },
           filter: {
             type: 'custom',

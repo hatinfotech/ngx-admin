@@ -86,9 +86,8 @@
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
             <button nbButton hero status="primary" (click)="printQrcode(formItem.value)" [disabled]="!form.valid || isProcessing">
-              <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+              <nb-icon pack="eva" icon="printer"></nb-icon>{{'In thẻ giá khu trưng bày (demo)' | translate | headtitlecase}}
             </button>
-            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm</button> -->
             <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero
               (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
             <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;"

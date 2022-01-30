@@ -17,7 +17,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel, ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
-import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
@@ -25,6 +25,8 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { MasterPriceTableQrCodePrintComponent } from '../master-price-table-qrcode-print/master-price-table-qrcode-print.component';
 import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
+import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'ngx-master-price-table-form',
@@ -596,11 +598,13 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   // Category list for filter
   categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
   groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
+  containerList: WarehouseGoodsContainerModel[] = [];
 
   async loadCache() {
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.groupList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: container.Path })) as any;
   }
 
   editing = {};
@@ -647,7 +651,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       Categories: {
         title: 'Danh mục',
         type: 'html',
-        width: '20%',
+        width: '15%',
         // valuePrepareFunction: (value: string, product: ProductModel) => {
         //   return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
         // },
@@ -689,7 +693,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       Groups: {
         title: 'Nhóm',
         type: 'html',
-        width: '20%',
+        width: '15%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
           return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
         },
@@ -733,6 +737,56 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         type: 'string',
         width: '8%',
       },
+      Containers: {
+        title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.container'), 'head-title'),
+        type: 'html',
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          // instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        },
+        valuePrepareFunction: (cell: any, row) => {
+          return cell ? (cell.map(container => this.commonService.getObjectText(container)).join('<br>')) : '';
+        },
+        width: '15%',
+        // filter: {
+        //   type: 'custom',
+        //   component: SmartTableSelect2FilterComponent,
+        //   config: {
+        //     delay: 0,
+        //     select2Option: {
+        //       placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+        //       allowClear: true,
+        //       width: '100%',
+        //       dropdownAutoWidth: true,
+        //       minimumInputLength: 0,
+        //       keyMap: {
+        //         id: 'id',
+        //         text: 'text',
+        //       },
+        //       multiple: true,
+        //       logic: 'OR',
+        //       ajax: {
+        //         url: (params: any) => {
+        //           return 'data:text/plan,[]';
+        //         },
+        //         delay: 0,
+        //         processResults: (data: any, params: any) => {
+        //           return {
+        //             results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+        //           };
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
+      },
+      // Containers: {
+      //   title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
+      //   type: 'html',
+      //   width: '15%',
+      //   valuePrepareFunction: (value: any, product: ProductModel) => {
+      //     return value && (value.map(container => this.commonService.getObjectText(container).join('<br>'))) || '';
+      //   },
+      // },
       Code: {
         title: 'Code',
         type: 'string',
@@ -955,6 +1009,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       params['includeFeaturePicture'] = true;
       params['sort_Id'] = 'desc';
       params['group_Unit'] = true;
+      params['includeContainers'] = true;
       return params;
     };
 

@@ -29,41 +29,45 @@ export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintCompon
   @Input() priceTable: string;
 
   style = /*css*/`
+  body {
+    margin: 0;
+  }
+  @media print {
+    body {
+      background: #fff !important;
+    }
     #print-area {
-      display: flex;
-      flex-wrap: wrap;
+      page-break-after: initial;
     }
-    .goods-container-label {
-    }
-    .goods-container-label .wrap {
-      display: flex;
-      border: 1px solid;
-      overflow: hidden;
-      border-radius: 5px;
-      margin: 3px;
-      align-items: flex-start;
-    }
-    .goods-container-label .wrap .qr-code {
-      min-width: 80px;
-      min-height: 80px;
-      object-fit: contain;
-    }
-    .goods-container-label .wrap .info {
-      margin: 3px;
-    }
-    .print-voucher-detail-table tr td {
-      border: none;
-    }
-
-    #print-area .print-voucher-detail-line td {
-      padding-top: 0px;
-      padding-bottom: 0px;
-    }
-    
-    #print-area .print-voucher-detail-line td, #print-area .print-voucher-detail-header td {
-      padding-left: 0px;
-      padding-right: 0px;
-    }
+  }
+  .label {
+    padding: 2px;
+    page-break-after:always;
+    padding: 1mm;
+    padding-top: 2mm;
+    color: #000;
+  }
+  .label .info {
+    height: 13mm;
+    overflow: hidden;
+  }
+  .label .find-order {
+    font-weight: bold !important;
+    font-size: 44px !important;
+    line-height: 10mm;
+  }
+  .bar-code {
+    padding: 0px;
+    border: 1px #000 solid;
+    border-radius: 5px;
+    margin-right: 1mm;
+    height: 20mm;
+  }
+  .page-break {
+    clear: left;
+    display:block;
+    page-break-after:always;
+  }
   `;
 
   constructor(
@@ -101,7 +105,7 @@ export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintCompon
   }
 
   renderTitle(data: WarehouseGoodsDeliveryNoteModel) {
-    return `QRCode_Hang_Hoa_${this.getIdentified(data).join('-')}` + (data.DateOfDelivered ? ('_' + this.datePipe.transform(data.DateOfDelivered, 'short')) : '');
+    return `QRCode_Kho_Ngan_Ke_${this.getIdentified(data).join('-')}` + (data.DateOfDelivered ? ('_' + this.datePipe.transform(data.DateOfDelivered, 'short')) : '');
   }
 
   close() {
@@ -171,27 +175,25 @@ export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintCompon
       id: this.id,
       limit: 'nolimit'
     }).then(rs => {
-      rs.map(item => {
-        // if (item.Path) {
-        //   const parts = item.Path.split('/');
-        //   parts.shift();
-        //   item.Path = parts.join('/');
-        // }
-        return item;
-      });
-      const table = [];
-      let row = [];
-      for (let i = 0; i < rs.length; i++) {
-        row.push(rs[i]);
-        if ((i + 1) % 4 === 0) {
-          table.push(row);
-          row = [];
-        }
-      }
-      if (row && row.length > 0) {
-        table.push(row);
-      }
-      return table;
+      // rs.map(item => {
+      //   if (item.Path) {
+      //     const parts = item.Path.split('/');
+      //     parts.shift();
+      //     item.Path = parts.join('/');
+      //   }
+      //   return item;
+      // });
+      // const table = [];
+      // let row = [];
+      // for (let i = 0; i < rs.length; i++) {
+      //   row.push(rs[i]);
+      //   if ((i+1) % 4 === 0) {
+      //     table.push(row);
+      //     row = [];
+      //   }
+      // }
+      // return table;
+      return rs;
     });
   }
 
