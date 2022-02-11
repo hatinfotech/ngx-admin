@@ -71,18 +71,32 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewContact'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editContact'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Common.addNewContact'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
-          data: [{ Groups: [{ id: 'CUSTOMER', text: this.commonService.translateText('Common.customer') }, { id: 'COMPANY', 'text': this.commonService.translateText('Common.company') }] }],
+          inputId: currentObject ? [currentObject] : null,
+          showLoadinng: true,
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
-            // const formItem = formGroupComponent.formGroup;
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
             formGroup.get('Object').patchValue(newContact);
-            // this.onSelectProduct(formGroup, newContacgt, option.parentForm)
           },
           onDialogClose: () => {
 
@@ -91,22 +105,36 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         closeOnEsc: false,
         closeOnBackdropClick: false,
       });
-    }
+    },
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewContact'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editContact'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Common.addNewContact'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
-          data: [{ Groups: [{ id: 'CUSTOMER', text: this.commonService.translateText('Common.customer') }, { id: 'PERSONAL', 'text': this.commonService.translateText('Common.personal') }] }],
+          inputId: currentObject ? [currentObject] : null,
+          showLoadinng: true,
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
-            // const formItem = formGroupComponent.formGroup;
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
-            formGroup.get('Object').patchValue(newContact);
-            // this.onSelectProduct(formGroup, newContacgt, option.parentForm)
+            formGroup.get('Contact').patchValue(newContact);
           },
           onDialogClose: () => {
 
@@ -115,7 +143,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         closeOnEsc: false,
         closeOnBackdropClick: false,
       });
-    }
+    },
   }];
 
 
@@ -1127,14 +1155,14 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     //   tax = this.taxList.filter(t => t.Code === tax)[0];
     // }
     if (source === 'ToMoney') {
-      let price = detail.get('ToMoney').value / detail.get('Quantity').value;
+      const price = detail.get('ToMoney').value / detail.get('Quantity').value;
       // if (tax) {
       //   price = price / (1 + parseFloat(tax.Tax) / 100);
       // }
       // console.log(detail.value);
       return price;
     } else {
-      let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+      const toMoney = detail.get('Quantity').value * detail.get('Price').value;
 
       // if (tax) {
       //   if (typeof tax === 'string') {
@@ -1299,7 +1327,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                       // delete voucherDetail.No;
                       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
                       newDtailFormGroup.get('Business').disable();
+                      newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
                       details.push(newDtailFormGroup);
+                      await new Promise(resolve => setTimeout(() => resolve(true), 300));
+                      this.toMoney(formGroup, newDtailFormGroup);
                     }
                   }
                 }

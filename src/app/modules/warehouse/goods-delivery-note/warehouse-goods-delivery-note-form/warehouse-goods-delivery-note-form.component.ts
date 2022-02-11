@@ -109,6 +109,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     minimumInputLength: 0,
     dropdownCssClass: 'is_tags',
     multiple: true,
+    maximumSelectionLength: 1,
     // tags: true,
     keyMap: {
       id: 'Code',
@@ -163,7 +164,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     ajax: {
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
-        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
+        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code,Sku,Name,OriginName=>Name,FeaturePicture,Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
           success(rs);
         }).catch(err => {
           console.error(err);
@@ -175,6 +176,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         return {
           results: data.map(product => {
             product.thumbnail = product?.FeaturePicture?.Thumbnail;
+            // product.id = product.id + '/' + this.commonService.getObjectId(product.WarehouseUnit);
+            product.text = `${product.id} - ` + (product.Sku && `${product.Sku} - ` || '') + `${product.text}`;
             return product;
           })
         };
@@ -224,12 +227,28 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   ];
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewContact'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editContact'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Common.addNewContact'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
-          data: [{ Groups: [{ id: 'SUPPLIER', text: this.commonService.translateText('Common.supplier') }] }],
+          inputId: currentObject ? [currentObject] : null,
+          showLoadinng: true,
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -242,16 +261,32 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         closeOnEsc: false,
         closeOnBackdropClick: false,
       });
-    }
+    },
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewContact'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editContact'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Common.addNewContact'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
-          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          inputId: currentObject ? [currentObject] : null,
+          showLoadinng: true,
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -264,7 +299,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         closeOnEsc: false,
         closeOnBackdropClick: false,
       });
-    }
+    },
   }];
 
   ngOnInit() {
@@ -297,7 +332,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     //   this.unitList = PurchaseOrderVoucherFormComponent._unitList;
     // }
 
-    this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path' });
+    this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path', limit: 'nolimit' });
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSEDELIVERY', select: 'id=>Code,text=>Name,type=>Type' });
 
     return super.init().then(status => {
@@ -501,25 +536,46 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   }
 
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
-    console.log(selectedData);
-    const unitControl = detail.get('Unit');
-    if (selectedData) {
-      detail.get('Description').setValue(selectedData.Name);
-      if (selectedData.Units && selectedData.Units.length > 0) {
-        unitControl['UnitList'] = selectedData.Units;
-        unitControl.patchValue(selectedData.Units.find(f => f['DefaultExport'] === true || f['IsDefaultSales'] === true));
-      } else {
-        unitControl['UnitList'] = [];
-        unitControl['UnitList'] = null;
-      }
-    } else {
-      detail.get('Description').setValue('');
-      detail.get('Unit').setValue('');
 
-      unitControl['UnitList'] = [];
-      unitControl['UnitList'] = null;
+    console.log(selectedData);
+    const productId = this.commonService.getObjectId(selectedData);
+    if (productId) {
+      const descriptionControl = detail.get('Description');
+      descriptionControl.setValue(selectedData['OriginName']);
+      if (selectedData.Units && selectedData?.Units.length > 0) {
+        const defaultUnit = selectedData.Units.find(f => f['DefaultExport'] === true);
+        detail['unitList'] = selectedData.Units;
+        detail.get('Unit').setValue(defaultUnit);
+      }
     }
     return false;
+  }
+
+  async onSelectUnit(detail: FormGroup, selectedData: ProductModel) {
+    const unitId = this.commonService.getObjectId(selectedData);
+    const productId = this.commonService.getObjectId(detail.get('Product').value);
+    if (unitId && productId) {
+      const containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+        select: 'Code',
+        includeUnit: true,
+        includeContainers: true,
+        eq_Code: productId,
+        eq_ConversionUnit: unitId
+      }).then(goodsList => {
+        // const results = [];
+        if (goodsList && goodsList.length > 0) {
+          return goodsList[0].Containers.map(m => ({
+            id: m.Container,
+            text: `${m.ContainerPath}: ${m.ContainerDescription}`
+          }));
+        }
+        return [];
+      });
+      detail['ContainerList'] = containerList;
+      if(containerList && containerList.length == 1) {
+        detail.get('Container').setValue(containerList[0]);
+      }
+    }
   }
 
   calculatToMoney(detail: FormGroup) {

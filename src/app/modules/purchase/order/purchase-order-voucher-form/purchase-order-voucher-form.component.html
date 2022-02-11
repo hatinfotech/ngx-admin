@@ -212,7 +212,7 @@
                                     <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [customIcons]="customIcons">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [customIcons]="getCustomIcons(i + ic)">
                                                     <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event, formItem)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>

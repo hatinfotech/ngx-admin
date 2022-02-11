@@ -173,7 +173,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             });
 
             instance.click.subscribe(async (row: SalesPriceReportModel) => {
-              const task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
+              let task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
               if (task) {
                 this.commonService.openMobileSidebar();
                 this.mobileAppService.openChatRoom({ ChatRoom: task.id });
@@ -181,9 +181,14 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
                 this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
                   const priceReport = rs[0];
                   if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
-                    this.commonService.openMobileSidebar();
-                    this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.id });
-                  } else {
+
+                    task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
+                    if (task) {
+                      this.commonService.openMobileSidebar();
+                      this.mobileAppService.openChatRoom({ ChatRoom: task.id });
+                    }
+                  }
+                  if (!task) {
                     this.commonService.showDialog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
                       {
                         label: this.commonService.translateText('Common.goback'),

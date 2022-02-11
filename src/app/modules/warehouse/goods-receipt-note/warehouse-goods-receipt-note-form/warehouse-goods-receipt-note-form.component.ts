@@ -110,6 +110,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     minimumInputLength: 0,
     dropdownCssClass: 'is_tags',
     multiple: true,
+    maximumSelectionLength: 1,
     // tags: true,
     keyMap: {
       id: 'Code',
@@ -178,20 +179,15 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
-    // tags: true,
     withThumbnail: true,
     keyMap: {
       id: 'Code',
       text: 'Name',
     },
     ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeUnit: true, 'search': params['term'] });
-      // },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeUnit: true, includeUnits: true, 'search': params['term'] }).then(rs => {
+        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code,Sku,Name,OriginName=>Name,FeaturePicture,Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
           success(rs);
         }).catch(err => {
           console.error(err);
@@ -200,11 +196,12 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       },
       delay: 300,
       processResults: (data: any, params: any) => {
-        // console.info(data, params);
         return {
-          results: data.map(item => {
-            item.thumbnail = item?.FeaturePicture?.Thumbnail;
-            return item;
+          results: data.map(product => {
+            product.thumbnail = product?.FeaturePicture?.Thumbnail;
+            // product.id = product.id + '/' + this.commonService.getObjectId(product.WarehouseUnit);
+            product.text = `${product.id} - ` + (product.Sku && `${product.Sku} - ` || '') + `${product.text}`;
+            return product;
           })
         };
       },
@@ -253,12 +250,28 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   ];
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewContact'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editContact'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Common.addNewContact'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
-          data: [{ Groups: [{ id: 'SUPPLIER', text: this.commonService.translateText('Common.supplier') }] }],
+          inputId: currentObject ? [currentObject] : null,
+          showLoadinng: true,
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -271,16 +284,32 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         closeOnEsc: false,
         closeOnBackdropClick: false,
       });
-    }
+    },
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewContact'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editContact'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Common.addNewContact'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
-          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          inputId: currentObject ? [currentObject] : null,
+          showLoadinng: true,
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -293,7 +322,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         closeOnEsc: false,
         closeOnBackdropClick: false,
       });
-    }
+    },
   }];
 
   ngOnInit() {
@@ -419,6 +448,14 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     } else {
       this.addDetailFormGroup(newForm);
     }
+
+    const titleControl = newForm.get('Title');
+    newForm.get('ObjectName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
+      if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Nhập kho: /.test(titleControl.value))) {
+        titleControl.setValue(`Nhập kho: ${objectName}`);
+      }
+    });
+
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: WarehouseGoodsReceiptNoteModel): void {
@@ -544,28 +581,49 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     }
   }
 
+  
+
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+
     console.log(selectedData);
-    const unitControl = detail.get('Unit');
-    if (selectedData) {
-      if (selectedData.Units && selectedData.Units.length > 0) {
-        detail['unitlist'] = selectedData.Units;
-        // const unitControl = detail.get('Unit');
-        // unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
-        unitControl['UnitList'] = selectedData.Units;
-        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
-      } else {
-        unitControl['UnitList'] = [];
-        unitControl['UnitList'] = null;
+    const productId = this.commonService.getObjectId(selectedData);
+    if (productId) {
+      const descriptionControl = detail.get('Description');
+      descriptionControl.setValue(selectedData['OriginName']);
+      if (selectedData.Units && selectedData?.Units.length > 0) {
+        const defaultUnit = selectedData.Units.find(f => f['DefaultImport'] === true);
+        detail['unitList'] = selectedData.Units;
+        detail.get('Unit').setValue(defaultUnit);
       }
-      detail.get('Description').setValue(selectedData.Name);
-    } else {
-      detail.get('Description').setValue('');
-      detail.get('Unit').setValue('');
-      unitControl['UnitList'] = [];
-      unitControl['UnitList'] = null;
     }
     return false;
+  }
+
+  async onSelectUnit(detail: FormGroup, selectedData: ProductModel) {
+    const unitId = this.commonService.getObjectId(selectedData);
+    const productId = this.commonService.getObjectId(detail.get('Product').value);
+    if (unitId && productId) {
+      const containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+        select: 'Code',
+        includeUnit: true,
+        includeContainers: true,
+        eq_Code: productId,
+        eq_ConversionUnit: unitId
+      }).then(goodsList => {
+        // const results = [];
+        if (goodsList && goodsList.length > 0) {
+          return goodsList[0].Containers.map(m => ({
+            id: m.Container,
+            text: `${m.ContainerPath}: ${m.ContainerDescription}`
+          }));
+        }
+        return [];
+      });
+      detail['ContainerList'] = containerList;
+      if(containerList && containerList.length == 1) {
+        detail.get('Container').setValue(containerList[0]);
+      }
+    }
   }
 
   calculatToMoney(detail: FormGroup) {

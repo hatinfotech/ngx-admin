@@ -408,7 +408,9 @@
         "prodId": "ID SP",
         "id": "ID",
         "action": "hành động",
-        "dateOfReceipted": "ngày nhập kho"
+        "dateOfReceipted": "ngày nhập kho",
+        "addNewContact": "thêm liên hệ mới",
+        "editContact": "chỉnh sửa liên hệ"
     },
     "Contact": {
         "Customer": {

@@ -310,12 +310,28 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   ];
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewContact'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editContact'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Common.addNewContact'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
-          data: [{ Groups: [{ id: 'SUPPLIER', text: this.commonService.translateText('Common.supplier') }] }],
+          inputId: currentObject ? [currentObject] : null,
+          showLoadinng: true,
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -328,16 +344,32 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         closeOnEsc: false,
         closeOnBackdropClick: false,
       });
-    }
+    },
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline',
+    title: this.commonService.translateText('Common.addNewContact'),
+    status: 'success',
+    states: {
+      '<>': {
+        icon: 'edit-outline',
+        status: 'primary',
+        title: this.commonService.translateText('Common.editContact'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Common.addNewContact'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
-          // inputId: ids,
-          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          inputId: currentObject ? [currentObject] : null,
+          showLoadinng: true,
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -350,7 +382,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         closeOnEsc: false,
         closeOnBackdropClick: false,
       });
-    }
+    },
   }];
 
   ngOnInit() {

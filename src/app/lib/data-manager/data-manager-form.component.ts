@@ -192,11 +192,15 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     if (this.isDuplicate) {
       // Clear id
       this.id = [];
+      
       const keyList = Array.isArray(this.idKey) ? this.idKey : [this.idKey];
       for (const formItem of this.array.controls) {
         for (const key of keyList) {
           formItem.get(key).setValue('');
+          
         }
+        // Clear relative vouchers
+        formItem.get('RelativeVouchers').setValue([]);
       }
     }
     return true;
