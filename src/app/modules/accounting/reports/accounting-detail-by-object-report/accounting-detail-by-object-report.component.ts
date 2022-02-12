@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -140,17 +141,29 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
         Object: {
           title: this.commonService.translateText('Common.contact'),
           type: 'string',
-          width: '10%',
-        },
-        ObjectName: {
-          title: this.commonService.translateText('Common.contactName'),
-          type: 'string',
-          width: '15%',
+          width: '20%',
+          valuePrepareFunction: (cell: any, row: any) => {
+            return row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
-          width: '15%',
+          width: '20%',
         },
         Voucher: {
           title: this.commonService.translateText('Common.voucher'),

@@ -4,7 +4,9 @@ import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -20,7 +22,7 @@ import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from 
   templateUrl: './accounting-receivables-from-customers-report.component.html',
   styleUrls: ['./accounting-receivables-from-customers-report.component.scss']
 })
-export class AccountingReceivablesFromCustomersReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
+export class AccountingReceivablesFromCustomersReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
 
   componentName: string = 'AccountingReceivablesFromCustomersReportComponent';
   formPath = '/accounting/account/form';
@@ -102,7 +104,7 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
         });
       };
 
-      const detailsReportBtn = {...summaryReportBtn};
+      const detailsReportBtn = { ...summaryReportBtn };
       detailsReportBtn.status = 'primary';
       detailsReportBtn.name = 'detailReport';
       detailsReportBtn.label = detailsReportBtn.title = 'In báo cáo chi tiết';
@@ -120,7 +122,7 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
       };
       this.actionButtonList.unshift(detailsReportBtn);
 
-      const vouchersReportBtn = {...summaryReportBtn};
+      const vouchersReportBtn = { ...summaryReportBtn };
       vouchersReportBtn.status = 'primary';
       vouchersReportBtn.name = 'vouchersReport';
       vouchersReportBtn.label = vouchersReportBtn.title = 'In báo cáo chứng từ';
@@ -163,7 +165,7 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
         console.log(fromDate);
         this.refresh();
       });
-      
+
       return rs;
     });
   }
@@ -176,14 +178,26 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
       actions: false,
       columns: {
         Object: {
-          title: this.commonService.translateText('Common.customer'),
-          type: 'string',
-          width: '10%',
-        },
-        ObjectName: {
-          title: this.commonService.translateText('Common.customerName'),
+          title: this.commonService.translateText('Common.contact'),
           type: 'string',
           width: '20%',
+          valuePrepareFunction: (cell: any, row: any) => {
+            return row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         HeadDebit: {
           title: '[' + this.commonService.translateText('Accounting.headDebit'),
@@ -250,17 +264,38 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
   }
 
   /** Api get funciton */
-  executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
-    params['reportReceivablesFromCustomer'] = true;
-    const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
-    const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+  // executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
+  //   params['reportReceivablesFromCustomer'] = true;
+  //   const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+  //   const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
 
-    const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-    const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+  //   const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+  //   const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
 
-    params['toDate'] = toDate.toISOString();
-    params['fromDate'] = fromDate.toISOString();
-    super.executeGet(params, success, error, complete);
+  //   params['toDate'] = toDate.toISOString();
+  //   params['fromDate'] = fromDate.toISOString();
+  //   super.executeGet(params, success, error, complete);
+  // }
+
+  initDataSource() {
+    const source = super.initDataSource();
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+
+      params['reportReceivablesFromCustomer'] = true;
+      const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+      const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+
+      const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+      const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+
+      params['toDate'] = toDate.toISOString();
+      params['fromDate'] = fromDate.toISOString();
+
+      return params;
+    };
+
+    return source;
   }
 
   getList(callback: (list: AccountModel[]) => void) {
@@ -282,12 +317,12 @@ export class AccountingReceivablesFromCustomersReportComponent extends DataManag
   }
 
   /** Config for paging */
-  protected configPaging() {
-    return {
-      display: true,
-      perPage: 99999,
-    };
-  }
+  // protected configPaging() {
+  //   return {
+  //     display: true,
+  //     perPage: 99999,
+  //   };
+  // }
 
   async refresh() {
     super.refresh();

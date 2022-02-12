@@ -3,7 +3,21 @@ import { DefaultFilter } from 'ng2-smart-table';
 import { FormControl } from '@angular/forms';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Select2Option } from '../select2/select2.component';
+import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
 
+class SmartTableFilterQuery {
+
+  constructor(
+    public condition: string,
+    public value: string,
+  ) {
+
+  }
+
+  public toString = (): string => {
+    return this.value;
+  }
+}
 @Component({
   selector: 'ngx-smart-table-filter',
   template: `
@@ -13,6 +27,7 @@ import { Select2Option } from '../select2/select2.component';
 export class SmartTableFilterComponent extends DefaultFilter implements OnInit, OnChanges {
 
   inputControl = new FormControl();
+  condition?: string;
 
   constructor() {
     super();
@@ -21,6 +36,9 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
 
   ngOnInit() {
     const config = this.column.getFilterConfig();
+    if (config) {
+      this.condition = config.condition || this.condition;
+    }
     if (config && config.delay) {
       this.delay = config.delay;
     }
@@ -33,8 +51,13 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
         debounceTime(this.delay),
       )
       .subscribe((value: string) => {
-        this.query = this.inputControl.value;
-        this.setFilter();
+        if (this.condition) {
+          this.query = new SmartTableFilterQuery(this.condition, value) as any;
+          this.setFilter();
+        } else {
+          this.query = this.inputControl.value;
+          this.setFilter();
+        }
       });
   }
 
@@ -176,13 +199,14 @@ export class SmartTableClearingFilterComponent extends SmartTableFilterComponent
 @Component({
   selector: 'ngx-smart-table-select2-filter',
   template: `
-  <ngx-select2 [formControl]="inputControl" [select2Option]="select2Option"></ngx-select2>
+  <ngx-select2 [formControl]="inputControl" [select2Option]="select2Option" [data]="data"></ngx-select2>
   `,
 })
 export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent implements OnInit, OnChanges {
   inputControl = new FormControl();
   select2Option: Select2Option & { data?: () => any[] };
   logic: 'AND' | 'OR' = 'AND';
+  data: any[] = [];
   condition = 'filter';
 
   constructor() {
@@ -194,6 +218,9 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
     this.select2Option = this.column.getFilterConfig().select2Option;
     if (this.select2Option.logic) {
       this.logic = this.select2Option.logic;
+      if (this.select2Option.data) {
+        this.data = this.select2Option.data;
+      }
     }
 
     if (this.delay > 0) {

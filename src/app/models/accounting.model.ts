@@ -50,6 +50,7 @@ export interface CashVoucherModel {
     RelationVoucher?: string;
     Details?: CashVoucherDetailModel[];
     State?: string;
+    StateLabel?: string;
     Permission?: string;
     BankAccount?: string;
     Bank?: string;

@@ -13,6 +13,7 @@ import { WarehouseInventoryAdjustNotePrintComponent } from '../inventory-adjust-
 import { AppModule } from '../../../../app.module';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @Component({
   selector: 'ngx-inventory-adjust-note-list',
@@ -79,10 +80,27 @@ export class WarehouseInventoryAdjustNoteListComponent extends ServerDataManager
           type: 'string',
           width: '5%',
         },
-        ObjectName: {
+        Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.object'), 'head-title'),
           type: 'string',
           width: '15%',
+          valuePrepareFunction: (cell: any, row: WarehouseInventoryAdjustNoteModel) => {
+            return row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -93,15 +111,29 @@ export class WarehouseInventoryAdjustNoteListComponent extends ServerDataManager
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
           type: 'custom',
           width: '8%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
             // instance.format$.next('medium');
           },
         },
-        DateOfDelivered: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfDelivered'), 'head-title'),
+        DateOfAdjusted: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.dateOfAdjusted'), 'head-title'),
           type: 'custom',
           width: '8%',
+          filter: {
+            type: 'custom',
+            _component: SmartTableDateRangeFilterComponent,
+            get component() {
+              return this._component;
+            },
+            set component(value) {
+              this._component = value;
+            },
+          },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
             // instance.format$.next('medium');
@@ -111,12 +143,50 @@ export class WarehouseInventoryAdjustNoteListComponent extends ServerDataManager
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
-          // filter: {
-          //   type: 'custom',
-          //   component: SmartTableDateTimeRangeFilterComponent,
-          // },
           valuePrepareFunction: (cell: string, row?: any) => {
             return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người tạo...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
           },
         },
         RelativeVouchers: {
@@ -198,6 +268,31 @@ export class WarehouseInventoryAdjustNoteListComponent extends ServerDataManager
               this.preview([rowData]);
               // });
             });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn trạng thái...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                data: Object.keys(AppModule.processMaps.warehouseReceiptGoodsNote).map(stateId => ({
+                  id: stateId,
+                  text: this.commonService.translateText(AppModule.processMaps.warehouseReceiptGoodsNote[stateId].label)
+                })).filter(f => f.id != '')
+              },
+            },
           },
         },
         Permission: {

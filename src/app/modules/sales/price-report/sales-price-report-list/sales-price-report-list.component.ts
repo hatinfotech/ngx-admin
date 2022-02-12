@@ -13,7 +13,7 @@ import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-
 import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { takeUntil } from 'rxjs/operators';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
 import { TaxModel } from '../../../../models/tax.model';
@@ -91,11 +91,28 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        ObjectName: {
+        Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          valuePrepareFunction: (cell: any, row: SalesVoucherModel) => {
+            return row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -123,6 +140,48 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           // },
           valuePrepareFunction: (cell: string, row?: any) => {
             return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người tạo...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
           },
         },
         Created: {
@@ -158,6 +217,13 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
           },
           width: '20%',
+        },
+        Amount: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.amount'), 'head-title'),
+          type: 'currency',
+          width: '5%',
+          class: 'align-right',
+          position: 'right',
         },
         Task: {
           title: 'Task',
@@ -225,44 +291,6 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             });
           },
         },
-        // Copy: {
-        //   title: 'Copy',
-        //   type: 'custom',
-        //   width: '10%',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'copy';
-        //     // instance.label = this.commonService.translateText('Common.copy');
-        //     instance.display = true;
-        //     instance.status = 'warning';
-        //     instance.valueChange.subscribe(value => {
-        //       // if (value) {
-        //       //   instance.disabled = false;
-        //       // } else {
-        //       //   instance.disabled = true;
-        //       // }
-        //     });
-        //     instance.click.subscribe(async (row: SalesPriceReportModel) => {
-
-        //       this.commonService.openDialog(SalesPriceReportFormComponent, {
-        //         context: {
-        //           inputMode: 'dialog',
-        //           inputId: [row.Code],
-        //           isDuplicate: true,
-        //           onDialogSave: (newData: SalesPriceReportModel[]) => {
-        //             // if (onDialogSave) onDialogSave(row);
-        //           },
-        //           onDialogClose: () => {
-        //             // if (onDialogClose) onDialogClose();
-        //             this.refresh();
-        //           },
-        //         },
-        //       });
-
-        //     });
-        //   },
-        // },
         State: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',
@@ -274,8 +302,6 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             instance.icon = 'checkmark-circle';
             instance.display = true;
             instance.status = 'success';
-            // instance.style = 'text-align: right';
-            // instance.class = 'align-right';
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
@@ -283,16 +309,35 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap.outline;
-              // instance.disabled = (value === 'APPROVE');
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
-              // this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
               this.preview([rowData]);
-              // });
             });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn trạng thái...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                data: Object.keys(AppModule.processMaps.priceReport).map(stateId => ({
+                  id: stateId,
+                  text: this.commonService.translateText(AppModule.processMaps.priceReport[stateId].label)
+                })).filter(f => f.id != '')
+              },
+            },
           },
         },
         Permission: {

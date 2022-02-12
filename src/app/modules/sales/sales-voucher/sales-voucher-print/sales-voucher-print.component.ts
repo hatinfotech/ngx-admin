@@ -266,7 +266,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
+    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeObject: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
       for (const item of rs) {
         const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
         item.StateLabel = processMap.label;
@@ -291,6 +291,11 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
       const item = data[i];
       item['Total'] = 0;
       item['Title'] = this.renderTitle(item);
+
+      if (this.commonService.getObjectId(item['State']) !== 'COMPLETE') {
+        item['DefaultNote'] = 'cho phép công nợ 1 tháng kể từ ngày bán hàng';
+      }
+
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }

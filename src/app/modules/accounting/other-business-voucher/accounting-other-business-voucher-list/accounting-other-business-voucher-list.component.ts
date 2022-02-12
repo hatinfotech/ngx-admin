@@ -5,7 +5,7 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
 import { SmartTableTagsComponent, SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -75,11 +75,27 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        ObjectName: {
+        Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          valuePrepareFunction: (cell: any, row: OtherBusinessVoucherModel) => {
+            return row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         Description: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
@@ -87,15 +103,60 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           width: '20%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        // RelativeVouchers: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
-        //   type: 'custom',
-        //   renderComponent: SmartTableTagsComponent,
-        //   onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-        //     instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-        //   },
-        //   width: '20%',
-        // },
+        Creator: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          type: 'string',
+          width: '10%',
+          // filter: {
+          //   type: 'custom',
+          //   component: SmartTableDateTimeRangeFilterComponent,
+          // },
+          valuePrepareFunction: (cell: string, row?: any) => {
+            return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người tạo...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
+          },
+        },
         Code: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
           type: 'string',
@@ -164,6 +225,31 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
                 this.preview([rowData['Code']]);
               // });
             });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn trạng thái...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                data: Object.keys(AppModule.processMaps.otherBusinessVoucher).map(stateId => ({
+                  id: stateId,
+                  text: this.commonService.translateText(AppModule.processMaps.otherBusinessVoucher[stateId].label)
+                })).filter(f => f.id != '')
+              },
+            },
           },
         },
         Permission: {
@@ -257,6 +343,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
     source.prepareParams = (params: any) => {
       params['includeParent'] = true;
       params['includeRelativeVouchers'] = true;
+      params['includeCreator'] = true;
       params['sort_Id'] = 'desc';
       params['eq_Type'] = 'RECEIPT';
       return params;

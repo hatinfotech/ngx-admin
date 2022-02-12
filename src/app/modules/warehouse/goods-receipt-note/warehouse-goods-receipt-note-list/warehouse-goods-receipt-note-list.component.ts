@@ -13,6 +13,7 @@ import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-rece
 import { AppModule } from '../../../../app.module';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-list',
@@ -79,10 +80,27 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           type: 'string',
           width: '5%',
         },
-        ObjectName: {
+        Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.object'), 'head-title'),
           type: 'string',
           width: '15%',
+          valuePrepareFunction: (cell: any, row: WarehouseGoodsReceiptNoteModel) => {
+            return row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -93,6 +111,10 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
           type: 'custom',
           width: '8%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
             // instance.format$.next('medium');
@@ -102,6 +124,10 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfDelivered'), 'head-title'),
           type: 'custom',
           width: '8%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
             // instance.format$.next('medium');
@@ -111,12 +137,50 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
-          // filter: {
-          //   type: 'custom',
-          //   component: SmartTableDateTimeRangeFilterComponent,
-          // },
           valuePrepareFunction: (cell: string, row?: any) => {
             return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người tạo...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
           },
         },
         RelativeVouchers: {
@@ -188,16 +252,35 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
-              // instance.disabled = (value === 'APPROVE');
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsReceiptNoteModel) => {
-              // this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
               this.preview([rowData]);
-              // });
             });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn trạng thái...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                data: Object.keys(AppModule.processMaps.warehouseReceiptGoodsNote).map(stateId => ({
+                  id: stateId,
+                  text: this.commonService.translateText(AppModule.processMaps.warehouseReceiptGoodsNote[stateId].label)
+                })).filter(f => f.id != '')
+              },
+            },
           },
         },
         Permission: {

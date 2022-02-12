@@ -15,13 +15,15 @@ import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from '.
 import { AccountingReceivablesFromCustomersReportPrintComponent } from '../print/accounting-receivables-from-customers-report-print/accounting-receivables-from-customers-report-print.component';
 import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from '../print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
 import { AccountingObjectCashFlowReportPrintComponent } from '../print/accounting-object-cash-flow-report-print/accounting-object-cash-flow-report-print.component';
+import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 
 @Component({
   selector: 'ngx-accounting-cash-flow-report',
   templateUrl: './accounting-cash-flow-report.component.html',
   styleUrls: ['./accounting-cash-flow-report.component.scss']
 })
-export class AccountingCashFlowReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
+export class AccountingCashFlowReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
 
   componentName: string = 'AccountingCashFlowComponent';
   formPath = '/accounting/account/form';
@@ -121,7 +123,7 @@ export class AccountingCashFlowReportComponent extends DataManagerListComponent<
       // };
       // this.actionButtonList.unshift(detailsReportBtn);
 
-      const vouchersReportBtn = {...summaryReportBtn};
+      const vouchersReportBtn = { ...summaryReportBtn };
       vouchersReportBtn.status = 'primary';
       vouchersReportBtn.name = 'vouchersReport';
       vouchersReportBtn.label = vouchersReportBtn.title = 'In đối soát công nợ';
@@ -164,7 +166,7 @@ export class AccountingCashFlowReportComponent extends DataManagerListComponent<
         console.log(fromDate);
         this.refresh();
       });
-      
+
       return rs;
     });
   }
@@ -177,14 +179,26 @@ export class AccountingCashFlowReportComponent extends DataManagerListComponent<
       actions: false,
       columns: {
         Object: {
-          title: this.commonService.translateText('Common.customer'),
+          title: this.commonService.translateText('Common.contact'),
           type: 'string',
-          width: '10%',
-        },
-        ObjectName: {
-          title: this.commonService.translateText('Common.customerName'),
-          type: 'string',
-          width: '20%',
+          width: '30%',
+          valuePrepareFunction: (cell: any, row: any) => {
+            return this.commonService.getObjectId(row.Object) + ' - ' + row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         HeadDebit: {
           title: '[' + this.commonService.translateText('Accounting.headDebit'),
@@ -251,8 +265,25 @@ export class AccountingCashFlowReportComponent extends DataManagerListComponent<
   }
 
   /** Api get funciton */
-  executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
-    params['reportCashFlow'] = true;
+  // executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
+  //   params['reportCashFlow'] = true;
+  //   const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+  //   const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+
+  //   const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+  //   const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+
+  //   params['toDate'] = toDate.toISOString();
+  //   params['fromDate'] = fromDate.toISOString();
+  //   super.executeGet(params, success, error, complete);
+  // }
+
+  initDataSource() {
+    const source = super.initDataSource();
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+
+      params['reportCashFlow'] = true;
     const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
     const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
 
@@ -261,7 +292,11 @@ export class AccountingCashFlowReportComponent extends DataManagerListComponent<
 
     params['toDate'] = toDate.toISOString();
     params['fromDate'] = fromDate.toISOString();
-    super.executeGet(params, success, error, complete);
+
+      return params;
+    };
+
+    return source;
   }
 
   getList(callback: (list: AccountModel[]) => void) {
@@ -283,12 +318,12 @@ export class AccountingCashFlowReportComponent extends DataManagerListComponent<
   }
 
   /** Config for paging */
-  protected configPaging() {
-    return {
-      display: true,
-      perPage: 99999,
-    };
-  }
+  // protected configPaging() {
+  //   return {
+  //     display: true,
+  //     perPage: 99999,
+  //   };
+  // }
 
   async refresh() {
     super.refresh();

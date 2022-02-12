@@ -221,6 +221,10 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
       const item = data[i];
       item['Total'] = 0;
       item['Title'] = this.renderTitle(item);
+      
+      const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
+      item.StateLabel = processMap.label;
+
       for (const detail of item.Details) {
         item['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);
       }

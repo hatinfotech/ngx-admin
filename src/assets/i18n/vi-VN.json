@@ -584,6 +584,7 @@
         "Order": {
             "title": "{{definition}}{{action}} phiếu đặt mua hàng"
         },
+        "dateOfOrder": "ngày đặt hàng",
         "dateOfPurchase": "ngày mua hàng",
         "dateOfPurchaseOrder": "ngày đặt hàng",
         "deliveryPerson": "người giao hàng",
@@ -600,7 +601,8 @@
             "title": "{{definition}}{{action}} phiếu điều chỉnh tồn kho"
         },
         "GoodsContainer": {
-            "title": "{{definition}}{{action}} vị trí hàng hóa"
+            "title": "{{definition}}{{action}} vị trí hàng hóa",
+            "path": "đường dẫn"
         },
         "Goods": {
             "title": "{{definition}}{{action}} hàng hóa"

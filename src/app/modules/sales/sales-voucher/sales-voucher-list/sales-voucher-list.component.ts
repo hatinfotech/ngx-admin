@@ -13,7 +13,7 @@ import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-f
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { take, takeUntil, filter } from 'rxjs/operators';
-import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { AppModule } from '../../../../app.module';
@@ -92,11 +92,28 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           type: 'string',
           width: '5%',
         },
-        ObjectName: {
+        Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '15%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          valuePrepareFunction: (cell: any, row: SalesVoucherModel) => {
+            return row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -110,6 +127,48 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           width: '10%',
           valuePrepareFunction: (cell: string, row?: any) => {
             return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người tạo...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
           },
         },
         DateOfSale: {
@@ -125,18 +184,6 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
             // instance.format$.next('medium');
           },
         },
-        // Amount: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
-        //   type: 'custom',
-        //   class: 'align-right',
-        //   width: '10%',
-        //   position: 'right',
-        //   renderComponent: SmartTableCurrencyComponent,
-        //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-        //     // instance.format$.next('medium');
-        //     instance.style = 'text-align: right';
-        //   },
-        // },
         RelativeVouchers: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
@@ -162,15 +209,9 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
             instance.icon = 'copy';
-            // instance.label = this.commonService.translateText('Common.copy');
             instance.display = true;
             instance.status = 'warning';
             instance.valueChange.subscribe(value => {
-              // if (value) {
-              //   instance.disabled = false;
-              // } else {
-              //   instance.disabled = true;
-              // }
             });
             instance.click.subscribe(async (row: SalesVoucherModel) => {
 
@@ -213,19 +254,35 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
-              // instance.disabled = (value === 'APPROVE');
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
-              // this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
               this.preview([rowData]);
-              // });
-              // this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-              //   this.preview(rs);
-              // });
             });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn trạng thái...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                data: Object.keys(AppModule.processMaps.salesVoucher).map(stateId => ({
+                  id: stateId,
+                  text: this.commonService.translateText(AppModule.processMaps.salesVoucher[stateId].label)
+                })).filter(f => f.id != '')
+              },
+            },
           },
         },
         Permission: {
@@ -244,9 +301,6 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
             instance.class = 'align-right';
             instance.title = this.commonService.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
 
@@ -260,10 +314,6 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
                   apiPath: '/sales/sales-vouchers',
                 }
               });
-
-              // this.getFormData([rowData.Code]).then(rs => {
-              //   this.preview(rs);
-              // });
             });
           },
         },
@@ -282,17 +332,9 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
             instance.class = 'align-right';
             instance.title = this.commonService.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
-              // this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
               this.preview([rowData]);
-              // });
-              // this.getFormData([rowData.Code]).then(rs => {
-              //   this.preview(rs);
-              // });
             });
           },
         }

@@ -871,6 +871,8 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                     delete orderDetail.No;
                     const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, orderDetail);
                     details.push(newDtailFormGroup);
+                    await new Promise(resolve => setTimeout(() => resolve(true), 300));
+                    this.toMoney(formGroup, newDtailFormGroup);
                   }
                 }
               }
@@ -878,7 +880,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);
-          
+
           setTimeout(() => {
             this.onProcessed();
           }, 1000);

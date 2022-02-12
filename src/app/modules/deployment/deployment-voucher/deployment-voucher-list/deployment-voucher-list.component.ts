@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { SmartTableDateTimeComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { DeploymentVoucherModel } from '../../../../models/deployment.model';
@@ -87,11 +87,27 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
-        ObjectName: {
+        Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          valuePrepareFunction: (cell: any, row: DeploymentVoucherModel) => {
+            return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -119,6 +135,48 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           // },
           valuePrepareFunction: (cell: string, row?: any) => {
             return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người tạo...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
           },
         },
         Created: {
@@ -232,44 +290,6 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
             });
           },
         },
-        // Copy: {
-        //   title: 'Copy',
-        //   type: 'custom',
-        //   width: '10%',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'copy';
-        //     // instance.label = this.commonService.translateText('Common.copy');
-        //     instance.display = true;
-        //     instance.status = 'warning';
-        //     instance.valueChange.subscribe(value => {
-        //       // if (value) {
-        //       //   instance.disabled = false;
-        //       // } else {
-        //       //   instance.disabled = true;
-        //       // }
-        //     });
-        //     instance.click.subscribe(async (row: DeploymentVoucherModel) => {
-
-        //       this.commonService.openDialog(DeploymentVoucherFormComponent, {
-        //         context: {
-        //           inputMode: 'dialog',
-        //           inputId: [row.Code],
-        //           isDuplicate: true,
-        //           onDialogSave: (newData: DeploymentVoucherModel[]) => {
-        //             // if (onDialogSave) onDialogSave(row);
-        //           },
-        //           onDialogClose: () => {
-        //             // if (onDialogClose) onDialogClose();
-        //             this.refresh();
-        //           },
-        //         },
-        //       });
-
-        //     });
-        //   },
-        // },
         State: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',
@@ -290,19 +310,35 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
               instance.label = this.commonService.translateText(processMap?.label);// this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
               instance.status = processMap?.status;//this.stateDic[value]?.status || 'danger';
               instance.outline = processMap.outline;//this.stateDic[value]?.outline || false;
-              // instance.disabled = (value === 'APPROVE');
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
-              // this.getFormData([rowData.Code]).then(rs => {
                 this.preview([rowData], 'list');
-              // });
-              // this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-              //   this.preview(rs);
-              // });
             });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn trạng thái...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                data: Object.keys(AppModule.processMaps.deploymentVoucher).map(stateId => ({
+                  id: stateId,
+                  text: this.commonService.translateText(AppModule.processMaps.deploymentVoucher[stateId].label)
+                })).filter(f => f.id != '')
+              },
+            },
           },
         },
         Permission: {
@@ -387,6 +423,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
+      params['includeObject'] = true;
       params['includeCreator'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';

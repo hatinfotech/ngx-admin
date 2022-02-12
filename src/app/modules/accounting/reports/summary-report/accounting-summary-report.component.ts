@@ -12,13 +12,15 @@ import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
+import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 
 @Component({
   selector: 'ngx-summary-report',
   templateUrl: './accounting-summary-report.component.html',
   styleUrls: ['./accounting-summary-report.component.scss']
 })
-export class AccountingSummaryReportComponent extends DataManagerListComponent<AccountModel> implements OnInit {
+export class AccountingSummaryReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
 
   componentName: string = 'AccountingSummaryReportComponent';
   formPath = '/accounting/account/form';
@@ -141,10 +143,56 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
     return this.configSetting({
       actions: false,
       columns: {
-        Account: {
+        Accounts: {
           title: this.commonService.translateText('Accounting.account'),
           type: 'string',
           width: '10%',
+          valuePrepareFunction: (cell: any, row: AccountModel) => {
+            return row.Account;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn tài khoản...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/accounting/accounts', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        item.text = `${item.id} - ${item.text}`;
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
+          },
         },
         AccountName: {
           title: this.commonService.translateText('Common.description'),
@@ -239,21 +287,45 @@ export class AccountingSummaryReportComponent extends DataManagerListComponent<A
   // }
 
   /** Api get funciton */
-  executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
-    // params['includeParent'] = true;
-    params['reportSummary'] = true;
-    params['Accounts'] = '111,112,128,131,138,141,136,211,331,338,511,512,515,632,635,641,642,711,4222,811,156,1331,3331,4212,4111,4112,4118,3341,3411,3348,3349,3350,6411,4211,3412,2288';
+  // executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
+  //   // params['includeParent'] = true;
+  //   params['reportSummary'] = true;
+  //   params['Accounts'] = '111,112,128,131,138,141,136,211,331,338,511,512,515,632,635,641,642,711,4222,811,156,1331,3331,4212,4111,4112,4118,3341,3411,3348,3349,3350,6411,4211,3412,2288';
 
-    const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
-    const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 999);
+  //   const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+  //   const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 999);
 
-    const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-    const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59);
+  //   const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+  //   const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59);
 
-    params['toDate'] = toDate.toISOString();
-    params['fromDate'] = fromDate.toISOString();
+  //   params['toDate'] = toDate.toISOString();
+  //   params['fromDate'] = fromDate.toISOString();
 
-    super.executeGet(params, success, error, complete);
+  //   super.executeGet(params, success, error, complete);
+  // }
+
+
+
+  initDataSource() {
+    const source = super.initDataSource();
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+
+      const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+      const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 999);
+
+      const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+      const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59);
+
+      params['reportSummary'] = true;
+      params['eq_Accounts'] = '[111,112,128,131,138,141,136,211,331,338,511,512,515,632,635,641,642,711,4222,811,156,1331,3331,4212,4111,4112,4118,3341,3411,3348,3349,3350,6411,4211,3412,2288]';
+      params['toDate'] = toDate.toISOString();
+      params['fromDate'] = fromDate.toISOString();
+
+      return params;
+    };
+
+    return source;
   }
 
   getList(callback: (list: AccountModel[]) => void) {

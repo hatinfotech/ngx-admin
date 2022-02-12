@@ -9,7 +9,7 @@ import { WarehouseGoodsFormComponent } from '../warehouse-goods-form/warehouse-g
 import { AssignContainerFormComponent } from '../assign-containers-form/assign-containers-form.component';
 import { ProductModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { SmartTableButtonComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
@@ -157,6 +157,21 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
         },
+        ContainerPath: {
+          title: this.commonService.translateText('Warehouse.GoodsContainer.path', { action: '', definition: '' }),
+          type: 'html',
+          width: '15%',
+          filter: {
+            type: 'custom',
+            component: SmartTableFilterComponent,
+            config: {
+              condition: 'bleft', 
+            }
+          },
+          valuePrepareFunction: (value: any, product: GoodsModel) => {
+            return product?.Container?.ContainerPath;
+          },
+        },
         // Goods: {
         //   title: this.commonService.translateText('Hàng hóa', { action: '', definition: '' }),
         //   type: 'html',
@@ -270,8 +285,8 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
             instance.status = 'primary';
-            instance.title = this.commonService.translateText('Gán/gở hàng hóa vào chỗ chứa');
-            instance.label = this.commonService.translateText('Gán/gở chỗ chứa');
+            instance.title = this.commonService.translateText('Gán/gở vị trí');
+            instance.label = this.commonService.translateText('Gán/gở vị trí');
             instance.valueChange.subscribe(value => {
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
@@ -323,7 +338,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
   }
 
   async init() {
-    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: container.Path })) as any;
+    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path} - ${container.Description}` })) as any;
     return super.init().then(rs => {
       this.actionButtonList.map(button => {
         if (button.name === 'assignCategories') {

@@ -5,6 +5,7 @@ import { NbDialogService, NbToastrService, NbDialogRef } from "@nebular/theme";
 import { takeUntil } from "rxjs/operators";
 import { AppModule } from "../../../../app.module";
 import { SmartTableDateTimeComponent, SmartTableButtonComponent, SmartTableTagsComponent } from "../../../../lib/custom-element/smart-table/smart-table.component";
+import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from "../../../../lib/custom-element/smart-table/smart-table.filter.component";
 import { SmartTableSetting } from "../../../../lib/data-manager/data-manger-list.component";
 import { ServerDataManagerListComponent } from "../../../../lib/data-manager/server-data-manger-list.component";
 import { ResourcePermissionEditComponent } from "../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component";
@@ -82,10 +83,27 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
           type: 'string',
           width: '10%',
         },
-        ObjectName: {
+        Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.object'), 'head-title'),
           type: 'string',
           width: '15%',
+          valuePrepareFunction: (cell: any, row: WarehouseGoodsDeliveryNoteModel) => {
+            return row.ObjectName;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.select2OptionForContact,
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
         },
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
@@ -96,6 +114,10 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
           type: 'custom',
           width: '15%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
             // instance.format$.next('medium');
@@ -105,6 +127,10 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfDelivered'), 'head-title'),
           type: 'custom',
           width: '15%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
             // instance.format$.next('medium');
@@ -114,12 +140,50 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
-          // filter: {
-          //   type: 'custom',
-          //   component: SmartTableDateTimeRangeFilterComponent,
-          // },
           valuePrepareFunction: (cell: string, row?: any) => {
             return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người tạo...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
           },
         },
         RelativeVouchers: {
@@ -201,6 +265,31 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
               this.preview([rowData]);
               // });
             });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn trạng thái...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                data: Object.keys(AppModule.processMaps.warehouseDeliveryGoodsNote).map(stateId => ({
+                  id: stateId,
+                  text: this.commonService.translateText(AppModule.processMaps.warehouseDeliveryGoodsNote[stateId].label)
+                })).filter(f => f.id != '')
+              },
+            },
           },
         },
         Permission: {
@@ -288,6 +377,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
+      params['includeObject'] = true;
       params['includeCreator'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
