@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.0.8.4',
+  version: '6.0.8.5',
+  // 6.0.8.5: fix some error, update select2ajaxoption
   // 6.0.8: fix some error
   // 6.0.7: update warehouse v3: inventory adjust note r2
   // 6.0.7: update warehouse v3: inventory adjust note
