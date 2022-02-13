@@ -16,6 +16,7 @@ import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput }
 import { UnitModel } from '../../../../models/unit.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { filter, take } from 'rxjs/operators';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 
 @Component({
   selector: 'ngx-product-list',
@@ -139,7 +140,13 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
             instance.valueChange.subscribe(value => {
             });
-            instance.click.subscribe((row: ProductModel) => {
+            instance.previewAction.subscribe((row: ProductModel) => {
+              this.commonService.openDialog(ImagesViewerComponent, {context: {
+                images: row?.Pictures.map(m => m['OriginImage']),
+                imageIndex: row?.Pictures?.findIndex(f => f.Id == row.FeaturePicture.Id) || 0
+              }});
+            });
+            instance.uploadAction.subscribe((row: ProductModel) => {
               if (this.files.length === 0) {
                 this.uploadForProduct = row;
                 this.uploadBtn.nativeElement.click();

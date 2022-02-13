@@ -200,7 +200,7 @@
 
                                             <div class="col-md-9 col-sm-9 col-xs-9">
                                                 <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="Image" label="Common.image" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem'}}"></ngx-files-input>
+                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem', padding: '0'}, thumbnailStype: {height: '5rem', width: '100%'}}"></ngx-files-input>
                                                 </ngx-form-group>
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">
                                                     <label class="label">Stt</label>

@@ -608,16 +608,16 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
     }
 
-    const imagesFormControl = newForm.get('Image');
-    newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if (value) {
-        if (value.Pictures && value.Pictures.length > 0) {
-          imagesFormControl.setValue(value.Pictures);
-        } else {
-          imagesFormControl.setValue([]);
-        }
-      }
-    });
+    // const imagesFormControl = newForm.get('Image');
+    // newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+    //   if (value) {
+    //     if (value.Pictures && value.Pictures.length > 0) {
+    //       imagesFormControl.setValue(value.Pictures);
+    //     } else {
+    //       imagesFormControl.setValue([]);
+    //     }
+    //   }
+    // });
 
     return newForm;
   }
@@ -726,22 +726,30 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
     console.log(selectedData);
-    const unitControl = detail.get('Unit');
-    if (selectedData) {
-      detail.get('Description').setValue(selectedData.Name);
-      if (selectedData.Units && selectedData.Units.length > 0) {
-        unitControl['UnitList'] = selectedData.Units;
-        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
+    if (!this.isProcessing) {
+      const unitControl = detail.get('Unit');
+      if (selectedData) {
+        detail.get('Description').setValue(selectedData.Name);
+        if (selectedData.Units && selectedData.Units.length > 0) {
+          unitControl['UnitList'] = selectedData.Units;
+          unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
+        } else {
+          unitControl['UnitList'] = [];
+          unitControl['UnitList'] = null;
+        }
+        detail.get('Description').setValue(selectedData.Name);
+
+        if(selectedData.Pictures && selectedData.Pictures.length > 0) {
+          detail.get('Image').setValue(selectedData.Pictures);
+        } else {
+          detail.get('Image').setValue([]);
+        }
       } else {
+        detail.get('Description').setValue('');
+        detail.get('Unit').setValue('');
         unitControl['UnitList'] = [];
         unitControl['UnitList'] = null;
       }
-      detail.get('Description').setValue(selectedData.Name);
-    } else {
-      detail.get('Description').setValue('');
-      detail.get('Unit').setValue('');
-      unitControl['UnitList'] = [];
-      unitControl['UnitList'] = null;
     }
     return false;
   }

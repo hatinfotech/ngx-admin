@@ -91,6 +91,11 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '10%',
+        },
         Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
@@ -125,11 +130,6 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
         //   type: 'string',
         //   width: '20%',
         // },
-        Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
-          width: '10%',
-        },
         Creator: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
           type: 'string',

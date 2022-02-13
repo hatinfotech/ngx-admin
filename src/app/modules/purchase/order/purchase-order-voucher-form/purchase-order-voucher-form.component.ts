@@ -554,16 +554,23 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
-    if (selectedData) {
-      detail.get('Description').setValue(selectedData.Name);
-      if (selectedData.Units) {
-        const unitControl = detail.get('Unit');
-        unitControl['UnitList'] = selectedData.Units;
-        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true));
+    if (!this.isProcessing) {
+      if (selectedData) {
+        detail.get('Description').setValue(selectedData.Name);
+        if (selectedData.Units) {
+          const unitControl = detail.get('Unit');
+          unitControl['UnitList'] = selectedData.Units;
+          unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true));
+        }
+        if(selectedData.Pictures && selectedData.Pictures.length > 0) {
+          detail.get('Image').setValue(selectedData.Pictures);
+        } else {
+          detail.get('Image').setValue([]);
+        }
+      } else {
+        detail.get('Description').setValue('');
+        detail.get('Unit').setValue('');
       }
-    } else {
-      detail.get('Description').setValue('');
-      detail.get('Unit').setValue('');
     }
     return false;
   }

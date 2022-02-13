@@ -244,6 +244,7 @@ import { CollaboratorOrderTeleCommitPrintComponent } from './modules/collaborato
 import { WarehouseInventoryAdjustNoteFormComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-form/inventory-adjust-note-form.component';
 import { WarehouseInventoryAdjustNoteListComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-list/inventory-adjust-note-list.component';
 import { WarehouseInventoryAdjustNotePrintComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-print/inventory-adjust-note-print.component';
+// import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -553,6 +554,9 @@ export class DynamicLocaleId extends String {
     }),
     NgxMaskModule.forRoot(options),
     NgxUploaderModule,
+
+    // Photo browser
+    // AngularImageViewerModule,
 
     // Modules
     NbAuthModule.forRoot({

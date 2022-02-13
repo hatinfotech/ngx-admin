@@ -16,6 +16,7 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { WarehouseGoodsPrintComponent } from '../warehouse-goods-print/warehouse-goods-print.component';
 import { takeUntil } from 'rxjs/operators';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -53,7 +54,13 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
             instance.valueChange.subscribe(value => {
             });
-            instance.click.subscribe(async (row: ProductModel) => {
+            instance.previewAction.subscribe((row: ProductModel) => {
+              this.commonService.openDialog(ImagesViewerComponent, {context: {
+                images: row?.Pictures.map(m => m['OriginImage']),
+                imageIndex: row?.Pictures?.findIndex(f => f.Id == row.FeaturePicture.Id) || 0
+              }});
+            });
+            instance.uploadAction.subscribe(async (row: ProductModel) => {
               if (this.files.length === 0) {
                 this.uploadForProduct = row;
                 this.uploadBtn.nativeElement.click();

@@ -1,3 +1,5 @@
+@import '~viewerjs/dist/viewer.css';
+
 .thumbnail {
   //   height: 5.5rem;
   background-repeat: no-repeat;
@@ -15,8 +17,8 @@
     background-color: var(--gray);
     margin: 0.3rem;
   }
-  .image-wrap {
-  }
+  // .image-wrap {
+  // }
   .progress-wrap {
     padding: 1rem;
   }
@@ -25,8 +27,8 @@
     border-color: #edf1f7;
     color: var(--gray-dark);
   }
-  .upload-btn-wrap {
-  }
+  // .upload-btn-wrap {
+  // }
   button.upload-btn {
     margin-right: 0.5rem;
     margin-left: 0.5rem;

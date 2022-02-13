@@ -7,6 +7,7 @@ import { FormControl } from '@angular/forms';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ViewCell } from 'ng2-smart-table';
+import { NbPosition, NbTrigger } from '@nebular/theme';
 
 @Component({
   template: `
@@ -143,10 +144,17 @@ export class SmartTableIconComponent extends SmartTableBaseComponent implements 
   selector: 'ngx-smart-table-thumbnail',
   template: `
   <div [style]="style" [class]="class">
-    <div class="thumbnail-wrap">
+    <div class="thumbnail-wrap" [nbPopover]="chooseComponent" [nbPopoverTrigger]="trigger" [nbPopoverPlacement]="position">
       <div class="thumbnail" [ngStyle]="{'background-image': renderValue}" (click)="onClick()" title="{{title}}"></div>
     </div>
-</div>`,
+  </div>
+  <ng-template #chooseComponent>
+    <div class="button-items-rows">
+      <button nbButton status="primary" (click)="onPreview()"><nb-icon pack="eva" icon="external-link-outline"></nb-icon>Xem hình</button>
+      <button nbButton status="danger" (click)="onUpload()"><nb-icon pack="eva" icon="cloud-upload-outline"></nb-icon>Upload</button>
+    </div>
+  </ng-template>
+`,
   styles: [
     `
     .thumbnail-wrap {
@@ -171,6 +179,26 @@ export class SmartTableIconComponent extends SmartTableBaseComponent implements 
       min-height: 3rem;
       border-radius: 50%;
     }
+    .button-items-rows {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin: -0.5rem;
+      padding: 1rem;
+    }
+    .button-items-rows>* {
+        margin: 0.5rem;
+        margin-top: 0.5rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        margin-left: 0.5rem;
+    }
+    .img-preview {
+      background-repeat: no-repeat;
+      background-size: cover;
+      width: 200px;
+      height: 150px;      
+    }
   `,
   ],
 })
@@ -183,6 +211,9 @@ export class SmartTableThumbnailComponent extends SmartTableBaseComponent implem
   display: boolean = false;
   // disabled: boolean = false;
   title = '';
+  trigger = NbTrigger.CLICK;
+  position = NbPosition.RIGHT;
+
 
   @Input() value: string | number;
   @Input() rowData: any;
@@ -190,6 +221,8 @@ export class SmartTableThumbnailComponent extends SmartTableBaseComponent implem
 
   // @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() click: EventEmitter<any> = new EventEmitter();
+  @Output() previewAction: EventEmitter<any> = new EventEmitter();
+  @Output() uploadAction: EventEmitter<any> = new EventEmitter();
   @Output() valueChange: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
@@ -198,7 +231,17 @@ export class SmartTableThumbnailComponent extends SmartTableBaseComponent implem
   }
 
   onClick() {
-    this.click.emit(this.rowData);
+    // this.click.emit(this.rowData);
+    return false;
+  }
+
+  onPreview() {
+    this.previewAction.emit(this.rowData);
+    return false;
+  }
+
+  onUpload() {
+    this.uploadAction.emit(this.rowData);
     return false;
   }
 

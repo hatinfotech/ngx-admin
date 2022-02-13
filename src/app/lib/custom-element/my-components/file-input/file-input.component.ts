@@ -4,6 +4,7 @@ import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChange
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { ApiService } from '../../../../services/api.service';
+import { ImagesViewerComponent } from '../images-viewer/images-viewer.component';
 
 @Component({
   selector: 'ngx-file-input',
@@ -204,7 +205,12 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
   }
 
   preview() {
-    window.open(this.value.OriginImage, '_blank');
+    // window.open(this.value.OriginImage, '_blank');
+    // Open photo browser
+    this.commonService.openDialog(ImagesViewerComponent, {context: {
+      images: [this.value?.OriginImage],
+      imageIndex: 0
+    }});
     return false;
   }
 

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
 import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent, SmartTableAccCurrencyComponent } from './smart-table/smart-table.component';
-import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule } from '@nebular/theme';
+import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule, NbCardModule, NbSpinnerModule, NbPopoverModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
 import { AgListComponent } from './ag-list/ag-list.component';
@@ -25,6 +25,9 @@ import { NgxUploaderModule } from '../../../vendor/ngx-uploader/src/public_api';
 import { FilesInputComponent } from './my-components/files-input/files-input.component';
 import { PrintHeaderComponent } from './print/print-header/print-header.component';
 import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
+import { ImagesViewerComponent } from './my-components/images-viewer/images-viewer.component';
+import { ImageViewerModule } from 'ngx-image-viewer';
+// import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({
   declarations: [
@@ -59,6 +62,7 @@ import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
     PrintHeaderComponent,
     SmartTableTagsComponent,
     SmartTableAccCurrencyComponent,
+    ImagesViewerComponent,
   ],
   imports: [
     CommonModule,
@@ -78,6 +82,36 @@ import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
     TranslateModule,
     CurrencyMaskModule,
     NgxUploaderModule,
+    // NgxViewerModule,
+    // AngularImageViewerModule,
+    NbCardModule,
+    NbSpinnerModule,
+    NbPopoverModule,
+    ImageViewerModule.forRoot({
+      btnClass: 'default', // The CSS class(es) that will apply to the buttons
+      zoomFactor: 0.1, // The amount that the scale will be increased by
+      containerBackgroundColor: '#ccc', // The color to use for the background. This can provided in hex, or rgb(a).
+      wheelZoom: false, // If true, the mouse wheel can be used to zoom in
+      allowFullscreen: true, // If true, the fullscreen button will be shown, allowing the user to entr fullscreen mode
+      allowKeyboardNavigation: true, // If true, the left / right arrow keys can be used for navigation
+      btnIcons: { // The icon classes that will apply to the buttons. By default, font-awesome is used.
+        zoomIn: 'fa fa-plus',
+        zoomOut: 'fa fa-minus',
+        rotateClockwise: 'fa fa-undo fa-flip-horizontal',
+        rotateCounterClockwise: 'fa fa-undo',
+        next: 'fa fa-arrow-right',
+        prev: 'fa fa-arrow-left',
+        fullscreen: 'fa fa-arrows-alt',
+      },
+      btnShow: {
+        zoomIn: true,
+        zoomOut: true,
+        rotateClockwise: true,
+        rotateCounterClockwise: true,
+        next: true,
+        prev: true
+      }
+    }),
   ],
   exports: [
     Select2Component,

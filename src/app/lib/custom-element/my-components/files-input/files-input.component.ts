@@ -5,6 +5,7 @@ import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { ImagesViewerComponent } from '../images-viewer/images-viewer.component';
 
 @Component({
   selector: 'ngx-files-input',
@@ -227,9 +228,12 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
     // window.open(file.OriginImage, '_blank');
 
     // Open photo browser
+    this.commonService.openDialog(ImagesViewerComponent, {context: {
+      images: this.value.map(m => m.OriginImage),
+      imageIndex: this.value.findIndex(f => f.Id == file.Id)
+    }});
 
-
-    this.onThumbnailClick.emit(file);
+    if(false) this.onThumbnailClick.emit(file);
     return false;
   }
 
