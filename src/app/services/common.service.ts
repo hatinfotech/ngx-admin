@@ -23,7 +23,7 @@ import { LocaleConfigModel } from '../models/system.model';
 import { environment } from '../../environments/environment';
 import { MySocket } from '../lib/nam-socket/my-socket';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
-import { filter, take } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { DeviceModel } from '../models/device.model';
 import { v4 as uuidv4 } from 'uuid';
 import { NotificationService } from './notification.service';
@@ -1080,7 +1080,7 @@ export class CommonService {
     document.body.removeChild(container);
 
   }
-  
+
   select2OptionForContact = {
     placeholder: 'Chọn liên hệ...',
     allowClear: true,
@@ -1094,10 +1094,25 @@ export class CommonService {
       text: 'text',
     },
     ajax: {
+      data: function (params) {
+        return {
+          ...params,
+          offset: params.offset || 0,
+          limit: params.limit || 10
+        };
+      },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
         const params = settings.data;
-        this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, search: params['term'] }).then(rs => {
+        const offset = settings.data['offset'];
+        const limit = settings.data['limit'];
+        this.apiService.getObservable<any[]>('/contact/contacts', { includeIdText: true, includeGroups: true, search: params['term'], offset, limit }).pipe(
+          map((res) => {
+            const total = +res.headers.get('x-total-count');
+            let data = res.body;
+            return { data, total };
+          }),
+        ).toPromise().then(rs => {
           success(rs);
         }).catch(err => {
           console.error(err);
@@ -1105,16 +1120,136 @@ export class CommonService {
         });
       },
       delay: 300,
-      processResults: (data: any, params: any) => {
-        console.info(data, params);
+      processResults: (rs: { data: any[], total: number }, params: any) => {
+        const data = rs.data;
+        const total = rs.total;
+        // console.info(data, params);
+        params.limit = params.limit || 10;
+        params.offset = params.offset || 0;
+        params.offset = params.offset += params.limit;
         return {
           results: data.map(item => {
             item['id'] = item['Code'];
             item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
             return item;
           }),
+          pagination: {
+            more: params.offset < total
+          }
         };
       },
     },
   };
+
+  select2OptionForProduct = {
+    placeholder: 'Chọn...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    withThumbnail: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      data: function (params) {
+        return {
+          ...params,
+          offset: params.offset || 0,
+          limit: params.limit || 10
+        };
+      },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        // console.log(settings);
+        const params = settings.data;
+        const offset = settings.data['offset'];
+        const limit = settings.data['limit'];
+        // const params = settings.data;
+        this.apiService.getObservable('/admin-product/products', { select: "id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true, 'search': params['term'], offset, limit }).pipe(
+          map((res) => {
+            const total = +res.headers.get('x-total-count');
+            let data = res.body;
+            return { data, total };
+          }),
+        ).toPromise().then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
+      },
+      delay: 300,
+      processResults: (rs: { data: any[], total: number }, params: any) => {
+        const data = rs.data;
+        const total = rs.total;
+        params.limit = params.limit || 10;
+        params.offset = params.offset || 0;
+        params.offset = params.offset += params.limit;
+        return {
+          results: data.map(item => {
+            item.thumbnail = item?.FeaturePicture?.Thumbnail;
+            return item;
+          }),
+          pagination: {
+            more: params.offset < total
+          }
+        };
+      },
+    },
+  };
+
+
+  makeSelect2AjaxOption(url: string, query: any, option?: { [key: string]: any, limit?: number, prepareReaultItem?: (item: any) => any }) {
+    return {
+      ...this.select2OptionForProduct,
+      placeholder: option.placeholder || this.select2OptionForProduct.placeholder,
+      ajax: {
+        data: function (params) {
+          return {
+            ...params,
+            offset: params.offset || 0,
+            limit: params.limit || option.limit || 10
+          };
+        },
+        transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+          console.log(settings);
+          const params = settings.data;
+          const offset = settings.data['offset'];
+          const limit = option.limit || settings.data['limit'];
+          this.apiService.getObservable(url, { ...query, 'search': params['term'], offset, limit }).pipe(
+            map((res) => {
+              const total = +res.headers.get('x-total-count');
+              let data = res.body;
+              return { data, total };
+            }),
+          ).toPromise().then(rs => {
+            success(rs);
+          }).catch(err => {
+            console.error(err);
+            failure();
+          });
+        },
+        processResults: (rs: { data: any[], total: number }, params: any) => {
+          const data = rs.data;
+          const total = rs.total;
+          params.limit = params.limit || 10;
+          params.offset = params.offset || 0;
+          params.offset = params.offset += params.limit;
+          return {
+            results: data.map(item => {
+              // item.thumbnail = item?.FeaturePicture?.Thumbnail;
+              if (option?.prepareReaultItem) {
+                item = option.prepareReaultItem(item);
+              }
+              return item;
+            }),
+            pagination: {
+              more: params.offset < total
+            }
+          };
+        },
+      }
+    };
+  }
 }

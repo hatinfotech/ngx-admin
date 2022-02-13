@@ -390,6 +390,12 @@ ngx-header ngx-action-control-list {
   // width: 100%;
   // line-height: 1.5rem;
   padding: 0;
+
+
+  .select2-selection__choice__display {
+    white-space: normal;
+  }
+
   .select2-selection__arrow {
     top: 0.4rem !important;
     right: 0.3rem !important;
@@ -956,7 +962,9 @@ body ng2-smart-table table tr:nth-child(even) td:first-child:hover {
 body ng2-smart-table .form-control:focus {
   box-shadow: none !important;
 }
-
+body ng2-smart-table table tr th {
+  vertical-align: top !important;
+}
 body ng2-smart-table table tr th,
 body ng2-smart-table table tr td {
   padding: 0.2rem 0.2rem !important;

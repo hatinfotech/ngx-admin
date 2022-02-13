@@ -176,42 +176,52 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   select2OptionForProduct = {
-    placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // tags: true,
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+      limit: 10,
+      placeholder: 'Chọn hàng hóa...',
+      prepareReaultItem: (item) => {
+        item.thumbnail = item?.FeaturePicture?.Thumbnail;
+        return item;
+      }
+    }),
     withThumbnail: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeUnit: true, 'search': params['term'] });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeUnit: true, includeUnits: true, 'search': params['term'] }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data.map(item => {
-            item.thumbnail = item?.FeaturePicture?.Thumbnail;
-            return item;
-          })
-        };
-      },
-    },
+
+    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
+    // allowClear: true,
+    // width: '100%',
+    // dropdownAutoWidth: true,
+    // minimumInputLength: 0,
+    // // tags: true,
+    // withThumbnail: true,
+    // keyMap: {
+    //   id: 'Code',
+    //   text: 'Name',
+    // },
+    // ajax: {
+    //   // url: params => {
+    //   //   return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeUnit: true, 'search': params['term'] });
+    //   // },
+    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+    //     console.log(settings);
+    //     const params = settings.data;
+    //     this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeUnit: true, includeUnits: true, 'search': params['term'] }).then(rs => {
+    //       success(rs);
+    //     }).catch(err => {
+    //       console.error(err);
+    //       failure();
+    //     });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     // console.info(data, params);
+    //     return {
+    //       results: data.map(item => {
+    //         item.thumbnail = item?.FeaturePicture?.Thumbnail;
+    //         return item;
+    //       })
+    //     };
+    //   },
+    // },
   };
 
   select2OptionForUnit = {

@@ -126,38 +126,46 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   }
 
   select2OptionForProduct = {
-    placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,Sku=>Sku", includeSearchResultLabel: true, includeUnits: true, 'search': params['term'] });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,Sku=>Sku", includeSearchResultLabel: true, includeUnits: true, 'search': params['term'] }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data
-        };
-      },
-    },
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+      limit: 10,
+      placeholder: 'Chọn hàng hóa/dịch vụ...',
+      prepareReaultItem: (item) => {
+        item.thumbnail = item?.FeaturePicture?.Thumbnail;
+        return item;
+      }
+    }),
+    withThumbnail: true,
+    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
+    // allowClear: true,
+    // width: '100%',
+    // dropdownAutoWidth: true,
+    // minimumInputLength: 0,
+    // withThumbnail: true,
+    // keyMap: {
+    //   id: 'id',
+    //   text: 'text',
+    // },
+    // ajax: {
+    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+    //     console.log(settings);
+    //     const params = settings.data;
+    //     this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,Sku=>Sku,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeSearchResultLabel: true, includeUnits: true, 'search': params['term'] }).then(rs => {
+    //       success(rs);
+    //     }).catch(err => {
+    //       console.error(err);
+    //       failure();
+    //     });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     return {
+    //       results: data.map(item => {
+    //         item.thumbnail = item?.FeaturePicture?.Thumbnail;
+    //         return item;
+    //       })
+    //     };
+    //   },
+    // },
   };
 
   select2OptionForUnit = {
@@ -296,7 +304,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     // }
 
     /** Load and cache unit list */
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;

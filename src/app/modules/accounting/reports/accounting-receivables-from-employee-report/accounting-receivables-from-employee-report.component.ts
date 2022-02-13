@@ -122,7 +122,7 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.select2OptionForContact,
+                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10}),
                 multiple: true,
                 logic: 'OR',
                 allowClear: true,

@@ -458,37 +458,46 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   select2OptionForProduct = {
-    placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+      limit: 10,
+      placeholder: 'Chọn hàng hóa/dịch vụ...',
+      prepareReaultItem: (item) => {
+        item.thumbnail = item?.FeaturePicture?.Thumbnail;
+        return item;
+      }
+    }),
     withThumbnail: true,
-    // tags: false,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        return {
-          results: data.map(product => {
-            product.thumbnail = product?.FeaturePicture?.Thumbnail;
-            return product;
-          })
-        };
-      },
-    },
+    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
+    // allowClear: true,
+    // width: '100%',
+    // dropdownAutoWidth: true,
+    // minimumInputLength: 0,
+    // withThumbnail: true,
+    // // tags: false,
+    // keyMap: {
+    //   id: 'Code',
+    //   text: 'Name',
+    // },
+    // ajax: {
+    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+    //     console.log(settings);
+    //     this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
+    //       success(rs);
+    //     }).catch(err => {
+    //       console.error(err);
+    //       failure();
+    //     });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     return {
+    //       results: data.map(product => {
+    //         product.thumbnail = product?.FeaturePicture?.Thumbnail;
+    //         return product;
+    //       })
+    //     };
+    //   },
+    // },
   };
 
   select2OptionForUnit = {

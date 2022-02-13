@@ -52,7 +52,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<AccountingOtherBusinessVoucherFormComponent>,
+    public ref: NbDialogRef<CollaboratorAwardFormComponent>,
     public collaboratorService: CollaboratorService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);

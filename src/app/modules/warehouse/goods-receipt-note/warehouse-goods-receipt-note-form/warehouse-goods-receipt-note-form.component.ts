@@ -174,38 +174,48 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   select2OptionForProduct = {
-    placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+      limit: 10,
+      placeholder: 'Chọn hàng hóa...',
+      prepareReaultItem: (item) => {
+        item.thumbnail = item?.FeaturePicture?.Thumbnail;
+        return item;
+      }
+    }),
     withThumbnail: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code,Sku,Name,OriginName=>Name,FeaturePicture,Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        return {
-          results: data.map(product => {
-            product.thumbnail = product?.FeaturePicture?.Thumbnail;
-            // product.id = product.id + '/' + this.commonService.getObjectId(product.WarehouseUnit);
-            product.text = `${product.id} - ` + (product.Sku && `${product.Sku} - ` || '') + `${product.text}`;
-            return product;
-          })
-        };
-      },
-    },
+
+    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
+    // allowClear: true,
+    // width: '100%',
+    // dropdownAutoWidth: true,
+    // minimumInputLength: 0,
+    // withThumbnail: true,
+    // keyMap: {
+    //   id: 'Code',
+    //   text: 'Name',
+    // },
+    // ajax: {
+    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+    //     console.log(settings);
+    //     this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code,Sku,Name,OriginName=>Name,FeaturePicture,Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
+    //       success(rs);
+    //     }).catch(err => {
+    //       console.error(err);
+    //       failure();
+    //     });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     return {
+    //       results: data.map(product => {
+    //         product.thumbnail = product?.FeaturePicture?.Thumbnail;
+    //         // product.id = product.id + '/' + this.commonService.getObjectId(product.WarehouseUnit);
+    //         product.text = `${product.id} - ` + (product.Sku && `${product.Sku} - ` || '') + `${product.text}`;
+    //         return product;
+    //       })
+    //     };
+    //   },
+    // },
   };
 
   select2OptionForUnit = {
