@@ -410,7 +410,8 @@
         "action": "hành động",
         "dateOfReceipted": "ngày nhập kho",
         "addNewContact": "thêm liên hệ mới",
-        "editContact": "chỉnh sửa liên hệ"
+        "editContact": "chỉnh sửa liên hệ",
+        "pictureList": "danh sách hình ảnh" 
     },
     "Contact": {
         "Customer": {

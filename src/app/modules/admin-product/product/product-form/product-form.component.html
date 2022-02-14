@@ -140,8 +140,8 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-12">
-                <ngx-form-group [formGroup]="formItem" name="Pictures" label="Common.pictures" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
-                  <ngx-files-input formControlName="Pictures" [config]="{style: {height: '10rem'}, thumbnailStype: {height: '7rem', width: '8rem'}, colSize: 3}" (onThumbnailClick)="onThumbnailPcitureClick($event, formItem)"></ngx-files-input>
+                <ngx-form-group [formGroup]="formItem" name="Pictures" label="Common.pictureList" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-files-input formControlName="Pictures" [config]="{style: {height: '10rem'}, thumbnailStype: {height: '7rem', width: '8rem'}, colSize: 3, overrideOnThumbnailClick: true}" (onThumbnailClick)="onThumbnailPcitureClick($event, formItem)"></ngx-files-input>
                 </ngx-form-group>
               </div>
               <div class="col-sm-12">

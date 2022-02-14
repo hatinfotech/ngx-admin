@@ -41,6 +41,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
     style?: any,
     thumbnailStype?: any,
     colSize?: number,
+    overrideOnThumbnailClick?: boolean,
     onThumbnailClick?: (file: FileModel) => void,
   };
   @Output() onThumbnailClick = new EventEmitter<FileModel>();
@@ -140,7 +141,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
       case 'addedToQueue':
         if (typeof output.file !== 'undefined') {
           this.files.push(output.file);
-          if(!Array.isArray(this.value)) this.value = [];
+          if (!Array.isArray(this.value)) this.value = [];
           this.value.push({ Thumbnail: 'assets/images/no-image-available.png', progress: { percentage: 0 }, uploading: true, file: output.file });
           // output.file['index'] = this.value.length - 1;
         }
@@ -175,7 +176,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
           this.value[imageIndex] = respFile;
         } else {
           this.value.splice(imageIndex, 1);
-          this.commonService.toastService.show(output.file.response?.logs?.join(', '), 'Hệ thống không thể upload file', {status: 'danger', duration: 5000});
+          this.commonService.toastService.show(output.file.response?.logs?.join(', '), 'Hệ thống không thể upload file', { status: 'danger', duration: 5000 });
         }
         // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
 
@@ -228,12 +229,16 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
     // window.open(file.OriginImage, '_blank');
 
     // Open photo browser
-    this.commonService.openDialog(ImagesViewerComponent, {context: {
-      images: this.value.map(m => m.OriginImage),
-      imageIndex: this.value.findIndex(f => f.Id == file.Id)
-    }});
-
-    if(false) this.onThumbnailClick.emit(file);
+    if (!this.config?.overrideOnThumbnailClick) {
+      this.commonService.openDialog(ImagesViewerComponent, {
+        context: {
+          images: this.value.map(m => m.OriginImage),
+          imageIndex: this.value.findIndex(f => f.Id == file.Id)
+        }
+      });
+    } else {
+      this.onThumbnailClick.emit(file);
+    }
     return false;
   }
 

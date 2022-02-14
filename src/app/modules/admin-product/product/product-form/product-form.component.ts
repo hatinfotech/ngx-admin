@@ -24,6 +24,7 @@ import { Select2Option } from '../../../../lib/custom-element/select2/select2.co
 import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { AdminProductService } from '../../admin-product.service';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 
 class MyUploadAdapter {
   xhr: XMLHttpRequest;
@@ -622,7 +623,17 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
             label: this.commonService.translateText('Common.preview'),
             status: 'success',
             action: () => {
-              window.open(file.OriginImage, '_blank');
+              // window.open(file.OriginImage, '_blank');
+              const pictures = form.get('Pictures').value;
+              // console.log(pictures);
+              if (pictures && pictures.length > 0) {
+                this.commonService.openDialog(ImagesViewerComponent, {
+                  context: {
+                    images: pictures.map(m => m.OriginImage),
+                    imageIndex: pictures.findIndex(f => f.Id == file.Id)
+                  }
+                });
+              }
             },
           },
           {

@@ -55,10 +55,23 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             instance.valueChange.subscribe(value => {
             });
             instance.previewAction.subscribe((row: ProductModel) => {
-              this.commonService.openDialog(ImagesViewerComponent, {context: {
-                images: row?.Pictures.map(m => m['OriginImage']),
-                imageIndex: row?.Pictures?.findIndex(f => f.Id == row.FeaturePicture.Id) || 0
-              }});
+              const pictureList = row?.Pictures || [];
+              if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
+                pictureList.push(row.FeaturePicture);
+              }
+              if (pictureList.length > 0) {
+                const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
+                if (pictureList.length > 1) {
+                  const currentItems = pictureList.splice(currentIndex, 1);
+                  pictureList.unshift(currentItems[0]);
+                }
+                this.commonService.openDialog(ImagesViewerComponent, {
+                  context: {
+                    images: pictureList.map(m => m['OriginImage']),
+                    imageIndex: 0,
+                  }
+                });
+              }
             });
             instance.uploadAction.subscribe(async (row: ProductModel) => {
               if (this.files.length === 0) {

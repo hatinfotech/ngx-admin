@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { resolve } from 'dns';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
@@ -349,7 +350,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+          this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         });
       }
 
@@ -446,11 +447,15 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         const unitControl = newForm.get('Unit');
         unitControl['UnitList'] = data?.Product['Units'];
       }
+      // (async () => {
       newForm.patchValue(data);
       if (!data['Type']) {
         data["Type"] = 'PRODUCT';
       }
-      this.toMoney(parentFormGroup, newForm);
+      // await new Promise(resolve => setTimeout(() => resolve(true), 300));
+      // this.toMoney(parentFormGroup, newForm, null, );
+      // })()
+
     }
     return newForm;
   }
@@ -465,7 +470,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     if (!noFormControl.value) {
       noFormControl.setValue(detailsFormArray.length);
     }
-    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
+    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
@@ -473,7 +478,8 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
-  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
+  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
+    this.toMoney(parentFormGroup, newChildFormGroup, null, index);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -562,7 +568,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           unitControl['UnitList'] = selectedData.Units;
           unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true));
         }
-        if(selectedData.Pictures && selectedData.Pictures.length > 0) {
+        if (selectedData.Pictures && selectedData.Pictures.length > 0) {
           detail.get('Image').setValue(selectedData.Pictures);
         } else {
           detail.get('Image').setValue([]);
@@ -575,28 +581,56 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     return false;
   }
 
-  calculatToMoney(detail: FormGroup) {
-    let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    // let tax = detail.get('Tax').value;
-    // if (tax) {
-    //   if (typeof tax === 'string') {
-    //     tax = this.taxList.filter(t => t.Code === tax)[0];
-    //   }
-    //   toMoney += toMoney * tax.Tax / 100;
-    // }
-    return toMoney;
+  // calculatToMoney(detail: FormGroup) {
+  //   let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+  //   // let tax = detail.get('Tax').value;
+  //   // if (tax) {
+  //   //   if (typeof tax === 'string') {
+  //   //     tax = this.taxList.filter(t => t.Code === tax)[0];
+  //   //   }
+  //   //   toMoney += toMoney * tax.Tax / 100;
+  //   // }
+  //   return toMoney;
+  // }
+  calculatToMoney(detail: FormGroup, source?: string) {
+    if (source === 'ToMoney') {
+      const price = detail.get('ToMoney').value / detail.get('Quantity').value;
+      return price;
+    } else {
+      const toMoney = detail.get('Quantity').value * detail.get('Price').value;
+      return toMoney;
+    }
   }
 
-  toMoney(formItem: FormGroup, detail: FormGroup) {
-    detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+  // toMoney(formItem: FormGroup, detail: FormGroup) {
+  //   detail.get('ToMoney').setValue(this.calculatToMoney(detail));
 
-    // Call culate total
-    const details = this.getDetails(formItem);
-    let total = 0;
-    for (let i = 0; i < details.controls.length; i++) {
-      total += this.calculatToMoney(details.controls[i] as FormGroup);
-    }
-    formItem.get('_total').setValue(total);
+  //   // Call culate total
+  //   const details = this.getDetails(formItem);
+  //   let total = 0;
+  //   for (let i = 0; i < details.controls.length; i++) {
+  //     total += this.calculatToMoney(details.controls[i] as FormGroup);
+  //   }
+  //   formItem.get('_total').setValue(total);
+  //   return false;
+  // }
+
+
+  toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
+    this.commonService.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
+      if (source === 'ToMoney') {
+        detail.get('Price').setValue(this.calculatToMoney(detail, source));
+      } else {
+        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+      }
+      // Call culate total
+      const details = this.getDetails(formItem);
+      let total = 0;
+      for (let i = 0; i < details.controls.length; i++) {
+        total += this.calculatToMoney(details.controls[i] as FormGroup);
+      }
+      formItem.get('_total').setValue(total);
+    });
     return false;
   }
 
