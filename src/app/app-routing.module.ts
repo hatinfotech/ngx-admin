@@ -101,6 +101,7 @@ import { CollaboratorAwardListComponent } from './modules/collaborator/award/col
 import { AccountingCashFlowReportComponent } from './modules/accounting/reports/accounting-cash-flow-report/accounting-cash-flow-report.component';
 import { AccountingDashboardComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard.component';
 import { WarehouseInventoryAdjustNoteListComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-list/inventory-adjust-note-list.component';
+import { SalesReturnsVoucherListComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-list/sales-returns-voucher-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -413,6 +414,15 @@ const routes: Routes = [
     path: 'sales/sales-voucher/form/:id',
     canActivate: [AuthGuardService],
     component: SalesVoucherFormComponent,
+  },
+  //Sales returns voucher
+  {
+    path: 'sales/returns-voucher/list',
+    canActivate: [AuthGuardService],
+    component: SalesReturnsVoucherListComponent,
+    data: {
+      reuse: true,
+    },
   },
   // Sales price table
   {

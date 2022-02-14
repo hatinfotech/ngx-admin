@@ -244,6 +244,9 @@ import { CollaboratorOrderTeleCommitPrintComponent } from './modules/collaborato
 import { WarehouseInventoryAdjustNoteFormComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-form/inventory-adjust-note-form.component';
 import { WarehouseInventoryAdjustNoteListComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-list/inventory-adjust-note-list.component';
 import { WarehouseInventoryAdjustNotePrintComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-print/inventory-adjust-note-print.component';
+import { SalesReturnsVoucherListComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-list/sales-returns-voucher-list.component';
+import { SalesReturnsVoucherFormComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-form/sales-returns-voucher-form.component';
+import { SalesReturnsVoucherPrintComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-print/sales-returns-voucher-print.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -280,6 +283,9 @@ export class DynamicLocaleId extends String {
     SalesVoucherListComponent,
     SalesVoucherFormComponent,
     SalesVoucherPrintComponent,
+    SalesReturnsVoucherListComponent,
+    SalesReturnsVoucherFormComponent,
+    SalesReturnsVoucherPrintComponent,
     PriceTableListComponent,
     PriceTableFormComponent,
     PriceTablePrintComponent,

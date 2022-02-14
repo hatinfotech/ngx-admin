@@ -53,6 +53,7 @@ import { NotificationModel } from '../models/notification.model';
 import { RootConfigModel, SystemConfigModel } from '../models/model';
 import { AdminProductService } from '../modules/admin-product/admin-product.service';
 import { CollaboratorEducationArticlePrintComponent } from '../modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
+import { SalesReturnsVoucherPrintComponent } from '../modules/sales/sales-returns-voucher/sales-returns-voucher-print/sales-returns-voucher-print.component';
 
 interface ClipboardItem {
   readonly types: string[];
@@ -895,6 +896,7 @@ export class CommonService {
 
   voucherPrintConponentTypeIndex = {
     'SALES': SalesVoucherPrintComponent,
+    'SALESRETURNS': SalesReturnsVoucherPrintComponent,
     'PURCHASE': PurchaseVoucherPrintComponent,
     'PURCHASEORDER': PurchaseOrderVoucherPrintComponent,
     'GOODSDELIVERY': WarehouseGoodsDeliveryNotePrintComponent,

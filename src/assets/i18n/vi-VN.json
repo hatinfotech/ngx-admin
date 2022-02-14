@@ -12,6 +12,7 @@
     "Sales": {
         "receipt": "thu tiền",
         "dateOfSales":"Ngày bán hàng",
+        "dateOfReturns":"Ngày trả hàng",
         "PriceReport": {
             "title": "{{definition}}{{action}} phiếu báo giá",
             "List": {
@@ -23,6 +24,15 @@
         },
         "SalesVoucher": {
             "title": "{{action}}{{definition}} phiếu bán hàng",
+            "List": {
+                "title": "sales voucher list"
+            },
+            "Form": {
+                "title": "{{action}} sales voucher"
+            }
+        },
+        "SalesReturnsVoucher": {
+            "title": "{{action}}{{definition}} phiếu trả hàng",
             "List": {
                 "title": "sales voucher list"
             },

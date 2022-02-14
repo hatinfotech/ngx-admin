@@ -368,6 +368,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     params['includeDetails'] = true;
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
+    params['includeUnit'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -561,7 +562,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     return false;
   }
 
-  async onSelectUnit(detail: FormGroup, selectedData: ProductModel) {
+  async onSelectUnit(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
     const unitId = this.commonService.getObjectId(selectedData);
     const productId = this.commonService.getObjectId(detail.get('Product').value);
     if (unitId && productId) {
@@ -729,7 +730,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               if (index < 0) {
                 const details = this.getDetails(formGroup);
                 // get purchase order
-                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeUnit: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
@@ -758,6 +759,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                       delete voucherDetail.No;
                       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY') });
                       details.push(newDtailFormGroup);
+                      this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
                     }
                   }
                 }

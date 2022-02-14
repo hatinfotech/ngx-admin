@@ -1,42 +1,40 @@
-import { CashVoucherModel } from './../../../../models/accounting.model';
-import { CashReceiptVoucherFormComponent } from './../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
+import { CashVoucherModel } from '../../../../models/accounting.model';
+import { CashReceiptVoucherFormComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 // import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
+import { SalesReturnsVoucherModel, SalesReturnsVoucherDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
-import { TaxModel } from '../../../../models/tax.model';
-import { UnitModel } from '../../../../models/unit.model';
-import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
+import { SalesReturnsVoucherFormComponent } from '../sales-returns-voucher-form/sales-returns-voucher-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 
 @Component({
-  selector: 'ngx-sales-voucher-print',
-  templateUrl: './sales-voucher-print.component.html',
-  styleUrls: ['./sales-voucher-print.component.scss'],
+  selector: 'ngx-sales-returns-voucher-print',
+  templateUrl: './sales-returns-voucher-print.component.html',
+  styleUrls: ['./sales-returns-voucher-print.component.scss'],
 })
-export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesVoucherModel> implements OnInit {
+export class SalesReturnsVoucherPrintComponent extends DataManagerPrintComponent<SalesReturnsVoucherModel> implements OnInit {
 
   /** Component name */
-  componentName = 'SalesPriceReportPrintComponent';
+  componentName = 'SalesReturnsVoucherPrintComponent';
   title: string = '';
   env = environment;
-  apiPath = '/sales/sales-vouchers';
+  apiPath = '/sales/sales-returns-vouchers';
   processMapList: ProcessMap[] = [];
   idKey = ['Code'];
-  formDialog = SalesVoucherFormComponent;
+  formDialog = SalesReturnsVoucherFormComponent;
 
   constructor(
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<SalesVoucherPrintComponent>,
+    public ref: NbDialogRef<SalesReturnsVoucherPrintComponent>,
     public datePipe: DatePipe,
   ) {
     super(commonService, router, apiService, ref);
@@ -49,7 +47,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
 
   async init() {
     const result = await super.init();
-    // this.title = `SalesVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
+    // this.title = `SalesReturnsVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
 
     // if (this.data && this.data.length > 0) {
     //   for (const i in this.data) {
@@ -67,8 +65,8 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     return result;
   }
 
-  renderTitle(data: SalesVoucherModel) {
-    return `PhieuBanHang_${this.getIdentified(data).join('-')}` + (data.DateOfSale ? ('_' + this.datePipe.transform(data.DateOfSale, 'short')) : '');
+  renderTitle(data: SalesReturnsVoucherModel) {
+    return `PhieuTraHang_${this.getIdentified(data).join('-')}` + (data.DateOfReturn ? ('_' + this.datePipe.transform(data.DateOfReturn, 'short')) : '');
   }
 
   close() {
@@ -88,7 +86,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     }
   }
 
-  toMoney(detail: SalesVoucherDetailModel) {
+  toMoney(detail: SalesReturnsVoucherDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
       // detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
@@ -130,14 +128,14 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     return '';
   }
 
-  prepareCopy(data: SalesVoucherModel) {
+  prepareCopy(data: SalesReturnsVoucherModel) {
     this.close();
-    this.commonService.openDialog(SalesVoucherFormComponent, {
+    this.commonService.openDialog(SalesReturnsVoucherFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [data.Code],
         isDuplicate: true,
-        onDialogSave: (newData: SalesVoucherModel[]) => {
+        onDialogSave: (newData: SalesReturnsVoucherModel[]) => {
           // if (onDialogSave) onDialogSave(row);
           this.onClose(newData[0]);
         },
@@ -150,7 +148,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     });
   }
 
-  approvedConfirm(data: SalesVoucherModel) {
+  approvedConfirm(data: SalesReturnsVoucherModel) {
     // if (['COMPLETE'].indexOf(data.State) > -1) {
     //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
@@ -194,7 +192,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<SalesVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<SalesReturnsVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
             this.loading = false;
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
@@ -218,9 +216,9 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     ]);
   }
 
-  approvedConfirmX(data: SalesVoucherModel) {
+  approvedConfirmX(data: SalesReturnsVoucherModel) {
     if (data.State === 'COMPLETE') {
-      this.commonService.showDialog(this.commonService.translateText('Common.notice'), this.commonService.translateText('Common.completedNotice', { resource: this.commonService.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
+      this.commonService.showDialog(this.commonService.translateText('Common.notice'), this.commonService.translateText('Common.completedNotice', { resource: this.commonService.translateText('Sales.SalesReturnsVoucher.title', { action: '', definition: '' }) }), [
         {
           label: this.commonService.translateText('Common.ok'),
           status: 'success',
@@ -228,7 +226,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
       ]);
       return;
     }
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.commonService.translateText('Sales.SalesVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.commonService.translateText('Sales.SalesReturnsVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',
@@ -246,7 +244,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
           } else if (data.State === 'APPROVED') {
             params['complete'] = true;
           }
-          this.apiService.putPromise<SalesVoucherModel[]>('/sales/sales-vouchers', params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<SalesReturnsVoucherModel[]>('/sales/sales-vouchers', params, [{ Code: data.Code }]).then(rs => {
             this.commonService.showDialog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
                 label: this.commonService.translateText('Common.close'),
@@ -266,12 +264,12 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeObject: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
+    return this.apiService.getPromise<SalesReturnsVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeObject: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
       for (const item of rs) {
         const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
         item.StateLabel = processMap.label;
         if (item && item.Details) {
-          this.setDetailsNo(item.Details, (detail: SalesVoucherDetailModel) => detail.Type !== 'CATEGORY');
+          this.setDetailsNo(item.Details, (detail: SalesReturnsVoucherDetailModel) => detail.Type !== 'CATEGORY');
           for (const detail of item.Details) {
             item['Total'] += detail['ToMoney'] = this.toMoney(detail);
           }
@@ -282,11 +280,11 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     });
   }
 
-  getItemDescription(item: SalesVoucherModel) {
+  getItemDescription(item: SalesReturnsVoucherModel) {
     return item?.Description;
   }
 
-  summaryCalculate(data: SalesVoucherModel[]) {
+  summaryCalculate(data: SalesReturnsVoucherModel[]) {
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;
@@ -304,7 +302,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     return data;
   }
 
-  receipt(item: SalesVoucherModel) {
+  receipt(item: SalesReturnsVoucherModel) {
     this.commonService.openDialog(CashReceiptVoucherFormComponent, {
       context: {
         onDialogSave: (items: CashVoucherModel[]) => {

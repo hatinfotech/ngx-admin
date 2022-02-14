@@ -60,7 +60,7 @@ export class WarehouseGoodsReceiptNoteDetailModel {
   ProductName?: string;
   Description?: string;
   Unit?: string & UnitModel;
-  Quantity?: string & number;
+  Quantity?: number;
   PriceOfReceipted?: string;
   Location?: string;
   ImageThumbnail?: string;
@@ -112,7 +112,7 @@ export class WarehouseInventoryAdjustNoteDetailModel {
   ProductName?: string;
   Description?: string;
   Unit?: string & UnitModel;
-  Quantity?: string & number;
+  Quantity?: number;
   PriceOfReceipted?: string;
   Location?: string;
   ImageThumbnail?: string;

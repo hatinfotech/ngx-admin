@@ -17,6 +17,9 @@
                 <nb-tab *ngIf="components['SALES']" tabTitle="{{components['SALES'].title}}">
                     <ngx-sales-voucher-list (onItemsChoosed)="onDialogChoose($event, 'SALES')"></ngx-sales-voucher-list>
                 </nb-tab>
+                <nb-tab *ngIf="components['SALESRETURNS']" tabTitle="{{components['SALESRETURNS'].title}}">
+                    <ngx-sales-returns-voucher-list (onItemsChoosed)="onDialogChoose($event, 'SALESRETURNS')"></ngx-sales-returns-voucher-list>
+                </nb-tab>
                 <nb-tab *ngIf="components['PURCHASE']" tabTitle="{{components['PURCHASE'].title}}">
                     <ngx-purchase-voucher-list (onItemsChoosed)="onDialogChoose($event, 'PURCHASE')"></ngx-purchase-voucher-list>
                 </nb-tab>

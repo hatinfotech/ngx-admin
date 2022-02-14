@@ -1,5 +1,5 @@
 import { ProductUnitModel } from './../../../../models/product.model';
-import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.model';
+import { WarehouseGoodsContainerModel, WarehouseGoodsDeliveryNoteModel } from './../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
@@ -12,7 +12,7 @@ import { DataManagerFormComponent } from '../../../../lib/data-manager/data-mana
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PurchaseVoucherModel } from '../../../../models/purchase.model';
-import { SalesVoucherModel } from '../../../../models/sales.model';
+import { SalesReturnsVoucherModel, SalesVoucherModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { WarehouseGoodsReceiptNoteModel, WarehouseGoodsReceiptNoteDetailModel } from '../../../../models/warehouse.model';
@@ -368,7 +368,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     // }
 
     this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path' });
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSERECEIPT', select: 'id=>Code,text=>Name,type=>Type' });
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSERECEIPT', select: 'id=>Code,text=>Name,type' });
 
     return super.init().then(status => {
       if (this.isDuplicate) {
@@ -394,6 +394,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     params['includeDetails'] = true;
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
+    params['includeUnit'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -591,7 +592,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     }
   }
 
-  
+
 
   onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
 
@@ -609,7 +610,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     return false;
   }
 
-  async onSelectUnit(detail: FormGroup, selectedData: ProductModel) {
+  async onSelectUnit(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
     const unitId = this.commonService.getObjectId(selectedData);
     const productId = this.commonService.getObjectId(detail.get('Product').value);
     if (unitId && productId) {
@@ -630,7 +631,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         return [];
       });
       detail['ContainerList'] = containerList;
-      if(containerList && containerList.length == 1) {
+      if (containerList && containerList.length == 1) {
         detail.get('Container').setValue(containerList[0]);
       }
     }
@@ -700,6 +701,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         components: {
           'PURCHASE': { title: 'Phiếu mua hàng' },
           'GOODSDELIVERY': { title: 'Phiếu xuất kho' },
+          'SALESRETURNS': { title: 'Phiếu hàng bán trả lại' },
         },
         // inputMode: 'dialog',
         onDialogChoose: async (chooseItems: any[], type?: string) => {
@@ -714,7 +716,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
               if (index < 0) {
                 const details = this.getDetails(formGroup);
                 // get purchase order
-                const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+                const voucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
@@ -751,6 +753,71 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+          }
+          if (type === 'SALESRETURNS') {
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                const details = this.getDetails(formGroup);
+                // get purchase order
+                const voucher = await this.apiService.getPromise<SalesReturnsVoucherModel[]>('/sales/sales-returns-vouchers/' + chooseItems[i].Code, { includeRelativeVouchers: true, includeContact: true, includeDetails: true, includeUnit: true }).then(rs => rs[0]);
+
+                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete voucher.Id;
+                  // delete voucher.Code;
+                  formGroup.patchValue({ ...voucher, Code: null, Details: [] });
+                  details.clear();
+                }
+                insertList.push(chooseItems[i]);
+                if(voucher.RelativeVouchers) {
+                  for(const relativeVoucher of voucher.RelativeVouchers) {
+                    if(relativeVoucher.type == 'GOODSDELIVERY') {
+                      insertList.push(relativeVoucher);
+                      const goodsDeliveryVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + relativeVoucher.id, { includeContact: true, includeDetails: true, includeUnit: true }).then(rs => rs[0]);
+                      if(goodsDeliveryVoucher && goodsDeliveryVoucher.Details && goodsDeliveryVoucher.Details.length > 0) {
+                        details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu xuất kho: ' + goodsDeliveryVoucher.Code + ' - ' + goodsDeliveryVoucher.Title }));
+                        for(const goodsDeliveryDetail of goodsDeliveryVoucher.Details) {
+                          if (goodsDeliveryDetail.Type === 'PRODUCT') {
+                            const quantity = voucher.Details.find(f => this.commonService.getObjectId(f.Product) == this.commonService.getObjectId(goodsDeliveryDetail.Product))?.Quantity;
+                            const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...goodsDeliveryDetail, No: null, Voucher: null, Business: [this.accountingBusinessList.find(f => f.id == 'GOODSRECEIPTFORRETURNS')], RelateDetail: `GOODSDELIVERY/${goodsDeliveryVoucher.Code}/${goodsDeliveryDetail.Id}`, Quantity: quantity });
+                            newDtailFormGroup.get('Business').disable();
+                            details.push(newDtailFormGroup);
+                            this.onSelectUnit(newDtailFormGroup, goodsDeliveryDetail.Unit, true);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+
+                // Insert order details into voucher details
+                // if (voucher?.Details) {
+                //   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu trả hàng: ' + voucher.Code + ' - ' + voucher.Title }));
+                //   for (const voucherDetail of voucher.Details) {
+                //     if (voucherDetail.Type === 'PRODUCT') {
+                //       // delete orderDetail.Id;
+                //       // delete orderDetail.Voucher;
+                //       // delete orderDetail.No;
+                //       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: [this.accountingBusinessList.find(f => f.id == 'GOODSRECEIPTFORRETURNS')], RelateDetail: `SALESRETURNS/${voucher.Code}/${voucherDetail.Id}` });
+                //       newDtailFormGroup.get('Business').disable();
+                //       details.push(newDtailFormGroup);
+                //       this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
+                //     }
+                //   }
+                // }
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type }))]);
           }
           if (type === 'GOODSDELIVERY') {
             for (let i = 0; i < chooseItems.length; i++) {
