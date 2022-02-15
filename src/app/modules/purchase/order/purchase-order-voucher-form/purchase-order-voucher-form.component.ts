@@ -1,9 +1,9 @@
+import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
-import { resolve } from 'dns';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
@@ -12,15 +12,16 @@ import { DataManagerFormComponent } from '../../../../lib/data-manager/data-mana
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel, PurchaseVoucherModel } from '../../../../models/purchase.model';
+import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel } from '../../../../models/purchase.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
-import { PurchaseVoucherPrintComponent } from '../../voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
+import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-form',
@@ -445,7 +446,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     if (data) {
       if (data?.Product && Array.isArray(data.Product['Units'])) {
         const unitControl = newForm.get('Unit');
-        unitControl['UnitList'] = data?.Product['Units'];
+        newForm['UnitList'] = data?.Product['Units'];
       }
       // (async () => {
       newForm.patchValue(data);
@@ -482,6 +483,167 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     this.toMoney(parentFormGroup, newChildFormGroup, null, index);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
+  }
+
+  /**
+   * Choose product form recent purchase order and add to details
+   * @param parentFormGroup 
+   * @returns 
+   */
+  addMultiProducts(parentFormGroup: FormGroup) {
+
+    const filter = { group_Object: true, group_Product: true, includeUnit: true };
+    const objectId = this.commonService.getObjectId(parentFormGroup.get('Object').value);
+    if (objectId) {
+      filter['eq_Object'] = objectId;
+      filter['sort_DateOfOrder'] = 'desc';
+    }
+
+    this.commonService.openDialog(DynamicListDialogComponent, {
+      context: {
+        inputMode: 'dialog',
+        choosedMode: true,
+        onDialogChoose: async (choosedItems: PurchaseOrderVoucherDetailModel[]) => {
+          console.log(choosedItems);
+          const productIds = choosedItems.map(m => m.Product);
+          const productList = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: '[' + productIds.join(',') + ']', select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true });
+          const details = this.getDetails(parentFormGroup);
+          for (const product of productList) {
+            const chooseItem = choosedItems.find(f => f.Product == product.Code);
+            const newDetailFormGroup = this.makeNewDetailFormGroup(parentFormGroup, {
+              Product: product as any,
+              Price: chooseItem?.Price,
+              Quantity: chooseItem?.Quantity,
+            });
+            newDetailFormGroup['UnitList'] = product.Units;
+            details.push(newDetailFormGroup);
+            newDetailFormGroup.get('Unit').setValue(product.Units.find(f => f['DefaultImport']));
+            this.onAddDetailFormGroup(parentFormGroup, newDetailFormGroup, details.length - 1);
+          }
+        },
+        title: 'Danh sách hàng hóa đã đặt hàng nhà cung cấp ' + parentFormGroup.get('ObjectName').value,
+        apiPath: '/purchase/order-voucher-details',
+        idKey: ['Product'],
+        params: filter,
+        // actionButtonList: [],
+        listSettings: {
+          // pager: {
+          //   display: true,
+          //   perPage: 10,
+          // },
+          actions: false,
+          columns: {
+            // No: {
+            //   title: 'No.',
+            //   type: 'string',
+            //   width: '5%',
+            //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            // },
+            Order: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.voucher'), 'head-title'),
+              type: 'text',
+              renderComponent: SmartTableTagsComponent,
+              // onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+              //   instance.click.subscribe((voucher: string) => this.commonService.previewVoucher('CLBRTORDER', voucher));
+              // },
+              width: '10%',
+              // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              // valuePrepareFunction: (cell: string, row: any) => {
+              //   return [{ id: cell, text: cell }] as any;
+              // },
+            },
+            Product: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.product'), 'head-title'),
+              type: 'string',
+              width: '10%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Description: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+              type: 'string',
+              width: '40%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Unit: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Product.unit'), 'head-title'),
+              type: 'string',
+              width: '10%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              valuePrepareFunction: (cell, row) => {
+                return this.commonService.getObjectText(cell);
+              }
+            },
+            Quantity: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.quantity'), 'head-title'),
+              type: 'string',
+              width: '10%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            Price: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.price'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+            },
+            ToMoney: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+              valuePrepareFunction: (cell: string, row: PurchaseOrderVoucherDetailModel) => {
+                return `${row.Quantity * row.Price}`;
+              },
+            },
+            Preview: {
+              title: this.commonService.translateText('Common.show'),
+              type: 'custom',
+              width: '5%',
+              class: 'align-right',
+              renderComponent: SmartTableButtonComponent,
+              onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+                instance.iconPack = 'eva';
+                instance.icon = 'external-link-outline';
+                instance.display = true;
+                instance.status = 'primary';
+                instance.style = 'text-align: right';
+                instance.class = 'align-right';
+                instance.title = this.commonService.translateText('Common.preview');
+                instance.valueChange.subscribe(value => {
+                  // instance.icon = value ? 'unlock' : 'lock';
+                  // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+                  // instance.disabled = value !== 'REQUEST';
+                });
+                instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseOrderVoucherDetailModel) => {
+                  this.commonService.previewVoucher('PURCHASEORDER', rowData.Order);
+                });
+              },
+            }
+          }
+        }
+      },
+    });
+
+    // const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
+    // const detailsFormArray = this.getDetails(parentFormGroup);
+    // detailsFormArray.push(newChildFormGroup);
+    // const noFormControl = newChildFormGroup.get('No');
+    // if (!noFormControl.value) {
+    //   noFormControl.setValue(detailsFormArray.length);
+    // }
+    // this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
+    return false;
   }
   /** End Detail Form */
 
@@ -565,7 +727,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         detail.get('Description').setValue(selectedData.Name);
         if (selectedData.Units) {
           const unitControl = detail.get('Unit');
-          unitControl['UnitList'] = selectedData.Units;
+          detail['UnitList'] = selectedData.Units;
           unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true));
         }
         if (selectedData.Pictures && selectedData.Pictures.length > 0) {

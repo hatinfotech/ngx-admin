@@ -20,7 +20,7 @@
                                                     <ngx-select2 formControlName="Object" [select2Option]="select2ContactOption" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group> -->
                                                 <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons">
-                                                    <nb-checkbox class="form-group-icon-control" formControlName="IsObjectRevenue" nbTooltip="Ghi nhận doanh số cho đối tượng"></nb-checkbox>
+                                                    <nb-checkbox class="form-group-icon-control" formControlName="IsObjectRevenue" nbTooltip="Giảm doanh số cho đối tượng"></nb-checkbox>
                                                     <ngx-select2 class="form-group-input-control" formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>

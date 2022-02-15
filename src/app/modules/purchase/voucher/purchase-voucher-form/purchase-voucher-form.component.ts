@@ -870,9 +870,9 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                 for (const orderDetail of purchaseOrder.Details) {
                   if (orderDetail.Type !== 'CATEGORY') {
                     delete orderDetail.Id;
-                    delete orderDetail.Voucher;
+                    // delete orderDetail.Order;
                     delete orderDetail.No;
-                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, orderDetail);
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {...orderDetail});
                     details.push(newDtailFormGroup);
                     await new Promise(resolve => setTimeout(() => resolve(true), 300));
                     this.toMoney(formGroup, newDtailFormGroup);

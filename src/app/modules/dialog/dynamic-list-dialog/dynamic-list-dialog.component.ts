@@ -33,6 +33,7 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
   @Input() listSettings: SmartTableSetting;
   // @Input() actionButtonList?: ActionControl[];
   @Input() params?: any;
+  @Input() choosedMode = false;
   @Input() data?: M[];
   // formDialog = CollaboratorCommissionFormComponent;
 
@@ -63,7 +64,10 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
   async init() {
     // await this.loadCache();
     return super.init().then(rs => {
-      const excludeActionButtons = ['choose', 'add', 'delete', 'edit'];
+      const excludeActionButtons = ['add', 'delete', 'edit'];
+      if (!this.isChoosedMode) {
+        excludeActionButtons.push('choose');
+      }
       this.actionButtonList = this.actionButtonList.filter(f => excludeActionButtons.indexOf(f.name) < 0);
       return rs;
     });
@@ -207,7 +211,7 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
   }
 
   get isChoosedMode() {
-    return false;
+    return this.choosedMode || false;
   }
 
 }

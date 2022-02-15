@@ -232,7 +232,7 @@
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-select2 formControlName="Unit" [data]="detail.get('Unit')['UnitList'] || unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
+                                                    <ngx-select2 formControlName="Unit" [data]="detail['UnitList'] || unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
@@ -261,10 +261,15 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 buttons-row">
+                                    <!-- <div class="buttons-row"> -->
                                     <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero [disabled]="isProcessing">
                                         <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Common.addProduct' | translate | headtitlecase}}
                                     </button>
+                                    <button nbButton status="primary" (click)="addMultiProducts(formItem)" size="medium" hero [disabled]="isProcessing">
+                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Thêm nhiều hàng hóa/dịch vụ' | translate | headtitlecase}}
+                                    </button>
+                                    <!-- </div> -->
                                 </div>
                                 <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12"></div>
                                 <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
