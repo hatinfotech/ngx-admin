@@ -49,7 +49,7 @@
                   <td [innerHTML]="renderValue(detail.Product | objectid)"></td>
                   <td [innerHTML]="renderValue(detail.Description)"></td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
-                  <td class="text-align-right">{{detail.Unit?.Name || detail.Unit}}</td>
+                  <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                   <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                   <td class="text-align-right">{{detail.Tax | objecttext}}</td>
                   <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td>
