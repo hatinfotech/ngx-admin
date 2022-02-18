@@ -538,12 +538,28 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       ConversionRatio: ['1'],
       IsDefaultSales: [true],
       IsDefaultPurchase: [false],
+      IsManageByAccessNumber: [false],
     });
 
     if (data) {
       // data['Id_old'] = data['Id'];
       newForm.patchValue(data);
     }
+    // const unitConversions = this.getUnitConversions(formItem);
+    // newForm.get('IsDefaultSales').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(changed => {
+    //   if (!this.isProcessing) {
+    //     // this.onProcessing();
+    //     // if (changed) {
+    //       for (const unitConversion of unitConversions.controls) {
+    //         if(newForm != unitConversion) {
+    //           unitConversion.get('IsDefaultSales').setValue(!changed);
+    //           console.log(unitConversion);
+    //         }
+    //       }
+    //     // }
+    //     // this.onProcessed();
+    //   }
+    // });
     return newForm;
   }
   getUnitConversions(formItem: FormGroup) {
@@ -659,4 +675,28 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       return rs;
     });
   };
+
+  onIsDefaultSalesChange(parentFormItem: FormGroup, formItem: FormGroup, event: any, index: number) {
+    console.log(event);
+    if (!this.isProcessing) {
+      const unitConversions = this.getUnitConversions(parentFormItem);
+      for (const unitConversion of unitConversions.controls) {
+        if (unitConversion !== formItem) {
+          unitConversion.get('IsDefaultSales').setValue(!formItem.get('IsDefaultSales').value);
+        }
+      }
+    }
+  }
+
+  onIsDefaultPurchaseChange(parentFormItem: FormGroup, formItem: FormGroup, event: any, index: number) {
+    console.log(event);
+    if (!this.isProcessing) {
+      const unitConversions = this.getUnitConversions(parentFormItem);
+      for (const unitConversion of unitConversions.controls) {
+        if (unitConversion !== formItem) {
+          unitConversion.get('IsDefaultPurchase').setValue(!formItem.get('IsDefaultPurchase').value);
+        }
+      }
+    }
+  }
 }

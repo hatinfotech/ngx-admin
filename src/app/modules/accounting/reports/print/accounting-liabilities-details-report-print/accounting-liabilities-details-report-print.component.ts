@@ -180,11 +180,12 @@ export class AccountingLiabilitiesDetailsReportPrintComponent extends DataManage
   summaryCalculate(data: any[]) {
     for (const i in data) {
       const item = data[i];
-      item['Total'] = 0;
+      // item['Total'] = 0;
       // item['Title'] = this.renderTitle(item);
-      for (const detail of item.Details) {
-        item['Total'] += parseFloat(detail['GenerateCredit'] as any) - parseFloat(detail['GenerateDebit'] as any);
-      }
+      // for (const detail of item.Details) {
+      //   item['Total'] += parseFloat(detail['GenerateCredit'] as any) - parseFloat(detail['GenerateDebit'] as any);
+      // }
+      item['Total'] = item.Details[item?.Details.length - 1]?.IncrementAmount;
       //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
     }
     return data;

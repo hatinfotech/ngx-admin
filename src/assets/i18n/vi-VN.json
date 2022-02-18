@@ -421,7 +421,8 @@
         "dateOfReceipted": "ngày nhập kho",
         "addNewContact": "thêm liên hệ mới",
         "editContact": "chỉnh sửa liên hệ",
-        "pictureList": "danh sách hình ảnh" 
+        "pictureList": "danh sách hình ảnh",
+        "printBarCode": "in mã vạch"
     },
     "Contact": {
         "Customer": {
@@ -649,7 +650,8 @@
         "calculateCostOfGoodsSold": "tính giá vốn hàng hóa",
         "calculateCostOfGoodsSoldConfirm": "bạn có chắc là muốn tính giá vốn hàng hóa trong kho?, lệnh này sẽ tính toán dựa trên phương pháp tính giá vốn trong cài đặt.",
         "container": "vị trí",
-        "findOrder": "số nhận thức"
+        "findOrder": "số nhận thức",
+        "accessNumber": "mã truy xuất"
     },
     "AdminProduct": {
         "chooseProducts": "chọn sản phẩm",

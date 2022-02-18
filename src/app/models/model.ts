@@ -29,6 +29,8 @@ export interface SystemConfigModel {
             companyTaxCode: string,
             email: string,
             tel: string,
+            address: string,
+            website: string,
             voucherInfo: string,
             voucherLogo: string,
             voucherLogoHeight: number,

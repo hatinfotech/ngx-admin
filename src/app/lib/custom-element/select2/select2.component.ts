@@ -156,6 +156,20 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
       //   id: '',
       //   text: this.select2Option.placeholder,
       // });
+      // this.data.unshift({id: '123', text: '123'});
+      if (!this._select2Option['ajax']) {
+        if (Array.isArray(this.value)) {
+          let newOptions = [...this.value];
+          for (const item of this.data) {
+            if (this.value.map(m => m['id'] || m).indexOf(item['id'] || item) > -1) {
+              newOptions = newOptions.filter(f => (f['id'] || f) != (item['id'] || item));
+            }
+          }
+          if (newOptions.length > 0) {
+            this.data = this.data.concat(newOptions);
+          }
+        }
+      }
     }
   }
 

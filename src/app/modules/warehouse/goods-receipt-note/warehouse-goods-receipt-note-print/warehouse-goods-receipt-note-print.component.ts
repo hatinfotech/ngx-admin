@@ -12,6 +12,7 @@ import { DatePipe } from '@angular/common';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 // import { AppModule } from '../../warehouse.module';
+import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-print',
@@ -57,6 +58,27 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
     //   }
     //   this.processMapList[i] = AppModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
     // }
+    this.actionButtonList.unshift({
+      name: 'print-access-numbers',
+      status: 'danger',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.printBarCode'), 'head-title'),
+      icon: 'grid-outline',
+      title: this.commonService.textTransform(this.commonService.translate.instant('In mã vạch cho hàng hóa quản lý bằng số truy xuất'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: (event: any, option: any) => {
+        const item = this.data[option.index];
+        this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+          context: {
+            voucher: item.Code,
+            id: ['xxx']
+          }
+        });
+        return false;
+      },
+    });
     this.summaryCalculate(this.data);
 
     return result;
@@ -120,7 +142,7 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true }).then(rs => {
+    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true, includeAccessNumbers: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
         // let no = 1;

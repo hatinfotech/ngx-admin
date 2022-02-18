@@ -230,6 +230,22 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     },
   };
 
+  select2OptionForAccessNumbers = {
+    placeholder: 'Số truy xuất, tự động phát sinh khi lưu phiếu...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    multiple: true,
+    // maximumSelectionLength: 1,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   select2OptionForContainer = {
     placeholder: 'Chọn kho/ngăn/kệ...',
     allowClear: true,
@@ -395,6 +411,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
     params['includeUnit'] = true;
+    params['includeAccessNumbers'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -409,6 +426,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+          this.onSelectUnit(newDetailFormGroup, detail.Unit);
         });
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
@@ -507,6 +525,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       Container: [''],
       RelateDetail: [''],
       Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSRECEIPT')],
+      AccessNumbers: [[]],
     });
 
     if (data) {
@@ -515,6 +534,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         data["Type"] = 'PRODUCT';
       }
       this.toMoney(parentFormGroup, newForm);
+      if(Array.isArray(data['AccessNumbers']) && data['AccessNumbers'].length > 0) {
+        newForm['IsManageByAccessNumber'] = true;
+        // newForm['AccessNumberList'] = data['AccessNumbers'];
+      }
     }
 
     const imagesFormControl = newForm.get('Image');
@@ -716,7 +739,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
               if (index < 0) {
                 const details = this.getDetails(formGroup);
                 // get purchase order
-                const voucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+                const voucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeObject: true, includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
@@ -743,9 +766,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                       // delete orderDetail.Id;
                       // delete orderDetail.Voucher;
                       // delete orderDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${voucher.Code}/${voucherDetail.Id}` });
-                      newDtailFormGroup.get('Business').disable();
-                      details.push(newDtailFormGroup);
+                      const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${voucher.Code}/${voucherDetail.Id}` });
+                      newDetailFormGroup.get('Business').disable();
+                      details.push(newDetailFormGroup);
+                      this.onSelectUnit(newDetailFormGroup, voucherDetail.Unit);
                     }
                   }
                 }

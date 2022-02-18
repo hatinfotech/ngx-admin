@@ -68,6 +68,22 @@ export class WarehouseGoodsReceiptNoteDetailModel {
   DebitAccount?: number;
   CreaditAccount?: number;
   Tax?: string & TaxModel;
+  AccessNumbers?: WarehouseGoodsReceiptNoteDetailAccessNumberModel[];
+}
+export class WarehouseGoodsReceiptNoteDetailAccessNumberModel {
+  [key: string]: any;
+  Id?: string | number;
+  No?: number;
+  Voucher?: string & WarehouseGoodsReceiptNoteModel;
+  Type?: string;
+  Product?: string & ProductModel;
+  ProductName?: string;
+  Description?: string;
+  Unit?: string & UnitModel;
+  AccessNumber?: string;
+  Price?: string;
+  DebitAccount?: number;
+  CreaditAccount?: number;
 }
 export class WarehouseInventoryAdjustNoteModel {
   Id?: string | number;
@@ -168,6 +184,7 @@ export class WarehouseGoodsDeliveryNoteDetailModel {
   Quantity?: number;
   PriceOfDelivered?: number;
   Location?: string;
+  Container?: any;
   ImageThumbnail?: string;
   Business?: BusinessModel[] | string;
   DebitAccount?: number;

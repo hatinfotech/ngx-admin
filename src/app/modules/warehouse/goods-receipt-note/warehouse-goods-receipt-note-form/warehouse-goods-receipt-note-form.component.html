@@ -254,12 +254,18 @@
                                                     <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="curencyFormat">
                                                 </ngx-form-group>
                                             </div> -->
-                                            <div class="col-md-12 col-sm-12">
+                                            <div class="col-md-{{getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? '3' : '12'}}">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
+                                                    <textarea type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}" rows="1"></textarea>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-md-9 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber']">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <ngx-select2 formControlName="AccessNumbers" [select2Option]="select2OptionForAccessNumbers" (selectChange)="onSelectAccessNumbers(detail, $event)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <input type="hidden" nbInput fullWidth formControlName="RelateDetail">
+                                            <!-- <input type="hidden" nbInput fullWidth formControlName="AccessNumbers"> -->
                                         </div>
                                     </div>
                                 </div>

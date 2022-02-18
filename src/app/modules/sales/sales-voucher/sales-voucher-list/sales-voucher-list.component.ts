@@ -95,7 +95,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
         Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
-          width: '15%',
+          width: '20%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
           valuePrepareFunction: (cell: any, row: SalesVoucherModel) => {
             return row.ObjectName;
@@ -121,7 +121,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
           type: 'string',
-          width: '24%',
+          width: '15%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Creator: {
@@ -174,10 +174,23 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
             },
           },
         },
+        Created: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
+          type: 'custom',
+          width: '10%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
         DateOfSale: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Sales.dateOfSales'), 'head-title'),
           type: 'custom',
-          width: '15%',
+          width: '10%',
           filter: {
             type: 'custom',
             component: SmartTableDateRangeFilterComponent,

@@ -1,0 +1,64 @@
+@import "../../../../../assets/style/print.css";
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+  #print-area {
+    page-break-after: initial;
+  }
+}
+.label {
+  /* padding: 5px; */
+  border: 1px #000 dashed;
+  float: left;
+  page-break-after: always;
+  width: 50mm;
+  height: 30mm;
+  padding: 1mm;
+  padding-top: 1mm;
+  color: #000;
+  font-weight: normal;
+}
+.label .info {
+  clear: both;
+  overflow: hidden;
+  line-height: 2.3mm;
+  font-size: 2.3mm !important;
+  font-weight: normal;
+  max-height: 6.7mm;
+}
+.label .register-info {
+  line-height: 2.3mm;
+  font-size: 2.3mm !important;
+  font-weight: bold;
+}
+.label .access-number {
+  font-size: 3mm !important;
+  line-height: 3mm;
+  font-weight: normal;
+}
+.label .find-order {
+  line-height: 22px;
+}
+.label .sku {
+  line-height: 2.3mm;
+  font-size: 2.3mm !important;
+  font-weight: normal;
+  white-space: nowrap;
+}
+.bar-code {
+  padding: 1px;
+  margin-right: 1mm;
+  height: 4.5mm;
+  width: 100%;
+}
+.qr-code {
+  width: 1.35cm;
+  height: 1.35cm;
+}
+.page-break {
+  clear: left;
+  display: block;
+  page-break-after: always;
+}

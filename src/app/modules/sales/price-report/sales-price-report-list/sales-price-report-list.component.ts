@@ -13,7 +13,7 @@ import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-
 import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { takeUntil } from 'rxjs/operators';
-import { SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { SalesPriceReportPrintComponent } from '../sales-price-report-print/sales-price-report-print.component';
 import { TaxModel } from '../../../../models/tax.model';
@@ -99,7 +99,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
         Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
-          width: '20%',
+          width: '15%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
           valuePrepareFunction: (cell: any, row: SalesVoucherModel) => {
             return row.ObjectName;
@@ -125,7 +125,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
         Title: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
           type: 'string',
-          width: '20%',
+          width: '15%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         // RelationVoucher: {
@@ -193,7 +193,20 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           width: '10%',
           filter: {
             type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
+            component: SmartTableDateRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        Reported: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Sales.dateOfReported'), 'head-title'),
+          type: 'custom',
+          width: '10%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
           },
           renderComponent: SmartTableDateTimeComponent,
           onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
@@ -219,7 +232,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
           },
-          width: '20%',
+          width: '15%',
         },
         Amount: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.amount'), 'head-title'),

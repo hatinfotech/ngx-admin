@@ -1143,7 +1143,7 @@ export class CommonService {
     },
   };
 
-  select2OptionForProduct = {
+  select2OptionForTemplate = {
     placeholder: 'Chọn...',
     allowClear: true,
     width: '100%',
@@ -1204,9 +1204,10 @@ export class CommonService {
 
   makeSelect2AjaxOption(url: string, query: any, option?: { [key: string]: any, limit?: number, prepareReaultItem?: (item: any) => any }) {
     return {
-      ...this.select2OptionForProduct,
-      placeholder: option.placeholder || this.select2OptionForProduct.placeholder,
+      ...this.select2OptionForTemplate,
+      placeholder: option.placeholder || this.select2OptionForTemplate.placeholder,
       ajax: {
+        delay: 300,
         data: function (params) {
           return {
             ...params,

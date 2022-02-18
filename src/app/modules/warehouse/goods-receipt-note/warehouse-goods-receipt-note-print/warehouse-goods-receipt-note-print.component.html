@@ -15,14 +15,14 @@
         <div>
           <div style="display: flex;">
             <div style="flex: 1;">
-                <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
-                    {{renderValue(data.ObjectName)}}
-                </div>
+              <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+                {{renderValue(data.ObjectName)}}
+              </div>
             </div>
             <div>
-                <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
-                    {{renderValue(data.Object | objectid)}}
-                </div>
+              <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
+                {{renderValue(data.Object | objectid)}}
+              </div>
             </div>
           </div>
           <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
@@ -32,42 +32,27 @@
         <div>
           <div>
             <table style="width: 100%;" class="print-voucher-detail-table">
-              <colgroup>
-                <!--STT-->
-                <col span="1" style="width: 0.5cm;">
-                <!--Dien giai-->
-                <col span="1" style="width: 14.5cm;">
-                <!--So luong-->
-                <col span="1" style="width: 4cm; text-align: right;">
-                <!--DVT-->
-                <col span="1" style="width: 2cm;">
-              </colgroup>
-              <tr class="print-voucher-detail-header">
-                <th>#</th>
-                <th>{{'Sales.technicalDescription' | translate | headtitlecase}}</th>
-                <th class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}
-                </th>
-                <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
-              </tr>
+              <thead class="print-voucher-detail-header">
+                <td>#</td>
+                <td class="nowrap" style="min-width: 10rem;">{{'Common.description' | translate | headtitlecase}}</td>
+                <td class="nowrap">{{'Warehouse.accessNumber' | translate | headtitlecase}}</td>
+                <td class="text-align-right nowrap">{{'Voucher.quantity' | translate | headtitlecase}}</td>
+                <td class="text-align-right nowrap">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+              </thead>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
                   <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
                 </tr>
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <td>{{detail.No}}</td>
-                  <td><span [innerHTML]="renderValue(detail.Description)"></span><br>
-                    <span style="font-size: 10px; font-style: italic;">
-                      <!-- {{'Common.note' | translate}} : {{detail.Product?.Code}}, -->
-                      {{'Common.code' | translate}} : {{detail.Product?.Code}},
-                      {{'Common.sort' | translate | headtitlecase}}:{{detail.No}}
-                    </span>
-                  </td>
+                  <td><span [innerHTML]="renderValue(detail.Description)"></span></td>
+                  <td><span>{{detail.AccessNumbers | objectstext}}</span></td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                   <td class="text-align-right">{{detail.Unit?.Name || detail.Unit}}</td>
                 </tr>
               </ng-container>
               <tr>
-                <td colspan="4">{{'Common.note' | translate | headtitlecase}}</td>
+                <td colspan="5">{{'Common.note' | translate | headtitlecase}}</td>
               </tr>
             </table>
           </div>
@@ -94,15 +79,15 @@
       </div>
     </nb-card-body>
     <nb-card-footer *ngIf="data.RelativeVouchers && data.RelativeVouchers.length > 0" class="print-relative-vouchers">
-        <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
-          <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
-          <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
+      <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
+        <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
+        <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
       </span>
     </nb-card-footer>
     <nb-card-footer>
       <div class="buttons-row">
         <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="edit(data);">
-            <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
+          <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
         </button>
         <button nbButton hero status="info" (click)="prepareCopy(data);" style="float: left;">
           <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}

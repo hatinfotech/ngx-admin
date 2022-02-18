@@ -32,23 +32,13 @@
         <div>
           <div>
             <table style="width: 100%;" class="print-voucher-detail-table">
-              <colgroup>
-                  <!--STT-->
-                  <col span="1" style="width: 0.5cm;">
-                  <!--Dien giai-->
-                  <col span="1" style="width: 14.5cm;">
-                  <!--So luong-->
-                  <col span="1" style="width: 4cm; text-align: right;">
-                  <!--DVT-->
-                  <col span="1" style="width: 2cm;">
-              </colgroup>
-              <tr class="print-voucher-detail-header">
-                  <th>#</th>
-                  <th>{{'Sales.technicalDescription' | translate | headtitlecase}}</th>
-                  <th class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}
-                  </th>
-                  <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
-              </tr>
+              <thead class="print-voucher-detail-header">
+                  <td>#</td>
+                  <td class="nowrap" style="min-width: 10rem;">{{'Common.description' | translate | headtitlecase}}</td>
+                <td class="nowrap">{{'Warehouse.accessNumber' | translate | headtitlecase}}</td>
+                <td class="text-align-right nowrap">{{'Voucher.quantity' | translate | headtitlecase}}</td>
+                <td class="text-align-right nowrap">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+              </thead>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                   <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
                       <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
@@ -62,12 +52,13 @@
                               {{'Common.sort' | translate | headtitlecase}}:{{detail.No}}
                           </span>
                       </td>
+                      <td><span>{{detail.AccessNumbers | objectstext}}</span></td>
                       <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                       <td class="text-align-right">{{detail.Unit?.Name || detail.Unit}}</td>
                   </tr>
               </ng-container>
               <tr>
-                  <td colspan="4">{{'Common.note' | translate | headtitlecase}}</td>
+                  <td colspan="5">{{'Common.note' | translate | headtitlecase}}</td>
               </tr>
           </table>
           </div>

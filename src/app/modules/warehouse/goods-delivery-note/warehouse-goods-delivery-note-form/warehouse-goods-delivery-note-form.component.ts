@@ -117,6 +117,22 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     },
   };
 
+  select2OptionForAccessNumbers = {
+    placeholder: 'Số truy xuất...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    multiple: true,
+    // maximumSelectionLength: 1,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -369,6 +385,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
     params['includeUnit'] = true;
+    params['includeAccessNumbers'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -383,6 +400,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+          this.onSelectUnit(newDetailFormGroup, detail.Unit, true);
+          // this.onSelectContainer(newDetailFormGroup, detail.Container, true);
         });
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
@@ -472,7 +491,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       Image: [[]],
       Container: [''],
       Business: { value: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), disabled: true },
-      RelateDetail: ['']
+      RelateDetail: [''],
+      AccessNumbers: [[]]
     });
 
     if (data) {
@@ -481,6 +501,9 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         data["Type"] = 'PRODUCT';
       }
       this.toMoney(parentFormGroup, newForm);
+      if(Array.isArray(data['AccessNumbers']) && data['AccessNumbers'].length > 0) {
+        newForm['IsManageByAccessNumber']
+      }
     }
     return newForm;
   }
@@ -570,12 +593,16 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         select: 'Code',
         includeUnit: true,
         includeContainers: true,
+        includeAccessNumbers: true,
         eq_Code: productId,
         eq_ConversionUnit: unitId
       }).then(goodsList => {
         // const results = [];
         if (goodsList && goodsList.length > 0) {
           return goodsList[0].Containers.map(m => ({
+            // ...m,
+            AccessNumbers: m?.AccessNumbers,
+            // AccessNumbers: m?.AccessNumbers?.map(an => ({ id: an, text: an })),
             id: m.Container,
             text: `${m.ContainerPath}: ${m.ContainerDescription}`
           }));
@@ -583,10 +610,23 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         return [];
       });
       detail['ContainerList'] = containerList;
-      if(containerList && containerList.length == 1) {
+      if (containerList && containerList.length == 1) {
         detail.get('Container').setValue(containerList[0]);
       }
     }
+  }
+
+  async onSelectContainer(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
+    console.log(selectedData);
+    if (selectedData && selectedData['AccessNumbers']) {
+      detail['AccessNumberList'] = selectedData['AccessNumbers'];
+    } else {
+      detail['AccessNumberList'] = [];
+    }
+  }
+  async onSelectAccessNumbers(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
+    console.log(selectedData);
+    // detail.get('Quantity').setValue(detail.get('AccessNumbers').value.length);
   }
 
   calculatToMoney(detail: FormGroup) {

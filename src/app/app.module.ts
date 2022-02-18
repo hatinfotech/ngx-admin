@@ -202,6 +202,7 @@ import { WarehouseGoodsDeliveryNotePrintComponent } from './modules/warehouse/go
 import { WarehouseGoodsReceiptNoteFormComponent } from './modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
 import { WarehouseGoodsReceiptNoteListComponent } from './modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-list/warehouse-goods-receipt-note-list.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from './modules/warehouse/goods-receipt-note/warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
+import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './modules/warehouse/goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
 import { AssignContainerFormComponent } from './modules/warehouse/goods/assign-containers-form/assign-containers-form.component';
 import { WarehouseGoodsFormComponent } from './modules/warehouse/goods/warehouse-goods-form/warehouse-goods-form.component';
 import { WarehouseGoodsListComponent } from './modules/warehouse/goods/warehouse-goods-list/warehouse-goods-list.component';
@@ -317,6 +318,7 @@ export class DynamicLocaleId extends String {
     WarehouseGoodsReceiptNoteListComponent,
     WarehouseGoodsReceiptNoteFormComponent,
     WarehouseGoodsReceiptNotePrintComponent,
+    WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent,
     WarehouseGoodsDeliveryNoteListComponent,
     WarehouseGoodsDeliveryNoteFormComponent,
     WarehouseGoodsDeliveryNotePrintComponent,
@@ -863,7 +865,7 @@ export class AppModule {
         ...AppModule.approvedState,
         nextState: 'COMPLETE',
         nextStates: [
-          { ...AppModule.completeState, status: 'success' },
+          // { ...AppModule.completeState, status: 'success' },
           AppModule.unrecordedState,
         ],
       },
