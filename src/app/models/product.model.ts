@@ -20,6 +20,7 @@ export class ProductModel {
   Categories?: ProductCategoryModel[];
   Groups?: ProductGroupModel[];
   Pictures?: ProductPictureModel[];
+  IsManageByAccessNumber?: boolean;
   UnitConversions?: (ProductUnitConversoinModel & { Name?: string, Symbol?: string })[];
 
   constructor() { }

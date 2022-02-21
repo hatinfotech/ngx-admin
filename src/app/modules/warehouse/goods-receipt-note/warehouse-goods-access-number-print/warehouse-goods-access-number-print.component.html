@@ -5,13 +5,15 @@
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
-                <div class="label" *ngFor="let item of this.data; let i = index;">
-                    <div class="access-number">Số truy xuất: {{item.AccessNumber}}</div>
+                <div class="blabel" *ngFor="let item of this.data; let i = index;">
                     <!-- <div class="find-order">{{item.Container.FindOrder || 'UNDEF'}}</div> -->
+                    <div class="access-number">Số truy xuất: {{item.AccessNumber}}</div>
                     <img class="bar-code" src="{{item.BarCode}}">
-                    <div class="info" style="float: left;"><span class="sku">SKU: {{item.Product.Sku}}</span>, {{item.Product | objecttext}}/{{item.Unit | objecttext}}</div>
+                    <!-- <div style="display: flex; height: 4.5mm; align-items: center; justify-content: center;">
+                    </div> -->
+                    <div class="info">SKU: {{item.Product.Sku}} - {{item.Product | objecttext}}/{{item.Unit | objecttext}}</div>
                     <div style="display: flex; clear: both;">
-                        <img class="qr-code" src="{{item.QrCode}}" style="margin-right: 1mm;">
+                        <img class="qr-code" src="{{item.QrCode}}" style="margin-right: 0.5mm;">
                         <div class="register-info" style="flex: 1">{{registerInfo.companyName}}<br>ĐC: {{registerInfo.address}}<br>ĐT: {{registerInfo.tel}}<br>Web: {{registerInfo.website}}</div>
                     </div>
                 </div>

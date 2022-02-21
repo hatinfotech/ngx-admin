@@ -8,8 +8,8 @@
                 <nb-tab *ngIf="components['GOODSDELIVERY']" tabTitle="{{components['GOODSDELIVERY'].title}}">
                     <ngx-warehouse-goods-delivery-note-list (onItemsChoosed)="onDialogChoose($event, 'GOODSDELIVERY')"></ngx-warehouse-goods-delivery-note-list>
                 </nb-tab>
-                <nb-tab *ngIf="components['GOODSDERECEIPT']" tabTitle="{{components['GOODSDERECEIPT'].title}}">
-                    <ngx-warehouse-goods-receipt-note-list (onItemsChoosed)="onDialogChoose($event, 'GOODSDERECEIPT')"></ngx-warehouse-goods-receipt-note-list>
+                <nb-tab *ngIf="components['GOODSRECEIPT']" tabTitle="{{components['GOODSRECEIPT'].title}}">
+                    <ngx-warehouse-goods-receipt-note-list (onItemsChoosed)="onDialogChoose($event, 'GOODSRECEIPT')"></ngx-warehouse-goods-receipt-note-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['DEPLOYMENT']" tabTitle="{{components['DEPLOYMENT'].title}}">
                     <ngx-deployment-voucher-list (onItemsChoosed)="onDialogChoose($event, 'DEPLOYMENT')"></ngx-deployment-voucher-list>

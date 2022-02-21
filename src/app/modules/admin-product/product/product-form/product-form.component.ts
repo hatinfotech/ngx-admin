@@ -445,6 +445,17 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         unitConversions.controls[0].get('Unit').setValue(value);
       }
     });
+    const skuControl = newForm.get('Sku');
+    const nameControl = newForm.get('Name');
+    setTimeout(() => {
+      nameControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+        if (!this.isProcessing && !data?.Sku) {
+          let sku = value;
+          sku = this.commonService.convertUnicodeToNormal(sku).toLowerCase().replace(/\s+/g, '');
+          skuControl.setValue(sku);
+        }
+      });
+    }, 1000);
 
     const featurePictureFormControl = newForm.get('FeaturePicture');
     newForm.get('Pictures').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
@@ -536,7 +547,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Id: [''],
       Unit: [formItem.get('WarehouseUnit').value || ''],
       ConversionRatio: ['1'],
-      IsDefaultSales: [true],
+      IsDefaultSales: [false],
       IsDefaultPurchase: [false],
       IsManageByAccessNumber: [false],
     });
@@ -680,9 +691,12 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     console.log(event);
     if (!this.isProcessing) {
       const unitConversions = this.getUnitConversions(parentFormItem);
-      for (const unitConversion of unitConversions.controls) {
-        if (unitConversion !== formItem) {
-          unitConversion.get('IsDefaultSales').setValue(!formItem.get('IsDefaultSales').value);
+      const isDefaultSalesControl = formItem.get('IsDefaultSales');
+      if (isDefaultSalesControl.value === true) {
+        for (const unitConversion of unitConversions.controls) {
+          if (unitConversion !== formItem) {
+            unitConversion.get('IsDefaultSales').setValue(false);
+          }
         }
       }
     }
@@ -692,9 +706,12 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     console.log(event);
     if (!this.isProcessing) {
       const unitConversions = this.getUnitConversions(parentFormItem);
-      for (const unitConversion of unitConversions.controls) {
-        if (unitConversion !== formItem) {
-          unitConversion.get('IsDefaultPurchase').setValue(!formItem.get('IsDefaultPurchase').value);
+      const isDefaultPurchaseControl = formItem.get('IsDefaultPurchase');
+      if (isDefaultPurchaseControl.value === true) {
+        for (const unitConversion of unitConversions.controls) {
+          if (unitConversion !== formItem) {
+            unitConversion.get('IsDefaultPurchase').setValue(false);
+          }
         }
       }
     }

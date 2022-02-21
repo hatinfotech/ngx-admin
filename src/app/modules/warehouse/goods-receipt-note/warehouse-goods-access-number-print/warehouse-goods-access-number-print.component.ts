@@ -43,57 +43,70 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       page-break-after: initial;
     }
   }
-  .label {
+  .blabel {
+    border: 1px #000 dashed;
     float: left;
     page-break-after: always;
-    width: 50mm;
     height: 30mm;
-    padding: 1mm;
-    padding-top: 1mm;
+    width: 50mm;
     color: #000;
     font-weight: normal;
+    overflow: hidden;
+    padding: 2mm;
   }
-  .label .info {
+  .blabel .info {
     clear: both;
     overflow: hidden;
-    line-height: 2.3mm;
-    font-size: 2.3mm !important;
+    line-height: 2.2mm;
+    font-size: 2.2mm !important;
     font-weight: normal;
     max-height: 6.7mm;
+    margin-top: 0.4mm;
+    margin-bottom: 0.4mm;
   }
-  .label .register-info {
-    line-height: 2.3mm;
-    font-size: 2.3mm !important;
+  .blabel .register-info {
+    line-height: 2mm;
+    font-size: 2mm !important;
     font-weight: bold;
   }
-  .label .access-number {
-    font-size: 3mm !important;
-    line-height: 3mm;
+  .blabel .access-number {
+    line-height: 2.2mm;
+    font-size: 2.2mm !important;
     font-weight: normal;
+    margin-bottom: 0.5mm;
   }
-  .label .find-order {
+  .blabel .find-order {
     line-height: 22px;
   }
-  .label .sku {
-    line-height: 2.3mm;
-    font-size: 2.3mm !important;
+  .blabel .sku {
+    line-height: 1.8mm;
+    font-size: 2mm !important;
     font-weight: normal;
     white-space: nowrap;
   }
   .bar-code {
-    padding: 1px;
-    margin-right: 1mm;
-    height: 4.5mm;
-    width: 100%;
+    height: 3mm;
+    /* width: initial; */
   }
   .qr-code {
-    width: 1.35cm;
-    height: 1.35cm;
+    width: 11.6mm;
+    height: 11.6mm;
   }
   .page-break {
     clear: left;
-    display:block;
-    page-break-after:always;
+    display: block;
+    page-break-after: always;
+  }
+  
+
+  /** reset */
+  .blabel {
+    border: none;
+    width: inherit;
+    height: 25mm;
+    width: 46mm;
+    margin: 2mm;
+    padding: 0mm;
   }
   `;
 

@@ -167,7 +167,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures,IsManageByAccessNumber", includeSearchResultLabel: true, includeUnits: true }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa...',
       prepareReaultItem: (item) => {
@@ -501,9 +501,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         data["Type"] = 'PRODUCT';
       }
       this.toMoney(parentFormGroup, newForm);
-      if(Array.isArray(data['AccessNumbers']) && data['AccessNumbers'].length > 0) {
-        newForm['IsManageByAccessNumber']
-      }
+      newForm['IsManageByAccessNumber'] = data.Product?.IsManageByAccessNumber || false;
     }
     return newForm;
   }
@@ -581,6 +579,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         detail['unitList'] = selectedData.Units;
         detail.get('Unit').setValue(defaultUnit);
       }
+      detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
     }
     return false;
   }
@@ -599,6 +598,9 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       }).then(goodsList => {
         // const results = [];
         if (goodsList && goodsList.length > 0) {
+          if(goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
+            detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
+          }
           return goodsList[0].Containers.map(m => ({
             // ...m,
             AccessNumbers: m?.AccessNumbers,
@@ -613,6 +615,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       if (containerList && containerList.length == 1) {
         detail.get('Container').setValue(containerList[0]);
       }
+      
     }
   }
 

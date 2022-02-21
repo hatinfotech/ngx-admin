@@ -993,7 +993,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
       context: {
         components: {
           'SALES': { title: 'Phiếu bán hàng' },
-          'GOODSDERECEIPT': { title: 'Phiếu nhập kho' },
+          'GOODSRECEIPT': { title: 'Phiếu nhập kho' },
         },
         onDialogChoose: async (chooseItems: any[], type?: string) => {
           console.log(chooseItems, type);
@@ -1001,7 +1001,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
           this.onProcessing();
-          if (type === 'GOODSDERECEIPT') {
+          if (type === 'GOODSRECEIPT') {
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {

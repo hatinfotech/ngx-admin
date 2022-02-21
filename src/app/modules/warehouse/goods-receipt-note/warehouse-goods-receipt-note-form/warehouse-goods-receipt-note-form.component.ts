@@ -174,7 +174,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures,IsManageByAccessNumber", includeSearchResultLabel: true, includeUnits: true }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa...',
       prepareReaultItem: (item) => {
@@ -534,10 +534,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         data["Type"] = 'PRODUCT';
       }
       this.toMoney(parentFormGroup, newForm);
-      if(Array.isArray(data['AccessNumbers']) && data['AccessNumbers'].length > 0) {
-        newForm['IsManageByAccessNumber'] = true;
-        // newForm['AccessNumberList'] = data['AccessNumbers'];
-      }
+      // if(Array.isArray(data['AccessNumbers']) && data['AccessNumbers'].length > 0) {
+      newForm['IsManageByAccessNumber'] = data.Product?.IsManageByAccessNumber || false;
+      // newForm['AccessNumberList'] = data['AccessNumbers'];
     }
 
     const imagesFormControl = newForm.get('Image');
@@ -629,6 +628,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         detail['unitList'] = selectedData.Units;
         detail.get('Unit').setValue(defaultUnit);
       }
+      detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
     }
     return false;
   }
@@ -802,14 +802,14 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
-                if(voucher.RelativeVouchers) {
-                  for(const relativeVoucher of voucher.RelativeVouchers) {
-                    if(relativeVoucher.type == 'GOODSDELIVERY') {
+                if (voucher.RelativeVouchers) {
+                  for (const relativeVoucher of voucher.RelativeVouchers) {
+                    if (relativeVoucher.type == 'GOODSDELIVERY') {
                       insertList.push(relativeVoucher);
                       const goodsDeliveryVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + relativeVoucher.id, { includeContact: true, includeDetails: true, includeUnit: true }).then(rs => rs[0]);
-                      if(goodsDeliveryVoucher && goodsDeliveryVoucher.Details && goodsDeliveryVoucher.Details.length > 0) {
+                      if (goodsDeliveryVoucher && goodsDeliveryVoucher.Details && goodsDeliveryVoucher.Details.length > 0) {
                         details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu xuất kho: ' + goodsDeliveryVoucher.Code + ' - ' + goodsDeliveryVoucher.Title }));
-                        for(const goodsDeliveryDetail of goodsDeliveryVoucher.Details) {
+                        for (const goodsDeliveryDetail of goodsDeliveryVoucher.Details) {
                           if (goodsDeliveryDetail.Type === 'PRODUCT') {
                             const quantity = voucher.Details.find(f => this.commonService.getObjectId(f.Product) == this.commonService.getObjectId(goodsDeliveryDetail.Product))?.Quantity;
                             const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...goodsDeliveryDetail, No: null, Voucher: null, Business: [this.accountingBusinessList.find(f => f.id == 'GOODSRECEIPTFORRETURNS')], RelateDetail: `GOODSDELIVERY/${goodsDeliveryVoucher.Code}/${goodsDeliveryDetail.Id}`, Quantity: quantity });
