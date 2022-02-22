@@ -65,7 +65,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     margin-bottom: 0.4mm;
   }
   .blabel .register-info {
-    line-height: 2mm;
+    line-height: 1.9mm;
     font-size: 2mm !important;
     font-weight: bold;
   }
@@ -85,12 +85,11 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     white-space: nowrap;
   }
   .bar-code {
-    height: 3mm;
-    /* width: initial; */
+    height: 3.7mm;
   }
   .qr-code {
-    width: 11.6mm;
-    height: 11.6mm;
+    width: 11mm;
+    height: 11mm;
   }
   .page-break {
     clear: left;
