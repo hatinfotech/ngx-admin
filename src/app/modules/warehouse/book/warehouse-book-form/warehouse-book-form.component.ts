@@ -1,3 +1,4 @@
+import { Select2Component } from './../../../../../vendor/ng2select2 copy/lib/ng2-select2.component';
 import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -8,8 +9,8 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
-import { SmartTableThumbnailComponent, SmartTableCurrencyEditableComponent, SmartTableCheckboxComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { ProductCategoryModel, ProductGroupModel, ProductModel, ProductUnitConversoinModel } from '../../../../models/product.model';
+import { SmartTableThumbnailComponent, SmartTableCurrencyEditableComponent, SmartTableCheckboxComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableSelect2EditableComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
@@ -18,6 +19,8 @@ import { takeUntil } from 'rxjs/operators';
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { UnitModel } from '../../../../models/unit.model';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { AssignContainerFormComponent } from '../../goods/assign-containers-form/assign-containers-form.component';
 
 @Component({
   selector: 'ngx-warehouse-book-form',
@@ -73,8 +76,8 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
   async clearCache() {
     WarehouseBookFormComponent._warehouseList = null;
     // WarehouseBookFormComponent._goodsContainerList = null;
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })) as any;
     this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
     return super.clearCache();
@@ -176,22 +179,70 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
     actions: false,
     pager: this.configPaging(),
     columns: {
-      FeaturePictureThumbnail: {
+      FeaturePicture: {
         title: 'Hình',
         type: 'custom',
         width: '5%',
         renderComponent: SmartTableThumbnailComponent,
         onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+          // instance.valueChange.subscribe(value => {
+          // });
+          // instance.click.subscribe(async (row: GoodsModel) => {
+          // });
+
+
+
+
+
           instance.valueChange.subscribe(value => {
           });
-          instance.click.subscribe(async (row: GoodsModel) => {
+          instance.previewAction.subscribe((row: ProductModel) => {
+            const pictureList = row?.Pictures || [];
+            if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
+              pictureList.push(row.FeaturePicture);
+            }
+            if (pictureList.length > 0) {
+              const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
+              if (pictureList.length > 1) {
+                const currentItems = pictureList.splice(currentIndex, 1);
+                pictureList.unshift(currentItems[0]);
+              }
+              this.commonService.openDialog(ImagesViewerComponent, {
+                context: {
+                  images: pictureList.map(m => m['OriginImage']),
+                  imageIndex: 0,
+                }
+              });
+            }
           });
+          // instance.uploadAction.subscribe((row: ProductModel) => {
+          //   if (this.files.length === 0) {
+          //     this.uploadForProduct = row;
+          //     this.uploadBtn.nativeElement.click();
+          //   } else {
+          //     this.commonService.toastService.show(
+          //       this.commonService.translateText('Common.uploadInProcess'),
+          //       this.commonService.translateText('Common.upload'),
+          //       {
+          //         status: 'warning',
+          //       });
+          //     // this.commonService.openDialog(ShowcaseDialogComponent, {
+          //     //   context: {
+          //     //     title: this.commonService.translateText('Common.upload'),
+          //     //     content: this.commonService.translateText('Common.uploadInProcess'),
+          //     //   },
+          //     // });
+          //   }
+          // });
+          // instance.title = this.commonService.translateText('click to change main product picture');
+
+
         },
       },
       Name: {
         title: 'Tên',
         type: 'string',
-        width: '15%',
+        width: '10%',
         // filter: {
         //   type: 'custom',
         //   component: SmartTableFilterComponent,
@@ -203,7 +254,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       Categories: {
         title: 'Danh mục',
         type: 'html',
-        width: '15%',
+        width: '10%',
         valuePrepareFunction: (value: string, product: GoodsModel) => {
           return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
         },
@@ -245,7 +296,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       Groups: {
         title: 'Nhóm',
         type: 'html',
-        width: '15%',
+        width: '10%',
         valuePrepareFunction: (value: string, product: GoodsModel) => {
           return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
         },
@@ -283,16 +334,36 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       },
       Container: {
         title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
-        type: 'html',
+        type: 'custom',
         width: '10%',
-        valuePrepareFunction: (value: string, product: GoodsModel) => {
-          return this.commonService.getObjectText(value);
-          // try {
-          //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
-          // } catch (e) {
-          //   return '';
-          // }
+        renderComponent: SmartTableTagsComponent,
+
+        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+          instance.labelAsText = true;
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => {
+            if (tag.type == 'NEWCONTAINER') {
+              this.commonService.openDialog(AssignContainerFormComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputGoodsList: [{ Code: instance.rowData.Code, WarehouseUnit: instance.rowData.WarehouseUnit }],
+                  onDialogSave: (newData: ProductModel[]) => {
+                    // this.refresh();
+                    // this.updateGridItems(editedItems, newData);
+                    // this.source.update(this.source.get)
+                  },
+                  onDialogClose: () => {
+                  },
+                },
+                closeOnEsc: false,
+                closeOnBackdropClick: false,
+              });
+            }
+          });
         },
+        // valuePrepareFunction: (value: string, product: GoodsModel) => {
+        //   // return this.commonService.getObjectText(value);
+        //   return [value] as any;
+        // },
         filter: {
           type: 'custom',
           component: SmartTableSelect2FilterComponent,
@@ -367,12 +438,150 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       Code: {
         title: 'Code',
         type: 'string',
-        width: '10%',
+        width: '5%',
       },
       Sku: {
         title: 'Sku',
         type: 'string',
         width: '5%',
+      },
+      AccessNumbers: {
+        title: this.commonService.translateText('Warehouse.accessNumber'),
+        width: '20%',
+        type: 'custom',
+        renderComponent: SmartTableSelect2EditableComponent,
+        editable: true,
+        delay: 3000,
+        onComponentInitFunction: (component: SmartTableSelect2EditableComponent) => {
+          component.select2Option = {
+            placeholder: 'Nhập số truy xuất...',
+            allowClear: true,
+            width: '100%',
+            dropdownAutoWidth: true,
+            minimumInputLength: 0,
+            dropdownCssClass: 'is_tags',
+            multiple: true,
+            // maximumSelectionLength: 1,
+            tags: true,
+            keyMap: {
+              id: 'id',
+              text: 'text',
+            },
+          };
+          component.onSelectChange = (selectedData: any, select2Conponent: Select2Component) => {
+            console.log(selectedData);
+            let hadChanged = false;
+            if (selectedData) {
+              for (const an of selectedData) {
+                if (!an?.origin && an.id == an.text) {
+                  const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+                  console.log(accessNumber, goodsId);
+                  an.id = accessNumber;
+                  hadChanged = true;
+                }
+              }
+              if (hadChanged) {
+                component.inputControl.setValue(selectedData);
+                // const accessNumbersControl = detail.get('AccessNumbers');
+                // accessNumbersControl.setValue(selectedData);
+                setTimeout(() => {
+                  $(select2Conponent['controls'].element[0])['select2']('open');
+                }, 500);
+              }
+              component.rowData.AccessNumbers = selectedData;
+              $(select2Conponent['controls'].element[0]).closest('td').next().find('input').val(selectedData.length)
+              this.commonService.takeUntil('update_head_entry_' + component.rowData.Code, 5000).then(() => {
+                const masterPriceTable = this.array.controls[0].get('Code').value;
+                if (this.commonService.getObjectId(component.rowData.WarehouseUnit)) {
+                  // instance.status = 'primary';
+                  console.log(component.rowData.Code);
+                  this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
+                    id: [this.array.controls[0].get('Code').value],
+                    updateHeadInventory: true,
+                    goods: component.rowData.Code,
+                    unit: this.commonService.getObjectId(component.rowData.WarehouseUnit),
+                    container: this.commonService.getObjectId(component.rowData['Container']),
+                    inventory: selectedData.length,
+                    currency: this.commonService.loginInfo.configuration.defaultCurrency,
+                  }, [{
+                    MasterPriceTable: masterPriceTable,
+                    Product: component.rowData.Code,
+                    Unit: component.rowData.WarehouseUnit.Code,
+                    Price: component.rowData.UnitPrice,
+                    Inventory: component.rowData.Inventory,
+                    AccessNumbers: component.rowData.AccessNumbers.map(m => m.id).filter(f => !!f)
+                  }]).then(rs => {
+                    console.log(component.rowData.Code);
+                    // instance.status = 'success';
+                  });
+                  // }
+                } else {
+                  // instance.status = 'danger';
+                  this.commonService.openDialog(ShowcaseDialogComponent, {
+                    context: {
+                      title: 'Cảnh báo',
+                      content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+                      actions: [
+                        {
+                          label: 'Trở về',
+                          icon: 'back',
+                          status: 'info',
+                          action: () => { },
+                        },
+                      ],
+                    },
+                  });
+                }
+              });
+            }
+          }
+        },
+        onChange: (value: any, row: GoodsModel, instance: SmartTableSelect2EditableComponent) => {
+          const masterPriceTable = this.array.controls[0].get('Code').value;
+          if (value !== null) {
+            row.AccesssNumbers = value;
+            if (this.commonService.getObjectId(row.WarehouseUnit)) {
+              instance.status = 'primary';
+              console.log(instance.rowData.Code);
+              this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
+                id: [this.array.controls[0].get('Code').value],
+                updateHeadInventory: true,
+                goods: row.Code,
+                unit: this.commonService.getObjectId(row.WarehouseUnit),
+                container: this.commonService.getObjectId(row['Container']),
+                inventory: row['Inventory'],
+                currency: this.commonService.loginInfo.configuration.defaultCurrency,
+              }, [{
+                MasterPriceTable: masterPriceTable,
+                Product: row.Code,
+                Unit: row.WarehouseUnit.Code,
+                Price: row.UnitPrice,
+                Inventory: row.Inventory,
+                AccessNumbers: value.map(m => m.id).filter(f => !!f)
+              }]).then(rs => {
+                console.log(instance.rowData.Code);
+                instance.status = 'success';
+              });
+              // }
+            } else {
+              instance.status = 'danger';
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: 'Cảnh báo',
+                  content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+                  actions: [
+                    {
+                      label: 'Trở về',
+                      icon: 'back',
+                      status: 'info',
+                      action: () => { },
+                    },
+                  ],
+                },
+              });
+            }
+          }
+        },
       },
       Inventory: {
         title: this.commonService.translateText('Warehouse.inventory'),
@@ -383,6 +592,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         onChange: (value: number, row: GoodsModel, instance: SmartTableNumberEditableComponent) => {
           const masterPriceTable = this.array.controls[0].get('Code').value;
           if (value !== null) {
+            row.Inventory = value;
             if (this.commonService.getObjectId(row.WarehouseUnit)) {
               instance.status = 'primary';
               console.log(instance.rowData.Code);
@@ -393,12 +603,14 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
                 unit: this.commonService.getObjectId(row.WarehouseUnit),
                 container: this.commonService.getObjectId(row['Container']),
                 inventory: value,
-                currency: value,
+                currency: this.commonService.loginInfo.configuration.defaultCurrency,
               }, [{
                 MasterPriceTable: masterPriceTable,
                 Product: row.Code,
                 Unit: row.WarehouseUnit.Code,
                 Price: value,
+                Inventory: value,
+                AccessNumbers: row.AccessNumbers.map(m => m.id).filter(f => !!f)
               }]).then(rs => {
                 console.log(instance.rowData.Code);
                 instance.status = 'success';
@@ -436,6 +648,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
             if (this.commonService.getObjectId(row.WarehouseUnit)) {
               instance.status = 'primary';
               console.log(instance.rowData.Code);
+              row.UnitPrice = value;
               this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
                 id: [this.array.controls[0].get('Code').value],
                 updateHeadInventory: true,
@@ -449,6 +662,8 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
                 Product: row.Code,
                 Unit: row.WarehouseUnit.Code,
                 Price: value,
+                Inventory: row.Inventory,
+                AccessNumbers: row.AccessNumbers.map(m => m.id).filter(f => !!f)
               }]).then(rs => {
                 console.log(instance.rowData.Code);
                 instance.status = 'success';
@@ -544,6 +759,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
       if (column.type === 'text-editable') {
         column.type = 'custom';
         column.renderComponent = SmartTableTextEditableComponent;
+        const onComponentInitFunction = column.onComponentInitFunction;
         column.onComponentInitFunction = (instance: SmartTableTextEditableComponent) => {
           instance.disabled = !column.editable;
           instance.placeholder = column.title;
@@ -556,6 +772,9 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
               column.onChange(value, instance.rowData, instance);
             }
           });
+          if (onComponentInitFunction) {
+            onComponentInitFunction(instance);
+          }
         };
       }
 
@@ -658,6 +877,19 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
           product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
         } else {
           delete product['FeaturePictureThumbnail'];
+        }
+        if (product?.AccessNumbers) {
+          product['AccessNumbers'] = product['AccessNumbers'].map(m => {
+            return {
+              id: m,
+              text: this.commonService.compileAccessNumber(m, product.Code)
+            };
+          });
+        }
+        if (product.Container) {
+          product.Container = [product.Container];
+        } else {
+          product.Container = [{ type: 'NEWCONTAINER', id: 'Gán vị trí', text: 'Gán vị trí' }];
         }
         return product;
       });

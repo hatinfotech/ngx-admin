@@ -1,7 +1,8 @@
+import { Select2Component } from './../../../../../vendor/ng2select2 copy/lib/ng2-select2.component';
 import { ProductUnitModel } from '../../../../models/product.model';
 import { WarehouseGoodsContainerModel, WarehouseInventoryAdjustNoteDetailModel, WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
@@ -25,6 +26,7 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
+import { SystemConfigModel } from '../../../../models/model';
 
 @Component({
   selector: 'ngx-inventory-adjust-note-form',
@@ -120,6 +122,22 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     },
   };
 
+  select2OptionForAccessNumbers = {
+    placeholder: 'Số truy xuất...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    multiple: true,
+    // maximumSelectionLength: 1,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   customIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductFormComponent, {
@@ -141,6 +159,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       });
     }
   }];
+
+  systemConfigs: SystemConfigModel;
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -169,6 +189,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         this.preview(option.form);
       },
     });
+
+    this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(configs => this.systemConfigs = configs);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -368,6 +390,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     params['includeDetails'] = true;
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
+    params['includeAccessNumbers'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -382,6 +405,11 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+          if (detail.Product) {
+            this.onSelectProduct(newDetailFormGroup, detail.Product, true);
+            const seelctedUnit = detail.Product.Units.find(f => f.id == detail.Unit.id);
+            this.onSelectUnit(newDetailFormGroup, seelctedUnit);
+          }
         });
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
@@ -456,7 +484,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       Type: ['PRODUCT', Validators.required],
       Product: [''],
       Description: ['', Validators.required],
-      Quantity: [1],
+      Quantity: [0],
       // Price: [0],
       Unit: [''],
       // Tax: ['VAT10'],
@@ -465,6 +493,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       Container: [''],
       RelateDetail: [''],
       Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSINVENTORYADJUST')],
+      AccessNumbers: [[]],
     });
 
     if (data) {
@@ -550,28 +579,116 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     }
   }
 
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, doNotAutoFill?: boolean) {
+
     console.log(selectedData);
-    const unitControl = detail.get('Unit');
-    if (selectedData) {
-      if (selectedData.Units && selectedData.Units.length > 0) {
-        detail['unitlist'] = selectedData.Units;
-        // const unitControl = detail.get('Unit');
-        // unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
-        unitControl['UnitList'] = selectedData.Units;
-        unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
-      } else {
-        unitControl['UnitList'] = [];
-        unitControl['UnitList'] = null;
+    const productId = this.commonService.getObjectId(selectedData);
+    if (productId) {
+      if (!doNotAutoFill) {
+        const descriptionControl = detail.get('Description');
+        descriptionControl.setValue(selectedData['OriginName']);
       }
-      detail.get('Description').setValue(selectedData.Name);
-    } else {
-      detail.get('Description').setValue('');
-      detail.get('Unit').setValue('');
-      unitControl['UnitList'] = [];
-      unitControl['UnitList'] = null;
+      detail['unitList'] = selectedData.Units;
+      if (!doNotAutoFill) {
+        if (selectedData.Units && selectedData?.Units.length > 0) {
+          const defaultUnit = selectedData.Units.find(f => f['DefaultExport'] === true);
+          detail.get('Unit').setValue(defaultUnit);
+        }
+      }
+      // detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
     }
     return false;
+  }
+
+  async onSelectUnit(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
+    const unitId = this.commonService.getObjectId(selectedData);
+    const productId = this.commonService.getObjectId(detail.get('Product').value);
+    if (typeof selectedData?.IsManageByAccessNumber !== 'undefined') {
+      detail['IsManageByAccessNumber'] = selectedData.IsManageByAccessNumber;
+    }
+    if (unitId && productId) {
+      const containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+        select: 'Code',
+        includeUnit: true,
+        includeContainers: true,
+        includeAccessNumbers: true,
+        eq_Code: productId,
+        eq_ConversionUnit: unitId
+      }).then(goodsList => {
+        // const results = [];
+        if (goodsList && goodsList.length > 0) {
+          if (goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
+            detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
+          }
+          return goodsList[0].Containers.map(m => ({
+            // ...m,
+            AccessNumbers: m?.AccessNumbers,
+            // AccessNumbers: m?.AccessNumbers?.map(an => ({ id: an, text: an })),
+            id: m.Container,
+            text: `${m.ContainerPath}: ${m.ContainerDescription}`
+          }));
+        }
+        return [];
+      });
+      detail['ContainerList'] = containerList;
+      if (containerList && containerList.length == 1) {
+        detail.get('Container').setValue(containerList[0]);
+      }
+
+    }
+  }
+
+  // compileAccessNumber(accessNumber: string, goodsId: string) {
+  //   const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+  //   let _goodsId = goodsId.replace(new RegExp(`^118${coreEmbedId}`), '');
+  //   let an = accessNumber.replace(/^127/, '');
+  //   return (_goodsId.length + 10 + '').padStart(2, '0') + `${_goodsId}` + an;
+  // }
+
+  // decompileAccessNumber(accessNumber: string) {
+  //   const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+  //   const goodsIdLength = parseInt(accessNumber.substring(0, 2)) - 10;
+  //   const goodsId = '118' + coreEmbedId + accessNumber.substring(2, 2 + goodsIdLength);
+  //   const _accessNumber = accessNumber.substring(2 + goodsIdLength);
+  //   return { accessNumber: '127' + _accessNumber, goodsId: goodsId };
+  // }
+
+  async onSelectContainer(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
+    console.log(selectedData);
+    if (selectedData && selectedData['AccessNumbers']) {
+      detail['AccessNumberList'] = selectedData['AccessNumbers'].map(accessNumber => {
+        // const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+        // let goodsId = this.commonService.getObjectId(detail.get('Product').value).replace(new RegExp(`^118${coreEmbedId}`), '');
+        // let an = accessNumber.replace(/^127/, '');
+
+        accessNumber = { origin: true, id: accessNumber, text: this.commonService.compileAccessNumber(accessNumber, this.commonService.getObjectId(detail.get('Product').value)) };
+        return accessNumber;
+      });
+    } else {
+      detail['AccessNumberList'] = [];
+    }
+  }
+  async onSelectAccessNumbers(detail: FormGroup, selectedData: any[], force?: boolean, element?: Select2Component) {
+    console.log(selectedData);
+    let hadChanged = false;
+    if (selectedData && selectedData.length > 0) {
+      for (const an of selectedData) {
+        if (!an?.origin && an.id == an.text) {
+          const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+          console.log(accessNumber, goodsId);
+          an.id = accessNumber;
+          hadChanged = true;
+        }
+      }
+      if (hadChanged) {
+        const accessNumbersControl = detail.get('AccessNumbers');
+        accessNumbersControl.setValue(selectedData);
+        setTimeout(() => {
+          $(element['controls'].element[0])['select2']('open');
+        }, 500);
+      }
+      detail.get('Quantity').setValue(selectedData && selectedData.length || 0);
+    }
   }
 
   calculatToMoney(detail: FormGroup) {

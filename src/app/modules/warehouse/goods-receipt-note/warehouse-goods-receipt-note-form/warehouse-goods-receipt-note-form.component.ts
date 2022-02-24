@@ -174,7 +174,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures,IsManageByAccessNumber", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa...',
       prepareReaultItem: (item) => {
@@ -426,7 +426,11 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
-          this.onSelectUnit(newDetailFormGroup, detail.Unit);
+          if (detail.Product) {
+            this.onSelectProduct(newDetailFormGroup, detail.Product, true);
+            const seelctedUnit = detail.Product.Units.find(f => f.id == detail.Unit.id);
+            this.onSelectUnit(newDetailFormGroup, seelctedUnit);
+          }
         });
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
@@ -535,8 +539,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       }
       this.toMoney(parentFormGroup, newForm);
       // if(Array.isArray(data['AccessNumbers']) && data['AccessNumbers'].length > 0) {
-      newForm['IsManageByAccessNumber'] = data.Product?.IsManageByAccessNumber || false;
+      // newForm['IsManageByAccessNumber'] = data.Product?.IsManageByAccessNumber || false;
       // newForm['AccessNumberList'] = data['AccessNumbers'];
+      // this.onSelectProduct(newForm, data.Product);
     }
 
     const imagesFormControl = newForm.get('Image');
@@ -616,19 +621,21 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
 
 
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, doNotAutoFill?: boolean) {
 
     console.log(selectedData);
     const productId = this.commonService.getObjectId(selectedData);
     if (productId) {
-      const descriptionControl = detail.get('Description');
-      descriptionControl.setValue(selectedData['OriginName']);
-      if (selectedData.Units && selectedData?.Units.length > 0) {
+      if (!doNotAutoFill) {
+        const descriptionControl = detail.get('Description');
+        descriptionControl.setValue(selectedData['OriginName'] || selectedData['Name']);
+      }
+      detail['unitList'] = selectedData.Units;
+      if (!doNotAutoFill && selectedData.Units && selectedData?.Units.length > 0) {
         const defaultUnit = selectedData.Units.find(f => f['DefaultImport'] === true);
-        detail['unitList'] = selectedData.Units;
         detail.get('Unit').setValue(defaultUnit);
       }
-      detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
+      // detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
     }
     return false;
   }
@@ -636,6 +643,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   async onSelectUnit(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
     const unitId = this.commonService.getObjectId(selectedData);
     const productId = this.commonService.getObjectId(detail.get('Product').value);
+    if (typeof selectedData?.IsManageByAccessNumber !== 'undefined') {
+      detail['IsManageByAccessNumber'] = selectedData.IsManageByAccessNumber;
+    }
     if (unitId && productId) {
       const containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
         select: 'Code',
@@ -769,7 +779,11 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                       const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${voucher.Code}/${voucherDetail.Id}` });
                       newDetailFormGroup.get('Business').disable();
                       details.push(newDetailFormGroup);
-                      this.onSelectUnit(newDetailFormGroup, voucherDetail.Unit);
+                      this.onSelectProduct(newDetailFormGroup, voucherDetail.Product, true);
+                      const selectedUnit = voucherDetail.Product.Units.find(f => f.id == voucherDetail.Unit.id);
+                      if (selectedUnit) {
+                        this.onSelectUnit(newDetailFormGroup, selectedUnit);
+                      }
                     }
                   }
                 }

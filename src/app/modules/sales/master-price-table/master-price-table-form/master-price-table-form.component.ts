@@ -27,6 +27,7 @@ import { MasterPriceTableQrCodePrintComponent } from '../master-price-table-qrco
 import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { ThisReceiver } from '@angular/compiler';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 
 @Component({
   selector: 'ngx-master-price-table-form',
@@ -632,7 +633,24 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
           instance.valueChange.subscribe(value => {
           });
-          instance.click.subscribe(async (row: ProductModel) => {
+          instance.previewAction.subscribe((row: ProductModel) => {
+            const pictureList = row?.Pictures || [];
+            if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
+              pictureList.push(row.FeaturePicture);
+            }
+            if (pictureList.length > 0) {
+              const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
+              if (pictureList.length > 1) {
+                const currentItems = pictureList.splice(currentIndex, 1);
+                pictureList.unshift(currentItems[0]);
+              }
+              this.commonService.openDialog(ImagesViewerComponent, {
+                context: {
+                  images: pictureList.map(m => m['OriginImage']),
+                  imageIndex: 0,
+                }
+              });
+            }
           });
         },
       },

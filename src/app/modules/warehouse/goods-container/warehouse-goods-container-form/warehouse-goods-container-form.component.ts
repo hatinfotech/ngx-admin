@@ -183,7 +183,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
       // Code_old: [''],
       Code: [{ value: '', disabled: true }],
       Parent: [''],
-      Name: ['', Validators.required],
+      Name: [''],
       FindOrder: [''],
       Warehouse: ['', Validators.required],
       Description: [''],

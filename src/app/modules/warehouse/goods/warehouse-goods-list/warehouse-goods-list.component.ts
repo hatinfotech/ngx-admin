@@ -185,7 +185,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             type: 'custom',
             component: SmartTableFilterComponent,
             config: {
-              condition: 'bleft', 
+              condition: 'bleft',
             }
           },
           valuePrepareFunction: (value: any, product: GoodsModel) => {
@@ -316,8 +316,10 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                   inputMode: 'dialog',
                   inputGoodsList: [editedItems],
                   onDialogSave: (newData: ProductModel[]) => {
-                    this.refresh();
-                    // this.updateGridItems(editedItems, newData);
+                    // this.refresh();
+                    this.apiService.getPromise<ProductModel[]>(this.apiPath + '/' + editedItems.Code, { includeContainer: true, includeUnit: true }).then(rs => {
+                      this.updateGridItems([editedItems], [{ ...editedItems, Container: rs[0]['Container'], ContainerPath: rs[0]['Container']['ContainerPath'] }]);
+                    });
                   },
                   onDialogClose: () => {
                   },

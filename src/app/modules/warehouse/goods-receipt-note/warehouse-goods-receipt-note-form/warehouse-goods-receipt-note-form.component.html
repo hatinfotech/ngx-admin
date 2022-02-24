@@ -256,7 +256,7 @@
                                             </div> -->
                                             <div class="col-md-{{getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? '3' : '12'}}">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <textarea type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}" rows="1"></textarea>
+                                                    <textarea class="scrollable-container" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}" rows="1"></textarea>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-9 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber']">

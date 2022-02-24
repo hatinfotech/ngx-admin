@@ -1,3 +1,4 @@
+import { WarehouseGoodsContainerFormComponent } from './../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { Component, OnInit, Input } from '@angular/core';
 import { BaseComponent } from '../../../../lib/base-component';
@@ -9,6 +10,7 @@ import { Select2Option } from '../../../../lib/custom-element/select2/select2.co
 import { NbDialogRef } from '@nebular/theme';
 import { ProductModel } from '../../../../models/product.model';
 import { WarehouseGoodsContainerModel, GoodsModel } from '../../../../models/warehouse.model';
+import { rejects } from 'assert';
 
 @Component({
   selector: 'ngx-assign-containers-form',
@@ -64,24 +66,61 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
     return super.init();
   }
 
-  assignCategories() {
-    const choosedContainers: (WarehouseGoodsContainerModel & { id?: string, text?: string })[] = this.containersFormControl.value;
+  async assignCategories() {
+    let choosedContainers: (WarehouseGoodsContainerModel & { id?: string, text?: string })[] = this.containersFormControl.value;
+
+    const ids = [];
+    const updateList: GoodsModel[] = [];
+    for (let p = 0; p < this.inputGoodsList.length; p++) {
+      const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
+      ids.push(product.Code);
+      updateList.push(product);
+    }
+    if (!choosedContainers || choosedContainers.length == 0) {
+      choosedContainers = await (async () => {
+        return new Promise<WarehouseGoodsContainerModel[]>((resolve, reject) => {
+          this.commonService.openDialog(ShowcaseDialogComponent, {
+            context: {
+              title: 'Tạo mới vị trí hàng hóa',
+              content: 'Bạn có muốn tạo mới vị trí hàng hóa không?',
+              actions: [
+                {
+                  label: 'Trở về',
+                  status: 'basic',
+                  action: () => {
+                    reject('Không tạo vị trí hàng hóa');
+                  },
+                },
+                {
+                  label: 'Tạo và gán',
+                  status: 'primary',
+                  action: () => {
+                    this.commonService.openDialog(WarehouseGoodsContainerFormComponent, {
+                      context: {
+                        inputMode: 'dialog',
+                        // inputGoodsList: [editedItems],
+                        onDialogSave: (newData: WarehouseGoodsContainerModel[]) => {
+                          // this.refresh();
+                          // this.updateGridItems(editedItems, newData);
+                          resolve(newData.map(m => ({ id: m.Code, text: m.Name })));
+                        },
+                        onDialogClose: () => {
+                        },
+                      },
+                      closeOnEsc: false,
+                      closeOnBackdropClick: false,
+                    });
+                  },
+                },
+              ],
+            }
+          });
+        });
+      })();
+    }
 
     if (choosedContainers && choosedContainers.length > 0) {
       this.processing = true;
-      const ids = [];
-      const updateList: GoodsModel[] = [];
-      for (let p = 0; p < this.inputGoodsList.length; p++) {
-        const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
-        ids.push(product.Code);
-        // for (let c = 0; c < choosedContainers.length; c++) {
-        //   const choosed = choosedContainers[c];
-        //   // if (!product.Containers.some(cate => choosed['id'] === cate['id'])) {
-        //   //   product.Containers.push({ Container: this.commonService.getObjectId(choosed), Goods: product.Code, Unit: this.commonService.getObjectId(product.WarehouseUnit) } as any);
-        //   // }
-        // }
-        updateList.push(product);
-      }
       this.commonService.openDialog(ShowcaseDialogComponent, {
         context: {
           actions: [
@@ -115,7 +154,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
             },
           ],
         }
-      })
+      });
     }
   }
 

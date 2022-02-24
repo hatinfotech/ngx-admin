@@ -445,17 +445,18 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         unitConversions.controls[0].get('Unit').setValue(value);
       }
     });
-    const skuControl = newForm.get('Sku');
-    const nameControl = newForm.get('Name');
-    setTimeout(() => {
-      nameControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-        if (!this.isProcessing && !data?.Sku) {
-          let sku = value;
-          sku = this.commonService.convertUnicodeToNormal(sku).toLowerCase().replace(/\s+/g, '');
-          skuControl.setValue(sku);
-        }
-      });
-    }, 1000);
+    // const skuControl = newForm.get('Sku');
+    // const nameControl = newForm.get('Name');
+    // setTimeout(() => {
+    //   nameControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: string) => {
+    //     if (!this.isProcessing && !data?.Sku) {
+    //       let sku = this.commonService.convertUnicodeToNormal(value).toLowerCase();
+    //       let nameParse = sku.replace(/[^a-z0-9]/, ' ').split(/ +/).map(m => m.substring(0, 1));
+    //       sku = nameParse.join('');
+    //       skuControl.setValue(sku);
+    //     }
+    //   });
+    // }, 1000);
 
     const featurePictureFormControl = newForm.get('FeaturePicture');
     newForm.get('Pictures').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {

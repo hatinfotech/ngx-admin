@@ -1,5 +1,7 @@
+import { Select2Option } from './../select2/select2.component';
+import { Select2Component } from './../../../../vendor/ng2select2 copy/lib/ng2-select2.component';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit, ElementRef, Type } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '../../../services/common.service';
@@ -326,7 +328,7 @@ export class SmartTableAccCurrencyComponent extends SmartTableBaseComponent impl
 
 @Component({
   template: `<div [style]="style" [class]="class">
-    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" nbTooltip="{{tag.type}}: {{tag.text}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.id}}</a>
+    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" nbTooltip="{{tag.type}}: {{tag.text}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText ? tag.text : tag.id}}</a>
   </div>`,
 })
 export class SmartTableTagsComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
@@ -336,9 +338,11 @@ export class SmartTableTagsComponent extends SmartTableBaseComponent implements 
 
   @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
 
+  labelAsText = false;
+
   ngOnInit() {
     // this.renderValue = this.value;
-
+    // console.log(123);
   }
 
   protected onClick(tag: { id: string, text: string, type: string }) {
@@ -522,7 +526,7 @@ export class SmartTableNumberEditableComponent extends SmartTableBaseComponent i
   template: `
   <div [style]="style" [class]="class">
     <input #inputText type="text" [name]="name" nbInput fullWidth
-        [placeholder]="placeholder" class="align-right" [formControl]="inputControl">
+        [placeholder]="placeholder" [formControl]="inputControl">
   </div>
   `,
 })
@@ -601,6 +605,96 @@ export class SmartTableTextEditableComponent extends SmartTableBaseComponent imp
       this.value = value;
     }
   }
+
+}
+@Component({
+  template: `
+  <div [style]="style" [class]="class">
+      <ngx-select2 *ngIf="select2Option" [formControl]="inputControl" [select2Option]="select2Option" [data]="data" #select2Conponent (selectChange)="onSelectChange($event, select2Conponent)"></ngx-select2>
+  </div>
+  `,
+})
+export class SmartTableSelect2EditableComponent extends SmartTableBaseComponent implements ViewCell, OnInit, AfterViewInit {
+
+  inputControl = new FormControl;
+  // @ViewChild('select2Conponent') select2Conponent: Select2Component;
+  data: any[];
+
+  select2Option: Select2Option;
+
+  renderValue: boolean;
+  // disabled: boolean = false;
+  placeholder: string = '';
+  delay: number = 1000;
+  name: string = '';
+  isPatchingValue = false;
+  defaultVavlue = '';
+
+  @Input() value: string | number;
+  @Input() rowData: any;
+  @Output() valueChange: EventEmitter<any> = new EventEmitter();
+  @ViewChild('inputText', { static: false }) input: ElementRef;
+
+  jqueryInput: JQuery;
+
+  constructor(public commonService: CommonService) {
+    super();
+    this.inputControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(this.delay),
+      )
+      .subscribe((value: number) => {
+        this.onChange(value);
+      });
+
+  }
+
+  set status(status: string) {
+    if (this.jqueryInput) {
+      this.jqueryInput.removeClass('status-primary');
+      this.jqueryInput.removeClass('status-info');
+      this.jqueryInput.removeClass('status-warning');
+      this.jqueryInput.removeClass('status-danger');
+      this.jqueryInput.removeClass('status-success');
+      if (status) {
+        this.jqueryInput.addClass('status-' + status);
+      }
+    }
+  }
+
+  ngAfterViewInit() {
+    // console.log(this.input.nativeElement);
+    // const thisInput = this.jqueryInput = $(this.input.nativeElement);
+    // thisInput.keyup(e => {
+    //   if (e.keyCode === 13) {
+    //     thisInput.closest('tr').next().find('input[name="' + this.name + '"]').focus();
+    //   }
+    // });
+  }
+
+  ngOnInit() {
+    this.renderValue = this.value ? true : false;
+    this.isPatchingValue = true;
+    this.inputControl.patchValue(this.value || this.defaultVavlue);
+    setTimeout(() => {
+      this.isPatchingValue = false;
+    }, 1000);
+  }
+
+  setValue(value: any) {
+    this.value = value;
+    this.inputControl.patchValue(this.value);
+  }
+
+  onChange(value: any) {
+    if (this.value !== value && !this.isPatchingValue) {
+      this.valueChange.emit(value);
+      this.value = value;
+    }
+  }
+
+  public onSelectChange = (value: any, select2Conponent: Select2Component) => {};
 
 }
 

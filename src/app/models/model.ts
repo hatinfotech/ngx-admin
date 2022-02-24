@@ -1,3 +1,5 @@
+import { ExecFileSyncOptionsWithBufferEncoding } from "child_process";
+
 export abstract class Model {
     [key: string]: any;
     id?: string;
@@ -37,4 +39,17 @@ export interface SystemConfigModel {
             voucherLogoHeight: number,
         }
     },
+}
+
+export class MyObject {
+    [key: string]: any,
+
+    constructor(
+        public id?: string,
+        public text?: string,
+        public type?: string) { }
+
+    toString() {
+        return this.text;
+    }
 }

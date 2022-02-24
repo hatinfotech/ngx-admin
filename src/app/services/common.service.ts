@@ -1257,4 +1257,19 @@ export class CommonService {
       }
     };
   }
+
+  compileAccessNumber(accessNumber: string, goodsId: string) {
+    const coreEmbedId = this.systemConfigs$.value.ROOT_CONFIGS.coreEmbedId;
+    let _goodsId = goodsId.replace(new RegExp(`^118${coreEmbedId}`), '');
+    let an = accessNumber.replace(/^127/, '');
+    return (_goodsId.length + 10 + '').padStart(2, '0') + `${_goodsId}` + an;
+  }
+
+  decompileAccessNumber(accessNumber: string) {
+    const coreEmbedId = this.systemConfigs$.value.ROOT_CONFIGS.coreEmbedId;
+    const goodsIdLength = parseInt(accessNumber.substring(0, 2)) - 10;
+    const goodsId = '118' + coreEmbedId + accessNumber.substring(2, 2 + goodsIdLength);
+    const _accessNumber = accessNumber.substring(2 + goodsIdLength);
+    return { accessNumber: '127' + _accessNumber, goodsId: goodsId };
+  }
 }

@@ -1,3 +1,4 @@
+import { SystemConfigModel } from './../../../../models/model';
 import { DeploymentVoucherModel } from './../../../../models/deployment.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -5,7 +6,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
-import { filter, take } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
@@ -133,6 +134,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     },
   };
 
+  systemConfigs: SystemConfigModel;
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -160,6 +163,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         this.preview(option.form);
       },
     });
+
+    this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(configs => this.systemConfigs = configs);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -598,7 +603,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       }).then(goodsList => {
         // const results = [];
         if (goodsList && goodsList.length > 0) {
-          if(goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
+          if (goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
             detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
           }
           return goodsList[0].Containers.map(m => ({
@@ -615,14 +620,21 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       if (containerList && containerList.length == 1) {
         detail.get('Container').setValue(containerList[0]);
       }
-      
+
     }
   }
 
   async onSelectContainer(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
     console.log(selectedData);
     if (selectedData && selectedData['AccessNumbers']) {
-      detail['AccessNumberList'] = selectedData['AccessNumbers'];
+      detail['AccessNumberList'] = selectedData['AccessNumbers'].map(accessNumber => {
+        const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+        let goodsId = this.commonService.getObjectId(detail.get('Product').value).replace(new RegExp(`^118${coreEmbedId}`), '');
+        let an = accessNumber.replace(/^127/, '');
+
+        accessNumber = { id: accessNumber, text: (goodsId.length + 10 + '').padStart(2, '0') + `${goodsId}` + an };
+        return accessNumber;
+      });
     } else {
       detail['AccessNumberList'] = [];
     }
