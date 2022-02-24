@@ -286,4 +286,12 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     }
   }
 
+  onControlEnter(event: KeyboardEvent) {
+    if ((event.target as HTMLElement).nodeName.toLowerCase() !== 'textarea') {
+      return false;
+    }
+    // return event.preventDefault();
+    // return true;
+  }
+
 }

@@ -248,6 +248,10 @@ import { WarehouseInventoryAdjustNotePrintComponent } from './modules/warehouse/
 import { SalesReturnsVoucherListComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-list/sales-returns-voucher-list.component';
 import { SalesReturnsVoucherFormComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-form/sales-returns-voucher-form.component';
 import { SalesReturnsVoucherPrintComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-print/sales-returns-voucher-print.component';
+import { CommercePosGuiComponent } from './modules/commerce-pos/gui/commerce-pos-gui/commerce-pos-gui.component';
+import { CommercePosOrderFormComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-form/commerce-pos-order-form.component';
+import { CommercePosOrderPrintComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-print/commerce-pos-order-print.component';
+import { CommercePosOrderListComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-list/commerce-pos-order-list.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -489,6 +493,12 @@ export class DynamicLocaleId extends String {
     CollaboratorEducationArticlePrintComponent,
 
     DynamicListDialogComponent,
+
+    // Commerce POS
+    CommercePosGuiComponent,
+    CommercePosOrderFormComponent,
+    CommercePosOrderListComponent,
+    CommercePosOrderPrintComponent,
 
   ],
   imports: [

@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.0.12.5',
+  version: '6.1.0.1',
+  // 6.1.0.2: Module Commerce POS
   // 6.0.12.4: Fix print label for access number
   // 6.0.12.2: Fix print label for access number
   // 6.0.12: Add AccessNumber feature for warehouse

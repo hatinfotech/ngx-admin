@@ -1,3 +1,5 @@
+import { CommercePosOrderListComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-list/commerce-pos-order-list.component';
+import { CommercePosGuiComponent } from './modules/commerce-pos/gui/commerce-pos-gui/commerce-pos-gui.component';
 import { CollaboratorEducationArticleListComponent } from './modules/collaborator/education-article/education-article-list/collaborator-education-article-list.component';
 import { CollaboratorCommissionListComponent } from './modules/collaborator/commission/collaborator-commission-list/collaborator-commission-list.component';
 import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
@@ -1163,7 +1165,23 @@ const routes: Routes = [
 
 
 
-
+  // Commerce POS route
+  {
+    path: 'commerce-pos/gui',
+    canActivate: [AuthGuardService],
+    component: CommercePosGuiComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'commerce-pos/order/list',
+    canActivate: [AuthGuardService],
+    component: CommercePosOrderListComponent,
+    data: {
+      reuse: true,
+    },
+  },
 
 
 

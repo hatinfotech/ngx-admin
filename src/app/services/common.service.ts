@@ -86,6 +86,8 @@ declare var navigator: {
 })
 export class CommonService {
 
+  layout$ = new BehaviorSubject<string>('one-column');
+
   // private DIACRITICS = diacritic;
 
   // ready$ = new BehaviorSubject<boolean>(false);

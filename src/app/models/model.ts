@@ -7,6 +7,7 @@ export abstract class Model {
 
 export interface RootConfigModel {
     coreName: string;
+    coreEmbedId: string;
     domain: string,
     sslEnabled: boolean,
     chatService: {

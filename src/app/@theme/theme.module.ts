@@ -45,6 +45,7 @@ import { SmartBotModule } from '../modules/smart-bot/smart-bot.module';
 import { ActivityNotificationComponent } from './components/header/header/activity-notification/activity-notification.component';
 import { HeaderNotificationContextDirective } from './components/header/header/header-notification-context/header-notification-context.directive';
 import { HeaderNotificationContextComponent } from './components/header/header/header-notification-context/header-notification-context.component';
+import { FullScreenLayoutComponent } from './layouts/full-screen/full-screen.layout';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -72,6 +73,7 @@ const COMPONENTS = [
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
+  FullScreenLayoutComponent,
   
   /** Custom */
   ActivityNotificationComponent,
