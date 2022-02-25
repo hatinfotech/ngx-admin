@@ -120,55 +120,12 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
       // };
       previewBtn.icon = 'grid-outline';
       previewBtn.click = () => {
-        this.commonService.openDialog(ShowcaseDialogComponent, {
+        this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
           context: {
-            title: 'Print Bar Code',
-            content: 'Chọn hàng hóa cần in Bar Code:',
-            actions: [
-              {
-                status: 'basic',
-                label: 'Trở về',
-                action: () => { },
-              },
-              {
-                status: 'success',
-                label: 'In QRCode',
-                action: () => {
-                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
-                    context: {
-                      id: this.selectedItems.map(item => this.makeId(item)),
-                      printForType: 'DRAWERS',
-                    }
-                  });
-                },
-              },
-              {
-                status: 'primary',
-                label: 'In tầng',
-                action: () => {
-                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
-                    context: {
-                      id: [],
-                      printForType: 'FLOOR',
-                    }
-                  });
-                },
-              },
-              {
-                status: 'info',
-                label: 'In kệ',
-                action: () => {
-                  this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
-                    context: {
-                      id: [],
-                      printForType: 'SHELF',
-                    }
-                  });
-                },
-              },
-            ]
+            id: this.selectedItems.map(item => this.makeId(item)),
+            printForType: 'DRAWERS',
           }
-        })
+        });
       };
       const copyBtn: ActionControl = {
         ...previewBtn,

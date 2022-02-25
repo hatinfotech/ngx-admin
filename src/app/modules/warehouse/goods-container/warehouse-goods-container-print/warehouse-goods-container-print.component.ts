@@ -44,29 +44,35 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
       page-break-after: initial;
     }
   }
-  .label {
+  .blabel {
     padding: 2px;
     page-break-after:always;
     padding: 1mm;
     padding-top: 2mm;
     color: #000;
+    overflow: hidden;
+    font-size: 2mm !important;
   }
-  .label .info {
-    clear: both;
-    height: 13mm;
+  .blabel .info {
+    clear: both;  
+    font-size: 2.8mm!important;
+    padding-top: 0.4mm;
     overflow: hidden;
   }
-  .label .find-order {
+  .blabel .find-order {
     font-weight: bold !important;
-    font-size: 44px !important;
-    line-height: 12mm;
+    font-size: 10.5mm !important;
+    line-height: 15mm;
   }
   .bar-code {
     padding: 1px;
-    border: 1px #000 solid;
-    border-radius: 5px;
     margin-right: 1mm;
-    height: 12mm;
+    height: 14mm;
+  }
+  .qr-code {
+    padding: 1px;
+    margin-right: 1mm;
+    height: 15mm;
   }
   .page-break {
     clear: left;
@@ -87,7 +93,7 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
 
   ngOnInit() {
     this.restrict();
-    super.ngOnInit();``
+    super.ngOnInit(); ``
   }
 
   async init() {
@@ -169,7 +175,9 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<WarehouseGoodsContainerModel[]>(this.apiPath, {
       includeWarehouse: true,
+      includeGoodsInContainer: true,
       renderQrCode: true,
+      // renderBarCode: true,
       // eq_Type: this.printForType,
       id: this.id,
       limit: 'nolimit'
@@ -192,7 +200,12 @@ export class WarehouseGoodsContainerPrintComponent extends DataManagerPrintCompo
       //   }
       // }
       // return table;
-      return rs;
+      return rs.map(item => {
+        if (item['Goods'] && item['Goods'].length > 0) {
+          item['Sku'] = item['Goods'][0]['Sku'];
+        }
+        return item;
+      });
     });
   }
 
