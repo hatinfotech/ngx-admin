@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
-import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent, SmartTableAccCurrencyComponent, SmartTableSelect2EditableComponent } from './smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent, SmartTableAccCurrencyComponent, SmartTableSelect2EditableComponent, SmartTableTagComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule, NbCardModule, NbSpinnerModule, NbPopoverModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
@@ -62,6 +62,7 @@ import { ImageViewerModule } from 'ngx-image-viewer';
     FilesInputComponent,
     PrintHeaderComponent,
     SmartTableTagsComponent,
+    SmartTableTagComponent,
     SmartTableAccCurrencyComponent,
     ImagesViewerComponent,
   ],

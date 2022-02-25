@@ -328,7 +328,7 @@ export class SmartTableAccCurrencyComponent extends SmartTableBaseComponent impl
 
 @Component({
   template: `<div [style]="style" [class]="class">
-    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" nbTooltip="{{tag.type}}: {{tag.text}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText ? tag.text : tag.id}}</a>
+    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.type}}: {{tag.text}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText ? tag.text : tag.id}}</a>
   </div>`,
 })
 export class SmartTableTagsComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
@@ -339,6 +339,7 @@ export class SmartTableTagsComponent extends SmartTableBaseComponent implements 
   @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
 
   labelAsText = false;
+  nowrap = true;
 
   ngOnInit() {
     // this.renderValue = this.value;
@@ -346,6 +347,36 @@ export class SmartTableTagsComponent extends SmartTableBaseComponent implements 
   }
 
   protected onClick(tag: { id: string, text: string, type: string }) {
+    this.click.emit(tag);
+  }
+
+  onChange(value: any) {
+    this.valueChange.emit(value);
+    this.value = value;
+  }
+
+}
+@Component({
+  template: `<div [style]="style" [class]="class">
+    <a (click)="onClick(value)" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{value.type}}: {{value.text}}"><nb-icon icon="{{value.icon || 'pricetags'}}" pack="{{value.iconPack || 'eva'}}"></nb-icon> {{labelAsText ? value.text : value.id}}</a>
+  </div>`,
+})
+export class SmartTableTagComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
+
+  @Input() value: { id: string, text: string, type?: string, icon?: string, iconPack?: string, status?: string } | any;
+  @Input() rowData: any;
+
+  @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
+
+  labelAsText = false;
+  nowrap = true;
+
+  ngOnInit() {
+    // this.renderValue = this.value;
+    // console.log(123);
+  }
+
+  public onClick(tag: { id: string, text: string, type: string }) {
     this.click.emit(tag);
   }
 

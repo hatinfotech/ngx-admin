@@ -146,7 +146,10 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
               status: 'danger',
               action: () => {
                 this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, updateContainerDescription: true, assignContainers: choosedContainers.map(container => this.commonService.getObjectId(container)).join(',') }, updateList).then(rs => {
-                  this.onDialogSave(rs);
+                  this.onDialogSave(rs.map(m => {
+                    m.Containers = choosedContainers;
+                    return m;
+                  }));
                   this.processing = false;
                   this.close();
                 });
