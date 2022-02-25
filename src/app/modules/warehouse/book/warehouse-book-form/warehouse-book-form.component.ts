@@ -10,7 +10,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductCategoryModel, ProductGroupModel, ProductModel, ProductUnitConversoinModel } from '../../../../models/product.model';
-import { SmartTableThumbnailComponent, SmartTableCurrencyEditableComponent, SmartTableCheckboxComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableSelect2EditableComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableThumbnailComponent, SmartTableCurrencyEditableComponent, SmartTableCheckboxComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableSelect2EditableComponent, SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
@@ -21,6 +21,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { UnitModel } from '../../../../models/unit.model';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { AssignContainerFormComponent } from '../../goods/assign-containers-form/assign-containers-form.component';
+import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
 
 @Component({
   selector: 'ngx-warehouse-book-form',
@@ -454,7 +455,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         delay: 3000,
         onComponentInitFunction: (component: SmartTableSelect2EditableComponent) => {
           component.select2Option = {
-            placeholder: 'Nhập số truy xuất...',
+            placeholder: 'Tự động tạo khi nhập tồn kho...',
             allowClear: true,
             width: '100%',
             dropdownAutoWidth: true,
@@ -477,6 +478,8 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
                   const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
                   console.log(accessNumber, goodsId);
                   an.id = accessNumber;
+                  // an.text = an.text + ' (' + accessNumber + ')';
+                  an.text = accessNumber + ' (' + this.commonService.getObjectId(an) + ')';
                   hadChanged = true;
                 }
               }
@@ -490,33 +493,33 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
               }
               component.rowData.AccessNumbers = selectedData;
               $(select2Conponent['controls'].element[0]).closest('td').next().find('input').val(selectedData.length)
+              component.status = 'warning';
               this.commonService.takeUntil('update_head_entry_' + component.rowData.Code, 5000).then(() => {
                 const masterPriceTable = this.array.controls[0].get('Code').value;
                 if (this.commonService.getObjectId(component.rowData.WarehouseUnit)) {
-                  // instance.status = 'primary';
                   console.log(component.rowData.Code);
                   this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
                     id: [this.array.controls[0].get('Code').value],
                     updateHeadInventory: true,
                     goods: component.rowData.Code,
                     unit: this.commonService.getObjectId(component.rowData.WarehouseUnit),
-                    container: this.commonService.getObjectId(component.rowData['Container']),
+                    container: this.commonService.getObjectId(component.rowData['Container'][0]),
                     inventory: selectedData.length,
                     currency: this.commonService.loginInfo.configuration.defaultCurrency,
                   }, [{
                     MasterPriceTable: masterPriceTable,
                     Product: component.rowData.Code,
                     Unit: component.rowData.WarehouseUnit.Code,
-                    Price: component.rowData.UnitPrice,
+                    UnitPrice: component.rowData.UnitPrice,
                     Inventory: component.rowData.Inventory,
                     AccessNumbers: component.rowData.AccessNumbers.map(m => m.id).filter(f => !!f)
                   }]).then(rs => {
                     console.log(component.rowData.Code);
-                    // instance.status = 'success';
+                    component.status = 'success';
                   });
                   // }
                 } else {
-                  // instance.status = 'danger';
+                  component.status = 'danger';
                   this.commonService.openDialog(ShowcaseDialogComponent, {
                     context: {
                       title: 'Cảnh báo',
@@ -536,52 +539,52 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
             }
           }
         },
-        onChange: (value: any, row: GoodsModel, instance: SmartTableSelect2EditableComponent) => {
-          const masterPriceTable = this.array.controls[0].get('Code').value;
-          if (value !== null) {
-            row.AccesssNumbers = value;
-            if (this.commonService.getObjectId(row.WarehouseUnit)) {
-              instance.status = 'primary';
-              console.log(instance.rowData.Code);
-              this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
-                id: [this.array.controls[0].get('Code').value],
-                updateHeadInventory: true,
-                goods: row.Code,
-                unit: this.commonService.getObjectId(row.WarehouseUnit),
-                container: this.commonService.getObjectId(row['Container']),
-                inventory: row['Inventory'],
-                currency: this.commonService.loginInfo.configuration.defaultCurrency,
-              }, [{
-                MasterPriceTable: masterPriceTable,
-                Product: row.Code,
-                Unit: row.WarehouseUnit.Code,
-                Price: row.UnitPrice,
-                Inventory: row.Inventory,
-                AccessNumbers: value.map(m => m.id).filter(f => !!f)
-              }]).then(rs => {
-                console.log(instance.rowData.Code);
-                instance.status = 'success';
-              });
-              // }
-            } else {
-              instance.status = 'danger';
-              this.commonService.openDialog(ShowcaseDialogComponent, {
-                context: {
-                  title: 'Cảnh báo',
-                  content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
-                  actions: [
-                    {
-                      label: 'Trở về',
-                      icon: 'back',
-                      status: 'info',
-                      action: () => { },
-                    },
-                  ],
-                },
-              });
-            }
-          }
-        },
+        // onChange: (value: any, row: GoodsModel, instance: SmartTableSelect2EditableComponent) => {
+        //   const masterPriceTable = this.array.controls[0].get('Code').value;
+        //   if (value !== null) {
+        //     row.AccesssNumbers = value;
+        //     if (this.commonService.getObjectId(row.WarehouseUnit)) {
+        //       instance.status = 'primary';
+        //       console.log(instance.rowData.Code);
+        //       this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
+        //         id: [this.array.controls[0].get('Code').value],
+        //         updateHeadInventory: true,
+        //         goods: row.Code,
+        //         unit: this.commonService.getObjectId(row.WarehouseUnit),
+        //         container: this.commonService.getObjectId(row['Container'][0]),
+        //         inventory: row['Inventory'],
+        //         currency: this.commonService.loginInfo.configuration.defaultCurrency,
+        //       }, [{
+        //         MasterPriceTable: masterPriceTable,
+        //         Product: row.Code,
+        //         Unit: row.WarehouseUnit.Code,
+        //         Price: row.UnitPrice,
+        //         Inventory: row.Inventory,
+        //         AccessNumbers: value.map(m => m.id).filter(f => !!f)
+        //       }]).then(rs => {
+        //         console.log(instance.rowData.Code);
+        //         instance.status = 'success';
+        //       });
+        //       // }
+        //     } else {
+        //       instance.status = 'danger';
+        //       this.commonService.openDialog(ShowcaseDialogComponent, {
+        //         context: {
+        //           title: 'Cảnh báo',
+        //           content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+        //           actions: [
+        //             {
+        //               label: 'Trở về',
+        //               icon: 'back',
+        //               status: 'info',
+        //               action: () => { },
+        //             },
+        //           ],
+        //         },
+        //       });
+        //     }
+        //   }
+        // },
       },
       Inventory: {
         title: this.commonService.translateText('Warehouse.inventory'),
@@ -589,35 +592,47 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         type: 'number-editable',
         editable: true,
         delay: 3000,
-        onChange: (value: number, row: GoodsModel, instance: SmartTableNumberEditableComponent) => {
+        onChange: (value: number, row: GoodsModel, component: SmartTableNumberEditableComponent) => {
           const masterPriceTable = this.array.controls[0].get('Code').value;
           if (value !== null) {
             row.Inventory = value;
             if (this.commonService.getObjectId(row.WarehouseUnit)) {
-              instance.status = 'primary';
-              console.log(instance.rowData.Code);
+              component.status = 'warning';
+              console.log(component.rowData.Code);
               this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
                 id: [this.array.controls[0].get('Code').value],
                 updateHeadInventory: true,
                 goods: row.Code,
                 unit: this.commonService.getObjectId(row.WarehouseUnit),
-                container: this.commonService.getObjectId(row['Container']),
+                container: this.commonService.getObjectId(row['Container'][0]),
                 inventory: value,
+                unitPrice: row.UnitPrice,
                 currency: this.commonService.loginInfo.configuration.defaultCurrency,
               }, [{
                 MasterPriceTable: masterPriceTable,
                 Product: row.Code,
                 Unit: row.WarehouseUnit.Code,
-                Price: value,
+                UnitPrice: row.UnitPrice,
                 Inventory: value,
                 AccessNumbers: row.AccessNumbers.map(m => m.id).filter(f => !!f)
-              }]).then(rs => {
-                console.log(instance.rowData.Code);
-                instance.status = 'success';
+              }]).then(async rs => {
+                console.log(component.rowData.Code);
+
+                //Update row
+                const udpateItem = (await this.source.getElements()).find(f => row.Code == f.Code && this.commonService.getObjectId(f.WarehouseUnit) == this.commonService.getObjectId(row.WarehouseUnit));
+                if (rs[0]['AccessNumbers']) {
+                  this.source.update(udpateItem, {AccessNumbers: rs[0]['AccessNumbers'].map(m => ({
+                    id: m,
+                    text: m + ' (' + this.commonService.compileAccessNumber(m, component.rowData.Code) + ')'
+                  }))}).then(() => {
+                    component.status = 'success';
+                  });
+                }
+
               });
               // }
             } else {
-              instance.status = 'danger';
+              component.status = 'danger';
               this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Cảnh báo',
@@ -642,35 +657,36 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         type: 'number-editable',
         editable: true,
         delay: 3000,
-        onChange: (value: number, row: GoodsModel, instance: SmartTableNumberEditableComponent) => {
+        onChange: (value: number, row: GoodsModel, component: SmartTableNumberEditableComponent) => {
           const masterPriceTable = this.array.controls[0].get('Code').value;
           if (value !== null) {
             if (this.commonService.getObjectId(row.WarehouseUnit)) {
-              instance.status = 'primary';
-              console.log(instance.rowData.Code);
+              component.status = 'warning';
+              console.log(component.rowData.Code);
               row.UnitPrice = value;
               this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
                 id: [this.array.controls[0].get('Code').value],
                 updateHeadInventory: true,
                 goods: row.Code,
                 unit: this.commonService.getObjectId(row.WarehouseUnit),
-                container: this.commonService.getObjectId(row['Container']),
+                container: this.commonService.getObjectId(row['Container'][0]),
                 unitPrice: value,
+                inventory: row.Inventory,
                 currency: this.commonService.loginInfo.configuration.defaultCurrency,
               }, [{
                 MasterPriceTable: masterPriceTable,
                 Product: row.Code,
                 Unit: row.WarehouseUnit.Code,
-                Price: value,
+                UnitPrice: value,
                 Inventory: row.Inventory,
                 AccessNumbers: row.AccessNumbers.map(m => m.id).filter(f => !!f)
               }]).then(rs => {
-                console.log(instance.rowData.Code);
-                instance.status = 'success';
+                console.log(component.rowData.Code);
+                component.status = 'success';
               });
               // }
             } else {
-              instance.status = 'danger';
+              component.status = 'danger';
               this.commonService.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Cảnh báo',
@@ -687,6 +703,38 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
               });
             }
           }
+        },
+      },
+      PrintAccessNumbers: {
+        title: this.commonService.translateText('In số truy xuất'),
+        type: 'custom',
+        width: '5%',
+        // class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'pricetags';
+          instance.display = true;
+          instance.status = 'success';
+          // instance.disabled = this.ref && Object.keys(this.ref).length > 0;
+          // instance.style = 'text-align: right';
+          // instance.class = 'align-right';
+          instance.status = 'primary';
+          instance.title = this.commonService.translateText('In số truy xuất');
+          instance.label = this.commonService.translateText('In số truy xuất');
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
+            if (rowData['AccessNumbers'] && rowData['AccessNumbers'].length > 0) {
+              this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+                context: {
+                  id: rowData['AccessNumbers'].map(m => this.commonService.getObjectId(m))
+                }
+              });
+            } else {
+              this.commonService.toastService.show('Chưa có số truy xuất tồn đầu', 'Sổ kho', { status: 'warning' });
+            }
+          });
         },
       },
     },
@@ -829,7 +877,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
   protected configPaging() {
     return {
       display: true,
-      perPage: 100,
+      perPage: 20,
     };
   }
 
@@ -882,9 +930,12 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
           product['AccessNumbers'] = product['AccessNumbers'].map(m => {
             return {
               id: m,
-              text: this.commonService.compileAccessNumber(m, product.Code)
+              text: m + ' (' + this.commonService.compileAccessNumber(m, product.Code) + ')'
+              // text: m
             };
           });
+        } else {
+          product['AccessNumbers'] = [];
         }
         if (product.Container) {
           product.Container = [product.Container];
@@ -991,6 +1042,10 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         ],
       },
     });
+    return false;
+  }
+  refreshList() {
+    this.source.refresh();
     return false;
   }
 

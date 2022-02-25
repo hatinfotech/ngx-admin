@@ -627,11 +627,38 @@ ngx-header ngx-action-control-list {
     }
   }
 }
-
 .form-group[state="warning"] {
   .select2-container {
     .select2-selection {
-      border-color: #ffaa00 !important;
+      border-color: var(--warning) !important;
+    }
+  }
+}
+.form-group[state="danger"] {
+  .select2-container {
+    .select2-selection {
+      border-color: var(--danger) !important;
+    }
+  }
+}
+.form-group[state="primary"] {
+  .select2-container {
+    .select2-selection {
+      border-color: var(--primary) !important;
+    }
+  }
+}
+.form-group[state="success"] {
+  .select2-container {
+    .select2-selection {
+      border-color: var(--success) !important;
+    }
+  }
+}
+.form-group[state="info"] {
+  .select2-container {
+    .select2-selection {
+      border-color: var(--input-info-border-color) !important;
     }
   }
 }

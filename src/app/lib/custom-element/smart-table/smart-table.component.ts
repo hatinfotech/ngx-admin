@@ -609,15 +609,21 @@ export class SmartTableTextEditableComponent extends SmartTableBaseComponent imp
 }
 @Component({
   template: `
-  <div [style]="style" [class]="class">
+  <div [style]="style" class="form-group" #wrap>
       <ngx-select2 *ngIf="select2Option" [formControl]="inputControl" [select2Option]="select2Option" [data]="data" #select2Conponent (selectChange)="onSelectChange($event, select2Conponent)"></ngx-select2>
   </div>
   `,
+  styles: [`
+    .form-group {
+      margin-bottom: 0;
+    }
+  `]
 })
 export class SmartTableSelect2EditableComponent extends SmartTableBaseComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
-  // @ViewChild('select2Conponent') select2Conponent: Select2Component;
+  @ViewChild('select2Conponent') inputComponent: Select2Component;
+  @ViewChild('wrap') wrap: ElementRef;
   data: any[];
 
   select2Option: Select2Option;
@@ -629,6 +635,8 @@ export class SmartTableSelect2EditableComponent extends SmartTableBaseComponent 
   name: string = '';
   isPatchingValue = false;
   defaultVavlue = '';
+
+  _status: string;
 
   @Input() value: string | number;
   @Input() rowData: any;
@@ -651,16 +659,22 @@ export class SmartTableSelect2EditableComponent extends SmartTableBaseComponent 
   }
 
   set status(status: string) {
-    if (this.jqueryInput) {
-      this.jqueryInput.removeClass('status-primary');
-      this.jqueryInput.removeClass('status-info');
-      this.jqueryInput.removeClass('status-warning');
-      this.jqueryInput.removeClass('status-danger');
-      this.jqueryInput.removeClass('status-success');
-      if (status) {
-        this.jqueryInput.addClass('status-' + status);
-      }
+    this._status = status;
+    if (status) {
+      // console.log(this.inputComponent['controls'].element);
+      $(this.wrap.nativeElement).attr('state', status);
     }
+
+    // if (this.jqueryInput) {
+    //   this.jqueryInput.removeClass('status-primary');
+    //   this.jqueryInput.removeClass('status-info');
+    //   this.jqueryInput.removeClass('status-warning');
+    //   this.jqueryInput.removeClass('status-danger');
+    //   this.jqueryInput.removeClass('status-success');
+    //   if (status) {
+    //     this.jqueryInput.addClass('status-' + status);
+    //   }
+    // }
   }
 
   ngAfterViewInit() {
@@ -694,7 +708,7 @@ export class SmartTableSelect2EditableComponent extends SmartTableBaseComponent 
     }
   }
 
-  public onSelectChange = (value: any, select2Conponent: Select2Component) => {};
+  public onSelectChange = (value: any, select2Conponent: Select2Component) => { };
 
 }
 

@@ -206,6 +206,12 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   }
 
   async getFormData(ids: string[]) {
+    const params: any = {};
+    if (this.voucher) {
+      params.eq_Voucher = this.voucher;
+    } else if (this.id) {
+      params.id = this.id;
+    }
     return this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
       includeWarehouse: true,
       includeContainer: true,
@@ -215,8 +221,9 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       renderQrCode: true,
       // eq_Type: this.printForType,
       // id: this.id,
-      eq_Voucher: this.voucher,
-      limit: 'nolimit'
+      // eq_Voucher: this.voucher,
+      limit: 'nolimit',
+      ...params
     }).then(rs => {
       // rs.map(item => {
       //   if (item.Path) {
