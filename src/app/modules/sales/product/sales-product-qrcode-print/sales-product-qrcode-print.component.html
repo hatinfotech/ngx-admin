@@ -1,0 +1,30 @@
+<div class="dialog-wrap {{inputMode}}" #dialogWrap>
+    <nb-card [nbSpinner]="loading" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+        <nb-card-header>
+            <ngx-card-header [option]="{controlOption: {}}" [size]="size" [icon]="favicon" [title]="(title | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body class="print-body" #printContent>
+            <div id="print-area">
+                <div class="blabel" *ngFor="let item of this.data; let i = index;">
+                    <img class="qr-code" src="{{item.QrCode}}" style="float: left;">
+                    <div class="price">{{item.Price | currency:'VND'}}</div>
+                    <div class="unit">ĐVT: {{item.WarehouseUnit | objecttext}}</div>
+                    <div class="location">{{item.Shelf}}/{{item.Warehouse | objecttext}}</div>
+                    <div class="info">SKU: {{item.Sku}} - {{item.Description || item.Name}}</div>
+                    <div class="find-order">Số nhận thức: {{item.FindOrder}}</div>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="buttons-row">
+                <button nbButton hero status="primary" (click)="print(0)">
+                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                </button>
+                <button nbButton hero status="danger" (click)="close()">
+                    <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
+                </button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</div>

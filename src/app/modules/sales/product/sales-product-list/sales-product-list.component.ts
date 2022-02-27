@@ -1,3 +1,4 @@
+import { MasterPriceTablePrintComponent } from './../../master-price-table/master-price-table-print/master-price-table-print.component';
 import { Component, OnInit } from '@angular/core';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { ApiService } from '../../../../services/api.service';
@@ -5,31 +6,31 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
-import { WarehouseGoodsFormComponent } from '../warehouse-goods-form/warehouse-goods-form.component';
-import { AssignContainerFormComponent } from '../assign-containers-form/assign-containers-form.component';
 import { ProductModel, ProductUnitConversoinModel } from '../../../../models/product.model';
-import { SmartTableButtonComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableCurrencyEditableComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { WarehouseGoodsPrintComponent } from '../warehouse-goods-print/warehouse-goods-print.component';
 import { takeUntil } from 'rxjs/operators';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-containers-form/assign-containers-form.component';
+import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { SalesProductQrCodePrintComponent } from '../sales-product-qrcode-print/sales-product-qrcode-print.component';
 
 @Component({
-  selector: 'ngx-warehouse-goods-list',
-  templateUrl: './warehouse-goods-list.component.html',
-  styleUrls: ['./warehouse-goods-list.component.scss'],
+  selector: 'ngx-sales-product-list',
+  templateUrl: './sales-product-list.component.html',
+  styleUrls: ['./sales-product-list.component.scss'],
 })
-export class WarehouseGoodsListComponent extends ProductListComponent implements OnInit {
+export class SalesProductListComponent extends ProductListComponent implements OnInit {
 
-  componentName: string = 'WarehouseGoodsListComponent';
-  formPath = '/warehouse/goods/form';
-  apiPath = '/warehouse/goods';
+  componentName: string = 'SalesProductListComponent';
+  // formPath = '/warehouse/goods/form';
+  apiPath = '/sales/master-price-table-details';
   idKey: string | string[] = ['Code', 'WarehouseUnit'];
-  formDialog = WarehouseGoodsFormComponent;
+  // formDialog = SalesProductFormComponent;
 
   containerList: WarehouseGoodsContainerModel[] = [];
 
@@ -48,7 +49,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           type: 'custom',
           width: '5%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['FeaturePicture'] ? product['FeaturePicture']['Thumbnail'] : '';
+            return product['FeaturePicture']['Thumbnail'];
           },
           renderComponent: SmartTableThumbnailComponent,
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
@@ -73,37 +74,17 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                 });
               }
             });
-            instance.uploadAction.subscribe(async (row: ProductModel) => {
-              if (this.files.length === 0) {
-                this.uploadForProduct = row;
-                this.uploadBtn.nativeElement.click();
-              } else {
-                this.commonService.toastService.show(
-                  this.commonService.translateText('Common.uploadInProcess'),
-                  this.commonService.translateText('Common.upload'),
-                  {
-                    status: 'warning',
-                  });
-                // this.commonService.openDialog(ShowcaseDialogComponent, {
-                //   context: {
-                //     title: this.commonService.translateText('Common.upload'),
-                //     content: this.commonService.translateText('Common.uploadInProcess'),
-                //   },
-                // });
-              }
-            });
-            instance.title = this.commonService.translateText('click to change main product picture');
           },
         },
         Name: {
           title: 'Tên',
           type: 'string',
-          width: '20%',
+          width: '12%',
         },
         Categories: {
           title: 'Danh mục',
           type: 'html',
-          width: '20%',
+          width: '15%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -114,6 +95,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
               delay: 0,
               select2Option: {
                 placeholder: 'Chọn danh mục...',
+                logic: 'OR',
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -123,6 +105,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                   text: 'text',
                 },
                 multiple: true,
+                // code template: smart-table fiter with data update
                 ajax: {
                   url: (params: any) => {
                     return 'data:text/plan,[]';
@@ -138,12 +121,12 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
         },
-        Container: {
-          title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
+        Groups: {
+          title: 'Nhóm',
           type: 'html',
           width: '15%',
-          valuePrepareFunction: (value: any, product: GoodsModel) => {
-            return value && (this.commonService.getObjectText(value)) || '';
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
           filter: {
             type: 'custom',
@@ -151,7 +134,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             config: {
               delay: 0,
               select2Option: {
-                placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                placeholder: 'Chọn nhóm...',
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -161,7 +144,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                   text: 'text',
                 },
                 multiple: true,
-                logic: 'OR',
+                // code template: smart-table fiter with data update
                 ajax: {
                   url: (params: any) => {
                     return 'data:text/plan,[]';
@@ -169,7 +152,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -177,66 +160,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
         },
-        ContainerPath: {
-          title: this.commonService.translateText('Warehouse.GoodsContainer.path', { action: '', definition: '' }),
-          type: 'html',
-          width: '15%',
-          filter: {
-            type: 'custom',
-            component: SmartTableFilterComponent,
-            config: {
-              condition: 'bleft',
-            }
-          },
-          valuePrepareFunction: (value: any, product: GoodsModel) => {
-            return product?.Container?.ContainerPath;
-          },
-        },
-        // Goods: {
-        //   title: this.commonService.translateText('Hàng hóa', { action: '', definition: '' }),
-        //   type: 'html',
-        //   width: '15%',
-        //   valuePrepareFunction: (value: string, product: GoodsModel) => {
-        //     return this.commonService.getObjectText(value);
-        //     // try {
-        //     //   return product['Containers'] ? ('<span class="tag">' + product['Containers'].filter(container => !!container['Container']).map(container => container['Container']['Path']).join('</span><span class="tag">') + '</span>') : '';
-        //     // } catch (e) {
-        //     //   return '';
-        //     // }
-        //   },
-        //   filter: {
-        //     type: 'custom',
-        //     component: SmartTableSelect2FilterComponent,
-        //     config: {
-        //       delay: 0,
-        //       select2Option: {
-        //         placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
-        //         allowClear: true,
-        //         width: '100%',
-        //         dropdownAutoWidth: true,
-        //         minimumInputLength: 0,
-        //         keyMap: {
-        //           id: 'id',
-        //           text: 'text',
-        //         },
-        //         multiple: true,
-        //         logic: 'OR',
-        //         ajax: {
-        //           url: (params: any) => {
-        //             return 'data:text/plan,[]';
-        //           },
-        //           delay: 0,
-        //           processResults: (data: any, params: any) => {
-        //             return {
-        //               results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-        //             };
-        //           },
-        //         },
-        //       },
-        //     },
-        //   },
-        // },
-        ConversionUnit: {
+        Unit: {
           title: 'ĐVT',
           type: 'html',
           width: '7%',
@@ -247,6 +171,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             type: 'custom',
             component: SmartTableSelect2FilterComponent,
             config: {
+              condition: 'eq',
               delay: 0,
               select2Option: {
                 placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
@@ -275,22 +200,77 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
         },
+        Containers: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.container'), 'head-title'),
+          type: 'html',
+          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+            // instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+          },
+          valuePrepareFunction: (cell: any, row) => {
+            return cell ? (cell.map(container => this.commonService.getObjectText(container)).join('<br>')) : '';
+          },
+          width: '15%',
+        },
         Code: {
           title: 'Code',
           type: 'string',
-          width: '8%',
+          width: '5%',
         },
         Sku: {
           title: 'Sku',
           type: 'string',
-          width: '10%',
+          width: '8%',
         },
-        Inventory: {
-          title: this.commonService.translateText('Warehouse.inventory'),
-          type: 'string',
-          width: '10%',
+        Price: {
+          title: 'Price',
+          width: '15%',
+          type: 'currency',
+          editable: true,
+          delay: 3000,
+          // onChange: (value: number, row: ProductModel, instance: SmartTableCurrencyEditableComponent) => {
+          //   const masterPriceTable = 'default';
+          //   if (value) {
+          //     if (row.WarehouseUnit.Code) {
+          //       // if (!instance.isPatchingValue) {
+          //       instance.status = 'primary';
+          //       console.log(instance.rowData.Code);
+          //       this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {}, [{
+          //         MasterPriceTable: masterPriceTable as any,
+          //         Product: row.Code,
+          //         Unit: row.WarehouseUnit.Code,
+          //         Price: value,
+          //       }]).then(rs => {
+          //         // console.log(rs);
+          //         console.log(instance.rowData.Code);
+          //         instance.status = 'success';
+          //         // setTimeout(() => {
+          //         //   console.log(instance.rowData.Code);
+          //         //   instance.status = '';
+          //         // }, 15000);
+          //       });
+          //       // }
+          //     } else {
+          //       instance.status = 'danger';
+          //       this.commonService.openDialog(ShowcaseDialogComponent, {
+          //         context: {
+          //           title: 'Cảnh báo',
+          //           content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+          //           actions: [
+          //             {
+          //               label: 'Trở về',
+          //               icon: 'back',
+          //               status: 'info',
+          //               action: () => { },
+          //             },
+          //           ],
+          //         },
+          //       });
+          //     }
+          //   }
+          // }
+          // },
         },
-        Action: {
+        PrintBarCode: {
           title: this.commonService.translateText('Common.action'),
           type: 'custom',
           width: '5%',
@@ -305,8 +285,8 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
             instance.status = 'primary';
-            instance.title = this.commonService.translateText('Gán/gở vị trí');
-            instance.label = this.commonService.translateText('Gán/gở vị trí');
+            instance.title = this.commonService.translateText('In QRCode');
+            instance.label = this.commonService.translateText('In QRCode');
             instance.valueChange.subscribe(value => {
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
@@ -318,7 +298,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                   onDialogSave: (newData: ProductModel[]) => {
                     // this.refresh();
                     this.apiService.getPromise<ProductModel[]>(this.apiPath + '/' + editedItems.Code, { includeContainer: true, includeUnit: true }).then(rs => {
-                      this.updateGridItems([editedItems], [{ ...editedItems, Container: rs[0]['Container'] || [], ContainerPath: rs[0]['Container'] && rs[0]['Container']['ContainerPath'] || null }]);
+                      this.updateGridItems([editedItems], [{ ...editedItems, Container: rs[0]['Container'], ContainerPath: rs[0]['Container']['ContainerPath'] }]);
                     });
                   },
                   onDialogClose: () => {
@@ -330,20 +310,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             });
           },
         },
-        // CostOfGoodsSold: {
-        //   title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
-        //   type: 'currency',
-        //   width: '10%',
-        // },
-        // InventoryCost: {
-        //   title: this.commonService.translateText('Warehouse.inventoryCost'),
-        //   type: 'currency',
-        //   width: '12%',
-        //   valuePrepareFunction: (value: string, goods: GoodsModel) => {
-        //     return (goods['Inventory'] * goods['CostOfGoodsSold']).toString();
-        //   },
-        // },
-      },
+      }
     });
   }
 
@@ -354,7 +321,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<WarehouseGoodsListComponent>,
+    public ref: NbDialogRef<SalesProductListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, _http, ref);
   }
@@ -363,51 +330,118 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path} - ${container.Description}` })) as any;
     return super.init().then(rs => {
       this.actionButtonList.map(button => {
-        if (button.name === 'assignCategories') {
-          button.name = 'assginContainer';
-          button.label = this.commonService.translateText('Warehouse.assign/unassignContainer');
-          button.title = this.commonService.translateText('Warehouse.assign/unassignContainer');
+        if (button.name === 'preview') {
+          button.name = 'printQrCode';
+          button.icon = 'grid-outline';
+          button.label = this.commonService.translateText('Print QR Code');
+          button.title = this.commonService.translateText('Print QR Code');
           button.click = (event, option) => {
-            this.openAssignContainersDialog();
+            // this.openAssignContainersDialog();
+            this.commonService.openDialog(SalesProductQrCodePrintComponent, {
+              context: {
+                id: this.selectedItems.map(item => this.makeId(item)),
+                // printForType: 'DRAWERS',
+              }
+            });
           };
         }
         return button;
       });
 
-      const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
-      previewBtn.label = 'Print QR Code';
-      previewBtn.icon = 'grid-outline';
-      previewBtn.disabled = () => false;
-      previewBtn.click = () => {
-        this.commonService.openDialog(ShowcaseDialogComponent, {
-          context: {
-            title: 'Print Bar Code',
-            content: 'Chọn hàng hóa cần in Bar Code:',
-            actions: [
-              {
-                status: 'basic',
-                label: 'Trở về',
-                action: () => { },
-              },
-              {
-                status: 'success',
-                label: 'In QRCode',
-                action: () => {
-                  this.commonService.openDialog(WarehouseGoodsPrintComponent, {
-                    context: {
-                      id: this.selectedItems.map(item => this.makeId(item)),
-                      // printForType: 'DRAWERS',
+      this.actionButtonList.unshift({
+        name: 'printPriceTable',
+        icon: 'grid-outline',
+        status: 'primary',
+        label: 'In bảng giá nội bộ',
+        title: 'In bảng giá nội bộ',
+        size: 'medium',
+        click: (event, option) => {
+          const filter = this.source.getFilter();
+
+          const params: any = {};
+          for (const fieldConf of filter.filters) {
+            if (fieldConf['search']) {
+              // params[`filter_${fieldConf['field']}`] = fieldConf['search'];
+              if (typeof fieldConf['search'] === 'object') {
+                if (fieldConf['search']['searchType'] === 'range') {
+                  if (fieldConf['search']['dataType'] === 'date') {
+                    if (!(fieldConf['search']['range'][0] instanceof Date)) {
+                      throw new Error('Search from not instance of date');
                     }
-                  });
-                },
-              },
-            ]
+                    if (!(fieldConf['search']['range'][1] instanceof Date)) {
+                      throw new Error('Search to not instance of date');
+                    }
+                  }
+                  params[`ge_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getBeginOfDate(fieldConf['search']['range'][0]).toISOString());
+                  params[`le_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getEndOfDate(fieldConf['search']['range'][1]).toISOString());
+                } else {
+                  if (fieldConf['search']['value']) {
+                    params[`${fieldConf?.search?.condition || 'filter'}_${fieldConf?.field}`] = this.encodeFilterQuery(fieldConf['search']['value']);
+                  }
+                }
+              } else {
+                if (fieldConf['search'] !== null) {
+                  params[`filter_${fieldConf['field']}`] = this.encodeFilterQuery(fieldConf['search']);
+                }
+    
+              }
+            }
           }
-        })
-      };
+
+          params.includeShelf = true;
+          params.sort_Id = 'desc';
+
+          this.commonService.openDialog(MasterPriceTablePrintComponent, {
+            context: {
+              id: [],
+              params: params,
+            }
+          })
+        }
+      });
+
+      // const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
+      // previewBtn.label = 'Print QR Code';
+      // previewBtn.icon = 'grid-outline';
+      // previewBtn.disabled = () => false;
+      // previewBtn.click = () => {
+      //   this.commonService.openDialog(ShowcaseDialogComponent, {
+      //     context: {
+      //       title: 'Print Bar Code',
+      //       content: 'Chọn hàng hóa cần in Bar Code:',
+      //       actions: [
+      //         {
+      //           status: 'basic',
+      //           label: 'Trở về',
+      //           action: () => { },
+      //         },
+      //         {
+      //           status: 'success',
+      //           label: 'In QRCode',
+      //           action: () => {
+      //             this.commonService.openDialog(SalesProductPrintComponent, {
+      //               context: {
+      //                 id: this.selectedItems.map(item => this.makeId(item)),
+      //                 // printForType: 'DRAWERS',
+      //               }
+      //             });
+      //           },
+      //         },
+      //       ]
+      //     }
+      //   })
+      // };
 
       return rs;
     });
+  }
+
+  encodeFilterQuery(query: { instance: any, value: any } | any) {
+    if (typeof query === 'object' && query?.instance) {
+      return query.instance.encodeFilterQuery(query.value);
+    } else {
+      return query;
+    }
   }
 
   ngOnInit(): void {
@@ -420,8 +454,13 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     // Set DataSource: prepareData
     source.prepareData = (data: ProductModel[]) => {
       data.map((product: ProductModel) => {
-        if (product.WarehouseUnit && product.WarehouseUnit.Name) {
-          product.WarehouseUnit.text = product.WarehouseUnit.Name;
+        if (product['WarehouseUnit']) {
+          product['UnitLabel'] = product['WarehouseUnit']['Name'];
+        }
+        if (product['FeaturePictureThumbnail']) {
+          product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
+        } else {
+          delete product['FeaturePictureThumbnail'];
         }
         return product;
       });
@@ -430,13 +469,14 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
+      params['masterPriceTable'] = 'default';
       params['includeCategories'] = true;
-      params['includeFeaturePicture'] = true;
+      params['includeGroups'] = true;
       params['includeUnit'] = true;
-      params['includeContainer'] = true;
-      params['includeInventory'] = true;
-      // params['includeUnitConversions'] = true;
+      params['includeFeaturePicture'] = true;
       params['sort_Id'] = 'desc';
+      params['group_Unit'] = true;
+      params['includeContainers'] = true;
       return params;
     };
 

@@ -7,7 +7,7 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableTagComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AssignCategoriesFormComponent } from '../assign-categories-form/assign-categories-form.component';
 import { FormGroup } from '@angular/forms';
@@ -15,9 +15,12 @@ import { FileModel } from '../../../../models/file.model';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { UnitModel } from '../../../../models/unit.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { filter, take } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { _ } from '@ag-grid-community/all-modules';
+import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
+import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-containers-form/assign-containers-form.component';
+import { defaultMaxListeners } from 'stream';
 
 @Component({
   selector: 'ngx-product-list',
@@ -44,6 +47,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   categoryList: ProductCategoryModel[] = [];
   groupList: ProductGroupModel[] = [];
   unitList: UnitModel[] = [];
+  containerList: WarehouseGoodsContainerModel[] = [];
 
   constructor(
     public apiService: ApiService,
@@ -62,6 +66,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
+    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })) as any;
   }
 
   async init() {
@@ -190,7 +195,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         Categories: {
           title: 'Danh mục',
           type: 'html',
-          width: '25%',
+          width: '20%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -264,12 +269,58 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             },
           },
         },
-        WarehouseUnit: {
-          title: 'ĐVT',
-          type: 'html',
-          width: '10%',
-          valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+        UnitConversions: {
+          title: 'ĐVT - Vị trí hàng hóa',
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          width: '15%',
+          // valuePrepareFunction: (value: string, product: ProductModel) => {
+          //   return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+          // },
+          onComponentInitFunction: (component: SmartTableTagsComponent) => {
+            component.labelAsText = (tag) => {
+              return tag.Container ? `${tag.text}: ${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text}`;
+            };
+            component.renderToolTip = (tag) => {
+              return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text} - (đơn vị tính chưa được set vị trí, click vào để set vị trí)`;
+            };
+            component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
+              if (!tag.Container) {
+                this.commonService.openDialog(AssignContainerFormComponent, {
+                  context: {
+                    inputMode: 'dialog',
+                    inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
+                    onDialogSave: async (newData: ProductModel[]) => {
+                      // this.refresh();
+                      // this.updateGridItems(editedItems, newData);
+                      const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
+                      this.source.isLocalUpdate = true;
+                      try {
+                        const newContainer = newData[0].Containers[0];
+                        this.source.update(udpateItem, {
+                          UnitConversions: [
+                            ...udpateItem.UnitConversions.map(m => ({
+                              type: m.type,
+                              id: m.id,
+                              text: m.text,
+                              Container: m.id == tag.id ? newContainer : m.Container,
+                            })),
+                            { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
+                        }).then(() => {
+                          this.source.isLocalUpdate = false;
+                        });
+                      } catch (err) {
+                        this.source.isLocalUpdate = false;
+                      }
+                    },
+                    onDialogClose: () => {
+                    },
+                  },
+                  closeOnEsc: false,
+                  closeOnBackdropClick: false,
+                });
+              }
+            });
           },
         },
         Code: {
@@ -300,6 +351,13 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         if (product.WarehouseUnit && product.WarehouseUnit.Name) {
           product.WarehouseUnit.text = product.WarehouseUnit.Name;
         }
+
+        // if (product.Container || product.Container.length > 0) {
+        //   // product.Container = [product.Container];
+        // } else {
+        //   product.Container = { type: 'NEWCONTAINER', id: 'Gán vị trí', text: 'Gán vị trí' };
+        // }
+
         return product;
       });
       return data;
@@ -312,6 +370,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       params['includeWarehouseUnit'] = true;
       // params['includeFeaturePicture'] = true;
       params['includeUnitConversions'] = true;
+      params['includeUnits'] = true;
+      params['includeUnitContainer'] = true;
+
       params['sort_Id'] = 'desc';
       return params;
     };

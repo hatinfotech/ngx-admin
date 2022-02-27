@@ -11,6 +11,8 @@ import { CustomServerDataSource } from '../custom-element/smart-table/custom-ser
 @Component({template: ''})
 export abstract class ServerDataManagerListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
+  source: CustomServerDataSource<M>;
+
   constructor(
     public apiService: ApiService,
     public router: Router,

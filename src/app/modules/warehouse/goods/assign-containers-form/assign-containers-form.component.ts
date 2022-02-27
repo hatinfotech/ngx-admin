@@ -29,7 +29,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
 
   goodsContainerList: (WarehouseGoodsContainerModel & { id?: string, text?: string })[] = [];
   select2OptionForGoodsContainers: Select2Option = {
-    placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+    placeholder: 'Chọn vị trí, để trống nếu muốn tạo mới...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -147,7 +147,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
               action: () => {
                 this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, updateContainerDescription: true, assignContainers: choosedContainers.map(container => this.commonService.getObjectId(container)).join(',') }, updateList).then(rs => {
                   this.onDialogSave(rs.map(m => {
-                    m.Containers = choosedContainers;
+                    m.Containers = m.Containers;
                     return m;
                   }));
                   this.processing = false;

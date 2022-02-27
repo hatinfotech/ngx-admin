@@ -2,7 +2,7 @@ import { SalesMasterPriceTableModel, SalesMasterPriceTableDetailModel } from './
 import { CashVoucherModel } from '../../../../models/accounting.model';
 import { CashReceiptVoucherFormComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 // import { SalesModule } from './../../sales.module';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { SalesVoucherModel, SalesVoucherDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
@@ -31,6 +31,8 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   idKey = ['Code'];
   formDialog = MasterPriceTableFormComponent;
 
+  @Input('params') params: any;
+
   constructor(
     public commonService: CommonService,
     public router: Router,
@@ -40,6 +42,18 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   ) {
     super(commonService, router, apiService, ref);
   }
+
+  style = /*css*/ `
+  .product-image {
+    height: 30mm;
+  }
+  .find-order {
+    font-weight: bold;
+    font-size: 20mm !important;
+    line-height: 20mm;
+  }
+  
+  `;
 
   ngOnInit() {
     this.restrict();
@@ -67,7 +81,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   }
 
   renderTitle(data: SalesMasterPriceTableModel) {
-    return `PhieuBanHang_${this.getIdentified(data).join('-')}` + (data.DateOfSale ? ('_' + this.datePipe.transform(data.DateOfSale, 'short')) : '');
+    return `Bang_Gai_Ban_Ra_${this.getIdentified(data).join('-')}` + (data.DateOfSale ? ('_' + this.datePipe.transform(data.DateOfSale, 'short')) : '');
   }
 
   close() {
@@ -265,9 +279,37 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesMasterPriceTableModel[]>(this.apiPath, { id: ids, includeDetails: true }).then(rs => {
-      if (rs[0] && rs[0].Details) {
-        this.setDetailsNo(rs[0].Details, (detail: SalesMasterPriceTableDetailModel) => true);
+    return this.apiService.getPromise<SalesMasterPriceTableModel[]>(this.apiPath, { id: ids }).then(async rs => {
+
+      const details = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {
+        masterPriceTable: 'default',
+        includeCategories: true,
+        includeGroups: true,
+        includeUnit: true,
+        includeFeaturePicture: true,
+        group_Unit: true,
+        includeContainers: true,
+        linit: 'nolimit',
+        ...this.params
+      }).then(details => {
+        return details;
+      });
+
+      // if (rs[0] && rs[0].Details) {
+      if (details) {
+        for (const priceReport of rs) {
+          priceReport.Details = details.map(detail => {
+            detail.FindOrders = detail.Containers?.map(container => {
+
+              return container.ContainerFindOrder;
+            });
+            detail.Shelfs = detail.Containers?.map(container => {
+              return `${container.Shelf.Name}`;
+            })
+            return detail;
+          });
+          this.setDetailsNo(priceReport.Details, (detail: SalesMasterPriceTableDetailModel) => true);
+        }
         // for (const detail of rs[0].Details) {
         //   rs[0]['Total'] += detail['ToMoney'] = this.toMoney(detail);
         // }

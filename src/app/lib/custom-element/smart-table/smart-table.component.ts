@@ -326,19 +326,36 @@ export class SmartTableAccCurrencyComponent extends SmartTableBaseComponent impl
 }
 
 
+export interface SmartTableCompoentTagModel {
+  id: string;
+  text: string;
+  type?: string;
+  icon?: string;
+  iconPack?: string;
+  status?: string;
+  [key: string]: any;
+}
+
 @Component({
   template: `<div [style]="style" [class]="class">
-    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.type}}: {{tag.text}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText ? tag.text : tag.id}}</a>
+    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{renderToolTip(tag)}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText(tag) || tag.id}}</a>
   </div>`,
 })
 export class SmartTableTagsComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
-  @Input() value: { id: string, text: string, type?: string, icon?: string, iconPack?: string, status?: string } | any;
+  @Input() value: SmartTableCompoentTagModel | any;
   @Input() rowData: any;
 
   @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
 
-  labelAsText = false;
+  labelAsText(tag: SmartTableCompoentTagModel) {
+    return null;
+  };
+
+  renderToolTip(tag: SmartTableCompoentTagModel) {
+    return (this.value.type ? `${this.value.type}: ` : '') + this.value.text;
+  }
+
   nowrap = true;
 
   ngOnInit() {
@@ -358,7 +375,7 @@ export class SmartTableTagsComponent extends SmartTableBaseComponent implements 
 }
 @Component({
   template: `<div [style]="style" [class]="class">
-    <a (click)="onClick(value)" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{value.type}}: {{value.text}}"><nb-icon icon="{{value.icon || 'pricetags'}}" pack="{{value.iconPack || 'eva'}}"></nb-icon> {{labelAsText ? value.text : value.id}}</a>
+    <a (click)="onClick(value)" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{value.type}}: {{value.text}}"><nb-icon icon="{{value.icon || 'pricetags'}}" pack="{{value.iconPack || 'eva'}}"></nb-icon> {{labelAsText(value) || value.id}}</a>
   </div>`,
 })
 export class SmartTableTagComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
@@ -368,7 +385,9 @@ export class SmartTableTagComponent extends SmartTableBaseComponent implements V
 
   @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
 
-  labelAsText = false;
+  labelAsText = (tag) => {
+    return null;
+  };
   nowrap = true;
 
   ngOnInit() {

@@ -11,8 +11,8 @@
     },
     "Sales": {
         "receipt": "thu tiền",
-        "dateOfSales":"Ngày bán hàng",
-        "dateOfReturns":"Ngày trả hàng",
+        "dateOfSales": "Ngày bán hàng",
+        "dateOfReturns": "Ngày trả hàng",
         "PriceReport": {
             "title": "{{definition}}{{action}} phiếu báo giá",
             "List": {
@@ -43,6 +43,9 @@
         "PriceTable": {
             "title": "{{action}}{{definition}} bảng giá bán",
             "printTableTitle": "bảng in giá bán ra"
+        },
+        "Product": {
+            "title": "{{action}}{{definition}} sản phẩm"
         },
         "MasterPriceTable": {
             "title": "{{action}}{{definition}} bảng giá bán",

@@ -340,7 +340,9 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         renderComponent: SmartTableTagComponent,
 
         onComponentInitFunction: (instance: SmartTableTagComponent) => {
-          instance.labelAsText = true;
+          instance.labelAsText = () => {
+            return instance.value.text;
+          };
           instance.nowrap = false;
           instance.click.subscribe((tag: { id: string, text: string, type: string }) => {
             if (tag.type == 'NEWCONTAINER') {

@@ -1,1 +1,9 @@
-@import '../../../../../assets/style/print.css';
+@import "../../../../../assets/style/print.css";
+.product-image {
+  height: 30mm;
+}
+.find-order {
+  font-weight: bold;
+  font-size: 20mm !important;
+  line-height: 20mm;
+}

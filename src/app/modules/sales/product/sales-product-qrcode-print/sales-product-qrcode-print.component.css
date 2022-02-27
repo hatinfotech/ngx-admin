@@ -1,0 +1,70 @@
+@import "../../../../../assets/style/print.css";
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+  #print-area {
+    page-break-after: initial;
+  }
+}
+.blabel {
+  /* padding: 5px; */
+  border: 1px #000 dashed;
+  float: left;
+  page-break-after: always;
+  width: 50mm;
+  height: 30mm;
+  padding: 1mm;
+  padding-top: 2mm;
+  color: #000;
+  font-size: 2mm !important;
+  overflow: hidden;
+}
+.blabel .info {
+  clear: both;
+  font-size: 2.8mm !important;
+  max-height: 8.9mm;
+  line-height: 3mm;
+  overflow: hidden;
+}
+.blabel .price {
+  font-weight: bold !important;
+  font-size: 5.2mm !important;
+  line-height: 6mm;
+}
+.blabel .unit {
+  line-height: 2.5mm;
+  font-size: 2.5mm;
+}
+.blabel .find-order {
+  clear: both;
+  font-size: 3mm !important;
+  height: 3mm;
+  line-height: 3mm;
+  overflow: hidden;
+  font-weight: bold;
+}
+.blabel .location {
+  font-weight: bold;
+  font-size: 3mm !important;
+  height: 4.2mm;
+  overflow: hidden;
+  width: 29mm;
+  padding: 0;
+}
+.bar-code {
+  padding: 1px;
+  margin-right: 1mm;
+  height: 14mm;
+}
+.qr-code {
+  padding: 1px;
+  margin-right: 1mm;
+  height: 13mm;
+}
+.page-break {
+  clear: left;
+  display: block;
+  page-break-after: always;
+}

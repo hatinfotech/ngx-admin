@@ -299,7 +299,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
       params['includeWarehouse'] = true;
       params['includeGoods'] = true;
       params['includeIdText'] = true;
-      // params['eq_Type'] = 'PAYMENT';
+      params['sort_Id'] = 'desc';
       return params;
     };
 

@@ -1,3 +1,4 @@
+import { SalesProductListComponent } from './modules/sales/product/sales-product-list/sales-product-list.component';
 import { CommercePosOrderListComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-list/commerce-pos-order-list.component';
 import { CommercePosGuiComponent } from './modules/commerce-pos/gui/commerce-pos-gui/commerce-pos-gui.component';
 import { CollaboratorEducationArticleListComponent } from './modules/collaborator/education-article/education-article-list/collaborator-education-article-list.component';
@@ -463,6 +464,11 @@ const routes: Routes = [
     path: 'sales/master-price-table/form/:id',
     canActivate: [AuthGuardService],
     component: MasterPriceTableFormComponent,
+  },
+  {
+    path: 'sales/product/list',
+    canActivate: [AuthGuardService],
+    component: SalesProductListComponent,
   },
 
   // Purchase routes
