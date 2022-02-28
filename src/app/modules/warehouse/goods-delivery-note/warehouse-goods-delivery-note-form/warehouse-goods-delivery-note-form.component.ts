@@ -798,8 +798,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                   }
                 } else {
                   delete refVoucher.Id;
-                  delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Details: [] });
+                  // delete refVoucher.Code;
+                  formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);

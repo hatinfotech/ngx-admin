@@ -281,6 +281,11 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<SalesMasterPriceTableModel[]>(this.apiPath, { id: ids }).then(async rs => {
 
+      const extendParams: any = {};
+      if (this.params.selectedProducts && this.params.selectedProducts.length > 0) {
+        extendParams.id = this.params.selectedProducts;
+        delete this.params.selectedProducts;
+      }
       const details = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {
         masterPriceTable: 'default',
         includeCategories: true,
@@ -290,7 +295,8 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
         group_Unit: true,
         includeContainers: true,
         linit: 'nolimit',
-        ...this.params
+        ...this.params,
+        ...extendParams
       }).then(details => {
         return details;
       });
@@ -304,7 +310,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
               return container.ContainerFindOrder;
             });
             detail.Shelfs = detail.Containers?.map(container => {
-              return `${container.Shelf.Name}`;
+              return `${container.Shelf?.Name || '--'}`;
             })
             return detail;
           });

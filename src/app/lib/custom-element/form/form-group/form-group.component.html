@@ -1,5 +1,5 @@
 <div class="form-group" [attr.state]="formControlValidate(formGroup.get(name), 'warning')">
-  <label class="label" *ngIf="!hideLabel">
+  <label class="label" *ngIf="!hideLabel" [ngStyle]="{'text-align': align && align || 'left'}">
     <span class="valid" [ngStyle]="{'text-align': align && align || 'left', 'margin-right': align && align === 'right' && allowCopy ? '25px' : '0'}">{{label | translate | headtitlecase}}</span>
     <span class="invalid">{{ warningText ? ((label | translate:{field: commonService.translate.instant(label)} | headtitlecase) + ': (' + warningText + ')') : ('Form.requireLabel' | translate:{field: commonService.translate.instant(label)} | headtitlecase)}}</span>
     <span *ngIf="required" class="text-danger">&nbsp;(*)</span>

@@ -64,6 +64,11 @@
                 <label class="label"><span class="valid">Chi tiết bảng giá bán ra</span></label>
               </div>
             </div>
+            <div class="buttons-row">
+              <button nbButton hero status="primary" (click)="printQrcode(formItem.value)" [disabled]="!form.valid || isProcessing">
+                <nb-icon pack="eva" icon="printer"></nb-icon>{{'In thẻ giá khu trưng bày (demo)' | translate | headtitlecase}}
+              </button>
+            </div>
             <div class="ng2-smart-table-wrap">
               <div class="ng2-smart-table-wrap">
                 <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source"

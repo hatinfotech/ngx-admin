@@ -545,7 +545,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   makeNewUnitConversionFormGroup(data?: ProductUnitConversoinModel, formItem?: FormGroup): FormGroup {
     const newForm = this.formBuilder.group({
       // Id_old: [''],
-      Id: [''],
+      // Id: [''],
       Unit: [formItem.get('WarehouseUnit').value || ''],
       ConversionRatio: ['1'],
       IsDefaultSales: [false],

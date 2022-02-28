@@ -18,6 +18,7 @@ import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-co
 import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { SalesProductQrCodePrintComponent } from '../sales-product-qrcode-print/sales-product-qrcode-print.component';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'ngx-sales-product-list',
@@ -270,7 +271,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
           // }
           // },
         },
-        PrintBarCode: {
+        Action: {
           title: this.commonService.translateText('Common.action'),
           type: 'custom',
           width: '5%',
@@ -278,34 +279,24 @@ export class SalesProductListComponent extends ProductListComponent implements O
           renderComponent: SmartTableButtonComponent,
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
-            instance.icon = 'pricetags';
+            instance.icon = 'grid-outline';
             instance.display = true;
             instance.status = 'success';
             instance.disabled = this.ref && Object.keys(this.ref).length > 0;
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
             instance.status = 'primary';
-            instance.title = this.commonService.translateText('In QRCode');
-            instance.label = this.commonService.translateText('In QRCode');
+            instance.title = this.commonService.translateText('In Tem QR');
+            instance.label = this.commonService.translateText('In Tem QR');
             instance.valueChange.subscribe(value => {
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsContainerModel) => {
               const editedItems = rowData;
-              this.commonService.openDialog(AssignContainerFormComponent, {
+              this.commonService.openDialog(SalesProductQrCodePrintComponent, {
                 context: {
-                  inputMode: 'dialog',
-                  inputGoodsList: [editedItems],
-                  onDialogSave: (newData: ProductModel[]) => {
-                    // this.refresh();
-                    this.apiService.getPromise<ProductModel[]>(this.apiPath + '/' + editedItems.Code, { includeContainer: true, includeUnit: true }).then(rs => {
-                      this.updateGridItems([editedItems], [{ ...editedItems, Container: rs[0]['Container'], ContainerPath: rs[0]['Container']['ContainerPath'] }]);
-                    });
-                  },
-                  onDialogClose: () => {
-                  },
-                },
-                closeOnEsc: false,
-                closeOnBackdropClick: false,
+                  id: [this.makeId(editedItems)],
+                  printForType: 'DRAWERS',
+                }
               });
             });
           },
@@ -313,6 +304,8 @@ export class SalesProductListComponent extends ProductListComponent implements O
       }
     });
   }
+
+  listControl: FormGroup;
 
   constructor(
     public apiService: ApiService,
@@ -322,9 +315,26 @@ export class SalesProductListComponent extends ProductListComponent implements O
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<SalesProductListComponent>,
+    public formBuilder: FormBuilder,
   ) {
     super(apiService, router, commonService, dialogService, toastService, _http, ref);
+    this.listControl = this.formBuilder.group({
+      Limit: [],
+    });
+    // this.listControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+    //   console.log(value);
+    //   this.source.setPaging(1, parseInt(value), true);
+    // });
   }
+
+  // protected configPaging() {
+  //   return {
+  //     display: true,
+  //     perPage: parseInt(this.listControl.get('Limit').value) || 40,
+  //   };
+  // }
+
+
 
   async init() {
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path} - ${container.Description}` })) as any;
@@ -383,13 +393,15 @@ export class SalesProductListComponent extends ProductListComponent implements O
                 if (fieldConf['search'] !== null) {
                   params[`filter_${fieldConf['field']}`] = this.encodeFilterQuery(fieldConf['search']);
                 }
-    
+
               }
             }
           }
 
           params.includeShelf = true;
-          params.sort_Id = 'desc';
+          params.sort_Name = 'desc';
+
+          params.selectedProducts = this.selectedIds.map(m => this.makeId(m));
 
           this.commonService.openDialog(MasterPriceTablePrintComponent, {
             context: {

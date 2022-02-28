@@ -234,7 +234,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         Groups: {
           title: 'Nhóm',
           type: 'html',
-          width: '25%',
+          width: '20%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -270,19 +270,79 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           },
         },
         UnitConversions: {
-          title: 'ĐVT - Vị trí hàng hóa',
+          title: 'ĐVT',
           type: 'custom',
           renderComponent: SmartTableTagsComponent,
-          width: '15%',
+          width: '10%',
           // valuePrepareFunction: (value: string, product: ProductModel) => {
           //   return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
           // },
           onComponentInitFunction: (component: SmartTableTagsComponent) => {
             component.labelAsText = (tag) => {
-              return tag.Container ? `${tag.text}: ${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text}`;
+              return tag.text;
             };
             component.renderToolTip = (tag) => {
-              return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text} - (đơn vị tính chưa được set vị trí, click vào để set vị trí)`;
+              return tag.text;
+            };
+            // component.labelAsText = (tag) => {
+            //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text}`;
+            // };
+            // component.renderToolTip = (tag) => {
+            //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text} - (đơn vị tính chưa được set vị trí, click vào để set vị trí)`;
+            // };
+            component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
+              if (!tag.Container) {
+                this.commonService.openDialog(AssignContainerFormComponent, {
+                  context: {
+                    inputMode: 'dialog',
+                    inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
+                    onDialogSave: async (newData: ProductModel[]) => {
+                      // this.refresh();
+                      // this.updateGridItems(editedItems, newData);
+                      const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
+                      this.source.isLocalUpdate = true;
+                      try {
+                        const newContainer = newData[0].Containers[0];
+                        this.source.update(udpateItem, {
+                          UnitConversions: [
+                            ...udpateItem.UnitConversions.map(m => ({
+                              type: m.type,
+                              id: m.id,
+                              text: m.text,
+                              Container: m.id == tag.id ? newContainer : m.Container,
+                            })),
+                            { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
+                        }).then(() => {
+                          this.source.isLocalUpdate = false;
+                        });
+                      } catch (err) {
+                        this.source.isLocalUpdate = false;
+                      }
+                    },
+                    onDialogClose: () => {
+                    },
+                  },
+                  closeOnEsc: false,
+                  closeOnBackdropClick: false,
+                });
+              }
+            });
+          },
+        },
+        Containers: {
+          title: 'Vị trí hàng hóa',
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
+          width: '10%',
+          // valuePrepareFunction: (value: string, product: ProductModel) => {
+          //   return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+          // },
+          onComponentInitFunction: (component: SmartTableTagsComponent) => {
+            component.labelAsText = (tag) => {
+              return tag.text;
+            };
+            component.renderToolTip = (tag) => {
+              return tag.text;
             };
             component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
               if (!tag.Container) {
@@ -350,6 +410,10 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       data.map((product: ProductModel) => {
         if (product.WarehouseUnit && product.WarehouseUnit.Name) {
           product.WarehouseUnit.text = product.WarehouseUnit.Name;
+        }
+
+        if (product.UnitConversions && product.UnitConversions.length > 0) {
+          product.Containers = product.UnitConversions.filter(f => !!f['Container']).map(m => m['Container']);
         }
 
         // if (product.Container || product.Container.length > 0) {

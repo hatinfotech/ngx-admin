@@ -13,6 +13,8 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-warehouse-goods-container-list',
@@ -262,6 +264,36 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
                 },
               },
             },
+          },
+        },
+        Action: {
+          title: this.commonService.translateText('Common.action'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'grid-outline';
+            instance.display = true;
+            instance.status = 'success';
+            instance.disabled = this.ref && Object.keys(this.ref).length > 0;
+            // instance.style = 'text-align: right';
+            // instance.class = 'align-right';
+            instance.status = 'primary';
+            instance.title = this.commonService.translateText('In Tem QR');
+            instance.label = this.commonService.translateText('In Tem QR');
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsContainerModel) => {
+              const editedItems = rowData;
+              this.commonService.openDialog(WarehouseGoodsContainerPrintComponent, {
+                context: {
+                  id: [this.makeId(editedItems)],
+                  printForType: 'DRAWERS',
+                }
+              });
+            });
           },
         },
       },

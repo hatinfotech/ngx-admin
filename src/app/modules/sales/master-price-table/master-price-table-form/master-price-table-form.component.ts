@@ -614,9 +614,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   settings = this.configSetting({
     mode: 'external',
     selectMode: 'multi',
-    actions: {
-      position: 'right',
-    },
+    actions: false,
     add: this.configAddButton(),
     edit: this.configEditButton(),
     delete: this.configDeleteButton(),
@@ -711,7 +709,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       Groups: {
         title: 'Nhóm',
         type: 'html',
-        width: '15%',
+        width: '10%',
         valuePrepareFunction: (value: string, product: ProductModel) => {
           return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
         },
@@ -750,53 +748,116 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
           },
         },
       },
-      UnitLabel: {
+      Unit: {
         title: 'ĐVT',
         type: 'string',
-        width: '8%',
-      },
-      Containers: {
-        title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.container'), 'head-title'),
-        type: 'html',
-        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-          // instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+        width: '10%',
+        valuePrepareFunction: (cell: any, row: any) => {
+          return this.commonService.getObjectText(cell);
         },
-        valuePrepareFunction: (cell: any, row) => {
-          return cell ? (cell.map(container => this.commonService.getObjectText(container)).join('<br>')) : '';
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            condition: 'eq',
+            delay: 0,
+            select2Option: {
+              placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              logic: 'OR',
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.unitList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
         },
-        width: '15%',
-        // filter: {
-        //   type: 'custom',
-        //   component: SmartTableSelect2FilterComponent,
-        //   config: {
-        //     delay: 0,
-        //     select2Option: {
-        //       placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
-        //       allowClear: true,
-        //       width: '100%',
-        //       dropdownAutoWidth: true,
-        //       minimumInputLength: 0,
-        //       keyMap: {
-        //         id: 'id',
-        //         text: 'text',
-        //       },
-        //       multiple: true,
-        //       logic: 'OR',
-        //       ajax: {
-        //         url: (params: any) => {
-        //           return 'data:text/plan,[]';
-        //         },
-        //         delay: 0,
-        //         processResults: (data: any, params: any) => {
-        //           return {
-        //             results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-        //           };
-        //         },
-        //       },
-        //     },
-        //   },
-        // },
       },
+      BaseUnit: {
+        title: 'ĐVT cơ bản',
+        type: 'boolean',
+        width: '10%',
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            condition: 'eq',
+            select2Option: {
+              placeholder: 'Chọn nhóm...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              data: [
+                { id: 'BASEUNIT', text: 'ĐVT cơ bản' },
+                { id: 'ALL', text: 'Tất cả' },
+              ],
+            },
+          },
+        },
+      },
+      // Containers: {
+      //   title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.container'), 'head-title'),
+      //   type: 'html',
+      //   onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+      //     // instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+      //   },
+      //   valuePrepareFunction: (cell: any, row) => {
+      //     return cell ? (cell.map(container => this.commonService.getObjectText(container)).join('<br>')) : '';
+      //   },
+      //   width: '15%',
+      //   // filter: {
+      //   //   type: 'custom',
+      //   //   component: SmartTableSelect2FilterComponent,
+      //   //   config: {
+      //   //     delay: 0,
+      //   //     select2Option: {
+      //   //       placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+      //   //       allowClear: true,
+      //   //       width: '100%',
+      //   //       dropdownAutoWidth: true,
+      //   //       minimumInputLength: 0,
+      //   //       keyMap: {
+      //   //         id: 'id',
+      //   //         text: 'text',
+      //   //       },
+      //   //       multiple: true,
+      //   //       logic: 'OR',
+      //   //       ajax: {
+      //   //         url: (params: any) => {
+      //   //           return 'data:text/plan,[]';
+      //   //         },
+      //   //         delay: 0,
+      //   //         processResults: (data: any, params: any) => {
+      //   //           return {
+      //   //             results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+      //   //           };
+      //   //         },
+      //   //       },
+      //   //     },
+      //   //   },
+      //   // },
+      // },
       // Containers: {
       //   title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
       //   type: 'html',
@@ -813,11 +874,11 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       Sku: {
         title: 'Sku',
         type: 'string',
-        width: '8%',
+        width: '13%',
       },
       Price: {
         title: 'Price',
-        width: '15%',
+        width: '20%',
         type: 'currency-editable',
         editable: true,
         delay: 3000,

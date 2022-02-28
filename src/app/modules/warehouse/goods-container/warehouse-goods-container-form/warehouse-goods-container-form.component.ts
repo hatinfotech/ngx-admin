@@ -188,7 +188,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
       Warehouse: ['', Validators.required],
       Description: [''],
       AccAccount: [''],
-      Type: ['', Validators.required],
+      Type: ['DRAWERS', Validators.required],
       // X: [''],
       // Y: [''],
       // Z: [''],

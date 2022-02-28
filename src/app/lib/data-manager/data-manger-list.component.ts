@@ -1,3 +1,4 @@
+import { deepExtend } from './../../../vendor/ng2-smart-table/src/lib/lib/helpers';
 import { LocalDataSource, ViewCell, Ng2SmartTableComponent } from 'ng2-smart-table';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
@@ -799,6 +800,10 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       this.onChoose(this.selectedItems);
       // this.close();
     }
+  }
+
+  setPaging(page: number, limit: number, doEmit?: boolean) {
+    this.source.setPaging(page, limit, doEmit);
   }
 
   onChoose(selectedItems: M[]) {

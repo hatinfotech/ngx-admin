@@ -1,0 +1,51 @@
+@import "../../../../../assets/style/print.css";
+/* .blabel,
+.blabel * {
+  all: initial;
+} */
+.blabel {
+  float: left;
+  page-break-after: always;
+  border: 1px #000 dashed;
+  float: left;
+  page-break-after: always;
+  width: 50mm;
+  height: 30mm;
+  padding: 1mm;
+  padding-top: 2mm;
+  color: #000;
+}
+.blabel .find-order {
+  font-weight: bold;
+  font-size: 7mm !important;
+  line-height: 7mm;
+}
+.blabel .bar-code {
+  height: 5.5mm;
+}
+.blabel .product-name {
+  font-weight: bold;
+  font-size: 3.4mm !important;
+  line-height: 3.4mm;
+  max-height: 10mm;
+  overflow: hidden;
+  padding-top: 1.1mm;
+}
+.blabel .product-price {
+  font-weight: bold !important;
+  font-size: 3.5mm !important;
+  line-height: 4mm;
+}
+.blabel .product-sku {
+  font-size: 2.6mm !important;
+  line-height: 3mm;
+}
+.blabel .product-id {
+  font-size: 2.6mm !important;
+  line-height: 3mm;
+}
+.page-break {
+  clear: left;
+  display: block;
+  page-break-after: always;
+}

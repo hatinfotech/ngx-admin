@@ -27,6 +27,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   apiPath = '/deployment/vouchers';
   processMapList: ProcessMap[] = [];
   idKey: ['Code'];
+  formDialog = DeploymentVoucherFormComponent;
 
   constructor(
     public commonService: CommonService,
@@ -93,7 +94,7 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
     if (value && value['text']) {
       html = value['text'];
     }
-    return (html && html?.placeholder || html || '').replace(/\n/g, '<br>');
+    return ((html && html.placeholder || html || '') + '').replace(/\n/g, '<br>');
   }
 
   toMoney(detail: DeploymentVoucherDetailModel) {

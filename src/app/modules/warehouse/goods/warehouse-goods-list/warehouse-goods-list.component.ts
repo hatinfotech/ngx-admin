@@ -1,3 +1,4 @@
+import { WarehouseGoodsFindOrderTempPrintComponent } from './../warehouse-goods-find-order-temp-print/warehouse-goods-find-order-temp-print.component';
 import { Component, OnInit } from '@angular/core';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { ApiService } from '../../../../services/api.service';
@@ -28,7 +29,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
   componentName: string = 'WarehouseGoodsListComponent';
   formPath = '/warehouse/goods/form';
   apiPath = '/warehouse/goods';
-  idKey: string | string[] = ['Code', 'WarehouseUnit'];
+  idKey: string | string[] = ['Code', 'WarehouseUnit', 'Container'];
   formDialog = WarehouseGoodsFormComponent;
 
   containerList: WarehouseGoodsContainerModel[] = [];
@@ -290,6 +291,43 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           type: 'string',
           width: '10%',
         },
+        PrintFindOrder: {
+          title: this.commonService.translateText('In số nhận thức'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'grid-outline';
+            instance.display = true;
+            instance.status = 'success';
+            instance.disabled = this.ref && Object.keys(this.ref).length > 0;
+            // instance.style = 'text-align: right';
+            // instance.class = 'align-right';
+            instance.status = 'primary';
+            instance.title = this.commonService.translateText('In tem nhận thức');
+            instance.label = this.commonService.translateText('In tem nhận thức');
+            instance.init.pipe(takeUntil(this.destroy$)).subscribe(value => {
+              if (!this.commonService.getObjectId(value.Container)) {
+                instance.disabled = true;
+                instance.title = 'Chưa set vị trí';
+              }
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
+              if (this.commonService.getObjectId(rowData.Container)) {
+                this.commonService.openDialog(WarehouseGoodsFindOrderTempPrintComponent, {
+                  context: {
+                    priceTable: 'default',
+                    id: [this.makeId(rowData)],
+                  }
+                });
+              } else {
+                this.commonService.toastService.show('Hàng hóa chứa được cài đặt vị trí', 'In tem nhận thức', { status: 'warning' })
+              }
+            });
+          },
+        },
         Action: {
           title: this.commonService.translateText('Common.action'),
           type: 'custom',
@@ -298,7 +336,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           renderComponent: SmartTableButtonComponent,
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
-            instance.icon = 'pricetags';
+            instance.icon = 'grid-outline';
             instance.display = true;
             instance.status = 'success';
             instance.disabled = this.ref && Object.keys(this.ref).length > 0;
@@ -374,37 +412,55 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         return button;
       });
 
-      const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
-      previewBtn.label = 'Print QR Code';
-      previewBtn.icon = 'grid-outline';
-      previewBtn.disabled = () => false;
-      previewBtn.click = () => {
-        this.commonService.openDialog(ShowcaseDialogComponent, {
-          context: {
-            title: 'Print Bar Code',
-            content: 'Chọn hàng hóa cần in Bar Code:',
-            actions: [
-              {
-                status: 'basic',
-                label: 'Trở về',
-                action: () => { },
-              },
-              {
-                status: 'success',
-                label: 'In QRCode',
-                action: () => {
-                  this.commonService.openDialog(WarehouseGoodsPrintComponent, {
-                    context: {
-                      id: this.selectedItems.map(item => this.makeId(item)),
-                      // printForType: 'DRAWERS',
-                    }
-                  });
-                },
-              },
-            ]
-          }
-        })
-      };
+      this.actionButtonList.unshift({
+        name: 'printFindOrderTem',
+        status: 'primary',
+        label: 'In tem nhận thức',
+        title: 'In tem nhận thức',
+        icon: 'grid-outline',
+        size: 'medium',
+        click: () => {
+          // const editedItems = this.selectedItems;
+          this.commonService.openDialog(WarehouseGoodsFindOrderTempPrintComponent, {
+            context: {
+              priceTable: 'default',
+              id: this.selectedItems.map(item => this.makeId(item)),
+            }
+          });
+        }
+      });
+
+      // const previewBtn = this.actionButtonList.find(f => f.name == 'preview');
+      // previewBtn.label = 'Print QR Code';
+      // previewBtn.icon = 'grid-outline';
+      // previewBtn.disabled = () => false;
+      // previewBtn.click = () => {
+      //   this.commonService.openDialog(ShowcaseDialogComponent, {
+      //     context: {
+      //       title: 'Print Bar Code',
+      //       content: 'Chọn hàng hóa cần in Bar Code:',
+      //       actions: [
+      //         {
+      //           status: 'basic',
+      //           label: 'Trở về',
+      //           action: () => { },
+      //         },
+      //         {
+      //           status: 'success',
+      //           label: 'In QRCode',
+      //           action: () => {
+      //             this.commonService.openDialog(WarehouseGoodsPrintComponent, {
+      //               context: {
+      //                 id: this.selectedItems.map(item => this.makeId(item)),
+      //                 // printForType: 'DRAWERS',
+      //               }
+      //             });
+      //           },
+      //         },
+      //       ]
+      //     }
+      //   })
+      // };
 
       return rs;
     });
