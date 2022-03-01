@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MasterPriceTableQrCodePrintComponent } from './master-price-table-qrcode-print.component';
+import { SalesProductDemoTemPrintComponent } from './product-demo-tem-print.component';
 
 
 describe('WarehouseGoodsPrintComponent', () => {
-  let component: MasterPriceTableQrCodePrintComponent;
-  let fixture: ComponentFixture<MasterPriceTableQrCodePrintComponent>;
+  let component: SalesProductDemoTemPrintComponent;
+  let fixture: ComponentFixture<SalesProductDemoTemPrintComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MasterPriceTableQrCodePrintComponent ],
+      declarations: [ SalesProductDemoTemPrintComponent ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MasterPriceTableQrCodePrintComponent);
+    fixture = TestBed.createComponent(SalesProductDemoTemPrintComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

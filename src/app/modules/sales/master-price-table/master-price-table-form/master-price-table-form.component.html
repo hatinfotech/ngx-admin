@@ -64,11 +64,11 @@
                 <label class="label"><span class="valid">Chi tiết bảng giá bán ra</span></label>
               </div>
             </div>
-            <div class="buttons-row">
+            <!-- <div class="buttons-row">
               <button nbButton hero status="primary" (click)="printQrcode(formItem.value)" [disabled]="!form.valid || isProcessing">
                 <nb-icon pack="eva" icon="printer"></nb-icon>{{'In thẻ giá khu trưng bày (demo)' | translate | headtitlecase}}
               </button>
-            </div>
+            </div> -->
             <div class="ng2-smart-table-wrap">
               <div class="ng2-smart-table-wrap">
                 <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
@@ -90,9 +90,9 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <button nbButton hero status="primary" (click)="printQrcode(formItem.value)" [disabled]="!form.valid || isProcessing">
+            <!-- <button nbButton hero status="primary" (click)="printQrcode(formItem.value)" [disabled]="!form.valid || isProcessing">
               <nb-icon pack="eva" icon="printer"></nb-icon>{{'In thẻ giá khu trưng bày (demo)' | translate | headtitlecase}}
-            </button>
+            </button> -->
             <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero
               (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
             <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;"

@@ -1,0 +1,48 @@
+@import "../../../../../assets/style/print.css";
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+  #print-area {
+    page-break-after: initial;
+  }
+}
+.blabel {
+  /* padding: 5px; */
+  border: 1px #000 dashed;
+  float: left;
+  page-break-after: always;
+  width: 50mm;
+  height: 30mm;
+  padding: 1mm;
+  padding-top: 2mm;
+  color: #000;
+}
+.blabel .product-price {
+  font-size: 3.6mm !important;
+  line-height: 3.6mm;
+  font-weight: bold;
+}
+.blabel .product-name {
+  font-size: 3mm !important;
+  font-weight: bold;
+  overflow: hidden;
+  line-height: 3.4mm;
+  max-height: 10.3mm;
+}
+.blabel .product-sku {
+  font-weight: bold;
+  font-size: 4mm !important;
+  line-height: 9mm;
+}
+.blabel .bar-code {
+  padding: 0px;
+  margin-right: 1mm;
+  height: 13mm;
+}
+.page-break {
+  clear: left;
+  display: block;
+  page-break-after: always;
+}

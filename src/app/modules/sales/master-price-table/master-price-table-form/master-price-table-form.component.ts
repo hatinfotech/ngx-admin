@@ -23,7 +23,7 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
-import { MasterPriceTableQrCodePrintComponent } from '../master-price-table-qrcode-print/master-price-table-qrcode-print.component';
+import { SalesProductDemoTemPrintComponent } from '../../product/product-demo-tem-print/product-demo-tem-print.component';
 import { MasterPriceTablePrintComponent } from '../master-price-table-print/master-price-table-print.component';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { ThisReceiver } from '@angular/compiler';
@@ -1183,7 +1183,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   }
 
   printQrcode(priceTable: SalesPriceTableModel) {
-    this.commonService.openDialog(MasterPriceTableQrCodePrintComponent, {
+    this.commonService.openDialog(SalesProductDemoTemPrintComponent, {
       context: {
         priceTable: priceTable.Code,
         id: this.selectedItems.map(item => this.makeDetailId(item as any)),

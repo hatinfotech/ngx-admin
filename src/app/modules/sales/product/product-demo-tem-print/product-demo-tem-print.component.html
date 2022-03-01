@@ -5,15 +5,18 @@
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
-                <div class="label" *ngFor="let item of this.data; let i = index;">
-                    <img class="bar-code" src="{{item.QrCode}}" style="float: left;">
-                    <span class="find-order">{{item.Containers && item.Containers.length > 0 && item.Containers[0].ContainerFindOrder}}</span><br>
-                    <div class="info">
-                        Giá: {{item.Price | currency:'VND'}}/{{item.WarehouseUnit | objecttext}}<br>
-                        {{item.Description || item.Name}}
+                <div class="blabel" *ngFor="let item of this.data; let i = index;">
+                    <div style="display: flex;">
+                        <div>
+                            <img class="bar-code" src="{{item.QrCodeForProboxApp}}">
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="product-price">{{item.Price | currency:'VND'}} / {{item.WarehouseUnit | objecttext}}</div>
+                            <div class="product-sku">SKU: {{item.Sku}}</div>
+                        </div>
                     </div>
+                    <div class="product-name">{{item.Name}}</div>
                 </div>
-                <div style="clear:both"></div>
             </div>
         </nb-card-body>
         <nb-card-footer>

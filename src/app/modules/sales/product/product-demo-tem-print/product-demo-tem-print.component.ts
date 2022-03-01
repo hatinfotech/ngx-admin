@@ -10,14 +10,14 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 
 @Component({
-  selector: 'ngx-master-price-table-qrcode-print',
-  templateUrl: './master-price-table-qrcode-print.component.html',
-  styleUrls: ['./master-price-table-qrcode-print.component.css'],
+  selector: 'ngx-product-demo-tem-print',
+  templateUrl: './product-demo-tem-print.component.html',
+  styleUrls: ['./product-demo-tem-print.component.css'],
 })
-export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintComponent<any> implements OnInit {
+export class SalesProductDemoTemPrintComponent extends DataManagerPrintComponent<any> implements OnInit {
 
   /** Component name */
-  componentName = 'MasterPriceTableQrCodePrintComponent';
+  componentName = 'SalesProductDemoTemPrintComponent';
   title: string = 'QRCode hàng hóa ';
   env = environment;
   apiPath = '/sales/master-price-table-details';
@@ -40,33 +40,53 @@ export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintCompon
       page-break-after: initial;
     }
   }
-  .label {
-    padding: 2px;
-    page-break-after:always;
+  .blabel {
+    /* padding: 5px; */
+    border: 1px #000 dashed;
+    float: left;
+    page-break-after: always;
+    width: 50mm;
+    height: 30mm;
     padding: 1mm;
     padding-top: 2mm;
     color: #000;
   }
-  .label .info {
-    height: 13mm;
+  .blabel .product-price {
+    font-size: 3.6mm !important;
+    line-height: 3.6mm;
+    font-weight: bold;
+  }
+  .blabel .product-name {
+    font-size: 3mm !important;
+    font-weight: bold;
     overflow: hidden;
+    line-height: 3.4mm;
+    max-height: 10.3mm;
   }
-  .label .find-order {
-    font-weight: bold !important;
-    font-size: 44px !important;
-    line-height: 10mm;
+  .blabel .product-sku {
+    font-weight: bold;
+    font-size: 4mm !important;
+    line-height: 9mm;
   }
-  .bar-code {
+  .blabel .bar-code {
     padding: 0px;
-    border: 1px #000 solid;
-    border-radius: 5px;
     margin-right: 1mm;
-    height: 20mm;
+    height: 13mm;
   }
   .page-break {
     clear: left;
-    display:block;
-    page-break-after:always;
+    display: block;
+    page-break-after: always;
+  }  
+
+  /** Forct */
+  .blabel {
+    border: none;
+    width: inherit;
+    height: 25mm;
+    width: 46mm;
+    margin: 2mm;
+    padding: 0mm;
   }
   `;
 
@@ -74,7 +94,7 @@ export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintCompon
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<MasterPriceTableQrCodePrintComponent>,
+    public ref: NbDialogRef<SalesProductDemoTemPrintComponent>,
     public datePipe: DatePipe,
   ) {
     super(commonService, router, apiService, ref);
@@ -82,7 +102,7 @@ export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintCompon
 
   ngOnInit() {
     this.restrict();
-    super.ngOnInit(); ``
+    super.ngOnInit();
   }
 
   async init() {
@@ -164,7 +184,7 @@ export class MasterPriceTableQrCodePrintComponent extends DataManagerPrintCompon
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<WarehouseGoodsContainerModel[]>(this.apiPath, {
       includeWarehouse: true,
-      renderQrCode: true,
+      renderQrCodeForProboxApp: true,
       masterPriceTable: this.priceTable,
       includeGroups: true,
       includeUnit: true,

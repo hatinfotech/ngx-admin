@@ -19,6 +19,7 @@ import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { SalesProductQrCodePrintComponent } from '../sales-product-qrcode-print/sales-product-qrcode-print.component';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { SalesProductDemoTemPrintComponent } from '../product-demo-tem-print/product-demo-tem-print.component';
 
 @Component({
   selector: 'ngx-sales-product-list',
@@ -80,7 +81,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
         Name: {
           title: 'Tên',
           type: 'string',
-          width: '12%',
+          width: '15%',
         },
         Categories: {
           title: 'Danh mục',
@@ -125,7 +126,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
         Groups: {
           title: 'Nhóm',
           type: 'html',
-          width: '15%',
+          width: '5%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -164,7 +165,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
         Unit: {
           title: 'ĐVT',
           type: 'html',
-          width: '7%',
+          width: '10%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
           },
@@ -215,16 +216,16 @@ export class SalesProductListComponent extends ProductListComponent implements O
         Code: {
           title: 'Code',
           type: 'string',
-          width: '5%',
+          width: '10%',
         },
         Sku: {
           title: 'Sku',
           type: 'string',
-          width: '8%',
+          width: '10%',
         },
         Price: {
           title: 'Price',
-          width: '15%',
+          width: '10%',
           type: 'currency',
           editable: true,
           delay: 3000,
@@ -271,8 +272,8 @@ export class SalesProductListComponent extends ProductListComponent implements O
           // }
           // },
         },
-        Action: {
-          title: this.commonService.translateText('Common.action'),
+        PriceTemDemo: {
+          title: this.commonService.translateText('Tem demo'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -286,16 +287,20 @@ export class SalesProductListComponent extends ProductListComponent implements O
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
             instance.status = 'primary';
-            instance.title = this.commonService.translateText('In Tem QR');
-            instance.label = this.commonService.translateText('In Tem QR');
-            instance.valueChange.subscribe(value => {
+            instance.title = this.commonService.translateText('In Tem Demo');
+            instance.label = this.commonService.translateText('In Tem Demo');
+            instance.init.subscribe(value => {
+              if (!value.Sku || !value.Price || !this.commonService.getObjectId(value.Unit)) {
+                instance.disabled = true;
+              }
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsContainerModel) => {
               const editedItems = rowData;
-              this.commonService.openDialog(SalesProductQrCodePrintComponent, {
+              this.commonService.openDialog(SalesProductDemoTemPrintComponent, {
                 context: {
+                  priceTable: 'default',
                   id: [this.makeId(editedItems)],
-                  printForType: 'DRAWERS',
+                  // printForType: 'DRAWERS',
                 }
               });
             });
@@ -343,14 +348,13 @@ export class SalesProductListComponent extends ProductListComponent implements O
         if (button.name === 'preview') {
           button.name = 'printQrCode';
           button.icon = 'grid-outline';
-          button.label = this.commonService.translateText('Print QR Code');
-          button.title = this.commonService.translateText('Print QR Code');
+          button.label = this.commonService.translateText('In tem demo');
+          button.title = this.commonService.translateText('In tem demo');
           button.click = (event, option) => {
-            // this.openAssignContainersDialog();
-            this.commonService.openDialog(SalesProductQrCodePrintComponent, {
+            this.commonService.openDialog(SalesProductDemoTemPrintComponent, {
               context: {
+                priceTable: 'default',
                 id: this.selectedItems.map(item => this.makeId(item)),
-                // printForType: 'DRAWERS',
               }
             });
           };

@@ -233,7 +233,7 @@ import { AccountingReceivablesFromCustomersReportPrintComponent } from './module
 import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-details-report-print/accounting-receivables-from-customers-details-report-print.component';
 import { AccountingLiabilitiesReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-report-print/accounting-liabilities-report-print.component';
 import { AccountingLiabilitiesDetailsReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-details-report-print/accounting-liabilities-details-report-print.component';
-import { MasterPriceTableQrCodePrintComponent } from './modules/sales/master-price-table/master-price-table-qrcode-print/master-price-table-qrcode-print.component';
+import { SalesProductDemoTemPrintComponent } from './modules/sales/product/product-demo-tem-print/product-demo-tem-print.component';
 import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
 import { AccountingObjectCashFlowReportPrintComponent } from './modules/accounting/reports/print/accounting-object-cash-flow-report-print/accounting-object-cash-flow-report-print.component';
 import { AccountingCashFlowReportComponent } from './modules/accounting/reports/accounting-cash-flow-report/accounting-cash-flow-report.component';
@@ -304,7 +304,7 @@ export class DynamicLocaleId extends String {
     MasterPriceTableListComponent,
     MasterPriceTableFormComponent,
     MasterPriceTablePrintComponent,
-    MasterPriceTableQrCodePrintComponent,
+    SalesProductDemoTemPrintComponent,
 
     // Purchase components
     PurchasePriceTableListComponent,
