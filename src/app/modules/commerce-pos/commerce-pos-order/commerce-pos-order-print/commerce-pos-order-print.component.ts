@@ -27,7 +27,7 @@ export class CommercePosOrderPrintComponent extends DataManagerPrintComponent<Co
   componentName = 'SalesPriceReportPrintComponent';
   title: string = '';
   env = environment;
-  apiPath = '/sales/commerce-pos-orders';
+  apiPath = '/commerce-pos/orders';
   processMapList: ProcessMap[] = [];
   idKey = ['Code'];
   formDialog = CommercePosOrderFormComponent;

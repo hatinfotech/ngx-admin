@@ -26,8 +26,8 @@ import { AppModule } from '../../../../app.module';
 export class CommercePosOrderListComponent extends ServerDataManagerListComponent<CommercePosOrderModel> implements OnInit {
 
   componentName: string = 'CommercePosOrderListComponent';
-  formPath = '/sales/commerce-pos-order/form';
-  apiPath = '/sales/commerce-pos-orders';
+  formPath = '/commerce-pos/commerce-pos-order/form';
+  apiPath = '/commerce-pos/orders';
   idKey = 'Code';
   formDialog = CommercePosOrderFormComponent;
   printDialog = CommercePosOrderPrintComponent;

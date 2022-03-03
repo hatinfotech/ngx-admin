@@ -38,6 +38,22 @@
                 <div class="pos-container scrollable-container" style="flex: 1; display: flex; flex-direction: row;">
                     <div class="order" style="display: flex; flex-direction: column; flex: 1;">
 
+                        <div class="pos-contact" style="padding: 1rem">
+                            <input type="hidden" formControlName="Object">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="pos-contact-field">
+                                        <input formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" size="medium" fullWidth placeholder="F7 - Số điện thoại..." class="pos-contact-field-input">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="pos-contact-field">
+                                        <input formControlName="ObjectName" type="text" nbInput status="primary" size="medium" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem;">
                             <div class="pos-search-input-wrap" style="flex: 1;">
                                 <input id="posSearchInput" (keydown)="onSearchInputKeydown($event)" type="text" nbInput status="primary" size="medium" fullWidth placeholder="F3 - Tìm hàng hóa/quét mã vạch..." class="pos-search-input">

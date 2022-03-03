@@ -1,3 +1,4 @@
+import { ContactModel } from './../../../../models/contact.model';
 import { CommercePosDetailModel, CommercePosOrderModel } from './../../../../models/commerce-pos.model';
 import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from "@angular/core";
@@ -152,8 +153,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
 
     await this.save(this.orderForm);
-    await this.barcodeProcess('145742024962');
-    await this.barcodeProcess('146537024944');
+    // await this.barcodeProcess('145742024962');
+    // await this.barcodeProcess('146537024944');
     return result;
   }
 
@@ -190,7 +191,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       ToMoney: [detail.Quantity * detail.Price || 0],
       FeaturePicture: [],
       Image: [detail.Image || []],
-      AccessNumbers: [detail.AccessNumbers || []],
+      AccessNumbers: [detail.AccessNumbers || null],
       Discount: [detail.Discount || 0],
     });
   }
@@ -252,9 +253,23 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
   }
 
+  onObjectPhoneInput(orderForm: FormGroup, event: any) {
+    this.commonService.takeUntil('commerce-pos-seach-contact-by-phone', 400).then(() => {
+      const phone = this.orderForm.get('ObjectPhone').value;
+      if (phone && phone.length > 9) {
+        this.apiService.getPromise<ContactModel[]>('/contact/contacts', { search: phone, sort_Id: 'desc' }).then(rs => {
+          if (rs.length > 0) {
+            this.orderForm.get('ObjectName').setValue(rs[0].Name);
+          }
+        });
+      }
+    });
+  }
+
   async barcodeProcess(inputValue: string) {
 
     if (inputValue && !/[^\d]/.test(inputValue)) {
+      const detailsControls = this.getDetails(this.orderForm).controls
       const systemConfigs = await this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
       const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
       const productIdLength = parseInt(inputValue.substring(0, 2)) - 10;
@@ -264,6 +279,33 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
       let productId = '118' + coreId + inputValue.substring(2, 2 + productIdLength);
 
+
+
+      let product = null;
+      try {
+        // Case 1: Search by access number
+        product = await this.apiService.getPromise<any[]>('/admin-product/products/' + productId, {
+          select: 'id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,WarehouseUnit,FeaturePicture,Pictures',
+          'includeSearchResultLabel': true,
+          'includeUnits': true,
+          'includeWarehouseUnit': true,
+        }).then(rs => rs[0]);
+        if (!product) {
+          throw Error('fail');
+        }
+      } catch (err) {
+        // Case 2: Search by product id
+        productId = inputValue
+        accessNumber = null;
+        product = await this.apiService.getPromise<any[]>('/admin-product/products/' + productId, {
+          select: 'id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,WarehouseUnit,FeaturePicture,Pictures',
+          'includeSearchResultLabel': true,
+          'includeUnits': true,
+          'includeWarehouseUnit': true,
+        }).then(rs => rs[0]);
+      }
+
+
       console.log(accessNumber, productId);
       let existsProduct: FormGroup = this.getDetails(this.orderForm).controls.find(f => this.commonService.getObjectId(f.get('Product').value) === productId) as FormGroup;
       if (existsProduct) {
@@ -271,17 +313,24 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         const priceControl = existsProduct.get('Price');
         const toMoney = existsProduct.get('ToMoney');
         const accessNumbersContorl = existsProduct.get('AccessNumbers');
-        if (!existsProduct.get('AccessNumbers').value.find(f => f == accessNumber)) {
-          quantityControl.setValue(quantityControl.value + 1);
-          toMoney.setValue(quantityControl.value * priceControl.value);
-          accessNumbersContorl.setValue([accessNumbersContorl.value, [accessNumber]]);
-          // existsProduct.AccessNumbers = [...existsProduct.AccessNumbers];
-          this.calculateTotal(this.orderForm);
+        if (accessNumber && accessNumbersContorl.value) {
+          if (!accessNumbersContorl.value.find(f => f == accessNumber)) {
+            quantityControl.setValue(quantityControl.value + 1);
+            toMoney.setValue(quantityControl.value * priceControl.value);
+            if (accessNumber && Array.isArray(accessNumbersContorl.value)) {
+              accessNumbersContorl.setValue([accessNumbersContorl.value, [accessNumber]]);
+            }
+            // existsProduct.AccessNumbers = [...existsProduct.AccessNumbers];
+            this.calculateTotal(this.orderForm);
 
-          this.increaseDetailPipSound.nativeElement.play();
+            this.increaseDetailPipSound.nativeElement.play();
+          } else {
+            this.errorSound.nativeElement.play();
+            this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
+          }
         } else {
-          this.errorSound.nativeElement.play();
-          this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
+          quantityControl.setValue(quantityControl.value + 1);
+          this.increaseDetailPipSound.nativeElement.play();
         }
         return existsProduct;
       } else {
@@ -297,6 +346,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         //   AccessNumbers: [accessNumber ? [accessNumber] : []],
         //   Discount: [0],
         // });
+
+
         existsProduct = this.makeNewOrderDetail({
           Sku: productId,
           Product: productId,
@@ -306,63 +357,59 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           Price: 0,
           ToMoney: 0,
           FeaturePicture: [],
-          AccessNumbers: accessNumber ? [accessNumber] : [],
+          AccessNumbers: accessNumber ? [accessNumber] : null,
           Discount: 0,
         });
-        this.getDetails(this.orderForm).controls.unshift(existsProduct);
 
-        const detailFormGroup = await this.apiService.getPromise<any[]>('/admin-product/products/' + productId, {
-          select: 'id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,WarehouseUnit,FeaturePicture,Pictures',
-          'includeSearchResultLabel': true,
-          'includeUnits': true,
-          'includeWarehouseUnit': true,
-        }).then(products => products[0]).then(async product => {
-          if (product) {
+        // .then(products => products[0]).then(async product => {
+        if (product) {
 
-            if (!product.WarehouseUnit || !this.commonService.getObjectId(product.WarehouseUnit) || this.commonService.getObjectId(product.WarehouseUnit) == 'n/a') {
-              this.errorSound.nativeElement.play();
-              this.commonService.toastService.show('Sản phẩm chưa cài đặt đơn vị tính !', 'Commerce POS', { status: 'danger' });
-              return;
-            }
-
-            existsProduct.get('Description').setValue(product.Name);
-            existsProduct.get('Sku').setValue(product.Sku);
-            existsProduct.get('Unit').setValue(product.WarehouseUnit);
-            existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
-
-            return await this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
-              priceTable: 'BGC201031',
-              product: productId,
-              includeUnit: true
-            }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.WarehouseUnit))).then(price => {
-              if (price) {
-                existsProduct.get('Price').setValue(parseFloat(price.Price));
-                existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
-                this.calculateTotal(this.orderForm);
-                this.newDetailPipSound.nativeElement.play();
-              } else {
-                this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
-              }
-              return existsProduct;
-            }).catch(err => {
-              this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
-              // this.order.Details = this.order.Details.filter(f => this.commonService.getObjectId(f.Product) !== this.commonService.getObjectId(existsProduct.Product))
-              this.errorSound.nativeElement.play();
-            });
-          } else {
+          if (!product.WarehouseUnit || !this.commonService.getObjectId(product.WarehouseUnit) || this.commonService.getObjectId(product.WarehouseUnit) == 'n/a') {
             this.errorSound.nativeElement.play();
-            this.commonService.toastService.show('Sản phẩm không tồn tại !', 'Commerce POS', { status: 'danger' });
-            return false;
+            this.commonService.toastService.show('Sản phẩm chưa cài đặt đơn vị tính !', 'Commerce POS', { status: 'danger' });
+            return;
           }
-        }).catch(err => {
+
+          existsProduct.get('Description').setValue(product.Name);
+          existsProduct.get('Sku').setValue(product.Sku);
+          existsProduct.get('Unit').setValue(product.WarehouseUnit);
+          existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
+
+          return await this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
+            priceTable: 'BGC201031',
+            product: productId,
+            includeUnit: true
+          }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.WarehouseUnit))).then(price => {
+            if (price) {
+              existsProduct.get('Price').setValue(parseFloat(price.Price));
+              existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
+              this.calculateTotal(this.orderForm);
+
+              detailsControls.unshift(existsProduct);
+              this.newDetailPipSound.nativeElement.play();
+              this.save(this.orderForm);
+            } else {
+              this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
+            }
+            return existsProduct;
+          }).catch(err => {
+
+            this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
+            this.errorSound.nativeElement.play();
+          });
+        } else {
           this.errorSound.nativeElement.play();
           this.commonService.toastService.show('Sản phẩm không tồn tại !', 'Commerce POS', { status: 'danger' });
-          // this.order.Details = this.order.Details.filter(f => this.commonService.getObjectId(f.Product) !== this.commonService.getObjectId(existsProduct.Product))
           return false;
-        });
+        }
+        // }).catch(err => {
+        //   this.errorSound.nativeElement.play();
+        //   this.commonService.toastService.show('Sản phẩm không tồn tại !', 'Commerce POS', { status: 'danger' });
+        //   return false;
+        // });
 
-        this.save(this.orderForm);
-        return detailFormGroup;
+        // this.save(this.orderForm);
+        // return detailFormGroup;
       }
 
     }
