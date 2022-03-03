@@ -1,0 +1,46 @@
+@import "../../../../../assets/style/print.css";
+/* .blabel,
+.blabel * {
+  all: initial;
+} */
+#print-area {
+  width: initial;
+  width: 80mm;
+}
+.bill {
+}
+.bill .bill-title {
+  font-weight: bold;
+  font-size: 1.2rem !important;
+  text-align: center;
+}
+.bill table thead td {
+  font-weight: bold;
+  border-bottom: 1px dashed #000;
+}
+.bill table tr td {
+  border-bottom: 1px dashed #000;
+  vertical-align: top;
+}
+.bill .bill-register-info {
+  text-align: center;
+  line-height: 1rem;
+}
+.bill .bill-info {
+  text-align: center;
+}
+.bill .bill-register-logo img {
+  width: 50mm;
+}
+.bill .bill-register-name {
+}
+.bill .bill-register-tax-code {
+}
+.bill .bill-register-tel {
+}
+.bill .bill-register-email {
+}
+.bill .bill-register-website {
+}
+.bill .bill-register-address {
+}

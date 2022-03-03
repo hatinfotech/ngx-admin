@@ -12,6 +12,20 @@
   }
 }
 .pos {
+  input {
+    color: inherit !important;
+  }
+  .pos-info {
+    padding: 0.5rem;
+    font-weight: bold;
+    line-height: 0.9rem;
+    font-size: 0.7rem;
+  }
+  .control-wrap {
+    font-size: 0.6rem;
+    font-weight: bold;
+    line-height: 0.7rem;
+  }
   .pos-header {
     background-color: var(--ck-color-base-background);
     border-bottom: var(--ck-color-base-border) 1px solid;
@@ -48,7 +62,7 @@
         border-bottom: var(--ck-color-base-border) 1px solid;
         vertical-align: top;
         img {
-          width: 20rem;
+          width: 11rem;
           border-radius: 1rem;
         }
       }
@@ -60,8 +74,10 @@
     }
     .pos-price {
       font-weight: bold;
-      font-size: 1.5rem;
+      font-size: 2rem;
       white-space: nowrap;
+    }
+    .pos-discount {
       line-height: 3rem;
     }
     .pos-tomoney {

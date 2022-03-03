@@ -1,3 +1,4 @@
+import { CommercePosDetailModel, CommercePosOrderModel } from './../../../../models/commerce-pos.model';
 import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
@@ -9,6 +10,7 @@ import screenfull from 'screenfull';
 import { filter, take, takeUntil } from "rxjs/operators";
 import { SystemConfigModel } from "../../../../models/model";
 import { CurrencyMaskConfig } from "ng2-currency-mask";
+import { CommercePosBillPrintComponent } from '../commerce-pos-order-print/commerce-pos-bill-print.component';
 
 class OrderModel {
   [key: string]: any;
@@ -65,20 +67,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   order: OrderModel = new OrderModel;
 
-  orderForm: FormGroup = this.formBuilder.group({
-    Object: [],
-    ObjectName: [],
-    ObjectPhone: [],
-    ObjectEmail: [],
-    ObjectAddress: [],
-    ObjectIdenfiedNumber: [],
-    Note: [],
-    SubNote: [],
-    Details: this.formBuilder.array([]),
-    Total: [0],
-    CashBack: [0],
-    CashReceipt: [0],
-  });;
+  historyOrderIndex: number = 0;
+  historyOrders: FormGroup[] = [];
+  orderForm: FormGroup = this.makeNewOrderForm();
 
   systemConfigs: SystemConfigModel;
   constructor(
@@ -93,6 +84,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.systemConfigs = settings;
     });
+
+    this.historyOrders.push(this.orderForm);
 
     // this.orderForm = this.formBuilder.group({
     //   Object: [],
@@ -111,17 +104,30 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
+    $('html').css({ fontSize: '20px' });
     screenfull.onchange(event => {
       console.log(event);
       setTimeout(() => {
-        if (this.isFullscreenMode) {
-          this.commonService.sidebarService.collapse('menu-sidebar');
-          this.commonService.sidebarService.collapse('chat-sidebar');
-        } else {
-          this.commonService.sidebarService.expand('menu-sidebar');
-        }
+        this.commonService.sidebarService.collapse('menu-sidebar');
+        this.commonService.sidebarService.collapse('chat-sidebar');
+        // if (this.isFullscreenMode) {
+        //   $('html').css({ fontSize: '20px' });
+        // } else {
+        //   $('html').css({ fontSize: 'initial' });
+        // }
       }, 300);
     });
+  }
+
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
+    $('html').css({ fontSize: 'initial' });
+  }
+
+  onResume() {
+    super.onResume();
+    this.commonService.sidebarService.collapse('menu-sidebar');
+    this.commonService.sidebarService.collapse('chat-sidebar');
   }
 
   async init() {
@@ -143,20 +149,74 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     //     return false;
     //   },
     // }];
+
+
+    await this.save(this.orderForm);
+    await this.barcodeProcess('145742024962');
+    await this.barcodeProcess('146537024944');
     return result;
+  }
+
+  makeNewOrderForm(data?: CommercePosOrderModel) {
+    const newForm = this.formBuilder.group({
+      Code: [],
+      Object: [],
+      ObjectName: [],
+      ObjectPhone: [],
+      ObjectEmail: [],
+      ObjectAddress: [],
+      ObjectIdenfiedNumber: [],
+      Note: [],
+      SubNote: [],
+      Total: [0],
+      CashBack: [0],
+      CashReceipt: [0],
+      State: [null],
+      DateOfSale: [new Date()],
+      Details: this.formBuilder.array([]),
+    });
+    newForm['isProcessing'] = null;
+    return newForm;
+  }
+
+  makeNewOrderDetail(detail?: CommercePosDetailModel) {
+    return this.formBuilder.group({
+      Sku: [detail.Sku || null],
+      Product: [detail.Product || null],
+      Unit: ['n/a'],
+      Description: [detail.Description || null],
+      Quantity: [detail.Quantity || 0],
+      Price: [detail.Price || 0],
+      ToMoney: [detail.Quantity * detail.Price || 0],
+      FeaturePicture: [],
+      Image: [detail.Image || []],
+      AccessNumbers: [detail.AccessNumbers || []],
+      Discount: [detail.Discount || 0],
+    });
   }
 
   getDetails(formGroup: FormGroup) {
     return formGroup.get('Details') as FormArray;
   }
 
+  async makeNewOrder() {
+    if (this.orderForm.get('State').value !== 'APPROVED') {
+      this.save(this.orderForm);
+    }
+    this.orderForm = this.makeNewOrderForm();
+    this.historyOrders.push(this.orderForm);
+    this.historyOrderIndex = this.historyOrders.length - 1;
+    await this.save(this.orderForm);
+    return this.orderForm;
+  }
+
   toggleFullscreen() {
     // const commercePosGuiEle = this.commercePosGui.nativeElement;
     if (!this.isFullscreenMode) {
-      this.commonService.layout$.next('full-screen');
+      // this.commonService.layout$.next('full-screen');
       screenfull.request();
     } else {
-      this.commonService.layout$.next('one-column');
+      // this.commonService.layout$.next('one-column');
       screenfull.exit();
     }
   }
@@ -192,10 +252,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
   }
 
-  barcodeProcess(inputValue: string) {
+  async barcodeProcess(inputValue: string) {
 
     if (inputValue && !/[^\d]/.test(inputValue)) {
-      const coreId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+      const systemConfigs = await this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
+      const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
       const productIdLength = parseInt(inputValue.substring(0, 2)) - 10;
       let accessNumber = inputValue.substring(productIdLength + 2);
       if (accessNumber) {
@@ -222,27 +283,40 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           this.errorSound.nativeElement.play();
           this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
         }
+        return existsProduct;
       } else {
-        existsProduct = this.formBuilder.group({
-          Sku: [productId],
-          Product: [productId],
-          Unit: ['CAI'],
-          Description: [productId],
-          Quantity: [1],
-          Price: [0],
-          ToMoney: [0],
+        // existsProduct = this.formBuilder.group({
+        //   Sku: [productId],
+        //   Product: [productId],
+        //   Unit: ['CAI'],
+        //   Description: [productId],
+        //   Quantity: [1],
+        //   Price: [0],
+        //   ToMoney: [0],
+        //   FeaturePicture: [],
+        //   AccessNumbers: [accessNumber ? [accessNumber] : []],
+        //   Discount: [0],
+        // });
+        existsProduct = this.makeNewOrderDetail({
+          Sku: productId,
+          Product: productId,
+          Unit: 'n/a',
+          Description: productId,
+          Quantity: 1,
+          Price: 0,
+          ToMoney: 0,
           FeaturePicture: [],
-          AccessNumbers: [accessNumber ? [accessNumber] : []],
-          Discount: [0],
+          AccessNumbers: accessNumber ? [accessNumber] : [],
+          Discount: 0,
         });
         this.getDetails(this.orderForm).controls.unshift(existsProduct);
 
-        this.apiService.getPromise<any[]>('/admin-product/products/' + productId, {
+        const detailFormGroup = await this.apiService.getPromise<any[]>('/admin-product/products/' + productId, {
           select: 'id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,WarehouseUnit,FeaturePicture,Pictures',
           'includeSearchResultLabel': true,
           'includeUnits': true,
           'includeWarehouseUnit': true,
-        }).then(products => products[0]).then(product => {
+        }).then(products => products[0]).then(async product => {
           if (product) {
 
             if (!product.WarehouseUnit || !this.commonService.getObjectId(product.WarehouseUnit) || this.commonService.getObjectId(product.WarehouseUnit) == 'n/a') {
@@ -256,19 +330,20 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             existsProduct.get('Unit').setValue(product.WarehouseUnit);
             existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
 
-            this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
+            return await this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
               priceTable: 'BGC201031',
               product: productId,
               includeUnit: true
             }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.WarehouseUnit))).then(price => {
               if (price) {
-                existsProduct.get('Price').setValue(price.Price);
+                existsProduct.get('Price').setValue(parseFloat(price.Price));
                 existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
                 this.calculateTotal(this.orderForm);
                 this.newDetailPipSound.nativeElement.play();
               } else {
                 this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
               }
+              return existsProduct;
             }).catch(err => {
               this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
               // this.order.Details = this.order.Details.filter(f => this.commonService.getObjectId(f.Product) !== this.commonService.getObjectId(existsProduct.Product))
@@ -277,14 +352,18 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           } else {
             this.errorSound.nativeElement.play();
             this.commonService.toastService.show('Sản phẩm không tồn tại !', 'Commerce POS', { status: 'danger' });
+            return false;
           }
         }).catch(err => {
           this.errorSound.nativeElement.play();
           this.commonService.toastService.show('Sản phẩm không tồn tại !', 'Commerce POS', { status: 'danger' });
           // this.order.Details = this.order.Details.filter(f => this.commonService.getObjectId(f.Product) !== this.commonService.getObjectId(existsProduct.Product))
+          return false;
         });
-      }
 
+        this.save(this.orderForm);
+        return detailFormGroup;
+      }
 
     }
   }
@@ -307,7 +386,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         label: 'Xác nhận',
         status: 'danger',
         action: () => {
-          this.order = new OrderModel();
+          // this.order = new OrderModel();
+          this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
+          if (this.historyOrderIndex > -1) {
+            this.historyOrders.splice(this.historyOrderIndex, 1);
+            this.makeNewOrder();
+          }
+
           setTimeout(() => {
             // event.target.blur();
             if ("activeElement" in document) {
@@ -318,6 +403,29 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       },
     ])
     return false;
+  }
+
+  onPreviousOrderClick() {
+    this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
+    if (this.historyOrderIndex > 0) {
+      this.save(this.historyOrders[this.historyOrderIndex]);
+      this.historyOrderIndex--;
+      this.orderForm = this.historyOrders[this.historyOrderIndex];
+    }
+  }
+  onNextOrderClick() {
+    this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
+    if (this.historyOrderIndex < this.historyOrders.length - 1) {
+      this.save(this.historyOrders[this.historyOrderIndex]);
+      this.historyOrderIndex++;
+      this.orderForm = this.historyOrders[this.historyOrderIndex];
+    } else {
+      this.save(this.historyOrders[this.historyOrderIndex]);
+      this.orderForm = this.makeNewOrderForm();
+      this.historyOrders.push(this.orderForm);
+      this.historyOrderIndex = this.historyOrders.length - 1;
+      this.save(this.orderForm);
+    }
   }
 
   barcode = '';
@@ -340,29 +448,39 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     });
   }
 
-  removeDetail(index: number) {
-    this.order.Details.splice(index, 1);
+  removeDetail(orderForm: FormGroup, index: number) {
+    this.getDetails(orderForm).controls.splice(index, 1);
+    this.calculateTotal(orderForm);
+    this.save(orderForm);
   }
 
-  onQuantityChanged(form: FormGroup, detail: FormGroup, event, numberFormat: CurrencyMaskConfig) {
+  onQuantityChanged(orderForm: FormGroup, detail: FormGroup, event, numberFormat: CurrencyMaskConfig) {
     // detail.get('Quantity').setValue(1);
     this.calculateToMoney(detail);
-    this.calculateTotal(form);
+    this.calculateTotal(orderForm);
+    this.save(orderForm);
     // return super.currencyMastKeydown(event, numberFormat)
   }
 
-  onIncreaseQuantityClick(form: FormGroup, detail: FormGroup) {
+  onIncreaseQuantityClick(orderForm: FormGroup, detail: FormGroup) {
     const quantityControl = detail.get('Quantity');
     quantityControl.setValue(quantityControl.value + 1);
     this.calculateToMoney(detail);
-    this.calculateTotal(form);
+    this.calculateTotal(orderForm);
+    this.newDetailPipSound.nativeElement.play();
+    this.save(orderForm);
   }
-  onDecreaseQuantityClick(form: FormGroup, detail: FormGroup) {
+  onDecreaseQuantityClick(orderForm: FormGroup, detail: FormGroup) {
     const quantityControl = detail.get('Quantity');
-    if (quantityControl.value > 0) {
+    if (quantityControl.value > 1) {
       quantityControl.setValue(quantityControl.value - 1);
       this.calculateToMoney(detail);
-      this.calculateTotal(form);
+      this.calculateTotal(orderForm);
+      this.increaseDetailPipSound.nativeElement.play();
+      this.save(orderForm);
+    } else {
+      this.errorSound.nativeElement.play();
+      this.commonService.toastService.show('Số lượng phải lớn hơn 0', 'Cảnh báo', { status: 'warning' });
     }
   }
 
@@ -371,5 +489,80 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     const cashBackControl = formGroup.get('CashBack');
     const totolControl = formGroup.get('Total');
     cashBackControl.setValue(cashReceiptControl.value - totolControl.value);
+  }
+
+  async payment(orderForm: FormGroup) {
+    orderForm['isProcessing'] = true;
+    setTimeout(() => {
+      orderForm['isProcessing'] = false;
+    }, 500);
+    await this.save(orderForm);
+    this.commonService.openDialog(CommercePosBillPrintComponent, {
+      context: {
+        skipPreview: true,
+        data: [orderForm.getRawValue()],
+        onSaveAndClose: (newOrder, printComponent) => {
+          // orderForm.get('Code').setValue(newOrder.Code);
+          // orderForm['isProcessing'] = false;
+          orderForm.patchValue(newOrder);
+          // this.historyOrders.push(orderForm);
+          this.commonService.toastService.show('Đơn hàng đã hoàn tất, bạn có thể bấm F4 để xem lại', 'Máy bán hàng', { status: 'success', duration: 8000 })
+          this.makeNewOrder();
+          printComponent.close();
+          // setTimeout(() => {
+          //   screenfull.request();
+          // }, 1000);
+          console.log(this.historyOrders);
+        },
+        onClose: () => {
+          // orderForm['isProcessing'] = false;
+        }
+      }
+    });
+  }
+
+  async save(orderForm: FormGroup): Promise<CommercePosOrderModel> {
+    let order = orderForm.getRawValue();
+    if (orderForm && orderForm['isProcessing'] !== true && order.State != 'APPROVED') {
+      return this.commonService.takeUntil('commerce-pos-order-save', 500).then(status => {
+        if (order.Code) {
+          // params['id0'] = order.Code;
+          return this.apiService.putPromise('/commerce-pos/orders/' + order.Code, {}, [order]).then(rs => {
+            // orderForm.get('Code').setValue(rs[0].Code);
+            orderForm.patchValue(rs[0]);
+            return rs[0];
+          });
+        } else {
+          orderForm['isProcessing'] = true;
+          return this.apiService.postPromise('/commerce-pos/orders', {}, [order]).then(rs => {
+            // orderForm.get('Code').setValue(rs[0].Code);
+            orderForm.patchValue(rs[0]);
+            orderForm['isProcessing'] = false;
+            return rs[0];
+          });
+        }
+      });
+    }
+    console.log('Order Form đang khởi tạo => chưa lưu đơn !');
+    return null;
+  }
+
+  async print(orderForm: FormGroup) {
+    if (orderForm.get('State').value !== 'APPROVED') {
+      this.commonService.toastService.show('Bạn chỉ có thể in lại phiếu đã chốt', 'Máy bán hàng', { status: 'warning' });
+      return false;
+    }
+    return new Promise(resovle => {
+      this.commonService.openDialog(CommercePosBillPrintComponent, {
+        context: {
+          skipPreview: true,
+          data: [orderForm.getRawValue()],
+          onSaveAndClose: (newOrder, printComponent) => {
+
+            resovle(true);
+          }
+        }
+      });
+    });
   }
 }

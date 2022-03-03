@@ -98,15 +98,17 @@ export class CommercePosDetailModel extends Model {
   Voucher?: string;
   No?: number;
   Type?: string;
-  Product?: string & ProductModel;
+  Product?: any;
   Description?: string;
-  Quantity?: string & number;
-  Price?: string & number;
+  Quantity?: number;
+  Price?: number;
   Tax?: string & TaxModel;
-  Image?: string;
+  Image?: any;
   CurrencyType?: string;
-  Unit?: string & UnitModel;
+  Unit?: any;
   Business?: string | BusinessModel[];
   ProductName?: string;
   PriceTableDetail?: string;
+  AccessNumbers?: string[];
+  Discount?: number;
 }

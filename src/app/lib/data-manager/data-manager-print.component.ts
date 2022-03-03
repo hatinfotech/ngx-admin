@@ -121,7 +121,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     });
   }
 
-  abstract close(): void;
+  // abstract close(): void;
 
   makeId(item: M) {
     if (typeof item === 'string') return item;
@@ -150,47 +150,48 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     return value;
   }
 
-  print(index?: number) {
-    if (this.onSaveAndPrint) {
-      this.onSaveAndPrint(this.identifier);
-    }
+  async print(index?: number) {
+    return new Promise(resolve => {
+      if (this.onSaveAndPrint) {
+        this.onSaveAndPrint(this.identifier);
+      }
 
-    const printFrame = document.createElement('iframe');
-    printFrame.name = 'printFrame';
-    printFrame.style.position = 'absolute';
-    printFrame.style.top = '-1000000px';
-    // printFrame.style.top = '20px';
-    printFrame.style.width = '21cm';
-    printFrame.style.height = '29.7cm';
-    document.body.appendChild(printFrame);
-    const frameDoc = printFrame.contentWindow ? printFrame.contentWindow : printFrame.contentDocument['document'] ? printFrame.contentDocument['document'] : printFrame.contentDocument;
-    frameDoc.document.open();
-    let printContent = '';
-    const printContentEles = this.printContent.toArray();
-    let title = 'ProBox one ®';
-    let data: M;
-    if (index !== undefined) {
-      printContent += printContentEles[index].element.nativeElement.innerHTML;
-      data = this.data[index];
-      // Todo: restrict only print created voucher  
-      // if(!data['Id']) {
-      //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
-      //   console.error('voucher not just created');
-      //   return false;
-      // }
-      if (data) {
-        title += ' - ' + data['Title'];
+      const printFrame = document.createElement('iframe');
+      printFrame.name = 'printFrame';
+      printFrame.style.position = 'absolute';
+      printFrame.style.top = '-1000000px';
+      // printFrame.style.top = '20px';
+      printFrame.style.width = '21cm';
+      printFrame.style.height = '29.7cm';
+      document.body.appendChild(printFrame);
+      const frameDoc = printFrame.contentWindow ? printFrame.contentWindow : printFrame.contentDocument['document'] ? printFrame.contentDocument['document'] : printFrame.contentDocument;
+      frameDoc.document.open();
+      let printContent = '';
+      const printContentEles = this.printContent.toArray();
+      let title = 'ProBox one ®';
+      let data: M;
+      if (index !== undefined) {
+        printContent += printContentEles[index].element.nativeElement.innerHTML;
+        data = this.data[index];
+        // Todo: restrict only print created voucher  
+        // if(!data['Id']) {
+        //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
+        //   console.error('voucher not just created');
+        //   return false;
+        // }
+        if (data) {
+          title += ' - ' + data['Title'];
+        }
+      } else {
+        for (const item of printContentEles) {
+          printContent += item.element.nativeElement.innerHTML;
+        }
       }
-    } else {
-      for (const item of printContentEles) {
-        printContent += item.element.nativeElement.innerHTML;
+      let style = '';
+      if (this.style) {
+        style = `<style>${this.style}</style>`;
       }
-    }
-    let style = '';
-    if(this.style) {
-      style = `<style>${this.style}</style>`;
-    }
-    frameDoc.document.write(`
+      frameDoc.document.write(`
     <html>
       <head>
         <base href="/${environment.basePath}/">
@@ -204,22 +205,24 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         ${printContent}
       </body>
     </html>`);
-    const currentTitle = document.title;
-    document.title = data ? this.renderTitle(data) : this.title;
-    frameDoc.document.close();
-    printFrame.onload = () => {
-      window.frames['printFrame'].focus();
-      window.frames['printFrame'].print();
-      document.body.removeChild(printFrame);
-      document.title = currentTitle;
-    };
+      const currentTitle = document.title;
+      document.title = data ? this.renderTitle(data) : this.title;
+      frameDoc.document.close();
+      printFrame.onload = () => {
+        window.frames['printFrame'].focus();
+        window.frames['printFrame'].print();
+        document.body.removeChild(printFrame);
+        document.title = currentTitle;
+        return resolve(true);
+      };
 
-    // setTimeout(function () {
+      // setTimeout(function () {
 
-    //   // if (typeof onSuccess == 'function') {
-    //   //   onSuccess();
-    //   // }
-    // }, 5000);
+      //   // if (typeof onSuccess == 'function') {
+      //   //   onSuccess();
+      //   // }
+      // }, 5000);
+    });
   }
 
   printX(index?: number) {
@@ -261,7 +264,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       }
     }
     let style = '';
-    if(this.style) {
+    if (this.style) {
       style = `<style>${this.style}</style>`;
     }
     printFrame.write(`
@@ -437,6 +440,11 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         },
       },
     });
+  }
+
+  close() {
+    super.close();
+    this.onClose && this.onClose(null, this);
   }
 
   async refresh() {
