@@ -9,110 +9,149 @@
         <source src='assets/sounds/beep-03.wav' type="audio/mp3">
     </audio>
     <nb-card class="small-header smart-table" class="dialog-wrap {{inputMode}}">
-        <nb-card-header *ngIf="!this.isFullscreenMode">
+        <!-- <nb-card-header>
             <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('Máy bán hàng' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase))" [controls]="actionButtonList"></ngx-card-header>
-        </nb-card-header>
+        </nb-card-header> -->
         <nb-card-body>
             <div class="pos" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
                 <div class="pos-header" style="display: flex; align-items: center;">
-                    <div class="logo-wrap" style="flex: 1; padding: 0.1rem">
+                    <!-- <div class="logo-wrap" style="flex: 1; padding: 0.1rem">
                         <img src="assets/images/logo/logo_probox_one.png" style="height: 35px; margin-left: 1rem;">
+                    </div> -->
+                    <div class="info-wrap" style="font-size: 0.7rem;
+                    font-weight: bold;
+                    line-height: 0.9rem;
+                    min-width: 10rem;
+                    flex: 1;
+                    padding: 0.5rem;">
+                        <div style="white-space: nowrap;">Quầy: Quầy 1</div>
+                        <div style="white-space: nowrap;">Leader: Nguyễn Thanh Thúy</div>
+                        <div style="white-space: nowrap;">Follower: Huỳnh Thị Thủy</div>
                     </div>
-                    <div class="info-wrap" style="width: 350px; font-size: 12px; font-weight: bold; line-height: 12px;">
-                        <div>Quầy: Quầy 1</div>
-                        <div>Leader: Nguyễn Thanh Thúy</div>
-                        <div>Follower: Huỳnh Thị Thủy</div>
-                    </div>
-                    <div class="control-wrap" style="width: 400px;  padding-left: 1rem; padding-right: 1rem;">
+                    <div class="control-wrap" style="
+                    font-size: 0.6rem;
+                    font-weight: bold;
+                    line-height: 0.7rem;
+                    min-width: 10rem;
+                    padding: 0.5rem; margin-right: 0.5rem;">
                         <div class="row buttons-row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <button nbButton fullWidth status="info">Quản lý</button>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <button nbButton fullWidth status="primary">Tùy chọn</button>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <button nbButton fullWidth status="primary" (click)="toggleFullscreen()">
+                                    <nb-icon icon="external-link-outline"></nb-icon>
+                                </button>
+                            </div>
+                            <div class="col-md-3">
                                 <button nbButton fullWidth status="danger">Thoát</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="pos-container scrollable-container" style="flex: 1; display: flex; flex-direction: row;">
-                    <div class="order" style="display: flex; flex-direction: column; flex: 1;">
+                    <div class="order" style="display: flex; flex-direction: column; flex: 1;" [formGroup]="orderForm">
 
                         <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem;">
                             <div class="pos-search-input-wrap" style="flex: 1;">
-                                <input id="posSearchInput" (keydown)="onSearchInputKeydown($event)" type="text" nbInput status="primary" size="medium" fullWidth placeholder="Tìm hàng hóa/quét mã vạch..." class="pos-search-input">
+                                <input id="posSearchInput" (keydown)="onSearchInputKeydown($event)" type="text" nbInput status="primary" size="medium" fullWidth placeholder="F3 - Tìm hàng hóa/quét mã vạch..." class="pos-search-input">
                             </div>
                             <div class="pos-search-button-wrap">
-                                <button nbButton status="primary" class="pos-search-button" size="medium" style="margin-left: 1rem; width: 50px;">
+                                <button nbButton status="primary" class="pos-search-button" size="medium" style="margin-left: 1rem; width: 3.3rem;">
                                     <nb-icon icon="search-outline"></nb-icon>
                                 </button>
                             </div>
                         </div>
 
                         <div class="pos-order-detail scrollable-container" style="flex: 1; padding: 1rem;">
-                            <table style="width: 100%; font-size: 14px; font-weight: bold;" [cellPadding]="5">
+                            <table style="width: 100%; font-size: 1rem; font-weight: bold;" [cellPadding]="5">
                                 <thead>
                                     <td style="text-align: center; white-space: nowrap;">Xóa</td>
-                                    <td style=" white-space: nowrap;">Hình</td>
                                     <td style=" white-space: nowrap;">Hàng hóa</td>
                                     <td style="text-align: center; white-space: nowrap;">(-)</td>
-                                    <td style="text-align: right; white-space: nowrap;">Số lượng</td>
+                                    <td style="text-align: right; white-space: nowrap;">Số lượng X Đơn giá = Thành tiền</td>
                                     <td style="text-align: center; white-space: nowrap;">+</td>
-                                    <td style="text-align: right; white-space: nowrap;">Đơn giá</td>
-                                    <td style="text-align: right; white-space: nowrap;">CK(%)</td>
-                                    <td style="text-align: right; white-space: nowrap;">Thành tiền</td>
+                                    <!-- <td style="text-align: right; white-space: nowrap;">Đơn giá</td> -->
+                                    <!-- <td style="text-align: right; white-space: nowrap;">CK(%)</td> -->
+                                    <!-- <td style="text-align: right; white-space: nowrap;">Thành tiền</td> -->
                                 </thead>
-                                <tr *ngFor="let detail of order.Details; let i = index">
+                                <tr *ngFor="let detail of getDetails(orderForm).controls; let i=index" [formGroup]="detail">
                                     <td style="text-align: center">
                                         <button nbButton status="danger" size="small" (click)="removeDetail(i)">
                                             <nb-icon icon="close-outline"></nb-icon>
                                         </button>
                                     </td>
-                                    <td><img src="{{detail.FeaturePicture}}"></td>
-                                    <td>{{detail.Description | objecttext}} - SKU: {{detail.Sku}}<br>Số truy xuất: {{detail.AccessNumbers | objectstext}}</td>
+                                    <td>
+                                        <img src="{{detail.value.FeaturePicture}}">
+                                        <br>
+                                        <hr>
+                                        <div style="min-width: 10rem;">{{detail.value.Description | objecttext}} - SKU: {{detail.value.Sku}}</div>
+                                    </td>
                                     <td style="text-align: center">
-                                        <button nbButton status="warning" size="small">
+                                        <button nbButton status="warning" size="small" style="margin: 0.2rem" (click)="onDecreaseQuantityClick(orderForm, detail)">
                                             <nb-icon icon="minus-outline"></nb-icon>
                                         </button>
                                     </td>
-                                    <td style="text-align: right;"><input nbInput [(ngModel)]="detail.Quantity" style="text-align: right; width: 80px;" currencyMask [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (keydown)="currencyMastKeydown($event, quantityFormat)"></td>
+                                    <td style="text-align: right;">
+                                        <div style="display: flex;">
+                                            <div style="flex: 1;">
+                                                <input class="pos-quantity" nbInput fullWidth size="small" formControlName="Quantity" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)" [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
+                                            </div>
+                                            <div class="pos-unit" style="white-space: nowrap;">{{detail.value.Unit | objecttext}}</div>
+                                        </div>
+                                        <div *ngIf="detail.value.AccessNumbers && detail.value.AccessNumbers.length > 0" class="pos-access-numbers">Số truy xuất: {{detail.value.AccessNumbers | objectstext}}</div>
+                                        <div class="pos-price">X {{detail.value.Price | currency:'VND'}}</div>
+                                        <div class="pos-discount">CK: {{detail.value.Discount | number}}%</div>
+                                        <br>
+                                        <hr>
+                                        <div class="pos-tomoney">= {{detail.value.ToMoney | currency:'VND'}}</div>
+                                    </td>
                                     <td style="text-align: center">
-                                        <button nbButton status="primary" size="small">
+                                        <button nbButton status="primary" size="small" style="margin: 0.2rem" (click)="onIncreaseQuantityClick(orderForm, detail)">
                                             <nb-icon icon="plus-outline"></nb-icon>
                                         </button>
                                     </td>
-                                    <td style="text-align: right;">{{detail.Price | currency:'VND'}}</td>
-                                    <td style="text-align: right;">{{detail.Discount | number}}</td>
-                                    <td style="text-align: right;">{{detail.ToMoney | currency:'VND'}}</td>
+                                    <!-- <td style="text-align: right;">{{detail.Price | currency:'VND'}}</td> -->
+                                    <!-- <td style="text-align: right;">{{detail.value.Discount | number}}</td> -->
+                                    <!-- <td style="text-align: right;">{{detail.value.ToMoney | currency:'VND'}}</td> -->
                                 </tr>
                             </table>
                         </div>
-                        <div class="pos-order-summary">
+                        <div class=" pos-order-summary">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; align-items: center;">
-                                        <div class="pos-field-label">Tiền CK</div>
-                                        <div class="pos-field-control" style="flex: 1"><input type="text" nbInput fullWidth style="text-align: right" currencyMask [options]="toMoneyCurencyFormat"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem;">
-                                        <div class="pos-field-label">Tiền VAT</div>
-                                        <div class="pos-field-control" style="flex: 1"><input type="text" nbInput fullWidth style="text-align: right" currencyMask [options]="toMoneyCurencyFormat"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem;">
+                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
                                         <div class="pos-field-label">Tiền hàng</div>
-                                        <div class="pos-field-control" style="flex: 1"><input type="text" [(ngModel)]="order.Total" nbInput fullWidth disabled style="text-align: right" currencyMask [options]="toMoneyCurencyFormat"></div>
+                                        <div class="pos-field-control" style="flex: 1">
+                                            <input type="text" formControlName="Total" fieldSize="giant" nbInput fullWidth disabled style="text-align: right; font-size: 2rem;" currencyMask [options]="toMoneyCurencyFormat">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem;">
-                                        <div class="pos-field-label">Thanh toán</div>
-                                        <div class="pos-field-control" style="flex: 1"><input type="text" nbInput fullWidth style="text-align: right" currencyMask [options]="toMoneyCurencyFormat"></div>
+                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
+                                        <div class="pos-field-label">Tiền khách đưa</div>
+                                        <div class="pos-field-control">
+                                            <input type="text" nbInput fullWidth formControlName="CashReceipt" fieldSize="giant" style="text-align: right; font-size: 2rem;" (keyup)="onCashReceiptChanged(orderForm)" currencyMask [options]="toMoneyCurencyFormat">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
+                                        <div class="pos-field-label">Tiền CK</div>
+                                        <div class="pos-field-control">
+                                            <input type="text" nbInput fullWidth style="text-align: right; font-size: 2rem;" fieldSize="giant" currencyMask [options]="toMoneyCurencyFormat">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
+                                        <div class="pos-field-label">Tiền thừa</div>
+                                        <div class="pos-field-control">
+                                            <input type="text" nbInput formControlName="CashBack" fieldSize="giant" fullWidth disabled style="text-align: right; font-size: 2rem;" currencyMask [options]="toMoneyCurencyFormat">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -253,7 +292,10 @@
                             <div class="row">
                                 <div class="col-xxxl-8">
                                     <button nbButton fullWidth size="medium" status="success" class="pos-business-button">
-                                        <nb-icon icon="flash-outline"></nb-icon>
+                                        <div>
+                                            <nb-icon icon="flash-outline"></nb-icon>
+                                            <span style="font-weight: bold; font-size: 1rem">F1</span>
+                                        </div>
                                         <div class="button-label">Thanh toán</div>
                                     </button>
                                 </div>

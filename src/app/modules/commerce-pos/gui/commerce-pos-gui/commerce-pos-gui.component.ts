@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NbDialogRef } from "@nebular/theme";
@@ -60,9 +61,24 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
-  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
 
   order: OrderModel = new OrderModel;
+
+  orderForm: FormGroup = this.formBuilder.group({
+    Object: [],
+    ObjectName: [],
+    ObjectPhone: [],
+    ObjectEmail: [],
+    ObjectAddress: [],
+    ObjectIdenfiedNumber: [],
+    Note: [],
+    SubNote: [],
+    Details: this.formBuilder.array([]),
+    Total: [0],
+    CashBack: [0],
+    CashReceipt: [0],
+  });;
 
   systemConfigs: SystemConfigModel;
   constructor(
@@ -70,12 +86,26 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<CommercePosGuiComponent>,
+    public formBuilder?: FormBuilder,
   ) {
     super(commonService, router, apiService, ref);
 
     this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.systemConfigs = settings;
     });
+
+    // this.orderForm = this.formBuilder.group({
+    //   Object: [],
+    //   ObjectName: [],
+    //   ObjectPhone: [],
+    //   ObjectEmail: [],
+    //   ObjectAddress: [],
+    //   ObjectIdenfiedNumber: [],
+    //   Note: [],
+    //   SubNote: [],
+    //   Details: this.formBuilder.array([]),
+    //   Total: [0],
+    // });
   }
 
   ngOnInit() {
@@ -96,22 +126,28 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   async init() {
     const result = await super.init();
-    this.actionButtonList = [{
-      name: 'fullscreen',
-      status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Fullscreen'), 'head-title'),
-      icon: 'external-link-outline',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Fullscreen'), 'head-title'),
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.toggleFullscreen();
-        return false;
-      },
-    }];
+    this.commonService.sidebarService.collapse('menu-sidebar');
+    this.commonService.sidebarService.collapse('chat-sidebar');
+    // this.actionButtonList = [{
+    //   name: 'fullscreen',
+    //   status: 'primary',
+    //   label: this.commonService.textTransform(this.commonService.translate.instant('Fullscreen'), 'head-title'),
+    //   icon: 'external-link-outline',
+    //   title: this.commonService.textTransform(this.commonService.translate.instant('Fullscreen'), 'head-title'),
+    //   size: 'medium',
+    //   disabled: () => {
+    //     return false;
+    //   },
+    //   click: () => {
+    //     this.toggleFullscreen();
+    //     return false;
+    //   },
+    // }];
     return result;
+  }
+
+  getDetails(formGroup: FormGroup) {
+    return formGroup.get('Details') as FormArray;
   }
 
   toggleFullscreen() {
@@ -129,14 +165,20 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   }
 
-  calculateTotal() {
+  calculateToMoney(detail: FormGroup) {
+    if (detail) {
+      detail.get('ToMoney').setValue(detail.get('Quantity').value * detail.get('Price').value);
+    }
+  }
+
+  calculateTotal(form: FormGroup) {
     let total = 0;
-    for (const detail of this.order.Details) {
-      total += detail.Price * detail.Quantity;
+    for (const detail of this.getDetails(form).controls) {
+      total += detail.get('Price').value * detail.get('Quantity').value;
     }
 
-    this.order.Total = total;
-
+    this.orderForm.get('Total').setValue(total);
+    this.onCashReceiptChanged(form);
     return total;
   }
 
@@ -162,14 +204,18 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       let productId = '118' + coreId + inputValue.substring(2, 2 + productIdLength);
 
       console.log(accessNumber, productId);
-      let existsProduct: any = this.order.Details.find(f => f.Product === productId);
+      let existsProduct: FormGroup = this.getDetails(this.orderForm).controls.find(f => this.commonService.getObjectId(f.get('Product').value) === productId) as FormGroup;
       if (existsProduct) {
-        if (!existsProduct.AccessNumbers.find(f => f == accessNumber)) {
-          existsProduct.Quantity++;
-          existsProduct['ToMoney'] = existsProduct.Quantity * existsProduct.Price;
-          existsProduct.AccessNumbers.push(accessNumber);
-          existsProduct.AccessNumbers = [...existsProduct.AccessNumbers];
-          this.calculateTotal();
+        const quantityControl = existsProduct.get('Quantity');
+        const priceControl = existsProduct.get('Price');
+        const toMoney = existsProduct.get('ToMoney');
+        const accessNumbersContorl = existsProduct.get('AccessNumbers');
+        if (!existsProduct.get('AccessNumbers').value.find(f => f == accessNumber)) {
+          quantityControl.setValue(quantityControl.value + 1);
+          toMoney.setValue(quantityControl.value * priceControl.value);
+          accessNumbersContorl.setValue([accessNumbersContorl.value, [accessNumber]]);
+          // existsProduct.AccessNumbers = [...existsProduct.AccessNumbers];
+          this.calculateTotal(this.orderForm);
 
           this.increaseDetailPipSound.nativeElement.play();
         } else {
@@ -177,36 +223,38 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
         }
       } else {
-        existsProduct = {
-          Sku: productId,
-          Product: productId,
-          Unit: 'CAI',
-          Description: productId,
-          Quantity: 1,
-          Price: 0,
-          ToMoney: 0,
-          FeaturePicture: '',
-          AccessNumbers: accessNumber ? [accessNumber] : [],
-        }
-        this.order.Details.unshift(existsProduct);
+        existsProduct = this.formBuilder.group({
+          Sku: [productId],
+          Product: [productId],
+          Unit: ['CAI'],
+          Description: [productId],
+          Quantity: [1],
+          Price: [0],
+          ToMoney: [0],
+          FeaturePicture: [],
+          AccessNumbers: [accessNumber ? [accessNumber] : []],
+          Discount: [0],
+        });
+        this.getDetails(this.orderForm).controls.unshift(existsProduct);
 
         this.apiService.getPromise<any[]>('/admin-product/products/' + productId, {
           select: 'id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,WarehouseUnit,FeaturePicture,Pictures',
           'includeSearchResultLabel': true,
           'includeUnits': true,
+          'includeWarehouseUnit': true,
         }).then(products => products[0]).then(product => {
           if (product) {
 
-            if(!product.WarehouseUnit || !this.commonService.getObjectId(product.WarehouseUnit) || this.commonService.getObjectId(product.WarehouseUnit) == 'n/a') {
+            if (!product.WarehouseUnit || !this.commonService.getObjectId(product.WarehouseUnit) || this.commonService.getObjectId(product.WarehouseUnit) == 'n/a') {
               this.errorSound.nativeElement.play();
               this.commonService.toastService.show('Sản phẩm chưa cài đặt đơn vị tính !', 'Commerce POS', { status: 'danger' });
               return;
             }
 
-            existsProduct.Description = product.Name;
-            existsProduct.Sku = product.Name;
-            existsProduct.Unit = product.WarehouseUnit;
-            existsProduct.FeaturePicture = product.FeaturePicture?.Thumbnail;
+            existsProduct.get('Description').setValue(product.Name);
+            existsProduct.get('Sku').setValue(product.Sku);
+            existsProduct.get('Unit').setValue(product.WarehouseUnit);
+            existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
 
             this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
               priceTable: 'BGC201031',
@@ -214,9 +262,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               includeUnit: true
             }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.WarehouseUnit))).then(price => {
               if (price) {
-                existsProduct.Price = price.Price;
-                existsProduct.ToMoney = price.Price * existsProduct.Quantity;
-                this.calculateTotal();
+                existsProduct.get('Price').setValue(price.Price);
+                existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
+                this.calculateTotal(this.orderForm);
                 this.newDetailPipSound.nativeElement.play();
               } else {
                 this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
@@ -296,4 +344,32 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     this.order.Details.splice(index, 1);
   }
 
+  onQuantityChanged(form: FormGroup, detail: FormGroup, event, numberFormat: CurrencyMaskConfig) {
+    // detail.get('Quantity').setValue(1);
+    this.calculateToMoney(detail);
+    this.calculateTotal(form);
+    // return super.currencyMastKeydown(event, numberFormat)
+  }
+
+  onIncreaseQuantityClick(form: FormGroup, detail: FormGroup) {
+    const quantityControl = detail.get('Quantity');
+    quantityControl.setValue(quantityControl.value + 1);
+    this.calculateToMoney(detail);
+    this.calculateTotal(form);
+  }
+  onDecreaseQuantityClick(form: FormGroup, detail: FormGroup) {
+    const quantityControl = detail.get('Quantity');
+    if (quantityControl.value > 0) {
+      quantityControl.setValue(quantityControl.value - 1);
+      this.calculateToMoney(detail);
+      this.calculateTotal(form);
+    }
+  }
+
+  onCashReceiptChanged(formGroup: FormGroup) {
+    const cashReceiptControl = formGroup.get('CashReceipt');
+    const cashBackControl = formGroup.get('CashBack');
+    const totolControl = formGroup.get('Total');
+    cashBackControl.setValue(cashReceiptControl.value - totolControl.value);
+  }
 }

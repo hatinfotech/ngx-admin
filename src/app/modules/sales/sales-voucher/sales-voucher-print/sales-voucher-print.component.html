@@ -16,7 +16,8 @@
         <div class="print-title">{{ 'Sales.SalesVoucher.title' | translate:{action: '', definition: ''} |
           uppercase }}
         </div>
-        <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }} - {{data.StateLabel | translate}}</div>
+        <!-- <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }} - {{data.StateLabel | translate}}</div> -->
+        <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }}</div>
         <div class="under-title" style="font-size: 11px;">{{'Ngày in phiếu' | translate}}: {{ data.DateOfSignature | date:'short' }}</div>
         <div>
           <div style="display: flex;">

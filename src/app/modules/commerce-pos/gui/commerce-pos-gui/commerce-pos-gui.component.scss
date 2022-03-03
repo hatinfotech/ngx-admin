@@ -1,11 +1,14 @@
+.pos * {
+  // font-size: 1rem;
+}
 .pos-wrap {
-  height: calc(100vh - 116px) !important;
+  height: calc(100vh - 7.4rem) !important;
   nb-card {
     margin-bottom: 0;
     height: 100%;
   }
   &.is-fullscreen {
-    height: calc(100vh - 115px) !important;
+    height: calc(100vh - 7.4rem) !important;
   }
 }
 .pos {
@@ -43,12 +46,41 @@
       td {
         border-right: var(--ck-color-base-border) 1px solid;
         border-bottom: var(--ck-color-base-border) 1px solid;
-
+        vertical-align: top;
         img {
-          width: 150px;
-          border-radius: 5px;
+          width: 20rem;
+          border-radius: 1rem;
         }
       }
+    }
+    .pos-quantity {
+      text-align: right;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .pos-price {
+      font-weight: bold;
+      font-size: 1.5rem;
+      white-space: nowrap;
+      line-height: 3rem;
+    }
+    .pos-tomoney {
+      font-weight: bold;
+      font-size: 2rem;
+      white-space: nowrap;
+      line-height: 3rem;
+    }
+    .pos-access-numbers {
+      font-weight: bold;
+      line-height: 1rem;
+      padding: 0.5rem;
+    }
+    .pos-unit {
+      white-space: nowrap;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      font-size: 1.6rem;
+      line-height: 3.7rem;
     }
   }
   .pos-order-summary {
@@ -58,10 +90,12 @@
   .pos-field {
     .pos-field-label {
       white-space: nowrap;
-      padding-right: 1rem;
+      // padding-right: 1rem;
       font-weight: bold;
-      width: 200px;
-      text-align: right;
+      // width: 200px;
+      // text-align: right;
+      font-size: 1.5rem;
+      line-height: 2.8rem;
     }
     .pos-field-control {
     }
@@ -73,7 +107,7 @@
 }
 
 .pos-business {
-  width: 170px;
+  width: 8.7rem;
   border-left: var(--ck-color-base-border) 1px solid;
 }
 .pos-status {
