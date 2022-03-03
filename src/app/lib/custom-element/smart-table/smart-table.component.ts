@@ -329,6 +329,7 @@ export class SmartTableAccCurrencyComponent extends SmartTableBaseComponent impl
 export interface SmartTableCompoentTagModel {
   id: string;
   text: string;
+  tip: string;
   type?: string;
   icon?: string;
   iconPack?: string;
@@ -338,8 +339,8 @@ export interface SmartTableCompoentTagModel {
 
 @Component({
   template: `<div [style]="style" [class]="class">
-    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{renderToolTip(tag)}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText(tag) || tag.id}}</a>
-  </div>`,
+    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{renderToolTip(tag)}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText(tag) || tag.id}}</a>
+  </div>`
 })
 export class SmartTableTagsComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
@@ -353,7 +354,7 @@ export class SmartTableTagsComponent extends SmartTableBaseComponent implements 
   };
 
   renderToolTip(tag: SmartTableCompoentTagModel) {
-    return (this.value.type ? `${this.value.type}: ` : '') + this.value.text;
+    return (tag.type ? `${tag.type}: ` : '') + tag.text;
   }
 
   nowrap = true;

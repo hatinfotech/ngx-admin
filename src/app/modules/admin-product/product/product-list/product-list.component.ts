@@ -282,7 +282,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
               return tag.text;
             };
             component.renderToolTip = (tag) => {
-              return tag.text;
+              return tag.tip || tag.text;
             };
             // component.labelAsText = (tag) => {
             //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text}`;
@@ -290,6 +290,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             // component.renderToolTip = (tag) => {
             //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text} - (đơn vị tính chưa được set vị trí, click vào để set vị trí)`;
             // };
+            // component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
+
+            // });
             component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
               if (!tag.Container) {
                 this.commonService.openDialog(AssignContainerFormComponent, {
@@ -414,6 +417,12 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
 
         if (product.UnitConversions && product.UnitConversions.length > 0) {
           product.Containers = product.UnitConversions.filter(f => !!f['Container']).map(m => m['Container']);
+          for (const unitConversion of product.UnitConversions) {
+            if (unitConversion.IsManageByAccessNumber) {
+              unitConversion['status'] = 'danger';
+              unitConversion['tip'] = unitConversion['text'] + ' (QL theo số truy xuất)';
+            }
+          }
         }
 
         // if (product.Container || product.Container.length > 0) {

@@ -65,18 +65,26 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     margin-bottom: 0.4mm;
   }
   .blabel .register-info {
-    line-height: 1.9mm;
-    font-size: 2mm !important;
-    font-weight: bold;
+    line-height: 1.8mm;
+      font-size: 1.9mm !important;
+      font-weight: bold;
   }
   .blabel .access-number {
     line-height: 2.2mm;
     font-size: 2.2mm !important;
     font-weight: normal;
     margin-bottom: 0.5mm;
+    padding-top: 0.7mm;
   }
   .blabel .find-order {
     line-height: 22px;
+  }
+  .blabel .product-price {
+    line-height: 2.2mm;
+    font-size: 2.2mm !important;
+    font-weight: bold;
+    margin-bottom: 0.5mm;
+    padding-top: 0.7mm;
   }
   .blabel .sku {
     line-height: 1.8mm;
@@ -88,8 +96,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     height: 3.7mm;
   }
   .qr-code {
-    width: 11mm;
-    height: 11mm;
+    height: 10.5mm;
   }
   .page-break {
     clear: left;
@@ -97,7 +104,6 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     page-break-after: always;
   }
   
-
   /** reset */
   .blabel {
     border: none;
@@ -219,6 +225,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       includeUnit: true,
       renderBarCode: true,
       renderQrCode: true,
+      includePrice: true,
       // eq_Type: this.printForType,
       // id: this.id,
       // eq_Voucher: this.voucher,

@@ -7,11 +7,18 @@
             <div id="print-area">
                 <div class="blabel" *ngFor="let item of this.data; let i = index;">
                     <!-- <div class="find-order">{{item.Container.FindOrder || 'UNDEF'}}</div> -->
-                    <div class="access-number">Số truy xuất: {{item.AccessNumber}}</div>
+                    <div style="display: flex;">
+                        <div style="flex: 1;">
+                            <div class="access-number">Số truy xuất: {{item.AccessNumber}}</div>
+                        </div>
+                        <div>
+                            <div class="product-price">{{item.Price | currency:'VND'}} / {{item.Unit | objecttext}}</div>
+                        </div>
+                    </div>
                     <img class="bar-code" src="{{item.BarCode}}">
                     <!-- <div style="display: flex; height: 4.5mm; align-items: center; justify-content: center;">
                     </div> -->
-                    <div class="info">SKU: {{item.Product.Sku}} - {{item.Product | objecttext}}/{{item.Unit | objecttext}}</div>
+                    <div class="info">SKU: {{item.Product.Sku}} - {{item.Product | objecttext}}</div>
                     <div style="display: flex; clear: both;">
                         <img class="qr-code" src="{{item.QrCode}}" style="margin-right: 0.5mm;">
                         <div class="register-info" style="flex: 1">{{registerInfo.companyName}}<br>ĐC: {{registerInfo.address}}<br>ĐT: {{registerInfo.tel}}<br>Web: {{registerInfo.website}}</div>

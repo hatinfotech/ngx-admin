@@ -3,7 +3,7 @@ import { UnitModel } from './unit.model';
 
 export class ProductModel {
   [key: string]: any;
-  id?: string; 
+  id?: string;
   text?: string;
 
   Code?: string;
@@ -20,7 +20,6 @@ export class ProductModel {
   Categories?: ProductCategoryModel[];
   Groups?: ProductGroupModel[];
   Pictures?: ProductPictureModel[];
-  // IsManageByAccessNumber?: boolean;
   UnitConversions?: (ProductUnitConversoinModel & { Name?: string, Symbol?: string })[];
 
   constructor() { }
@@ -62,10 +61,11 @@ export class ProductUnitConversoinModel {
   ConversionRatio?: string & number;
   IsDefaultSales?: boolean;
   IsDefaultPrchase?: boolean;
+  IsManageByAccessNumber?: boolean;
 }
 export class ProductGroupModel {
   [key: string]: any;
-  id?: string; 
+  id?: string;
   text?: string;
 
   Id?: string & number;
