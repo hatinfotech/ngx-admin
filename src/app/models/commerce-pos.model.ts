@@ -7,6 +7,7 @@ import { Model } from './model';
 export class CommercePosOrderModel extends Model {
   Id?: string & number;
   Code?: string;
+  BarCode?: string;
   No?: string;
   Type?: string;
   Object?: string;
@@ -99,6 +100,7 @@ export class CommercePosDetailModel extends Model {
   No?: number;
   Type?: string;
   Product?: any;
+  Sku?: any;
   Description?: string;
   Quantity?: number;
   Price?: number;

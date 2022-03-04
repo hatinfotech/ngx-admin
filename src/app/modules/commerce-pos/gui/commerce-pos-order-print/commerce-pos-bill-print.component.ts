@@ -72,7 +72,12 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   .bill .bill-register-website {
   }
   .bill .bill-register-address {
-  }  
+  }
+  
+  .bill-head-info div {
+    border-bottom: dashed #000 1px;
+  }
+  
 
   @media print {
     body {
@@ -136,7 +141,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     return result;
   }
 
-  renderTitle(data: WarehouseGoodsDeliveryNoteModel) {
+  renderTitle(data: CommercePosOrderModel) {
     return `QRCode_Kho_Ngan_Ke_${this.getIdentified(data).join('-')}` + (data.DateOfDelivered ? ('_' + this.datePipe.transform(data.DateOfDelivered, 'short')) : '');
   }
 

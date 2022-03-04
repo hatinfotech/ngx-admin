@@ -18,11 +18,14 @@
                         </div>
                         <div class="bill-title">PHIẾU BÁO GIÁ</div>
                         <div class="bill-info">{{order.Code}} - {{order.DateOfSale | date:'short'}}</div>
+                        <div class="barcode" style="text-align: center;">
+                            <img src="{{order.BarCode}}">
+                        </div>
                         <div class="bill-head-info">
                             <div class="bill-object-name">Khách hàng: {{order.ObjectName || ''}}</div>
-                            <div class="bill-object-phone">Số điện thoại:  {{order.ObjectPhone || ''}}</div>
-                            <div class="bill-object-address">Địa chỉ:  {{order.ObjectAddress || ''}}</div>
-                            <div class="bill-object-email">Email:  {{order.ObjectEmail || ''}}</div>
+                            <div class="bill-object-phone">Số điện thoại: {{order.ObjectPhone || ''}}</div>
+                            <div class="bill-object-address">Địa chỉ: {{order.ObjectAddress || ''}}</div>
+                            <div class="bill-object-email">Email: {{order.ObjectEmail || ''}}</div>
                         </div>
                     </div>
                     <div class="bill-body">
@@ -33,7 +36,10 @@
                                 <td style="text-align: right;">Thành tiền</td>
                             </thead>
                             <tr *ngFor="let detail of order.Details">
-                                <td>{{detail.Description}}</td>
+                                <td>
+                                    <div>{{detail.Description}} - SKU:{{detail.Sku}}</div>
+                                    <div *ngIf="detail.AccessNumbers">Số truy xuất:{{detail.AccessNumbers}}</div>
+                                </td>
                                 <td style="text-align: right">
                                     <div class="bill-price">{{detail.Price | currency:'VND'}}</div>
                                     <div class="bill-quantity" style="white-space: nowrap;">x {{detail.Quantity | number}} {{detail.Unit | objecttext}}</div>
@@ -48,8 +54,9 @@
                         </table>
                     </div>
                     <div class="bill-footer" style="text-align: center;">
+                        <div style="font-style: italic">Quý khách đưa lại phiếu này trong trường hợp đổi trả hàng hóa !</div>
                         <div style="font-style: italic">Xin cảm ơn và hẹn gặp lại</div>
-                        <div>Phiếu được in từ phần mềm ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div>
+                        <div>Phiếu được in từ phần mềm<br>ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div>
                     </div>
                 </div>
             </div>

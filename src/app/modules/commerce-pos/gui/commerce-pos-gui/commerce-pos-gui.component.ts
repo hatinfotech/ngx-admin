@@ -179,6 +179,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   makeNewOrderForm(data?: CommercePosOrderModel) {
     const newForm = this.formBuilder.group({
       Code: [],
+      BarCode: [],
       Object: [],
       ObjectName: [],
       ObjectPhone: [],
@@ -793,18 +794,19 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   async save(orderForm: FormGroup): Promise<CommercePosOrderModel> {
     let order = orderForm.getRawValue();
+    delete order.BarCode;
     if (orderForm && orderForm['isProcessing'] !== true && order.State != 'APPROVED') {
       return this.commonService.takeUntil('commerce-pos-order-save', 500).then(status => {
         if (order.Code) {
           // params['id0'] = order.Code;
-          return this.apiService.putPromise('/commerce-pos/orders/' + order.Code, {}, [order]).then(rs => {
+          return this.apiService.putPromise('/commerce-pos/orders/' + order.Code, {renderBarCode: true}, [order]).then(rs => {
             // orderForm.get('Code').setValue(rs[0].Code);
             orderForm.patchValue(rs[0]);
             return rs[0];
           });
         } else {
           orderForm['isProcessing'] = true;
-          return this.apiService.postPromise('/commerce-pos/orders', {}, [order]).then(rs => {
+          return this.apiService.postPromise('/commerce-pos/orders', {renderBarCode: true}, [order]).then(rs => {
             // orderForm.get('Code').setValue(rs[0].Code);
             orderForm.patchValue(rs[0]);
             orderForm['isProcessing'] = false;
