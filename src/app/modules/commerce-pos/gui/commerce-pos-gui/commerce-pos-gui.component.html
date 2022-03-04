@@ -170,7 +170,7 @@
                                 <div class="col-xxxl-12">
                                     <!-- Mã đơn:<br>{{orderForm.value?.Code}} -->
                                     <div class="pos-info">
-                                        <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" class="text-color-success">Mã đơn:<br>{{orderForm.value?.Code}}</div>
+                                        <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" [ngClass]="{'text-color-danger': orderForm['voucherType'] == 'CPOSRETURNS','text-color-success':orderForm['voucherType'] == 'CPOSORDER'}">Mã đơn:<br>{{orderForm.value?.Code}}</div>
                                         <div *ngIf="!orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" class="text-color-warning">Đang khởi tạo...</div>
                                     </div>
                                 </div>
@@ -217,7 +217,10 @@
                                 </div>
                                 <div class="col-xxxl-4">
                                     <button nbButton fullWidth size="medium" [disabled]="orderForm.value?.State !== 'APPROVED'" status="primary" class="pos-business-button" (click)="print(orderForm)">
-                                        <nb-icon icon="printer-outline"></nb-icon>
+                                        <div>
+                                            <nb-icon icon="printer-outline"></nb-icon>
+                                            <span style="font-weight: bold; font-size: 1rem">F9</span>
+                                        </div>
                                         <div class="button-label">In lại</div>
                                     </button>
                                 </div>

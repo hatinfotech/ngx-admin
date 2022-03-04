@@ -623,7 +623,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     console.log(event);
 
     if (event.key == 'F9') {
-      this.payment(this.orderForm);
+      if (this.orderForm.value?.State == 'APPROVED') {
+        this.print(this.orderForm);
+      } else {
+        this.payment(this.orderForm);
+      }
       event.preventDefault();
       return true;
     }
@@ -651,6 +655,82 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.onNextOrderClick();
       event.preventDefault();
       return true;
+    }
+
+    if (event.key == 'ArrowDown') {
+      const details = this.getDetails(this.orderForm).controls;
+      let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+      if (activeDetailIndex < 0) {
+        activeDetailIndex = 0
+      } else {
+        activeDetailIndex++;
+      }
+      const nextDetail = details[activeDetailIndex];
+      if (nextDetail) {
+        nextDetail['isActive'] = true;
+
+        $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
+
+        for (const detail of details) {
+          if (detail !== nextDetail) {
+            detail['isActive'] = false;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    if (event.key == 'ArrowUp') {
+      const details = this.getDetails(this.orderForm).controls;
+      let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+      if (activeDetailIndex > details.length - 1) {
+        activeDetailIndex = details.length - 1;
+      } else {
+        activeDetailIndex--;
+      }
+      if (activeDetailIndex > -1) {
+        const nextDetail = details[activeDetailIndex];
+        nextDetail['isActive'] = true;
+
+        $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
+
+        for (const detail of details) {
+          if (detail !== nextDetail) {
+            detail['isActive'] = false;
+          }
+        }
+      }
+      return false;
+    }
+
+    if (event.key == '+') {
+      const details = this.getDetails(this.orderForm).controls;
+      const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+      if (activeDetail) {
+        this.onIncreaseQuantityClick(this.orderForm, activeDetail);
+      }
+      return false;
+    }
+    if (event.key == '-') {
+      const details = this.getDetails(this.orderForm).controls;
+      const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+      if (activeDetail) {
+        this.onDecreaseQuantityClick(this.orderForm, activeDetail);
+      }
+      return false;
+    }
+
+    if (event.key == 'Delete') {
+      const details = this.getDetails(this.orderForm).controls;
+      let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+      if (activeDetailIndex > -1) {
+        details.splice(activeDetailIndex, 1);
+        const nextActive = details[activeDetailIndex] as FormGroup;
+        if (nextActive) {
+          this.activeDetail(this.orderForm, nextActive, activeDetailIndex);
+        }
+      }
     }
 
     if ("activeElement" in document) {
@@ -718,68 +798,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     //     return false;
     //   }
     // });
-
-    if (event.key == 'ArrowDown') {
-      const details = this.getDetails(this.orderForm).controls;
-      let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
-      if (activeDetailIndex < 0) {
-        activeDetailIndex = 0
-      } else {
-        activeDetailIndex++;
-      }
-      const nextDetail = details[activeDetailIndex];
-      nextDetail['isActive'] = true;
-
-      $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
-
-      for (const detail of details) {
-        if (detail !== nextDetail) {
-          detail['isActive'] = false;
-        }
-      }
-
-      return false;
-    }
-
-    if (event.key == 'ArrowUp') {
-      const details = this.getDetails(this.orderForm).controls;
-      let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
-      if (activeDetailIndex > details.length - 1) {
-        activeDetailIndex = details.length - 1;
-      } else {
-        activeDetailIndex--;
-      }
-      if (activeDetailIndex > -1) {
-        const nextDetail = details[activeDetailIndex];
-        nextDetail['isActive'] = true;
-
-        $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
-
-        for (const detail of details) {
-          if (detail !== nextDetail) {
-            detail['isActive'] = false;
-          }
-        }
-      }
-      return false;
-    }
-
-    if (event.key == '+') {
-      const details = this.getDetails(this.orderForm).controls;
-      const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
-      if (activeDetail) {
-        this.onIncreaseQuantityClick(this.orderForm, activeDetail);
-      }
-      return false;
-    }
-    if (event.key == '-') {
-      const details = this.getDetails(this.orderForm).controls;
-      const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
-      if (activeDetail) {
-        this.onDecreaseQuantityClick(this.orderForm, activeDetail);
-      }
-      return false;
-    }
 
   }
 

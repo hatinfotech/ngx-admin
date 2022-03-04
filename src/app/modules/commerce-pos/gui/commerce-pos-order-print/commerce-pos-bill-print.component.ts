@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { isThisTypeNode } from 'typescript';
@@ -27,6 +27,9 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   processMapList: ProcessMap[] = [];
   idKey: ['Code', 'WarehouseUnit', 'Container'];
   // formDialog = WarehouseGoodsFormComponent;
+
+  @ViewChild('paymentBtn') paymentBtn: ElementRef;
+  @ViewChild('printBtn') printBtn: ElementRef;
 
   @Input() skipPreview: boolean;
   @Input() order: CommercePosOrderModel;
@@ -124,6 +127,11 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
       }
       return rs;
     });
+    if(this.data[0].State == 'APPROVED') {
+      this.printBtn['hostElement'].nativeElement.focus();
+    } else {
+      this.paymentBtn['hostElement'].nativeElement.focus();
+    }
     // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
     // for (const i in this.data) {
