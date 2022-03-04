@@ -20,8 +20,8 @@
                     </div> -->
                     <div class="info-wrap" style="min-width: 10rem; flex: 1;">
                         <div class="pos-info">
-                            <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 2rem;" class="text-color-success">Mã đơn: {{orderForm.value?.Code}}</div>
-                            <div *ngIf="!orderForm.value?.Code" style="white-space: nowrap; font-size: 2rem;" class="text-color-warning">Đang khởi tạo...</div>
+                            <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 1.5rem;" class="text-color-success">Mã đơn: {{orderForm.value?.Code}}</div>
+                            <div *ngIf="!orderForm.value?.Code" style="white-space: nowrap; font-size: 1.5rem;" class="text-color-warning">Đang khởi tạo...</div>
                         </div>
                     </div>
                     <div class="control-wrap" style="min-width: 10rem; padding: 0.5rem; margin-right: 0.5rem;">
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="pos-container scrollable-container" style="flex: 1; display: flex; flex-direction: row;">
+                <div class="pos-container scrollable-container" style="flex: 1; display: flex; flex-direction: row; max-width: 100%;">
                     <div class="order" style="display: flex; flex-direction: column; flex: 1;">
 
                         <div class="pos-contact" style="padding: 1rem">
@@ -43,12 +43,12 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="pos-contact-field">
-                                        <input formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" size="medium" fullWidth placeholder="F7 - Số điện thoại..." class="pos-contact-field-input">
+                                        <input #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="giant" fullWidth placeholder="F8 - Số điện thoại..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="pos-contact-field">
-                                        <input formControlName="ObjectName" type="text" nbInput status="primary" size="medium" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
+                                        <input formControlName="ObjectName" type="text" nbInput status="primary" fieldSize="giant" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                             </div>
@@ -56,23 +56,30 @@
 
                         <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem;">
                             <div class="pos-search-input-wrap" style="flex: 1;">
-                                <input id="posSearchInput" (keydown)="onSearchInputKeydown($event)" type="text" nbInput status="primary" size="medium" fullWidth placeholder="F3 - Tìm hàng hóa/quét mã vạch..." class="pos-search-input">
+                                <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" type="text" nbInput status="success" fieldSize="giant" fullWidth placeholder="F3 - Tìm hàng hóa/quét mã vạch..." class="pos-search-input">
                             </div>
                             <div class="pos-search-button-wrap">
-                                <button nbButton status="primary" class="pos-search-button" size="medium" style="margin-left: 1rem; width: 3.3rem;">
+                                <button nbButton status="success" class="pos-search-button" size="giant" style="margin-left: 1rem; width: 3.3rem;">
                                     <nb-icon icon="search-outline"></nb-icon>
                                 </button>
                             </div>
                         </div>
 
                         <div class="pos-order-detail scrollable-container" style="flex: 1; padding: 1rem;">
-                            <table style="width: 100%; font-size: 1rem; font-weight: bold;" [cellPadding]="5">
+                            <table style="width: 100%; font-size: 1rem; font-weight: bold;">
+                                <!-- <colgroup>
+                                    <td style="width: 5%;"></td>
+                                    <td style="width: 45%;"></td>
+                                    <td style="width: 5%;"></td>
+                                    <td style="width: 40%;"></td>
+                                    <td style="width: 5%;"></td>
+                                </colgroup> -->
                                 <thead>
-                                    <td style="text-align: center; white-space: nowrap;">Xóa</td>
+                                    <td style="text-align: center;">Xóa</td>
                                     <td style=" white-space: nowrap;">Hàng hóa</td>
-                                    <td style="text-align: center; white-space: nowrap;">(-)</td>
-                                    <td style="text-align: right; white-space: nowrap;">Số lượng X Đơn giá = Thành tiền</td>
-                                    <td style="text-align: center; white-space: nowrap;">(+)</td>
+                                    <td style="text-align: center;">(-)</td>
+                                    <td style="text-align: right;">Số lượng X Đơn giá<br>= Thành tiền</td>
+                                    <td style="text-align: center;">(+)</td>
                                     <!-- <td style="text-align: right; white-space: nowrap;">Đơn giá</td> -->
                                     <!-- <td style="text-align: right; white-space: nowrap;">CK(%)</td> -->
                                     <!-- <td style="text-align: right; white-space: nowrap;">Thành tiền</td> -->
@@ -84,10 +91,14 @@
                                         </button>
                                     </td>
                                     <td>
-                                        <img src="{{detail.value.FeaturePicture}}">
-                                        <br>
-                                        <hr>
-                                        <div style="min-width: 10rem;">{{detail.value.Description | objecttext}} - SKU: {{detail.value.Sku}}</div>
+                                        <div style="display: flex; flex-direction: column;">
+                                            <div style="width: 100%; height: 100%; flex: 1; height: 15rem;">
+                                                <img class="pos-product-image" src="{{detail.value.FeaturePicture}}">
+                                            </div>
+                                            <div style="min-width: 10rem;">{{detail.value.Description | objecttext}} - SKU: {{detail.value.Sku}}</div>
+                                        </div>
+                                        <!-- <br>
+                                        <hr> -->
                                     </td>
                                     <td style="text-align: center">
                                         <button nbButton status="warning" size="giant" style="margin: 0.2rem" (click)="onDecreaseQuantityClick(orderForm, detail)">
@@ -97,7 +108,7 @@
                                     <td style="text-align: right;">
                                         <div style="display: flex;">
                                             <div style="flex: 1;">
-                                                <input class="pos-quantity" nbInput fullWidth size="giant" formControlName="Quantity" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)" [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
+                                                <input class="pos-quantity" nbInput size="giant" formControlName="Quantity" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)" [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
                                             </div>
                                             <div class="pos-unit" style="white-space: nowrap;">{{detail.value.Unit | objecttext}}</div>
                                         </div>
@@ -293,7 +304,7 @@
                                     <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="success" class="pos-business-button" (click)="payment(orderForm)">
                                         <div>
                                             <nb-icon icon="flash-outline"></nb-icon>
-                                            <span style="font-weight: bold; font-size: 1rem">F8</span>
+                                            <span style="font-weight: bold; font-size: 1rem">F9</span>
                                         </div>
                                         <div class="button-label">Thanh toán</div>
                                     </button>

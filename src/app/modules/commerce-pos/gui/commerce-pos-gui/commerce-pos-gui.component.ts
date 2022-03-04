@@ -59,6 +59,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   @ViewChild('newDetailPipSound', { static: true }) newDetailPipSound: ElementRef;
   @ViewChild('increaseDetailPipSound', { static: true }) increaseDetailPipSound: ElementRef;
   @ViewChild('errorSound', { static: true }) errorSound: ElementRef;
+
+  @ViewChild('ObjectPhone', { static: true }) objectPhoneEleRef: ElementRef;
+  @ViewChild('Search', { static: true }) searchEleRef: ElementRef;
+
   get isFullscreenMode() {
     return screenfull.isFullscreen;
   }
@@ -105,7 +109,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
-    $('html').css({ fontSize: '20px' });
+    // $('html').css({ fontSize: '20px' });
     screenfull.onchange(event => {
       console.log(event);
       setTimeout(() => {
@@ -251,6 +255,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       event.target.value = '';
       this.barcodeProcess(inputValue);
     }
+    return true;
   }
 
   onObjectPhoneInput(orderForm: FormGroup, event: any) {
@@ -295,7 +300,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         }
       } catch (err) {
         // Case 2: Search by product id
-        productId = inputValue
+        productId = inputValue.length < 9 ? `118${coreId}${inputValue}` : inputValue;
         accessNumber = null;
         product = await this.apiService.getPromise<any[]>('/admin-product/products/' + productId, {
           select: 'id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,WarehouseUnit,FeaturePicture,Pictures',
@@ -324,12 +329,16 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             this.calculateTotal(this.orderForm);
 
             this.increaseDetailPipSound.nativeElement.play();
+            this.calculateToMoney(existsProduct);
+            this.calculateTotal(this.orderForm);
           } else {
             this.errorSound.nativeElement.play();
             this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
           }
         } else {
           quantityControl.setValue(quantityControl.value + 1);
+          this.calculateToMoney(existsProduct);
+          this.calculateTotal(this.orderForm);
           this.increaseDetailPipSound.nativeElement.play();
         }
         return existsProduct;
@@ -383,6 +392,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             if (price) {
               existsProduct.get('Price').setValue(parseFloat(price.Price));
               existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
+
+              this.calculateToMoney(existsProduct);
               this.calculateTotal(this.orderForm);
 
               detailsControls.unshift(existsProduct);
@@ -476,9 +487,23 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   barcode = '';
-  @HostListener('document:keypress', ['$event'])
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // console.log(event);
+    console.log(event);
+
+    if (event.key == 'F9') {
+      this.payment(this.orderForm);
+      event.preventDefault();
+    }
+    if (event.key == 'F8') {
+      this.objectPhoneEleRef.nativeElement.focus();
+      event.preventDefault();
+    }
+    if (event.key == 'F3') {
+      this.searchEleRef.nativeElement.focus();
+      event.preventDefault();
+    }
+    
     if ("activeElement" in document) {
       if ((document.activeElement as HTMLElement).id == 'posSearchInput') {
         return true;
@@ -493,6 +518,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
       this.barcode = '';
     });
+
   }
 
   removeDetail(orderForm: FormGroup, index: number) {

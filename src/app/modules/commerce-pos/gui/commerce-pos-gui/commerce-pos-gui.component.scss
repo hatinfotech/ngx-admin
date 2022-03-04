@@ -6,6 +6,7 @@
   nb-card {
     margin-bottom: 0;
     height: 100%;
+    margin-top: initial;
   }
   &.is-fullscreen {
     height: calc(100vh - 7.4rem) !important;
@@ -57,20 +58,26 @@
     table {
       border-left: var(--ck-color-base-border) 1px solid;
       border-top: var(--ck-color-base-border) 1px solid;
+      thead {
+        td {
+          vertical-align: middle;
+        }
+      }
       td {
         border-right: var(--ck-color-base-border) 1px solid;
         border-bottom: var(--ck-color-base-border) 1px solid;
         vertical-align: top;
-        img {
-          width: 11rem;
-          border-radius: 1rem;
-        }
       }
+    }
+    .pos-product-image {
+      width: 100%;
+      border-radius: 1rem;
     }
     .pos-quantity {
       text-align: right;
       font-size: 2rem;
       font-weight: bold;
+      width: 100%;
     }
     .pos-price {
       font-weight: bold;
