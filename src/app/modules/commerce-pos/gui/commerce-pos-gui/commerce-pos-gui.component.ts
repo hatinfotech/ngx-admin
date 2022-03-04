@@ -13,6 +13,7 @@ import { filter, take, takeUntil } from "rxjs/operators";
 import { SystemConfigModel } from "../../../../models/model";
 import { CurrencyMaskConfig } from "ng2-currency-mask";
 import { CommercePosBillPrintComponent } from '../commerce-pos-order-print/commerce-pos-bill-print.component';
+import { CommercePosReturnsPrintComponent } from '../commerce-pos-returns-print/commerce-pos-returns-print.component';
 
 class OrderModel {
   [key: string]: any;
@@ -195,6 +196,64 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       DateOfSale: [new Date()],
       Details: this.formBuilder.array([]),
     });
+    newForm['voucherType'] = 'CPOSORDER';
+    newForm['isProcessing'] = null;
+    return newForm;
+  }
+  async makeNewReturnsForm(data?: CommercePosOrderModel, orderId?: string) {
+
+    let order;
+    let newForm;
+    if (orderId) {
+      order = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + orderId, { includeDetails: true }).then(rs => rs[0]);
+    }
+
+    if (order) {
+      newForm = this.formBuilder.group({
+        Code: [],
+        BarCode: [],
+        Order: [order.Code || null],
+        Object: [order.Object || null],
+        ObjectName: [order.ObjectName || null],
+        ObjectPhone: [order.objectPhoneEleRef || null],
+        ObjectEmail: [order.ObjectEmail || null],
+        ObjectAddress: [order.ObjectAddress || null],
+        Note: [],
+        SubNote: [],
+        Total: [0],
+        CashBack: [0],
+        CashReceipt: [0],
+        State: [null],
+        DateOfReturn: [new Date()],
+        Details: this.formBuilder.array([]),
+      });
+      if (order.Details) {
+        const details = (this.getDetails(newForm) as FormArray).controls;
+        for (const detail of order.Details) {
+          details.unshift(this.makeNewOrderDetail(detail));
+        }
+      }
+    } else {
+      newForm = this.formBuilder.group({
+        Code: [],
+        BarCode: [],
+        Object: [],
+        ObjectName: [],
+        ObjectPhone: [],
+        ObjectEmail: [],
+        ObjectAddress: [],
+        ObjectIdenfiedNumber: [],
+        Note: [],
+        SubNote: [],
+        Total: [0],
+        CashBack: [0],
+        CashReceipt: [0],
+        State: [null],
+        DateOfSale: [new Date()],
+        Details: this.formBuilder.array([]),
+      });
+    }
+    newForm['voucherType'] = 'CPOSRETURNS';
     newForm['isProcessing'] = null;
     return newForm;
   }
@@ -307,6 +366,31 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         if (inputValue.length < 8) { // Chỉ đúng khi số thứ tự id sản phẩm < 7 con số ( < 10 triệu)
           productId = '118' + coreId + inputValue;
         } else {
+          if (new RegExp('^128' + coreId).test(inputValue)) {
+            setTimeout(() => {
+
+              this.commonService.showDialog('Máy bán hàng', 'Bạn có muốn tạo phiếu trả hàng từ đơn hàng ' + inputValue, [
+                {
+                  label: 'Trở về',
+                  status: 'basic',
+                  action: () => {
+
+                  }
+                },
+                {
+                  label: 'Tạo phiếu trả hàng',
+                  status: 'danger',
+                  action: async () => {
+                    this.orderForm = await this.makeNewReturnsForm(null, inputValue);
+                    this.save(this.orderForm);
+                    this.historyOrders.push(this.orderForm);
+                    this.historyOrderIndex = this.historyOrders.length - 1;
+                  }
+                },
+              ]);
+            }, 50);
+            return true;
+          }
           const productIdLength = parseInt(inputValue.substring(0, 2)) - 10;
           accessNumber = inputValue.substring(productIdLength + 2);
           if (accessNumber) {
@@ -768,45 +852,62 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       orderForm['isProcessing'] = false;
     }, 500);
     await this.save(orderForm);
-    this.commonService.openDialog(CommercePosBillPrintComponent, {
-      context: {
-        skipPreview: true,
-        data: [orderForm.getRawValue()],
-        onSaveAndClose: (newOrder, printComponent) => {
-          // orderForm.get('Code').setValue(newOrder.Code);
-          // orderForm['isProcessing'] = false;
-          orderForm.patchValue(newOrder);
-          // this.historyOrders.push(orderForm);
-          this.commonService.toastService.show('Đơn hàng đã hoàn tất, bạn có thể bấm F4 để xem lại', 'Máy bán hàng', { status: 'success', duration: 8000 })
-          this.makeNewOrder();
-          printComponent.close();
-          // setTimeout(() => {
-          //   screenfull.request();
-          // }, 1000);
-          console.log(this.historyOrders);
-        },
-        onClose: () => {
-          // orderForm['isProcessing'] = false;
+    if (orderForm['voucherType'] == 'CPOSORDER') {
+      this.commonService.openDialog(CommercePosBillPrintComponent, {
+        context: {
+          skipPreview: true,
+          data: [orderForm.getRawValue()],
+          onSaveAndClose: (newOrder, printComponent) => {
+            orderForm.patchValue(newOrder);
+            this.commonService.toastService.show('Đơn hàng đã hoàn tất, bạn có thể bấm F4 để xem lại', 'Máy bán hàng', { status: 'success', duration: 8000 })
+            this.makeNewOrder();
+            printComponent.close();
+            console.log(this.historyOrders);
+          },
+          onClose: () => {
+          }
         }
-      }
-    });
+      });
+    } else {
+      this.commonService.openDialog(CommercePosReturnsPrintComponent, {
+        context: {
+          skipPreview: true,
+          data: [orderForm.getRawValue()],
+          onSaveAndClose: (newOrder, printComponent) => {
+            orderForm.patchValue(newOrder);
+            this.commonService.toastService.show('Phiếu trả hàng đã lưu !', 'Máy bán hàng', { status: 'success', duration: 8000 })
+            // this.makeNewOrder();
+
+            this.historyOrderIndex--;
+            this.orderForm = this.historyOrders[this.historyOrderIndex];
+
+            printComponent.close();
+            console.log(this.historyOrders);
+          },
+          onClose: () => {
+          }
+        }
+      });
+    }
   }
 
   async save(orderForm: FormGroup): Promise<CommercePosOrderModel> {
+    const voucherType = orderForm['voucherType'];
+    const apiPath = voucherType == 'CPOSORDER' ? '/commerce-pos/orders' : '/commerce-pos/returns';
     let order = orderForm.getRawValue();
     delete order.BarCode;
     if (orderForm && orderForm['isProcessing'] !== true && order.State != 'APPROVED') {
       return this.commonService.takeUntil('commerce-pos-order-save', 500).then(status => {
         if (order.Code) {
           // params['id0'] = order.Code;
-          return this.apiService.putPromise('/commerce-pos/orders/' + order.Code, {renderBarCode: true}, [order]).then(rs => {
+          return this.apiService.putPromise(apiPath + '/' + order.Code, { renderBarCode: true }, [order]).then(rs => {
             // orderForm.get('Code').setValue(rs[0].Code);
             orderForm.patchValue(rs[0]);
             return rs[0];
           });
         } else {
           orderForm['isProcessing'] = true;
-          return this.apiService.postPromise('/commerce-pos/orders', {renderBarCode: true}, [order]).then(rs => {
+          return this.apiService.postPromise(apiPath, { renderBarCode: true }, [order]).then(rs => {
             // orderForm.get('Code').setValue(rs[0].Code);
             orderForm.patchValue(rs[0]);
             orderForm['isProcessing'] = false;

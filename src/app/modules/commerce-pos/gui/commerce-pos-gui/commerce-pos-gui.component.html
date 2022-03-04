@@ -8,12 +8,12 @@
     <audio #errorSound>
         <source src='assets/sounds/beep-03.wav' type="audio/mp3">
     </audio>
-    <nb-card class="small-header smart-table" class="dialog-wrap {{inputMode}}">
+    <nb-card class="small-header smart-table" class="dialog-wrap {{inputMode}}" [formGroup]="orderForm" [ngClass]="{'pos-returns': orderForm['voucherType'] == 'CPOSRETURNS'}">
         <!-- <nb-card-header>
             <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('Máy bán hàng' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase))" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header> -->
         <nb-card-body>
-            <div class="pos" style="width: 100%; height: 100%; display: flex; flex-direction: column;" [formGroup]="orderForm">
+            <div class="pos" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
                 <!-- <div class="pos-header" style="display: flex; align-items: center;">
                     <div class="info-wrap" style="min-width: 10rem; flex: 1;">
                     </div>
@@ -48,10 +48,10 @@
 
                         <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem;">
                             <div class="pos-search-input-wrap" style="flex: 1;">
-                                <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" type="text" nbInput status="success" fieldSize="giant" fullWidth placeholder="F3 - Tìm hàng hóa theo số truy xuất, sku, id, tên..." class="pos-search-input">
+                                <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" type="text" nbInput status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" fieldSize="giant" fullWidth placeholder="F3 - Tìm hàng hóa theo số truy xuất, sku, id, tên..." class="pos-search-input">
                             </div>
                             <div class="pos-search-button-wrap">
-                                <button nbButton status="success" class="pos-search-button" size="giant" style="margin-left: 1rem; width: 3.3rem;">
+                                <button nbButton status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" class="pos-search-button" size="giant" style="margin-left: 1rem; width: 3.3rem;">
                                     <nb-icon icon="search-outline"></nb-icon>
                                 </button>
                             </div>
@@ -351,7 +351,7 @@
                                             <nb-icon icon="flash-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F9</span>
                                         </div>
-                                        <div class="button-label">Thanh toán</div>
+                                        <div class="button-label">{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'Hoàn tiền' : 'Thanh toán'}}</div>
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">

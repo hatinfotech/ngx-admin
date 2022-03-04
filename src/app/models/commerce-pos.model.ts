@@ -16,6 +16,7 @@ export class CommercePosOrderModel extends Model {
   ObjectPhone?: string;
   SalesStaff?: string;
   DateOfSale?: string;
+  DateOfReturn?: string;
   PromotePrograme?: string;
   PriceReportVoucher?: string;
   DateOfDelivery?: string;

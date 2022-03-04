@@ -161,6 +161,10 @@
   font-size: 12px;
 }
 
+.pos-returns {
+  border-color: var(--danger);
+}
+
 @media (min-width: 1600px) {
   .pos-business {
     width: 400px;

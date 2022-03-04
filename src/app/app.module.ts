@@ -256,6 +256,7 @@ import { SalesProductListComponent } from './modules/sales/product/sales-product
 import { SalesProductQrCodePrintComponent } from './modules/sales/product/sales-product-qrcode-print/sales-product-qrcode-print.component';
 import { WarehouseGoodsFindOrderTempPrintComponent } from './modules/warehouse/goods/warehouse-goods-find-order-temp-print/warehouse-goods-find-order-temp-print.component';
 import { CommercePosBillPrintComponent } from './modules/commerce-pos/gui/commerce-pos-order-print/commerce-pos-bill-print.component';
+import { CommercePosReturnsPrintComponent } from './modules/commerce-pos/gui/commerce-pos-returns-print/commerce-pos-returns-print.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -504,6 +505,7 @@ export class DynamicLocaleId extends String {
     // Commerce POS
     CommercePosGuiComponent,
     CommercePosBillPrintComponent,
+    CommercePosReturnsPrintComponent,
     CommercePosOrderFormComponent,
     CommercePosOrderListComponent,
     CommercePosOrderPrintComponent,
