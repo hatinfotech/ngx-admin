@@ -62,6 +62,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   @ViewChild('ObjectPhone', { static: true }) objectPhoneEleRef: ElementRef;
   @ViewChild('Search', { static: true }) searchEleRef: ElementRef;
+  @ViewChild('orderDetailTable', { static: true }) orderDetailTableRef: ElementRef;
 
   get isFullscreenMode() {
     return screenfull.isFullscreen;
@@ -159,6 +160,18 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     await this.save(this.orderForm);
     // await this.barcodeProcess('145742024962');
     // await this.barcodeProcess('146537024944');
+
+    // await this.barcodeProcess('11802497101');
+    // await this.barcodeProcess('11802497100');
+    // await this.barcodeProcess('11802497099');
+    // await this.barcodeProcess('11802497098');
+    // await this.barcodeProcess('11802497097');
+    // await this.barcodeProcess('11802497096');
+    // await this.barcodeProcess('11802497095');
+    // await this.barcodeProcess('11802497094');
+    // await this.barcodeProcess('11802497093');
+    // await this.barcodeProcess('11802497092');
+
     return result;
   }
 
@@ -312,7 +325,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
 
       console.log(accessNumber, productId);
-      let existsProduct: FormGroup = this.getDetails(this.orderForm).controls.find(f => this.commonService.getObjectId(f.get('Product').value) === productId) as FormGroup;
+      const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId);
+      // let existsProduct: FormGroup = this.getDetails(this.orderForm).controls.find(f => this.commonService.getObjectId(f.get('Product').value) === productId) as FormGroup;
+      let existsProduct: FormGroup = detailsControls[existsProductIndex] as FormGroup;
       if (existsProduct) {
         const quantityControl = existsProduct.get('Quantity');
         const priceControl = existsProduct.get('Price');
@@ -331,6 +346,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             this.increaseDetailPipSound.nativeElement.play();
             this.calculateToMoney(existsProduct);
             this.calculateTotal(this.orderForm);
+            this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
           } else {
             this.errorSound.nativeElement.play();
             this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
@@ -339,6 +355,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           quantityControl.setValue(quantityControl.value + 1);
           this.calculateToMoney(existsProduct);
           this.calculateTotal(this.orderForm);
+
+          this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
           this.increaseDetailPipSound.nativeElement.play();
         }
         return existsProduct;
@@ -397,6 +415,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               this.calculateTotal(this.orderForm);
 
               detailsControls.unshift(existsProduct);
+
+              this.activeDetail(this.orderForm, existsProduct, 0);
+
               this.newDetailPipSound.nativeElement.play();
               this.save(this.orderForm);
             } else {
@@ -448,7 +469,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
           if (this.historyOrderIndex > -1) {
             this.historyOrders.splice(this.historyOrderIndex, 1);
-            this.makeNewOrder();
+            if (this.historyOrders.length == 0) {
+              this.makeNewOrder();
+            } else {
+              this.historyOrderIndex = this.historyOrders.length - 1;
+              this.orderForm = this.historyOrders[this.historyOrderIndex];
+            }
           }
 
           setTimeout(() => {
@@ -477,13 +503,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.save(this.historyOrders[this.historyOrderIndex]);
       this.historyOrderIndex++;
       this.orderForm = this.historyOrders[this.historyOrderIndex];
-    } else {
-      this.save(this.historyOrders[this.historyOrderIndex]);
-      this.orderForm = this.makeNewOrderForm();
-      this.historyOrders.push(this.orderForm);
-      this.historyOrderIndex = this.historyOrders.length - 1;
-      this.save(this.orderForm);
     }
+    //  else {
+    //   this.save(this.historyOrders[this.historyOrderIndex]);
+    //   this.orderForm = this.makeNewOrderForm();
+    //   this.historyOrders.push(this.orderForm);
+    //   this.historyOrderIndex = this.historyOrders.length - 1;
+    //   this.save(this.orderForm);
+    // }
   }
 
   barcode = '';
@@ -494,31 +521,172 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     if (event.key == 'F9') {
       this.payment(this.orderForm);
       event.preventDefault();
+      return true;
     }
     if (event.key == 'F8') {
       this.objectPhoneEleRef.nativeElement.focus();
       event.preventDefault();
+      return true;
     }
     if (event.key == 'F3') {
       this.searchEleRef.nativeElement.focus();
       event.preventDefault();
+      return true;
     }
-    
+    if (event.key == 'F5') {
+      this.makeNewOrder();
+      event.preventDefault();
+      return true;
+    }
+    if (event.key == 'ArrowLeft') {
+      this.onPreviousOrderClick();
+      event.preventDefault();
+      return true;
+    }
+    if (event.key == 'ArrowRight') {
+      this.onNextOrderClick();
+      event.preventDefault();
+      return true;
+    }
+
     if ("activeElement" in document) {
       if ((document.activeElement as HTMLElement).id == 'posSearchInput') {
         return true;
       }
+      if ((document.activeElement as HTMLElement).id == 'ObjectPhone') {
+        return true;
+      }
     }
+
+    // Barcode scan
     this.barcode += event.key;
     this.commonService.takeUntil('barcode-scan', 100).then(() => {
       console.log(this.barcode);
       if (this.barcode && /Enter$/.test(this.barcode)) {
         this.barcodeProcess(this.barcode.replace(/Enter$/, ''));
+      } else {
+        if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(event.key) > -1) {
+          const details = this.getDetails(this.orderForm).controls;
+          const activeDetail = details[parseInt(event.key) - 1];
+          if (activeDetail) {
+            activeDetail['isActive'] = true;
+
+            // focus
+            // $(this.orderDetailTableRef.nativeElement.children[parseInt(event.key)]).find('.pos-quantity')[0].focus();
+            $(this.orderDetailTableRef.nativeElement.children[parseInt(event.key)])[0].scrollIntoView();
+
+            for (const detail of details) {
+              if (detail !== activeDetail) {
+                detail['isActive'] = false;
+              }
+            }
+          }
+          event.preventDefault();
+          return false;
+        }
       }
 
       this.barcode = '';
     });
 
+    // this.commonService.takeUntil('skip-by-barcode-scan', 110).then(() => {
+    //   if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(event.key) > -1) {
+    //     const details = this.getDetails(this.orderForm).controls;
+    //     const activeDetail = details[parseInt(event.key) - 1];
+    //     if (activeDetail) {
+    //       activeDetail['isActive'] = true;
+
+    //       // focus
+    //       // $(this.orderDetailTableRef.nativeElement.children[parseInt(event.key)]).find('.pos-quantity')[0].focus();
+    //       $(this.orderDetailTableRef.nativeElement.children[parseInt(event.key)])[0].scrollIntoView();
+
+    //       for (const detail of details) {
+    //         if (detail !== activeDetail) {
+    //           detail['isActive'] = false;
+    //         }
+    //       }
+    //     }
+    //     event.preventDefault();
+    //     return false;
+    //   }
+    // });
+
+    if (event.key == 'ArrowDown') {
+      const details = this.getDetails(this.orderForm).controls;
+      let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+      if (activeDetailIndex < 0) {
+        activeDetailIndex = 0
+      } else {
+        activeDetailIndex++;
+      }
+      const nextDetail = details[activeDetailIndex];
+      nextDetail['isActive'] = true;
+
+      $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
+
+      for (const detail of details) {
+        if (detail !== nextDetail) {
+          detail['isActive'] = false;
+        }
+      }
+
+      return false;
+    }
+
+    if (event.key == 'ArrowUp') {
+      const details = this.getDetails(this.orderForm).controls;
+      let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+      if (activeDetailIndex > details.length - 1) {
+        activeDetailIndex = details.length - 1;
+      } else {
+        activeDetailIndex--;
+      }
+      if (activeDetailIndex > -1) {
+        const nextDetail = details[activeDetailIndex];
+        nextDetail['isActive'] = true;
+
+        $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
+
+        for (const detail of details) {
+          if (detail !== nextDetail) {
+            detail['isActive'] = false;
+          }
+        }
+      }
+      return false;
+    }
+
+    if (event.key == '+') {
+      const details = this.getDetails(this.orderForm).controls;
+      const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+      if (activeDetail) {
+        this.onIncreaseQuantityClick(this.orderForm, activeDetail);
+      }
+      return false;
+    }
+    if (event.key == '-') {
+      const details = this.getDetails(this.orderForm).controls;
+      const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+      if (activeDetail) {
+        this.onDecreaseQuantityClick(this.orderForm, activeDetail);
+      }
+      return false;
+    }
+
+  }
+
+  activeDetail(orderForm: FormGroup, activeDetail: FormGroup, index: number) {
+    const details = this.getDetails(orderForm).controls;
+
+    // const activeDetail = 
+    activeDetail['isActive'] = true;
+
+    for (const detail of details) {
+      if (detail !== activeDetail) {
+        detail['isActive'] = false;
+      }
+    }
+    $(this.orderDetailTableRef.nativeElement?.children[index + 1])[0]?.scrollIntoView();
   }
 
   removeDetail(orderForm: FormGroup, index: number) {

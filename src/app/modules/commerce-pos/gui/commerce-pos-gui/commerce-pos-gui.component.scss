@@ -54,7 +54,7 @@
     overflow: auto;
     max-width: initial;
     margin: initial;
-    border-bottom: var(--ck-color-base-border) 1px solid;
+    // border-bottom: var(--ck-color-base-border) 1px solid;
     table {
       border-left: var(--ck-color-base-border) 1px solid;
       border-top: var(--ck-color-base-border) 1px solid;
@@ -68,31 +68,41 @@
         border-bottom: var(--ck-color-base-border) 1px solid;
         vertical-align: top;
       }
+      tr:nth-child(odd) {
+        td {
+          background-color: var(--ck-color-button-on-disabled-background);
+        }
+      }
+      tr.detail-active {
+        td {
+          background-color: var(--danger);
+        }
+      }
     }
     .pos-product-image {
-      width: 100%;
-      border-radius: 1rem;
+      // width: 100%;
+      border-radius: 0.3rem;
     }
     .pos-quantity {
       text-align: right;
-      font-size: 2rem;
+      font-size: 1rem;
       font-weight: bold;
       width: 100%;
     }
     .pos-price {
       font-weight: bold;
-      font-size: 2rem;
-      line-height: 3rem;
+      font-size: 1rem;
+      line-height: 1rem;
       white-space: nowrap;
     }
     .pos-discount {
-      line-height: 3rem;
+      line-height: 1rem;
     }
     .pos-tomoney {
       font-weight: bold;
-      font-size: 2rem;
+      font-size: 1rem;
       white-space: nowrap;
-      line-height: 3rem;
+      line-height: 1rem;
     }
     .pos-access-numbers {
       font-weight: bold;
@@ -103,8 +113,8 @@
       white-space: nowrap;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
-      font-size: 1.6rem;
-      line-height: 3.7rem;
+      font-size: 0.8rem;
+      line-height: 2.5rem;
     }
   }
   .pos-order-summary {
@@ -123,6 +133,16 @@
     }
     .pos-field-control {
     }
+  }
+  .pos-total-payment {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--success);
+    text-align: center;
+    border-radius: 0.25rem;
+    border: 1px solid var(--success);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 }
 .scrollable-container {

@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
+import { isThisTypeNode } from 'typescript';
 import { threadId } from 'worker_threads';
 import { environment } from '../../../../../environments/environment.prod';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
@@ -235,6 +236,21 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
 
   getItemDescription(item: WarehouseGoodsDeliveryNoteModel) {
     return item?.Description;
+  }
+
+  summaryCalculate(data: CommercePosOrderModel[]) {
+    if (data) {
+      for (const item of data) {
+        if (item.Details) {
+          let total = 0;
+          for (const detail of item.Details) {
+            detail['ToMoney'] = (detail.Quantity * detail.Price);
+            total += detail['ToMoney'];
+          }
+          item['Total'] = total;
+        }
+      }
+    }
   }
 
   payment(index: number) {

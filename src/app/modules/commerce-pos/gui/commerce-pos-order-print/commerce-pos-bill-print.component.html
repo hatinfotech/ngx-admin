@@ -18,6 +18,12 @@
                         </div>
                         <div class="bill-title">PHIẾU BÁO GIÁ</div>
                         <div class="bill-info">{{order.Code}} - {{order.DateOfSale | date:'short'}}</div>
+                        <div class="bill-head-info">
+                            <div class="bill-object-name">Khách hàng: {{order.ObjectName || ''}}</div>
+                            <div class="bill-object-phone">Số điện thoại:  {{order.ObjectPhone || ''}}</div>
+                            <div class="bill-object-address">Địa chỉ:  {{order.ObjectAddress || ''}}</div>
+                            <div class="bill-object-email">Email:  {{order.ObjectEmail || ''}}</div>
+                        </div>
                     </div>
                     <div class="bill-body">
                         <table style="width: 100%;" border="0" cellPadding="2">
@@ -54,7 +60,7 @@
                     <nb-icon pack="eva" icon="close"></nb-icon>
                 </button> -->
                 <button nbButton hero [disabled]="data[0].State == 'APPROVED'" status="success" (click)="payment(0)">
-                    <nb-icon pack="eva" icon="flash"></nb-icon>{{'F9 - Thanh toán và in' | translate | headtitlecase}}
+                    <nb-icon pack="eva" icon="flash"></nb-icon>{{'Enter để thanh toán và in bill' | translate | headtitlecase}}
                 </button>
             </div>
         </nb-card-footer>
