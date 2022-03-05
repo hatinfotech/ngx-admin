@@ -9,7 +9,7 @@
                     <div class="product-name">{{item.Name}}</div>
                     <div class="product-price">Giá: {{item.Price | currency:'VND'}} / {{item.Unit | objecttext}}</div>
                     <div style="display: flex;">
-                        <div class="find-order">{{item.FindOrder || '----'}}</div>
+                        <div class="find-order" style="margin-right: 0.5mm;">{{item.FindOrder || '----'}}</div>
                         <div style="display: flex; align-items: center;">
                             <img class="bar-code" src="{{item.BarCode}}">
                         </div>

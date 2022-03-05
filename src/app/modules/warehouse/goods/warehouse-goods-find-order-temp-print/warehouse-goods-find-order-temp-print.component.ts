@@ -63,7 +63,7 @@ export class WarehouseGoodsFindOrderTempPrintComponent extends DataManagerPrintC
   margin-right: 1mm;
 }
 .blabel .bar-code {
-  height: 5.5mm;
+  height: 4.5mm;
 }
 .blabel .product-name {
   font-weight: bold;

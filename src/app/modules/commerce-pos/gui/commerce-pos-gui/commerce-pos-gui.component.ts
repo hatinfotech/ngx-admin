@@ -355,6 +355,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       let productId = null;
       let accessNumber = null;
       let sku = null;
+      let unitSeq = null;
       inputValue = inputValue.replace(new RegExp('^118' + coreId), '');
       let product: ProductModel = null;
       if (/^[a-z]+\d+/i.test(inputValue)) {// Search by sku
@@ -363,8 +364,29 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         });
         productId = product.Code;
       } else {
-        if (inputValue.length < 8) { // Chỉ đúng khi số thứ tự id sản phẩm < 7 con số ( < 10 triệu)
+        if (inputValue.length < 5) { // Chỉ đúng khi số thứ tự id sản phẩm < 7 con số ( < 10 triệu)
           productId = '118' + coreId + inputValue;
+        } else if (inputValue.length < 10) {
+
+          // Truy van thong tin san pham theo cau truc moi
+          const unitIdLength = parseInt(inputValue.slice(0, 1));
+          unitSeq = inputValue.slice(1, unitIdLength + 1);
+
+          productId = inputValue.slice(unitIdLength + 1);
+          productId = '118' + coreId + productId;
+          product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true, unitSeq: unitSeq }).then(rs => {
+            return rs[0];
+          });
+
+          // => Thu truy van theo cau truc cu
+          if (!product) {
+            productId = '118' + coreId + inputValue;
+            unitSeq = null;
+            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true }).then(rs => {
+              return rs[0];
+            });
+          }
+
         } else {
           if (new RegExp('^128' + coreId).test(inputValue)) {
             setTimeout(() => {
@@ -396,7 +418,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           if (accessNumber) {
             accessNumber = '127' + accessNumber;
           }
-          productId = '118' + coreId + inputValue.substring(2, 2 + productIdLength);
+          productId = inputValue.substring(2, 2 + productIdLength);
+          const unitIdLength = parseInt(productId.slice(0, 1));
+          unitSeq = productId.slice(1, unitIdLength + 1);
+          productId = productId.slice(unitIdLength + 1);
+          productId = '118' + coreId + productId;
+
+
         }
         // get access number inventory 
         if (new RegExp('^127' + coreId).test(accessNumber)) {
@@ -408,6 +436,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             if (!product.Inventory || product.Inventory < 1) {
               throw Error(`${product.Name} (${product.Unit.Name}) không có trong kho`);
             }
+          } else {
+            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true, unitSeq: unitSeq }).then(rs => {
+              return rs[0];
+            });
           }
         }
       }
