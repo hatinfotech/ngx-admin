@@ -1,3 +1,5 @@
+import { WarehouseGoodsContainerModel } from './warehouse.model';
+import { IdTextModel } from './common.model';
 import { FileModel } from './file.model';
 import { UnitModel } from './unit.model';
 
@@ -13,6 +15,8 @@ export class ProductModel {
   Description?: string;
   Technical?: string;
   FeaturePicture?: FileModel;
+
+  Containers?: WarehouseGoodsContainerModel[];
 
   Units?: UnitModel[];
 
@@ -41,6 +45,8 @@ export class ProductInCategoryModel {
 }
 
 export class ProductUnitModel {
+  id?: string;
+  text?: string;
   Code?: string;
   Name?: string;
   Symbol?: string;

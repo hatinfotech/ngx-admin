@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { WarehouseGoodsFormComponent } from '../warehouse-goods-form/warehouse-goods-form.component';
 import { AssignContainerFormComponent } from '../assign-containers-form/assign-containers-form.component';
 import { ProductModel, ProductUnitConversoinModel } from '../../../../models/product.model';
-import { SmartTableButtonComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
@@ -18,6 +18,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { WarehouseGoodsPrintComponent } from '../warehouse-goods-print/warehouse-goods-print.component';
 import { takeUntil } from 'rxjs/operators';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -33,6 +34,19 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
   formDialog = WarehouseGoodsFormComponent;
 
   containerList: WarehouseGoodsContainerModel[] = [];
+
+  constructor(
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public _http: HttpClient,
+    public ref: NbDialogRef<WarehouseGoodsListComponent>,
+    public adminProductService: AdminProductService,
+  ) {
+    super(apiService, router, commonService, dialogService, toastService, _http, ref, adminProductService);
+  }
 
   loadListSetting(): SmartTableSetting {
     return this.configSetting({
@@ -178,19 +192,109 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
         },
+        // ContainerPath: {
+        //   title: this.commonService.translateText('Warehouse.GoodsContainer.path', { action: '', definition: '' }),
+        //   type: 'html',
+        //   width: '15%',
+        //   filter: {
+        //     type: 'custom',
+        //     component: SmartTableFilterComponent,
+        //     config: {
+        //       condition: 'bleft',
+        //     }
+        //   },
+        //   valuePrepareFunction: (value: any, product: GoodsModel) => {
+        //     return product?.Container?.ContainerPath;
+        //   },
+        // },
+
         ContainerPath: {
-          title: this.commonService.translateText('Warehouse.GoodsContainer.path', { action: '', definition: '' }),
-          type: 'html',
+          title: 'Kệ hàng hóa',
+          type: 'custom',
+          renderComponent: SmartTableTagsComponent,
           width: '15%',
           filter: {
             type: 'custom',
-            component: SmartTableFilterComponent,
+            component: SmartTableSelect2FilterComponent,
             config: {
+              delay: 0,
               condition: 'bleft',
-            }
+              select2Option: {
+                placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                // multiple: true,
+                logic: 'OR',
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.shelfList.filter(shelf => !params.term || this.commonService.smartFilter(shelf.text, params.term)),
+                    };
+                  },
+                },
+              },
+            },
           },
-          valuePrepareFunction: (value: any, product: GoodsModel) => {
-            return product?.Container?.ContainerPath;
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product.Containers as any;
+          },
+          onComponentInitFunction: (component: SmartTableTagsComponent) => {
+            component.labelAsText = (tag) => {
+              return tag.text;
+            };
+            component.renderToolTip = (tag) => {
+              return tag.text;
+            };
+            component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
+
+            });
+            component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
+              if (!tag.Container) {
+                this.commonService.openDialog(AssignContainerFormComponent, {
+                  context: {
+                    inputMode: 'dialog',
+                    inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
+                    onDialogSave: async (newData: ProductModel[]) => {
+                      // this.refresh();
+                      // this.updateGridItems(editedItems, newData);
+                      const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
+                      this.source.isLocalUpdate = true;
+                      try {
+                        const newContainer = newData[0].Containers[0];
+                        this.source.update(udpateItem, {
+                          UnitConversions: [
+                            ...udpateItem.UnitConversions.map(m => ({
+                              type: m.type,
+                              id: m.id,
+                              text: m.text,
+                              Container: m.id == tag.id ? newContainer : m.Container,
+                            })),
+                            { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
+                        }).then(() => {
+                          this.source.isLocalUpdate = false;
+                        });
+                      } catch (err) {
+                        this.source.isLocalUpdate = false;
+                      }
+                    },
+                    onDialogClose: () => {
+                    },
+                  },
+                  closeOnEsc: false,
+                  closeOnBackdropClick: false,
+                });
+              }
+            });
           },
         },
         // Goods: {
@@ -383,18 +487,6 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         // },
       },
     });
-  }
-
-  constructor(
-    public apiService: ApiService,
-    public router: Router,
-    public commonService: CommonService,
-    public dialogService: NbDialogService,
-    public toastService: NbToastrService,
-    public _http: HttpClient,
-    public ref: NbDialogRef<WarehouseGoodsListComponent>,
-  ) {
-    super(apiService, router, commonService, dialogService, toastService, _http, ref);
   }
 
   async init() {

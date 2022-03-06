@@ -1,3 +1,6 @@
+import { IdTextModel } from './../../../../models/common.model';
+import { ProductUnitModel } from './../../../../models/product.model';
+import { AdminProductService } from './../../admin-product.service';
 import { Component, OnInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { ProductModel, ProductCategoryModel, ProductUnitConversoinModel, ProductGroupModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
@@ -8,7 +11,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { SmartTableTagComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AssignCategoriesFormComponent } from '../assign-categories-form/assign-categories-form.component';
 import { FormGroup } from '@angular/forms';
 import { FileModel } from '../../../../models/file.model';
@@ -46,8 +49,10 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   // Category list for filter
   categoryList: ProductCategoryModel[] = [];
   groupList: ProductGroupModel[] = [];
-  unitList: UnitModel[] = [];
+  unitList: ProductUnitModel[] = [];
   containerList: WarehouseGoodsContainerModel[] = [];
+
+  shelfList: IdTextModel[];
 
   constructor(
     public apiService: ApiService,
@@ -57,6 +62,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<ProductListComponent>,
+    public adminProductService: AdminProductService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }
@@ -65,13 +71,21 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
+    // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })) as any;
+    this.shelfList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, limit: 'nolimit', eq_Type: 'SHELF' })).map(container => ({ id: container.Path, text: `${container.FindOrder} - ${container.Path}` })) as any;
   }
 
   async init() {
     await this.loadCache();
     return super.init().then(rs => {
+
+      // Load unit list
+      this.adminProductService.unitList$.pipe(takeUntil(this.destroy$)).subscribe(unitList => {
+        this.unitList = unitList;
+      });
+
+
       this.actionButtonList.unshift({
         name: 'assignCategories',
         status: 'info',
@@ -331,15 +345,78 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
               }
             });
           },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              select2Option: {
+                placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                logic: 'OR',
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.unitList.filter(unit => !params.term || this.commonService.smartFilter(unit.text, params.term)),
+                    };
+                  },
+                },
+              },
+            },
+          },
         },
-        Containers: {
+        ContainerPath: {
           title: 'Vị trí hàng hóa',
           type: 'custom',
           renderComponent: SmartTableTagsComponent,
           width: '10%',
-          // valuePrepareFunction: (value: string, product: ProductModel) => {
-          //   return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
-          // },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'bleft',
+              select2Option: {
+                placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                // multiple: true,
+                logic: 'OR',
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.shelfList.filter(shelf => !params.term || this.commonService.smartFilter(shelf.text, params.term)),
+                    };
+                  },
+                },
+              },
+            },
+          },
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product.Containers as any;
+          },
           onComponentInitFunction: (component: SmartTableTagsComponent) => {
             component.labelAsText = (tag) => {
               return tag.text;
@@ -347,6 +424,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             component.renderToolTip = (tag) => {
               return tag.text;
             };
+            component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
+
+            });
             component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
               if (!tag.Container) {
                 this.commonService.openDialog(AssignContainerFormComponent, {

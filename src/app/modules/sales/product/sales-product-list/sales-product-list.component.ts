@@ -20,6 +20,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { SalesProductQrCodePrintComponent } from '../sales-product-qrcode-print/sales-product-qrcode-print.component';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { SalesProductDemoTemPrintComponent } from '../product-demo-tem-print/product-demo-tem-print.component';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-sales-product-list',
@@ -321,8 +322,9 @@ export class SalesProductListComponent extends ProductListComponent implements O
     public _http: HttpClient,
     public ref: NbDialogRef<SalesProductListComponent>,
     public formBuilder: FormBuilder,
+    public adminProductService: AdminProductService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, _http, ref);
+    super(apiService, router, commonService, dialogService, toastService, _http, ref, adminProductService);
     this.listControl = this.formBuilder.group({
       Limit: [],
     });

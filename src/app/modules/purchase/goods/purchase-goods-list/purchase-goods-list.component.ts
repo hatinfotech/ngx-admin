@@ -13,6 +13,7 @@ import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -37,8 +38,9 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<PurchaseGoodsListComponent>,
+    public adminProductService: AdminProductService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, _http, ref);
+    super(apiService, router, commonService, dialogService, toastService, _http, ref, adminProductService);
     // this.actionButtonList.map(button => {
     //   if (button.name === 'assignCategories') {
     //     button.name = 'assginContainer';
