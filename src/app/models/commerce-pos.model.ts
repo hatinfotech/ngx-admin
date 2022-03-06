@@ -7,6 +7,8 @@ import { Model } from './model';
 export class CommercePosOrderModel extends Model {
   Id?: string & number;
   Code?: string;
+  Returns?: string;
+  DebitFunds?: number;
   BarCode?: string;
   No?: string;
   Type?: string;
@@ -114,4 +116,52 @@ export class CommercePosDetailModel extends Model {
   PriceTableDetail?: string;
   AccessNumbers?: string[];
   Discount?: number;
+}
+
+export interface CommercePosCashVoucherModel {
+  Id?: string;
+  Cashbook?: string;
+  Code?: string;
+  Type?: string;
+  Title?: string;
+  TypeName?: string;
+  Seq?: string;
+  Description?: string;
+  RelatedUser?: string;
+  RelatedUserName?: string;
+  DateOfImplement?: string;
+  Created?: string;
+  DateOfVoucher?: Date;
+  Creator?: string;
+  CreatorName?: string;
+  Object?: string;
+  ObjectName?: string;
+  ObjectPhone?: string;
+  ObjectEmail?: string;
+  ObjectAddress?: string;
+  ObjectTaxCode?: string;
+  Amount?: number;
+  Currency?: string;
+  RelationVoucher?: string;
+  Details?: CommercePosCashVoucherModelDetailModel[];
+  State?: string;
+  StateLabel?: string;
+  Permission?: string;
+  BankAccount?: string;
+  Bank?: string;
+  Returns?: string;
+  RelativeVouchers?: { id?: string, text?: string, type?: string }[];
+}
+
+export interface CommercePosCashVoucherModelDetailModel {
+  Id?: string;
+  Voucher?: string;
+  RelateCode?: string;
+  Description?: string;
+  Amount?: number;
+  Currency?: string;
+  AccountingBusiness?: string;
+  DebitAccount?: string;
+  CreditAccount?: string;
+  RelativeVoucher?: string;
 }

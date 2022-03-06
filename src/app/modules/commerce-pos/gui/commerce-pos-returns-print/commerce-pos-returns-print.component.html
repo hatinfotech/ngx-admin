@@ -38,7 +38,7 @@
                             <tr *ngFor="let detail of order.Details">
                                 <td>
                                     <div>{{detail.Description}} - SKU:{{detail.Sku}}</div>
-                                    <div *ngIf="detail.AccessNumbers">Số truy xuất:{{detail.AccessNumbers}}</div>
+                                    <div *ngIf="detail.AccessNumbers">Số truy xuất:{{detail.AccessNumbers | objectstext}}</div>
                                 </td>
                                 <td style="text-align: right">
                                     <div class="bill-price">{{detail.Price | currency:'VND'}}</div>
@@ -49,12 +49,20 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3" style="text-align: right; font-weight: bold;">Tổng cộng: {{order.Total | currency:'VND'}}</td>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">Cửa hàng đang nợ bạn: {{order.Total | currency:'VND'}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">Phát sinh từ phiếu {{order.Order}}</td>
                             </tr>
                         </table>
                     </div>
-                    <div class="bill-footer" style="text-align: center;">
-                        <div style="font-style: italic">Xin cảm ơn và hẹn gặp lại</div>
+                    <div class="bill-footer" style="text-align: left;">
+                        <div style="font-style: italic">
+                            Hướng dẫn:<br>
+                            1. Phiếu sử dụng để cấn trừ tiền cho đơn hàng tiếp theo<br>
+                            2. Phiếu sử dụng cho việc hoàn tiền<br>
+                            3. Quý khách vui lòng điền đủ tên, số điện thoại, địa chỉ để được hỗ trợ
+                        </div>
                         <div>Phiếu được in từ phần mềm<br>ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div>
                     </div>
                 </div>
@@ -66,7 +74,7 @@
                     <nb-icon pack="eva" icon="close"></nb-icon>
                 </button> -->
                 <button nbButton hero [disabled]="data[0].State == 'APPROVED'" status="danger" (click)="approve(0)">
-                    <nb-icon pack="eva" icon="flash"></nb-icon>{{'Enter để hoàn tiền và in phiếu' | translate | headtitlecase}}
+                    <nb-icon pack="eva" icon="flash"></nb-icon>{{'Enter để nhận hàng và in phiếu' | translate | headtitlecase}}
                 </button>
             </div>
         </nb-card-footer>

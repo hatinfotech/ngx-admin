@@ -344,7 +344,13 @@
                             </div>
                             <div class="row" style="padding-bottom: 0.5rem;">
                                 <div class="col-xxxl-12">
-                                    <div class="pos-total-payment">Tổng tiền:<br>{{orderForm.value?.Total | currency:'VND'}}</div>
+                                    <div class="pos-total-payment">
+                                        <div>Tổng tiền:<br>{{orderForm.value?.Total | currency:'VND'}}</div>
+                                        <div *ngIf="orderForm.value?.Returns">
+                                            <div style="color: var(--warning);">Hoàn tiền:<br>{{orderForm.value?.DebitFunds | currency:'VND'}}</div>
+                                            <div style="color: var(--primary)">Phải thu:<br>{{orderForm.value?.Total - orderForm.value?.DebitFunds | currency:'VND'}}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -359,7 +365,10 @@
                                 </div>
                                 <div class="col-xxxl-4">
                                     <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="danger" class="pos-business-button" (click)="destroyOrder($event)">
-                                        <nb-icon icon="close-outline"></nb-icon>
+                                        <div>
+                                            <nb-icon icon="close-outline"></nb-icon>
+                                            <span style="font-weight: bold; font-size: 1rem">F4</span>
+                                        </div>
                                         <div class="button-label">Hủy phiếu</div>
                                     </button>
                                 </div>

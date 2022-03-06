@@ -13,14 +13,14 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 
 @Component({
-  selector: 'ngx-commerce-pos-returns-print',
-  templateUrl: './commerce-pos-returns-print.component.html',
-  styleUrls: ['./commerce-pos-returns-print.component.css'],
+  selector: 'ngx-commerce-pos-payment-print',
+  templateUrl: './commerce-pos-payment-print.component.html',
+  styleUrls: ['./commerce-pos-payment-print.component.css'],
 })
-export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<any> implements OnInit {
+export class CommercePosPaymnentPrintComponent extends DataManagerPrintComponent<any> implements OnInit {
 
   /** Component name */
-  componentName = 'CommercePosReturnsPrintComponent';
+  componentName = 'CommercePosPaymnentPrintComponent';
   title: string = 'In bill';
   env = environment;
   apiPath = '/warehouse/find-order-tems';
@@ -100,7 +100,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
     public commonService: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<CommercePosReturnsPrintComponent>,
+    public ref: NbDialogRef<CommercePosPaymnentPrintComponent>,
     public datePipe: DatePipe,
   ) {
     super(commonService, router, apiService, ref);
@@ -249,8 +249,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
         if (item.Details) {
           let total = 0;
           for (const detail of item.Details) {
-            detail['ToMoney'] = (detail.Quantity * detail.Price);
-            total += detail['ToMoney'];
+            total += detail['Amount'];
           }
           item['Total'] = total;
         }
@@ -260,25 +259,25 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
 
   approve(index: number) {
     const params: any = { payment: true };
-    let order = this.data[index];
-    if (order) {
-      order.State = 'APPROVED';
-      if (order.Code) {
+    let returnsPayment = this.data[index];
+    if (returnsPayment) {
+      returnsPayment.State = 'APPROVED';
+      if (returnsPayment.Code) {
         // params['id0'] = order.Code;
-        this.apiService.putPromise('/commerce-pos/returns/' + order.Code, params, [order]).then(rs => {
-          order = this.data[index] = rs[0];
+        this.apiService.putPromise('/commerce-pos/cash-vouchers/' + returnsPayment.Code, params, [returnsPayment]).then(rs => {
+          returnsPayment = this.data[index] = rs[0];
           setTimeout(async () => {
             await this.print(index);
-            this.onSaveAndClose(order, this);
+            this.onSaveAndClose(returnsPayment, this);
           });
         });
       } else {
-        this.apiService.postPromise('/commerce-pos/returns', params, [order]).then(rs => {
+        this.apiService.postPromise('/commerce-pos/cash-vouchers', params, [returnsPayment]).then(rs => {
           this.id = [rs[0].Code];
-          order = this.data[index] = rs[0];
+          returnsPayment = this.data[index] = rs[0];
           setTimeout(async () => {
             await this.print(index);
-            if (this.onSaveAndClose) this.onSaveAndClose(order, this);
+            if (this.onSaveAndClose) this.onSaveAndClose(returnsPayment, this);
           }, 300);
         });
 

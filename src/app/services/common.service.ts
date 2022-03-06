@@ -11,7 +11,7 @@ import {
   NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
   NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries, NbThemeService, NbGlobalPhysicalPosition,
 } from '@nebular/theme';
-import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
+import { DialogActionButton, ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location, getCurrencySymbol, CurrencyPipe, DatePipe } from '@angular/common';
 import { ActionControl } from '../lib/custom-element/action-control-list/action-control.interface';
 import localeVi from '@angular/common/locales/vi';
@@ -514,8 +514,8 @@ export class CommonService {
   }
 
   /** Dialog */
-  showDialog(title: string, content: string, buttons: { label: string, icon?: string, status?: string, action?: () => void }[], onClose?: () => void) {
-    return this.dialogService.open(ShowcaseDialogComponent, {
+  showDialog(title: string, content: string, buttons: DialogActionButton[], onClose?: () => void) {
+    const dialogRef = this.dialogService.open(ShowcaseDialogComponent, {
       context: {
         title: title,
         content: content,
@@ -525,8 +525,17 @@ export class CommonService {
         },
       },
     });
+
+    dialogRef.onClose.subscribe(status => {
+      const index = this.dialogStack.findIndex(f => f === dialogRef);
+      this.dialogStack.splice(index, 1);
+    });
+    this.dialogStack.push(dialogRef);
+
+    return dialogRef;
   }
 
+  dialogStack: NbDialogRef<any>[] = [];
   openDialog<T>(content: Type<T> | TemplateRef<T>, userConfig?: Partial<NbDialogConfig<Partial<T> | string>>): NbDialogRef<T> {
     setTimeout(() => {
       // tslint:disable-next-line: ban
@@ -567,7 +576,11 @@ export class CommonService {
 
       panel.find('nb-dialog-container').append(dialogLoading);
     }
-
+    dialogRef.onClose.subscribe(status => {
+      const index = this.dialogStack.findIndex(f => f === dialogRef);
+      this.dialogStack.splice(index, 1);
+    });
+    this.dialogStack.push(dialogRef);
     return dialogRef;
   }
 
@@ -654,6 +667,24 @@ export class CommonService {
       callback();
     }
     return result;
+  }
+  async takeUntilCallback(context: string, delay: number, callback?: () => void) {
+    if (delay === 0) {
+      if (callback) callback();
+      return;
+    }
+    if (!this.takeUltilCount[context]) this.takeUltilCount[context] = 0;
+    this.takeUltilCount[context]++;
+    ((takeCount) => {
+      setTimeout(() => {
+        this.takeUltilPastCount[context] = takeCount;
+      }, delay);
+    })(this.takeUltilCount[context]);
+    setTimeout(() => {
+      if (this.takeUltilPastCount[context] === this.takeUltilCount[context]) {
+        callback();
+      }
+    }, delay);
   }
 
   private takeOncePastCount = {};

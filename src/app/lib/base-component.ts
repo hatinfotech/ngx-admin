@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy, Input, AfterViewInit, Component } from '@angular/core';
+import { OnInit, OnDestroy, Input, AfterViewInit, Component, HostListener } from '@angular/core';
 import { CommonService } from '../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
@@ -115,6 +115,22 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
       }
       return true;
     });
+  }
+
+  onKeyboardEvent(event: KeyboardEvent) {
+    return true;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.ref instanceof NbDialogRef) {
+      if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+        return this.onKeyboardEvent(event);
+      }
+    } else {
+      return this.onKeyboardEvent(event);
+    }
+    return true;
   }
 
   ngOnInit(): void {

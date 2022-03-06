@@ -1,7 +1,15 @@
 import { Component, OnInit, Input, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
-import { DialogActionButton } from '../../../../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { MytableContent } from '../my-table/my-table.component';
+
+export interface DialogActionButton {
+  label: string;
+  icon?: string;
+  status?: string;
+  disabled?: boolean;
+  focus?: boolean;
+  action?: (item?: DialogActionButton, dialog?: ImagesViewerComponent) => any;
+};
 
 @Component({
   selector: 'ngx-images-viewer',

@@ -127,7 +127,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
       }
       return rs;
     });
-    if(this.data[0].State == 'APPROVED') {
+    if (this.data[0].State == 'APPROVED') {
       this.printBtn['hostElement'].nativeElement.focus();
     } else {
       this.paymentBtn['hostElement'].nativeElement.focus();
@@ -292,6 +292,13 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
 
       }
     }
+  }
+
+  onKeyboardEvent(event: KeyboardEvent) {
+    if (event.key == 'Enter') {
+      this.payment(0);
+    }
+    return true;
   }
 
 }

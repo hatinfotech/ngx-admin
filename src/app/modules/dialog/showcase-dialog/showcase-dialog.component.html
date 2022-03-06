@@ -4,7 +4,9 @@
     <nb-card-header>
       <nav>
         {{ title }}
-        <button nbButton status="danger" hero size="medium" (click)="dismiss()" style="float: right;" title="Trở về"><nb-icon pack="eva" icon="close-outline"></nb-icon>ESC</button>
+        <button nbButton status="danger" hero size="medium" (click)="dismiss()" style="float: right;" title="Trở về">
+          <nb-icon pack="eva" icon="close-outline"></nb-icon>ESC
+        </button>
       </nav>
     </nb-card-header>
     <nb-card-body *ngIf="content" [innerHTML]="content"></nb-card-body>
@@ -14,7 +16,9 @@
     <nb-card-footer *ngIf="footerContent || actions?.length > 0">
       <span *ngIf="footerContent" [innerHTML]="footerContent"></span>
       <div class="buttons-row">
-        <button *ngFor="let item of actions" nbButton hero [status]="item?.status" [disabled]="item?.disabled" (click)="onButtonClick(item);"><nb-icon *ngIf="item?.icon" [pack]="'eva'" [icon]="item.icon"></nb-icon>{{ item.label }}</button>
+        <button *ngFor="let item of actions" nbButton hero [status]="item?.status" [disabled]="item?.disabled" (click)="onButtonClick(item);" [ngClass]="{'is-focus': item.focus}">
+          <nb-icon *ngIf="item?.icon" [pack]="'eva'" [icon]="item.icon"></nb-icon>{{ item.label }}
+        </button>
       </div>
     </nb-card-footer>
   </nb-card>

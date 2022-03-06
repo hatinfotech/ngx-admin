@@ -1,4 +1,5 @@
-import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnInit } from '@angular/core';
+import { CommonService } from './../../../services/common.service';
+import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnInit, HostListener } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { MytableContent } from '../../../lib/custom-element/my-components/my-table/my-table.component';
 
@@ -7,6 +8,8 @@ export interface DialogActionButton {
   icon?: string;
   status?: string;
   disabled?: boolean;
+  focus?: boolean;
+  keyShortcut?: string;
   action?: (item?: DialogActionButton, dialog?: ShowcaseDialogComponent) => any;
 };
 
@@ -25,10 +28,27 @@ export class ShowcaseDialogComponent implements AfterViewInit, OnInit {
   @Input() actions: DialogActionButton[];
   @ViewChild('dialogWrap', { static: true }) dialogWrap: ElementRef;
   @Input() onClose?: () => void;
+  @Input() onKeyboardEvent?: (event: KeyboardEvent, component: ShowcaseDialogComponent) => void;
   loading = false;
 
-  constructor(public ref: NbDialogRef<ShowcaseDialogComponent>) {
+  constructor(public ref: NbDialogRef<ShowcaseDialogComponent>, public commonService?: CommonService) {
 
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+      console.log(event.key + ': listen on show case dialog...');
+      const action = this.actions.find(f => f.keyShortcut == event.key);
+      if (action) {
+        action.action(action, this);
+        return false;
+      }
+      if (this.onKeyboardEvent) {
+        return this.onKeyboardEvent(event, this);
+      }
+    }
+    return true;
   }
 
   ngOnInit(): void {
@@ -70,6 +90,7 @@ export class ShowcaseDialogComponent implements AfterViewInit, OnInit {
       const nativeEle = dialog.componentRef.location.nativeElement;
       // tslint:disable-next-line: ban
       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
+      $(nativeEle).find('.buttons-row button.is-focus')[0].focus();
     }
     this.onAfterInit && this.onAfterInit();
   }

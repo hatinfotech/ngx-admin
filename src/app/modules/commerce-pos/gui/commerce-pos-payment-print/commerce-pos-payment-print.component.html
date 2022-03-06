@@ -16,9 +16,9 @@
                             <div class="bill-register-tel" *ngIf="registerInfo.tel">ĐT: {{registerInfo.tel}}</div>
                             <div class="bill-register-address" *ngIf="registerInfo.address">ĐC: {{registerInfo.address}}</div>
                         </div>
-                        <div class="bill-title">PHIẾU BÁO GIÁ</div>
-                        <div class="bill-info">{{order.Code}} - {{order.DateOfSale | date:'short'}}</div>
-                        <div class="barcode" style="text-align: center;">
+                        <div class="bill-title">PHIẾU CHI</div>
+                        <div class="bill-info">{{order.Code}} - {{order.DateOfReturn | date:'short'}}</div>
+                        <div class="barcode" style="text-align: center;" *ngIf="order.BarCode">
                             <img src="{{order.BarCode}}">
                         </div>
                         <div class="bill-head-info">
@@ -31,46 +31,32 @@
                     <div class="bill-body">
                         <table style="width: 100%;" border="0" cellPadding="2">
                             <thead>
-                                <td>Hàng hóa</td>
-                                <td style="text-align: right;">Đ.Giá x SL</td>
-                                <td style="text-align: right;">Thành tiền</td>
+                                <td>Mô tả</td>
+                                <td style="text-align: right;">Số tiền</td>
                             </thead>
                             <tr *ngFor="let detail of order.Details">
                                 <td>
-                                    <div>{{detail.Description}} - SKU:{{detail.Sku}}</div>
-                                    <div *ngIf="detail.AccessNumbers">Số truy xuất:{{detail.AccessNumbers | objectstext}}</div>
-                                </td>
-                                <td style="text-align: right">
-                                    <div class="bill-price">{{detail.Price | currency:'VND'}}</div>
-                                    <div class="bill-quantity" style="white-space: nowrap;">x {{detail.Quantity | number}} {{detail.Unit | objecttext}}</div>
+                                    <div>{{detail.Description}}</div>
                                 </td>
                                 <td style="text-align: right; white-space: nowrap;">
-                                    <div class="bill-tomoney">{{detail.ToMoney | currency:'VND'}}</div>
+                                    <div class="bill-tomoney">{{detail.Amount | currency:'VND'}}</div>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="text-align: right; font-weight: bold;">Tổng cộng: {{order.Total | currency:'VND'}}</td>
                             </tr>
                             <tr *ngIf="order.Returns">
-                                <td colspan="3" style="text-align: right; font-weight: bold;">Cấn trừ tiền trả hàng (phiếu {{order.Returns}}): {{order.DebitFunds | currency:'VND'}}</td>
-                            </tr>
-                            <tr *ngIf="order.Returns">
-                                <td colspan="3" style="text-align: right; font-weight: bold;">Phải thu: {{order.Total - order.DebitFunds | currency:'VND'}}</td>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">Phiếu trả hàng: {{order.Returns}}</td>
                             </tr>
                         </table>
                     </div>
                     <div class="bill-footer" style="text-align: left;">
-                        <div style="font-style: italic">Quý khách đưa lại phiếu này trong trường hợp đổi trả hàng hóa !</div>
-                        <div style="font-style: italic">
+                        <!-- <div style="font-style: italic">
                             Hướng dẫn:<br>
-                            1. Phiếu dùng để hỗ trợ đổi trả hàng (bắt buộc phải có)<br>
-                            2. Hàng hóa sau khi mua nếu chưa hài lòng, quý khách vui lòng đổi trả trong ngày hoặc trể nhất là hôm sau.<br>
-                            3. Hàng hóa khi đổi trả phải còn nguyên vẹn chưa tháo lắp, còn nguyên tem số truy xuất<br>
-                            4. Quy tắc khấu hao:<br>
-                            - Đổi tra sau 2 ngày mất 30% tiền<br>
-                            - Hàng không còn nguyên bao bì mất 50% tiền<br>
-                        </div>
-                        <div style="font-style: italic">Xin cảm ơn và hẹn gặp lại</div>
+                            1. Phiếu sử dụng để cấn trừ tiền cho đơn hàng tiếp theo<br>
+                            2. Phiếu sử dụng cho việc hoàn tiền<br>
+                            3. Quý khách vui lòng điền đủ tên, số điện thoại, địa chỉ để được hỗ trợ
+                        </div> -->
                         <div>Phiếu được in từ phần mềm<br>ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div>
                     </div>
                 </div>
@@ -81,11 +67,8 @@
                 <!-- <button nbButton hero status="danger" (click)="close()">
                     <nb-icon pack="eva" icon="close"></nb-icon>
                 </button> -->
-                <button #paymentBtn nbButton hero *ngIf="data[0].State != 'APPROVED'" status="success" (click)="payment(0)">
-                    <nb-icon pack="eva" icon="flash"></nb-icon>{{'Enter để thanh toán và in bill' | translate | headtitlecase}}
-                </button>
-                <button #printBtn nbButton hero *ngIf="data[0].State == 'APPROVED'" status="primary" (click)="print(0)">
-                    <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In lại bill' | translate | headtitlecase}}
+                <button nbButton hero [disabled]="data[0].State == 'APPROVED'" status="danger" (click)="approve(0)">
+                    <nb-icon pack="eva" icon="flash"></nb-icon>{{'Enter để hoàn tiền và in phiếu' | translate | headtitlecase}}
                 </button>
             </div>
         </nb-card-footer>
