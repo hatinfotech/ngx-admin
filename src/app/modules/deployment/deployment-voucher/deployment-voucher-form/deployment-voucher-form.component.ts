@@ -62,7 +62,35 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: ProductUnitModel[];
 
+  constructor(
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref: NbDialogRef<DeploymentVoucherFormComponent>,
+    public adminProductService?: AdminProductService,
+    public datePipe?: DatePipe
+  ) {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
+    /** Append print button to head card */
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview([option.form?.value], 'form');
+      },
+    });
+  }
 
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
@@ -442,49 +470,6 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     }
   }];
 
-  constructor(
-    public activeRoute: ActivatedRoute,
-    public router: Router,
-    public formBuilder: FormBuilder,
-    public apiService: ApiService,
-    public toastrService: NbToastrService,
-    public dialogService: NbDialogService,
-    public commonService: CommonService,
-    public ref: NbDialogRef<DeploymentVoucherFormComponent>,
-    public adminProductService?: AdminProductService,
-    public datePipe?: DatePipe
-  ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-
-    /** Append print button to head card */
-    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
-      name: 'print',
-      status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
-      icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.isProcessing,
-      hidden: () => false,
-      click: (event: any, option: ActionControlListOption) => {
-        this.preview([option.form?.value], 'form');
-      },
-    });
-    // this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
-    //   name: 'print',
-    //   status: 'info',
-    //   label: this.commonService.textTransform(this.commonService.translate.instant('Common.task'), 'head-title'),
-    //   icon: 'link-2',
-    //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.task'), 'head-title'),
-    //   size: 'medium',
-    //   disabled: () => this.isProcessing,
-    //   hidden: () => false,
-    //   click: (event: any, option: ActionControlListOption) => {
-    //     this.preview(option.form);
-    //   },
-    // });
-  }
-
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
   }
@@ -675,7 +660,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       ObjectIdentifiedNumber: [''],
       Recipient: [''],
       ObjectTaxCode: [''],
-      DirectReceiverName: [''],
+      // DirectReceiverName: [''],
       ObjectBankName: [''],
       ObjectBankCode: [''],
       Contact: [''],
@@ -686,6 +671,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       ContactIdentifiedNumber: [''],
       DateOfDelivery: [''],
       DeliveryAddress: [''],
+      MapUrl: [''],
       PriceTable: [''],
       IsObjectRevenue: [false],
       // PriceReportVoucher: [''],
@@ -697,7 +683,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       DeploymentDate: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],
-      RequireInvoice: [false],
+      // RequireInvoice: [false],
 
       // Transport
       Transportation: [],
@@ -707,6 +693,9 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       ShippingCost: [],
       ShippingCostPaymentBy: [],
       ShippingCostPaymentRatio: [100],
+      DirectReceiverName: [],
+      DirectReceiverPhone: [],
+
 
       Details: this.formBuilder.array([]),
     });

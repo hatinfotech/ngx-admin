@@ -1,1 +1,22 @@
-@import '../../../../../assets/style/print.css';
+@import "../../../../../assets/style/print.css";
+
+
+// #print-area .print-voucher-detail-header * {
+//     font-size: 1rem !important;
+//     line-height: 1rem !important;
+// }
+
+.font-large * {
+  font-size: 1.2rem !important;
+  line-height: 1.6rem !important;
+}
+
+#print-area .under-line {
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+
+#print-area .print-voucher-detail-header td {
+    font-size: 1rem !important;
+    line-height: 1rem !important;
+}

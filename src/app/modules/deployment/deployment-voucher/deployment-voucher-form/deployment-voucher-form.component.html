@@ -87,51 +87,37 @@
                             </div>
                         </div>
 
-                        <label class="label label-with-border-below">{{'Common.deliveryAndPayment' | translate | headtitlecase}}</label>
+                        <label class="label label-with-border-below">{{'Thông tin triển khai' | translate | headtitlecase}}</label>
                         <div class="row dashed-radius-border">
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="ObjectBankName" label="Bank.name" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="ObjectBankName" placeholder="{{'Bank.name' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverName" label="Người nhận hàng" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="DirectReceiverName" placeholder="{{'Người nhận hàng' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <ngx-form-group [formGroup]="formItem" name="ObjectBankCode" label="Bank.code" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="ObjectBankCode" placeholder="{{'Bank.code' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverPhone" label="SĐT người nhận hàng" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="DirectReceiverPhone" placeholder="{{'SĐT người nhận hàng' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-md-3">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <ngx-form-group [formGroup]="formItem" name="DeploymentDate" label="{{validateVoucherDate(formItem.get('DeploymentDate'), 'Ngày thực hiện')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                             <input type="text" [owlDateTime]="DeploymentDate" [owlDateTimeTrigger]="DeploymentDate" nbInput fullWidth formControlName="DeploymentDate" placeholder="{{'Ngày thực hiện' | translate | headtitlecase}}">
                                             <owl-date-time #DeploymentDate [startAt]="formItem.get('DeploymentDate')?.value || this.commonService.lastVoucherDate"></owl-date-time>
                                         </ngx-form-group>
                                     </div>
-                                    <div class="col-md-6">
-                                        <ngx-form-group [formGroup]="formItem" name="RequireInvoice" label="Yêu cầu xuất hóa đơn" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                            <nb-checkbox formControlName="RequireInvoice" nbTooltip="Khách yêu cầu xuất hóa đơn VAT">Y/C xuất hóa đơn</nb-checkbox>
-                                        </ngx-form-group>
-                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-3">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <ngx-form-group [formGroup]="formItem" name="PriceTable" label="Sales.priceTable" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                            <ngx-select2 formControlName="PriceTable" [select2Option]="select2SalesPriceReportOption"></ngx-select2>
-                                        </ngx-form-group>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <ngx-form-group [formGroup]="formItem" name="PriceReport" label="Common.priceReport" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                            <ngx-select2 formControlName="PriceReport" [select2Option]="selectPriceReportOption" (selectChange)="onSalectPriceReport(formItem, $event, i)"></ngx-select2>
-                                        </ngx-form-group>
-                                    </div>
-                                </div>
+                            <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="MapUrl" label="Link bản đồ" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="MapUrl" placeholder="{{'Link bản đồ' | translate | headtitlecase}}">
+                                </ngx-form-group>
                             </div>
 
                             <div class="col-sm-9">

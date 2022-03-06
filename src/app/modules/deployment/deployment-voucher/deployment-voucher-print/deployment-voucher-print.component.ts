@@ -40,6 +40,23 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
     super(commonService, router, apiService, ref);
   }
 
+  style = /*css*/`
+  .font-large * {
+    font-size: 1.2rem !important;
+    line-height: 1.6rem !important;
+  }
+
+  #print-area .under-line {
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+  }
+
+  #print-area .print-voucher-detail-header td {
+      font-size: 1rem !important;
+      line-height: 1rem !important;
+  }
+  `;
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -268,7 +285,14 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true }).then(rs => {
+    return this.apiService.getPromise<DeploymentVoucherModel[]>(this.apiPath, { 
+      id: ids, 
+      includeContact: true, 
+      includeDetails: true, 
+      includeRelativeVouchers: true,
+      renderBarCode: true,
+      renderMapUrlQrCode: true
+     }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: DeploymentVoucherModel) => detail.Type === 'PRODUCT');
       }
