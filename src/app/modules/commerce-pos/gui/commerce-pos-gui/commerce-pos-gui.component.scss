@@ -75,7 +75,8 @@
       }
       tr.detail-active {
         td {
-          background-color: var(--danger);
+          // background-color: var(--danger);
+          background-color: var(--ck-color-base-action);
         }
       }
     }

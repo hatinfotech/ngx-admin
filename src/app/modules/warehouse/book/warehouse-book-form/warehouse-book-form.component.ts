@@ -618,7 +618,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
         width: '8%',
         type: 'number-editable',
         editable: true,
-        delay: 3000,
+        delay: 5000,
         onChange: (value: number, row: GoodsModel, component: SmartTableNumberEditableComponent) => {
           const masterPriceTable = this.array.controls[0].get('Code').value;
           if (value !== null) {
@@ -648,7 +648,11 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
                 //Update row
                 this.source.isLocalUpdate = true;
                 try {
-                  const updateItem = (await this.source.getAll()).find(f => row.Code == f.Code && this.commonService.getObjectId(f.WarehouseUnit) == this.commonService.getObjectId(row.WarehouseUnit));
+                  const updateItem = (await this.source.getAll()).find(f => 
+                    row.Code == f.Code 
+                    && this.commonService.getObjectId(f.WarehouseUnit) == this.commonService.getObjectId(row.WarehouseUnit)
+                    && this.commonService.getObjectId(f.Container) == this.commonService.getObjectId(row.Container)
+                    );
                   if (rs[0]['AccessNumbers']) {
                     this.source.update(updateItem, {
                       // ...udpateItem,

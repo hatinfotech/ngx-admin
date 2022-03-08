@@ -56,6 +56,7 @@
                                 </button>
                             </div>
                         </div>
+                        <div *ngIf="orderForm['voucherType'] == 'CPOSRETURNS'" style="padding: 1rem; color: var(--danger); font-weight: bold;">BẠN ĐANG THAO TÁC TRÊN PHIẾU TRẢ HÀNG CHO ĐƠN HÀNG {{orderForm.value?.Order}}</div>
 
                         <div class="pos-order-detail scrollable-container" style="flex: 1; padding: 1rem;">
                             <table #orderDetailTable style="width: 100%; font-size: 1rem; font-weight: bold;">
@@ -104,7 +105,7 @@
                                     <td style="text-align: right;">
                                         <div style="display: flex;">
                                             <div style="flex: 1;">
-                                                <input class="pos-quantity" nbInput size="giant" formControlName="Quantity" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)" [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
+                                                <input class="pos-quantity" nbInput size="giant" formControlName="Quantity" (keydown)="onQuantityKeydown(orderForm, detail, $event, quantityFormat)" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)">
                                             </div>
                                             <div class="pos-unit" style="white-space: nowrap;">{{detail.value.Unit | objecttext}}</div>
                                         </div>
