@@ -258,6 +258,7 @@ import { WarehouseGoodsFindOrderTempPrintComponent } from './modules/warehouse/g
 import { CommercePosBillPrintComponent } from './modules/commerce-pos/gui/commerce-pos-order-print/commerce-pos-bill-print.component';
 import { CommercePosReturnsPrintComponent } from './modules/commerce-pos/gui/commerce-pos-returns-print/commerce-pos-returns-print.component';
 import { CommercePosPaymnentPrintComponent } from './modules/commerce-pos/gui/commerce-pos-payment-print/commerce-pos-payment-print.component';
+import { WarehouseFindOrderTempPrintComponent } from './modules/warehouse/label/warehouse-find-order-temp-print/warehouse-find-order-temp-print.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -352,6 +353,7 @@ export class DynamicLocaleId extends String {
     WarehouseGoodsPrintComponent,
     AssignContainerFormComponent,
     WarehouseBookCommitComponent,
+    WarehouseFindOrderTempPrintComponent,
 
     // Accounting components
     CashReceiptVoucherListComponent,

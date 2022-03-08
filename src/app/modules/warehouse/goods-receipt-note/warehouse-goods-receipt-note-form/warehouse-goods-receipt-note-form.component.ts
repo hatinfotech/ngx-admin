@@ -752,7 +752,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 const voucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeObject: true, includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
@@ -770,7 +770,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
                 // Insert order details into voucher details
                 if (voucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + voucher.Code + ' - ' + voucher.Title }));
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
                   for (const voucherDetail of voucher.Details) {
                     if (voucherDetail.Type === 'PRODUCT') {
                       // delete orderDetail.Id;

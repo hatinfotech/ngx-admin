@@ -7,7 +7,7 @@
             <div id="print-area">
                 <div class="blabel" *ngFor="let item of this.data; let i = index;">
                     <div class="product-name">{{item.Name}}</div>
-                    <div class="product-price">Giá: {{item.Price | currency:'VND'}} / {{item.Unit | objecttext}}</div>
+                    <div class="product-price"><span *ngIf="item.Price">Giá: {{item.Price | currency:'VND'}} / </span>{{item.Unit | objecttext}}</div>
                     <div style="display: flex;">
                         <div class="find-order" style="margin-right: 0.5mm;">{{item.FindOrder || '----'}}</div>
                         <div style="display: flex; align-items: center;">
