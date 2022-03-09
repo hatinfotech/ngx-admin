@@ -515,7 +515,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: WarehouseGoodsReceiptNoteDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: [''],
@@ -667,6 +667,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       if (containerList && containerList.length == 1) {
         detail.get('Container').setValue(containerList[0]);
       }
+
+      if (selectedData && selectedData['ConversionQuantity']) {
+        detail.get('Quantity').setValue(selectedData['ConversionQuantity']);
+      }
     }
   }
 
@@ -763,7 +767,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 } else {
                   delete voucher.Id;
                   // delete voucher.Code;
-                  formGroup.patchValue({ ...voucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -776,7 +780,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                       // delete orderDetail.Id;
                       // delete orderDetail.Voucher;
                       // delete orderDetail.No;
-                      const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${voucher.Code}/${voucherDetail.Id}` });
+                      const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${voucher.Code}/${voucherDetail.Id}` });
                       newDetailFormGroup.get('Business').disable();
                       details.push(newDetailFormGroup);
                       this.onSelectProduct(newDetailFormGroup, voucherDetail.Product, true);
@@ -812,7 +816,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 } else {
                   delete voucher.Id;
                   // delete voucher.Code;
-                  formGroup.patchValue({ ...voucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -826,7 +830,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                         for (const goodsDeliveryDetail of goodsDeliveryVoucher.Details) {
                           if (goodsDeliveryDetail.Type === 'PRODUCT') {
                             const quantity = voucher.Details.find(f => this.commonService.getObjectId(f.Product) == this.commonService.getObjectId(goodsDeliveryDetail.Product))?.Quantity;
-                            const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...goodsDeliveryDetail, No: null, Voucher: null, Business: [this.accountingBusinessList.find(f => f.id == 'GOODSRECEIPTFORRETURNS')], RelateDetail: `GOODSDELIVERY/${goodsDeliveryVoucher.Code}/${goodsDeliveryDetail.Id}`, Quantity: quantity });
+                            const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...goodsDeliveryDetail, Id: null, No: null, Voucher: null, Business: [this.accountingBusinessList.find(f => f.id == 'GOODSRECEIPTFORRETURNS')], RelateDetail: `GOODSDELIVERY/${goodsDeliveryVoucher.Code}/${goodsDeliveryDetail.Id}`, Quantity: quantity });
                             newDtailFormGroup.get('Business').disable();
                             details.push(newDtailFormGroup);
                             this.onSelectUnit(newDtailFormGroup, goodsDeliveryDetail.Unit, true);
@@ -858,15 +862,16 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type }))]);
           }
           if (type === 'GOODSDELIVERY') {
+            // Qui trình tqmj xuất tái nhập
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
                 const details = this.getDetails(formGroup);
                 // get purchase order
-                const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+                const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, detailIncludeUnitConversionCalculate: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu xuất kho chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
@@ -877,29 +882,48 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 } else {
                   delete voucher.Id;
                   // delete voucher.Code;
-                  formGroup.patchValue({ ...voucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
 
                 // Insert order details into voucher details
                 if (voucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + voucher.Code + ' - ' + voucher.Title }));
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Phiếu xuất: ' + voucher.Code + ' - ' + voucher.Title }));
                   for (const voucherDetail of voucher.Details) {
                     if (voucherDetail.Type === 'PRODUCT') {
                       // delete orderDetail.Id;
                       // delete orderDetail.Voucher;
                       // delete orderDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `GOODSDELIVERY/${voucher.Code}/${voucherDetail.Id}` });
-                      newDtailFormGroup.get('Business').disable();
-                      details.push(newDtailFormGroup);
+                      const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `GOODSDELIVERY/${voucher.Code}/${voucherDetail.Id}` });
+                      // newDetailFormGroup.get('Business').disable();
+                      newDetailFormGroup['case'] = 'REIMPORT';
+
+                      let business = [...voucherDetail.Business];
+                      if (business) {
+                        const busunessItemIndex = business.findIndex(f => this.commonService.getObjectId(f) == 'WAREHOUSETEMPORARYEXPORT')
+                        if (busunessItemIndex > -1) {
+                          business[busunessItemIndex] = { id: 'WAREHOUSEREIMPORT', text: 'Tái nhập hàng hóa' };
+                        }
+                        newDetailFormGroup.get('Business').setValue(business);
+                      }
+
+                      details.push(newDetailFormGroup);
+
+                      if (voucherDetail.Product?.Units) {
+                        newDetailFormGroup['unitList'] = voucherDetail.Product?.Units;
+                      }
+
+                      const chooseUnit = voucherDetail.Product?.Units.find(f => this.commonService.getObjectId(f) == this.commonService.getObjectId(voucherDetail.Unit));
+                      this.onSelectUnit(newDetailFormGroup, chooseUnit, true);
+
                     }
                   }
                 }
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
           }
           setTimeout(() => {
             this.onProcessed();
@@ -934,6 +958,14 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     const relationVoucher = formGroup.get('RelativeVouchers');
     relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
     return false;
+  }
+
+  extractToOtherUnits(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
+    const formDetails = this.getDetails(parentFormGroup);
+    const newDetailFormGroup = this.makeNewDetailFormGroup(parentFormGroup, { ...detail.value, Id: null });
+    newDetailFormGroup['unitList'] = detail['unitList'];
+    newDetailFormGroup['case'] = detail['case'];
+    formDetails.controls.splice(index, 0, newDetailFormGroup);
   }
 
 }

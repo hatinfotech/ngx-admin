@@ -284,7 +284,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Business" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Business" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
                                                             <ngx-select2 [data]="accountingBusinessList" formControlName="Business" (selectChange)="toMoney(formItem, detail, 'Business', ic)" [select2Option]="select2OptionForAccountingBusiness"></ngx-select2>
                                                         </ngx-form-group>
                                                     </div>

@@ -337,7 +337,14 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   async init() {
     // await this.loadCache();
-    return super.init();
+    return super.init().then(rs => {
+      if (this.isDuplicate) {
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Sku').setValue('');
+        });
+      }
+      return rs;
+    });
   }
 
   /** Execute api get */

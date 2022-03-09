@@ -427,7 +427,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CashVoucherDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       AccountingBusiness: [''],
       Description: ['', Validators.required],
       RelateCode: [''],
@@ -636,7 +636,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       } else {
         delete salesVoucher.Id;
         delete salesVoucher.Code;
-        formGroup.patchValue({ ...salesVoucher, Details: [] });
+        formGroup.patchValue({ ...salesVoucher, Id: null, Details: [] });
         formGroup.get('Description').patchValue('Thu tiền cho ' + salesVoucher.Title);
         details.clear();
       }
@@ -660,6 +660,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
           DebitAccount: '1111',
           CreditAccount: '131',
           Amount: totalMoney,
+          Id: null,
         });
         details.push(newDtailFormGroup);
       }
@@ -681,3 +682,4 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
 }
+  

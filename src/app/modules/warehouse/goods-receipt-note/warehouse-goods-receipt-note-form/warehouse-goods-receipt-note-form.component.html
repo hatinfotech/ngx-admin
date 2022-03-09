@@ -186,13 +186,18 @@
                                         <div class="row">
                                             <div class="col-md-3 col-sm-3 col-xs-3">
                                                 <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="No" label="Common.no" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
+                                                    <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;" value="{{ic+1}}">
                                                     <input type="hidden" formControlName="Id">
                                                 </ngx-form-group>
                                                 <div class="form-group">
                                                     <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
                                                     <button nbButton status="{{getFieldValue(detail, 'Type') === 'PRODUCT' ? 'danger' : 'primary'}}" hero size="medium" (click)="removeDetailGroup(formItem, detail, ic)" style="width: 100%; margin-bottom: 3px; padding: 0">
                                                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                                    </button>
+                                                </div>
+                                                <div class="form-group" *ngIf="detail['case'] == 'REIMPORT'" >
+                                                    <button nbButton status="primary" hero size="medium" (click)="extractToOtherUnits(formItem, detail, ic)" style="width: 100%; margin-bottom: 3px; padding: 0" nbTooltip="Chuyển đổi đơn vị tính">
+                                                        <nb-icon pack="eva" icon="corner-down-right-outline"></nb-icon>
                                                     </button>
                                                 </div>
                                             </div>
@@ -221,7 +226,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Business" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Business" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false">
                                                     <ngx-select2 [data]="accountingBusinessList" formControlName="Business" [select2Option]="select2OptionForAccountingBusiness"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
@@ -274,7 +279,7 @@
                             <div class="row">
                                 <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                                     <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero [disabled]="isProcessing">
-                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Purchase.addProduct' | translate | headtitlecase}}
+                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Thêm chi tiết' | translate | headtitlecase}}
                                     </button>
                                 </div>
                                 <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12"></div>

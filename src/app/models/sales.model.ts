@@ -43,7 +43,7 @@ export class SalesVoucherModel extends Model {
 }
 
 export class SalesVoucherDetailModel extends Model  {
-  Id?: string & number;
+  Id?: any;
   Voucher?: string;
   No?: number;
   Type?: string;
@@ -55,7 +55,7 @@ export class SalesVoucherDetailModel extends Model  {
   Image?: string;
   CurrencyType?: string;
   Unit?: string & UnitModel;
-  Business?: string | BusinessModel[];
+  Business?: string[] | BusinessModel[];
   ProductName?: string;
   PriceTableDetail?: string;
 }
@@ -96,7 +96,7 @@ export class SalesReturnsVoucherModel extends Model {
 }
 
 export class SalesReturnsVoucherDetailModel extends Model  {
-  Id?: string & number;
+  Id?: any;
   Voucher?: string;
   No?: number;
   Type?: string;

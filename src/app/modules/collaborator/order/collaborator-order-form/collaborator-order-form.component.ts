@@ -634,7 +634,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesPriceReportDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT'],
       Product: [''],

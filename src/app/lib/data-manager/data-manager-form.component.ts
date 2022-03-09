@@ -192,15 +192,16 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     if (this.isDuplicate) {
       // Clear id
       this.id = [];
-      
+
       const keyList = Array.isArray(this.idKey) ? this.idKey : [this.idKey];
       for (const formItem of this.array.controls) {
         for (const key of keyList) {
           formItem.get(key).setValue('');
-          
+
         }
         // Clear relative vouchers
-        formItem.get('RelativeVouchers').setValue([]);
+        const relativeVouchersFormControl = formItem.get('RelativeVouchers');
+        relativeVouchersFormControl && relativeVouchersFormControl.setValue([]);
       }
     }
     return true;
@@ -418,7 +419,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   /** Error event */
   onError(e: HttpErrorResponse) {
     // console.log(e);
-    if(false) if (e?.status === 500) {
+    if (false) if (e?.status === 500) {
       this.close();
     }
     if (e && e.error && e.error.logs) {
@@ -774,10 +775,12 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   select2OptionForContact = {
-    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-      item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-      return item;
-    }}),
+    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+      placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+        item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        return item;
+      }
+    }),
 
     // placeholder: 'Chọn liên hệ...',
     // allowClear: true,

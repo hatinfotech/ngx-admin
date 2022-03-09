@@ -614,7 +614,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesReturnsVoucherDetailModel): FormGroup {
     let newForm = null;
     newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {
@@ -1021,7 +1021,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
                 } else {
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
+                  formGroup.patchValue({ ...refVoucher, Id: null, Code: null, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -1075,7 +1075,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
                   // }
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...refVoucher, Id: null, Code: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -1089,7 +1089,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
 
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
                     if (voucherDetail.Type !== 'CATEGORY') {
                       // delete voucherDetail.Id;

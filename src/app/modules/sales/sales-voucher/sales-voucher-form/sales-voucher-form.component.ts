@@ -736,7 +736,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesVoucherDetailModel): FormGroup {
     let newForm = null;
     newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {
@@ -1263,14 +1263,14 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                 } else {
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
+                  formGroup.patchValue({ ...refVoucher, Code: null, Id: null, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
 
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu xuất kho: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Phiếu xuất kho: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
                     if (voucherDetail.Type !== 'CATEGORY') {
                       // delete voucherDetail.Id;
@@ -1317,7 +1317,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                   // }
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...refVoucher, Id: null, Code: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -1329,7 +1329,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
                     if (voucherDetail.Type !== 'CATEGORY') {
                       // delete voucherDetail.Id;

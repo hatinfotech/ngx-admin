@@ -479,7 +479,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: WarehouseInventoryAdjustNoteDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: [''],
@@ -783,7 +783,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 } else {
                   delete voucher.Id;
                   // delete voucher.Code;
-                  formGroup.patchValue({ ...voucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...voucher, Id: null, Code: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -796,7 +796,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                       // delete orderDetail.Id;
                       // delete orderDetail.Voucher;
                       // delete orderDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${voucher.Code}/${voucherDetail.Id}` });
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASE/${voucher.Code}/${voucherDetail.Id}` });
                       newDtailFormGroup.get('Business').disable();
                       details.push(newDtailFormGroup);
                     }
@@ -827,20 +827,20 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 } else {
                   delete voucher.Id;
                   // delete voucher.Code;
-                  formGroup.patchValue({ ...voucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...voucher, Id: null, Code: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
 
                 // Insert order details into voucher details
                 if (voucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + voucher.Code + ' - ' + voucher.Title }));
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Phiếu bán hàng: ' + voucher.Code + ' - ' + voucher.Title }));
                   for (const voucherDetail of voucher.Details) {
                     if (voucherDetail.Type === 'PRODUCT') {
                       // delete orderDetail.Id;
                       // delete orderDetail.Voucher;
                       // delete orderDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `GOODSDELIVERY/${voucher.Code}/${voucherDetail.Id}` });
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `GOODSDELIVERY/${voucher.Code}/${voucherDetail.Id}` });
                       newDtailFormGroup.get('Business').disable();
                       details.push(newDtailFormGroup);
                     }

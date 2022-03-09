@@ -483,7 +483,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: WarehouseGoodsDeliveryNoteDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: [''],
@@ -799,7 +799,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 } else {
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...refVoucher, Id: null, Code: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -812,7 +812,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                       delete voucherDetail.Id;
                       delete voucherDetail.Voucher;
                       delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY') });
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY') });
                       details.push(newDtailFormGroup);
                       this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
                     }
@@ -821,7 +821,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
           }
           if (type === 'PRICEREPORT') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -864,7 +864,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PRICEREPORT' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
           }
           if (type === 'DEPLOYMENT') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -906,7 +906,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'DEPLOYMENT' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
           }
           setTimeout(() => {
             this.onProcessed();

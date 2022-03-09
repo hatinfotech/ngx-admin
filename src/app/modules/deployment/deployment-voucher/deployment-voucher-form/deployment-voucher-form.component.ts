@@ -767,7 +767,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: DeploymentVoucherDetailModel): FormGroup {
     let newForm = null;
     newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {

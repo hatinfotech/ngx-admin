@@ -528,7 +528,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesPriceReportDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT'],
       Product: [''],

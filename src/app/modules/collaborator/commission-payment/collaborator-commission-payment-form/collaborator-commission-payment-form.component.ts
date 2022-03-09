@@ -411,7 +411,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
 
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CashVoucherDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       // AccountingBusiness: [''],
       Description: ['', Validators.required],
       // RelateCode: [''],

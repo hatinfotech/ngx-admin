@@ -548,7 +548,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: PurchaseVoucherDetailModel): FormGroup {
     let newForm: FormGroup;
     newForm = this.formBuilder.group({
-      Id: [''],
+      // Id: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {
@@ -859,20 +859,20 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
               } else {
                 delete purchaseOrder.Id;
                 delete purchaseOrder.Code;
-                formGroup.patchValue({ ...purchaseOrder, Details: [] });
+                formGroup.patchValue({ ...purchaseOrder, Id: null, Details: [] });
                 details.clear();
               }
               insertList.push(chooseItems[i]);
 
               // Insert order details into voucher details
               if (purchaseOrder?.Details) {
-                details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseOrder.Code + ' - ' + purchaseOrder.Title }));
+                details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Phiếu đặt mua hàng: ' + purchaseOrder.Code + ' - ' + purchaseOrder.Title }));
                 for (const orderDetail of purchaseOrder.Details) {
                   if (orderDetail.Type !== 'CATEGORY') {
                     delete orderDetail.Id;
                     // delete orderDetail.Order;
                     delete orderDetail.No;
-                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {...orderDetail});
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {...orderDetail, Id: null});
                     details.push(newDtailFormGroup);
                     await new Promise(resolve => setTimeout(() => resolve(true), 300));
                     this.toMoney(formGroup, newDtailFormGroup);
