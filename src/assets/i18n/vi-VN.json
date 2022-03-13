@@ -316,6 +316,7 @@
         "supplier": "nhà cung cấp",
         "supplierName": "tên nhà cung cấp",
         "contactName": "tên liên hệ",
+        "contactId": "ID liên hệ",
         "shortName": "tên rút gọn",
         "branchAddress": "địa chỉ chi nhánh",
         "autoGenerate": "tự phát sinh",
