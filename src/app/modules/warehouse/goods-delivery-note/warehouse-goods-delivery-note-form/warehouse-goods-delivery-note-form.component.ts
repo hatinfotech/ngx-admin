@@ -629,7 +629,10 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     if (selectedData && selectedData['AccessNumbers']) {
       detail['AccessNumberList'] = selectedData['AccessNumbers'].map(accessNumber => {
         const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+        const unit = detail.get('Unit').value;
+        const unitSeq = unit?.Sequence || '';
         let goodsId = this.commonService.getObjectId(detail.get('Product').value).replace(new RegExp(`^118${coreEmbedId}`), '');
+        goodsId = (unitSeq + '').length + unitSeq + goodsId;
         let an = accessNumber.replace(/^127/, '');
 
         accessNumber = { id: accessNumber, text: (goodsId.length + 10 + '').padStart(2, '0') + `${goodsId}` + an };
