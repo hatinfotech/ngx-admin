@@ -266,7 +266,7 @@
                                             </div>
                                             <div class="col-md-9 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber']">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-select2 formControlName="AccessNumbers" [select2Option]="select2OptionForAccessNumbers" (selectChange)="onSelectAccessNumbers(detail, $event)"></ngx-select2>
+                                                    <ngx-select2 formControlName="AccessNumbers" [select2Option]="select2OptionForAccessNumbers" #select2 (selectChange)="onSelectAccessNumbers(detail, $event, select2)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <input type="hidden" nbInput fullWidth formControlName="RelateDetail">

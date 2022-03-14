@@ -27,6 +27,7 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
+import { Select2Component } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-form',
@@ -868,7 +869,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
               if (index < 0) {
                 const details = this.getDetails(formGroup);
                 // get purchase order
-                const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, detailIncludeUnitConversionCalculate: true }).then(rs => rs[0]);
+                const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, detailIncludeUnitConversionCalculate: true, includeAccessNumbers: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
                   this.commonService.toastService.show(this.commonService.translateText('Phiếu xuất kho chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
@@ -966,6 +967,29 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     newDetailFormGroup['unitList'] = detail['unitList'];
     newDetailFormGroup['case'] = detail['case'];
     formDetails.controls.splice(index, 0, newDetailFormGroup);
+  }
+
+  onSelectAccessNumbers(detail: FormGroup, selectedData: any, select2Conponent: Select2Component) {
+    // const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+    let hadChanged = false;
+    for (const an of selectedData) {
+      if (!an?.origin && an.id == an.text) {
+        const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+        console.log(accessNumber, goodsId);
+        // an.text = an.text + ' (' + accessNumber + ')';
+        an.text = accessNumber + ' (' + this.commonService.getObjectId(an) + ')';
+        an.id = accessNumber;
+        hadChanged = true;
+      }
+    }
+    if (hadChanged) {
+      detail.get('AccessNumbers').setValue(selectedData);
+      // const accessNumbersControl = detail.get('AccessNumbers');
+      // accessNumbersControl.setValue(selectedData);
+      setTimeout(() => {
+        $(select2Conponent['controls']['element'][0])['select2']('open');
+      }, 500);
+    }
   }
 
 }
