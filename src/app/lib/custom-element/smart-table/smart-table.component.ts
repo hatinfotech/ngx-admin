@@ -376,19 +376,24 @@ export class SmartTableTagsComponent extends SmartTableBaseComponent implements 
 }
 @Component({
   template: `<div [style]="style" [class]="class">
-    <a (click)="onClick(value)" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{value.type}}: {{value.text}}"><nb-icon icon="{{value.icon || 'pricetags'}}" pack="{{value.iconPack || 'eva'}}"></nb-icon> {{labelAsText(value) || value.id}}</a>
+    <a (click)="onClick(value)" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{renderToolTip(value)}}"><nb-icon icon="{{value.icon || 'pricetags'}}" pack="{{value.iconPack || 'eva'}}"></nb-icon> {{labelAsText(value) || value.id}}</a>
   </div>`,
 })
 export class SmartTableTagComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
-  @Input() value: { id: string, text: string, type?: string, icon?: string, iconPack?: string, status?: string } | any;
+  @Input() value: SmartTableCompoentTagModel | any;
   @Input() rowData: any;
 
   @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
 
-  labelAsText = (tag) => {
+  labelAsText = (tag: SmartTableCompoentTagModel) => {
     return null;
   };
+
+  renderToolTip(tag: SmartTableCompoentTagModel) {
+    return (tag.type ? `${tag.type}: ` : '') + tag.text;
+  }
+
   nowrap = true;
 
   ngOnInit() {

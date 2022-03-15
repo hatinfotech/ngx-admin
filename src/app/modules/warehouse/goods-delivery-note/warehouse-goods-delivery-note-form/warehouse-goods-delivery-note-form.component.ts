@@ -495,7 +495,8 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       // ToMoney: [0],
       Image: [[]],
       Container: [''],
-      Business: { value: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), disabled: true },
+      // Business: { value: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), disabled: true },
+      Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY')],
       RelateDetail: [''],
       AccessNumbers: [[]]
     });

@@ -1029,29 +1029,29 @@ body ng2-smart-table .no {
   text-align: left;
 }
 
-.nb-theme-dark
-  ng2-smart-table
-  thead
-  tr.ng2-smart-filters
-  th
-  .ng2-smart-filter
-  input {
-  background: #182037 !important;
-  border-color: #14192f !important;
-  color: #fff !important;
-}
+// .nb-theme-dark
+//   ng2-smart-table
+//   thead
+//   tr.ng2-smart-filters
+//   th
+//   .ng2-smart-filter
+//   input {
+//   background: #182037 !important;
+//   border-color: #14192f !important;
+//   color: #fff !important;
+// }
 
-.nb-theme-cosmic
-  ng2-smart-table
-  thead
-  tr.ng2-smart-filters
-  th
-  .ng2-smart-filter
-  input {
-  background: #232547 !important;
-  border-color: #191b36 !important;
-  color: #fff !important;
-}
+// .nb-theme-cosmic
+//   ng2-smart-table
+//   thead
+//   tr.ng2-smart-filters
+//   th
+//   .ng2-smart-filter
+//   input {
+//   background: #232547 !important;
+//   border-color: #191b36 !important;
+//   color: #fff !important;
+// }
 
 @media (max-width: 50rem) {
   nb-card.small-header {

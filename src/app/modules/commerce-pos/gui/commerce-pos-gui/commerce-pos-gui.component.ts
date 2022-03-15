@@ -83,6 +83,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   systemConfigs: SystemConfigModel;
   shortcutKeyContext: string = 'main';
 
+  searchResults: ProductModel[] = null;
+  searchResultActiveIndex = 0;
+
   constructor(
     public commonService: CommonService,
     public router: Router,
@@ -317,13 +320,44 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return total;
   }
 
-  onSearchInputKeydown(event: any) {
+  async onSearchInputKeydown(event: any) {
     console.log(event);
 
-    if (event.key == 'Enter') {
-      const inputValue: string = event.target?.value;
+    const inputValue: string = event.target?.value;
+    if (event.key == 'Enter' && (!this.searchResults || this.searchResults.length == 0)) {
       event.target.value = '';
-      this.barcodeProcess(inputValue);
+      try {
+        await this.barcodeProcess(inputValue);
+      } catch (err) {
+        this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning' });
+      }
+    }
+    return true;
+  }
+
+  async onSearchInputKeyup(event: any) {
+    console.log(event);
+
+    const inputValue: string = event.target?.value;
+    if (event.key != 'Enter') {
+      if (/\w+/.test(inputValue)) {
+        this.commonService.takeUntilCallback('commerce-pos-search', 300, () => {
+          this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+            includeUnit: true,
+            includePrice: true,
+            search: inputValue,
+            includeInventory: true,
+            includeWarehouseUnit: true,
+            isNotManageByAccessNumber: true
+          }).then(rs => {
+            this.searchResults = rs;
+            rs[0].active = true;
+            // return rs;
+          });
+        });
+      } else {
+        this.searchResults = null;
+      }
     }
     return true;
   }
@@ -697,6 +731,27 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   onKeyboardEvent(event: KeyboardEvent) {
     // console.log(event);
 
+    if (this.searchResults && this.searchResults.length > 0) {
+      if (event.key == 'ArrowRight') {
+        if (this.searchResultActiveIndex < this.searchResults.length - 1) {
+          this.searchResultActiveIndex++;
+          event.preventDefault();
+        }
+      }
+      if (event.key == 'ArrowLeft') {
+        if (this.searchResultActiveIndex > 0) {
+          this.searchResultActiveIndex--;
+        }
+        event.preventDefault();
+      }
+      if (event.key == 'Enter') {
+        const product = this.searchResults[this.searchResultActiveIndex];
+        this.onChooseProduct(product);
+        event.preventDefault();
+      }
+      return true;
+    }
+
     if (event.key == 'Escape') {
       this.shortcutKeyContext = 'main';
       return true;
@@ -744,7 +799,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         // quantityEle.select();
 
         this.focusToQuantity(activeDetailIndex);
-        
         event.preventDefault();
         return false;
       }
@@ -1188,5 +1242,18 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         }
       });
     });
+  }
+
+  onChooseProduct(product: ProductModel) {
+    this.searchEleRef.nativeElement.value = '';
+    let productId = product.Code;
+    this.searchResults = null;
+    this.searchResultActiveIndex = 0;
+    if (product.WarehouseUnit['sequence']) {
+      const miniErpCode = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+      productId = productId.replace(new RegExp('^118' + miniErpCode), '');
+      productId = product.WarehouseUnit['sequence'].length + product.WarehouseUnit['sequence'] + productId;
+    }
+    this.barcodeProcess(productId);
   }
 }

@@ -1,3 +1,5 @@
+import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
+import { SmartTableTagComponent } from './../../../../lib/custom-element/smart-table/smart-table.component';
 import { WarehouseGoodsFindOrderTempPrintComponent } from './../warehouse-goods-find-order-temp-print/warehouse-goods-find-order-temp-print.component';
 import { Component, OnInit } from '@angular/core';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
@@ -19,6 +21,7 @@ import { WarehouseGoodsPrintComponent } from '../warehouse-goods-print/warehouse
 import { takeUntil } from 'rxjs/operators';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -392,8 +395,90 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         },
         Inventory: {
           title: this.commonService.translateText('Warehouse.inventory'),
-          type: 'string',
+          type: 'custom',
           width: '10%',
+          renderComponent: SmartTableTagComponent,
+          onComponentInitFunction: (component: SmartTableTagComponent) => {
+            component.renderToolTip = (tag) => {
+              return component.rowData?.AccessNumbers?.join(', ') || '';
+            };
+            component.click.pipe(takeUntil(this.destroy$)).subscribe(tag => {
+              const filter = { id: component.rowData?.AccessNumbers };
+              this.commonService.openDialog(DynamicListDialogComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  choosedMode: true,
+                  onDialogChoose: async (choosedItems: any[]) => {
+                    console.log(choosedItems);
+                    this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+                      context: {
+                        id: choosedItems.map(m => this.commonService.getObjectId(m['AccessNumber']))
+                      }
+                    });
+                  },
+                  title: 'Các số truy xuất đang có mặt tại: ' + this.commonService.getObjectText(component.rowData.Container),
+                  apiPath: '/warehouse/goods-receipt-note-detail-access-numbers',
+                  idKey: ['Product'],
+                  params: {
+                    includeWarehouse: true,
+                    includeContainer: true,
+                    includeProduct: true,
+                    includeUnit: true,
+                    renderBarCode: true,
+                    // renderQrCode: true,
+                    includePrice: true,
+                    ...filter
+                  },
+                  // actionButtonList: [],
+                  listSettings: {
+                    // pager: {
+                    //   display: true,
+                    //   perPage: 10,
+                    // },
+                    actions: false,
+                    columns: {
+                      AccessNumber: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Số truy xuất'), 'head-title'),
+                        type: 'text',
+                        renderComponent: SmartTableTagsComponent,
+                        width: '10%',
+                      },
+                      Product: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Hàng hóa'), 'head-title'),
+                        type: 'string',
+                        width: '80%',
+                        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                        valuePrepareFunction: (cell: any, row: any) => {
+                          return this.commonService.getObjectText(cell);
+                        }
+                      },
+                      Unit: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Đơn vị tính'), 'head-title'),
+                        type: 'string',
+                        width: '10%',
+                        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                        valuePrepareFunction: (cell, row) => {
+                          return this.commonService.getObjectText(cell);
+                        }
+                      },
+                      // Container: {
+                      //   title: this.commonService.textTransform(this.commonService.translate.instant('Vị trí'), 'head-title'),
+                      //   type: 'string',
+                      //   width: '50%',
+                      //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                      //   valuePrepareFunction: (cell) => {
+                      //     return this.commonService.getObjectText(cell);
+                      //   }
+                      // },
+                    }
+                  }
+                }
+              });
+            })
+          },
+          valuePrepareFunction: (cell: any, row: any) => {
+            return { id: cell, text: cell, type: 'Tồn kho' } as any;
+          }
         },
         PrintFindOrder: {
           title: this.commonService.translateText('In số nhận thức'),

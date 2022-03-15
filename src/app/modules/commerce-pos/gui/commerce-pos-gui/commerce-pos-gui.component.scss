@@ -146,6 +146,16 @@
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
+  .pos-search-result-item {
+    img {
+      border-radius: 0.5rem;
+    }
+
+  }
+  .pos-search-result-item:hover,
+  .pos-search-result-item.active {
+    background-color: var(--ck-color-button-action-hover-background);
+  }
 }
 .scrollable-container {
   max-width: initial;

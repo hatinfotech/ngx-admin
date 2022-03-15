@@ -22,13 +22,14 @@ class SmartTableFilterQuery {
 @Component({
   selector: 'ngx-smart-table-filter',
   template: `
-      <input type="text" [ngClass]="inputClass" nbInput fullWidth [formControl]="inputControl" placeholder="{{ column.title }}" (keyup)="doSerach($event)">
+      <input type="text" [status]="status" [ngClass]="inputClass" nbInput fullWidth [formControl]="inputControl" placeholder="{{ column.title }}" (keyup)="doSerach($event)">
   `,
 })
 export class SmartTableFilterComponent extends DefaultFilter implements OnInit, OnChanges {
 
   inputControl = new FormControl();
   condition?: string;
+  status = 'basic';
 
   // searchEvent = 'keyup';
 
@@ -40,6 +41,7 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
   }
 
   doSerach(event: KeyboardEvent) {
+    
     if (event.key == 'Enter') {
       if (this.condition) {
         this.query = new SmartTableFilterQuery(this.condition, this.inputControl.value) as any;
@@ -48,14 +50,22 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
         this.query = this.inputControl.value;
         this.setFilter();
       }
-    } else {
-      if (!this.inputControl.value) {
-        this.commonService.takeUntilCallback('smart-table-filter-input-keyup', 300, () => {
-          this.query = new SmartTableFilterQuery(this.condition, this.inputControl.value) as any;
-          this.setFilter();
-        });
-      }
-    }
+      this.status = 'success';
+      setTimeout(() => {
+        this.status = 'basic';
+      }, 1000);
+    } 
+    // else {
+    //   this.status = 'warning';
+    // }
+    // else {
+    //   if (!this.inputControl.value) {
+    //     this.commonService.takeUntilCallback('smart-table-filter-input-keyup', 300, () => {
+    //       this.query = new SmartTableFilterQuery(this.condition, this.inputControl.value) as any;
+    //       this.setFilter();
+    //     });
+    //   }
+    // }
   }
 
   ngOnInit() {
@@ -69,20 +79,21 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
     if (this.query) {
       this.inputControl.setValue(this.query);
     }
-    // this.inputControl.valueChanges
-    //   .pipe(
-    //     distinctUntilChanged(),
-    //     debounceTime(this.delay),
-    //   )
-    //   .subscribe((value: string) => {
-    //     if (this.condition) {
-    //       this.query = new SmartTableFilterQuery(this.condition, value) as any;
-    //       this.setFilter();
-    //     } else {
-    //       this.query = this.inputControl.value;
-    //       this.setFilter();
-    //     }
-    //   });
+    this.inputControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        // debounceTime(this.delay),
+      )
+      .subscribe((value: string) => {
+        // if (this.condition) {
+        //   this.query = new SmartTableFilterQuery(this.condition, value) as any;
+        //   this.setFilter();
+        // } else {
+        //   this.query = this.inputControl.value;
+        //   this.setFilter();
+        // }
+        this.status = 'warning';
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {

@@ -47,8 +47,25 @@
                         </div> -->
 
                         <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem;">
-                            <div class="pos-search-input-wrap" style="flex: 1;">
-                                <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" type="text" nbInput status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" fieldSize="giant" fullWidth placeholder="F3 - Tìm hàng hóa theo số truy xuất, sku, id, tên..." class="pos-search-input">
+                            <div class="pos-search-input-wrap" style="flex: 1; position: relative;">
+                                <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" (keyup)="onSearchInputKeyup($event)" type="text" nbInput status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" fieldSize="giant" fullWidth placeholder="F3 - Tìm hàng hóa theo số truy xuất, sku, id, tên..." class="pos-search-input">
+                                <div id="searchResults" style="position: absolute; width: 100%;
+                                background: var(--ck-color-base-background);" *ngIf="searchResults && searchResults.length > 0">
+                                    <div style="display: flex; flex-wrap: wrap;">
+                                        <div class="pos-search-result-item" style="display: flex;
+                                        flex-direction: column;
+                                        cursor: pointer;
+                                        padding: 0.5rem;
+                                        border: 1px solid var(--ck-color-base-border);
+                                        border-radius: 1rem; font-size: 1.2rem; line-height: 1.4rem;
+                                        margin: 0.5rem;" *ngFor="let item of searchResults; let i = index" [ngClass]="{'active': i == searchResultActiveIndex}" (click)="onChooseProduct(item)">
+                                            <img style="width: 10rem;" src="{{item.FeaturePicture?.SmallImage}}">
+                                            <div style="margin-top: 0.5rem;">SKU: {{item.Sku}}</div>
+                                            <div>{{item.Name}}</div>
+                                            <div style="color: var(--danger);">{{item.Price | currency:'VND'}}/{{item.WarehouseUnit | objecttext}}</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="pos-search-button-wrap">
                                 <button nbButton status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" class="pos-search-button" size="giant" style="margin-left: 1rem; width: 3.3rem;">

@@ -21,7 +21,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
 
   /** Component name */
   componentName = 'WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent';
-  title: string = 'QRCode chỗ chứa hàng hóa ';
+  title: string = 'BarCode hàng hóa';
   env = environment;
   apiPath = '/warehouse/goods-receipt-note-detail-access-numbers';
   processMapList: ProcessMap[] = [];
