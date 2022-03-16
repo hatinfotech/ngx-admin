@@ -448,9 +448,10 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         const newUnitConversion = this.makeNewUnitConversionFormGroup({}, newForm);
         unitConversions.push(newUnitConversion);
         this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
-      } else {
-        unitConversions.controls[0].get('Unit').setValue(value);
       }
+      // else {
+      // unitConversions.controls[0].get('Unit').setValue(value);
+      // }
     });
     // const skuControl = newForm.get('Sku');
     // const nameControl = newForm.get('Name');
@@ -722,6 +723,13 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
           }
         }
       }
+    }
+  }
+
+  onWarehouseChange(formGroup: FormGroup, seltectData: UnitModel, index: number) {
+    if (!this.isProcessing) {
+      const unitConversion = this.getUnitConversions(formGroup);
+      unitConversion.controls[0].get('Unit').setValue(seltectData?.id);
     }
   }
 }

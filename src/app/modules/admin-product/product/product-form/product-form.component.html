@@ -20,7 +20,7 @@
               </div>
               <div class="col-sm-2">
                 <ngx-form-group [formGroup]="formItem" name="WarehouseUnit" label="Đơn vị tính cơ bản" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [customIcons]="unitControlIcons" [touchedValidate]="false">
-                  <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList"></ngx-select2>
+                  <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList"  (selectChange)="onWarehouseChange(formItem, $event, i)"></ngx-select2>
                 </ngx-form-group>
               </div>
               <div class="col-sm-2">
