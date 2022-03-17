@@ -118,10 +118,14 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
     // return this.data.Code;
     return '';
   }
-  
+
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<PurchaseVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true }).then(data => {
       this.summaryCalculate(data);
+      for (const item of data) {
+        this.setDetailsNo(item.Details, (detail: PurchaseVoucherDetailModel) => detail.Type !== 'CATEGORY');
+      }
+
       return data;
     });
   }

@@ -66,8 +66,8 @@
                 <td class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
               </thead>
               <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
-                <td>{{i + 1}}</td>
-                <td>{{renderValue(detail.Product | objectid)}}</td>
+                <td>{{detail.No}}</td>
+                <td>{{renderValue(detail.Product | objectid)}} - SKU:{{detail.Product?.Sku}}</td>
                 <td>{{renderValue(detail.Description)}}</td>
                 <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                 <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>

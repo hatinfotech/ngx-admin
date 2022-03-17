@@ -1,3 +1,5 @@
+import { takeUntil, filter } from 'rxjs/operators';
+import { FormControl, FormBuilder, FormArray } from '@angular/forms';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberModel } from './../../../../models/warehouse.model';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { DatePipe } from '@angular/common';
@@ -11,6 +13,8 @@ import { WarehouseGoodsDeliveryNoteModel, WarehouseGoodsDeliveryNoteDetailModel 
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AnyTxtRecord } from 'dns';
+import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'ngx-warehouse-goods-access-number-print',
@@ -113,9 +117,13 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     margin: 2mm;
     padding: 0mm;
   }
+  .print-choosed {
+    display: none;
+  }
   `;
 
   registerInfo: any;
+  choosedForms = this.formBuilder.array([]);
 
   constructor(
     public commonService: CommonService,
@@ -123,6 +131,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     public apiService: ApiService,
     public ref: NbDialogRef<WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent>,
     public datePipe: DatePipe,
+    public formBuilder?: FormBuilder,
   ) {
     super(commonService, router, apiService, ref);
   }
@@ -150,6 +159,36 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     //   this.processMapList[i] = AppModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
     // }
     this.summaryCalculate(this.data);
+
+    const printActionButton = this.actionButtonList.find(f => f.name == 'print');
+    if (printActionButton) {
+      printActionButton.click = (event?: any, option?: ActionControlListOption) => {
+        this.print(option?.index);
+      };
+    }
+
+    this.actionButtonList.unshift({
+      name: 'choosedtoogle',
+      label: 'Chọn/bỏ chọn',
+      status: 'info',
+      title: 'Chọn/bỏ chọn tất cả',
+      type: 'button',
+      icon: 'checkmark-square-outline',
+      click: () => {
+        if (this.choosedForms.controls.length == this.choosedForms.controls.filter(f => f.get('Choosed').value).length) {
+          for (const itemControl of this.choosedForms.controls) {
+            itemControl.get('Choosed').setValue(false);
+          }
+        } else {
+
+          for (const itemControl of this.choosedForms.controls) {
+            itemControl.get('Choosed').setValue(true);
+          }
+        }
+      },
+      size: 'medium'
+    });
+
 
     return result;
   }
@@ -229,6 +268,8 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       // eq_Type: this.printForType,
       // id: this.id,
       // eq_Voucher: this.voucher,
+      sort_No: 'asc',
+      sort_AccessNumberNo: 'asc',
       limit: 'nolimit',
       ...params
     }).then(rs => {
@@ -250,6 +291,22 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       //   }
       // }
       // return table;
+      this.choosedForms.controls = [];
+      for (const item of rs) {
+        const formData = {};
+        for (const field of Object.keys(item)) {
+          formData[field] = [item[field]];
+        }
+        const checkbox = this.formBuilder.group({
+          'Choosed': [true],
+          ...formData,
+        });
+        this.choosedForms.push(checkbox);
+
+        checkbox.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+          console.log(value);
+        });
+      }
       return rs;
     });
   }
@@ -257,6 +314,25 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
 
   getItemDescription(item: WarehouseGoodsDeliveryNoteModel) {
     return item?.Description;
+  }
+
+  async print(index?: number) {
+    const oldLength = this.choosedForms.controls.length;
+    const currentForm = this.choosedForms.controls;
+    this.choosedForms.controls = this.choosedForms.controls.filter(f => f.value?.Choosed);
+    if (this.choosedForms.controls.length === 0) {
+      this.commonService.toastService.show('Không có tem nào được chọn !', 'In barcode', { status: 'warning' })
+      this.choosedForms.controls = [...currentForm];
+    } else {
+      if (oldLength != this.choosedForms.controls.length) {
+        setTimeout(() => {
+          super.print();
+        }, 1000);
+      } else {
+        super.print();
+      }
+    }
+    return true;
   }
 
 }

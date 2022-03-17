@@ -4,23 +4,27 @@
             <ngx-card-header [option]="{controlOption: {}}" [size]="size" [icon]="favicon" [title]="(title | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
-            <div id="print-area">
-                <div class="blabel" *ngFor="let item of this.data; let i = index;">
+            <div id="print-area" [formGroup]="choosedForms">
+                <!-- <div class="blabel" *ngFor="let item of this.data; let i = index;" style="position: relative;"> -->
+                <div class="blabel" *ngFor="let item of this.choosedForms.controls; let i = index;" style="position: relative;" [formGroup]="item">
                     <!-- <div class="find-order">{{item.Container.FindOrder || 'UNDEF'}}</div> -->
+                    <div style="position:absolute; bottom: 0.5rem; right: 0.5rem;" class="print-choosed">
+                        <nb-checkbox formControlName="Choosed"></nb-checkbox>
+                    </div>
                     <div style="display: flex;">
                         <div style="flex: 1;">
-                            <div class="access-number">Số truy xuất: {{item.AccessNumber}}</div>
+                            <div class="access-number">Số truy xuất: {{item.value.AccessNumber}}</div>
                         </div>
                         <div>
-                            <div class="product-price">{{item.Price | currency:'VND'}} / {{item.Unit | objecttext}}</div>
+                            <div class="product-price">{{item.value.Price | currency:'VND'}} / {{item.value.Unit | objecttext}}</div>
                         </div>
                     </div>
-                    <img class="bar-code" src="{{item.BarCode}}">
+                    <img class="bar-code" src="{{item.value.BarCode}}">
                     <!-- <div style="display: flex; height: 4.5mm; align-items: center; justify-content: center;">
                     </div> -->
-                    <div class="info">SKU: {{item.Product.Sku}} - {{item.Product | objecttext}}</div>
+                    <div class="info">SKU: {{item.value.Product.Sku}} - {{item.value.Product | objecttext}}</div>
                     <div style="display: flex; clear: both;">
-                        <img class="qr-code" src="{{item.QrCode}}" style="margin-right: 0.5mm;">
+                        <img class="qr-code" src="{{item.value.QrCode}}" style="margin-right: 0.5mm;">
                         <div class="register-info" style="flex: 1">{{registerInfo.companyName}}<br>ĐC: {{registerInfo.address}}<br>ĐT: {{registerInfo.tel}}<br>Web: {{registerInfo.website}}</div>
                     </div>
                 </div>
