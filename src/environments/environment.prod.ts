@@ -5,7 +5,9 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.1.1.38',
+  version: '6.1.1.46',
+  // 6.1.1.44: Update POS GUI
+  // 6.1.1.39: Fix lỗi thay đổi số truy xuất gốc thành số truy xuất không đúng cấu trúc do không nhận dạng được số truy xuất gốc khi cập nhật phiếu nhập 
   // 6.1.1.28: Fix lỗi quan trong: lỗi update các trường detail trung id với detail của phiếu liên quan => các dữ liệu trước đó có thể bị sai nhưng dữ liệu đã ghi sổ thì vẫn đúng (số liệu ghi sổ sẽ bị sai nếu bỏ ghi và ghi lại)
   // 6.1.1: Continue develop Commerce POS module, GUI and api
   // 6.1.0.8: Assign product container in product list

@@ -18,7 +18,7 @@ export class ProductModel {
 
   Containers?: WarehouseGoodsContainerModel[];
 
-  Units?: UnitModel[];
+  Units?: ProductUnitConversoinModel[];
 
   // References
   Categories?: ProductCategoryModel[];
@@ -61,6 +61,7 @@ export class ProductPictureModel {
 }
 
 export class ProductUnitConversoinModel {
+  id?: string; text?: string;
   Id?: number & string;
   Product?: string & ProductModel;
   Unit?: string & UnitModel;
@@ -68,6 +69,7 @@ export class ProductUnitConversoinModel {
   IsDefaultSales?: boolean;
   IsDefaultPrchase?: boolean;
   IsManageByAccessNumber?: boolean;
+  Name?: string;
 }
 export class ProductGroupModel {
   [key: string]: any;

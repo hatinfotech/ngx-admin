@@ -86,7 +86,7 @@ declare var navigator: {
 })
 export class CommonService {
 
-  layout$ = new BehaviorSubject<string>('one-column');
+  layout$ = new BehaviorSubject<'one-column' | 'fullscreen'>('one-column');
 
   // private DIACRITICS = diacritic;
 

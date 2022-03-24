@@ -7,3 +7,11 @@
     padding-top: nb-theme(layout-padding-top);
   }
 }
+
+nb-layout-column.fullscreen {
+  padding:  0 !important;
+}
+
+nb-layout .fullscreen {
+  overflow: hidden;
+}

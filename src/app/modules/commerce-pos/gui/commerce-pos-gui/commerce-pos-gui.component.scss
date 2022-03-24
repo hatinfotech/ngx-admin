@@ -2,7 +2,9 @@
   // font-size: 1rem;
 }
 .pos-wrap {
-  height: calc(100vh - 7.4rem) !important;
+  // height: calc(100vh - 7.4rem) !important;
+  // height: calc(100vh - 1.9rem) !important;
+  overflow: hidden !important;
   nb-card {
     margin-bottom: 0;
     height: 100%;
@@ -150,7 +152,6 @@
     img {
       border-radius: 0.5rem;
     }
-
   }
   .pos-search-result-item:hover,
   .pos-search-result-item.active {

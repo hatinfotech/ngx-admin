@@ -8,26 +8,28 @@ import { CommonService } from '../../../services/common.service';
   selector: 'ngx-one-column-layout',
   styleUrls: ['./one-column.layout.scss'],
   template: `
-    <nb-layout [attr.authState]="authState" windowMode>
-      <nb-layout-header fixed>
-        <ngx-header></ngx-header>
-      </nb-layout-header>
+    <nb-layout [attr.authState]="authState" windowMode [ngClass]="{'fullscreen': (commonService.layout$ | async) == 'fullscreen'}">
 
-      <nb-sidebar #menuSidebar class="menu-sidebar" tag="menu-sidebar" responsive state="expanded">
-        <ng-content select="nb-menu"></ng-content>
-      </nb-sidebar>
+        <nb-layout-header fixed  *ngIf="(commonService.layout$ | async) == 'one-column'">
+          <ngx-header></ngx-header>
+        </nb-layout-header>
+  
+        <nb-sidebar #menuSidebar class="menu-sidebar" tag="menu-sidebar" responsive state="expanded" *ngIf="(commonService.layout$ | async) == 'one-column'">
+          <ng-content select="nb-menu"></ng-content>
+        </nb-sidebar>
+  
+        <nb-layout-column [ngClass]="{'fullscreen': (commonService.layout$ | async) == 'fullscreen'}">
+          <ng-content select="router-outlet"></ng-content>
+        </nb-layout-column>
+  
+        <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed" *ngIf="(commonService.layout$ | async) == 'one-column'">
+          <ngx-smart-bot id="small-smart-bot"></ngx-smart-bot>
+        </nb-sidebar>
+  
+        <nb-layout-footer fixed *ngIf="(commonService.layout$ | async) == 'one-column'">
+          <ngx-footer></ngx-footer>
+        </nb-layout-footer>
 
-      <nb-layout-column>
-        <ng-content select="router-outlet"></ng-content>
-      </nb-layout-column>
-
-      <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed">
-        <ngx-smart-bot id="small-smart-bot"></ngx-smart-bot>
-      </nb-sidebar>
-
-      <nb-layout-footer fixed>
-        <ngx-footer></ngx-footer>
-      </nb-layout-footer>
     </nb-layout>
   `,
 })
@@ -52,7 +54,7 @@ export class OneColumnLayoutComponent {
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private authService: NbAuthService,
-    private commonService: CommonService,
+    public commonService: CommonService,
   ) {
     // setTimeout(() => {
     //   this.authState = 'login';

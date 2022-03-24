@@ -283,7 +283,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             },
           },
         },
-        UnitConversions: {
+        Units: {
           title: 'ĐVT',
           type: 'custom',
           renderComponent: SmartTableTagsComponent,
@@ -377,95 +377,95 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             },
           },
         },
-        ContainerPath: {
-          title: 'Vị trí hàng hóa',
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'bleft',
-              select2Option: {
-                placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                // multiple: true,
-                logic: 'OR',
-                ajax: {
-                  url: (params: any) => {
-                    return 'data:text/plan,[]';
-                  },
-                  delay: 0,
-                  processResults: (data: any, params: any) => {
-                    return {
-                      results: this.shelfList.filter(shelf => !params.term || this.commonService.smartFilter(shelf.text, params.term)),
-                    };
-                  },
-                },
-              },
-            },
-          },
-          valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product.Containers as any;
-          },
-          onComponentInitFunction: (component: SmartTableTagsComponent) => {
-            component.labelAsText = (tag) => {
-              return tag.text;
-            };
-            component.renderToolTip = (tag) => {
-              return tag.text;
-            };
-            component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
+        // ContainerPath: {
+        //   title: 'Vị trí hàng hóa',
+        //   type: 'custom',
+        //   renderComponent: SmartTableTagsComponent,
+        //   width: '10%',
+        //   filter: {
+        //     type: 'custom',
+        //     component: SmartTableSelect2FilterComponent,
+        //     config: {
+        //       delay: 0,
+        //       condition: 'bleft',
+        //       select2Option: {
+        //         placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+        //         allowClear: true,
+        //         width: '100%',
+        //         dropdownAutoWidth: true,
+        //         minimumInputLength: 0,
+        //         keyMap: {
+        //           id: 'id',
+        //           text: 'text',
+        //         },
+        //         // multiple: true,
+        //         logic: 'OR',
+        //         ajax: {
+        //           url: (params: any) => {
+        //             return 'data:text/plan,[]';
+        //           },
+        //           delay: 0,
+        //           processResults: (data: any, params: any) => {
+        //             return {
+        //               results: this.shelfList.filter(shelf => !params.term || this.commonService.smartFilter(shelf.text, params.term)),
+        //             };
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        //   valuePrepareFunction: (value: string, product: ProductModel) => {
+        //     return product.Containers as any;
+        //   },
+        //   onComponentInitFunction: (component: SmartTableTagsComponent) => {
+        //     component.labelAsText = (tag) => {
+        //       return tag.text;
+        //     };
+        //     component.renderToolTip = (tag) => {
+        //       return tag.text;
+        //     };
+        //     component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
 
-            });
-            component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
-              if (!tag.Container) {
-                this.commonService.openDialog(AssignContainerFormComponent, {
-                  context: {
-                    inputMode: 'dialog',
-                    inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
-                    onDialogSave: async (newData: ProductModel[]) => {
-                      // this.refresh();
-                      // this.updateGridItems(editedItems, newData);
-                      const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
-                      this.source.isLocalUpdate = true;
-                      try {
-                        const newContainer = newData[0].Containers[0];
-                        this.source.update(udpateItem, {
-                          UnitConversions: [
-                            ...udpateItem.UnitConversions.map(m => ({
-                              type: m.type,
-                              id: m.id,
-                              text: m.text,
-                              Container: m.id == tag.id ? newContainer : m.Container,
-                            })),
-                            { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
-                        }).then(() => {
-                          this.source.isLocalUpdate = false;
-                        });
-                      } catch (err) {
-                        this.source.isLocalUpdate = false;
-                      }
-                    },
-                    onDialogClose: () => {
-                    },
-                  },
-                  closeOnEsc: false,
-                  closeOnBackdropClick: false,
-                });
-              }
-            });
-          },
-        },
+        //     });
+        //     component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
+        //       if (!tag.Container) {
+        //         this.commonService.openDialog(AssignContainerFormComponent, {
+        //           context: {
+        //             inputMode: 'dialog',
+        //             inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
+        //             onDialogSave: async (newData: ProductModel[]) => {
+        //               // this.refresh();
+        //               // this.updateGridItems(editedItems, newData);
+        //               const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
+        //               this.source.isLocalUpdate = true;
+        //               try {
+        //                 const newContainer = newData[0].Containers[0];
+        //                 this.source.update(udpateItem, {
+        //                   UnitConversions: [
+        //                     ...udpateItem.UnitConversions.map(m => ({
+        //                       type: m.type,
+        //                       id: m.id,
+        //                       text: m.text,
+        //                       Container: m.id == tag.id ? newContainer : m.Container,
+        //                     })),
+        //                     { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
+        //                 }).then(() => {
+        //                   this.source.isLocalUpdate = false;
+        //                 });
+        //               } catch (err) {
+        //                 this.source.isLocalUpdate = false;
+        //               }
+        //             },
+        //             onDialogClose: () => {
+        //             },
+        //           },
+        //           closeOnEsc: false,
+        //           closeOnBackdropClick: false,
+        //         });
+        //       }
+        //     });
+        //   },
+        // },
         Code: {
           title: 'Code',
           type: 'string',
@@ -495,9 +495,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           product.WarehouseUnit.text = product.WarehouseUnit.Name;
         }
 
-        if (product.UnitConversions && product.UnitConversions.length > 0) {
-          product.Containers = product.UnitConversions.filter(f => !!f['Container']).map(m => m['Container']);
-          for (const unitConversion of product.UnitConversions) {
+        if (product.Units && product.Units.length > 0) {
+          product.Containers = product.Units.filter(f => !!f['Container']).map(m => m['Container']);
+          for (const unitConversion of product.Units) {
             if (unitConversion.IsManageByAccessNumber) {
               unitConversion['status'] = 'danger';
               unitConversion['tip'] = unitConversion['text'] + ' (QL theo số truy xuất)';
@@ -522,9 +522,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       params['includeGroups'] = true;
       params['includeWarehouseUnit'] = true;
       // params['includeFeaturePicture'] = true;
-      params['includeUnitConversions'] = true;
+      // params['includeUnitConversions'] = true;
       params['includeUnits'] = true;
-      params['includeUnitContainer'] = true;
+      // params['includeUnitContainer'] = true;
 
       params['sort_Id'] = 'desc';
       return params;

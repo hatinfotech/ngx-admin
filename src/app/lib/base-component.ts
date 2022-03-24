@@ -120,6 +120,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   onKeyboardEvent(event: KeyboardEvent) {
     return true;
   }
+  onKeyupEvent(event: KeyboardEvent) {
+    return true;
+  }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -129,6 +132,17 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
       }
     } else {
       return this.onKeyboardEvent(event);
+    }
+    return true;
+  }
+  @HostListener('document:keyup', ['$event'])
+  handleKeyupEvent(event: KeyboardEvent) {
+    if (this.ref instanceof NbDialogRef) {
+      if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+        return this.onKeyupEvent(event);
+      }
+    } else {
+      return this.onKeyupEvent(event);
     }
     return true;
   }

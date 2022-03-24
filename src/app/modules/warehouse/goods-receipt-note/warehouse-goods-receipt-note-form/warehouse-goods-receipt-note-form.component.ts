@@ -1,3 +1,4 @@
+import { AccAccountFormComponent } from './../../../accounting/acc-account/acc-account-form/acc-account-form.component';
 import { ProductUnitModel } from './../../../../models/product.model';
 import { WarehouseGoodsContainerModel, WarehouseGoodsDeliveryNoteModel } from './../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -60,43 +61,6 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   unitList: ProductUnitModel[];
 
   warehouseContainerList = [];
-
-  // select2ContactOption = {
-  //   placeholder: 'Chọn liên hệ...',
-  //   allowClear: true,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   // multiple: true,
-  //   // tags: true,
-  //   keyMap: {
-  //     id: 'id',
-  //     text: 'text',
-  //   },
-  //   ajax: {
-  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-  //       console.log(settings);
-  //       const params = settings.data;
-  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
-  //         success(rs);
-  //       }).catch(err => {
-  //         console.error(err);
-  //         failure();
-  //       });
-  //     },
-  //     delay: 300,
-  //     processResults: (data: any, params: any) => {
-  //       console.info(data, params);
-  //       return {
-  //         results: data.map(item => {
-  //           item['id'] = item['Code'];
-  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-  //           return item;
-  //         }),
-  //       };
-  //     },
-  //   },
-  // };
 
   uploadConfig = {
 
@@ -184,39 +148,6 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       }
     }),
     withThumbnail: true,
-
-    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    // allowClear: true,
-    // width: '100%',
-    // dropdownAutoWidth: true,
-    // minimumInputLength: 0,
-    // withThumbnail: true,
-    // keyMap: {
-    //   id: 'Code',
-    //   text: 'Name',
-    // },
-    // ajax: {
-    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-    //     console.log(settings);
-    //     this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code,Sku,Name,OriginName=>Name,FeaturePicture,Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
-    //       success(rs);
-    //     }).catch(err => {
-    //       console.error(err);
-    //       failure();
-    //     });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     return {
-    //       results: data.map(product => {
-    //         product.thumbnail = product?.FeaturePicture?.Thumbnail;
-    //         // product.id = product.id + '/' + this.commonService.getObjectId(product.WarehouseUnit);
-    //         product.text = `${product.id} - ` + (product.Sku && `${product.Sku} - ` || '') + `${product.text}`;
-    //         return product;
-    //       })
-    //     };
-    //   },
-    // },
   };
 
   select2OptionForUnit = {
@@ -359,30 +290,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   async init(): Promise<boolean> {
 
-    /** Load and cache tax list */
-    // if (!PurchaseOrderVoucherFormComponent._taxList) {
-    //   this.taxList = PurchaseOrderVoucherFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
-    //     tax['id'] = tax.Code;
-    //     tax['text'] = tax.Name;
-    //     return tax;
-    //   });
-    // } else {
-    //   this.taxList = PurchaseOrderVoucherFormComponent._taxList;
-    // }
-
-    /** Load and cache unit list */
-    // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', {limit: 'nolimit'})).map(tax => {
-    //   tax['id'] = tax.Code;
-    //   tax['text'] = tax.Name;
-    //   return tax;
-    // });
-
     await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.unitList = list);
-
-    // if (!PurchaseOrderVoucherFormComponent._unitList) {
-    // } else {
-    //   this.unitList = PurchaseOrderVoucherFormComponent._unitList;
-    // }
 
     this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path' });
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSERECEIPT', select: 'id=>Code,text=>Name,type' });
@@ -396,7 +304,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
           formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
           this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
             // Clear id
-            conditonFormGroup.get('Id').setValue('');
+            // conditonFormGroup.get('Id').setValue('');
           });
         });
       }
@@ -413,7 +321,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     params['useBaseTimezone'] = true;
     params['includeUnit'] = true;
     params['includeAccessNumbers'] = true;
-    super.executeGet(params, success, error);
+    super.executeGet(params, (resources: WarehouseGoodsReceiptNoteModel[]) => {
+      success(resources);
+    }, error);
   }
 
   async formLoad(formData: WarehouseGoodsReceiptNoteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WarehouseGoodsReceiptNoteModel) => void) {
@@ -534,15 +444,18 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     });
 
     if (data) {
+      if (data?.AccessNumbers && this.commonService.getObjectId(data?.Product)) {
+        for (const accessNumber of data?.AccessNumbers) {
+          if (accessNumber?.id && accessNumber.id == accessNumber?.text) {
+            accessNumber.text += ' (' + this.commonService.compileAccessNumber(accessNumber.id, this.commonService.getObjectId(data?.Product)) + ')';
+          }
+        }
+      }
       newForm.patchValue(data);
       if (!data['Type']) {
         data["Type"] = 'PRODUCT';
       }
       this.toMoney(parentFormGroup, newForm);
-      // if(Array.isArray(data['AccessNumbers']) && data['AccessNumbers'].length > 0) {
-      // newForm['IsManageByAccessNumber'] = data.Product?.IsManageByAccessNumber || false;
-      // newForm['AccessNumberList'] = data['AccessNumbers'];
-      // this.onSelectProduct(newForm, data.Product);
     }
 
     const imagesFormControl = newForm.get('Image');
@@ -676,58 +589,12 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   calculatToMoney(detail: FormGroup) {
-    // let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    // let tax = detail.get('Tax').value;
-    // if (tax) {
-    //   if (typeof tax === 'string') {
-    //     tax = this.taxList.filter(t => t.Code === tax)[0];
-    //   }
-    //   toMoney += toMoney * tax.Tax / 100;
-    // }
-    // return toMoney;
     return 0;
   }
 
   toMoney(formItem: FormGroup, detail: FormGroup) {
-    // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-
-    // // Call culate total
-    // const details = this.getDetails(formItem);
-    // let total = 0;
-    // for (let i = 0; i < details.controls.length; i++) {
-    //   total += this.calculatToMoney(details.controls[i] as FormGroup);
-    // }
-    // formItem.get('_total').setValue(total);
     return false;
   }
-
-
-  // async preview(formItem: FormGroup) {
-  //   const data: WarehouseGoodsReceiptNoteModel = formItem.value;
-  //   // data.Details.forEach(detail => {
-  //   //   if (typeof detail['Tax'] === 'string') {
-  //   //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-  //   //     if (this.unitList) {
-  //   //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-  //   //     }
-  //   //   }
-  //   // });
-  //   this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
-  //     context: {
-  //       showLoadinng: true,
-  //       title: 'Xem trước',
-  //       data: [data],
-  //       idKey: ['Code'],
-  //       onSaveAndClose: (priceReport: WarehouseGoodsReceiptNoteModel) => {
-  //         this.saveAndClose();
-  //       },
-  //       onSaveAndPrint: (priceReport: WarehouseGoodsReceiptNoteModel) => {
-  //         this.save();
-  //       },
-  //     },
-  //   });
-  //   return false;
-  // }
 
   getRawFormData() {
     return super.getRawFormData();
@@ -937,21 +804,6 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
-    // if (relativeVocher && relativeVocher.type == 'PURCHASE') {
-    //   this.commonService.openDialog(PurchaseVoucherPrintComponent, {
-    //     context: {
-    //       showLoadinng: true,
-    //       title: 'Xem trước',
-    //       id: [this.commonService.getObjectId(relativeVocher)],
-    //       // data: data,
-    //       idKey: ['Code'],
-    //       // approvedConfirm: true,
-    //       onClose: (data: SalesVoucherModel) => {
-    //         this.refresh();
-    //       },
-    //     },
-    //   });
-    // }
     return false;
   }
 
@@ -973,7 +825,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     // const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
     let hadChanged = false;
     for (const an of selectedData) {
-      if (!an?.origin && an.id == an.text) {
+      if (an.id == an.text) {
         const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
         console.log(accessNumber, goodsId);
         // an.text = an.text + ' (' + accessNumber + ')';
@@ -982,7 +834,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         hadChanged = true;
       }
     }
-    if (hadChanged) {
+    if (hadChanged) {// Todo: nếu có thay đổi (quét thêm mã vào) thì giao điện không thể scroll được
       detail.get('AccessNumbers').setValue(selectedData);
       // const accessNumbersControl = detail.get('AccessNumbers');
       // accessNumbersControl.setValue(selectedData);
@@ -990,6 +842,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         $(select2Conponent['controls']['element'][0])['select2']('open');
       }, 500);
     }
+
+    // Update quantity by number access numbers
+    detail.get('Quantity').setValue(selectedData.length);
   }
 
 }

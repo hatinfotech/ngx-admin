@@ -19,7 +19,7 @@ export class ObjectIdPipe implements PipeTransform {
   }
 }
 
-@Pipe({name: 'objectsdid'})
+@Pipe({name: 'objectsid'})
 export class ObjectsIdPipe implements PipeTransform {
   constructor(public commonService: CommonService) {
 

@@ -51,7 +51,9 @@ Global style
 /* end style inject*/
 
 /* Layout */
-
+body {
+  min-width: inherit !important;
+}
 body nb-layout[authState="logout"] .layout nb-layout-header,
 body nb-layout[authState="logout"] nb-sidebar {
   display: none;
@@ -393,7 +395,6 @@ ngx-header ngx-action-control-list {
   // width: 100%;
   // line-height: 1.5rem;
   padding: 0;
-
 
   .select2-selection__choice__display {
     white-space: normal;
@@ -826,6 +827,7 @@ body
   nb-sidebar.chat-sidebar
   .main-container {
   padding: 0;
+  min-width: initial !important;
 }
 
 body nb-sidebar.chat-sidebar .scrollable {
@@ -1573,9 +1575,17 @@ ag-grid-angular {
 
 /* Layout */
 
-body nb-layout .layout .layout-container .content .columns nb-layout-column {
-  padding: 0.95rem 0.95rem 0.95rem !important;
+.nb-theme-dark,
+.nb-theme-default,
+.nb-theme-corporate,
+.nb-theme-cosmic {
+  nb-layout .layout .layout-container .content .columns nb-layout-column {
+    padding: 0.95rem 0.95rem 0.95rem;
+  }
 }
+// body nb-layout .layout .layout-container .content .columns nb-layout-column {
+//   padding: 0.95rem 0.95rem 0.95rem;
+// }
 
 .row {
   margin-right: -9px;

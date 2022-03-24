@@ -27,7 +27,7 @@
                         </div>
                     </div>
                 </div> -->
-                <div class="pos-container scrollable-container" style="flex: 1; display: flex; flex-direction: row; width: 100%;">
+                <div class="pos-container scrollable-container" style="flex: 1; display: flex; flex-direction: row; width: 100%; overflow: hidden;">
                     <div class="order" style="display: flex; flex-direction: column; flex: 1;">
 
                         <!-- <div class="pos-contact" style="padding: 1rem">
@@ -35,12 +35,12 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="pos-contact-field">
-                                        <input #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="giant" fullWidth placeholder="F8 - Số điện thoại..." class="pos-contact-field-input">
+                                        <input #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="F8 - Số điện thoại..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="pos-contact-field">
-                                        <input formControlName="ObjectName" type="text" nbInput status="primary" fieldSize="giant" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
+                                        <input formControlName="ObjectName" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
 
                         <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem;">
                             <div class="pos-search-input-wrap" style="flex: 1; position: relative;">
-                                <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" (keyup)="onSearchInputKeyup($event)" type="text" nbInput status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" fieldSize="giant" fullWidth placeholder="F3 - Tìm hàng hóa theo số truy xuất, sku, id, tên..." class="pos-search-input">
+                                <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" (keyup)="onSearchInputKeyup($event)" type="text" nbInput status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" fieldSize="large" fullWidth [placeholder]="searchInputPlaceholder || 'F3 - Tìm hàng hóa theo số truy xuất, số nhận thức, sku, id, tên...'" class="pos-search-input">
                                 <div id="searchResults" style="position: absolute; width: 100%;
                                 background: var(--ck-color-base-background);" *ngIf="searchResults && searchResults.length > 0">
                                     <div style="display: flex; flex-wrap: wrap;">
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                             <div class="pos-search-button-wrap">
-                                <button nbButton status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" class="pos-search-button" size="giant" style="margin-left: 1rem; width: 3.3rem;">
+                                <button nbButton status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" class="pos-search-button" size="large" style="margin-left: 1rem; width: 3.3rem;">
                                     <nb-icon icon="search-outline"></nb-icon>
                                 </button>
                             </div>
@@ -98,7 +98,7 @@
                                     <td style="text-align: center">
                                         <div style="display: flex; flex-direction: column;">
                                             <div>
-                                                <button nbButton status="danger" size="giant" style="flex-direction: column; font-size: 0.6rem; padding: 0.4rem;" (click)="removeDetail(orderForm, i)">
+                                                <button nbButton status="danger" size="large" style="flex-direction: column; font-size: 0.6rem; padding: 0.4rem;" (click)="removeDetail(orderForm, i)">
                                                     <nb-icon icon="close-outline"></nb-icon>
                                                     Delete
                                                 </button>
@@ -111,18 +111,18 @@
                                             <div style="width: 100%; height: 100%; flex: 1; height: 15rem;">
                                                 <img class="pos-product-image" src="{{detail.value.Image?.SmallImage}}" [ngStyle]="{'height': ((12 - getDetails(orderForm).controls.length) > 4 ? (12 - getDetails(orderForm).controls.length) : 5)+'rem'}">
                                             </div>
-                                            <div style="min-width: 10rem;">{{detail.value.Description | objecttext}} - SKU: {{detail.value.Sku}}</div>
+                                            <div style="min-width: 10rem;">{{detail.value.Description | objecttext}} - SKU: {{detail.value.Sku}} - Vị trí: {{detail.value?.FindOrder}}</div>
                                         </div>
                                     </td>
                                     <td style="text-align: center">
-                                        <button nbButton status="warning" [disabled]="detail.value?.AccessNumbers" size="giant" style="margin: 0.2rem" (click)="onDecreaseQuantityClick(orderForm, detail)">
+                                        <button nbButton status="warning" [disabled]="detail.value?.AccessNumbers" size="large" style="margin: 0.2rem" (click)="onDecreaseQuantityClick(orderForm, detail)">
                                             <nb-icon icon="minus-outline"></nb-icon>
                                         </button>
                                     </td>
                                     <td style="text-align: right;">
                                         <div style="display: flex;">
                                             <div style="flex: 1;">
-                                                <input class="pos-quantity" nbInput size="giant" formControlName="Quantity" (keydown)="onQuantityKeydown(orderForm, detail, $event, quantityFormat)" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)">
+                                                <input class="pos-quantity" nbInput size="large" formControlName="Quantity" (keydown)="onQuantityKeydown(orderForm, detail, $event, quantityFormat)" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)">
                                             </div>
                                             <div class="pos-unit" style="white-space: nowrap;">{{detail.value.Unit | objecttext}}</div>
                                         </div>
@@ -134,7 +134,7 @@
                                         <div class="pos-tomoney">= {{detail.value.ToMoney | currency:'VND'}}</div>
                                     </td>
                                     <td style="text-align: center">
-                                        <button nbButton status="success" [disabled]="detail.value?.AccessNumbers" size="giant" style="margin: 0.2rem" (click)="onIncreaseQuantityClick(orderForm, detail)">
+                                        <button nbButton status="success" [disabled]="detail.value?.AccessNumbers" size="large" style="margin: 0.2rem" (click)="onIncreaseQuantityClick(orderForm, detail)">
                                             <nb-icon icon="plus-outline"></nb-icon>
                                         </button>
                                     </td>
@@ -150,7 +150,7 @@
                                     <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
                                         <div class="pos-field-label" style="text-align: right;">Tiền khách đưa</div>
                                         <div class="pos-field-control">
-                                            <input type="text" nbInput fullWidth formControlName="CashReceipt" fieldSize="giant" style="text-align: right; font-size: 2rem;" (keyup)="onCashReceiptChanged(orderForm)" currencyMask [options]="toMoneyCurencyFormat">
+                                            <input type="text" nbInput fullWidth formControlName="CashReceipt" fieldSize="large" style="text-align: right; font-size: 2rem;" (keyup)="onCashReceiptChanged(orderForm)" currencyMask [options]="toMoneyCurencyFormat">
                                         </div>
                                     </div>
                                 </div>
@@ -158,7 +158,7 @@
                                     <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
                                         <div class="pos-field-label" style="text-align: right;">Tiền hàng</div>
                                         <div class="pos-field-control" style="flex: 1">
-                                            <input type="text" formControlName="Total" fieldSize="giant" nbInput fullWidth disabled style="text-align: right; font-size: 2rem;" currencyMask [options]="toMoneyCurencyFormat">
+                                            <input type="text" formControlName="Total" fieldSize="large" nbInput fullWidth disabled style="text-align: right; font-size: 2rem;" currencyMask [options]="toMoneyCurencyFormat">
                                         </div>
                                     </div>
                                 </div>
@@ -166,7 +166,7 @@
                                     <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
                                         <div class="pos-field-label" style="text-align: right;">Tiền CK</div>
                                         <div class="pos-field-control">
-                                            <input type="text" nbInput fullWidth style="text-align: right; font-size: 2rem;" fieldSize="giant" currencyMask [options]="toMoneyCurencyFormat">
+                                            <input type="text" nbInput fullWidth style="text-align: right; font-size: 2rem;" fieldSize="large" currencyMask [options]="toMoneyCurencyFormat">
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@
                                     <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
                                         <div class="pos-field-label" style="text-align: right;">Tiền thừa</div>
                                         <div class="pos-field-control">
-                                            <input type="text" nbInput formControlName="CashBack" fieldSize="giant" fullWidth disabled style="text-align: right; font-size: 2rem;" currencyMask [options]="toMoneyCurencyFormat">
+                                            <input type="text" nbInput formControlName="CashBack" fieldSize="large" fullWidth disabled style="text-align: right; font-size: 2rem;" currencyMask [options]="toMoneyCurencyFormat">
                                         </div>
                                     </div>
                                 </div>
@@ -351,12 +351,12 @@
                             <div class="row pos-contact">
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field">
-                                        <input id="ObjectPhone" #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="giant" fullWidth placeholder="F8 - Số điện thoại..." class="pos-contact-field-input">
+                                        <input id="ObjectPhone" #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="F8 - Số điện thoại..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field">
-                                        <input id="ObjectName" formControlName="ObjectName" type="text" nbInput status="primary" fieldSize="giant" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
+                                        <input id="ObjectName" formControlName="ObjectName" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                             </div>
@@ -416,7 +416,7 @@
                     </div>
                 </div>
                 <div class="pos-status" style="display: flex; align-items: center; padding: 0.2rem; padding-left: 1rem;">
-                    <div class="status" style="flex: 1;">Online | Lượt khách: 102, Doanh thu: 12.000.000đ</div>
+                    <div class="status" style="flex: 1;">Commerce POS v1.0 | Nhân viên bán hàng: {{(commonService.loginInfo$ | async)?.user?.Name}}</div>
                     <div class="pos-time" style="text-align: right; width: 200px;">{{currentDate | date:'short'}}</div>
                 </div>
             </div>
