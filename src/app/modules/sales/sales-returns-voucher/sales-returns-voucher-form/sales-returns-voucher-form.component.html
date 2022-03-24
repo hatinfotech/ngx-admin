@@ -256,7 +256,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
-                                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity', ic)" currencyMask [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (keydown)="currencyMastKeydown($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
+                                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity', ic)" [inputMask]="towDigitsInputMask">
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">

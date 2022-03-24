@@ -193,7 +193,7 @@
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                           <input type="text" nbInput fullWidth formControlName="Quantity"
                             placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right"
-                            (keyup)="toMoney(formItem, detail)" currencyMask [options]="numberFormat">
+                            (keyup)="toMoney(formItem, detail)" [inputMask]="towDigitsInputMask">
                         </ngx-form-group>
                       </div>
                       <div class="col-md-2">

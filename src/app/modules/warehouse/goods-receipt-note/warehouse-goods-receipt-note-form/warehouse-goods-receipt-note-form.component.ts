@@ -60,6 +60,11 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: ProductUnitModel[];
 
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
   warehouseContainerList = [];
 
   uploadConfig = {
@@ -583,7 +588,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       }
 
       if (selectedData && selectedData['ConversionQuantity']) {
-        detail.get('Quantity').setValue(selectedData['ConversionQuantity']);
+        if (!this.isProcessing) {
+          detail.get('Quantity').setValue(selectedData['ConversionQuantity']);
+        }
       }
     }
   }

@@ -241,7 +241,7 @@
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" (focus)="currencyMaskFocus($event, numberFormat)" currencyMask [options]="numberFormat">
+                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" [inputMask]="towDigitsInputMask">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-{{getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? '3' : '12'}}">

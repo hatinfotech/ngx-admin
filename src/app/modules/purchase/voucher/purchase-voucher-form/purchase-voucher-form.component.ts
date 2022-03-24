@@ -52,6 +52,11 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
   quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
 
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,

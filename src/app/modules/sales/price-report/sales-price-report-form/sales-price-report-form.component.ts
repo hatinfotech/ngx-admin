@@ -47,6 +47,11 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
   quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
 
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
   taxList: (TaxModel & { id?: string, text?: string })[];

@@ -60,6 +60,11 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   warehouseContainerList = [];
 
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
   // select2ContactOption = {
   //   placeholder: 'Chọn liên hệ...',
   //   allowClear: true,

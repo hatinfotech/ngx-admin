@@ -41,6 +41,11 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
   taxFormat: CurrencyMaskConfig = this.commonService.getTaxMaskConfig();
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
 
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
   taxList: (TaxModel & { id?: string, text?: string })[];

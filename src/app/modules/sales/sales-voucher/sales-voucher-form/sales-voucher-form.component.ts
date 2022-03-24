@@ -60,6 +60,11 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
   quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
 
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
   taxList: (TaxModel & { id?: string, text?: string })[];

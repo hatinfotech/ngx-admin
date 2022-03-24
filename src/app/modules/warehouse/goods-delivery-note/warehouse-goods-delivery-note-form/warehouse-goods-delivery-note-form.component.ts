@@ -45,6 +45,11 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
   env = environment;
 
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
   locale = this.commonService.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
   numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();

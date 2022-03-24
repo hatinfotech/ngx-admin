@@ -53,6 +53,7 @@
                 <td>{{'Common.prodId' | translate | headtitlecase}}</td>
                 <td>{{'Common.goodsOrService' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Số truy xuất' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td> -->
@@ -67,6 +68,7 @@
                   <td>{{renderValue(detail.Product | objectid)}}</td>
                   <td [innerHTML]="renderValue(detail.Description)"></td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
+                  <td class="text-align-right">{{detail.AccessNumbers | objectsid}}</td>
                   <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                   <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                   <!-- <td class="text-align-right">{{detail.Tax | objectstext}}</td> -->
@@ -75,7 +77,7 @@
               </ng-container>
               <tr>
                 <td colspan="2">{{'Common.note' | translate | headtitlecase}}: {{data['DefaultNote']}}</td>
-                <td colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                <td colspan="5" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
               </tr>
             </table>
