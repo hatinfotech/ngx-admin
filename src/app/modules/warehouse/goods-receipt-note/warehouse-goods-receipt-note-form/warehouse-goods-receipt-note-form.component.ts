@@ -564,6 +564,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     const productId = this.commonService.getObjectId(detail.get('Product').value);
     if (typeof selectedData?.IsManageByAccessNumber !== 'undefined') {
       detail['IsManageByAccessNumber'] = selectedData.IsManageByAccessNumber;
+      if (!this.isProcessing) {
+        detail.get('AccessNumbers').setValue(null);
+      }
     }
     if (unitId && productId) {
       const containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
@@ -825,7 +828,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     const newDetailFormGroup = this.makeNewDetailFormGroup(parentFormGroup, { ...detail.value, Id: null });
     newDetailFormGroup['unitList'] = detail['unitList'];
     newDetailFormGroup['case'] = detail['case'];
-    formDetails.controls.splice(index, 0, newDetailFormGroup);
+    newDetailFormGroup['IsManageByAccessNumber'] = detail['IsManageByAccessNumber'];
+    formDetails.controls.splice(index + 1, 0, newDetailFormGroup);
   }
 
   onSelectAccessNumbers(detail: FormGroup, selectedData: any, select2Conponent: Select2Component) {

@@ -554,4 +554,12 @@ export class SalesProductListComponent extends ProductListComponent implements O
       },
     ])
   }
+
+  /** Config for paging */
+  protected configPaging() {
+    return {
+      display: true,
+      perPage: 200,  
+    };
+  }
 }

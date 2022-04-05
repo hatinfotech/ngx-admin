@@ -22,6 +22,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
+import { AssignNewContainerFormComponent } from '../assign-new-containers-form/assign-new-containers-form.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -557,6 +558,50 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             });
           },
         },
+        NewContainer: {
+          title: this.commonService.translateText('Vị trí mới'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'pricetags-outline';
+            instance.display = true;
+            // instance.status = 'success';
+            instance.disabled = this.ref && Object.keys(this.ref).length > 0;
+            // instance.style = 'text-align: right';
+            // instance.class = 'align-right';
+            instance.status = 'success';
+            instance.title = this.commonService.translateText('Gán/gở vị trí');
+            instance.label = this.commonService.translateText('Gán/gở vị trí');
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
+              const editedItems = rowData;
+              this.commonService.openDialog(AssignNewContainerFormComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputGoodsList: [editedItems],
+                  onDialogSave: (newData: ProductModel[]) => {
+                    if (rowData.Container) {
+                      this.refresh();
+                    } else {
+                      this.apiService.getPromise<ProductModel[]>(this.apiPath + '/' + editedItems.Code, { includeContainer: true, includeUnit: true }).then(rs => {
+                        this.updateGridItems([editedItems], [{ ...editedItems, Container: rs[0]['Container'] || [], ContainerPath: rs[0]['Container'] && rs[0]['Container']['ContainerPath'] || null }]);
+                      });
+                    }
+                    // 
+                  },
+                  onDialogClose: () => {
+                  },
+                },
+                closeOnEsc: false,
+                closeOnBackdropClick: false,
+              });
+            });
+          },
+        },
         // CostOfGoodsSold: {
         //   title: this.commonService.translateText('Warehouse.costOfGoodsSold'),
         //   type: 'currency',
@@ -728,5 +773,13 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         }
       },
     ])
+  }
+
+  /** Config for paging */
+  protected configPaging() {
+    return {
+      display: true,
+      perPage: 100,  
+    };
   }
 }

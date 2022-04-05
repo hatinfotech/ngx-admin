@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.1.1.47',
+  version: '6.1.1.52',
+  // 6.1.1.48: Update quick create new container for goods
   // 6.1.1.47: Fix can not input quantity as float number
   // 6.1.1.44: Update POS GUI
   // 6.1.1.39: Fix lỗi thay đổi số truy xuất gốc thành số truy xuất không đúng cấu trúc do không nhận dạng được số truy xuất gốc khi cập nhật phiếu nhập 

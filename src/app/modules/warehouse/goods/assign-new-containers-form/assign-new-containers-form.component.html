@@ -1,0 +1,32 @@
+<form class="popup">
+  <nb-card class="small-header popup">
+    <nb-card-header>
+      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Warehouse.GoodsContainer.title' | translate:{definition: '', action: commonService.translate.instant('Common.assign')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+
+      <!-- <nav>
+        {{'AdminProduct.assignCategories' | translate | headtitlecase}}
+        <button nbButton status="warning" hero size="tiny" style="float: right;" title="Đóng" (click)="close()">
+          <nb-icon pack="eva" icon="close"></nb-icon>
+        </button>
+      </nav> -->
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="label"><span class="valid">{{'Kệ hàng hóa' | translate:{action:'',definition: ''} | headtitlecase}}</span>
+            </label>
+            <ngx-select2 [formControl]="containersFormControl" [select2Option]="select2OptionForShelf"></ngx-select2>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="buttons-row" style="text-align: right;">
+        <button nbButton status="warning" hero>{{'Common.close' | translate | headtitlecase}}</button>
+        <button type="button" nbButton status="success" [disabled]="!containersFormControl.value || processing" hero
+          (click)="createAndAssign()">{{'Tạo mới và gán' | translate | headtitlecase}}</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</form>

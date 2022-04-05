@@ -286,9 +286,9 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     // params['includeConditions'] = true;
     // params['includeProduct'] = true;
     params['includeContact'] = true;
-    params['includeDetails'] = true;
+    // params['includeDetails'] = true;
     params['useBaseTimezone'] = true;
-    params['includeDetails'] = true;
+    // params['includeDetails'] = true;
     super.executeGet(params, success, error);
   }
 
