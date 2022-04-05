@@ -175,6 +175,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     }
     this.destroy$.next();
     this.destroy$.complete();
+    this.ref = null;
   }
 
   ngAfterViewInit(): void {
