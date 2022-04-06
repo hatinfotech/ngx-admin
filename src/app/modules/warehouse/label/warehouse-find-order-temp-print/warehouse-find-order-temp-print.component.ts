@@ -30,6 +30,7 @@ export class WarehouseFindOrderTempPrintComponent extends DataManagerPrintCompon
   @Input() product: string;
   @Input() unit: string;
   @Input() container: string;
+  @Input() data: any;
 
   style = /*css*/`
   body {
@@ -94,7 +95,7 @@ export class WarehouseFindOrderTempPrintComponent extends DataManagerPrintCompon
 
 /** Override */
 .blabel {
-  border: none;
+  /*border: none;*/
   width: inherit;
   height: 25mm;
   width: 46mm;

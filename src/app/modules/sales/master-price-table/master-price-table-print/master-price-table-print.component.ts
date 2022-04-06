@@ -298,7 +298,53 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
         ...this.params,
         ...extendParams
       }).then(details => {
-        return details;
+
+        const newDetails = [];
+        const findOrderIds: string[] = [];
+        for (const detail of details) {
+
+          if (detail.Containers?.length > 0) {
+            for (const container of detail.Containers) {
+
+              const newDetail = detail;
+              newDetail.Container = container;
+              findOrderIds.push(`${newDetail.Code}-${this.commonService.getObjectId(newDetail.Unit)}-${this.commonService.getObjectId(newDetail.Container)}`);
+              newDetails.push(newDetail);
+            }
+          } else {
+            newDetails.push(detail);
+          }
+        }
+
+        // const id = details.map(detail => );
+
+        return this.apiService.getPromise<any[]>('/warehouse/find-order-tems', {
+          includeWarehouse: true,
+          renderBarCode: true,
+          masterPriceTable: 'default',
+          includeGroups: true,
+          includeUnit: true,
+          includeFeaturePicture: true,
+          group_Unit: true,
+          includeContainers: true,
+          id: findOrderIds,
+          limit: 'nolimit',
+        }).then(rs => {
+          return newDetails.map(newDetail => {
+            const findOrderTemData = rs.find(f => f.Code = newDetail.Code && this.commonService.getObjectId(f.Container) == this.commonService.getObjectId(newDetail.Container) && this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(newDetail.Unit))
+            newDetail.FindOrderTem = {
+              Code: newDetail.Code,
+              Sku: newDetail.Sku,
+              Name: newDetail.Name,
+              Unit: newDetail.Unit,
+              FindOrder: findOrderTemData.FindOrder,
+              Price: newDetail.Price,
+              BarCode: findOrderTemData.BarCode,
+            };
+            return newDetail;
+          })
+        });
+
       });
 
       // if (rs[0] && rs[0].Details) {

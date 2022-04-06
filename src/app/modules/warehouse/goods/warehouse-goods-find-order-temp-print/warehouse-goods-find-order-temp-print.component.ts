@@ -31,77 +31,79 @@ export class WarehouseGoodsFindOrderTempPrintComponent extends DataManagerPrintC
   @Input() unit: string;
   @Input() container: string;
 
-  style = /*css*/`
-  body {
-    margin: 0;
-  }
+//   style = /*css*/`
+//   body {
+//     margin: 0;
+//   }
   
-@media print {
-  body {
-    background: #fff !important;
-  }
-  #print-area {
-    page-break-after: initial;
-  }
-}
-.blabel {
-  float: left;
-  page-break-after: always;
-  border: 1px #000 dashed;
-  float: left;
-  page-break-after: always;
-  width: 50mm;
-  height: 30mm;
-  padding: 1mm;
-  padding-top: 2mm;
-  color: #000;
-}
-.blabel .find-order {
-  font-weight: bold;
-  font-size: 7mm !important;
-  line-height: 7mm;
-  margin-right: 1mm;
-}
-.blabel .bar-code {
-  height: 4.5mm;
-}
-.blabel .product-name {
-  font-weight: bold;
-  font-size: 3.4mm !important;
-  line-height: 3.4mm;
-  max-height: 10mm;
-  overflow: hidden;
-  padding-top: 1.1mm;
-}
-.blabel .product-price {
-  font-weight: bold !important;
-  font-size: 3.5mm !important;
-  line-height: 4mm;
-}
-.blabel .product-sku {
-  font-size: 2.6mm !important;
-  line-height: 3mm;
-}
-.blabel .product-id {
-  font-size: 2.6mm !important;
-  line-height: 3mm;
-}
-.page-break {
-  clear: left;
-  display: block;
-  page-break-after: always;
-}
+// @media print {
+//   body {
+//     background: #fff !important;
+//   }
+//   #print-area {
+//     page-break-after: initial;
+//   }
+// }
+// .blabel {
+//   float: left;
+//   page-break-after: always;
+//   border: 1px #000 dashed;
+//   float: left;
+//   page-break-after: always;
+//   width: 50mm;
+//   height: 30mm;
+//   padding: 1mm;
+//   padding-top: 2mm;
+//   color: #000;
+// }
+// .blabel .find-order {
+//   font-weight: bold;
+//   font-size: 7mm !important;
+//   line-height: 7mm;
+//   margin-right: 1mm;
+// }
+// .blabel .bar-code {
+//   height: 4.5mm;
+// }
+// .blabel .product-name {
+//   font-weight: bold;
+//   font-size: 3.4mm !important;
+//   line-height: 3.4mm;
+//   max-height: 10mm;
+//   overflow: hidden;
+//   padding-top: 1.1mm;
+// }
+// .blabel .product-price {
+//   font-weight: bold !important;
+//   font-size: 3.5mm !important;
+//   line-height: 4mm;
+// }
+// .blabel .product-sku {
+//   font-size: 2.6mm !important;
+//   line-height: 3mm;
+// }
+// .blabel .product-id {
+//   font-size: 2.6mm !important;
+//   line-height: 3mm;
+// }
+// .page-break {
+//   clear: left;
+//   display: block;
+//   page-break-after: always;
+// }
 
-/** Override */
-.blabel {
-  border: none;
-  width: inherit;
-  height: 25mm;
-  width: 46mm;
-  margin: 2mm;
-  padding: 0mm;
-}
-  `;
+// /** Override */
+// .blabel {
+//   border: none;
+//   width: inherit;
+//   height: 25mm;
+//   width: 46mm;
+//   margin: 2mm;
+//   padding: 0mm;
+// }
+//   `;
+
+
 
   constructor(
     public commonService: CommonService,
@@ -115,7 +117,7 @@ export class WarehouseGoodsFindOrderTempPrintComponent extends DataManagerPrintC
 
   ngOnInit() {
     this.restrict();
-    super.ngOnInit(); ``
+    super.ngOnInit();
   }
 
   async init() {

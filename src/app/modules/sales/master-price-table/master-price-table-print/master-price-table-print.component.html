@@ -39,8 +39,8 @@
                 <td>{{'Common.goodsOrService' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}</td> -->
                 <td class="text-align-center" style="text-align: center">{{'Warehouse.container' | translate | headtitlecase}}</td>
-                <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
-                <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
+                <!-- <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td> -->
+                <td class="text-align-right">{{'Tem vị trí' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td> -->
                 <!-- <td class="text-align-right nowrap">{{'Voucher.toMoney' | translate | headtitlecase}}</td> -->
               </thead>
@@ -51,22 +51,25 @@
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <!-- <td>{{detail.No}}</td> -->
                   <td>
-                    <div style="width: 30mm; height: 30mm; overflow: hidden;">
-                      <img class="product-image" [src]="detail.FeaturePicture?.LargeImage">
+                    <div style="width: 30mm; height: 28mm; overflow: hidden;">
+                      <img class="product-image" [src]="detail.FeaturePicture?.LargeImage || 'assets/images/no-image-available.png'">
                     </div>
                   </td>
                   <td>{{renderValue(detail.Code | objectid)}}<br><span style="font-weight: bold;
                     font-size: 5mm;
                     text-align: center;
-                    line-height: 10mm;">SKU:{{detail.Sku}}</span></td>
+                    line-height: 10mm;">SKU: {{detail.Sku}}</span></td>
                   <td [innerHTML]="renderValue(detail.Name)" style="font-weight: bold; font-size: 16px"></td>
                   <!-- <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td> -->
                   <td class="text-align-center" style="font-weight: bold;
                   font-size: 13mm;
                   text-align: center;
                   line-height: 13mm;" [innerHTML]="detail.Shelfs | objecttext"></td>
-                  <td class="text-align-right" style="font-weight: bold; font-size: 5mm;">{{detail.WarehouseUnit | objecttext}}</td>
-                  <td class="text-align-right" style="width: 50mm; height: 30mm; font-weight: bold;">{{renderValue(detail.Price) | currency:'VND'}}</td>
+                  <!-- <td class="text-align-right" style="font-weight: bold; font-size: 5mm;">{{detail.WarehouseUnit | objecttext}}</td> -->
+                  <td>
+                    <!-- {{renderValue(detail.Price) | currency:'VND'}} -->
+                    <ngx-warehouse-find-order-temp-print [data]="detail.FindOrderTem"></ngx-warehouse-find-order-temp-print>
+                  </td>
                   <!-- <td class="text-align-right">{{detail.Tax | objectstext}}</td> -->
                   <!-- <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td> -->
                 </tr>

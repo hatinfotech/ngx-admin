@@ -559,7 +559,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
   protected configPaging() {
     return {
       display: true,
-      perPage: 200,  
+      perPage: 200,
     };
   }
 }

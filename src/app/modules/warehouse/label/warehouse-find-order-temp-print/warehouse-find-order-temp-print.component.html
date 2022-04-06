@@ -1,16 +1,37 @@
-<div id="print-area">
-    <div class="blabel" *ngFor="let item of this.data; let i = index;">
-        <div class="product-name">{{item.Name}}</div>
-        <div class="product-price"><span *ngIf="item.Price">Giá: {{item.Price | currency:'VND'}} / </span>{{item.Unit | objecttext}}</div>
-        <div style="display: flex;">
-            <div class="find-order" style="margin-right: 0.5mm;">{{item.FindOrder || '----'}}</div>
-            <div style="display: flex; align-items: center;">
-                <img class="bar-code" src="{{item.BarCode}}">
-            </div>
+<div class="blabel" style="float: left;
+page-break-after: always;
+border: 1px #000 dashed;
+float: left;
+page-break-after: always;
+width: 50mm;
+height: 28mm;
+padding: 1mm;
+padding-top: 2mm;
+color: #000;">
+    <div style="display: flex;">
+        <div style="display: flex; align-items: center">
+            <div class="find-order" style="margin-right: 0.5mm; font-weight: bold;
+            font-size: 7mm !important;
+            line-height: 7mm;
+            margin-right: 1mm;">{{data.FindOrder || '----'}}</div>
         </div>
-        <div style="display: flex;">
-            <div style="flex: 1;" class="product-sku">SKU: {{item.Sku}}</div>
-            <div class="product-id">ID: {{item.Code}}</div>
+        <div>
+            <div class="product-name" style="font-weight: bold;
+            font-size: 3.4mm !important;
+            line-height: 3.4mm;
+            max-height: 10mm;
+            overflow: hidden;
+            padding-top: 1.1mm;">{{data.Name}}</div>
         </div>
+    </div>
+    <div class="product-price" style="font-weight: bold !important;
+    font-size: 3.5mm !important;
+    line-height: 4mm;"><span *ngIf="data.Price">Giá: {{data.Price | currency:'VND'}} / </span>{{data.Unit | objecttext}}</div>
+    <img class="bar-code" style="height: 4.5mm;" src="{{data.BarCode}}">
+    <div style="display: flex;">
+        <div style="flex: 1; font-size: 2.6mm !important;
+        line-height: 3mm;" class="product-sku">SKU: {{data.Sku}}</div>
+        <div class="product-id" style="font-size: 2.6mm !important;
+        line-height: 3mm;">ID: {{data.Code}}</div>
     </div>
 </div>
