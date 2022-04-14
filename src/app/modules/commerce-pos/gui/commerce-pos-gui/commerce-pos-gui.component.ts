@@ -255,7 +255,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       Price: [detail.Price || 0],
       ToMoney: [detail.Quantity * detail.Price || 0],
       FeaturePicture: [detail.Image[0] || null],
-      Image: [detail.Image[0] || null],
+      Image: [Array.isArray(detail.Image) ? detail.Image[0] : detail.Image],
       AccessNumbers: [detail.AccessNumbers || null],
       Discount: [detail.Discount || 0],
       FindOrder: [detail.FindOrder || 0],

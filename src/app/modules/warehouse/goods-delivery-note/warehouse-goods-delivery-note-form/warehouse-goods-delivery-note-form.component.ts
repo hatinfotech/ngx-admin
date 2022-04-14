@@ -655,7 +655,9 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   }
   async onSelectAccessNumbers(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
     console.log(selectedData);
-    // detail.get('Quantity').setValue(detail.get('AccessNumbers').value.length);
+    if (detail['IsManageByAccessNumber']) {
+      detail.get('Quantity').setValue(detail.get('AccessNumbers').value.length);
+    }
   }
 
   calculatToMoney(detail: FormGroup) {
