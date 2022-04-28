@@ -27,6 +27,7 @@ import { PrintHeaderComponent } from './print/print-header/print-header.componen
 import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
 import { ImagesViewerComponent } from './my-components/images-viewer/images-viewer.component';
 import { ImageViewerModule } from 'ngx-image-viewer';
+import { InputMaskModule } from '@ngneat/input-mask';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({
@@ -89,6 +90,7 @@ import { ImageViewerModule } from 'ngx-image-viewer';
     NbCardModule,
     NbSpinnerModule,
     NbPopoverModule,
+    InputMaskModule,
     ImageViewerModule.forRoot({
       btnClass: 'default', // The CSS class(es) that will apply to the buttons
       zoomFactor: 0.1, // The amount that the scale will be increased by

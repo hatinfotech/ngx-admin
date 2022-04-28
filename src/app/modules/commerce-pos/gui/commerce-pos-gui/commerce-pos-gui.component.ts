@@ -58,6 +58,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   title: string = 'Máy bán hàng';
   currentDate = new Date();
 
+  status = '';
+
   @ViewChild('newDetailPipSound', { static: true }) newDetailPipSound: ElementRef;
   @ViewChild('increaseDetailPipSound', { static: true }) increaseDetailPipSound: ElementRef;
   @ViewChild('errorSound', { static: true }) errorSound: ElementRef;
@@ -65,6 +67,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   @ViewChild('ObjectPhone', { static: true }) objectPhoneEleRef: ElementRef;
   @ViewChild('Search', { static: true }) searchEleRef: ElementRef;
   @ViewChild('orderDetailTable', { static: true }) orderDetailTableRef: ElementRef;
+  @ViewChild('searchResultsRef', { static: true }) searchResultsRef: ElementRef;
 
   get isFullscreenMode() {
     return screenfull.isFullscreen;
@@ -84,6 +87,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   searchResults: ProductModel[] = null;
   searchResultActiveIndex = 0;
+
+  masterPriceTable: { [key: string]: ProductModel } = {};
+
+  // searchInput = '';
 
   constructor(
     public commonService: CommonService,
@@ -146,6 +153,37 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // await this.barcodeProcess('11802497093');
     // await this.barcodeProcess('11802497092');
 
+    // Download master price table
+    (async () => {
+      this.status = 'Đang tải bảng giá...';
+      while (true) {
+        try {
+          await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
+            masterPriceTable: 'default',
+            includeCategories: true,
+            includeGroups: true,
+            includeFeaturePicture: true,
+            getRawData: true,
+            limit: 'nolimit',
+            includeContainers: true,
+          }).then(priceTableDetails => {
+            this.masterPriceTable = {};
+            for (const priceTableDetail of priceTableDetails) {
+              priceTableDetail.Price = parseFloat(priceTableDetail.Price);
+              this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
+            }
+            // console.log(this.masterPriceTable);
+            this.status = '';
+          });
+          break;
+        } catch (err) {
+          console.log(err);
+          console.log('retry...');
+          this.status = 'Lỗi tải bảng giá, đang thử lại...';
+        }
+      }
+    })();
+
     return result;
   }
 
@@ -178,7 +216,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       if (data.Details) {
         const details = (this.getDetails(newForm) as FormArray).controls;
         for (const detail of data.Details) {
-          details.unshift(this.makeNewOrderDetail(detail));
+          details.push(this.makeNewOrderDetail(detail));
         }
         this.calculateTotal(newForm);
       }
@@ -216,7 +254,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       if (order.Details) {
         const details = (this.getDetails(newForm) as FormArray).controls;
         for (const detail of order.Details) {
-          details.unshift(this.makeNewOrderDetail(detail));
+          details.push(this.makeNewOrderDetail(detail));
         }
         this.calculateTotal(newForm);
       }
@@ -352,23 +390,36 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return true;
   }
 
+  lastSearchCount = 0;
   async onSearchInputKeyup(event: any) {
     console.log(event);
-    if (false) this.commonService.takeUntilCallback('commerce-pos-search', 300, () => {
+    this.commonService.takeUntilCallback('commerce-pos-search', 300, () => {
       const inputValue: string = event.target?.value;
       if (event.key != 'Enter') {
         if (/\w+/.test(inputValue)) {
-          this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+          this.lastSearchCount++;
+          const currentSearchCount = this.lastSearchCount;
+          this.apiService.getPromise<ProductModel[]>('/warehouse/goods', {
+            includeCategories: true,
+            includeFeaturePicture: true,
             includeUnit: true,
-            includePrice: true,
+            includeContainer: true,
+            // includeInventory: true,
+            // sort_Id: 'desc',
             search: inputValue,
-            includeInventory: true,
-            includeWarehouseUnit: true,
-            isNotManageByAccessNumber: true
           }).then(rs => {
-            this.searchResults = rs;
-            rs[0].active = true;
-            // return rs;
+            if (currentSearchCount == this.lastSearchCount) {
+              this.searchResults = rs.map(goods => {
+                goods.Price = this.masterPriceTable[`${goods.Code}-${this.commonService.getObjectId(goods.WarehouseUnit)}`]?.Price;
+                return goods;
+              });
+              if (rs[0]) {
+                rs[0].active = true;
+              }
+              // return rs;
+            } else {
+              console.log('search results was lated');
+            }
           });
 
         } else {
@@ -418,13 +469,20 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       } else {
         if (option?.searchByFindOrder || inputValue.length < 5) {
           //Tìm hàng hóa theo số nhận thức
-          product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, includeInventory: true, findOrder: inputValue, isNotManageByAccessNumber: true }).then(rs => {
+          product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+            includeUnit: true,
+            includePrice: false,
+            includeInventory: true,
+            findOrder: inputValue,
+            // isNotManageByAccessNumber: true
+          }).then(rs => {
             return rs[0];
           });
           if (product) {
+            unitId = this.commonService.getObjectId(product.Unit);
+            product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
             product.FindOrder = inputValue.trim();
             productId = product.Code;
-            unitId = this.commonService.getObjectId(product.Unit);
           }
         } else {
           if (/^9\d+/.test(inputValue)) {
@@ -441,14 +499,23 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             productId = tmpcode;
 
 
-            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, includeInventory: true, findOrder: findOrder, isNotManageByAccessNumber: true, unitSeq: unitSeq }).then(rs => {
+            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+              includeUnit: true,
+              includePrice: false,
+              includeInventory: true,
+              findOrder: findOrder,
+              // isNotManageByAccessNumber: true,
+              unitSeq: unitSeq
+            }).then(rs => {
               return rs[0];
             });
             if (!product) {
               return Promise.reject('Không tìn thấy hàng hóa');
             }
-            productId = product.Code;
+
             unitId = this.commonService.getObjectId(product.Unit);
+            product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+            productId = product.Code;
             product.FindOrder = findOrder;
 
           } else {
@@ -536,12 +603,17 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 }, 50);
                 return true;
               } else if (new RegExp('^118' + coreId).test(inputValue)) {
-                product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + inputValue, { includeUnit: true, includePrice: true, includeInventory: true }).then(rs => {
+                product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + inputValue, {
+                  includeUnit: true,
+                  includePrice: false,
+                  includeInventory: true,
+                }).then(rs => {
                   return rs[0];
                 });
                 if (product) {
                   productId = product.Code;
                   unitId = this.commonService.getObjectId(product.WarehouseUnit);
+                  product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
                 }
               }
               // else if (inputValue.length < 10 && !new RegExp('^128|129' + coreId).test(inputValue)) {
@@ -593,20 +665,32 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           // get access number inventory 
           // get access number inventory 
           if (new RegExp('^127' + coreId).test(accessNumber)) {
-            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { accessNumber: accessNumber, includeUnit: true, includePrice: true, includeInventory: true }).then(rs => {
+            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+              accessNumber: accessNumber,
+              includeUnit: true,
+              includePrice: false,
+              includeInventory: true
+            }).then(rs => {
               return rs[0];
             });
             if (product) {
               productId = product.Code;
               unitId = this.commonService.getObjectId(product.Unit);
+              product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
               if (!product.Inventory || product.Inventory < 1) {
                 throw Error(`${product.Name} (${product.Unit.Name}) không có trong kho`);
               }
             } else {
-              product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true, unitSeq: unitSeq }).then(rs => {
+              product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
+                includeUnit: true,
+                includePrice: false,
+                includeInventory: true,
+                unitSeq: unitSeq
+              }).then(rs => {
                 return rs[0];
               });
               unitId = this.commonService.getObjectId(product.Unit);
+              product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
             }
           }
         }
@@ -616,11 +700,16 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         // Case 2: Search by product id
         productId = inputValue.length < 9 ? `118${coreId}${inputValue}` : inputValue;
         accessNumber = null;
-        product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true }).then(rs => {
+        product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
+          includeUnit: true,
+          includePrice: false,
+          includeInventory: true
+        }).then(rs => {
           return rs[0];
         });
         if (product) {
           unitId = this.commonService.getObjectId(product.Unit);
+          product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
         }
         // }
       }
@@ -677,7 +766,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         if (product?.Price) {
           // Nếu đã có giá (trường hợp quét số truy xuất)
           this.calculateToMoney(existsProduct);
-          detailsControls.unshift(existsProduct);
+          detailsControls.push(existsProduct);
           this.calculateTotal(this.orderForm);
           this.activeDetail(this.orderForm, existsProduct, 0);
           this.newDetailPipSound.nativeElement.play();
@@ -707,7 +796,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
 
                 this.calculateToMoney(existsProduct);
-                detailsControls.unshift(existsProduct);
+                detailsControls.push(existsProduct);
                 this.calculateTotal(this.orderForm);
 
                 this.activeDetail(this.orderForm, existsProduct, 0);
@@ -802,9 +891,28 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     const quantityEle = activeEle.find('.pos-quantity')[0] as HTMLInputElement;
     quantityEle.focus();
     quantityEle.select();
+    let timeout = null;
+
+    timeout = setTimeout(() => {
+      // auto blue after 5s
+      quantityEle.blur();
+    }, 3000);
+
+    quantityEle.onkeyup = () => {
+      // console.log(123);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        // auto blue after 5s
+        quantityEle.blur();
+      }, 3000);
+    };
+
   }
 
+
+  // isBarcodeJustScaned = false;
   barcode = '';
+  // tmpQuantity = '';
   findOrderKeyInput = '';
   searchInputPlaceholder = '';
   // @HostListener('document:keydown', ['$event'])
@@ -812,28 +920,44 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // console.log(event);
 
     if (this.searchResults && this.searchResults.length > 0) {
-      if (event.key == 'ArrowRight') {
+      if (event.key == 'ArrowDown') {
         if (this.searchResultActiveIndex < this.searchResults.length - 1) {
           this.searchResultActiveIndex++;
+
+          const activeEle = $(this.searchResultsRef.nativeElement.children[this.searchResultActiveIndex]);
+          activeEle[0].scrollIntoView();
+
           event.preventDefault();
         }
+        return true;
       }
-      if (event.key == 'ArrowLeft') {
+      if (event.key == 'ArrowUp') {
         if (this.searchResultActiveIndex > 0) {
           this.searchResultActiveIndex--;
+
+          const activeEle = $(this.searchResultsRef.nativeElement.children[this.searchResultActiveIndex]);
+          activeEle[0].scrollIntoView();
+
+          event.preventDefault();
         }
-        event.preventDefault();
+        return true;
       }
       if (event.key == 'Enter') {
         const product = this.searchResults[this.searchResultActiveIndex];
         this.onChooseProduct(product);
         event.preventDefault();
+        return true;
       }
-      return true;
     }
 
     if (event.key == 'Escape') {
       this.shortcutKeyContext = 'main';
+      if (this.commonService.dialogStack.length === 0) {
+        this.searchResults = null;
+        // this.searchInput = '';
+        this.searchEleRef.nativeElement.value = '';
+        (document.activeElement as HTMLElement).blur();
+      }
       return true;
     }
 
@@ -904,107 +1028,132 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
       return true;
     }
-    if (event.key == 'ArrowLeft') {
-      if (this.commonService.dialogStack.length === 0) {
-        this.onPreviousOrderClick();
-        event.preventDefault();
-      }
-      return true;
-    }
-    if (event.key == 'ArrowRight') {
-      if (this.commonService.dialogStack.length === 0) {
-        this.onNextOrderClick();
-        event.preventDefault();
-      }
-      return true;
-    }
 
-    if (event.key == 'ArrowDown') {
-      if (this.commonService.dialogStack.length === 0) {
-        const details = this.getDetails(this.orderForm).controls;
-        let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
-        if (activeDetailIndex < 0) {
-          activeDetailIndex = 0
-        } else {
-          activeDetailIndex++;
+    if (this.searchResults == null) {
+      if (event.key == 'ArrowLeft') {
+        if (this.commonService.dialogStack.length === 0) {
+          this.onPreviousOrderClick();
+          event.preventDefault();
         }
-        const nextDetail = details[activeDetailIndex];
-        if (nextDetail) {
-          nextDetail['isActive'] = true;
+        return true;
+      }
+      if (event.key == 'ArrowRight') {
+        if (this.commonService.dialogStack.length === 0) {
+          this.onNextOrderClick();
+          event.preventDefault();
+        }
+        return true;
+      }
 
-          $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
-          this.focusToQuantity(activeDetailIndex);
+      if (event.key == 'ArrowDown') {
+        if (this.commonService.dialogStack.length === 0) {
 
-          for (const detail of details) {
-            if (detail !== nextDetail) {
-              detail['isActive'] = false;
-            }
+          // this.tmpQuantity = '';
+          this.findOrderKeyInput = '';
+          this.searchInputPlaceholder = '';
+          (document.activeElement as HTMLElement).blur();
+
+          const details = this.getDetails(this.orderForm).controls;
+          let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+          if (activeDetailIndex < 0) {
+            activeDetailIndex = 0
+          } else {
+            activeDetailIndex++;
           }
-        }
-      }
-
-      return false;
-    }
-
-    if (event.key == 'ArrowUp') {
-      if (this.commonService.dialogStack.length === 0) {
-        const details = this.getDetails(this.orderForm).controls;
-        let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
-        if (activeDetailIndex > details.length - 1) {
-          activeDetailIndex = details.length - 1;
-        } else {
-          activeDetailIndex--;
-        }
-        if (activeDetailIndex > -1) {
           const nextDetail = details[activeDetailIndex];
-          nextDetail['isActive'] = true;
+          if (nextDetail) {
+            nextDetail['isActive'] = true;
 
-          $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
-          this.focusToQuantity(activeDetailIndex);
+            $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
+            // this.focusToQuantity(activeDetailIndex);
 
-          for (const detail of details) {
-            if (detail !== nextDetail) {
-              detail['isActive'] = false;
+            for (const detail of details) {
+              if (detail !== nextDetail) {
+                detail['isActive'] = false;
+              }
+            }
+          }
+        }
+
+        return false;
+      }
+
+      if (event.key == 'ArrowUp') {
+        if (this.commonService.dialogStack.length === 0) {
+
+          // this.tmpQuantity = '';
+          this.findOrderKeyInput = '';
+          this.searchInputPlaceholder = '';
+          (document.activeElement as HTMLElement).blur();
+
+          const details = this.getDetails(this.orderForm).controls;
+          let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+          if (activeDetailIndex > details.length - 1) {
+            activeDetailIndex = details.length - 1;
+          } else {
+            activeDetailIndex--;
+          }
+          if (activeDetailIndex > -1) {
+            const nextDetail = details[activeDetailIndex];
+            nextDetail['isActive'] = true;
+
+            $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1])[0].scrollIntoView();
+            // this.focusToQuantity(activeDetailIndex);
+
+            for (const detail of details) {
+              if (detail !== nextDetail) {
+                detail['isActive'] = false;
+              }
+            }
+          }
+        }
+        return false;
+      }
+
+
+      if (event.key == '+') {
+        if (this.commonService.dialogStack.length === 0) {
+          const details = this.getDetails(this.orderForm).controls;
+          const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+          if (activeDetail) {
+            this.onIncreaseQuantityClick(this.orderForm, activeDetail);
+          }
+        }
+        return false;
+      }
+      if (event.key == '-') {
+        if (this.commonService.dialogStack.length === 0) {
+          const details = this.getDetails(this.orderForm).controls;
+          const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+          if (activeDetail) {
+            this.onDecreaseQuantityClick(this.orderForm, activeDetail);
+          }
+        }
+        return false;
+      }
+
+      if (event.key == 'Delete') {
+        if (this.commonService.dialogStack.length === 0) {
+          const details = this.getDetails(this.orderForm).controls;
+          let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+          if (activeDetailIndex > -1) {
+            details.splice(activeDetailIndex, 1);
+            this.calculateTotal(this.orderForm);
+            const nextActive = details[activeDetailIndex] as FormGroup;
+            if (nextActive) {
+              this.activeDetail(this.orderForm, nextActive, activeDetailIndex);
+            } else {
+              if (details.length > 0) {
+                activeDetailIndex = 0;
+                this.activeDetail(this.orderForm, details[0] as FormGroup, activeDetailIndex);
+              }
             }
           }
         }
       }
-      return false;
-    }
+    } else {
+      // Control for search results
 
-    if (event.key == '+') {
-      if (this.commonService.dialogStack.length === 0) {
-        const details = this.getDetails(this.orderForm).controls;
-        const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
-        if (activeDetail) {
-          this.onIncreaseQuantityClick(this.orderForm, activeDetail);
-        }
-      }
-      return false;
-    }
-    if (event.key == '-') {
-      if (this.commonService.dialogStack.length === 0) {
-        const details = this.getDetails(this.orderForm).controls;
-        const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
-        if (activeDetail) {
-          this.onDecreaseQuantityClick(this.orderForm, activeDetail);
-        }
-      }
-      return false;
-    }
-
-    if (event.key == 'Delete') {
-      if (this.commonService.dialogStack.length === 0) {
-        const details = this.getDetails(this.orderForm).controls;
-        let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
-        if (activeDetailIndex > -1) {
-          details.splice(activeDetailIndex, 1);
-          const nextActive = details[activeDetailIndex] as FormGroup;
-          if (nextActive) {
-            this.activeDetail(this.orderForm, nextActive, activeDetailIndex);
-          }
-        }
-      }
     }
 
     if ("activeElement" in document) {
@@ -1025,23 +1174,68 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // Barcode scan
     if (this.commonService.dialogStack.length === 0) {
       this.barcode += event.key;
-      this.commonService.takeUntil('barcode-scan', 100).then(() => {
-        console.log(this.barcode);
-        if (this.barcode && /Enter$/.test(this.barcode)) {
-          try {
-            if (this.barcode.length > 5) {
-              this.barcodeProcess(this.barcode.replace(/Enter$/, ''));
+      // if (/[0-9|\.]/.test(event.key)) {
+      //   if (['Backspace'].indexOf(event.key) < 0 && !/[0-9\.]/.test(event.key)) {
+      //     event.preventDefault();
+      //     return false;
+      //   }
+      //   this.tmpQuantity += event.key;
+      // }
+      // if (event.key == 'Backspace') {
+      //   this.tmpQuantity = this.tmpQuantity.slice(0, -1);
+      //   const details = this.getDetails(this.orderForm).controls;
+      //   const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+      //   if (activeDetail) {
+      //     const quantityControl = activeDetail.get('Quantity');
+      //     quantityControl.setValue(this.tmpQuantity);
+      //   }
+      //   this.barcode = this.barcode.slice(0, -1);
+      // }
+      if ((document.activeElement as HTMLElement).tagName == 'BODY' || (document.activeElement as HTMLElement).id == 'posSearchInput') {
+        this.commonService.takeUntil('barcode-scan', 100).then(() => {
+          console.log(this.barcode);
+          if (this.barcode && /Enter$/.test(this.barcode)) {
+            // this.tmpQuantity = '';
+            try {
+              if (this.barcode.length > 5) {
+                this.barcodeProcess(this.barcode.replace(/Enter.*$/, '')).then(rs => {
+                  // this.isBarcodeJustScaned = false;
+                  // this.tmpQuantity = '';
+                });
+              }
+              // this.findOrderKeyInput = '';
+            } catch (err) {
+              this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning' });
             }
-            // this.findOrderKeyInput = '';
-          } catch (err) {
-            this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning' });
           }
-        }
-        this.barcode = '';
-      });
+          this.barcode = '';
+          // this.isBarcodeJustScaned = true;
+        });
+      }
 
-      if (/^[0-9]$/.test(event.key)) {
+      if ((document.activeElement as HTMLElement).tagName == 'BODY') {
+        // Quantity processing
+        // this.commonService.takeUntil('quantity-change', 150).then(() => {
+        //   if (this.tmpQuantity) {
+        //     const details = this.getDetails(this.orderForm).controls;
+        //     const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+        //     if (activeDetail) {
+        //       const quantityControl = activeDetail.get('Quantity');
+        //       quantityControl.setValue(this.tmpQuantity);
+        //       this.calculateToMoney(activeDetail);
+        //       this.calculateTotal(this.orderForm);
+        //       this.barcode = '';
+        //     }
+        //   }
+        // });
+      }
+
+      if (/^[0-9]$/.test(event.key) && (document.activeElement as HTMLElement).tagName == 'BODY') {
         this.findOrderKeyInput += event.key;
+        this.searchInputPlaceholder = this.findOrderKeyInput + ' - tìm theo vị trí hàng hóa...';
+      }
+      if (event.key == 'Backspace') {
+        this.findOrderKeyInput = this.findOrderKeyInput.slice(0, -1);
         this.searchInputPlaceholder = this.findOrderKeyInput + ' - tìm theo vị trí hàng hóa...';
       }
 
@@ -1112,6 +1306,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   onQuantityKeydown(orderForm: FormGroup, detail: FormGroup, event, numberFormat: CurrencyMaskConfig) {
+    // return false;
     // detail.get('Quantity').setValue(1);
     if (['Backspace'].indexOf(event.key) < 0 && !/[0-9\.]/.test(event.key)) {
       event.preventDefault();
@@ -1126,9 +1321,19 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     this.calculateTotal(orderForm);
     return true;
   }
+
   onQuantityChanged(orderForm: FormGroup, detail: FormGroup, event, numberFormat: CurrencyMaskConfig) {
+    // const currentQuantity = event.target.value;
+    // this.commonService.takeUntil('change-quantity', 150).then(() => {
+    //   if (!this.isBarcodeJustScaned) {
     this.calculateToMoney(detail);
     this.calculateTotal(orderForm);
+    console.log('change quantity accepted');
+    //   } else {
+    //     event.target.value = currentQuantity;
+    //     console.log('change quantity not accepted, restore: ' + currentQuantity);
+    //   }
+    // });
     return true;
   }
 
@@ -1377,6 +1582,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   onChooseProduct(product: ProductModel) {
+    (document.activeElement as HTMLElement).blur();
     this.searchEleRef.nativeElement.value = '';
     let productId = product.Code;
     this.searchResults = null;
@@ -1386,6 +1592,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       productId = productId.replace(new RegExp('^118' + miniErpCode), '');
       productId = product.WarehouseUnit['sequence'].length + product.WarehouseUnit['sequence'] + productId;
     }
-    this.barcodeProcess(productId);
+    if (product.Container?.ContainerFindOrder) {
+      this.barcodeProcess(product.Container.ContainerFindOrder, { searchByFindOrder: true });
+    }
+    // this.tmpQuantity = '';
   }
 }

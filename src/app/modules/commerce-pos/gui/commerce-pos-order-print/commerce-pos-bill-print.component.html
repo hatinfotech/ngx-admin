@@ -57,20 +57,21 @@
                             <tr *ngIf="order.Returns">
                                 <td colspan="3" style="text-align: right; font-weight: bold;">Phải thu: {{order.Total - order.DebitFunds | currency:'VND'}}</td>
                             </tr>
+                            <tr>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">&nbsp;</td>
+                            </tr>
                         </table>
                     </div>
+                    <br>
                     <div class="bill-footer" style="text-align: left;">
-                        <div style="font-style: italic">Quý khách đưa lại phiếu này trong trường hợp đổi trả hàng hóa !</div>
-                        <div style="font-style: italic">
-                            Hướng dẫn:<br>
-                            1. Phiếu dùng để hỗ trợ đổi trả hàng (bắt buộc phải có)<br>
-                            2. Hàng hóa sau khi mua nếu chưa hài lòng, quý khách vui lòng đổi trả trong ngày hoặc trể nhất là hôm sau.<br>
-                            3. Hàng hóa khi đổi trả phải còn nguyên vẹn chưa tháo lắp, còn nguyên tem số truy xuất<br>
-                            4. Quy tắc khấu hao:<br>
-                            - Đổi tra sau 2 ngày mất 30% tiền<br>
-                            - Hàng không còn nguyên bao bì mất 50% tiền<br>
-                        </div>
-                        <div style="font-style: italic">Xin cảm ơn và hẹn gặp lại</div>
+                        <div>Quý khách giữ lại tem mã vạch trên hàng hóa trong trường hợp đổi trả!</div>
+                        <div style="font-style: italic; padding-top: 3px; padding-bottom: 3px; font-weight: bold; font-size: 14px;">Cảm ơn Quý Khách và hẹn gặp lại</div>
                         <div>Phiếu được in từ phần mềm<br>ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div>
                     </div>
                 </div>

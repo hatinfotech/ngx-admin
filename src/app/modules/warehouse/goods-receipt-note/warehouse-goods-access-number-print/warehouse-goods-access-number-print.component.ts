@@ -294,6 +294,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       this.choosedForms.controls = [];
       for (const item of rs) {
         const formData = {};
+        item['Price'] = item['Price'] && (parseInt(item['Price'])/1000) || null as any;
         for (const field of Object.keys(item)) {
           formData[field] = [item[field]];
         }

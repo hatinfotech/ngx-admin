@@ -499,14 +499,19 @@ export class SmartTableCurrencyEditableComponent extends SmartTableBaseComponent
     <div [style]="style" [class]="class">
       <input #inputText type="text" [name]="name" nbInput fullWidth [attr.disabled]="disabled ? 'disabled' : null"
           [placeholder]="placeholder" class="align-right" [formControl]="inputControl"
-          currencyMask [options]="numberFormat">
+          [inputMask]="towDigitsInputMask">
     </div>
   `,
 })
 export class SmartTableNumberEditableComponent extends SmartTableBaseComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
 
   renderValue: boolean;
   disabled: boolean = false;

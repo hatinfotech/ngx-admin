@@ -1062,7 +1062,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     if (selectedData && this.commonService.getObjectId(selectedData) == 'BANLE' && detailForm) {
       this.apiService.getPromise('/accounting/reports', {
         reportSummary: true,
-        Accounts: '1111',
+        eq_Accounts: '1111',
         toDate: this.commonService.getEndOfDate(parentForm.get('DateOfSale')?.value).toISOString(),
       }).then(rs => {
         console.log(rs);
