@@ -63,6 +63,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   @ViewChild('newDetailPipSound', { static: true }) newDetailPipSound: ElementRef;
   @ViewChild('increaseDetailPipSound', { static: true }) increaseDetailPipSound: ElementRef;
   @ViewChild('errorSound', { static: true }) errorSound: ElementRef;
+  @ViewChild('paymentSound', { static: true }) paymentSound: ElementRef;
 
   @ViewChild('ObjectPhone', { static: true }) objectPhoneEleRef: ElementRef;
   @ViewChild('Search', { static: true }) searchEleRef: ElementRef;
@@ -133,6 +134,39 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     this.commonService.sidebarService.collapse('chat-sidebar');
   }
 
+  async updateMaterPriceTable() {
+    this.status = 'Đang tải bảng giá...';
+    while (true) {
+      try {
+        await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
+          masterPriceTable: 'default',
+          includeCategories: true,
+          includeGroups: true,
+          includeFeaturePicture: true,
+          getRawData: true,
+          limit: 'nolimit',
+          includeContainers: true,
+        }).then(priceTableDetails => {
+          this.masterPriceTable = {};
+          for (const priceTableDetail of priceTableDetails) {
+            priceTableDetail.Price = parseFloat(priceTableDetail.Price);
+            this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
+          }
+          // console.log(this.masterPriceTable);
+          this.status = '';
+          this.commonService.toastService.show('Đã cập nhật bảng giá mới', 'POS Thương mại', { status: 'success' });
+        });
+        return true;
+      } catch (err) {
+        console.log(err);
+        console.log('retry...');
+        this.status = 'Lỗi tải bảng giá, đang thử lại...';
+        this.commonService.toastService.show('Bảng giá mới chưa được cập nhật', 'POS Thương mại', { status: 'warning' });
+        return false;
+      }
+    }
+  }
+
   async init() {
     const result = await super.init();
     this.commonService.sidebarService.collapse('menu-sidebar');
@@ -154,36 +188,50 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // await this.barcodeProcess('11802497092');
 
     // Download master price table
-    (async () => {
-      this.status = 'Đang tải bảng giá...';
-      while (true) {
-        try {
-          await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
-            masterPriceTable: 'default',
-            includeCategories: true,
-            includeGroups: true,
-            includeFeaturePicture: true,
-            getRawData: true,
-            limit: 'nolimit',
-            includeContainers: true,
-          }).then(priceTableDetails => {
-            this.masterPriceTable = {};
-            for (const priceTableDetail of priceTableDetails) {
-              priceTableDetail.Price = parseFloat(priceTableDetail.Price);
-              this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
-            }
-            // console.log(this.masterPriceTable);
-            this.status = '';
-          });
-          break;
-        } catch (err) {
-          console.log(err);
-          console.log('retry...');
-          this.status = 'Lỗi tải bảng giá, đang thử lại...';
-        }
-      }
-    })();
+    // (async () => {
+    //   this.status = 'Đang tải bảng giá...';
+    //   while (true) {
+    //     try {
+    //       await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
+    //         masterPriceTable: 'default',
+    //         includeCategories: true,
+    //         includeGroups: true,
+    //         includeFeaturePicture: true,
+    //         getRawData: true,
+    //         limit: 'nolimit',
+    //         includeContainers: true,
+    //       }).then(priceTableDetails => {
+    //         this.masterPriceTable = {};
+    //         for (const priceTableDetail of priceTableDetails) {
+    //           priceTableDetail.Price = parseFloat(priceTableDetail.Price);
+    //           this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
+    //         }
+    //         // console.log(this.masterPriceTable);
+    //         this.status = '';
+    //       });
+    //       break;
+    //     } catch (err) {
+    //       console.log(err);
+    //       console.log('retry...');
+    //       this.status = 'Lỗi tải bảng giá, đang thử lại...';
+    //     }
+    //   }
+    // })();
+    this.updateMaterPriceTable();
 
+    // Listen price table update
+    setInterval(() => {
+      console.log('Listen new master price table update...');
+      this.apiService.getPromise<any>('/sales/master-price-tables/getUpdate', { priceTable: 'default' }).then(rs => {
+        console.log(rs);
+        if (rs && rs.State == 'UPDATED') {
+          return this.updateMaterPriceTable();
+        }
+        return false;
+      }).catch(err => {
+        console.log(err);
+      });
+    }, 60000);
     return result;
   }
 
@@ -1384,15 +1432,17 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
     await this.save(orderForm);
     if (orderForm['voucherType'] == 'CPOSORDER') {
+      this.paymentSound.nativeElement.play();
       this.commonService.openDialog(CommercePosBillPrintComponent, {
         context: {
           skipPreview: true,
+          instantPayment: true,
           data: [data],
           onSaveAndClose: (newOrder, printComponent) => {
             orderForm.patchValue(newOrder);
             this.commonService.toastService.show('Đơn hàng đã hoàn tất, bạn có thể bấm F4 để xem lại', 'Máy bán hàng', { status: 'success', duration: 8000 })
             this.makeNewOrder();
-            printComponent.close();
+            // printComponent.close();
             console.log(this.historyOrders);
           },
           onClose: () => {

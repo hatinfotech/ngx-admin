@@ -33,6 +33,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
 
   @Input() skipPreview: boolean;
   @Input() order: CommercePosOrderModel;
+  @Input() instantPayment: boolean;
 
   style = /*css*/`
   #print-area {
@@ -145,7 +146,9 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     //   this.processMapList[i] = AppModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
     // }
     this.summaryCalculate(this.data);
-
+    if (this.instantPayment) {
+      this.payment(0, { print: false });
+    }
     return result;
   }
 
@@ -266,7 +269,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     }
   }
 
-  payment(index: number) {
+  payment(index: number, option?: { print: boolean }) {
     const params: any = { payment: true };
     let order = this.data[index];
     if (order) {
@@ -276,8 +279,10 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
         this.apiService.putPromise('/commerce-pos/orders/' + order.Code, params, [order]).then(rs => {
           order = this.data[index] = rs[0];
           setTimeout(async () => {
-            await this.print(index);
-            this.onSaveAndClose(order, this);
+            if (option?.print) {
+              await this.print(index);
+            }
+            if (this.onSaveAndClose) this.onSaveAndClose(order, this);
           });
         });
       } else {
@@ -285,7 +290,10 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
           this.id = [rs[0].Code];
           order = this.data[index] = rs[0];
           setTimeout(async () => {
-            await this.print(index);
+            // await this.print(index);
+            if (option?.print) {
+              await this.print(index);
+            }
             if (this.onSaveAndClose) this.onSaveAndClose(order, this);
           }, 300);
         });
@@ -296,7 +304,12 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
 
   onKeyboardEvent(event: KeyboardEvent) {
     if (event.key == 'Enter') {
-      this.payment(0);
+      if (!this.instantPayment) {
+        this.payment(0);
+      } else {
+        this.print(0);
+        this.close();
+      }
     }
     return true;
   }

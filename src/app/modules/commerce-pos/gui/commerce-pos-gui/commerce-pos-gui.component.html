@@ -8,6 +8,9 @@
     <audio #errorSound>
         <source src='assets/sounds/beep-03.wav' type="audio/mp3">
     </audio>
+    <audio #paymentSound>
+        <source src='assets/sounds/benboncan_till-with-bell.wav' type="audio/mp3">
+    </audio>
     <nb-card class="small-header smart-table" class="dialog-wrap {{inputMode}}" [formGroup]="orderForm" [ngClass]="{'pos-returns': orderForm['voucherType'] == 'CPOSRETURNS'}">
         <!-- <nb-card-header>
             <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('Máy bán hàng' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase))" [controls]="actionButtonList"></ngx-card-header>
@@ -430,7 +433,7 @@
                 </div>
                 <div class="pos-status" style="display: flex; align-items: center; padding: 0.2rem; padding-left: 1rem;">
                     <div class="status" style="flex: 1;">Commerce POS v1.0 | Nhân viên bán hàng: {{(commonService.loginInfo$ | async)?.user?.Name}}</div>
-                    <div class="pos-time" style="text-align: right; width: 400px;">{{currentDate | date:'short'}} - Trạng thái: {{status || 'Ready'}}</div>
+                    <div class="pos-time" style="text-align: right; width: 350px;">{{currentDate | date:'short'}} - Trạng thái: {{status || 'Ready'}}</div>
                 </div>
             </div>
         </nb-card-body>

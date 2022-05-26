@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.1.1.72',
+  version: '6.1.1.76',
+  // 6.1.1.75: Auto update master price table when had been changed
   // 6.1.1.48: Update quick create new container for goods
   // 6.1.1.47: Fix can not input quantity as float number
   // 6.1.1.44: Update POS GUI
