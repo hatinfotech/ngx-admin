@@ -12,7 +12,6 @@ import { ActionControlListOption } from '../../../../lib/custom-element/action-c
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
-import { PurchaseVoucherModel } from '../../../../models/purchase.model';
 import { SalesVoucherModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
@@ -406,6 +405,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         itemFormData.Details.forEach(detail => {
+          detail.AccessNumbers = detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n');
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
@@ -608,8 +608,10 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   async onSelectUnit(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
     const unitId = this.commonService.getObjectId(selectedData);
     const productId = this.commonService.getObjectId(detail.get('Product').value);
-    if (typeof selectedData?.IsManageByAccessNumber !== 'undefined') {
+    if (selectedData?.IsManageByAccessNumber) {
       detail['IsManageByAccessNumber'] = selectedData.IsManageByAccessNumber;
+    } else {
+      detail['IsManageByAccessNumber'] = false;
     }
     if (unitId && productId) {
       const containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
@@ -624,6 +626,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         if (goodsList && goodsList.length > 0) {
           if (goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
             detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
+          } else {
+            detail['IsManageByAccessNumber'] = false;
           }
           return goodsList[0].Containers.map(m => ({
             // ...m,
@@ -673,27 +677,31 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       detail['AccessNumberList'] = [];
     }
   }
-  async onSelectAccessNumbers(detail: FormGroup, selectedData: any[], force?: boolean, element?: Select2Component) {
-    console.log(selectedData);
-    let hadChanged = false;
-    if (selectedData && selectedData.length > 0) {
-      for (const an of selectedData) {
-        if (!an?.origin && an.id == an.text) {
-          const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
-          console.log(accessNumber, goodsId);
-          an.id = accessNumber;
-          hadChanged = true;
-        }
-      }
-      if (hadChanged) {
-        const accessNumbersControl = detail.get('AccessNumbers');
-        accessNumbersControl.setValue(selectedData);
-        setTimeout(() => {
-          $(element['controls'].element[0])['select2']('open');
-        }, 500);
-      }
-      detail.get('Quantity').setValue(selectedData && selectedData.length || 0);
+  async onSelectAccessNumbers(detail: FormGroup, event: any, force?: boolean, element?: any) {
+    console.log(element, event);
+    if (event.key == 'Enter' || force) {
+      detail.get('Quantity').setValue(element.value.trim().split('\n').length);
     }
+    // console.log(selectedData);
+    // let hadChanged = false;
+    // if (selectedData && selectedData.length > 0) {
+    //   for (const an of selectedData) {
+    //     if (!an?.origin && an.id == an.text) {
+    //       const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+    //       console.log(accessNumber, goodsId);
+    //       an.id = accessNumber;
+    //       hadChanged = true;
+    //     }
+    //   }
+    //   if (hadChanged) {
+    //     const accessNumbersControl = detail.get('AccessNumbers');
+    //     accessNumbersControl.setValue(selectedData);
+    //     setTimeout(() => {
+    //       $(element['controls'].element[0])['select2']('open');
+    //     }, 500);
+    //   }
+    //   detail.get('Quantity').setValue(selectedData && selectedData.length || 0);
+    // }
   }
 
   calculatToMoney(detail: FormGroup) {
@@ -751,7 +759,21 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   // }
 
   getRawFormData() {
-    return super.getRawFormData();
+    const data = super.getRawFormData();
+    for (const item of data.array) {
+      for (const detail of item.Details) {
+        if (typeof detail.AccessNumbers == 'string') {
+          detail.AccessNumbers = detail.AccessNumbers.split('\n').map(ac => {
+            if (/^127/.test(ac)) {
+              return { id: ac, text: ac };
+            }
+            const acd = this.commonService.decompileAccessNumber(ac);
+            return { id: acd.accessNumber, text: acd.accessNumber };
+          });
+        }
+      }
+    }
+    return data;
   }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {

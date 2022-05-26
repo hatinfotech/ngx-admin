@@ -33,21 +33,11 @@
         <div>
           <div>
             <table style="width: 100%;" class="print-voucher-detail-table">
-              <colgroup>
-                <!--STT-->
-                <col span="1" style="width: 0.5cm;">
-                <!--Dien giai-->
-                <col span="1" style="width: 14.5cm;">
-                <!--So luong-->
-                <col span="1" style="width: 4cm; text-align: right;">
-                <!--DVT-->
-                <col span="1" style="width: 2cm;">
-              </colgroup>
               <tr class="print-voucher-detail-header">
                 <th>#</th>
                 <th>{{'Common.description' | translate | headtitlecase}}</th>
-                <th class="">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                 <th>{{'Warehouse.container' | translate | headtitlecase}}</th>
+                <th class="">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                 <th class="text-align-right nowrap">{{'Warehouse.theoryInventory' | translate | headtitlecase}}</th>
                 <th class="text-align-right nowrap">{{'Warehouse.realityInventory' | translate | headtitlecase}}</th>
               </tr>
@@ -57,9 +47,9 @@
                 </tr>
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <td>{{detail.No}}</td>
-                  <td><span [innerHTML]="detail.Description"></span> <br>ID: {{detail.Product | objectid}}</td>
+                  <td><span [innerHTML]="detail.Description"></span> <br>ID: {{detail.Product | objectid}} - SKU: {{detail.Product?.Sku}}</td>
+                  <td class="">{{detail.Container?.FindOrder}} - {{detail.Container | objecttext}}</td>
                   <td class="">{{detail.Unit | objecttext}}</td>
-                  <td class="nowrap">{{detail.Container?.FindOrder}} - {{detail.Container | objecttext}}</td>
                   <td class="text-align-right">{{renderValue(detail.Inventory) | number}}</td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                 </tr>
