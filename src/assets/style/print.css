@@ -95,6 +95,7 @@
 .print-body {
   background-color: #fff;
   color: #000;
+  padding: 1rem 1rem;
 }
 
 @media print {

@@ -502,6 +502,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         }
+        this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
         // itemFormData.Details.forEach(detail => {
         // });
       }
@@ -1007,10 +1008,10 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
           const insertList = [];
           this.onProcessing();
           if (type === 'GOODSRECEIPT') {
+            const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
-                const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>('/warehouse/goods-receipt-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
@@ -1049,12 +1050,13 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'SALES') {
+            const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
-                const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
 
@@ -1113,6 +1115,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
 
           setTimeout(() => {

@@ -351,13 +351,14 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
       // Details form load
       if (itemFormData.Details) {
+        const details = this.getDetails(newForm);
         itemFormData.Details.forEach(detail => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
-          const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         });
+        this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
 
       // Direct callback

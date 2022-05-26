@@ -391,6 +391,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   /** Execute api get */
   executeGet(params: any, success: (resources: WarehouseInventoryAdjustNoteModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
+    params['includeObject'] = true;
     params['includeDetails'] = true;
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
@@ -405,7 +406,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         itemFormData.Details.forEach(detail => {
-          detail.AccessNumbers = detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n');
+          detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
@@ -762,8 +763,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     const data = super.getRawFormData();
     for (const item of data.array) {
       for (const detail of item.Details) {
-        if (typeof detail.AccessNumbers == 'string') {
-          detail.AccessNumbers = detail.AccessNumbers.split('\n').map(ac => {
+        if (detail.AccessNumbers && typeof detail.AccessNumbers == 'string') {
+          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').map(ac => {
             if (/^127/.test(ac)) {
               return { id: ac, text: ac };
             }

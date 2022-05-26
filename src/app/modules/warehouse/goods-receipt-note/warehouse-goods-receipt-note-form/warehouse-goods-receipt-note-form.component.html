@@ -166,7 +166,7 @@
                             <div class="col-sm-2 label">
                                 {{'Common.noNumber' | translate | headtitlecase}}/{{'Common.photo' | translate | headtitlecase}}</div>
                             <div class="col-sm-3 label">{{'Common.goodsOrService' | translate | headtitlecase}}</div>
-                            <div class="col-sm-7 label">
+                            <div class="col-sm-5 label">
                                 <div class="row">
                                     <div class="col-sm-3 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
                                     <div class="col-sm-7 label">{{'Warehouse.container' | translate | headtitlecase}}</div>
@@ -174,6 +174,11 @@
                                     <!-- <div class="col-sm-2 label align-right">{{'Voucher.price' | translate | headtitlecase}}</div> -->
                                     <!-- <div class="col-sm-3 label">{{'Voucher.tax' | translate | headtitlecase}}</div> -->
                                     <!-- <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div> -->
+                                </div>
+                            </div>
+                            <div class="col-sm-2 label">
+                                <div class="row">
+                                    <div class="col-sm-12 label align-right">{{'Warehouse.accessNumber' | translate | headtitlecase}}</div>
                                 </div>
                             </div>
                         </div>
@@ -195,8 +200,8 @@
                                                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                                                     </button>
                                                 </div>
-                                                <div class="form-group">
-                                                    <button nbButton status="primary" hero size="medium" (click)="extractToOtherUnits(formItem, detail, ic)" style="width: 100%; margin-bottom: 3px; padding: 0" nbTooltip="Chuyển đổi đơn vị tính">
+                                                <div class="form-group" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                                    <button nbButton status="primary" hero size="medium" (click)="extractToOtherUnits(formItem, detail, ic)" style="width: 100%; margin-bottom: 3px; padding: 0" nbTooltip="Copy xuống dưới">
                                                         <nb-icon pack="eva" icon="corner-down-right-outline"></nb-icon>
                                                     </button>
                                                 </div>
@@ -232,46 +237,41 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [touchedValidate]="false" [customIcons]="unitCustomIcons">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [customIcons]="unitCustomIcons">
                                                     <ngx-select2 formControlName="Unit" [data]="detail['unitList']" [select2Option]="select2OptionForUnit" (selectChange)="onSelectUnit(detail, $event)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-7 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Container" label="Warehouse.container" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Container" label="Warehouse.container" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true" [customIcons]="customIconsForContainer" [touchedValidate]="false">
                                                     <ngx-select2 [data]="detail['ContainerList'] || warehouseContainerList" formControlName="Container" [select2Option]="select2OptionForContainer"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" [inputMask]="towDigitsInputMask">
+                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" [inputMask]="towDigitsInputMask" [touchedValidate]="false">
                                                 </ngx-form-group>
                                             </div>
-                                            <!-- <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [formGroup]="detail" name="Price" label="Voucher.price" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail)" currencyMask [options]="curencyFormat">
-                                                </ngx-form-group>
-                                            </div> -->
-                                            <!-- <div class="col-md-3 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="curencyFormat">
-                                                </ngx-form-group>
-                                            </div> -->
-                                            <div class="col-md-{{getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? '3' : '12'}}">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                            <div class="col-md-12">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                                     <textarea class="scrollable-container" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}" rows="1"></textarea>
                                                 </ngx-form-group>
                                             </div>
-                                            <div class="col-md-9 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber']">
+                                            <!-- <div class="col-md-9 col-sm-8 col-xs-8" *ngIf="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber']">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <ngx-select2 formControlName="AccessNumbers" [select2Option]="select2OptionForAccessNumbers" #select2 (selectChange)="onSelectAccessNumbers(detail, $event, select2)"></ngx-select2>
                                                 </ngx-form-group>
-                                            </div>
+                                            </div> -->
                                             <input type="hidden" nbInput fullWidth formControlName="RelateDetail">
                                             <!-- <input type="hidden" nbInput fullWidth formControlName="AccessNumbers"> -->
                                         </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                            <textarea [attr.disabled]="getFieldValue(detail, 'Type') == 'PRODUCT' && !detail['IsManageByAccessNumber'] ? true : null" class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" [placeholder]="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? 'Số truy xuất sẽ được phát sinh tự động' : 'Hàng hóa không quản lý theo số truy xuất'" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea>
+                                        </ngx-form-group>
                                     </div>
                                 </div>
                             </div>

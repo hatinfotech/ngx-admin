@@ -32,7 +32,7 @@
             <table style="width: 100%;" class="print-voucher-detail-table">
               <thead class="print-voucher-detail-header">
                 <td>#</td>
-                <td>{{'Common.prodId' | translate | headtitlecase}}</td>
+                <td>{{'Sku' | translate | headtitlecase}}</td>
                 <td>{{'Sales.technicalDescription' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
@@ -46,7 +46,7 @@
                 </tr>
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <td>{{detail.No}}</td>
-                  <td [innerHTML]="renderValue(detail.Product | objectid)"></td>
+                  <td><span>{{detail.Product?.Sku}}</span><span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span></td>
                   <td [innerHTML]="renderValue(detail.Description)"></td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                   <td class="text-align-right">{{detail.Unit | objecttext}}</td>

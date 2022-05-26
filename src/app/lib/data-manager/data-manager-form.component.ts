@@ -580,7 +580,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     this.save().then(rs => {
       this.goback();
       if (this.previewAfterSave || (this.previewAfterCreate && createMode)) {
-        this.preview(rs, 'list', 'print');
+        this.preview(this.makeId(rs[0]), 'list', 'print');
       }
     });
     return false;

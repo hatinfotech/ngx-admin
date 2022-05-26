@@ -655,7 +655,7 @@
         "calculateCostOfGoodsSoldConfirm": "bạn có chắc là muốn tính giá vốn hàng hóa trong kho?, lệnh này sẽ tính toán dựa trên phương pháp tính giá vốn trong cài đặt.",
         "container": "vị trí",
         "findOrder": "số nhận thức",
-        "accessNumber": "mã truy xuất"
+        "accessNumber": "số truy xuất"
     },
     "AdminProduct": {
         "chooseProducts": "chọn sản phẩm",

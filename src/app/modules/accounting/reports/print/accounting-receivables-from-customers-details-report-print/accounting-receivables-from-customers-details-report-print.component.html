@@ -48,24 +48,27 @@
                                 <td class="" style="white-space: nowrap">{{'Common.dateOfVoucher' | translate | headtitlecase}}</td>
                                 <td class="" style="white-space: nowrap">{{'Common.voucher' | translate | headtitlecase}}</td>
                                 <td class="" style="white-space: nowrap">{{'Common.goodsOrService' | translate | headtitlecase}}</td>
+                                <td class="text-align-right" style="white-space: nowrap">{{'Số lượng' | translate | headtitlecase}}</td>
+                                <td class="" style="white-space: nowrap">{{'ĐVT' | translate | headtitlecase}}</td>
+                                <td class="text-align-right" style="white-space: nowrap">{{'Đơn giá' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Common.numOfMoney' | translate | headtitlecase}}</td>
-                                <td class="text-align-right" style="white-space: nowrap">{{'Common.debt' | translate | headtitlecase}}</td>
+                                <td class="text-align-right" style="white-space: nowrap">{{'Biến động' | translate | headtitlecase}}</td>
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
-                                <td>{{detail.VoucherDate | date:'short'}}</td>
+                                <td class="nowrap">{{detail.VoucherDate | date:'short'}}</td>
                                 <td>{{detail.Voucher}}</td>
                                 <td>{{detail.Description}}</td>
+                                <td class="text-align-right">{{detail.Quantity ? (detail.Quantity | number) : ''}}</td>
+                                <td>{{detail.ProductUnitLabel}}</td>
+                                <td class="text-align-right">{{detail.Quantity ? renderCurrency((detail.GenerateDebit - detail.GenerateCredit) / detail.Quantity) : ''}}</td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateDebit - detail.GenerateCredit)"></td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
                             </tr>
                             <tr style="font-weight: bold;">
+                                <td colspan="7" class="text-align-right">{{data['Total'] < 0 ? 'Ứng trước' : 'Công nợ'}}: </td>
+                                <td class="text-align-right" [innerHtml]="renderCurrency(data['Total'])"></td>
                                 <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
-                                <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>

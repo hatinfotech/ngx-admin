@@ -48,8 +48,7 @@
                       <td><span [innerHTML]="renderValue(detail.Description)"></span><br>
                           <span style="font-size: 10px; font-style: italic;">
                               <!-- {{'Common.note' | translate}} : {{detail.Product?.Code}}, -->
-                              {{'Common.code' | translate}} : {{detail.Product?.Code}},
-                              {{'Common.sort' | translate | headtitlecase}}:{{detail.No}}
+                              {{'Sku' | translate}}: {{detail.Product?.Sku}} - ID: {{detail.Product?.Code}}
                           </span>
                       </td>
                       <td><span>{{detail.AccessNumbers | objectstext}}</span></td>

@@ -648,7 +648,7 @@ export class ApiService {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không có quyền', {
           status: 'danger',
-          duration: 10000,
+          duration: 30000,
         });
       }
     }
@@ -657,7 +657,7 @@ export class ApiService {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không thể thực thi', {
           status: 'danger',
-          duration: 10000,
+          duration: 30000,
         });
       }
     }
@@ -665,7 +665,7 @@ export class ApiService {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu chưa được xử lý', {
           status: 'danger',
-          duration: 10000,
+          duration: 30000,
         });
       }
     }

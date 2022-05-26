@@ -414,6 +414,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup, parseInt(ic));
         }
+        this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
         // itemFormData.Details.forEach(detail => {
 
         // });

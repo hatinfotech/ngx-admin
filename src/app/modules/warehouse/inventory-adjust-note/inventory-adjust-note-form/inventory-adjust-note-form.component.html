@@ -1,4 +1,13 @@
 <form [formGroup]="form" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
+    <audio #newDetailPipSound>
+        <source src='assets/sounds/beep-08b.wav' type="audio/mp3">
+    </audio>
+    <audio #increaseDetailPipSound>
+        <source src='assets/sounds/beep-07a.wav' type="audio/mp3">
+    </audio>
+    <audio #errorSound>
+        <source src='assets/sounds/beep-03.wav' type="audio/mp3">
+    </audio>
     <div formArrayName="array">
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
@@ -131,14 +140,16 @@
                             <div class="col-sm-2 label">
                                 {{'Common.noNumber' | translate | headtitlecase}}/{{'Common.photo' | translate | headtitlecase}}</div>
                             <div class="col-sm-3 label">{{'Common.goodsOrService' | translate | headtitlecase}}</div>
-                            <div class="col-sm-7 label">
+                            <div class="col-sm-5 label">
                                 <div class="row">
                                     <div class="col-sm-3 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
                                     <div class="col-sm-7 label">{{'Warehouse.container' | translate | headtitlecase}}</div>
                                     <div class="col-sm-2 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
-                                    <!-- <div class="col-sm-2 label align-right">{{'Voucher.price' | translate | headtitlecase}}</div> -->
-                                    <!-- <div class="col-sm-3 label">{{'Voucher.tax' | translate | headtitlecase}}</div> -->
-                                    <!-- <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div> -->
+                                </div>
+                            </div>
+                            <div class="col-sm-2 label">
+                                <div class="row">
+                                    <div class="col-sm-12 label align-right">{{'Warehouse.accessNumber' | translate | headtitlecase}}</div>
                                 </div>
                             </div>
                         </div>
@@ -192,7 +203,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-{{getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? '5' : '7'}} col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [touchedValidate]="false" [customIcons]="unitCustomIcons">
@@ -221,9 +232,9 @@
                                             </div> -->
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber']">
+                                    <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                            <textarea class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" placeholder="Số truy xuất: 127xxx,127xxx" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea>
+                                            <textarea [attr.disabled]="getFieldValue(detail, 'Type') == 'PRODUCT' && !detail['IsManageByAccessNumber'] ? true : null" class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" [placeholder]="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? 'Số truy xuất: \n127xxx\n127xxx' : 'Hàng hóa không quản lý theo số truy xuất'" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea>
                                         </ngx-form-group>
                                     </div>
                                 </div>

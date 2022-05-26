@@ -180,15 +180,15 @@ export class AccountingReceivablesFromCustomersVoucherssReportPrintComponent ext
   summaryCalculate(data: any[]) {
     for (const i in data) {
       const item = data[i];
-      item['Total'] = 0;
       item['TotalDebit'] = 0;
       item['TotalCredit'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
-        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] as any);
-        item['TotalCredit'] += parseFloat(detail['GenerateCredit'] as any);
-        item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
+        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] || detail['HeadDebit'] as any);
+        item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
+        // item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
       }
+      item['Total'] = item.Details[item.Details.length - 1]?.IncrementAmount;
       //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
     }
     return data;

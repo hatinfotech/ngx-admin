@@ -457,13 +457,14 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
       // Details form load
       if (itemFormData.Details) {
+        const details = this.getDetails(newForm);
         itemFormData.Details.forEach(detail => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
-          const details = this.getDetails(newForm);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         });
+        this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
 
       // Direct callback
@@ -845,10 +846,10 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
           const relationVoucherValue: any[] = (relationVoucher.value || []);
           const insertList = [];
           this.onProcessing();
+          const details = this.getDetails(formGroup);
           for (let i = 0; i < chooseItems.length; i++) {
             const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
             if (index < 0) {
-              const details = this.getDetails(formGroup);
               // get purchase order
               const purchaseOrder = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
@@ -863,8 +864,8 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                 }
               } else {
                 delete purchaseOrder.Id;
-                delete purchaseOrder.Code;
-                formGroup.patchValue({ ...purchaseOrder, Id: null, Details: [] });
+                // delete purchaseOrder.Code;
+                formGroup.patchValue({ ...purchaseOrder, Id: null, Code: null, Details: [] });
                 details.clear();
               }
               insertList.push(chooseItems[i]);
@@ -888,6 +889,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
             }
           }
           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);
+          this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
 
           setTimeout(() => {
             this.onProcessed();

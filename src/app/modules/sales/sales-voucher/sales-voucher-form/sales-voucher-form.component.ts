@@ -73,7 +73,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: ProductUnitModel[];
 
-
+  masterPriceTable: SalesMasterPriceTableModel;
 
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
@@ -224,7 +224,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         return {
           results: data.map(item => {
             item['id'] = item['id'] || item['Code'];
-            item['text'] = (item['DateOfApproved'] ? ('['+this.datePipe.transform(item['DateOfApproved'], 'short') + '] ') : '') + (item['text'] || item['Title']);
+            item['text'] = (item['DateOfApproved'] ? ('[' + this.datePipe.transform(item['DateOfApproved'], 'short') + '] ') : '') + (item['text'] || item['Title']);
             return item;
           }),
         };
@@ -582,7 +582,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     // }
 
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
-
+    this.masterPriceTable = await this.apiService.getPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { limit: 1 }).then(rs => rs[0]);
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -624,6 +624,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         }
+        this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
         // itemFormData.Details.forEach(detail => {
         // });
       }
@@ -638,6 +639,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   makeNewFormGroup(data?: SalesVoucherModel): FormGroup {
+
     const newForm = this.formBuilder.group({
       Code: [''],
       Object: ['', Validators.required],
@@ -659,7 +661,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       ContactIdentifiedNumber: [''],
       DateOfDelivery: [''],
       DeliveryAddress: [''],
-      PriceTable: [''],
+      PriceTable: [this.masterPriceTable ? { id: this.masterPriceTable.Code, text: (this.masterPriceTable['DateOfApproved'] ? ('[' + this.datePipe.transform(this.masterPriceTable['DateOfApproved'], 'short') + '] ') : '') + (this.masterPriceTable['text'] || this.masterPriceTable['Title']) } : ''],
       IsObjectRevenue: [false],
       // PriceReportVoucher: [''],
       PriceReport: [''],
@@ -1249,10 +1251,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           const insertList = [];
           this.onProcessing();
           if (type === 'GOODSDELIVERY') {
+            const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
-                const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
@@ -1291,12 +1293,13 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'PRICEREPORT') {
+            const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
-                const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
 
@@ -1353,8 +1356,9 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
-          
+
           setTimeout(() => {
             this.onProcessed();
           }, 1000);

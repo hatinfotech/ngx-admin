@@ -796,10 +796,10 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
           const insertList = [];
           this.onProcessing();
           if (type === 'SALES') {
+            const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
-                const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeUnit: true }).then(rs => rs[0]);
 
@@ -838,12 +838,13 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'PRICEREPORT') {
+            const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
-                const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
@@ -881,12 +882,13 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'DEPLOYMENT') {
+            const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
-                const details = this.getDetails(formGroup);
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<DeploymentVoucherModel[]>('/deployment/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
@@ -923,6 +925,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               }
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           setTimeout(() => {
             this.onProcessed();
