@@ -218,7 +218,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         return {
           results: data.map(item => {
             item['id'] = item['id'] || item['Code'];
-            item['text'] = (item['DateOfApproved'] ? ('['+this.datePipe.transform(item['DateOfApproved'], 'short') + '] ') : '') + (item['text'] || item['Title']);
+            item['text'] = (item['DateOfApproved'] ? ('[' + this.datePipe.transform(item['DateOfApproved'], 'short') + '] ') : '') + (item['text'] || item['Title']);
             return item;
           }),
         };
@@ -313,7 +313,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     minimumInputLength: 0,
     dropdownCssClass: 'is_tags',
     multiple: true,
-    maximumSelectionLength: 1,
+    // maximumSelectionLength: 1,
     // tags: true,
     keyMap: {
       id: 'Code',
@@ -575,7 +575,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     //   this.taxList = CommercePosOrderFormComponent._taxList;
     // }
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
 
     return super.init().then(status => {
       if (this.isDuplicate) {
@@ -602,6 +602,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
     params['includeEmployee'] = true;
+    params['includeUnit'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -613,6 +614,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         const details = this.getDetails(newForm);
         details.clear();
         for (const detailData of itemFormData.Details) {
+          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.join('\n') + '\n') : '';
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
@@ -774,6 +776,8 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       // Reason: [''],
       // Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
       Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
+      AccessNumbers: [''],
+      // IsDebt: [false],
     });
 
     if (data) {
@@ -798,6 +802,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         }
       }
     });
+    newForm['IsManageByAccessNumber'] = data.Unit['IsManageByAccessNumber'] || false;
 
     return newForm;
   }
@@ -1225,9 +1230,9 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
   //   return false;
   // }
 
-  getRawFormData() {
-    return super.getRawFormData();
-  }
+  // getRawFormData() {
+  //   return super.getRawFormData();
+  // }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
     this.commonService.openDialog(ReferenceChoosingDialogComponent, {
@@ -1348,7 +1353,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
             }
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
           }
-          
+
           setTimeout(() => {
             this.onProcessed();
           }, 1000);
@@ -1367,6 +1372,31 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     const relationVoucher = formGroup.get('RelativeVouchers');
     relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
     return false;
+  }
+
+  async onSelectAccessNumbers(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
+    console.log(selectedData);
+    if (detail['IsManageByAccessNumber']) {
+      detail.get('Quantity').setValue(detail.get('AccessNumbers').value.length);
+    }
+  }
+  
+  getRawFormData() {
+    const data = super.getRawFormData();
+    for (const item of data.array) {
+      for (const detail of item.Details) {
+        if (typeof detail.AccessNumbers == 'string') {
+          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').map(ac => {
+            if (/^127/.test(ac)) {
+              return { id: ac, text: ac };
+            }
+            const acd = this.commonService.decompileAccessNumber(ac);
+            return acd.accessNumber;
+          });
+        }
+      }
+    }
+    return data;
   }
 
 }

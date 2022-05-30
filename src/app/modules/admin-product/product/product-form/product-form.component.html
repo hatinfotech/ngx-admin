@@ -78,12 +78,12 @@
                       <div class="row fit-content-column">
                         <div class="col-sm-12">
                           <div class="row">
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                               <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="Unit" label="AdminProduct.unit" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                                 <ngx-select2 formControlName="Unit" [data]="unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
                               </ngx-form-group>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                               <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="ConversionRatio" label="AdminProduct.conversionRatio" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
                                 <input type="text" nbInput fullWidth formControlName="ConversionRatio" [inputMask]="towDigitsInputMask" placeholder="{{'Product.conversionRatio' | translate | headtitlecase}}">
                               </ngx-form-group>
@@ -106,6 +106,13 @@
                               <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsManageByAccessNumber" label="Dùng số truy xuất" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                 <nb-checkbox formControlName="IsManageByAccessNumber">
                                   <label class="label"><span class="valid">{{'Dùng số truy xuất' | translate | headtitlecase}}</span></label>
+                                </nb-checkbox>
+                              </ngx-form-group>
+                            </div>
+                            <div class="col-sm-2">
+                              <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsAutoAdjustInventory" label="Tự động trừ kho" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                <nb-checkbox formControlName="IsAutoAdjustInventory">
+                                  <label class="label"><span class="valid">{{'Tự động trừ kho' | translate | headtitlecase}}</span></label>
                                 </nb-checkbox>
                               </ngx-form-group>
                             </div>

@@ -273,7 +273,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     const params: any = { payment: true };
     let order = this.data[index];
     if (order) {
-      order.State = 'APPROVED';
+      // order.State = 'APPROVED';
       if (order.Code) {
         // params['id0'] = order.Code;
         this.apiService.putPromise('/commerce-pos/orders/' + order.Code, params, [order]).then(rs => {

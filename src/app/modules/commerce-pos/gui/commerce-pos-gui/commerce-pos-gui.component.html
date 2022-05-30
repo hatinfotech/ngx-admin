@@ -90,6 +90,7 @@
                             </div>
                         </div>
                         <div *ngIf="orderForm['voucherType'] == 'CPOSRETURNS'" style="padding: 1rem; color: var(--danger); font-weight: bold;">BẠN ĐANG THAO TÁC TRÊN PHIẾU TRẢ HÀNG CHO ĐƠN HÀNG {{orderForm.value?.Order}}</div>
+                        <div *ngIf="orderForm.value?.State == 'UNRECORDED'" style="padding: 1rem; color: var(--danger); font-weight: bold;">PHIẾU ĐÃ HỦY</div>
 
                         <div class="pos-order-detail scrollable-container" style="flex: 1; padding: 1rem;">
                             <table #orderDetailTable style="width: 100%; font-size: 1rem; font-weight: bold;">
@@ -204,7 +205,7 @@
                                 <div class="col-xxxl-12">
                                     <!-- Mã đơn:<br>{{orderForm.value?.Code}} -->
                                     <div class="pos-info">
-                                        <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" [ngClass]="{'text-color-danger': orderForm['voucherType'] == 'CPOSRETURNS','text-color-success':orderForm['voucherType'] == 'CPOSORDER'}">Mã đơn:<br>{{orderForm.value?.Code}}</div>
+                                        <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" [ngClass]="{'text-color-danger': (orderForm['voucherType'] == 'CPOSRETURNS' || orderForm.value['State'] == 'UNRECORDED'),'text-color-success':(orderForm['voucherType'] == 'CPOSORDER' && orderForm.value['State'] != 'UNRECORDED')}">Mã đơn:<br>{{orderForm.value?.Code}}</div>
                                         <div *ngIf="!orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" class="text-color-warning">Đang khởi tạo...</div>
                                     </div>
                                 </div>
@@ -214,9 +215,19 @@
                         <div class="scrollable-container" style="flex: 1; overflow-x: hidden; max-width: initial; margin: initial;">
                             <div class="row">
                                 <div class="col-xxxl-4">
-                                    <button nbButton fullWidth size="medium" [disabled]="true" status="info" class="pos-business-button">
+                                    <button nbButton fullWidth size="medium" status="info" class="pos-business-button" (click)="chooseCustomer()">
                                         <nb-icon icon="person-outline"></nb-icon>
                                         <div class="button-label">Khách hàng</div>
+                                    </button>
+                                </div>
+                                <div class="col-xxxl-4">
+                                    <button nbButton fullWidth size="medium" status="warning" *ngIf="orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
+                                        <nb-icon icon="book-outline"></nb-icon>
+                                        <div class="button-label">Công nợ</div>
+                                    </button>
+                                    <button nbButton fullWidth size="medium" status="warning" [outline]="true" *ngIf="!orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
+                                        <nb-icon icon="book-outline"></nb-icon>
+                                        <div class="button-label">Công nợ</div>
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
@@ -398,7 +409,7 @@
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
-                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="danger" class="pos-business-button" (click)="destroyOrder($event)">
+                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State != 'APPROVED'" status="danger" class="pos-business-button" (click)="destroyOrder($event)">
                                         <div>
                                             <nb-icon icon="close-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F4</span>

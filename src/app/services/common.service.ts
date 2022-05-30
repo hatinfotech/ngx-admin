@@ -1,3 +1,4 @@
+import { CommercePosOrderPrintComponent } from './../modules/commerce-pos/commerce-pos-order/commerce-pos-order-print/commerce-pos-order-print.component';
 import { diacritic } from './../lib/diacritic';
 import { timezones } from './../lib/timezones';
 import { HelpdeskTicketModel } from './../models/helpdesk.model';
@@ -951,6 +952,7 @@ export class CommonService {
     'CLBRTQUARTERLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTYEARLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTEXTENDTERM': CollaboratorEducationArticlePrintComponent,
+    'COMMERCEPOSORDER': CommercePosOrderPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {

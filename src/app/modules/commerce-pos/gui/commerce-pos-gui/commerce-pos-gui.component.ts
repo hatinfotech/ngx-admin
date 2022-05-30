@@ -16,6 +16,7 @@ import { CurrencyMaskConfig } from "ng2-currency-mask";
 import { CommercePosBillPrintComponent } from '../commerce-pos-order-print/commerce-pos-bill-print.component';
 import { CommercePosReturnsPrintComponent } from '../commerce-pos-returns-print/commerce-pos-returns-print.component';
 import { CommercePosPaymnentPrintComponent } from '../commerce-pos-payment-print/commerce-pos-payment-print.component';
+import { ContactAllListComponent } from '../../../contact/contact-all-list/contact-all-list.component';
 
 class OrderModel {
   [key: string]: any;
@@ -256,6 +257,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       Returns: [],
       RelativeVouchers: [data?.Returns ? [{ id: data.Returns, text: data.Returns, type: 'CPOSRETURNS' }] : null],
       DebitFunds: [],
+      IsDebt: [false],
     });
     newForm['voucherType'] = 'CPOSORDER';
     newForm['isProcessing'] = null;
@@ -345,6 +347,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       AccessNumbers: [detail.AccessNumbers || null],
       Discount: [detail.Discount || 0],
       FindOrder: [detail.FindOrder || 0],
+      Container: [detail.Container || 0],
     });
   }
 
@@ -353,6 +356,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   async makeNewOrder(data?: CommercePosOrderModel, returns?: string) {
+
+    if (this.historyOrders[this.historyOrders.length - 1].get('State').value == 'NOTJUSTAPPROVED' && this.historyOrders[this.historyOrders.length - 1].get('Details').value?.length == 0) {
+      this.historyOrderIndex = this.historyOrders.length - 1;
+      this.orderForm = this.historyOrders[this.historyOrders.length - 1];
+      return this.orderForm;
+    }
+
     if (this.orderForm.get('State').value !== 'APPROVED') {
       this.save(this.orderForm);
     }
@@ -492,22 +502,23 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   inputValue: string = '';
-  async barcodeProcess(inputValue: string, option?: { searchByFindOrder?: boolean }) {
+  async barcodeProcess(inputValue: string, option?: { searchByFindOrder?: boolean, product?: ProductModel }) {
 
     // if (inputValue && !/[^\d]/.test(inputValue)) {
-    if (inputValue) {
-      this.inputValue = inputValue;
-      const detailsControls = this.getDetails(this.orderForm).controls
-      const systemConfigs = await this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
-      const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
-      let productId = null;
-      let accessNumber = null;
-      let sku = null;
-      let unitSeq = null;
-      let unitId = null;
-      // inputValue = inputValue.replace(new RegExp('^118' + coreId), '');
-      let product: ProductModel = null;
+    // if (inputValue) {
+    this.inputValue = inputValue;
+    const detailsControls = this.getDetails(this.orderForm).controls
+    const systemConfigs = await this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
+    const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
+    let productId = null;
+    let accessNumber = null;
+    let sku = null;
+    let unitSeq = null;
+    let unitId = null;
+    // inputValue = inputValue.replace(new RegExp('^118' + coreId), '');
+    let product: ProductModel = option.product || null;
 
+    if (!product) {
       if (/^[a-z]+\d+/i.test(inputValue)) {
         // Search by sku
         product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, eq_Sku: inputValue, includeInventory: true }).then(rs => {
@@ -726,6 +737,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               unitId = this.commonService.getObjectId(product.Unit);
               product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
               if (!product.Inventory || product.Inventory < 1) {
+                this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) không có trong kho`, 'Cảnh báo', { status: 'danger' })
                 throw Error(`${product.Name} (${product.Unit.Name}) không có trong kho`);
               }
             } else {
@@ -743,132 +755,137 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           }
         }
       }
-
-      if (!product) { // Nếu không lấy đươc thông tin sản phẩm theo số truy xuất
-        // Case 2: Search by product id
-        productId = inputValue.length < 9 ? `118${coreId}${inputValue}` : inputValue;
-        accessNumber = null;
-        product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
-          includeUnit: true,
-          includePrice: false,
-          includeInventory: true
-        }).then(rs => {
-          return rs[0];
-        });
-        if (product) {
-          unitId = this.commonService.getObjectId(product.Unit);
-          product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
-        }
-        // }
-      }
-
-      console.log(accessNumber, productId);
-      const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
-      let existsProduct: FormGroup = detailsControls[existsProductIndex] as FormGroup;
-      if (existsProduct) {
-        const quantityControl = existsProduct.get('Quantity');
-        const priceControl = existsProduct.get('Price');
-        const toMoney = existsProduct.get('ToMoney');
-        const accessNumbersContorl = existsProduct.get('AccessNumbers');
-        if (accessNumber && accessNumbersContorl.value) {
-          if (!accessNumbersContorl.value.find(f => f == accessNumber)) {
-            quantityControl.setValue(quantityControl.value + 1);
-            toMoney.setValue(quantityControl.value * priceControl.value);
-            if (accessNumber && Array.isArray(accessNumbersContorl.value)) {
-              accessNumbersContorl.setValue([...accessNumbersContorl.value, accessNumber]);
-            }
-            this.calculateTotal(this.orderForm);
-
-            this.increaseDetailPipSound.nativeElement.play();
-            this.calculateToMoney(existsProduct);
-            this.calculateTotal(this.orderForm);
-            this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
-          } else {
-            this.errorSound.nativeElement.play();
-            this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
-          }
-        } else {
-          quantityControl.setValue(quantityControl.value + 1);
-          this.calculateToMoney(existsProduct);
-          this.calculateTotal(this.orderForm);
-
-          this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
-          this.increaseDetailPipSound.nativeElement.play();
-        }
-        return existsProduct;
-      } else {
-        existsProduct = this.makeNewOrderDetail({
-          Sku: product?.Sku || productId,
-          Product: productId,
-          Unit: product?.Unit || 'n/a',
-          Description: product?.Name || productId,
-          Quantity: 1,
-          Price: product?.Price || 0,
-          ToMoney: (product?.Price * 1) || 0,
-          Image: product?.FeaturePicture || [],
-          AccessNumbers: accessNumber ? [accessNumber] : null,
-          Discount: 0,
-          FindOrder: product?.FindOrder,
-        });
-
-        if (product?.Price) {
-          // Nếu đã có giá (trường hợp quét số truy xuất)
-          this.calculateToMoney(existsProduct);
-          detailsControls.push(existsProduct);
-          this.calculateTotal(this.orderForm);
-          this.activeDetail(this.orderForm, existsProduct, 0);
-          this.newDetailPipSound.nativeElement.play();
-          this.save(this.orderForm);
-        } else {
-          // Nếu chưa có giá (trường hợp quét ID sản phẩm)
-          if (product) {
-
-            if (!product.Unit || !this.commonService.getObjectId(product.Unit) || this.commonService.getObjectId(product.Unit) == 'n/a') {
-              this.errorSound.nativeElement.play();
-              this.commonService.toastService.show('Sản phẩm chưa cài đặt đơn vị tính !', 'Commerce POS', { status: 'danger' });
-              return;
-            }
-
-            existsProduct.get('Description').setValue(product.Name);
-            existsProduct.get('Sku').setValue(product.Sku);
-            existsProduct.get('Unit').setValue(product.Unit);
-            existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
-
-            return await this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
-              // priceTable: 'BGC201031',
-              product: productId,
-              includeUnit: true
-            }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.Unit))).then(price => {
-              if (price) {
-                existsProduct.get('Price').setValue(parseFloat(price.Price));
-                existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
-
-                this.calculateToMoney(existsProduct);
-                detailsControls.push(existsProduct);
-                this.calculateTotal(this.orderForm);
-
-                this.activeDetail(this.orderForm, existsProduct, 0);
-
-                this.newDetailPipSound.nativeElement.play();
-                this.save(this.orderForm);
-              } else {
-                this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
-              }
-              return existsProduct;
-            }).catch(err => {
-
-              this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
-              this.errorSound.nativeElement.play();
-            });
-          } else {
-            this.errorSound.nativeElement.play();
-            this.commonService.toastService.show('Sản phẩm không tồn tại !', 'Commerce POS', { status: 'danger' });
-            return false;
-          }
-        }
-      }
-
+    } else {
+      productId = product.Code;
+      unitId = this.commonService.getObjectId(product.Unit);
     }
+
+    if (!product) { // Nếu không lấy đươc thông tin sản phẩm theo số truy xuất
+      // Case 2: Search by product id
+      productId = inputValue.length < 9 ? `118${coreId}${inputValue}` : inputValue;
+      accessNumber = null;
+      product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
+        includeUnit: true,
+        includePrice: false,
+        includeInventory: true
+      }).then(rs => {
+        return rs[0];
+      });
+      if (product) {
+        unitId = this.commonService.getObjectId(product.Unit);
+        product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+      }
+      // }
+    }
+
+    console.log(accessNumber, productId);
+    const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
+    let existsProduct: FormGroup = detailsControls[existsProductIndex] as FormGroup;
+    if (existsProduct) {
+      const quantityControl = existsProduct.get('Quantity');
+      const priceControl = existsProduct.get('Price');
+      const toMoney = existsProduct.get('ToMoney');
+      const accessNumbersContorl = existsProduct.get('AccessNumbers');
+      if (accessNumber && accessNumbersContorl.value) {
+        if (!accessNumbersContorl.value.find(f => f == accessNumber)) {
+          quantityControl.setValue(quantityControl.value + 1);
+          toMoney.setValue(quantityControl.value * priceControl.value);
+          if (accessNumber && Array.isArray(accessNumbersContorl.value)) {
+            accessNumbersContorl.setValue([...accessNumbersContorl.value, accessNumber]);
+          }
+          this.calculateTotal(this.orderForm);
+
+          this.increaseDetailPipSound.nativeElement.play();
+          this.calculateToMoney(existsProduct);
+          this.calculateTotal(this.orderForm);
+          this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
+        } else {
+          this.errorSound.nativeElement.play();
+          this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
+        }
+      } else {
+        quantityControl.setValue(quantityControl.value + 1);
+        this.calculateToMoney(existsProduct);
+        this.calculateTotal(this.orderForm);
+
+        this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
+        this.increaseDetailPipSound.nativeElement.play();
+      }
+      return existsProduct;
+    } else {
+      existsProduct = this.makeNewOrderDetail({
+        Sku: product?.Sku || productId,
+        Product: productId,
+        Unit: product?.Unit || 'n/a',
+        Description: product?.Name || productId,
+        Quantity: 1,
+        Price: product?.Price || 0,
+        ToMoney: (product?.Price * 1) || 0,
+        Image: product?.FeaturePicture || [],
+        AccessNumbers: accessNumber ? [accessNumber] : null,
+        Discount: 0,
+        FindOrder: product?.FindOrder,
+        Container: product?.Container,
+      });
+
+      if (product?.Price) {
+        // Nếu đã có giá (trường hợp quét số truy xuất)
+        this.calculateToMoney(existsProduct);
+        detailsControls.push(existsProduct);
+        this.calculateTotal(this.orderForm);
+        this.activeDetail(this.orderForm, existsProduct, 0);
+        this.newDetailPipSound.nativeElement.play();
+        this.save(this.orderForm);
+      } else {
+        // Nếu chưa có giá (trường hợp quét ID sản phẩm)
+        if (product) {
+
+          if (!product.Unit || !this.commonService.getObjectId(product.Unit) || this.commonService.getObjectId(product.Unit) == 'n/a') {
+            this.errorSound.nativeElement.play();
+            this.commonService.toastService.show('Sản phẩm chưa cài đặt đơn vị tính !', 'Commerce POS', { status: 'danger' });
+            return;
+          }
+
+          existsProduct.get('Description').setValue(product.Name);
+          existsProduct.get('Sku').setValue(product.Sku);
+          existsProduct.get('Unit').setValue(product.Unit);
+          existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
+
+          return await this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
+            // priceTable: 'BGC201031',
+            product: productId,
+            includeUnit: true
+          }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.Unit))).then(price => {
+            if (price) {
+              existsProduct.get('Price').setValue(parseFloat(price.Price));
+              existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
+
+              this.calculateToMoney(existsProduct);
+              detailsControls.push(existsProduct);
+              this.calculateTotal(this.orderForm);
+
+              this.activeDetail(this.orderForm, existsProduct, 0);
+
+              this.newDetailPipSound.nativeElement.play();
+              this.save(this.orderForm);
+            } else {
+              this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
+            }
+            return existsProduct;
+          }).catch(err => {
+
+            this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
+            this.errorSound.nativeElement.play();
+          });
+        } else {
+          this.errorSound.nativeElement.play();
+          this.commonService.toastService.show('Sản phẩm không tồn tại !', 'Commerce POS', { status: 'danger' });
+          return false;
+        }
+      }
+    }
+
+    // }
   }
 
   destroyOrder(event?: any) {
@@ -892,23 +909,28 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         focus: true,
         action: () => {
           // this.order = new OrderModel();
-          this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
-          if (this.historyOrderIndex > -1) {
-            this.historyOrders.splice(this.historyOrderIndex, 1);
-            if (this.historyOrders.length == 0) {
-              this.makeNewOrder();
-            } else {
-              this.historyOrderIndex = this.historyOrders.length - 1;
-              this.orderForm = this.historyOrders[this.historyOrderIndex];
+          this.apiService.putPromise('/commerce-pos/orders', { changeState: 'UNRECORDED' }, [{ Code: this.orderForm.get('Code').value }]).then(rs => {
+            this.orderForm.get('State').setValue('UNRECORDED');
+            this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
+            if (this.historyOrderIndex > -1) {
+              // this.historyOrders.splice(this.historyOrderIndex, 1);
+              if (this.historyOrders.length == 0) {
+                this.makeNewOrder();
+              } else {
+                this.historyOrderIndex = this.historyOrders.length - 1;
+                this.orderForm = this.historyOrders[this.historyOrderIndex];
+              }
             }
-          }
 
-          setTimeout(() => {
-            // event.target.blur();
-            if ("activeElement" in document) {
-              (document.activeElement as HTMLElement).blur();
-            }
-          }, 500);
+            setTimeout(() => {
+              // event.target.blur();
+              if ("activeElement" in document) {
+                (document.activeElement as HTMLElement).blur();
+              }
+            }, 500);
+
+          });
+
         }
       },
     ])
@@ -1214,6 +1236,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       if ((document.activeElement as HTMLElement)?.classList?.value.indexOf('pos-quantity') > -1) {
         if (event.key == 'Enter') {
           (document.activeElement as HTMLElement).blur();
+          this.findOrderKeyInput = '';
+          this.searchInputPlaceholder = '';
           return true;
         }
       }
@@ -1440,7 +1464,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           data: [data],
           onSaveAndClose: (newOrder, printComponent) => {
             orderForm.patchValue(newOrder);
-            this.commonService.toastService.show('Đơn hàng đã hoàn tất, bạn có thể bấm F4 để xem lại', 'Máy bán hàng', { status: 'success', duration: 8000 })
+            this.commonService.toastService.show('Đơn hàng đã hoàn tất', 'Máy bán hàng', { status: 'success', duration: 8000 })
             this.makeNewOrder();
             // printComponent.close();
             console.log(this.historyOrders);
@@ -1644,7 +1668,32 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
     if (product.Container?.ContainerFindOrder) {
       this.barcodeProcess(product.Container.ContainerFindOrder, { searchByFindOrder: true });
+    } else {
+      product.Unit = product.WarehouseUnit;
+      this.barcodeProcess(null, { product: product });
     }
     // this.tmpQuantity = '';
+  }
+
+  chooseCustomer() {
+    this.commonService.openDialog(ContactAllListComponent, {
+      context: {
+        inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: ContactModel[]) => {
+          console.log(chooseItems);
+          const contact = chooseItems[0];
+          if (contact) {
+            this.orderForm.get('Object').setValue(contact.Code);
+            this.orderForm.get('ObjectName').setValue(contact.Name);
+            this.orderForm.get('ObjectPhone').setValue(contact.Phone);
+          }
+        }
+      }
+    });
+  }
+
+  toggleDebt() {
+    this.orderForm.get('IsDebt').setValue(!this.orderForm.get('IsDebt').value);
+    this.save(this.orderForm);
   }
 }

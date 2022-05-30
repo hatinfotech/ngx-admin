@@ -153,7 +153,9 @@
       border-radius: 0.5rem;
     }
   }
-  .pos-search-result-item:hover,
+  .pos-search-result-item:hover {
+    background-color: var(--ck-color-link-selected-background);
+  }
   .pos-search-result-item.active {
     background-color: var(--ck-color-button-action-hover-background);
   }

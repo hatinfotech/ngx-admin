@@ -212,17 +212,17 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         //   },
         // },
 
-        ContainerPath: {
+        ContainerShelf: {
           title: 'Kệ hàng hóa',
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          width: '15%',
+          type: 'html',
+          // renderComponent: SmartTableTagsComponent,
+          width: '10%',
           filter: {
             type: 'custom',
             component: SmartTableSelect2FilterComponent,
             config: {
               delay: 0,
-              condition: 'bleft',
+              condition: 'eq',
               select2Option: {
                 placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
                 allowClear: true,
@@ -250,56 +250,56 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product.Containers as any;
+            return product.ContainerShelfName as any;
           },
-          onComponentInitFunction: (component: SmartTableTagsComponent) => {
-            component.labelAsText = (tag) => {
-              return tag.text;
-            };
-            component.renderToolTip = (tag) => {
-              return tag.text;
-            };
-            component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
+          // onComponentInitFunction: (component: SmartTableTagsComponent) => {
+          //   component.labelAsText = (tag) => {
+          //     return tag.text;
+          //   };
+          //   component.renderToolTip = (tag) => {
+          //     return tag.text;
+          //   };
+          //   component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
 
-            });
-            component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
-              if (!tag.Container) {
-                this.commonService.openDialog(AssignContainerFormComponent, {
-                  context: {
-                    inputMode: 'dialog',
-                    inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
-                    onDialogSave: async (newData: ProductModel[]) => {
-                      // this.refresh();
-                      // this.updateGridItems(editedItems, newData);
-                      const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
-                      this.source.isLocalUpdate = true;
-                      try {
-                        const newContainer = newData[0].Containers[0];
-                        this.source.update(udpateItem, {
-                          UnitConversions: [
-                            ...udpateItem.UnitConversions.map(m => ({
-                              type: m.type,
-                              id: m.id,
-                              text: m.text,
-                              Container: m.id == tag.id ? newContainer : m.Container,
-                            })),
-                            { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
-                        }).then(() => {
-                          this.source.isLocalUpdate = false;
-                        });
-                      } catch (err) {
-                        this.source.isLocalUpdate = false;
-                      }
-                    },
-                    onDialogClose: () => {
-                    },
-                  },
-                  closeOnEsc: false,
-                  closeOnBackdropClick: false,
-                });
-              }
-            });
-          },
+          //   });
+          //   component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
+          //     if (!tag.Container) {
+          //       this.commonService.openDialog(AssignContainerFormComponent, {
+          //         context: {
+          //           inputMode: 'dialog',
+          //           inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
+          //           onDialogSave: async (newData: ProductModel[]) => {
+          //             // this.refresh();
+          //             // this.updateGridItems(editedItems, newData);
+          //             const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
+          //             this.source.isLocalUpdate = true;
+          //             try {
+          //               const newContainer = newData[0].Containers[0];
+          //               this.source.update(udpateItem, {
+          //                 UnitConversions: [
+          //                   ...udpateItem.UnitConversions.map(m => ({
+          //                     type: m.type,
+          //                     id: m.id,
+          //                     text: m.text,
+          //                     Container: m.id == tag.id ? newContainer : m.Container,
+          //                   })),
+          //                   { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
+          //               }).then(() => {
+          //                 this.source.isLocalUpdate = false;
+          //               });
+          //             } catch (err) {
+          //               this.source.isLocalUpdate = false;
+          //             }
+          //           },
+          //           onDialogClose: () => {
+          //           },
+          //         },
+          //         closeOnEsc: false,
+          //         closeOnBackdropClick: false,
+          //       });
+          //     }
+          //   });
+          // },
         },
         // Goods: {
         //   title: this.commonService.translateText('Hàng hóa', { action: '', definition: '' }),
@@ -394,10 +394,15 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           type: 'string',
           width: '10%',
         },
+        LastAdjust: {
+          title: 'Kiểm kho',
+          type: 'datetime',
+          width: '10%',
+        },
         Inventory: {
           title: this.commonService.translateText('Warehouse.inventory'),
           type: 'custom',
-          width: '10%',
+          width: '5%',
           renderComponent: SmartTableTagComponent,
           onComponentInitFunction: (component: SmartTableTagComponent) => {
             component.renderToolTip = (tag) => {
@@ -713,6 +718,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       params['includeUnit'] = true;
       params['includeContainer'] = true;
       params['includeInventory'] = true;
+      params['includeLastInventoryAdjust'] = true;
       // params['includeUnitConversions'] = true;
       params['sort_Id'] = 'desc';
       return params;
