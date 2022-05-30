@@ -300,6 +300,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         DateOfReturn: [new Date()],
         RelativeVouchers: [[{ id: order.Code, text: order.Title || order.Code, type: 'CPOSORDER' }]],
         Details: this.formBuilder.array([]),
+        IsDebt: [false],
       });
       if (order.Details) {
         const details = (this.getDetails(newForm) as FormArray).controls;
@@ -326,6 +327,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         State: [null],
         DateOfSale: [new Date()],
         Details: this.formBuilder.array([]),
+        IsDebt: [false],
       });
     }
     newForm['voucherType'] = 'CPOSRETURNS';
@@ -1695,5 +1697,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   toggleDebt() {
     this.orderForm.get('IsDebt').setValue(!this.orderForm.get('IsDebt').value);
     this.save(this.orderForm);
+  }
+
+  async onMakeNewReturnsForm() {
+    this.orderForm = await this.makeNewReturnsForm();
+    this.save(this.orderForm);
+    this.historyOrders.push(this.orderForm);
+    this.historyOrderIndex = this.historyOrders.length - 1;
   }
 }

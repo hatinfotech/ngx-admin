@@ -89,7 +89,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div *ngIf="orderForm['voucherType'] == 'CPOSRETURNS'" style="padding: 1rem; color: var(--danger); font-weight: bold;">BẠN ĐANG THAO TÁC TRÊN PHIẾU TRẢ HÀNG CHO ĐƠN HÀNG {{orderForm.value?.Order}}</div>
+                        <div *ngIf="orderForm['voucherType'] == 'CPOSRETURNS'" style="padding: 1rem; color: var(--danger); font-weight: bold;">BẠN ĐANG THAO TÁC TRÊN PHIẾU TRẢ HÀNG {{orderForm.value?.Order ? 'CHO ĐƠN HÀNG' + ' ' + orderForm.value?.Order : ''}}</div>
                         <div *ngIf="orderForm.value?.State == 'UNRECORDED'" style="padding: 1rem; color: var(--danger); font-weight: bold;">PHIẾU ĐÃ HỦY</div>
 
                         <div class="pos-order-detail scrollable-container" style="flex: 1; padding: 1rem;">
@@ -231,6 +231,12 @@
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
+                                    <button nbButton fullWidth size="medium" status="danger" class="pos-business-button" (click)="onMakeNewReturnsForm()">
+                                        <nb-icon icon="undo-outline"></nb-icon>
+                                        <div class="button-label">Trả hàng</div>
+                                    </button>
+                                </div>
+                                <div class="col-xxxl-4">
                                     <button nbButton fullWidth size="medium" [disabled]="true" status="info" class="pos-business-button">
                                         <nb-icon icon="square-outline"></nb-icon>
                                         <div class="button-label">Giao hàng</div>
@@ -297,12 +303,6 @@
                                     <button nbButton fullWidth size="medium" [disabled]="true" status="info" class="pos-business-button">
                                         <nb-icon icon="square-outline"></nb-icon>
                                         <div class="button-label">Đặt hàng</div>
-                                    </button>
-                                </div>
-                                <div class="col-xxxl-4">
-                                    <button nbButton fullWidth size="medium" [disabled]="true" status="info" class="pos-business-button">
-                                        <nb-icon icon="square-outline"></nb-icon>
-                                        <div class="button-label">Trả hàng</div>
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
