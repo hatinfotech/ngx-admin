@@ -518,7 +518,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     let unitSeq = null;
     let unitId = null;
     // inputValue = inputValue.replace(new RegExp('^118' + coreId), '');
-    let product: ProductModel = option.product || null;
+    let product: ProductModel = option?.product || null;
 
     if (!product) {
       if (/^[a-z]+\d+/i.test(inputValue)) {
