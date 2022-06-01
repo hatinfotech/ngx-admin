@@ -55,6 +55,7 @@ import { RootConfigModel, SystemConfigModel } from '../models/model';
 import { AdminProductService } from '../modules/admin-product/admin-product.service';
 import { CollaboratorEducationArticlePrintComponent } from '../modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
 import { SalesReturnsVoucherPrintComponent } from '../modules/sales/sales-returns-voucher/sales-returns-voucher-print/sales-returns-voucher-print.component';
+import { CommercePosReturnPrintComponent } from '../modules/commerce-pos/commerce-pos-return/commerce-pos-return-print/commerce-pos-return-print.component';
 
 interface ClipboardItem {
   readonly types: string[];
@@ -953,6 +954,7 @@ export class CommonService {
     'CLBRTYEARLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTEXTENDTERM': CollaboratorEducationArticlePrintComponent,
     'COMMERCEPOSORDER': CommercePosOrderPrintComponent,
+    'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {

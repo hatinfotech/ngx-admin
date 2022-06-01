@@ -1,7 +1,7 @@
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductModel } from './../../../../models/product.model';
 import { ContactModel } from './../../../../models/contact.model';
-import { CommercePosDetailModel, CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnsModel } from './../../../../models/commerce-pos.model';
+import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel } from './../../../../models/commerce-pos.model';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
@@ -335,7 +335,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return newForm;
   }
 
-  makeNewOrderDetail(detail?: CommercePosDetailModel) {
+  makeNewOrderDetail(detail?: CommercePosReturnDetailModel) {
     return this.formBuilder.group({
       Sku: [detail.Sku || null],
       Product: [detail.Product || null],
@@ -738,9 +738,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               productId = product.Code;
               unitId = this.commonService.getObjectId(product.Unit);
               product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
-              if (!product.Inventory || product.Inventory < 1) {
-                this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) không có trong kho`, 'Cảnh báo', { status: 'danger' })
-                throw Error(`${product.Name} (${product.Unit.Name}) không có trong kho`);
+              if (this.orderForm['voucherType'] == 'CPOSRETURNS') {
+                if (product.Inventory && product.Inventory > 0) {
+                  throw Error(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`);
+                }
+              } else {
+                if (!product.Inventory || product.Inventory < 1) {
+                  throw Error(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`);
+                }
               }
             } else {
               product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
@@ -1588,7 +1593,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   async returnsPayment(returns: string) {
-    const returnsObj = await this.apiService.getPromise<CommercePosReturnsModel[]>('/commerce-pos/returns/' + returns, { includeDetails: true, includeRelativeVouchers: true }).then(rs => rs[0]);
+    const returnsObj = await this.apiService.getPromise<CommercePosReturnModel[]>('/commerce-pos/returns/' + returns, { includeDetails: true, includeRelativeVouchers: true }).then(rs => rs[0]);
     let debitFunds = 0;
     if (returnsObj && returnsObj?.Details) {
       for (const detail of returnsObj.Details) {

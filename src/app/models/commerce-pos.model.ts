@@ -61,7 +61,7 @@ export class CommercePosOrderDetailModel extends Model {
   ProductName?: string;
   PriceTableDetail?: string;
 }
-export class CommercePosReturnsModel extends Model {
+export class CommercePosReturnModel extends Model {
   Id?: string & number;
   Code?: string;
   No?: string;
@@ -94,10 +94,10 @@ export class CommercePosReturnsModel extends Model {
   Invoice?: string;
   Creator?: string;
 
-  Details?: CommercePosDetailModel[];
+  Details?: CommercePosReturnDetailModel[];
 }
 
-export class CommercePosDetailModel extends Model {
+export class CommercePosReturnDetailModel extends Model {
   Id?: string & number;
   Voucher?: string;
   No?: number;

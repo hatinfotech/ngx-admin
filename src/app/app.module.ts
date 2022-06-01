@@ -260,6 +260,9 @@ import { CommercePosReturnsPrintComponent } from './modules/commerce-pos/gui/com
 import { CommercePosPaymnentPrintComponent } from './modules/commerce-pos/gui/commerce-pos-payment-print/commerce-pos-payment-print.component';
 import { WarehouseFindOrderTempPrintComponent } from './modules/warehouse/label/warehouse-find-order-temp-print/warehouse-find-order-temp-print.component';
 import { AssignNewContainerFormComponent } from './modules/warehouse/goods/assign-new-containers-form/assign-new-containers-form.component';
+import { CommercePosReturnFormComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-form/commerce-pos-return-form.component';
+import { CommercePosReturnListComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-list/commerce-pos-return-list.component';
+import { CommercePosReturnPrintComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-print/commerce-pos-return-print.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -515,6 +518,9 @@ export class DynamicLocaleId extends String {
     CommercePosOrderFormComponent,
     CommercePosOrderListComponent,
     CommercePosOrderPrintComponent,
+    CommercePosReturnFormComponent,
+    CommercePosReturnListComponent,
+    CommercePosReturnPrintComponent,
 
   ],
   imports: [

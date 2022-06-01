@@ -61,7 +61,7 @@
                                 <td>{{detail.Description}}</td>
                                 <td class="text-align-right">{{detail.Quantity ? (detail.Quantity | number) : ''}}</td>
                                 <td>{{detail.ProductUnitLabel}}</td>
-                                <td class="text-align-right">{{detail.Quantity ? renderCurrency((detail.GenerateDebit - detail.GenerateCredit) / detail.Quantity) : ''}}</td>
+                                <td class="text-align-right" [innerHtml]="detail.Quantity ? renderCurrency((detail.GenerateDebit - detail.GenerateCredit) / detail.Quantity) : ''"></td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateDebit - detail.GenerateCredit)"></td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
                             </tr>
