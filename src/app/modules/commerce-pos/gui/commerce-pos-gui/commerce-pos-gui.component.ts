@@ -359,7 +359,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   async makeNewOrder(data?: CommercePosOrderModel, returns?: string) {
 
-    if (this.historyOrders[this.historyOrders.length - 1].get('State').value == 'NOTJUSTAPPROVED' && this.historyOrders[this.historyOrders.length - 1].get('Details').value?.length == 0) {
+    if (this.orderForm['voucherType'] != 'CPOSRETURNS' && this.historyOrders[this.historyOrders.length - 1].get('State').value == 'NOTJUSTAPPROVED' && this.historyOrders[this.historyOrders.length - 1].get('Details').value?.length == 0) {
       this.historyOrderIndex = this.historyOrders.length - 1;
       this.orderForm = this.historyOrders[this.historyOrders.length - 1];
       return this.orderForm;

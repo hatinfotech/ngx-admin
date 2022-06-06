@@ -294,6 +294,20 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       //   //   }
       //   // }
       // });
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          formItem.get('RelativeVouchers').setValue('');
+          formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
+          this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
+            // Clear id
+            conditonFormGroup.get('Id').setValue('');
+          });
+        });
+      }
       return rs;
     });
   }
