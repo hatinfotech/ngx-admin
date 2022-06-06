@@ -614,7 +614,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         const details = this.getDetails(newForm);
         details.clear();
         for (const detailData of itemFormData.Details) {
-          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.join('\n') + '\n') : '';
+          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
@@ -1377,7 +1377,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
   async onSelectAccessNumbers(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
     console.log(selectedData);
     if (detail['IsManageByAccessNumber']) {
-      detail.get('Quantity').setValue(detail.get('AccessNumbers').value.length);
+      detail.get('Quantity').setValue(detail.get('AccessNumbers').value.trim().split('\n').length);
     }
   }
   
@@ -1386,7 +1386,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     for (const item of data.array) {
       for (const detail of item.Details) {
         if (typeof detail.AccessNumbers == 'string') {
-          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').map(ac => {
+          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').filter(f => !!f).map(ac => {
             if (/^127/.test(ac)) {
               return { id: ac, text: ac };
             }

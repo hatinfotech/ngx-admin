@@ -187,8 +187,8 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
             // instance.format$.next('medium');
           },
         },
-        DateOfSale: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Sales.dateOfSales'), 'head-title'),
+        DateOfReturn: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Sales.dateOfReturn'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {

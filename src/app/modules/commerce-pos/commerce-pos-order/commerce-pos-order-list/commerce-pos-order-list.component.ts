@@ -54,7 +54,75 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
   }
 
   async init() {
-    return super.init();
+    return super.init().then(state => {
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'unrecord',
+        status: 'warning',
+        label: 'Bỏ ghi',
+        title: 'Bỏ ghi các phiếu đã chọn',
+        size: 'medium',
+        icon: 'slash-outline',
+        disabled: () => {
+          return this.selectedIds.length == 0;
+        },
+        click: () => {
+          this.commonService.showDialog('Đơn hàng POS', 'Bạn có chắc muốn bỏ ghi các đơn hàng đã chọn ?', [
+            {
+              label: 'Trở về',
+              status: 'basic',
+              action: () => {
+              }
+            },
+            {
+              label: 'Bỏ ghi',
+              status: 'warning',
+              focus: true,
+              action: () => {
+                this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
+                  this.commonService.toastService.show('Bỏ ghi thành công !', 'Đơn hàng POS', { status: 'success' });
+                  this.refresh();
+                });
+              }
+            },
+          ]);
+        }
+      });
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'writetobook',
+        status: 'primary',
+        label: 'Duyệt',
+        title: 'Duyệt các phiếu đã chọn',
+        size: 'medium',
+        icon: 'checkmark-square-outline',
+        disabled: () => {
+          return this.selectedIds.length == 0;
+        },
+        click: () => {
+          this.commonService.showDialog('Đơn hàng POS', 'Bạn có chắc muốn bỏ ghi các đơn hàng đã chọn ?', [
+            {
+              label: 'Trở về',
+              status: 'basic',
+              action: () => {
+              }
+            },
+            {
+              label: 'Duyệt',
+              status: 'primary',
+              focus: true,
+              action: () => {
+                this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
+                  this.commonService.toastService.show('Duyệt thành công !', 'Đơn hàng POS', { status: 'success' });
+                  this.refresh();
+                });
+              }
+            },
+          ]);
+        }
+      });
+      return state;
+    });
   }
 
   editing = {};
@@ -107,10 +175,12 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }}),
+                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+                  placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                    item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                    return item;
+                  }
+                }),
                 multiple: true,
                 logic: 'OR',
                 allowClear: true,

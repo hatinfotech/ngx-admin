@@ -252,7 +252,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       CashBack: [0],
       CashReceipt: [0],
       State: [null],
-      DateOfSale: [new Date()],
+      DateOfSale: [null],
       Details: this.formBuilder.array([]),
       Returns: [],
       RelativeVouchers: [data?.Returns ? [{ id: data.Returns, text: data.Returns, type: 'CPOSRETURNS' }] : null],
