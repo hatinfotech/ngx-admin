@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="form-control-group accept-group">
-                    <nb-checkbox name="rememberMe" [(ngModel)]="user.rememberMe" *ngIf="rememberMe">Giữ đăng nhập trong 7 ngày</nb-checkbox>
+                    <nb-checkbox name="rememberMe" [(ngModel)]="user.rememberMe" *ngIf="rememberMe">Giữ đăng nhập</nb-checkbox>
                 </div>
 
                 <button nbButton fullWidth status="primary" size="large" [disabled]="submitted || !form.valid" [class.btn-pulse]="submitted">
