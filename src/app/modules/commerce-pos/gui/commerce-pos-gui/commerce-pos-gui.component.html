@@ -132,7 +132,7 @@
                                         </div>
                                     </td>
                                     <td style="text-align: center">
-                                        <button nbButton status="warning" [disabled]="detail.value?.AccessNumbers" size="large" style="margin: 0.2rem" (click)="onDecreaseQuantityClick(orderForm, detail)">
+                                        <button nbButton status="warning" size="large" style="margin: 0.2rem" (click)="onDecreaseQuantityClick(orderForm, detail)">
                                             <nb-icon icon="minus-outline"></nb-icon>
                                         </button>
                                     </td>
@@ -151,7 +151,7 @@
                                         <div class="pos-tomoney">= {{detail.value.ToMoney | currency:'VND'}}</div>
                                     </td>
                                     <td style="text-align: center">
-                                        <button nbButton status="success" [disabled]="detail.value?.AccessNumbers" size="large" style="margin: 0.2rem" (click)="onIncreaseQuantityClick(orderForm, detail)">
+                                        <button nbButton status="success" size="large" style="margin: 0.2rem" (click)="onIncreaseQuantityClick(orderForm, detail)">
                                             <nb-icon icon="plus-outline"></nb-icon>
                                         </button>
                                     </td>
@@ -383,7 +383,7 @@
                                 </div>
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field">
-                                        <input id="ObjectName" formControlName="ObjectName" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
+                                        <input id="ObjectName" formControlName="ObjectName" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" status="primary" fieldSize="large" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                             </div>

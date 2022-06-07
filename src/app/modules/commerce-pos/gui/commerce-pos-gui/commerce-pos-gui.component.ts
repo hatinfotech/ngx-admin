@@ -491,15 +491,29 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   onObjectPhoneInput(orderForm: FormGroup, event: any) {
-    this.commonService.takeUntil('commerce-pos-seach-contact-by-phone', 400).then(() => {
+    this.commonService.takeUntil('commerce-pos-seach-contact-by-phone', 600).then(() => {
       const phone = this.orderForm.get('ObjectPhone').value;
       if (phone && phone.length > 9) {
         this.apiService.getPromise<ContactModel[]>('/contact/contacts', { search: phone, sort_Id: 'desc' }).then(rs => {
           if (rs.length > 0) {
-            this.orderForm.get('ObjectName').setValue(rs[0].Name);
+            const contact = rs[0];
+            if (contact) {
+              if (contact.Code) {
+                this.orderForm.get('Object').setValue(contact.Code);
+              }
+              if (contact.Name) {
+                this.orderForm.get('ObjectName').setValue(contact.Name);
+              }
+            }
+            this.save(orderForm);
           }
         });
       }
+    });
+  }
+  onObjectNameInput(orderForm: FormGroup, event: any) {
+    this.commonService.takeUntil('commerce-pos-save-contact-name', 3000).then(() => {
+      this.save(orderForm);
     });
   }
 
@@ -1417,9 +1431,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   onIncreaseQuantityClick(orderForm: FormGroup, detail: FormGroup) {
-    if (detail.get('AccessNumbers').value) {
-      return false;
-    }
+    // if (detail.get('AccessNumbers').value) {
+    //   return false;
+    // }
     const quantityControl = detail.get('Quantity');
     quantityControl.setValue(quantityControl.value + 1);
     this.calculateToMoney(detail);
@@ -1428,9 +1442,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     this.save(orderForm);
   }
   onDecreaseQuantityClick(orderForm: FormGroup, detail: FormGroup) {
-    if (detail.get('AccessNumbers').value) {
-      return false;
-    }
+    // if (detail.get('AccessNumbers').value) {
+    //   return false;
+    // }
     const quantityControl = detail.get('Quantity');
     if (quantityControl.value > 1) {
       quantityControl.setValue(quantityControl.value - 1);
@@ -1702,6 +1716,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   toggleDebt() {
     this.orderForm.get('IsDebt').setValue(!this.orderForm.get('IsDebt').value);
     this.save(this.orderForm);
+
+    (document.activeElement as HTMLElement).blur();
   }
 
   async onMakeNewReturnsForm() {
@@ -1709,5 +1725,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     this.save(this.orderForm);
     this.historyOrders.push(this.orderForm);
     this.historyOrderIndex = this.historyOrders.length - 1;
+
+    (document.activeElement as HTMLElement).blur();
   }
 }
