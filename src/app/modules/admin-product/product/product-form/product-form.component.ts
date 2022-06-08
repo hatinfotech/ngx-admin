@@ -409,7 +409,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     newForm = this.formBuilder.group({
       // Code_old: [''],
       Code: [''],
-      Sku: { disabled: true, value: '' },
+      // Sku: { disabled: true, value: '' },
+      Sku: [''],
       WarehouseUnit: ['n/a', (control: FormControl) => {
         if (newForm && !this.commonService.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };

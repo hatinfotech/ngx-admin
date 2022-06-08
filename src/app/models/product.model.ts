@@ -51,6 +51,7 @@ export class ProductUnitModel {
   Name?: string;
   Symbol?: string;
   FullName?: string;
+  Sequence?: string;
 }
 
 export class ProductPictureModel {
