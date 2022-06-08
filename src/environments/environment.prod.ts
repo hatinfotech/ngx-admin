@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.1.2.15',
+  version: '6.1.2.16',
   // 6.1.2.1: Dev adjust inventory feature and update Commerce POS: auto ajust inventory
   // 6.1.1.75: Auto update master price table when had been changed
   // 6.1.1.48: Update quick create new container for goods

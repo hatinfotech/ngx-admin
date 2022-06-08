@@ -171,20 +171,34 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   private unitMap: { [key: string]: ProductUnitModel } = {};
   private productMap: { [key: string]: ProductModel } = {};
+  private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
   async init() {
     const result = await super.init().then(async status => {
-      await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { limit: 'nolimit' }).then(unitList => {
-        for (const unit of unitList) {
-          this.unitMap[unit['Sequence']] = unit;
-        }
-        console.log(this.unitMap);
-      });
       await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 'nolimit' }).then(productList => {
         for (const product of productList) {
           this.productMap[product.Code] = product;
         }
         console.log(this.productMap);
+        this.commonService.toastService.show('Đã tải danh sách hàng hóa', 'POS Thương mại', { status: 'success' });
       });
+      await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { limit: 'nolimit' }).then(unitList => {
+        for (const unit of unitList) {
+          this.unitMap[unit['Sequence']] = unit;
+        }
+        console.log(this.unitMap);
+        this.commonService.toastService.show('Đã tải danh sách đơn vị tính', 'POS Thương mại', { status: 'success' });
+        return true;
+      });
+      await this.apiService.getPromise<any>('/warehouse/goods', {
+        getFindOrderIndex: true,
+        limit: 'nolimit'
+      }).then(rs => {
+        this.findOrderMap = rs;
+        this.commonService.toastService.show('Đã tải danh sách vị trí', 'POS Thương mại', { status: 'success' });
+        return true;
+      });
+
+      await this.updateMaterPriceTable();
       return status;
     });
     this.commonService.sidebarService.collapse('menu-sidebar');
@@ -235,7 +249,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     //     }
     //   }
     // })();
-    this.updateMaterPriceTable();
 
     // Listen price table update
     setInterval(() => {
@@ -570,17 +583,27 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       } else {
         if (option?.searchByFindOrder || inputValue.length < 5) {
           //Tìm hàng hóa theo số nhận thức
-          product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
-            includeUnit: true,
-            includePrice: false,
-            includeInventory: true,
-            findOrder: inputValue,
-            // isNotManageByAccessNumber: true
-          }).then(rs => {
-            return rs[0];
-          });
+          const goodsInContainer = this.findOrderMap[inputValue];
+          if (goodsInContainer && goodsInContainer.Goods && goodsInContainer.Unit) {
+            productId = goodsInContainer.Goods;
+            product = this.productMap[productId];
+            unitId = goodsInContainer.Unit;
+            product.Unit = unit = { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel };
+            product.Container = goodsInContainer.Container;
+          }
+          if (!product) {
+            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+              includeUnit: true,
+              includePrice: false,
+              includeInventory: true,
+              findOrder: inputValue,
+              // isNotManageByAccessNumber: true
+            }).then(rs => {
+              return rs[0];
+            });
+          }
           if (product) {
-            unitId = this.commonService.getObjectId(product.Unit);
+            unitId = unitId || this.commonService.getObjectId(product.Unit);
             product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
             product.FindOrder = inputValue.trim();
             productId = product.Code;
