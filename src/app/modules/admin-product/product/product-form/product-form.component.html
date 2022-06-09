@@ -64,14 +64,14 @@
                   </div>
                 </div>
 
+                <hr>
                 <div formArrayName="UnitConversions" class="form-details" [sortablejs]="getUnitConversions(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
-                  <hr>
                   <div class="form-detail-item" *ngFor="let unitConversion of getUnitConversions(formItem).controls; let ic=index" [formGroup]="unitConversion">
                     <div class="row fit-row">
                       <div class="fit-fist-col label">
                         <div class="form-group">
                           <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
-                          <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ ic + 1 }}">
+                          <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ic + 1 }}">
                           <input type="hidden" formControlName="Id">
                         </div>
                       </div>
