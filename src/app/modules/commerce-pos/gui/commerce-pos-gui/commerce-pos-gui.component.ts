@@ -783,11 +783,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
                 product = this.productMap[productId];
 
-                if (unitSeq) {
+                if (product && unitSeq) {
                   unit = this.unitMap[unitSeq];
-                  unitId = unit.Code;
+                  if (unit) {
+                    unitId = unit.Code;
 
-                  product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                    product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                  }
                 }
               }
 
@@ -799,7 +801,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           // get access number inventory 
           if (new RegExp('^127' + coreId).test(accessNumber)) {
             // product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
-            this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+            const waitForGetProductByAccessNumber = this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
               accessNumber: accessNumber,
               includeUnit: true,
               includePrice: false,
@@ -836,6 +838,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
               return product;
             });
+
+            if (!unitId || !product) { // Nếu tem cũ không có unit sequence thì phải lấy thông tin sản phẩm bằng số truy xuất ngay từ đầu
+              await waitForGetProductByAccessNumber;
+            }
             if (product) {
               productId = product.Code;
               unitId = unitId || this.commonService.getObjectId(product.Unit);
