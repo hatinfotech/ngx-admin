@@ -92,7 +92,7 @@
                         <div class="pos-search" style="padding: 1rem; padding-bottom: 0;">
                             <div class="pos-search-input-wrap" style="flex: 1; position: relative;">
                                 <ngx-form-group [formGroup]="orderForm" name="Object" label="Khách hàng" [allowCopy]="false" [required]="true" [hideLabel]="true">
-                                    <ngx-select2 class="" formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(orderForm, $event)"></ngx-select2>
+                                    <ngx-select2 #customerEle class="" formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(orderForm, $event)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                         </div>
@@ -229,11 +229,17 @@
                                 </div>
                                 <div class="col-xxxl-4">
                                     <button nbButton fullWidth size="medium" status="warning" *ngIf="orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
-                                        <nb-icon icon="book-outline"></nb-icon>
+                                        <div>
+                                            <nb-icon icon="book-outline"></nb-icon>
+                                            <span style="font-weight: bold; font-size: 1rem">F7</span>
+                                        </div>
                                         <div class="button-label">Công nợ</div>
                                     </button>
                                     <button nbButton fullWidth size="medium" status="warning" [outline]="true" *ngIf="!orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
-                                        <nb-icon icon="book-outline"></nb-icon>
+                                        <div>
+                                            <nb-icon icon="book-outline"></nb-icon>
+                                            <span style="font-weight: bold; font-size: 1rem">F7</span>
+                                        </div>
                                         <div class="button-label">Công nợ</div>
                                     </button>
                                 </div>
