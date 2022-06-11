@@ -98,6 +98,18 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   // searchInput = '';
 
+  select2OptionForContact = {
+    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+      placeholder: 'Chọn khách hàng...', limit: 10, prepareReaultItem: (item) => {
+        item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        return item;
+      },
+      containerCss: `
+        width: 100%
+      `
+    }),
+  }
+
   constructor(
     public commonService: CommonService,
     public router: Router,
@@ -137,6 +149,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     super.onResume();
     this.commonService.sidebarService.collapse('menu-sidebar');
     this.commonService.sidebarService.collapse('chat-sidebar');
+  }
+
+  onObjectChange(formGroup: FormGroup, selectedData: ContactModel) {
+    if (selectedData && !selectedData['doNotAutoFill']) {
+      if (selectedData.Code) {
+        formGroup.get('ObjectName').setValue(selectedData.Name);
+        formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+      }
+    }
   }
 
   async updateMaterPriceTable() {
@@ -1887,7 +1908,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           console.log(chooseItems);
           const contact = chooseItems[0];
           if (contact) {
-            this.orderForm.get('Object').setValue(contact.Code);
+            this.orderForm.get('Object').setValue({ id: contact.Code, text: `${contact.Code} - ${contact.Name}` });
             this.orderForm.get('ObjectName').setValue(contact.Name);
             this.orderForm.get('ObjectPhone').setValue(contact.Phone);
           }
