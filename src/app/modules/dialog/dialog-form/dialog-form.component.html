@@ -1,14 +1,14 @@
 <nb-card [ngStyle]="cardStyle">
   <nb-card-header>{{ title }}</nb-card-header>
   <nb-card-body>
-    <div [formGroup]="formGroup">
+    <div [formGroup]="formGroup" #formEle>
       <div class="row">
         <div class="col-sm-12" *ngFor="let control of controls">
           <div class="form-group">
             <label class="label"><span class="valid">{{ control.label }}</span></label>
-            <input *ngIf="!control.type || control.type == 'text'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder">
-            <input *ngIf="control.type == 'currency'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder" currencyMask [options]="curencyFormat">
-            <textarea *ngIf="control.type == 'textarea'" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder"></textarea>
+            <input [name]="control.name" *ngIf="!control.type || control.type == 'text'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder">
+            <input [name]="control.name" *ngIf="control.type == 'currency'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder" currencyMask [options]="curencyFormat">
+            <textarea [name]="control.name" *ngIf="control.type == 'textarea'" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder"></textarea>
           </div>
         </div>
       </div>

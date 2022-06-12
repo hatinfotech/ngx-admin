@@ -4,7 +4,7 @@ import { ProductModel, ProductUnitModel } from './../../../../models/product.mod
 import { ContactModel } from './../../../../models/contact.model';
 import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel } from './../../../../models/commerce-pos.model';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, ViewChild, ɵCodegenComponentFactoryResolver } from "@angular/core";
 import { Router } from "@angular/router";
 import { NbDialogRef } from "@nebular/theme";
 import { BaseComponent } from "../../../../lib/base-component";
@@ -18,6 +18,7 @@ import { CommercePosBillPrintComponent } from '../commerce-pos-order-print/comme
 import { CommercePosReturnsPrintComponent } from '../commerce-pos-returns-print/commerce-pos-returns-print.component';
 import { CommercePosPaymnentPrintComponent } from '../commerce-pos-payment-print/commerce-pos-payment-print.component';
 import { ContactAllListComponent } from '../../../contact/contact-all-list/contact-all-list.component';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 
 declare const openDatabase;
 
@@ -1032,10 +1033,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             // priceTable: 'BGC201031',
             product: productId,
             includeUnit: true
+          }).catch(err => {
+            this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
+            // this.errorSound.nativeElement.play();
+            return [];
           }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.Unit))).then(price => {
-            if (price) {
-              existsProduct.get('Price').setValue(parseFloat(price.Price));
-              existsProduct.get('ToMoney').setValue(price.Price * existsProduct.get('Quantity').value);
+            if (price || true) { // Cho phép chọn sản phẩm không có giá bán
+              price = parseFloat(price?.Price || 0);
+              existsProduct.get('Price').setValue(price);
+              existsProduct.get('ToMoney').setValue(price * existsProduct.get('Quantity').value);
 
               this.calculateToMoney(existsProduct);
               detailsControls.push(existsProduct);
@@ -1049,10 +1055,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
             }
             return existsProduct;
-          }).catch(err => {
-
-            this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
-            this.errorSound.nativeElement.play();
           });
         } else {
           this.errorSound.nativeElement.play();
@@ -1278,6 +1280,74 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         return false;
       }
       return true;
+    }
+    if (event.key == 'F12') {
+      if (this.commonService.dialogStack.length === 0) {
+        const details = this.getDetails(this.orderForm).controls;
+        let activeDetail = details.find(f => f['isActive'] === true);
+        // const quantityEle = $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1]).find('.pos-quantity')[0] as HTMLInputElement;
+        // quantityEle.focus();
+        // quantityEle.select();
+
+        // this.focusToQuantity(activeDetailIndex);
+
+        this.commonService.openDialog(DialogFormComponent, {
+          context: {
+            title: 'Thay đổi giá bán',
+            onInit: (form, dialog) => {
+              // const price = form.get('Price');
+              // const description = form.get('Description');
+              // price.setValue(parseFloat(activeDetail.get('Price').value));
+              // description.setValue(parseFloat(activeDetail.get('Description').value));
+            },
+            controls: [
+              {
+                name: 'Price',
+                label: 'Giá thay đổi',
+                placeholder: 'Giá thay đổi',
+                type: 'currency',
+                initValue: activeDetail.get('Price').value,
+                focus: true,
+              },
+              {
+                name: 'Description',
+                label: 'Mô tả',
+                placeholder: 'Mô tả thêm cho việc thay đổi giá bán',
+                type: 'text',
+                initValue: activeDetail.get('Description').value,
+              },
+            ],
+            actions: [
+              {
+                label: 'Esc - Trở về',
+                icon: 'back',
+                status: 'basic',
+                keyShortcut: 'Escape',
+                action: () => { },
+              },
+              {
+                label: 'Enter - Xác nhận',
+                icon: 'generate',
+                status: 'success',
+                keyShortcut: 'Enter',
+                action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                  activeDetail.get('Price').setValue(form.get('Price').value);
+                  activeDetail.get('Description').setValue(form.get('Description').value);
+
+                  this.calculateToMoney(activeDetail as FormGroup);
+                  this.calculateTotal(this.orderForm);
+
+                  formDialogConpoent.dismiss();
+                },
+              },
+            ],
+          },
+        });
+
+        event.preventDefault();
+        return false;
+      }
+      return false;
     }
     if (event.key == 'F3') {
       if (this.commonService.dialogStack.length === 0) {

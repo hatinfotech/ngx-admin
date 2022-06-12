@@ -124,7 +124,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
       this.title = 'PHIẾU BÁO GIÁ';
     }
     if(this.printType == 'INVOICE') {
-      this.title = 'HÓA ĐƠN';
+      this.title = 'HÓA ĐƠN BÁN LẺ';
     }
     const result = await super.init().then(rs => {
       const printActionButn = this.actionButtonList.find(f => f.name == 'print');

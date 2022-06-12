@@ -1,5 +1,5 @@
 import { CommonService } from './../../../services/common.service';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../showcase-dialog/showcase-dialog.component';
 import { FormGroup, AbstractControl, FormControl } from '@angular/forms';
@@ -48,7 +48,7 @@ this.commonService.openDialog(DialogFormComponent, {
   templateUrl: './dialog-form.component.html',
   styleUrls: ['./dialog-form.component.scss'],
 })
-export class DialogFormComponent implements OnInit {
+export class DialogFormComponent implements OnInit, AfterViewInit {
 
 
   @Input() title: string;
@@ -62,9 +62,12 @@ export class DialogFormComponent implements OnInit {
     placeholder: string,
     initValue?: any;
     disabled?: boolean,
+    focus?: boolean,
   }[];
-  @Input() actions: { label: string, icon?: string, status?: string, action?: (form: FormGroup) => void }[];
+  @Input() actions: { label: string, icon?: string, status?: string, keyShortcut?: string, action?: (form: FormGroup, dialog?: DialogFormComponent) => void }[];
   @Input() onInit: (form: FormGroup, dialog: DialogFormComponent) => void;
+  @ViewChild('formEle', { static: true }) formEle: ElementRef;
+  @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
 
   curencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
   formGroup: FormGroup;
@@ -89,6 +92,15 @@ export class DialogFormComponent implements OnInit {
       });
     }
   }
+  ngAfterViewInit(): void {
+    this.controls.forEach(control => {
+      if (control.focus) {
+        const formcontrol = $(this.formEle.nativeElement).find(`[name=${control.name}]`)
+        formcontrol[0].focus();
+        formcontrol.select();
+      }
+    });
+  }
 
   ngOnInit(): void {
     const fcs: { [key: string]: AbstractControl } = {};
@@ -103,6 +115,22 @@ export class DialogFormComponent implements OnInit {
     if (this.onInit) {
       this.onInit(this.formGroup, this);
     }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+      console.log(event.key + ': listen on show case dialog...');
+      const action = this.actions.find(f => f.keyShortcut == event.key);
+      if (action) {
+        action.action(this.formGroup, this);
+        return false;
+      }
+      if (this.onKeyboardEvent) {
+        return this.onKeyboardEvent(event, this);
+      }
+    }
+    return true;
   }
 
   dismiss() {

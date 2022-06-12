@@ -1105,7 +1105,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
                 status: 'basic',
                 action: () => { },
               },
-              {
+              { 
                 label: 'Tính doanh thu bán lẻ',
                 icon: 'generate',
                 status: 'success',
