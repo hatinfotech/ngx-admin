@@ -29,6 +29,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
   // formDialog = WarehouseGoodsFormComponent;
 
   @Input() skipPreview: boolean;
+  @Input() instantPayment: boolean;
   @Input() order: CommercePosOrderModel;
 
   style = /*css*/`
@@ -137,7 +138,9 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
     //   this.processMapList[i] = AppModule.processMaps.warehouseDeliveryGoodsNote[data.State || ''];
     // }
     this.summaryCalculate(this.data);
-
+    if (this.instantPayment) {
+      this.approve(0, { print: false });
+    }
     return result;
   }
 
@@ -258,7 +261,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
     }
   }
 
-  approve(index: number) {
+  approve(index: number, option?: { print: boolean }) {
     const params: any = { payment: true };
     let order = this.data[index];
     if (order) {
@@ -268,7 +271,9 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
         this.apiService.putPromise('/commerce-pos/returns/' + order.Code, params, [order]).then(rs => {
           order = this.data[index] = rs[0];
           setTimeout(async () => {
-            await this.print(index);
+            if (option?.print) {
+              await this.print(index);
+            }
             this.onSaveAndClose(order, this);
           });
         });
@@ -277,7 +282,9 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
           this.id = [rs[0].Code];
           order = this.data[index] = rs[0];
           setTimeout(async () => {
-            await this.print(index);
+            if (option?.print) {
+              await this.print(index);
+            }
             if (this.onSaveAndClose) this.onSaveAndClose(order, this);
           }, 300);
         });

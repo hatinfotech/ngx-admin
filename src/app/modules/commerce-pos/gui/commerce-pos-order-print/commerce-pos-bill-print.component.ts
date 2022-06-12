@@ -34,6 +34,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   @Input() skipPreview: boolean;
   @Input() order: CommercePosOrderModel;
   @Input() instantPayment: boolean;
+  @Input() printType: 'PRICEREPORT' | 'INVOICE' = 'PRICEREPORT';
 
   style = /*css*/`
   #print-area {
@@ -119,6 +120,12 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   }
 
   async init() {
+    if(this.printType == 'PRICEREPORT') {
+      this.title = 'PHIẾU BÁO GIÁ';
+    }
+    if(this.printType == 'INVOICE') {
+      this.title = 'HÓA ĐƠN';
+    }
     const result = await super.init().then(rs => {
       const printActionButn = this.actionButtonList.find(f => f.name == 'print');
       if (printActionButn) {

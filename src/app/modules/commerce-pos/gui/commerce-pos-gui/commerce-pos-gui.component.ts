@@ -168,68 +168,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     (document.activeElement as HTMLElement).blur();
   }
 
-  async updateMaterPriceTable() {
+  async updateGodosInfo() {
     this.status = 'Đang tải bảng giá...';
-    while (true) {
-      try {
-        await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
-          masterPriceTable: 'default',
-          includeCategories: true,
-          includeGroups: true,
-          includeFeaturePicture: true,
-          getRawData: true,
-          limit: 'nolimit',
-          includeContainers: true,
-        }).then(priceTableDetails => {
-          this.masterPriceTable = {};
-          for (const priceTableDetail of priceTableDetails) {
-            priceTableDetail.Price = parseFloat(priceTableDetail.Price);
-            this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
-          }
-          // console.log(this.masterPriceTable);
-          this.status = '';
-          this.commonService.toastService.show('Đã cập nhật bảng giá mới', 'POS Thương mại', { status: 'success' });
-
-          // this.status = 'Đang tải DS hàng hóa';
-          // this.goodsList = [];
-          // this.apiService.getPromise<ProductModel[]>('/warehouse/goods', {
-          //   includeCategories: true,
-          //   includeFeaturePicture: true,
-          //   includeUnit: true,
-          //   includeContainer: true,
-          //   sort_Name: 'asc',
-          //   sort_UnitConvertNo: 'asc',
-          //   // includeInventory: true,
-          //   // sort_Id: 'desc',
-          //   // search: 'co sieu thanh',
-          //   limit: 'nolimit'
-          // }).then(rs => {
-          //   for (const product of rs) {
-          //     product.Keyword = `${product.Sku}-${product.Name}`;
-          //   }
-
-          //   this.goodsList = rs;
-          //   this.commonService.toastService.show('Đã lập chỉ mục tìm kiếm cho danh sách hàng hóa', 'POS Thương mại', { status: 'success' });
-          //   this.status = 'Ready';
-          // });
-        });
-        return true;
-      } catch (err) {
-        console.log(err);
-        console.log('retry...');
-        this.status = 'Lỗi tải bảng giá, đang thử lại...';
-        this.commonService.toastService.show('Bảng giá mới chưa được cập nhật', 'POS Thương mại', { status: 'warning' });
-        return false;
-      }
-    }
-  }
-
-  private unitMap: { [key: string]: ProductUnitModel } = {};
-  private productMap: { [key: string]: ProductModel } = {};
-  private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
-  private goodsList: ProductModel[] = [];
-  async init() {
-    const result = await super.init().then(async status => {
+    // while (true) {
+    try {
       await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 'nolimit' }).then(productList => {
         for (const product of productList) {
           this.productMap[product.Code] = product;
@@ -253,7 +195,45 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         // this.commonService.toastService.show('Đã tải danh sách vị trí', 'POS Thương mại', { status: 'success' });
         return true;
       });
-      await this.updateMaterPriceTable();
+
+      await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
+        masterPriceTable: 'default',
+        includeCategories: true,
+        includeGroups: true,
+        includeFeaturePicture: true,
+        getRawData: true,
+        limit: 'nolimit',
+        includeContainers: true,
+      }).then(priceTableDetails => {
+        this.masterPriceTable = {};
+        for (const priceTableDetail of priceTableDetails) {
+          priceTableDetail.Price = parseFloat(priceTableDetail.Price);
+          this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
+        }
+        // console.log(this.masterPriceTable);
+        this.status = '';
+
+      });
+      this.commonService.toastService.show('Đã cập nhật bảng giá mới', 'POS Thương mại', { status: 'success' });
+      return true;
+    } catch (err) {
+      console.log(err);
+      console.log('retry...');
+      this.status = 'Lỗi tải bảng giá, đang thử lại...';
+      this.commonService.toastService.show('Bảng giá mới chưa được cập nhật, refersh trình duyệt để tải lại', 'POS Thương mại', { status: 'danger' });
+      return false;
+    }
+    // }
+  }
+
+  private unitMap: { [key: string]: ProductUnitModel } = {};
+  private productMap: { [key: string]: ProductModel } = {};
+  private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
+  private goodsList: ProductModel[] = [];
+  async init() {
+    const result = await super.init().then(async status => {
+
+      await this.updateGodosInfo();
 
       // Notification
       this.commonService.toastService.show('POS đã sẵn sàng', 'POS Thương mại', { status: 'success' });
@@ -278,50 +258,19 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // await this.barcodeProcess('11802497093');
     // await this.barcodeProcess('11802497092');
 
-    // Download master price table
-    // (async () => {
-    //   this.status = 'Đang tải bảng giá...';
-    //   while (true) {
-    //     try {
-    //       await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
-    //         masterPriceTable: 'default',
-    //         includeCategories: true,
-    //         includeGroups: true,
-    //         includeFeaturePicture: true,
-    //         getRawData: true,
-    //         limit: 'nolimit',
-    //         includeContainers: true,
-    //       }).then(priceTableDetails => {
-    //         this.masterPriceTable = {};
-    //         for (const priceTableDetail of priceTableDetails) {
-    //           priceTableDetail.Price = parseFloat(priceTableDetail.Price);
-    //           this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
-    //         }
-    //         // console.log(this.masterPriceTable);
-    //         this.status = '';
-    //       });
-    //       break;
-    //     } catch (err) {
-    //       console.log(err);
-    //       console.log('retry...');
-    //       this.status = 'Lỗi tải bảng giá, đang thử lại...';
-    //     }
-    //   }
-    // })();
-
     // Listen price table update
     setInterval(() => {
       console.log('Listen new master price table update...');
       this.apiService.getPromise<any>('/sales/master-price-tables/getUpdate', { priceTable: 'default' }).then(rs => {
         console.log(rs);
         if (rs && rs.State == 'UPDATED') {
-          return this.updateMaterPriceTable();
+          return this.updateGodosInfo();
         }
         return false;
       }).catch(err => {
         console.log(err);
       });
-    }, 60000);
+    }, 20000);
     return result;
   }
 
@@ -446,9 +395,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return formGroup.get('Details') as FormArray;
   }
 
-  async makeNewOrder(data?: CommercePosOrderModel, returns?: string) {
+  async makeNewOrder(data?: CommercePosOrderModel, returns?: string, option?: { force?: boolean }) {
     const endOrderForm = this.historyOrders[this.historyOrders.length - 1];
-    if (endOrderForm && this.orderForm['voucherType'] != 'CPOSRETURNS' && endOrderForm.getRawValue()['State'] == 'NOTJUSTAPPROVED' && endOrderForm.getRawValue()['Details'].length == 0) {
+    if (!option?.force && endOrderForm && this.orderForm['voucherType'] != 'CPOSRETURNS' && endOrderForm.getRawValue()['State'] == 'NOTJUSTAPPROVED' && endOrderForm.getRawValue()['Details'].length == 0) {
       this.historyOrderIndex = this.historyOrders.length - 1;
       this.orderForm = this.historyOrders[this.historyOrders.length - 1];
       return this.orderForm;
@@ -1000,6 +949,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       // }
     }
 
+    if (this.orderForm.value?.State == 'APPROVED') {
+      this.commonService.toastService.show('POS Thương mại', 'Đơn hàng đã thanh toán, bạn phải hủy phiếu mới thêm hàng hóa vào được!', { status: 'warning' });
+      return false;
+    }
+
     console.log(accessNumber, productId);
     let existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
     existsProduct = detailsControls[existsProductIndex] as FormGroup;
@@ -1126,8 +1080,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         }
       },
       {
-        label: 'F10 - Xác nhận',
-        keyShortcut: 'F10',
+        label: 'Enter - Xác nhận',
+        keyShortcut: 'Enter',
         status: 'danger',
         focus: true,
         action: () => {
@@ -1137,12 +1091,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
             if (this.historyOrderIndex > -1) {
               // this.historyOrders.splice(this.historyOrderIndex, 1);
-              if (this.historyOrders.length == 0) {
-                this.makeNewOrder();
-              } else {
-                this.historyOrderIndex = this.historyOrders.length - 1;
-                this.orderForm = this.historyOrders[this.historyOrderIndex];
-              }
+              // if (this.historyOrders.length == 0) {
+              //   this.makeNewOrder();
+              // } else {
+              //   this.historyOrderIndex = this.historyOrders.length - 1;
+              //   this.orderForm = this.historyOrders[this.historyOrderIndex];
+              // }
             }
 
             setTimeout(() => {
@@ -1281,9 +1235,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     if (event.key == 'F9') {
       if (this.commonService.dialogStack.length === 0) {
         if (this.orderForm.value?.State == 'APPROVED') {
-          this.print(this.orderForm);
+          this.print(this.orderForm, { printType: 'INVOICE' });
         } else {
-          this.payment(this.orderForm);
+          this.payment(this.orderForm, { skipPrint: false, printType: 'INVOICE' });
         }
         event.preventDefault();
       }
@@ -1492,7 +1446,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
     // Barcode scan
     if (this.commonService.dialogStack.length === 0) {
-      if (/^[0-9a-z]$/i.test(event.key) && (document.activeElement as HTMLElement).tagName == 'BODY') {
+      if ((/^[0-9a-z]$/i.test(event.key) || ['Enter'].indexOf(event.key) > -1) && (document.activeElement as HTMLElement).tagName == 'BODY') {
         this.barcode += event.key;
       }
       // if (/[0-9|\.]/.test(event.key)) {
@@ -1512,6 +1466,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       //   }
       //   this.barcode = this.barcode.slice(0, -1);
       // }
+
+      // Detect for barcode scan: input string in 100ms
       if ((document.activeElement as HTMLElement).tagName == 'BODY' || (document.activeElement as HTMLElement).id == 'posSearchInput') {
         this.commonService.takeUntil('barcode-scan', 100).then(() => {
           console.log(this.barcode);
@@ -1519,7 +1475,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             // this.tmpQuantity = '';
             try {
               if (this.barcode.length > 5) {
-                this.barcodeProcess(this.barcode.replace(/Enter.*$/, '')).then(rs => {
+                this.barcodeProcess(this.barcode.length > 15 && this.barcode.replace(/Enter.*$/, '')).then(rs => {
                   // this.isBarcodeJustScaned = false;
                   // this.tmpQuantity = '';
                 });
@@ -1703,32 +1659,53 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     cashBackControl.setValue(cashReceiptControl.value - totolControl.value);
   }
 
-  async payment(orderForm: FormGroup) {
+  async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE', skipPrint?: boolean }) {
     const data = orderForm.getRawValue();
     if (!data?.Details?.length) {
       this.commonService.toastService.show('Chưa có hàng hóa nào trong đơn hàng !', 'Máy bán hàng', { status: 'warning', duration: 5000 })
       return false;
     }
+    delete data.DateOfSale;
     // await this.save(orderForm);
     orderForm['isProcessing'] = true;
     setTimeout(() => {
       orderForm['isProcessing'] = false;
     }, 500);
+
+    option = {
+      printType: 'PRICEREPORT',
+      ...option,
+    };
+
     if (orderForm['voucherType'] == 'CPOSORDER') {
+
       this.paymentSound.nativeElement.play();
       this.commonService.openDialog(CommercePosBillPrintComponent, {
         context: {
           skipPreview: true,
+          printType: option?.printType,
           instantPayment: true,
           data: [data],
-          onSaveAndClose: (newOrder, printComponent) => {
+          onSaveAndClose: (newOrder: CommercePosOrderModel, printComponent) => {
+            if (typeof newOrder.Object == 'string') {
+              newOrder.Object = { id: newOrder.Object, text: `${newOrder.Object} - ${newOrder.ObjectName}` };
+            }
             orderForm.patchValue(newOrder);
-            this.commonService.toastService.show('Đơn hàng đã hoàn tất', 'Máy bán hàng', { status: 'success', duration: 8000 })
+            this.commonService.toastService.show(option?.skipPrint ? `Đã thanh toán cho đơn hàng ${newOrder.Code}, để in phiếu nhấn nút điều hướng sang trái và in lại!` : `Đã thanh toán cho đơn hàng ${newOrder.Code}`, 'Máy bán hàng', { status: 'success', duration: 8000 })
             this.makeNewOrder();
             // printComponent.close();
             console.log(this.historyOrders);
           },
           onClose: () => {
+          },
+          onAfterInit: (component) => {
+            if (option?.skipPrint) {
+              component?.close();
+            } else {
+              setTimeout(() => {
+                component?.close();
+              }, 15000);
+            }
           }
         }
       });
@@ -1736,19 +1713,28 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.commonService.openDialog(CommercePosReturnsPrintComponent, {
         context: {
           skipPreview: true,
+          instantPayment: true,
           data: [orderForm.getRawValue()],
           onSaveAndClose: (newOrder, printComponent) => {
+            if (typeof newOrder.Object == 'string') {
+              newOrder.Object = { id: newOrder.Object, text: `${newOrder.Object} - ${newOrder.ObjectName}` };
+            }
             orderForm.patchValue(newOrder);
             this.commonService.toastService.show('Phiếu trả hàng đã lưu !', 'Máy bán hàng', { status: 'success', duration: 8000 })
-            // this.makeNewOrder();
+            this.makeNewOrder();
 
-            this.historyOrderIndex--;
-            this.orderForm = this.historyOrders[this.historyOrderIndex];
+            // this.historyOrderIndex--;
+            // this.orderForm = this.historyOrders[this.historyOrderIndex];
 
-            printComponent.close();
+            // printComponent.close();
             console.log(this.historyOrders);
           },
           onClose: () => {
+          },
+          onAfterInit: (component) => {
+            if (option?.skipPrint) {
+              component?.close();
+            }
           }
         }
       });
@@ -1784,23 +1770,42 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return null;
   }
 
-  async print(orderForm: FormGroup) {
+  async print(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE' }) {
     if (orderForm.get('State').value !== 'APPROVED') {
       this.commonService.toastService.show('Bạn chỉ có thể in lại phiếu đã chốt', 'Máy bán hàng', { status: 'warning' });
       return false;
     }
-    return new Promise(resovle => {
-      this.commonService.openDialog(CommercePosBillPrintComponent, {
+    option = {
+      printType: 'PRICEREPORT',
+      ...option
+    }
+    if (orderForm['voucherType'] == 'CPOSORDER') {
+      return new Promise(resovle => {
+
+        this.commonService.openDialog(CommercePosBillPrintComponent, {
+          context: {
+            skipPreview: true,
+            printType: option.printType,
+            data: [orderForm.getRawValue()],
+            onSaveAndClose: (newOrder, printComponent) => {
+              this.commonService.toastService.show('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Máy bán hàng', { status: 'success', duration: 8000 })
+            }
+          }
+        });
+      });
+    } else {
+      this.commonService.openDialog(CommercePosReturnsPrintComponent, {
         context: {
           skipPreview: true,
+          // printType: option.printType,
           data: [orderForm.getRawValue()],
           onSaveAndClose: (newOrder, printComponent) => {
-            this.commonService.toastService.show('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Máy bán hàng', { status: 'success', duration: 8000 })
-            resovle(true);
+            // this.commonService.toastService.show('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Máy bán hàng', { status: 'success', duration: 8000 })
           }
         }
       });
-    });
+    }
+    return true;
   }
 
   async printOrder(orderId: string) {
@@ -1816,7 +1821,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           data: [order],
           onSaveAndClose: (newOrder, printComponent) => {
             // this.commonService.toastService.show('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Máy bán hàng', { status: 'success', duration: 8000 })
-            resovle(true);
           }
         }
       });
@@ -1836,12 +1840,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     //       data: [order],
     //       onSaveAndClose: (newOrder, printComponent) => {
     //         // this.commonService.toastService.show('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Máy bán hàng', { status: 'success', duration: 8000 })
-    //         resovle(true);
     //       }
     //     }
     //   });
     // });
-    this.makeNewOrder(order);
+    this.makeNewOrder(order, null, { force: true });
   }
 
   async returnsPayment(returns: string) {
@@ -1904,7 +1907,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             this.historyOrderIndex = this.historyOrders.length - 1;
             this.orderForm = this.historyOrders[this.historyOrderIndex] || await this.makeNewOrder();
 
-            resovle(true);
           },
           onClose: () => {
             // this.shortcutKeyContext = 'main';

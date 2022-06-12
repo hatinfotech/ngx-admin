@@ -1,3 +1,4 @@
+import { IdTextModel } from './common.model';
 import { BusinessModel } from './accounting.model';
 import { TaxModel } from './tax.model';
 import { UnitModel } from './unit.model';
@@ -12,7 +13,7 @@ export class CommercePosOrderModel extends Model {
   BarCode?: string;
   No?: string;
   Type?: string;
-  Object?: string;
+  Object?: any;
   ObjectName?: string;
   ObjectAddress?: string;
   ObjectPhone?: string;

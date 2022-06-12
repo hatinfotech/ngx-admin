@@ -49,20 +49,22 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3" style="text-align: right; font-weight: bold;">Cửa hàng đang nợ bạn: {{order.Total | currency:'VND'}}</td>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">Cửa hàng đã hoàn lại: {{order.Total | currency:'VND'}}</td>
                             </tr>
-                            <tr>
+                            <tr *ngIf="order.Order">
                                 <td colspan="3" style="text-align: right; font-weight: bold;">Phát sinh từ phiếu {{order.Order}}</td>
                             </tr>
                         </table>
                     </div>
                     <div class="bill-footer" style="text-align: left;">
-                        <div style="font-style: italic">
+                        <!-- <div style="font-style: italic">
                             Hướng dẫn:<br>
                             1. Phiếu sử dụng để cấn trừ tiền cho đơn hàng tiếp theo<br>
                             2. Phiếu sử dụng cho việc hoàn tiền<br>
                             3. Quý khách vui lòng điền đủ tên, số điện thoại, địa chỉ để được hỗ trợ
                         </div>
+                        <div>Phiếu được in từ phần mềm<br>ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div> -->
+                        <div style="font-style: italic; padding-top: 3px; padding-bottom: 3px; font-weight: bold; font-size: 14px;">Cảm ơn Quý Khách và hẹn gặp lại</div>
                         <div>Phiếu được in từ phần mềm<br>ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div>
                     </div>
                 </div>

@@ -228,19 +228,19 @@
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
-                                    <button nbButton fullWidth size="medium" status="warning" *ngIf="orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
+                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="warning" *ngIf="orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
                                         <div>
                                             <nb-icon icon="book-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F7</span>
                                         </div>
                                         <div class="button-label">Công nợ</div>
                                     </button>
-                                    <button nbButton fullWidth size="medium" status="warning" [outline]="true" *ngIf="!orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
+                                    <button nbButton fullWidth size="medium" status="primary" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" [outline]="true" *ngIf="!orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
                                         <div>
                                             <nb-icon icon="book-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F7</span>
                                         </div>
-                                        <div class="button-label">Công nợ</div>
+                                        <div class="button-label">Tiền mặt</div>
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
@@ -280,7 +280,7 @@
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
-                                    <button nbButton fullWidth size="medium" [disabled]="orderForm.value?.State !== 'APPROVED'" status="primary" class="pos-business-button" (click)="print(orderForm)">
+                                    <button nbButton fullWidth size="medium" [disabled]="orderForm.value?.State !== 'APPROVED'" status="primary" class="pos-business-button" (click)="print(orderForm, {printType: 'INVOICE'})">
                                         <div>
                                             <nb-icon icon="printer-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F9</span>
@@ -413,7 +413,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xxxl-8">
-                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="success" class="pos-business-button" (click)="payment(orderForm)">
+                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="success" class="pos-business-button" (click)="payment(orderForm, {printType: 'INVOICE'})">
                                         <div>
                                             <nb-icon icon="flash-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F9</span>

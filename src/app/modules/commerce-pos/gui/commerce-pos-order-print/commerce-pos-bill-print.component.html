@@ -16,7 +16,7 @@
                             <div class="bill-register-tel" *ngIf="registerInfo.tel">ĐT: {{registerInfo.tel}}</div>
                             <div class="bill-register-address" *ngIf="registerInfo.address">ĐC: {{registerInfo.address}}</div>
                         </div>
-                        <div class="bill-title">PHIẾU BÁO GIÁ</div>
+                        <div class="bill-title">{{title}}</div>
                         <div class="bill-info">{{order.Code}} - {{order.DateOfSale | date:'short'}}</div>
                         <div class="barcode" style="text-align: center;">
                             <img src="{{order.BarCode}}">
@@ -49,7 +49,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3" style="text-align: right; font-weight: bold;">Tổng cộng: {{order.Total | currency:'VND'}}</td>
+                                <td style="text-align: left; font-weight: bold;">{{order.IsDebt ? 'Công nợ' : ''}}</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold;">Tổng cộng: {{order.Total | currency:'VND'}}</td>
                             </tr>
                             <tr *ngIf="order.Returns">
                                 <td colspan="3" style="text-align: right; font-weight: bold;">Cấn trừ tiền trả hàng (phiếu {{order.Returns}}): {{order.DebitFunds | currency:'VND'}}</td>
