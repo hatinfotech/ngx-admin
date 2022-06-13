@@ -383,7 +383,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       Quantity: [detail.Quantity || 0],
       Price: [detail.Price || 0],
       ToMoney: [detail.Quantity * detail.Price || 0],
-      FeaturePicture: [detail.Image[0] || null],
+      FeaturePicture: [detail.Image && detail.Image[0] || null],
       Image: [Array.isArray(detail.Image) ? detail.Image[0] : detail.Image],
       AccessNumbers: [detail.AccessNumbers || null],
       Discount: [detail.Discount || 0],
@@ -721,7 +721,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                           label: 'F7 - Tạo phiếu trả hàng',
                           keyShortcut: 'F7',
                           status: 'danger',
-                          focus: true,
+                          // focus: true,
                           action: async () => {
                             this.orderForm = await this.makeNewReturnsForm(null, inputValue);
                             this.save(this.orderForm);
@@ -730,8 +730,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                           }
                         },
                         {
-                          label: 'F10 - Mở lại bill',
-                          keyShortcut: 'F10',
+                          label: 'Enter - Mở lại bill',
+                          keyShortcut: 'Enter',
                           status: 'info',
                           focus: true,
                           action: async () => {
@@ -1898,7 +1898,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   async loadOrder(orderId: string) {
-    const order = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + orderId, { includeDetails: true, renderBarCode: true }).then(rs => rs[0]);
+    const order = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + orderId, { includeDetails: true, renderBarCode: true, includeObject: true, includeUnit: true }).then(rs => rs[0]);
     // if (order.State !== 'APPROVED') {
     //   this.commonService.toastService.show('Bạn chỉ có thể in lại phiếu đã chốt', 'Máy bán hàng', { status: 'warning' });
     //   return false;
@@ -1914,6 +1914,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     //     }
     //   });
     // });
+    if (order && order.Object?.id) {
+      order.Object.text = `${order.Object.id} - ${order.Object.text}`;
+    }
     this.makeNewOrder(order, null, { force: true });
   }
 
