@@ -215,13 +215,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         this.status = '';
 
       });
-      this.commonService.toastService.show('Đã cập nhật bảng giá mới', 'POS Thương mại', { status: 'success' });
+      // this.commonService.toastService.show('Đã cập nhật bảng giá mới', 'POS Thương mại', { status: 'success' });
       return true;
     } catch (err) {
       console.log(err);
       console.log('retry...');
       this.status = 'Lỗi tải bảng giá, đang thử lại...';
-      this.commonService.toastService.show('Bảng giá mới chưa được cập nhật, refersh trình duyệt để tải lại', 'POS Thương mại', { status: 'danger' });
+      this.commonService.toastService.show('Bảng giá mới chưa được cập nhật, refersh trình duyệt để tải lại', 'Cập nhật bảng giá không thành công !', { status: 'danger' });
       return false;
     }
     // }
@@ -237,7 +237,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       await this.updateGodosInfo();
 
       // Notification
-      this.commonService.toastService.show('POS đã sẵn sàng', 'POS Thương mại', { status: 'success' });
+      this.commonService.toastService.show('Hệ thống đã sẵn sàng để bán hàng !', 'POS đã sẵn sàng', { status: 'success' });
 
       return status;
     });
@@ -265,7 +265,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.apiService.getPromise<any>('/sales/master-price-tables/getUpdate', { priceTable: 'default' }).then(rs => {
         console.log(rs);
         if (rs && rs.State == 'UPDATED') {
-          return this.updateGodosInfo();
+          this.commonService.toastService.show('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { status: 'primary' });
+          return this.updateGodosInfo().then(status => {
+            this.commonService.toastService.show('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { status: 'success' });
+            return status;
+          });
         }
         return false;
       }).catch(err => {
@@ -876,13 +880,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
                   if (this.orderForm['voucherType'] == 'CPOSRETURNS') {
                     if (product.Inventory && product.Inventory > 0) {
-                      this.commonService.toastService.show('POS Thương mại', `${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, { status: 'warning' });
+                      this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, 'Hàng hóa chưa xuất bán !', { status: 'warning' });
                       existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
                       // return;
                     }
                   } else {
                     if (!product.Inventory || product.Inventory < 1) {
-                      this.commonService.toastService.show('POS Thương mại', `${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, { status: 'warning' });
+                      this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, 'Hàng hóa không có trong kho !', { status: 'warning' });
                       existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
                       // return;
                     }
@@ -951,7 +955,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
 
     if (this.orderForm.value?.State == 'APPROVED') {
-      this.commonService.toastService.show('POS Thương mại', 'Đơn hàng đã thanh toán, bạn phải hủy phiếu mới thêm hàng hóa vào được!', { status: 'warning' });
+      this.commonService.toastService.show('Bạn phải hủy phiếu mới thêm hàng hóa vào được!', 'Đơn hàng đã thanh toán !', { status: 'warning' });
       return false;
     }
 
@@ -978,7 +982,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
         } else {
           this.errorSound.nativeElement.play();
-          this.commonService.toastService.show('Trùng số truy xuất !', 'Commerce POS', { status: 'warning' });
+          this.commonService.toastService.show('Mã truy xuất đã được quét trước đó rồi, mời bạn quét tiếp các mã khác !', 'Trùng mã truy xuất !', { status: 'warning' });
         }
       } else {
         quantityControl.setValue(quantityControl.value + 1);
@@ -1020,7 +1024,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
           if (!product.Unit || !this.commonService.getObjectId(product.Unit) || this.commonService.getObjectId(product.Unit) == 'n/a') {
             this.errorSound.nativeElement.play();
-            this.commonService.toastService.show('Sản phẩm chưa cài đặt đơn vị tính !', 'Commerce POS', { status: 'danger' });
+            this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa được cài đặt đơn vị tính !', 'Sản phẩm chưa cài đặt đơn vị tính !', { status: 'danger' });
             return;
           }
 
@@ -1034,7 +1038,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             product: productId,
             includeUnit: true
           }).catch(err => {
-            this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
+            this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { status: 'danger' });
             // this.errorSound.nativeElement.play();
             return [];
           }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.Unit))).then(price => {
@@ -1052,13 +1056,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               this.newDetailPipSound.nativeElement.play();
               // this.save(this.orderForm);
             } else {
-              this.commonService.toastService.show('Sản phẩm chưa có giá bán !', 'Commerce POS', { status: 'danger' });
+              this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { status: 'danger' });
             }
             return existsProduct;
           });
         } else {
           this.errorSound.nativeElement.play();
-          this.commonService.toastService.show('Sản phẩm không tồn tại !', 'Commerce POS', { status: 'danger' });
+          this.commonService.toastService.show('Hàng hóa không tồn tại !', 'Hàng hóa không tồn tại !', { status: 'danger' });
           return false;
         }
       }
@@ -1231,6 +1235,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       console.log(this.customerEle);
       $(this.customerEle['controls'].selector.nativeElement)['select2']('open');
       return false;
+    }
+
+    if (event.key == 'F10') {
+      if (this.commonService.dialogStack.length === 0) {
+        this.onMakeNewReturnsForm();
+        return false;
+      }
     }
 
     // Payment/re-print
@@ -1718,7 +1729,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       // this.save(orderForm);
     } else {
       this.errorSound.nativeElement.play();
-      this.commonService.toastService.show('Số lượng phải lớn hơn 0', 'Cảnh báo', { status: 'warning' });
+      this.commonService.toastService.show('Chỉ có thể bán hàng với số lượng lớn hơn 0', 'Số lượng phải lớn hơn 0', { status: 'warning' });
     }
   }
 
@@ -1732,7 +1743,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE', skipPrint?: boolean }) {
     const data = orderForm.getRawValue();
     if (!data?.Details?.length) {
-      this.commonService.toastService.show('Chưa có hàng hóa nào trong đơn hàng !', 'Máy bán hàng', { status: 'warning', duration: 5000 })
+      this.commonService.toastService.show('Bạn phải thêm hàng hóa vào đơn hàng trước khi thanh toán !', 'Chưa có hàng hóa nào trong đơn hàng !', { status: 'warning', duration: 5000 })
       return false;
     }
     delete data.DateOfSale;
@@ -1761,7 +1772,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               newOrder.Object = { id: newOrder.Object, text: `${newOrder.Object} - ${newOrder.ObjectName}` };
             }
             orderForm.patchValue(newOrder);
-            this.commonService.toastService.show(option?.skipPrint ? `Đã thanh toán cho đơn hàng ${newOrder.Code}, để in phiếu nhấn nút điều hướng sang trái và in lại!` : `Đã thanh toán cho đơn hàng ${newOrder.Code}`, 'Máy bán hàng', { status: 'success', duration: 8000 })
+            this.commonService.toastService.show(option?.skipPrint ? `Đã thanh toán cho đơn hàng ${newOrder.Code}, để in phiếu nhấn nút điều hướng sang trái và in lại!` : `Đã thanh toán cho đơn hàng ${newOrder.Code}`, 'Đã thanh toán', { status: 'success', duration: 8000 })
             this.makeNewOrder();
             // printComponent.close();
             console.log(this.historyOrders);
@@ -1790,7 +1801,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               newOrder.Object = { id: newOrder.Object, text: `${newOrder.Object} - ${newOrder.ObjectName}` };
             }
             orderForm.patchValue(newOrder);
-            this.commonService.toastService.show('Phiếu trả hàng đã lưu !', 'Máy bán hàng', { status: 'success', duration: 8000 })
+            this.commonService.toastService.show('Phiếu trả hàng đã lưu !', 'Đã lưu đơn hàng !', { status: 'success', duration: 8000 })
             this.makeNewOrder();
 
             // this.historyOrderIndex--;
@@ -1842,7 +1853,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   async print(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE' }) {
     if (orderForm.get('State').value !== 'APPROVED') {
-      this.commonService.toastService.show('Bạn chỉ có thể in lại phiếu đã chốt', 'Máy bán hàng', { status: 'warning' });
+      this.commonService.toastService.show('Bạn chỉ có thể in lại phiếu đã chốt', 'Không thể in bill !', { status: 'warning' });
       return false;
     }
     option = {
@@ -1858,7 +1869,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             printType: option.printType,
             data: [orderForm.getRawValue()],
             onSaveAndClose: (newOrder, printComponent) => {
-              this.commonService.toastService.show('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Máy bán hàng', { status: 'success', duration: 8000 })
+              this.commonService.toastService.show('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Đã tạo phiếu chi !', { status: 'success', duration: 8000 })
             }
           }
         });
@@ -1881,7 +1892,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   async printOrder(orderId: string) {
     const order = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + orderId, { includeDetails: true, renderBarCode: true }).then(rs => rs[0]);
     if (order.State !== 'APPROVED') {
-      this.commonService.toastService.show('Bạn chỉ có thể in lại phiếu đã chốt', 'Máy bán hàng', { status: 'warning' });
+      this.commonService.toastService.show('Bạn chỉ có thể in lại phiếu đã chốt', 'Không thể in bill !', { status: 'warning' });
       return false;
     }
     return new Promise(resovle => {
@@ -1929,7 +1940,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
     }
     if (returnsObj.State !== 'APPROVED') {
-      this.commonService.toastService.show('Phiếu trả hàng chưa được duyệt', 'Máy bán hàng', { status: 'warning' });
+      this.commonService.toastService.show('Phiếu trả hàng chưa được duyệt', 'Không thể trả hàng !', { status: 'warning' });
       return false;
     }
 
@@ -2031,9 +2042,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     debtControl.setValue(!debtControl.value);
     // this.save(this.orderForm);
     if (debtControl.value) {
-      this.commonService.toastService.show('Phiếu này sẽ ghi nhận doanh thu công nợ !', 'Máy bán hàng', { status: 'warning' });
+      this.commonService.toastService.show('Phiếu này sẽ ghi nhận doanh thu công nợ !', 'Ghi nhận doanh thu công nợ', { status: 'primary', duration: 1000 });
     } else {
-      this.commonService.toastService.show('Phiếu này sẽ ghi nhận doanh thu tiền mặt !', 'Máy bán hàng', { status: 'primary' });
+      this.commonService.toastService.show('Phiếu này sẽ ghi nhận doanh thu tiền mặt !', 'Ghi nhận doanh thu tiền mặt', { status: 'success', duration: 1000 });
     }
     (document.activeElement as HTMLElement).blur();
   }

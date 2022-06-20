@@ -120,10 +120,10 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   }
 
   async init() {
-    if(this.printType == 'PRICEREPORT') {
+    if (this.printType == 'PRICEREPORT') {
       this.title = 'PHIẾU BÁO GIÁ';
     }
-    if(this.printType == 'INVOICE') {
+    if (this.printType == 'INVOICE') {
       this.title = 'HÓA ĐƠN BÁN LẺ';
     }
     const result = await super.init().then(rs => {
@@ -276,6 +276,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     }
   }
 
+  isProcessing = false;
   payment(index: number, option?: { print: boolean }) {
     const params: any = { payment: true };
     let order = this.data[index];
@@ -283,6 +284,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
       // order.State = 'APPROVED';
       if (order.Code) {
         // params['id0'] = order.Code;
+        this.isProcessing = true;
         this.apiService.putPromise('/commerce-pos/orders/' + order.Code, params, [order]).then(rs => {
           order = this.data[index] = rs[0];
           setTimeout(async () => {
@@ -291,8 +293,13 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
             }
             if (this.onSaveAndClose) this.onSaveAndClose(order, this);
           });
+          this.isProcessing = false;
+        }).catch(err => {
+          this.isProcessing = false;
+          return Promise.reject(err);
         });
       } else {
+        this.isProcessing = true;
         this.apiService.postPromise('/commerce-pos/orders', params, [order]).then(rs => {
           this.id = [rs[0].Code];
           order = this.data[index] = rs[0];
@@ -303,6 +310,10 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
             }
             if (this.onSaveAndClose) this.onSaveAndClose(order, this);
           }, 300);
+          this.isProcessing = false;
+        }).catch(err => {
+          this.isProcessing = false;
+          return Promise.reject(err);
         });
 
       }
@@ -311,12 +322,18 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
 
   onKeyboardEvent(event: KeyboardEvent) {
     if (event.key == 'Enter') {
+
       if (!this.instantPayment) {
         this.payment(0);
       } else {
-        this.print(0);
-        this.close();
+        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+          this.print(0);
+          this.close();
+        } else {
+          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning'});
+        }
       }
+
     }
     return true;
   }

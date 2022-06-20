@@ -83,7 +83,7 @@
                 <!-- <button nbButton hero status="danger" (click)="close()">
                     <nb-icon pack="eva" icon="close"></nb-icon>
                 </button> -->
-                <button #paymentBtn nbButton hero *ngIf="data[0].State != 'APPROVED'" status="success" (click)="payment(0)">
+                <button #paymentBtn nbButton [disabled]="isProcessing" hero *ngIf="data[0].State != 'APPROVED'" status="success" (click)="payment(0)">
                     <nb-icon pack="eva" icon="flash"></nb-icon>{{'Enter để thanh toán và in bill' | translate | headtitlecase}}
                 </button>
                 <button #printBtn nbButton hero *ngIf="data[0].State == 'APPROVED'" status="primary" (click)="print(0)">

@@ -141,7 +141,7 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
         Object: {
           title: this.commonService.translateText('Common.contact'),
           type: 'string',
-          width: '20%',
+          width: '13%',
           valuePrepareFunction: (cell: any, row: any) => {
             return row.ObjectName;
           },
@@ -152,10 +152,12 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }}),
+                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+                  placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                    item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                    return item;
+                  }
+                }),
                 multiple: true,
                 logic: 'OR',
                 allowClear: true,
@@ -166,7 +168,7 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
-          width: '20%',
+          width: '12%',
         },
         Voucher: {
           title: this.commonService.translateText('Common.voucher'),
@@ -184,6 +186,31 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
           title: this.commonService.translateText('Accounting.account'),
           type: 'string',
           width: '5%',
+        },
+        Quantity: {
+          title: this.commonService.translateText('Số lượng'),
+          type: 'number',
+          width: '5%',
+          valuePrepareFunction: (cell, row) => { 
+            return row.ProductUnitLabel ? row.Quantity : '-';
+           },
+        },
+        Unit: {
+          title: this.commonService.translateText('ĐVT'),
+          type: 'text',
+          width: '5%',
+          valuePrepareFunction: (cell, row) => { 
+            return row.ProductUnitLabel ? row.ProductUnitLabel : '-';
+           },
+        },
+        Price: {
+          title: this.commonService.translateText('Giá'),
+          type: 'acc-currency',
+          width: '5%',
+          valuePrepareFunction: (cell, row) => { 
+            
+            return row.Quantity ? `${(row.GenerateDebit - row.GenerateCredit) / row.Quantity}` : '-'; 
+          },
         },
         HeadAmount: {
           title: this.commonService.translateText('Accounting.headAmount'),
