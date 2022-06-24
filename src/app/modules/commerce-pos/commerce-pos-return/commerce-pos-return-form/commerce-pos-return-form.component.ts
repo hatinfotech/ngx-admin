@@ -663,7 +663,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      DateOfSale: [null, Validators.required],
+      DateOfReturn: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],
       RequireInvoice: [false],
@@ -671,8 +671,8 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
     });
     if (data) {
       // data['Code_old'] = data['Code'];
-      if (!((data.DateOfSale as any) instanceof Date)) {
-        data.DateOfSale = new Date(data.DateOfSale) as any;
+      if (!((data.DateOfReturn as any) instanceof Date)) {
+        data.DateOfReturn = new Date(data.DateOfReturn) as any;
       }
       this.patchFormGroupValue(newForm, data);
     } else {
@@ -686,9 +686,9 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
       }
     });
 
-    newForm.get('DateOfSale').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfSate => {
-      if (dateOfSate) {
-        this.commonService.lastVoucherDate = dateOfSate;
+    newForm.get('DateOfReturn').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfReturn => {
+      if (dateOfReturn) {
+        this.commonService.lastVoucherDate = dateOfReturn;
       }
     });
     return newForm;
@@ -1062,17 +1062,18 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
       this.apiService.getPromise('/accounting/reports', {
         reportSummary: true,
         Accounts: '1111',
-        toDate: this.commonService.getEndOfDate(parentForm.get('DateOfSale')?.value).toISOString(),
+        toDate: this.commonService.getEndOfDate(parentForm.get('DateOfReturn')?.value).toISOString(),
       }).then(rs => {
         console.log(rs);
         this.commonService.openDialog(DialogFormComponent, {
           context: {
             title: 'Tính doanh thu bán lẻ',
-            onInit: (form, dialog) => {
+            onInit: async (form, dialog) => {
               const reatilRevenue = form.get('RetailRevenue');
               form.get('RealCash').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(realCashValue => {
                 reatilRevenue.setValue(realCashValue - rs[0]['TailAmount']);
               });
+              return true;
             },
             controls: [
               {

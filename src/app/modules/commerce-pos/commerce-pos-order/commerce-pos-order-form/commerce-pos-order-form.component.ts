@@ -1068,11 +1068,12 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         this.commonService.openDialog(DialogFormComponent, {
           context: {
             title: 'Tính doanh thu bán lẻ',
-            onInit: (form, dialog) => {
+            onInit: async (form, dialog) => {
               const reatilRevenue = form.get('RetailRevenue');
               form.get('RealCash').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(realCashValue => {
                 reatilRevenue.setValue(realCashValue - rs[0]['TailAmount']);
               });
+              return true;
             },
             controls: [
               {

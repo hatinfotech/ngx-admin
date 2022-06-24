@@ -972,6 +972,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     return true;
   }
 
+  public activeDetailIndex = 0;
   barcodeProcess(barcode: string) {
     console.log(barcode);
     const coreId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
@@ -1003,7 +1004,9 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       const details = this.getDetails(this.array.controls[0] as FormGroup);
       for (const goods of rs) {
         if (goods.AccessNumbers?.indexOf(accessNumber) > -1) {
-          let existsGoods = details.controls.find(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
+          let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
+          // let existsGoods = details.controls.find(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
+          let existsGoods = details.controls[existGoodsIndex];
           if (!existsGoods) {
             if (!this.commonService.getObjectId(details.controls[0]?.get('Product').value)) {
               details.removeAt(0);
@@ -1020,18 +1023,30 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
             existsGoods['IsManageByAccessNumber'] = true;
             details.push(existsGoods);
             this.newDetailPipSound.nativeElement.play();
+
+            this.activeDetailIndex = details.length - 1;
+            setTimeout(() => {
+              $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
+            }, 0);
           } else {
             let currentAccessNumbers = existsGoods.get('AccessNumbers').value || [];
+            this.activeDetailIndex = existGoodsIndex;
+            $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
             if (currentAccessNumbers.indexOf(accessNumber) < 0) {
               currentAccessNumbers.push(accessNumber);
               existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
               existsGoods.get('Quantity').setValue(currentAccessNumbers.length);
               this.increaseDetailPipSound.nativeElement.play();
             } else {
+              this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning' });
               this.errorSound.nativeElement.play();
+              $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
             }
           }
           break;
+        } else {
+          this.commonService.toastService.show(`${goods.Code} - ${goods.Name} không có trong kho !`, 'Hàng hóa không có trong kho !', { status: 'warning' });
+          this.errorSound.nativeElement.play();
         }
       }
     });

@@ -1305,11 +1305,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         this.commonService.openDialog(DialogFormComponent, {
           context: {
             title: 'Thay đổi giá bán',
-            onInit: (form, dialog) => {
+            onInit: async (form, dialog) => {
               // const price = form.get('Price');
               // const description = form.get('Description');
               // price.setValue(parseFloat(activeDetail.get('Price').value));
               // description.setValue(parseFloat(activeDetail.get('Description').value));
+              return true;
             },
             controls: [
               {

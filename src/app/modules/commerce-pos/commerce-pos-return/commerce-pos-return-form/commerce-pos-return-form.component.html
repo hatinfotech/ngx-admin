@@ -105,9 +105,9 @@
                             <div class="col-md-3">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <ngx-form-group [formGroup]="formItem" name="DateOfSale" label="{{validateVoucherDate(formItem.get('DateOfSale'), 'Sales.dateOfSales')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
-                                            <input type="text" [owlDateTime]="DateOfSale" [owlDateTimeTrigger]="DateOfSale" nbInput fullWidth formControlName="DateOfSale" placeholder="{{'Sales.dateOfSales' | translate | headtitlecase}}">
-                                            <owl-date-time #DateOfSale [startAt]="formItem.get('DateOfSale')?.value || this.commonService.lastVoucherDate"></owl-date-time>
+                                        <ngx-form-group [formGroup]="formItem" name="DateOfReturn" label="{{validateVoucherDate(formItem.get('DateOfReturn'), 'Ngày trả hàng')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                            <input type="text" [owlDateTime]="DateOfReturn" [owlDateTimeTrigger]="DateOfReturn" nbInput fullWidth formControlName="DateOfReturn" placeholder="{{'Ngày trả hàng' | translate | headtitlecase}}">
+                                            <owl-date-time #DateOfReturn [startAt]="formItem.get('DateOfReturn')?.value || this.commonService.lastVoucherDate"></owl-date-time>
                                         </ngx-form-group>
                                     </div>
                                     <div class="col-md-6">

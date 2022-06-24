@@ -3,7 +3,7 @@ import { LocalDataSource, ViewCell, Ng2SmartTableComponent } from 'ng2-smart-tab
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
-import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbDialogRef, NbDialogConfig } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable, Output, EventEmitter } from '@angular/core';
 import { BaseComponent } from '../base-component';
@@ -823,7 +823,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     return this.ref && Object.keys(this.ref).length > 0;
   }
 
-  async preview(data: M[], source?: string) {
+  async preview<T>(data: M[], source?: string, userConfig?: Partial<NbDialogConfig<Partial<T> | string>>) {
     if (!this.printDialog) {
       console.log('Print dialog was not set');
       return false;
@@ -844,6 +844,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           this.refresh();
         },
       },
+      ...(userConfig || {})
     });
     return false;
   }

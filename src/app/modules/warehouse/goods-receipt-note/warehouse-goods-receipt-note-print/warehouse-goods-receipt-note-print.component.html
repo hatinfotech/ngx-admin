@@ -58,7 +58,7 @@
                           font-weight: bold;
                           font-size: 16px;">{{detail.Container.FindOrder}}</div>
                           <div class="barcode" style="flex: 1;">
-                            <img style="margin-left: 5px;" [src]="detail.BarCode">
+                            <img (click)="printContainerTemp(detail)" style="margin-left: 5px; cursor: pointer;" [src]="detail.BarCode">
                           </div>
                         </div>
                         <div style="display: flex;">

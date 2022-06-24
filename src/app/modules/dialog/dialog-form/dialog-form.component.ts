@@ -1,3 +1,5 @@
+import { filter, take } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { CommonService } from './../../../services/common.service';
 import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
@@ -65,12 +67,14 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
     focus?: boolean,
   }[];
   @Input() actions: { label: string, icon?: string, status?: string, keyShortcut?: string, action?: (form: FormGroup, dialog?: DialogFormComponent) => void }[];
-  @Input() onInit: (form: FormGroup, dialog: DialogFormComponent) => void;
+  @Input() onInit: (form: FormGroup, dialog: DialogFormComponent) => Promise<boolean>;
   @ViewChild('formEle', { static: true }) formEle: ElementRef;
   @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
 
   curencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
   formGroup: FormGroup;
+
+  inited = new BehaviorSubject<boolean>(false);
 
   constructor(
     public ref: NbDialogRef<ShowcaseDialogComponent>,
@@ -93,12 +97,14 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
     }
   }
   ngAfterViewInit(): void {
-    this.controls.forEach(control => {
-      if (control.focus) {
-        const formcontrol = $(this.formEle.nativeElement).find(`[name=${control.name}]`)
-        formcontrol[0].focus();
-        formcontrol.select();
-      }
+    this.inited.pipe(filter(f => f), take(1)).toPromise().then(rs => {
+      this.controls.forEach(control => {
+        if (control.focus) {
+          const formcontrol = $(this.formEle.nativeElement).find(`[name=${control.name}]`)
+          formcontrol[0].focus();
+          formcontrol.select();
+        }
+      });
     });
   }
 
@@ -113,7 +119,9 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
     });
     this.formGroup = new FormGroup(fcs);
     if (this.onInit) {
-      this.onInit(this.formGroup, this);
+      this.onInit(this.formGroup, this).then(rs => {
+        this.inited.next(true);
+      });
     }
   }
 

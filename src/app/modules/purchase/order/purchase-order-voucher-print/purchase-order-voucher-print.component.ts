@@ -1,3 +1,4 @@
+import { PurchaseOrderVoucherDetailModel } from './../../../../models/purchase.model';
 import { PurchaseOrderVoucherFormComponent } from './../purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -10,6 +11,8 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { PurchaseOrderVoucherModel, PurchaseVoucherDetailModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { FormGroup } from '@angular/forms';
 // import { PurchaseModule } from '../../purchase.module';
 
 @Component({
@@ -214,6 +217,65 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
       this.processMapList[i] = AppModule.processMaps.purchaseOrder[item.State || ''];
     }
     return data;
+  }
+
+  updateSalePrice(detail: PurchaseOrderVoucherDetailModel) {
+    this.commonService.openDialog(DialogFormComponent, {
+      context: {
+        title: 'Cập nhật giá bán',
+        onInit: async (form, dialog) => {
+          const price = form.get('Price');
+          await this.apiService.getPromise('/sales/master-price-table-details', { masterPriceTable: 'default', eq_Code: this.commonService.getObjectId(detail?.Product), eq_Unit: this.commonService.getObjectId(detail?.Unit) }).then(rs => {
+            console.log(rs);
+            price.setValue(rs[0]?.Price);
+            dialog['MasterPriceTable'] = rs[0].MasterPriceTable;
+          });
+          return true;
+        },
+        controls: [
+          {
+            name: 'Price',
+            label: 'Giá thay đổi',
+            placeholder: 'Giá thay đổi',
+            type: 'currency',
+            initValue: 0,
+            focus: true,
+          },
+          {
+            name: 'Description',
+            label: 'Mô tả',
+            placeholder: 'Mô tả thêm cho việc thay đổi giá bán',
+            type: 'text',
+            disabled: true,
+            initValue: detail.Description,
+          },
+        ],
+        actions: [
+          {
+            label: 'Esc - Trở về',
+            icon: 'back',
+            status: 'basic',
+            keyShortcut: 'Escape',
+            action: () => { },
+          },
+          {
+            label: 'Enter - Xác nhận',
+            icon: 'generate',
+            status: 'success',
+            keyShortcut: 'Enter',
+            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+              this.apiService.putPromise('/sales/master-price-table-details', {}, [{
+                MasterPriceTable: formDialogConpoent['MasterPriceTable'],
+                Product: this.commonService.getObjectId(detail.Product),
+                Unit: this.commonService.getObjectId(detail.Unit),
+                Price: form.get('Price').value
+              }]);
+              formDialogConpoent.dismiss();
+            },
+          },
+        ],
+      },
+    });
   }
 
 }

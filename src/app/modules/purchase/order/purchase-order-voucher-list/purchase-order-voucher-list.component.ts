@@ -268,7 +268,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
               instance.outline = processMap?.outline;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
-              this.preview([rowData]);
+              this.preview([rowData], null, {closeOnEsc: false});
             });
           },
           filter: {

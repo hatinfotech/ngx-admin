@@ -13,6 +13,7 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 // import { AppModule } from '../../warehouse.module';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
+import { WarehouseGoodsFindOrderTempPrintComponent } from '../../goods/warehouse-goods-find-order-temp-print/warehouse-goods-find-order-temp-print.component';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-print',
@@ -249,6 +250,15 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
       this.processMapList[i] = AppModule.processMaps.warehouseReceiptGoodsNote[item.State || ''];
     }
     return data;
+  }
+
+  printContainerTemp(detail: WarehouseGoodsReceiptNoteDetailModel) {
+    this.commonService.openDialog(WarehouseGoodsFindOrderTempPrintComponent, {
+      context: {
+        priceTable: 'default',
+        id: [`${this.commonService.getObjectId(detail.Product)}-${this.commonService.getObjectId(detail.Unit)}-${this.commonService.getObjectId(detail.Container)}`],
+      }
+    });
   }
 
 }

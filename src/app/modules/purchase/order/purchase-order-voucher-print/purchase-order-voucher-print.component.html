@@ -68,7 +68,7 @@
               <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                 <td>{{detail.No}}</td>
                 <td><span>{{detail.Product?.Sku}}</span><span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span></td>
-                <td>{{renderValue(detail.Description)}}</td>
+                <td><span class="description" style="cursor: pointer" (click)="updateSalePrice(detail)">{{renderValue(detail.Description)}}</span></td>
                 <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                 <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                 <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
