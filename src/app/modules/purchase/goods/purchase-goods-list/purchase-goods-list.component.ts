@@ -1,4 +1,5 @@
-import { filter, take } from 'rxjs/operators';
+import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { ApiService } from '../../../../services/api.service';
@@ -8,17 +9,20 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { PurchaseGoodsFormComponent } from '../purchase-goods-form/warehouse-goods-form.component';
 import { ProductModel, ProductUnitConversoinModel } from '../../../../models/product.model';
-import { SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableTagComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
   templateUrl: './purchase-goods-list.component.html',
   styleUrls: ['./purchase-goods-list.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class PurchaseGoodsListComponent extends ProductListComponent implements OnInit {
 
@@ -67,18 +71,37 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
       delete: this.configDeleteButton(),
       pager: this.configPaging(),
       columns: {
-        FeaturePictureThumbnail: {
+        FeaturePicture: {
           title: 'Hình',
           type: 'custom',
           width: '5%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['FeaturePictureThumbnail'] ? product['FeaturePictureThumbnail'] + '?token=' + this.apiService.getAccessToken() : '';
+            return product['FeaturePicture'] ? product['FeaturePicture']['Thumbnail'] : '';
           },
           renderComponent: SmartTableThumbnailComponent,
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
             instance.valueChange.subscribe(value => {
             });
-            instance.click.subscribe(async (row: ProductModel) => {
+            instance.previewAction.subscribe((row: ProductModel) => {
+              const pictureList = row?.Pictures || [];
+              if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
+                pictureList.push(row.FeaturePicture);
+              }
+              if (pictureList.length > 0) {
+                const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
+                if (pictureList.length > 1) {
+                  const currentItems = pictureList.splice(currentIndex, 1);
+                  pictureList.unshift(currentItems[0]);
+                }
+                this.commonService.openDialog(ImagesViewerComponent, {
+                  context: {
+                    images: pictureList.map(m => m['OriginImage']),
+                    imageIndex: 0,
+                  }
+                });
+              }
+            });
+            instance.uploadAction.subscribe(async (row: ProductModel) => {
               if (this.files.length === 0) {
                 this.uploadForProduct = row;
                 this.uploadBtn.nativeElement.click();
@@ -241,10 +264,137 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
         //   type: 'string',
         //   width: '5%',
         // },
+        // CostOfGoodsSold: {
+        //   title: this.commonService.translateText('Purchase.costOfGoodsSold'),
+        //   type: 'currency',
+        //   width: '10%',
+        // },
         CostOfGoodsSold: {
           title: this.commonService.translateText('Purchase.costOfGoodsSold'),
-          type: 'currency',
+          type: 'custom',
           width: '10%',
+          renderComponent: SmartTableTagComponent,
+          onComponentInitFunction: (component: SmartTableTagComponent) => {
+            component.renderToolTip = (tag) => {
+              return component.rowData?.AccessNumbers?.join(', ') || '';
+            };
+            component.click.pipe(takeUntil(this.destroy$)).subscribe(tag => {
+              const filter = { id: component.rowData?.AccessNumbers };
+              this.commonService.openDialog(DynamicListDialogComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  choosedMode: false,
+                  onDialogChoose: async (choosedItems: any[]) => {
+                    console.log(choosedItems);
+                    // this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+                    //   context: {
+                    //     id: choosedItems.map(m => this.commonService.getObjectId(m['AccessNumber']))
+                    //   }
+                    // });
+                  },
+                  title: 'Chi tiết giá nhập của: ' + component.rowData.Name,
+                  apiPath: '/purchase/voucher-details',
+                  idKey: ['Product'],
+                  params: {
+                    // includeWarehouse: true,
+                    // includeContainer: true,
+                    // includeProduct: true,
+                    // includeUnit: true,
+                    // renderBarCode: true,
+                    // // renderQrCode: true,
+                    // includePrice: true,
+                    includeUnit: true,
+                    includeVoucherInfo: true,
+                    sort_DateOfPurchase: 'desc',
+                    eq_Product: component.rowData.Code,
+                    eq_Unit: this.commonService.getObjectId(component.rowData.WarehouseUnit),
+                    eq_State: 'APPROVED',
+                    ...filter
+                  },
+                  // actionButtonList: [],
+                  listSettings: {
+                    // pager: {
+                    //   display: true,
+                    //   perPage: 10,
+                    // },
+                    actions: false,
+                    columns: {
+                      DateOfPurchase: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfPurchase'), 'head-title'),
+                        type: 'datetime',
+                        width: '10%',
+                      },
+                      Voucher: {
+                        title: this.commonService.translateText('Common.voucher'),
+                        type: 'custom',
+                        renderComponent: SmartTableTagsComponent,
+                        valuePrepareFunction: (cell: string, row: any) => {
+                          return [{ id: cell, text: row['Title'], type: 'PURCHASE' }] as any;
+                        },
+                        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+                          instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id));
+                        },
+                        width: '10%',
+                      },
+                      Object: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
+                        type: 'text',
+                        renderComponent: SmartTableTagsComponent,
+                        width: '20%',
+                        valuePrepareFunction: (cell, row: any) => { return row.ObjectName; }
+                      },
+                      Title: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+                        type: 'text',
+                        renderComponent: SmartTableTagsComponent,
+                        width: '20%',
+                      },
+                      Product: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Hàng hóa'), 'head-title'),
+                        type: 'string',
+                        width: '20%',
+                        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                        // valuePrepareFunction: (cell: any, row: any) => {
+                        //   return this.commonService.getObjectText(cell);
+                        // }
+                      },
+                      Quantity: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Common.quantity'), 'head-title'),
+                        type: 'number',
+                        width: '10%',
+                        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                        // valuePrepareFunction: (cell, row) => {
+                        //   return this.commonService.getObjectText(cell);
+                        // }
+                      },
+                      Unit: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Đơn vị tính'), 'head-title'),
+                        type: 'string',
+                        width: '10%',
+                        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                        valuePrepareFunction: (cell, row) => {
+                          return this.commonService.getObjectText(cell);
+                        }
+                      },
+                      Price: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Common.price'), 'head-title'),
+                        type: 'currency',
+                        width: '10%',
+                        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                        // valuePrepareFunction: (cell) => {
+                        //   return this.commonService.getObjectText(cell);
+                        // }
+                      },
+                    }
+                  }
+                },
+                closeOnBackdropClick: false,
+              });
+            })
+          },
+          valuePrepareFunction: (cell: any, row: any) => {
+            return { id: cell, text: cell, type: 'Giá nhập' } as any;
+          }
         },
         // InventoryCost: {
         //   title: this.commonService.translateText('Warehouse.inventoryCost'),

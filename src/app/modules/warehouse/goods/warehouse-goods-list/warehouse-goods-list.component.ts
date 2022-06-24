@@ -409,7 +409,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
               return component.rowData?.AccessNumbers?.join(', ') || '';
             };
             component.click.pipe(takeUntil(this.destroy$)).subscribe(tag => {
-              const filter = { id: component.rowData?.AccessNumbers };
+              const filter = { eq_AccessNumber: '[' + component.rowData?.AccessNumbers?.join(',') + ']' };
               this.commonService.openDialog(DynamicListDialogComponent, {
                 context: {
                   inputMode: 'dialog',
@@ -431,8 +431,10 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                     includeProduct: true,
                     includeUnit: true,
                     renderBarCode: true,
+                    includeVoucherInfo: true,
                     // renderQrCode: true,
                     includePrice: true,
+                    sort_DateOfReceipted: 'desc',
                     ...filter
                   },
                   // actionButtonList: [],
@@ -443,30 +445,60 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                     // },
                     actions: false,
                     columns: {
+                      DateOfReceipted: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.dateOfReceipted'), 'head-title'),
+                        type: 'datetime',
+                        width: '10%',
+                      },
+                      Voucher: {
+                        title: this.commonService.translateText('Common.voucher'),
+                        type: 'custom',
+                        renderComponent: SmartTableTagsComponent,
+                        valuePrepareFunction: (cell: string, row: any) => {
+                          return [{ id: cell, text: row['Title'], type: 'GOODSRECEIPT' }] as any;
+                        },
+                        onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+                          instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id));
+                        },
+                        width: '20%',
+                      },
+                      Object: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
+                        type: 'text',
+                        renderComponent: SmartTableTagsComponent,
+                        width: '20%',
+                        valuePrepareFunction: (cell, row: any) => { return row.ObjectName; }
+                      },
+                      Title: {
+                        title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+                        type: 'text',
+                        renderComponent: SmartTableTagsComponent,
+                        width: '20%',
+                      },
                       AccessNumber: {
                         title: this.commonService.textTransform(this.commonService.translate.instant('Số truy xuất'), 'head-title'),
                         type: 'text',
                         renderComponent: SmartTableTagsComponent,
-                        width: '10%',
+                        width: '20%',
                       },
-                      Product: {
-                        title: this.commonService.textTransform(this.commonService.translate.instant('Hàng hóa'), 'head-title'),
-                        type: 'string',
-                        width: '80%',
-                        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-                        valuePrepareFunction: (cell: any, row: any) => {
-                          return this.commonService.getObjectText(cell);
-                        }
-                      },
-                      Unit: {
-                        title: this.commonService.textTransform(this.commonService.translate.instant('Đơn vị tính'), 'head-title'),
-                        type: 'string',
-                        width: '10%',
-                        filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
-                        valuePrepareFunction: (cell, row) => {
-                          return this.commonService.getObjectText(cell);
-                        }
-                      },
+                      // Product: {
+                      //   title: this.commonService.textTransform(this.commonService.translate.instant('Hàng hóa'), 'head-title'),
+                      //   type: 'string',
+                      //   width: '80%',
+                      //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                      //   valuePrepareFunction: (cell: any, row: any) => {
+                      //     return this.commonService.getObjectText(cell);
+                      //   }
+                      // },
+                      // Unit: {
+                      //   title: this.commonService.textTransform(this.commonService.translate.instant('Đơn vị tính'), 'head-title'),
+                      //   type: 'string',
+                      //   width: '10%',
+                      //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+                      //   valuePrepareFunction: (cell, row) => {
+                      //     return this.commonService.getObjectText(cell);
+                      //   }
+                      // },
                       // Container: {
                       //   title: this.commonService.textTransform(this.commonService.translate.instant('Vị trí'), 'head-title'),
                       //   type: 'string',
@@ -785,7 +817,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
   protected configPaging() {
     return {
       display: true,
-      perPage: 100,  
+      perPage: 100,
     };
   }
 }

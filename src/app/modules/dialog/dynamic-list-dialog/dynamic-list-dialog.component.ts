@@ -113,8 +113,8 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
       // Set DataSource: prepareParams
       source.prepareParams = (params: any) => {
         // params['includeParent'] = true;
-        params['includeRelativeVouchers'] = true;
-        params['sort_Created'] = 'desc';
+        // params['includeRelativeVouchers'] = true;
+        // params['sort_Created'] = 'desc';
         if (this.params) params = {
           ...params,
           ...this.params,
