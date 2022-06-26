@@ -68,7 +68,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
     focus?: boolean,
     option?: any
   }[];
-  @Input() actions: { label: string, icon?: string, status?: string, keyShortcut?: string, action?: (form: FormGroup, dialog?: DialogFormComponent) => void }[];
+  @Input() actions: { label: string, icon?: string, status?: string, keyShortcut?: string, action?: (form: FormGroup, dialog?: DialogFormComponent) => any }[];
   @Input() onInit: (form: FormGroup, dialog: DialogFormComponent) => Promise<boolean>;
   @ViewChild('formEle', { static: true }) formEle: ElementRef;
   @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
@@ -89,7 +89,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
       this.actions.forEach(element => {
         if (!element.action) {
           element.action = () => {
-
+            return true;
           };
         }
         if (!element.status) {
@@ -133,7 +133,10 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
       console.log(event.key + ': listen on show case dialog...');
       const action = this.actions.find(f => f.keyShortcut == event.key);
       if (action) {
-        action.action(this.formGroup, this);
+        if (action.action(this.formGroup, this)) {
+          this.dismiss();
+        }
+
         return false;
       }
       if (this.onKeyboardEvent) {

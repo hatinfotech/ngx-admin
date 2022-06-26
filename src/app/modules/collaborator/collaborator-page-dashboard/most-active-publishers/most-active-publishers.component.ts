@@ -65,13 +65,13 @@ export class MostActivePublishersComponent implements OnDestroy {
             label: 'Trở về',
             icon: 'back',
             status: 'info',
-            action: () => { },
+            action: () => { return true; },
           },
           {
             label: 'Tạo task',
             icon: 'generate',
             status: 'success',
-            action: async (form: FormGroup) => {
+            action: (form: FormGroup) => {
               // let contact = await this.apiService.getPromise<ContactModel[]>('/contact/contacts', { searchByOutsideReference: true, eq_RefUserId: publisher.Publisher }).then(rs => rs[0]);
               // if(!contact) {
               //   contact = await this.apiService.postPromise<ContactModel[]>('/contact/contacts', { }, [{
