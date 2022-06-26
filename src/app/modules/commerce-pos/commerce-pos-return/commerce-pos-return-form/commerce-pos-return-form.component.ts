@@ -1104,7 +1104,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
                 label: 'Trở về',
                 icon: 'back',
                 status: 'basic',
-                action: () => { },
+                action: () => { return true; },
               },
               {
                 label: 'Tính doanh thu bán lẻ',
@@ -1114,6 +1114,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
                   console.log(rs);
                   detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
                   this.toMoney(parentForm, detail, 'Product');
+                  return true;
                 },
               },
             ],
@@ -1381,7 +1382,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
       detail.get('Quantity').setValue(detail.get('AccessNumbers').value.trim().split('\n').length);
     }
   }
-  
+
   getRawFormData() {
     const data = super.getRawFormData();
     for (const item of data.array) {

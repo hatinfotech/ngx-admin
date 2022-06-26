@@ -1,3 +1,4 @@
+import { Select2Option } from './../../../lib/custom-element/select2/select2.component';
 import { filter, take } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from './../../../services/common.service';
@@ -65,6 +66,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
     initValue?: any;
     disabled?: boolean,
     focus?: boolean,
+    option?: any
   }[];
   @Input() actions: { label: string, icon?: string, status?: string, keyShortcut?: string, action?: (form: FormGroup, dialog?: DialogFormComponent) => void }[];
   @Input() onInit: (form: FormGroup, dialog: DialogFormComponent) => Promise<boolean>;
@@ -99,7 +101,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.inited.pipe(filter(f => f), take(1)).toPromise().then(rs => {
       this.controls.forEach(control => {
-        if (control.focus) {
+        if (control?.focus) {
           const formcontrol = $(this.formEle.nativeElement).find(`[name=${control.name}]`)
           formcontrol[0].focus();
           formcontrol.select();
@@ -139,6 +141,10 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
       }
     }
     return true;
+  }
+
+  onAction(item: any, form: FormGroup) {
+    return item?.action(form, this);
   }
 
   dismiss() {

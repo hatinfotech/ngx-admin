@@ -26,6 +26,7 @@ import { filter, take, takeUntil } from 'rxjs/operators';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { SystemConfigModel } from '../../../../models/model';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 
 @Component({
   selector: 'ngx-inventory-adjust-note-form',
@@ -782,8 +783,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     const data = super.getRawFormData();
     for (const item of data.array) {
       for (const detail of item.Details) {
-        if (detail.AccessNumbers && typeof detail.AccessNumbers == 'string') {
-          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').map(ac => {
+        if (typeof detail.AccessNumbers == 'string') {
+          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').filter(ac => !!ac).map(ac => {
             if (/^127/.test(ac)) {
               return { id: ac, text: ac };
             }
@@ -1005,7 +1006,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           AccessNumbers: `${accessNumber}\n`,
           Quantity: 1,
           Description: goods.Name,
-          Pictures: goods.Pictures
+          Image: goods.Pictures
         } as any);
         existsGoods['IsManageByAccessNumber'] = true;
         details.push(existsGoods);
@@ -1039,6 +1040,119 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
 
 
+  }
+
+  addGoodsOfShelf(parentFormGroup: FormGroup) {
+    this.commonService.openDialog(DialogFormComponent, {
+      context: {
+        title: 'Thay đổi giá bán',
+        onInit: async (form, dialog) => {
+          // const price = form.get('Price');
+          // const description = form.get('Description');
+          // price.setValue(parseFloat(activeDetail.get('Price').value));
+          // description.setValue(parseFloat(activeDetail.get('Description').value));
+          return true;
+        },
+        controls: [
+          {
+            name: 'Shelf',
+            label: 'Kệ hàng hóa',
+            placeholder: 'Chọn kệ hàng hóa',
+            type: 'select2',
+            initValue: null,
+            // focus: true,
+            option: {
+              placeholder: 'Chọn kệ...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              ajax: {
+                transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                  console.log(settings);
+                  this.apiService.getPromise('/warehouse/goods-containers', { filter_Name: settings.data['term'] ? settings.data['term'] : '', includeIdText: true, eq_Type: 'SHELF', limit: 20 }).then(rs => {
+                    success(rs);
+                  }).catch(err => {
+                    console.error(err);
+                    failure();
+                  });
+                },
+                delay: 300,
+                processResults: (data: any, params: any) => {
+                  // console.info(data, params);
+                  return {
+                    results: data,
+                  };
+                },
+              },
+            }
+          },
+        ],
+        actions: [
+          {
+            label: 'Esc - Trở về',
+            icon: 'back',
+            status: 'basic',
+            keyShortcut: 'Escape',
+            action: () => { return true; },
+          },
+          {
+            label: 'Chọn',
+            icon: 'generate',
+            status: 'success',
+            // keyShortcut: 'Enter',
+            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+
+              console.log(form.value);
+
+              // Get all container of shelf
+              this.isProcessing = true;
+              this.apiService.getPromise<any[]>('/warehouse/goods-containers', { includeGoods: true, eq_Shelf: this.commonService.getObjectId(form.value?.Shelf), limit: 'nolimit' }).then(rs => {
+                console.log(rs);
+
+                if (rs && rs.length > 0) {
+                  const details = this.getDetails(this.array.controls[0] as FormGroup);
+                  if (!this.commonService.getObjectId(details.controls[0]?.get('Product').value)) {
+                    details.removeAt(0);
+                  }
+                  for (const container of rs) {
+                    const goods = container?.Goods[0];
+                    const existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
+                      Product: { Code: this.commonService.getObjectId(goods), id: this.commonService.getObjectId(goods), text: this.commonService.getObjectText(goods) },
+                      Unit: { id: goods.Unit, text: goods.UnitLabel },
+                      Container: { id: container.Code, text: container.Path },
+                      AccessNumbers: '',
+                      Quantity: 0,
+                      Description: container.GoodsName,
+                      Image: [goods.GoodsThumbnail]
+                    } as any);
+                    existsGoods['IsManageByAccessNumber'] = true;
+                    existsGoods['ContainerList'] = [{ id: container.Code, text: container.Path }];
+                    details.push(existsGoods);
+                    // this.newDetailPipSound.nativeElement.play();
+                    // this.onSelectUnit(existsGoods, { id: goods.Unit, text: goods.UnitLabel, IsManageByAccessNumber: true });
+                    this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+                    this.activeDetailIndex = 0;
+                  }
+                }
+                this.isProcessing = false;
+              }).catch(err => {
+                this.isProcessing = false;
+                Promise.reject(err);
+              });
+
+              // formDialogConpoent.dismiss();
+
+              return true;
+            },
+          },
+        ],
+      },
+    });
   }
 
 }

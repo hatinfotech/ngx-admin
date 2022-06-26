@@ -127,7 +127,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
                   label: 'Trở về',
                   icon: 'back',
                   status: 'info',
-                  action: () => { },
+                  action: () => { return true; },
                 },
                 {
                   label: 'Cập nhật',
@@ -140,7 +140,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
                     }]).then(rs => {
                       this.refresh();
                     });
-
+                    return true;
                   },
                 },
               ],

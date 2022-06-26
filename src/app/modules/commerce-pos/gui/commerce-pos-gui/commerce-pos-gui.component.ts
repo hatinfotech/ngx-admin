@@ -871,10 +871,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
               product = rs[0];
 
-              const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
-              existsProduct = detailsControls[existsProductIndex] as FormGroup;
-              if (existsProduct) {
-                setTimeout(() => {
+              setTimeout(() => {
+                const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
+                existsProduct = detailsControls[existsProductIndex] as FormGroup;
+                if (existsProduct) {
 
                   existsProduct.get('Container').setValue(product.Container);
 
@@ -893,8 +893,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                   }
 
                   // this.save(this.orderForm);
-                }, 1000);
-              }
+                }
+              }, 1000);
 
 
               return product;
@@ -1335,7 +1335,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 icon: 'back',
                 status: 'basic',
                 keyShortcut: 'Escape',
-                action: () => { },
+                action: () => { return true; },
               },
               {
                 label: 'Enter - Xác nhận',
@@ -1349,7 +1349,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                   this.calculateToMoney(activeDetail as FormGroup);
                   this.calculateTotal(this.orderForm);
 
-                  formDialogConpoent.dismiss();
+                  // formDialogConpoent.dismiss();
+
+                  return true;
                 },
               },
             ],

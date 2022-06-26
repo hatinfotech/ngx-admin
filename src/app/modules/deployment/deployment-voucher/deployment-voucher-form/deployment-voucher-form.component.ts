@@ -1151,7 +1151,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
                 label: 'Trở về',
                 icon: 'back',
                 status: 'basic',
-                action: () => { },
+                action: () => { return true; },
               },
               {
                 label: 'Tính doanh thu bán lẻ',
@@ -1161,6 +1161,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
                   console.log(rs);
                   detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
                   this.toMoney(parentForm, detail, 'Product');
+                  return true;
                 },
               },
             ],

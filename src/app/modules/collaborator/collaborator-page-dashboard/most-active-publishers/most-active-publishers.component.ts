@@ -95,6 +95,7 @@ export class MostActivePublishersComponent implements OnDestroy {
                 this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Code'] });
               });
 
+              return true;
             },
           },
         ],

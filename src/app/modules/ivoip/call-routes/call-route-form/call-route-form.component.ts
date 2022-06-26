@@ -210,7 +210,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
             label: 'Trở về',
             icon: 'back',
             status: 'info',
-            action: () => { },
+            action: () => { return true; },
           },
           {
             label: 'Tạo tự động',
@@ -225,6 +225,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
                 currentValue['extension'] = startExt;
                 this.array.push(this.makeNewFormGroup(currentValue));
               }
+              return true;
             },
           },
         ],

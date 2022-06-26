@@ -293,7 +293,7 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
                 label: 'Trở về',
                 icon: 'back',
                 status: 'info',
-                action: () => { },
+                action: () => { return true; },
               },
               {
                 label: 'Tải lên',
@@ -311,6 +311,8 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
                     data: { foo: 'bar' },
                   };
                   this.uploadInput.emit(event);
+
+                  return true;
 
                 },
               },

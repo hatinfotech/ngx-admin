@@ -9,12 +9,13 @@
             <input [name]="control.name" *ngIf="!control.type || control.type == 'text'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder">
             <input [name]="control.name" *ngIf="control.type == 'currency'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder" currencyMask [options]="curencyFormat">
             <textarea [name]="control.name" *ngIf="control.type == 'textarea'" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder"></textarea>
+            <ngx-select2 [name]="control.name" [formControlName]="control.name" *ngIf="control.type == 'select2'" [select2Option]="control.option"></ngx-select2>
           </div>
         </div>
       </div>
     </div>
   </nb-card-body>
   <nb-card-footer>
-    <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="dismiss(); item?.action(formGroup)">{{ item?.label }}</button>
+    <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="onAction(item, formGroup) && dismiss()">{{ item?.label }}</button>
   </nb-card-footer>
 </nb-card>

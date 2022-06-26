@@ -40,10 +40,11 @@
                 <th class="">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                 <th class="text-align-right nowrap">{{'Warehouse.theoryInventory' | translate | headtitlecase}}</th>
                 <th class="text-align-right nowrap">{{'Warehouse.realityInventory' | translate | headtitlecase}}</th>
+                <th class="text-align-right nowrap">{{'Số truy xuất mới' | translate | headtitlecase}}</th>
               </tr>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
-                  <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
+                  <td colspan="8" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
                 </tr>
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <td>{{detail.No}}</td>
@@ -52,10 +53,11 @@
                   <td class="">{{detail.Unit | objecttext}}</td>
                   <td class="text-align-right">{{renderValue(detail.Inventory) | number}}</td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
+                  <td class="text-align-right">{{renderNewAccessNumber(detail?.AccessNumbers)}}</td>
                 </tr>
               </ng-container>
               <tr>
-                <td colspan="6">{{'Common.note' | translate | headtitlecase}}</td>
+                <td colspan="7">{{'Common.note' | translate | headtitlecase}}</td>
               </tr>
             </table>
           </div>

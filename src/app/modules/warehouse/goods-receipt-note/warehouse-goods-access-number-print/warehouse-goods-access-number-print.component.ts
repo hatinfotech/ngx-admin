@@ -257,59 +257,47 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     } else if (this.id) {
       params.id = this.id;
     }
-    return this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
-      includeWarehouse: true,
-      includeContainer: true,
-      includeProduct: true,
-      includeUnit: true,
-      renderBarCode: true,
-      renderQrCode: true,
-      includePrice: true,
-      // eq_Type: this.printForType,
-      // id: this.id,
-      // eq_Voucher: this.voucher,
-      sort_No: 'asc',
-      sort_AccessNumberNo: 'asc',
-      limit: 'nolimit',
-      ...params
-    }).then(rs => {
-      // rs.map(item => {
-      //   if (item.Path) {
-      //     const parts = item.Path.split('/');
-      //     parts.shift();
-      //     item.Path = parts.join('/');
-      //   }
-      //   return item;
-      // });
-      // const table = [];
-      // let row = [];
-      // for (let i = 0; i < rs.length; i++) {
-      //   row.push(rs[i]);
-      //   if ((i+1) % 4 === 0) {
-      //     table.push(row);
-      //     row = [];
-      //   }
-      // }
-      // return table;
-      this.choosedForms.controls = [];
-      for (const item of rs) {
-        const formData = {};
-        item['Price'] = item['Price'] && (parseInt(item['Price'])/1000) || null as any;
-        for (const field of Object.keys(item)) {
-          formData[field] = [item[field]];
-        }
-        const checkbox = this.formBuilder.group({
-          'Choosed': [true],
-          ...formData,
-        });
-        this.choosedForms.push(checkbox);
-
-        checkbox.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-          console.log(value);
-        });
+    let rs;
+    if (this.data) {
+      rs = this.data;
+    } else {
+      rs = await this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
+        includeWarehouse: true,
+        includeContainer: true,
+        includeProduct: true,
+        includeUnit: true,
+        renderBarCode: true,
+        renderQrCode: true,
+        includePrice: true,
+        // eq_Type: this.printForType,
+        // id: this.id,
+        // eq_Voucher: this.voucher,
+        sort_No: 'asc',
+        sort_AccessNumberNo: 'asc',
+        limit: 'nolimit',
+        ...params
+      }).then(rs => {
+        return rs;
+      });
+    }
+    this.choosedForms.controls = [];
+    for (const item of rs) {
+      const formData = {};
+      item['Price'] = item['Price'] && (parseInt(item['Price']) / 1000) || null as any;
+      for (const field of Object.keys(item)) {
+        formData[field] = [item[field]];
       }
-      return rs;
-    });
+      const checkbox = this.formBuilder.group({
+        'Choosed': [true],
+        ...formData,
+      });
+      this.choosedForms.push(checkbox);
+
+      checkbox.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+        console.log(value);
+      });
+    }
+    return rs;
   }
 
 

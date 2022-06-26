@@ -290,7 +290,7 @@ export class SmsPhoneNumberFormComponent extends DataManagerFormComponent<SmsPho
                 label: 'Trở về',
                 icon: 'back',
                 status: 'info',
-                action: () => { },
+                action: () => { return true; },
               },
               {
                 label: 'Tải lên',
@@ -308,7 +308,7 @@ export class SmsPhoneNumberFormComponent extends DataManagerFormComponent<SmsPho
                     data: { foo: 'bar' },
                   };
                   this.uploadInput.emit(event);
-
+                  return true;
                 },
               },
             ],

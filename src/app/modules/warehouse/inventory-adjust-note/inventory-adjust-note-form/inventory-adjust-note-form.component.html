@@ -175,7 +175,7 @@
 
                                             <div class="col-md-9 col-sm-9 col-xs-9">
                                                 <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="Image" label="Common.image" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem'}}"></ngx-files-input>
+                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem', padding: '0'}, thumbnailStype: {height: '5rem', width: '100%'}}"></ngx-files-input>
                                                 </ngx-form-group>
                                                 <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">
                                                     <label class="label">Stt</label>
@@ -241,12 +241,16 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                                    <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero [disabled]="isProcessing">
-                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Purchase.addProduct' | translate | headtitlecase}}
-                                    </button>
+                                <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="buttons-row">
+                                        <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero [disabled]="isProcessing">
+                                            <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Thêm dòng mới' | translate | headtitlecase}}
+                                        </button>
+                                        <button nbButton status="primary" (click)="addGoodsOfShelf(formItem)" size="medium" hero [disabled]="isProcessing">
+                                            <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Thêm thàng hóa theo kệ' | translate | headtitlecase}}
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12"></div>
                                 <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
                                     <div class="row">
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>

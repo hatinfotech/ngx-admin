@@ -1104,9 +1104,11 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
                 label: 'Trở về',
                 icon: 'back',
                 status: 'basic',
-                action: () => { },
+                action: () => {
+                  return true;
+                },
               },
-              { 
+              {
                 label: 'Tính doanh thu bán lẻ',
                 icon: 'generate',
                 status: 'success',
@@ -1114,6 +1116,8 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
                   console.log(rs);
                   detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
                   this.toMoney(parentForm, detail, 'Product');
+
+                  return true;
                 },
               },
             ],
@@ -1381,7 +1385,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       detail.get('Quantity').setValue(detail.get('AccessNumbers').value.trim().split('\n').length);
     }
   }
-  
+
   getRawFormData() {
     const data = super.getRawFormData();
     for (const item of data.array) {

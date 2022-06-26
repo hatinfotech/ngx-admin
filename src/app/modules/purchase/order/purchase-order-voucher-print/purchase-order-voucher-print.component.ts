@@ -256,7 +256,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
             icon: 'back',
             status: 'basic',
             keyShortcut: 'Escape',
-            action: () => { },
+            action: () => { return true; },
           },
           {
             label: 'Enter - Xác nhận',
@@ -270,7 +270,8 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
                 Unit: this.commonService.getObjectId(detail.Unit),
                 Price: form.get('Price').value
               }]);
-              formDialogConpoent.dismiss();
+              // formDialogConpoent.dismiss();
+              return true;
             },
           },
         ],

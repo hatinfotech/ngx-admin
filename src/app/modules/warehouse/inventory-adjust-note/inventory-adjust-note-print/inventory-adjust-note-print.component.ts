@@ -11,6 +11,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from '../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
 // import { AppModule } from '../../warehouse.module';
 
 @Component({
@@ -57,6 +58,40 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
     //   }
     //   this.processMapList[i] = AppModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
     // }
+
+    this.actionButtonList.unshift({
+      name: 'print-access-numbers',
+      status: 'danger',
+      label: this.commonService.textTransform(this.commonService.translate.instant('Common.printBarCode'), 'head-title'),
+      icon: 'grid-outline',
+      title: this.commonService.textTransform(this.commonService.translate.instant('In mã vạch cho hàng hóa bị mất tem hoặc không rõ nguồn gốc'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: (event: any, option: any) => {
+        const item = this.data[option.index];
+        let newAccessNumbers: string[] = [];
+        if (item.Details) {
+          for (const detail of item.Details) {
+            if (detail?.AccessNumbers) {
+              newAccessNumbers = newAccessNumbers.concat(detail.AccessNumbers.filter(f => f.IsNew).map(m => m.AccessNumber));
+            }
+          }
+        }
+        // this.apiService.getPromise('', {});
+
+        this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+          context: {
+            // voucher: item.Code,
+            id: newAccessNumbers,
+            // id: ['xxx']
+          }
+        });
+        return false;
+      },
+    });
+
     this.summaryCalculate(this.data);
 
     return result;
@@ -75,6 +110,13 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
       return value['text'];
     }
     return value;
+  }
+
+  renderNewAccessNumber(accessNumbers: any[]) {
+    if (accessNumbers) {
+      return accessNumbers.filter(f => f.IsNew).map(m => m.AccessNumber).join(', ');
+    }
+    return '';
   }
 
   toMoney(detail: WarehouseGoodsReceiptNoteDetailModel) {
@@ -120,7 +162,7 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true }).then(rs => {
+    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true, includeAccessNumbers: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
         // let no = 1;
