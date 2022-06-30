@@ -34,6 +34,10 @@ nb-card nb-tabset nb-tab {
   padding-right: 9px !important;
 }
 
+.form-detail-item.import {
+  border: greenyellow 1px solid;
+  border-radius: 5px;
+}
 .form-detail-item.active {
   border: red 1px solid;
     border-radius: 5px;

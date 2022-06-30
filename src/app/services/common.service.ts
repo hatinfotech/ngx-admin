@@ -648,6 +648,7 @@ export class CommonService {
     const result = new Promise<boolean>(resolve => {
       if (delay === 0) {
         // if (callback) callback(); else return;
+        if (callback) callback();
         resolve(true);
         return;
       }
@@ -661,13 +662,12 @@ export class CommonService {
       setTimeout(() => {
         if (this.takeUltilPastCount[context] === this.takeUltilCount[context]) {
           // callback();
+          if (callback) callback();
           resolve(true);
         }
       }, delay);
     });
-    if (callback) {
-      callback();
-    }
+    
     return result;
   }
   async takeUntilCallback(context: string, delay: number, callback?: () => void) {

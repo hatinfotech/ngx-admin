@@ -455,7 +455,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                         type: 'custom',
                         renderComponent: SmartTableTagsComponent,
                         valuePrepareFunction: (cell: string, row: any) => {
-                          return [{ id: cell, text: row['Title'], type: 'GOODSRECEIPT' }] as any;
+                          return [{ id: cell, text: row['Title'], type: /^124/.test(cell) ? 'INVENTORYADJUST' : 'GOODSRECEIPT' }] as any;
                         },
                         onComponentInitFunction: (instance: SmartTableTagsComponent) => {
                           instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id));

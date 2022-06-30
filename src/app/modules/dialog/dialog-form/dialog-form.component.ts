@@ -130,7 +130,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
-      console.log(event.key + ': listen on show case dialog...');
+      // console.log(event.key + ': listen on show case dialog...');
       const action = this.actions.find(f => f.keyShortcut == event.key);
       if (action) {
         if (action.action(this.formGroup, this)) {

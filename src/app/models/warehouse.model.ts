@@ -87,6 +87,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberModel {
 }
 export class WarehouseInventoryAdjustNoteModel {
   Id?: string | number;
+  Type?: string;
   Code?: string;
   Title?: string;
   Description?: string;
@@ -112,6 +113,7 @@ export class WarehouseInventoryAdjustNoteModel {
   Warehouse?: string;
   Branch?: string;
   State?: string;
+  Shelf?: string;
 
   Bookkeeping?: boolean;
 
@@ -136,6 +138,7 @@ export class WarehouseInventoryAdjustNoteDetailModel {
   DebitAccount?: number;
   CreaditAccount?: number;
   Tax?: string & TaxModel;
+  AccessNumbers?: any;
 }
 
 

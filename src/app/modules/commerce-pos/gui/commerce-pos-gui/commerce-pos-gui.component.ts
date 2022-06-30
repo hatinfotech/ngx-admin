@@ -871,6 +871,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
               product = rs[0];
 
+              if (!product) {
+                this.commonService.toastService.show(`Số truy xuất ${accessNumber} không tồn tại !`, 'Số truy xuất không tồn tại !', { status: 'warning' });
+                existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
+                return null;
+              }
+
               setTimeout(() => {
                 const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
                 existsProduct = detailsControls[existsProductIndex] as FormGroup;

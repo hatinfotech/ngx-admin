@@ -1,5 +1,5 @@
 <form [formGroup]="form" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
-    <audio #newDetailPipSound>
+    <!-- <audio #newDetailPipSound>
         <source src='assets/sounds/beep-08b.wav' type="audio/mp3">
     </audio>
     <audio #increaseDetailPipSound>
@@ -7,7 +7,7 @@
     </audio>
     <audio #errorSound>
         <source src='assets/sounds/beep-03.wav' type="audio/mp3">
-    </audio>
+    </audio> -->
     <div formArrayName="array">
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
@@ -85,8 +85,8 @@
                             </div>
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="RelativeVouchers" label="Common.relationVoucher" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <button class="fit-control-button" [outline]="true" nbButton status="primary" fullWidth (click)="openRelativeVoucherChoosedDialog(formItem)" size="medium" hero>
-                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>Thêm chứng từ liên quan
+                                    <button class="fit-control-button" nbTooltip="Tạo phiếu cho nhiều người dùng kiểm kho" [outline]="true" nbButton status="primary" fullWidth (click)="createAlternateAdjustVoucher(formItem)" size="medium" hero>
+                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>Tạo phiếu phụ
                                     </button>
                                 </ngx-form-group>
                             </div>
@@ -111,9 +111,14 @@
                                 </ngx-form-group>
                             </div> -->
 
-                            <div class="col-sm-12">
+                            <div class="col-sm-9">
                                 <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Shelf" label="Kệ hàng hóa" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="Shelf" [select2Option]="select2OptionForShelf" [data]="shelfList"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <!-- <div class="col-sm-3">
@@ -155,7 +160,7 @@
                         </div>
 
                         <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }" (sortablejsInit)="sortablejsInit($event, getDetails(formItem).controls)">
-                            <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail" [ngClass]="{'category': getFieldValue(detail, 'Type') == 'CATEGORY', 'active': ic == activeDetailIndex}">
+                            <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail" [ngClass]="{'category': getFieldValue(detail, 'Type') == 'CATEGORY', 'active': ic == activeDetailIndex, 'import': detail['_type'] == 'IMPORT'}">
                                 <hr>
                                 <div class="row">
                                     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
@@ -163,7 +168,7 @@
                                             <div class="col-md-3 col-sm-3 col-xs-3">
                                                 <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="No" label="Common.no" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
-                                                    <input type="hidden" formControlName="Id">
+                                                    <!-- <input type="hidden" formControlName="Id"> -->
                                                 </ngx-form-group>
                                                 <div class="form-group">
                                                     <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
@@ -211,8 +216,8 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-7 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Container" label="Warehouse.container" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false">
-                                                    <ngx-select2 [data]="detail['ContainerList'] || warehouseContainerList" formControlName="Container" [select2Option]="select2OptionForContainer" (selectChange)="onSelectContainer(detail, $event)"></ngx-select2>
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Container" label="Warehouse.container" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                                                    <ngx-select2 [data]="detail['ContainerList'] || warehouseContainerList" formControlName="Container" [select2Option]="select2OptionForContainer" (selectChange)="onSelectContainer(detail, $event, false, formItem)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
@@ -234,14 +239,14 @@
                                     </div>
                                     <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                            <textarea [attr.disabled]="getFieldValue(detail, 'Type') == 'PRODUCT' && !detail['IsManageByAccessNumber'] ? true : null" class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" [placeholder]="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? 'Số truy xuất: \n127xxx\n127xxx' : 'Hàng hóa không quản lý theo số truy xuất'" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea>
+                                            <textarea class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" [placeholder]="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? 'Số truy xuất: \n127xxx\n127xxx' : 'Hàng hóa không quản lý theo số truy xuất'" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea>
                                         </ngx-form-group>
                                     </div>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
                                     <div class="buttons-row">
                                         <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero [disabled]="isProcessing">
                                             <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Thêm dòng mới' | translate | headtitlecase}}
@@ -249,9 +254,15 @@
                                         <button nbButton status="primary" (click)="addGoodsOfShelf(formItem)" size="medium" hero [disabled]="isProcessing">
                                             <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Thêm thàng hóa theo kệ' | translate | headtitlecase}}
                                         </button>
+                                        <button nbButton status="info" (click)="syncWithSubVoucher(formItem)" size="medium" hero [disabled]="isProcessing || (formItem.get('RelativeVouchers').value || []).length == 0">
+                                            <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Đồng bộ phiếu phụ' | translate | headtitlecase}}
+                                        </button>
+                                        <button nbButton status="danger" (click)="barcodeScan(formItem)" size="medium" hero [disabled]="isProcessing">
+                                            <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'BarCode scan' | translate | headtitlecase}}
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
                                     <div class="row">
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                         <div class="col-md-2 col-sm-4 col-xs-4"></div>

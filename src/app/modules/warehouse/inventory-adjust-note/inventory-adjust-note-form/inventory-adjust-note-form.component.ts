@@ -27,6 +27,7 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { SystemConfigModel } from '../../../../models/model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { _ } from 'ag-grid-community';
 
 @Component({
   selector: 'ngx-inventory-adjust-note-form',
@@ -65,9 +66,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     digits: 2
   });
 
-  @ViewChild('newDetailPipSound', { static: true }) newDetailPipSound: ElementRef;
-  @ViewChild('increaseDetailPipSound', { static: true }) increaseDetailPipSound: ElementRef;
-  @ViewChild('errorSound', { static: true }) errorSound: ElementRef;
+  // @ViewChild('newDetailPipSound', { static: true }) newDetailPipSound: ElementRef;
+  // @ViewChild('increaseDetailPipSound', { static: true }) increaseDetailPipSound: ElementRef;
+  // @ViewChild('errorSound', { static: true }) errorSound: ElementRef;
+  // newDetailPipSound: HTMLAudioElement = new Audio('assets/sounds/beep-08b.wav');
+  // increaseDetailPipSound: HTMLAudioElement = new Audio('assets/sounds/beep-07a.wav');
+  // errorSound: HTMLAudioElement = new Audio('assets/sounds/beep-03.wav');
 
   // select2ContactOption = {
   //   placeholder: 'Chọn liên hệ...',
@@ -279,6 +283,18 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     },
   };
 
+  select2OptionForShelf = {
+    placeholder: 'Chọn kệ hàng hóa...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   // Type field option
   select2OptionForType = {
     placeholder: 'Chọn loại...',
@@ -346,6 +362,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   private unitMap: { [key: string]: ProductUnitModel } = {};
+  private shelfList: WarehouseGoodsContainerModel[] = null;
   async init(): Promise<boolean> {
 
     /** Load and cache tax list */
@@ -399,6 +416,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         return true;
       });
 
+      // Test pip sound
+      // for (let i = 0; i < 100; i++) {
+      //   this.playNewPipSound();
+      //   await new Promise(resolve => setTimeout(() => resolve(true), 300));
+      // }
+
+      this.shelfList = await this.apiService.getPromise('/warehouse/goods-containers', { eq_Type: 'SHELF', limit: 'nolimit', includeIdText: true });
       return status;
     });
   }
@@ -420,23 +444,100 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // Details form load
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
-        itemFormData.Details.forEach(detail => {
-          detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
-          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
-          details.push(newDetailFormGroup);
-          // const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(newForm, newDetailFormGroup);
-          if (detail.Product) {
-            this.onSelectProduct(newDetailFormGroup, detail.Product, true);
-            let seelctedUnit = detail.Product?.Units?.find(f => f.id == detail.Unit.id);
-            if (seelctedUnit) {
-              this.onSelectUnit(newDetailFormGroup, seelctedUnit);
-            } else {
-              seelctedUnit = detail.Unit;
-              this.onSelectUnit(newDetailFormGroup, seelctedUnit);
-            }
+
+        // Get product unit info
+        let goodsList = [];
+        let page = 1;
+        const limit = 50;
+        while (true) {
+          const ids = itemFormData.Details.slice((page - 1) * limit, page * limit).map(m => `${this.commonService.getObjectId(m.Product)}-${this.commonService.getObjectId(m.Unit)}`);
+          if (ids.length == 0) break;
+          const pageList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+            select: 'Code',
+            includeUnit: true,
+            includeContainers: true,
+            id: ids,
+            limit: 'nolimit'
+          }).then(goodsList => {
+            return goodsList;
+          });
+          if (pageList.length == 0) {
+            break;
           }
-        });
+          goodsList = goodsList.concat(pageList);
+          page++;
+        }
+
+        const goodsListIndex = {};
+        for (const goods of goodsList) {
+          goodsListIndex[`${goods.Code}-${this.commonService.getObjectId(goods.ConversionUnit)}`] = goods;
+        }
+
+        // itemFormData.Details.forEach(detail => {
+        //   detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+        //   const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
+        //   details.push(newDetailFormGroup);
+        //   // const comIndex = details.length - 1;
+        //   this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+        //   if (detail.Product) {
+        //     this.onSelectProduct(newDetailFormGroup, detail.Product, true);
+        //     let seelctedUnit = detail.Product?.Units?.find(f => f.id == detail.Unit.id);
+        //     const relateGoods = goodsListIndex[`${this.commonService.getObjectId(detail.Product)}-${this.commonService.getObjectId(detail.Unit)}`];
+        //     if (relateGoods) {
+        //       seelctedUnit.IsManageByAccessNumber = relateGoods.IsManageByAccessNumber;
+        //       seelctedUnit['Containers'] = relateGoods.Containers;
+        //     }
+        //     if (seelctedUnit) {
+        //       this.onSelectUnit(newDetailFormGroup, seelctedUnit);
+        //     } else {
+        //       seelctedUnit = detail.Unit;
+        //       this.onSelectUnit(newDetailFormGroup, seelctedUnit);
+        //     }
+        //   }
+        // });
+
+
+        for (let id = 0; id < itemFormData.Details.length; id++) {
+          const detail = itemFormData.Details[id];
+          detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+
+          // const item = itemFormData.Details[id];
+          let detailFormGroup: FormGroup;
+          if (!details.controls[id]) {
+            detailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
+            details.push(detailFormGroup);
+            this.onAddDetailFormGroup(newForm, detailFormGroup);
+
+            if (detail.Product) {
+              this.onSelectProduct(detailFormGroup, detail.Product, true);
+              let seelctedUnit = detail.Product?.Units?.find(f => f.id == detail.Unit.id);
+              const relateGoods = goodsListIndex[`${this.commonService.getObjectId(detail.Product)}-${this.commonService.getObjectId(detail.Unit)}`];
+              if (relateGoods) {
+                seelctedUnit.IsManageByAccessNumber = relateGoods.IsManageByAccessNumber;
+                seelctedUnit['Containers'] = relateGoods.Containers;
+              } else {
+                console.log('Can not found relate goods');
+              }
+              if (seelctedUnit) {
+                this.onSelectUnit(detailFormGroup, seelctedUnit);
+              } else {
+                seelctedUnit = detail.Unit;
+                this.onSelectUnit(detailFormGroup, seelctedUnit);
+              }
+            }
+
+          } else {
+            detailFormGroup = details.controls[id] as FormGroup;
+            // await this.patchFormGroupValue(detailFormGroup, item);
+            detailFormGroup.patchValue(detail);
+          }
+        }
+
+        // remove dirty form group
+        if (itemFormData.Details.length < details.controls.length) {
+          this.array.controls.splice(itemFormData.Details.length, details.controls.length - itemFormData.Details.length);
+        }
+
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
 
@@ -449,9 +550,66 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   }
 
+  patchFormGroupValue = (formGroup: FormGroup, data: WarehouseInventoryAdjustNoteModel) => {
+
+    if (data) {
+      formGroup.patchValue(data);
+
+
+      // Details form load
+      // if (data.Details) {
+      //   const details = this.getDetails(formGroup);
+
+      //   // Get product unit info
+      //   this.apiService.getPromise<any[]>('/warehouse/goods', {
+      //     select: 'Code',
+      //     includeUnit: true,
+      //     includeContainers: true,
+      //     id: data.Details.map(m => `${this.commonService.getObjectId(m.Product)}-${this.commonService.getObjectId(m.Unit)}`),
+      //   }).then(goodsList => {
+
+      //     const goodsListIndex = {};
+      //     for (const goods of goodsList) {
+      //       goodsListIndex[`${goods.Code}-${this.commonService.getObjectId(goods.WarehouseUnit)}`] = goods;
+      //     }
+
+      //     for (let id = 0; id < data.Details.length; id++) {
+      //       const detail = data.Details[id];
+      //       detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+
+      //       const item = data.Details[id];
+      //       let detailFormGroup: FormGroup;
+      //       if (!details.controls[id]) {
+      //         detailFormGroup = this.makeNewFormGroup(item);
+      //         details.push(formGroup);
+      //         this.onAddDetailFormGroup(formGroup, detailFormGroup);
+      //       } else {
+      //         detailFormGroup = details.controls[id] as FormGroup;
+      //         // await this.patchFormGroupValue(detailFormGroup, item);
+      //         detailFormGroup.patchValue(item);
+      //       }
+      //     }
+
+      //     // remove dirty form group
+      //     if (data.Details.length < details.controls.length) {
+      //       this.array.controls.splice(data.Details.length, details.controls.length - data.Details.length);
+      //     }
+
+      //     this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+
+
+      //     return goodsList;
+      //   });
+      // }
+
+    }
+    return true;
+  }
+
   makeNewFormGroup(data?: WarehouseInventoryAdjustNoteModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
+      Type: [null],
       Object: ['', Validators.required],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -470,6 +628,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       Note: [''],
       SubNote: [''],
       RelativeVouchers: [],
+      Shelf: [],
       _total: [''],
       Details: this.formBuilder.array([]),
     });
@@ -516,13 +675,17 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // Tax: ['VAT10'],
       // ToMoney: [0],
       Image: [[]],
-      Container: [''],
+      Container: ['', Validators.required],
       RelateDetail: [''],
       Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSINVENTORYADJUST')],
-      AccessNumbers: [[]],
+      AccessNumbers: { value: '', disabled: true },
     });
 
     if (data) {
+
+      if (Array.isArray(data.AccessNumbers)) {
+        data.AccessNumbers = Array.isArray(data.AccessNumbers) && data.AccessNumbers.length > 0 ? (data.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+      }
       newForm.patchValue(data);
       if (!data['Type']) {
         data["Type"] = 'PRODUCT';
@@ -626,7 +789,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     return false;
   }
 
-  async onSelectUnit(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
+  async onSelectUnit(detail: FormGroup, selectedData: any, force?: boolean) {
     const unitId = this.commonService.getObjectId(selectedData);
     const productId = this.commonService.getObjectId(detail.get('Product').value);
     if (selectedData?.IsManageByAccessNumber) {
@@ -635,34 +798,48 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       detail['IsManageByAccessNumber'] = false;
     }
     if (unitId && productId) {
-      const containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
-        select: 'Code',
-        includeUnit: true,
-        includeContainers: true,
-        includeAccessNumbers: true,
-        eq_Code: productId,
-        eq_ConversionUnit: unitId
-      }).then(goodsList => {
-        // const results = [];
-        if (goodsList && goodsList.length > 0) {
-          if (goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
-            detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
-          } else {
-            detail['IsManageByAccessNumber'] = false;
+      let containerList;
+      if (selectedData.Containers && (typeof selectedData.Containers[0]) == 'object') {
+        containerList = selectedData.Containers;
+      } else {
+        containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+          select: 'Code',
+          includeUnit: true,
+          includeContainers: true,
+          includeAccessNumbers: true,
+          eq_Code: productId,
+          eq_ConversionUnit: unitId
+        }).then(goodsList => {
+          // const results = [];
+          if (goodsList && goodsList.length > 0) {
+            if (goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
+              detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
+            } else {
+              detail['IsManageByAccessNumber'] = false;
+            }
+            return goodsList[0].Containers.map(m => ({
+              // ...m,
+              ContainerShelf: m.ContainerShelf,
+              ContainerShelfName: m.ContainerShelfName,
+              AccessNumbers: m?.AccessNumbers,
+              // AccessNumbers: m?.AccessNumbers?.map(an => ({ id: an, text: an })),
+              id: m.Container,
+              text: `${m.ContainerPath}: ${m.ContainerDescription}`
+            }));
           }
-          return goodsList[0].Containers.map(m => ({
-            // ...m,
-            AccessNumbers: m?.AccessNumbers,
-            // AccessNumbers: m?.AccessNumbers?.map(an => ({ id: an, text: an })),
-            id: m.Container,
-            text: `${m.ContainerPath}: ${m.ContainerDescription}`
-          }));
-        }
-        return [];
-      });
+          return [];
+        });
+      }
       detail['ContainerList'] = containerList;
       if (containerList && containerList.length == 1) {
         detail.get('Container').setValue(containerList[0]);
+      } else {
+        const selectedContainer = containerList.find(f => f.selected);
+        if (selectedContainer) {
+          setTimeout(() => {
+            detail.get('Container').setValue(selectedContainer);
+          }, 0);
+        }
       }
 
     }
@@ -683,8 +860,16 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   //   return { accessNumber: '127' + _accessNumber, goodsId: goodsId };
   // }
 
-  async onSelectContainer(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
-    console.log(selectedData);
+  async onSelectContainer(detail: FormGroup, selectedData: ProductModel, force?: boolean, parentForm?: FormGroup) {
+    // console.log(selectedData);
+    const selectedShelf = parentForm && this.commonService.getObjectId(parentForm.get('Shelf').value) || null;
+    if (selectedShelf && selectedData?.ContainerShelf && selectedData?.ContainerShelf != selectedShelf) {
+      this.commonService.toastService.show('Vị trí hàng hóa không đúng kệ đã chọn', 'Vị trí hàng hóa không đúng kệ đã chọn', { status: 'warning' });
+      // this.errorSound.nativeElement.pause();
+      // this.errorSound.nativeElement.currentTime = 0;
+      this.playErrorPipSound();
+      return false;
+    }
     if (selectedData && selectedData['AccessNumbers']) {
       detail['AccessNumberList'] = selectedData['AccessNumbers'].map(accessNumber => {
         // const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
@@ -941,41 +1126,74 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     // }
     if (this.ref && document.activeElement.tagName == 'BODY') {
       this.barcode += event.key;
-      this.commonService.takeUntil('warehouse-receipt-note-barcode-scan', 100).then(() => {
-        console.log(this.barcode);
-        if (this.barcode && /Enter$/.test(this.barcode)) {
-          try {
-            if (this.barcode.length > 5) {
-              this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
-            }
-            // this.findOrderKeyInput = '';
-          } catch (err) {
-            this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning' });
-          }
-        }
+      this.commonService.takeUntil('warehouse-receipt-note-barcode-scan', 100, () => {
         this.barcode = '';
       });
+      console.log(this.barcode);
+      if (this.barcode && /Enter$/.test(this.barcode)) {
+        try {
+          if (this.barcode.length > 5) {
+            this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
+          }
+          // this.findOrderKeyInput = '';
+        } catch (err) {
+          this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning' });
+        }
+        this.barcode = '';
+      }
+      // });
     }
     return true;
   }
 
   public activeDetailIndex = 0;
+  barcodeQueue = [];
+  barcodeInPrgress = false;
   barcodeProcess(barcode: string) {
     console.log(barcode);
+
+    if (this.barcodeInPrgress) {
+      console.log('barcode in progress => push to queue');
+      this.barcodeQueue.push(barcode);
+      return;
+    }
+
+    this.barcodeInPrgress = true;
+
     const coreId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
 
-    const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
-    let accessNumber = barcode.substring(productIdLength + 2);
-    if (accessNumber) {
-      accessNumber = '127' + accessNumber;
+    let unitSeq, productId, unit, unitId, accessNumber;
+
+    if (/^9\d+/.test(barcode)) {
+      // Đây là barcode vị trí hàng hóa
+      let tmpcode = barcode.substring(1);
+      const findOrderLength = parseInt(tmpcode.substring(0, 1));
+      tmpcode = tmpcode.substring(1);
+      const findOrder = tmpcode.substring(0, findOrderLength);
+      tmpcode = tmpcode.substring(findOrderLength);
+      const unitSeqLength = parseInt(tmpcode.substring(0, 1));
+      tmpcode = tmpcode.substring(1);
+      unitSeq = tmpcode.substring(0, unitSeqLength);
+      unit = this.unitMap[unitSeq];
+      unitId = this.commonService.getObjectId(unit);
+      tmpcode = tmpcode.substring(unitSeqLength);
+      productId = tmpcode;
+      productId = '118' + coreId + productId;
+    } else {
+
+      const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
+      accessNumber = barcode.substring(productIdLength + 2);
+      if (accessNumber) {
+        accessNumber = '127' + accessNumber;
+      }
+      productId = barcode.substring(2, 2 + productIdLength);
+      let unitIdLength = parseInt(productId.slice(0, 1));
+      unitSeq = productId.slice(1, unitIdLength + 1);
+      unit = this.unitMap[unitSeq];
+      unitId = this.commonService.getObjectId(unit);
+      productId = productId.slice(unitIdLength + 1);
+      productId = '118' + coreId + productId;
     }
-    let productId = barcode.substring(2, 2 + productIdLength);
-    let unitIdLength = parseInt(productId.slice(0, 1));
-    let unitSeq = productId.slice(1, unitIdLength + 1);
-    let unit = this.unitMap[unitSeq];
-    let unitId = this.commonService.getObjectId(unit);
-    productId = productId.slice(unitIdLength + 1);
-    productId = '118' + coreId + productId;
 
     const details = this.getDetails(this.array.controls[0] as FormGroup);
     let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
@@ -989,7 +1207,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         includeCategories: true,
         includeFeaturePicture: true,
         includeUnit: true,
-        includeContainer: true,
+        includeContainers: true,
         includeInventory: true,
         sort_Id: 'desc',
         offset: 0,
@@ -1010,36 +1228,84 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         } as any);
         existsGoods['IsManageByAccessNumber'] = true;
         details.push(existsGoods);
-        this.newDetailPipSound.nativeElement.play();
-        this.onSelectUnit(existsGoods, { ...unit, IsManageByAccessNumber: true });
+
+
+        if (goods.Containers && goods.Containers.length > 0) {
+          // this.errorSound.nativeElement.pause();
+          // this.errorSound.nativeElement.currentTime = 0;
+
+          const selectedShelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
+
+          let container = null;
+          if (selectedShelf) {
+            container = goods.Containers.find(f => f.ContainerShelf == selectedShelf);
+            if (container) {
+              container.selected = true;
+              this.playNewPipSound();
+            } else {
+              this.commonService.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning' });
+              this.playErrorPipSound();
+            }
+          } else {
+            if (accessNumber) {
+              container = goods.Containers.find(f => f.AccessNumbers.some(s => s == accessNumber));
+              if (!container) {
+                this.commonService.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning' });
+                this.playErrorPipSound();
+              } else {
+                container.selected = true;
+                this.playNewPipSound();
+              }
+            } else {
+
+            }
+          }
+        } else {
+          this.playErrorPipSound();
+          this.commonService.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning' });
+        }
+        this.onSelectUnit(existsGoods, { ...unit, IsManageByAccessNumber: true, Containers: goods.Containers });
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
         this.activeDetailIndex = details.length - 1;
         setTimeout(() => {
           $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
         }, 0);
+        this.barcodeInPrgress = false;
+        if (this.barcodeQueue.length > 0) {
+          this.barcodeProcess(this.barcodeQueue.shift());
+        }
+      }).catch(err => {
+        this.barcodeInPrgress = false;
+        if (this.barcodeQueue.length > 0) {
+          this.barcodeProcess(this.barcodeQueue.shift());
+        }
+        return Promise.reject(err);
       });
 
     } else {
-      let currentAccessNumbers: string = existsGoods.get('AccessNumbers').value || '';
-      this.activeDetailIndex = existGoodsIndex;
-      $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
-      if (currentAccessNumbers.indexOf(accessNumber) < 0) {
-        currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
-        existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
-        existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
-        this.increaseDetailPipSound.nativeElement.play();
-      } else {
-        this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning' });
-        this.errorSound.nativeElement.play();
+      if (accessNumber) {
+        let currentAccessNumbers: string = existsGoods.get('AccessNumbers').value || '';
+        this.activeDetailIndex = existGoodsIndex;
         $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
+        if (currentAccessNumbers.indexOf(accessNumber) < 0) {
+          currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
+          existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
+          existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
+          this.playIncreasePipSound();
+        } else {
+          this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning' });
+          this.playErrorPipSound();
+          $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
+        }
+      } else {
+        existsGoods.get('Quantity').setValue(parseFloat(existsGoods.get('Quantity').value) + 1);
+        this.playIncreasePipSound();
+      }
+      this.barcodeInPrgress = false;
+      if (this.barcodeQueue.length > 0) {
+        this.barcodeProcess(this.barcodeQueue.shift());
       }
     }
-
-
-
-
-
-
   }
 
   addGoodsOfShelf(parentFormGroup: FormGroup) {
@@ -1121,22 +1387,25 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                   }
                   for (const container of rs) {
                     const goods = container?.Goods[0];
-                    const existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
-                      Product: { Code: this.commonService.getObjectId(goods), id: this.commonService.getObjectId(goods), text: this.commonService.getObjectText(goods) },
-                      Unit: { id: goods.Unit, text: goods.UnitLabel },
-                      Container: { id: container.Code, text: container.Path },
-                      AccessNumbers: '',
-                      Quantity: 0,
-                      Description: container.GoodsName,
-                      Image: [goods.GoodsThumbnail]
-                    } as any);
-                    existsGoods['IsManageByAccessNumber'] = true;
-                    existsGoods['ContainerList'] = [{ id: container.Code, text: container.Path }];
-                    details.push(existsGoods);
-                    // this.newDetailPipSound.nativeElement.play();
-                    // this.onSelectUnit(existsGoods, { id: goods.Unit, text: goods.UnitLabel, IsManageByAccessNumber: true });
-                    this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
-                    this.activeDetailIndex = 0;
+                    let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == this.commonService.getObjectId(goods) && this.commonService.getObjectId(f.get('Unit').value) == goods.Unit);
+                    let existsGoods = details.controls[existGoodsIndex] as FormGroup;
+                    if (!existsGoods) {
+                      existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
+                        Product: { Code: this.commonService.getObjectId(goods), id: this.commonService.getObjectId(goods), text: this.commonService.getObjectText(goods) },
+                        Unit: { id: goods.Unit, text: goods.UnitLabel },
+                        Container: { id: container.Code, text: container.Path },
+                        AccessNumbers: '',
+                        Quantity: 0,
+                        Description: container.GoodsName,
+                        Image: [goods.GoodsThumbnail]
+                      } as any);
+                      existsGoods['IsManageByAccessNumber'] = goods.IsManageByAccessNumber;
+                      existsGoods['ContainerList'] = [{ id: container.Code, text: container.Path }];
+                      details.push(existsGoods);
+                      // this.onSelectUnit(existsGoods, { id: goods.Unit, text: goods.UnitLabel, IsManageByAccessNumber: true });
+                      this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+                      this.activeDetailIndex = 0;
+                    }
                   }
                 }
                 this.isProcessing = false;
@@ -1153,6 +1422,240 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         ],
       },
     });
+  }
+
+  barcodeScan(formItem: FormGroup) {
+    this.commonService.openDialog(DialogFormComponent, {
+      context: {
+        title: 'BarCode Scan',
+        onInit: async (form, dialog) => {
+          // const price = form.get('Price');
+          // const description = form.get('Description');
+          // price.setValue(parseFloat(activeDetail.get('Price').value));
+          // description.setValue(parseFloat(activeDetail.get('Description').value));
+          return true;
+        },
+        controls: [
+          {
+            name: 'BarCode',
+            label: 'BarCode',
+            placeholder: 'Quét barcode vào đây...',
+            type: 'text',
+            initValue: null,
+            focus: true,
+          },
+        ],
+        actions: [
+          {
+            label: 'Esc - Trở về',
+            icon: 'back',
+            status: 'basic',
+            keyShortcut: 'Escape',
+            action: () => { return true; },
+          },
+          {
+            label: 'Enter',
+            icon: 'generate',
+            status: 'success',
+            keyShortcut: 'Enter',
+            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+
+              const barCodeField = form.get('BarCode');
+              const barCode = barCodeField.value.replace(/\n/, '');
+              barCodeField.setValue('');
+              console.log(barCode);
+
+              this.barcodeProcess(barCode);
+
+              return false;
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  createAlternateAdjustVoucher(formItem: FormGroup) {
+    if (!formItem.get('Code').value) {
+      this.commonService.toastService.show(`Bạn phải lưu phiếu trước khi tạo phiếu phụ !`, 'Phiếu chưa được lưu !', { status: 'warning' });
+      this.playErrorPipSound();
+      return false;
+    }
+    if (!formItem.get('Title').value) {
+      this.commonService.toastService.show(`Bạn phải điền tiêu đề trước khi tạo phiếu phụ !`, 'Phiếu chưa có tiêu đề !', { status: 'warning' });
+      this.playErrorPipSound();
+      return false;
+    }
+    this.commonService.openDialog(DialogFormComponent, {
+      context: {
+        title: 'Thông tin phiếu kiểm kho phụ cho trường hợp teamwork',
+        onInit: async (form, dialog) => {
+          // const price = form.get('Price');
+          // const description = form.get('Description');
+          // price.setValue(parseFloat(activeDetail.get('Price').value));
+          // description.setValue(parseFloat(activeDetail.get('Description').value));
+          return true;
+        },
+        controls: [
+          {
+            name: 'Object',
+            label: 'Người tiếp nhận nhiệm vụ',
+            placeholder: 'Chọn người tiếp nhận nhiệm vụ...',
+            type: 'select2',
+            initValue: null,
+            // focus: true,
+            option: {
+              ...this.select2OptionForContact
+            }
+          },
+        ],
+        actions: [
+          {
+            label: 'Esc - Trở về',
+            icon: 'back',
+            status: 'basic',
+            keyShortcut: 'Escape',
+            action: () => { return true; },
+          },
+          {
+            label: 'Tạo',
+            icon: 'generate',
+            status: 'success',
+            // keyShortcut: 'Enter',
+            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+
+              console.log(form.value);
+              const object = form.get('Object').value;
+              const relationVoucher = formItem.get('RelativeVouchers');
+
+              this.apiService.postPromise<WarehouseInventoryAdjustNoteModel[]>(this.apiPath, {}, [
+                {
+                  Type: 'SUB',
+                  Object: this.commonService.getObjectId(object),
+                  ObjectName: this.commonService.getObjectText(object),
+                  Title: formItem.get('Title').value + ' (phiếu phụ)',
+                  Shelf: formItem.get('Shelf').value
+                }
+              ]).then(rs => {
+                const newSubVoucher = rs[0];
+                if (newSubVoucher) {
+                  relationVoucher.setValue([...(relationVoucher.value || []), { id: newSubVoucher.Code, text: newSubVoucher.Title, type: 'INVENTORYADJUSTSUB' }]);
+                }
+              });
+
+              // formDialogConpoent.dismiss();
+
+              return true;
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  syncWithSubVoucher(formItem: FormGroup) {
+    const relativeVoucher: { id: string, text: string, type: string }[] = formItem.get('RelativeVouchers').value;
+    if (relativeVoucher && relativeVoucher.length > 0) {
+      try {
+        this.commonService.showDialog('Đồng bộ với phiếu phụ', 'Hệ thống sẽ lấy chi tiết của các phiếu phụ và đồng bộ với chi tiết của phiếu chính, bạn có chắc là muốn đồng bộ ?', [
+          {
+            label: 'Trở về',
+            status: 'basic',
+            action: () => {
+
+              return true;
+            }
+          },
+          {
+            label: 'Đồng bộ',
+            status: 'primary',
+            action: () => {
+
+              this.apiService.getPromise<WarehouseInventoryAdjustNoteModel[]>(this.apiPath, { id: relativeVoucher.map(m => this.commonService.getObjectId(m)), includeDetails: true, includeAccessNumbers: true }).then(subVouchers => {
+
+                console.log(subVouchers);
+                const details = this.getDetails(this.array.controls[0] as FormGroup);
+
+                if (subVouchers && subVouchers.length > 0) {
+                  for (const subVoucher of subVouchers) {
+                    if (subVoucher.Type != 'SUB') {
+                      return Promise.reject('Phiếu liên quan không phải phiếu phụ');
+                    }
+                    if (this.commonService.getObjectId(subVoucher.Shelf) != this.commonService.getObjectId(formItem.get('Shelf').value)) {
+                      return Promise.reject('Phiếu phụ không chung kệ với phiếu chính');
+                    }
+
+                    if (subVoucher.Details && subVoucher.Details.length > 0) {
+                      for (const detail of subVoucher.Details) {
+
+
+                        let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == this.commonService.getObjectId(detail.Product) && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(detail.Unit));
+                        let existsGoods = details.controls[existGoodsIndex] as FormGroup;
+
+
+                        if (!existsGoods) {
+                          existsGoods = this.makeNewDetailFormGroup(formItem, detail);
+                          existsGoods['_type'] = 'IMPORT';
+                          details.push(existsGoods);
+                        } else {
+                          if (detail.Quantity > 0) {
+                            if (detail.AccessNumbers && detail.AccessNumbers.length > 0) {
+                              let currentAccessNumbers: string = existsGoods.get('AccessNumbers').value || '';
+
+                              for (const ac of detail.AccessNumbers) {
+                                const accessNumber = this.commonService.getObjectId(ac);
+                                if (currentAccessNumbers.indexOf(accessNumber) < 0) {
+                                  currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
+                                  existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
+                                  existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
+                                }
+                              }
+
+                            } else {
+                              existsGoods.get('Quantity').setValue(parseFloat(existsGoods.get('Quantity').value) + parseFloat(detail.Quantity as any));
+                            }
+                          }
+                        }
+
+                      }
+                    }
+                  }
+                }
+
+                this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+
+              });
+              return true;
+            }
+          },
+        ])
+      } catch (err) {
+        this.commonService.toastService.show(err, 'Lỗi trong lúc đồng bộ phiếu phụ !', { status: 'warning' });
+      }
+    }
+  }
+
+  newPipSoundQueue = [];
+  increasePipSoundQueue = [];
+  errorPipSoundQueue = [];
+
+  newPipSoundPlaying = false;
+  increasePipSoundPlaying = false;
+  errorPipSoundPlaying = false;
+
+  playNewPipSound() {
+    const sound: HTMLAudioElement = new Audio('assets/sounds/beep-08b.wav');
+    sound.play();
+  }
+
+  playIncreasePipSound() {
+    const sound: HTMLAudioElement = new Audio('assets/sounds/beep-07a.wav');
+    sound.play();
+  }
+
+  playErrorPipSound() {
+    const sound: HTMLAudioElement = new Audio('assets/sounds/beep-03.wav');
+    sound.play();
   }
 
 }
