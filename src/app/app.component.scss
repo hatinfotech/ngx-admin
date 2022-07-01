@@ -2056,3 +2056,18 @@ nb-action {
 .print-body p {
   color: black;
 }
+
+
+body{
+  &.nb-theme-dark,
+  &.nb-theme-default {
+
+    nb-layout .scrollable-container::-webkit-scrollbar-thumb {
+      background: #ff9800;
+    }
+    nb-layout .scrollable-container::-webkit-scrollbar {
+      width: 0.43rem;
+    }
+    
+  }
+}

@@ -320,13 +320,13 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   onProcessing() {
     this.isProcessing = true;
-    this.form.disable();
+    // this.form.disable();
   }
 
   onProcessed() {
     this.isProcessing = false;
-    this.form.enable();
-    this.disabledControls.forEach(control => control.disable());
+    // this.form.enable();
+    // this.disabledControls.forEach(control => control.disable());
   }
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: M): void {
@@ -539,7 +539,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
       // console.info(data);
 
-      this.form.disable();
+      // this.form.disable();
       if (this.id.length > 0) {
         // Update
         this.executePut({ id: this.id, silent: true }, data.array, results => {

@@ -10,7 +10,7 @@
     </audio> -->
     <div formArrayName="array">
         <div *ngFor="let formItem of array.controls; let i = index">
-            <nb-card class="small-header popup">
+            <nb-card [nbSpinner]="isProcessing" class="small-header popup">
                 <nb-card-header>
                     <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Warehouse.InventoryAdjustNote.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
@@ -168,7 +168,7 @@
                                             <div class="col-md-3 col-sm-3 col-xs-3">
                                                 <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="No" label="Common.no" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
-                                                    <!-- <input type="hidden" formControlName="Id"> -->
+                                                    <input type="hidden" formControlName="SystemUuid">
                                                 </ngx-form-group>
                                                 <div class="form-group">
                                                     <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
@@ -239,7 +239,10 @@
                                     </div>
                                     <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                            <textarea class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" [placeholder]="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? 'Số truy xuất: \n127xxx\n127xxx' : 'Hàng hóa không quản lý theo số truy xuất'" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea>
+                                            <!-- <textarea class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" [placeholder]="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? 'Số truy xuất: \n127xxx\n127xxx' : 'Hàng hóa không quản lý theo số truy xuất'" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea> -->
+                                            <select class="scrollable-container status-basic input-full-width shape-rectangle" nbInput formControlName="AccessNumbers" name="AccessNumbers" style="height: 88px" multiple placeholder="Số truy xuất" disabled>
+                                                <option *ngFor="let item of detail.get('AccessNumbers').value" [value]="item" selected>{{item}}</option>
+                                            </select>
                                         </ngx-form-group>
                                     </div>
                                 </div>
@@ -288,7 +291,7 @@
                             <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
                         </button>
                         <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
-                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="save()">{{'Common.save' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="save()" [nbSpinner]="isProcessing">{{'Common.save' | translate | headtitlecase}}</button>
                     </div>
                 </nb-card-footer>
             </nb-card>

@@ -5,33 +5,34 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.1.2.41',
-  // 6.1.2.1: Dev adjust inventory feature and update Commerce POS: auto ajust inventory
-  // 6.1.1.75: Auto update master price table when had been changed
-  // 6.1.1.48: Update quick create new container for goods
-  // 6.1.1.47: Fix can not input quantity as float number
-  // 6.1.1.44: Update POS GUI
-  // 6.1.1.39: Fix lỗi thay đổi số truy xuất gốc thành số truy xuất không đúng cấu trúc do không nhận dạng được số truy xuất gốc khi cập nhật phiếu nhập 
-  // 6.1.1.28: Fix lỗi quan trong: lỗi update các trường detail trung id với detail của phiếu liên quan => các dữ liệu trước đó có thể bị sai nhưng dữ liệu đã ghi sổ thì vẫn đúng (số liệu ghi sổ sẽ bị sai nếu bỏ ghi và ghi lại)
-  // 6.1.1: Continue develop Commerce POS module, GUI and api
-  // 6.1.0.8: Assign product container in product list
-  // 6.1.1.1: Update warehouse module: manage by addcess number feature
-  // 6.1.0.2: Module Commerce POS
-  // 6.0.12.4: Fix print label for access number
-  // 6.0.12.2: Fix print label for access number
-  // 6.0.12: Add AccessNumber feature for warehouse
-  // 6.0.11.3: fix purchase voucher print
-  // 6.0.11: Support choose product from recent purchase order
-  // 6.0.10: sales returns feature
-  // 6.0.9: add photo browser feature
-  // 6.0.8.5: fix some error, update select2ajaxoption
-  // 6.0.8: fix some error
-  // 6.0.7: update warehouse v3: inventory adjust note r2
-  // 6.0.7: update warehouse v3: inventory adjust note
-  // 6.0.6: update tax feature
-  // 6.0.4.4: publisher create chat room from order and sync with core BM
-  // 6.0.4.1: dev multi core chat feature: add chat room member and connect/disconnect function
-  // 6.0.3.2: hotfix unit of vouchers
+  version: '6.1.2.45',
+  // 6.1.3:     Update cost of goods sold calculate
+  // 6.1.2.1:   Dev adjust inventory feature and update Commerce POS: auto ajust inventory
+  // 6.1.1.75:  Auto update master price table when had been changed
+  // 6.1.1.48:  Update quick create new container for goods
+  // 6.1.1.47:  Fix can not input quantity as float number
+  // 6.1.1.44:  Update POS GUI
+  // 6.1.1.39:  Fix lỗi thay đổi số truy xuất gốc thành số truy xuất không đúng cấu trúc do không nhận dạng được số truy xuất gốc khi cập nhật phiếu nhập 
+  // 6.1.1.28:  Fix lỗi quan trong: lỗi update các trường detail trung id với detail của phiếu liên quan => các dữ liệu trước đó có thể bị sai nhưng dữ liệu đã ghi sổ thì vẫn đúng (số liệu ghi sổ sẽ bị sai nếu bỏ ghi và ghi lại)
+  // 6.1.1:     Continue develop Commerce POS module, GUI and api
+  // 6.1.0.8:   Assign product container in product list
+  // 6.1.1.1:   Update warehouse module: manage by addcess number feature
+  // 6.1.0.2:   Module Commerce POS
+  // 6.0.12.4:  Fix print label for access number
+  // 6.0.12.2:  Fix print label for access number
+  // 6.0.12:    Add AccessNumber feature for warehouse
+  // 6.0.11.3:  fix purchase voucher print
+  // 6.0.11:    Support choose product from recent purchase order
+  // 6.0.10:    Sales returns feature
+  // 6.0.9:     Add photo browser feature
+  // 6.0.8.5:   fix some error, update select2ajaxoption
+  // 6.0.8:     fix some error
+  // 6.0.7:     update warehouse v3: inventory adjust note r2
+  // 6.0.7:     update warehouse v3: inventory adjust note
+  // 6.0.6:     update tax feature
+  // 6.0.4.4:   publisher create chat room from order and sync with core BM
+  // 6.0.4.1:   dev multi core chat feature: add chat room member and connect/disconnect function
+  // 6.0.3.2:   hotfix unit of vouchers
   // 6.0.3: dev multi core chat feature: base of technology
   // 6.0.2.7: Fix accounting statistics daskboard
   // 6.0.2: Update scan2login without socket

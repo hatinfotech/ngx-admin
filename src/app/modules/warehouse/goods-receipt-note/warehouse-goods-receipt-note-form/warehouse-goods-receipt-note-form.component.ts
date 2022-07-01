@@ -662,7 +662,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     for (const item of data.array) {
       for (const detail of item.Details) {
         if (typeof detail.AccessNumbers == 'string') {
-          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').map(ac => {
+          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').filter(ac => !!ac).map(ac => {
             if (/^127/.test(ac)) {
               return { id: ac, text: ac };
             }
@@ -904,7 +904,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   onSelectAccessNumbers(detail: FormGroup, event: any, force?: boolean, element?: any) {
 
     if (event.key == 'Enter' || force) {
-      detail.get('Quantity').setValue(element.value.trim().split('\n').length);
+      detail.get('Quantity').setValue(element.value.trim().split('\n').filter(ac => !!ac).length);
     }
 
     // // const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));

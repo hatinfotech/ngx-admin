@@ -5,7 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
@@ -499,7 +499,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
         for (let id = 0; id < itemFormData.Details.length; id++) {
           const detail = itemFormData.Details[id];
-          detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+          // detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+          detail.AccessNumbers = Array.isArray(detail.AccessNumbers) ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [];
 
           // const item = itemFormData.Details[id];
           let detailFormGroup: FormGroup;
@@ -553,55 +554,15 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   patchFormGroupValue = (formGroup: FormGroup, data: WarehouseInventoryAdjustNoteModel) => {
 
     if (data) {
-      formGroup.patchValue(data);
-
-
-      // Details form load
-      // if (data.Details) {
-      //   const details = this.getDetails(formGroup);
-
-      //   // Get product unit info
-      //   this.apiService.getPromise<any[]>('/warehouse/goods', {
-      //     select: 'Code',
-      //     includeUnit: true,
-      //     includeContainers: true,
-      //     id: data.Details.map(m => `${this.commonService.getObjectId(m.Product)}-${this.commonService.getObjectId(m.Unit)}`),
-      //   }).then(goodsList => {
-
-      //     const goodsListIndex = {};
-      //     for (const goods of goodsList) {
-      //       goodsListIndex[`${goods.Code}-${this.commonService.getObjectId(goods.WarehouseUnit)}`] = goods;
-      //     }
-
-      //     for (let id = 0; id < data.Details.length; id++) {
-      //       const detail = data.Details[id];
-      //       detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
-
-      //       const item = data.Details[id];
-      //       let detailFormGroup: FormGroup;
-      //       if (!details.controls[id]) {
-      //         detailFormGroup = this.makeNewFormGroup(item);
-      //         details.push(formGroup);
-      //         this.onAddDetailFormGroup(formGroup, detailFormGroup);
-      //       } else {
-      //         detailFormGroup = details.controls[id] as FormGroup;
-      //         // await this.patchFormGroupValue(detailFormGroup, item);
-      //         detailFormGroup.patchValue(item);
-      //       }
-      //     }
-
-      //     // remove dirty form group
-      //     if (data.Details.length < details.controls.length) {
-      //       this.array.controls.splice(data.Details.length, details.controls.length - data.Details.length);
-      //     }
-
-      //     this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
-
-
-      //     return goodsList;
-      //   });
-      // }
-
+      if (data.Details) {
+        for (const detail of data.Details) {
+          if (Array.isArray(detail.AccessNumbers)) {
+            detail.AccessNumbers = detail.AccessNumbers.map(m => this.commonService.getObjectId(m));
+          }
+          // this.getDetails(formGroup).push(this.makeNewDetailFormGroup(formGroup));
+        }
+      }
+      formGroup.patchValue(data, { onlySelf: true });
     }
     return true;
   }
@@ -664,7 +625,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: WarehouseInventoryAdjustNoteDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      // Id: [''],
+      SystemUuid: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: [''],
@@ -678,13 +639,15 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       Container: ['', Validators.required],
       RelateDetail: [''],
       Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSINVENTORYADJUST')],
-      AccessNumbers: { value: '', disabled: true },
+      // AccessNumbers: { value: '', disabled: true },
+      AccessNumbers: { value: [], disabled: true },
     });
 
     if (data) {
 
       if (Array.isArray(data.AccessNumbers)) {
-        data.AccessNumbers = Array.isArray(data.AccessNumbers) && data.AccessNumbers.length > 0 ? (data.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+        // data.AccessNumbers = Array.isArray(data.AccessNumbers) && data.AccessNumbers.length > 0 ? (data.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+        data.AccessNumbers = Array.isArray(data.AccessNumbers) ? data.AccessNumbers.map(ac => this.commonService.getObjectId(ac)) : [];
       }
       newForm.patchValue(data);
       if (!data['Type']) {
@@ -726,6 +689,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     return false;
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
+    // this.updateInitialDetailFormPropertiesCache(newChildFormGroup);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -967,7 +931,17 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   getRawFormData() {
     const data = super.getRawFormData();
     for (const item of data.array) {
+      for (const prop in item) {
+        if (prop != 'Details') {
+          item[prop] = this.commonService.getObjectId(item[prop]);
+        }
+      }
       for (const detail of item.Details) {
+        for (const prop in detail) {
+          if (prop != 'AccessNumbers') {
+            detail[prop] = this.commonService.getObjectId(detail[prop]);
+          }
+        }
         if (typeof detail.AccessNumbers == 'string') {
           detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').filter(ac => !!ac).map(ac => {
             if (/^127/.test(ac)) {
@@ -1221,7 +1195,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           Product: { Code: goods.Code, id: goods.Code, text: goods.Name },
           Unit: goods.WarehouseUnit,
           Container: goods.Container,
-          AccessNumbers: `${accessNumber}\n`,
+          // AccessNumbers: `${accessNumber}\n`,
+          AccessNumbers: accessNumber ? [accessNumber] : [],
           Quantity: 1,
           Description: goods.Name,
           Image: goods.Pictures
@@ -1284,13 +1259,16 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
     } else {
       if (accessNumber) {
-        let currentAccessNumbers: string = existsGoods.get('AccessNumbers').value || '';
+        // let currentAccessNumbers: string = existsGoods.get('AccessNumbers').value || '';
+        let currentAccessNumbers: string[] = existsGoods.get('AccessNumbers').value || [];
         this.activeDetailIndex = existGoodsIndex;
         $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
         if (currentAccessNumbers.indexOf(accessNumber) < 0) {
-          currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
+          // currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
+          currentAccessNumbers.push(accessNumber)
           existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
-          existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
+          // existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
+          existsGoods.get('Quantity').setValue(currentAccessNumbers.length);
           this.playIncreasePipSound();
         } else {
           this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning' });
@@ -1394,7 +1372,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                         Product: { Code: this.commonService.getObjectId(goods), id: this.commonService.getObjectId(goods), text: this.commonService.getObjectText(goods) },
                         Unit: { id: goods.Unit, text: goods.UnitLabel },
                         Container: { id: container.Code, text: container.Path },
-                        AccessNumbers: '',
+                        AccessNumbers: [],
                         Quantity: 0,
                         Description: container.GoodsName,
                         Image: [goods.GoodsThumbnail]
@@ -1600,14 +1578,16 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                         } else {
                           if (detail.Quantity > 0) {
                             if (detail.AccessNumbers && detail.AccessNumbers.length > 0) {
-                              let currentAccessNumbers: string = existsGoods.get('AccessNumbers').value || '';
+                              let currentAccessNumbers: string[] = existsGoods.get('AccessNumbers').value || [];
 
                               for (const ac of detail.AccessNumbers) {
                                 const accessNumber = this.commonService.getObjectId(ac);
                                 if (currentAccessNumbers.indexOf(accessNumber) < 0) {
-                                  currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
+                                  // currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
+                                  currentAccessNumbers.push(accessNumber);
                                   existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
-                                  existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
+                                  // existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
+                                  existsGoods.get('Quantity').setValue(currentAccessNumbers.length);
                                 }
                               }
 
@@ -1656,6 +1636,96 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   playErrorPipSound() {
     const sound: HTMLAudioElement = new Audio('assets/sounds/beep-03.wav');
     sound.play();
+  }
+
+  // updateInitialFormPropertiesCache(form: FormGroup) {
+  //   super.updateInitialFormPropertiesCache(form);
+  //   const details = this.getDetails(form);
+  //   for (const detail of details.controls) {
+  //     this.updateInitialDetailFormPropertiesCache(detail as FormGroup);
+  //   }
+  // }
+
+  // updateInitialDetailFormPropertiesCache(detailForm: FormGroup) {
+  //   Object.keys(detailForm.controls).forEach(name => {
+  //     const control = detailForm.controls[name];
+  //     if (control.disabled) {
+  //       this.disabledControls.push(detailForm.controls[name]);
+  //     }
+  //   });
+  // }
+
+  /** After main form create event */
+  onAfterCreateSubmit(newFormData: WarehouseInventoryAdjustNoteModel[]) {
+    // this.formLoad(newFormData);
+
+    for (const i in this.array.controls) {
+      // this.patchFormGroupValue(this.array.controls[i] as FormGroup, newFormData[i]);
+      const formItem = this.array.controls[i];
+      formItem.get('Code').patchValue(newFormData[i].Code);
+      const detailsForm = this.getDetails(formItem as FormGroup);
+      for (const d in detailsForm.controls) {
+        const detailForm = detailsForm.controls[d];
+        detailForm.get('AccessNumbers').patchValue(this.convertAccessNumberToStringList(newFormData[i]['Details'][d]['AccessNumbers']));
+      }
+    }
+
+    if (!this.silent) {
+      this.toastrService.show('success', 'Dữ liệu đã được lưu lại', {
+        status: 'success',
+        hasIcon: true,
+        position: NbGlobalPhysicalPosition.TOP_RIGHT,
+        duration: 3000,
+      });
+    }
+    this.id = newFormData.map(item => this.makeId(item));
+    if (this.mode === 'page') {
+      this.commonService.location.go(this.generateUrlByIds(this.id));
+    }
+    if (this.queryParam && this.queryParam['list']) {
+      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+    }
+
+    if (this.mode === 'dialog' && this.onDialogSave) {
+      this.onDialogSave(newFormData);
+    }
+  }
+
+  convertAccessNumberToStringList(accessNumbers: any[]) {
+    return accessNumbers.map(m => this.commonService.getObjectId(m));
+  }
+
+  /** Affter main form update event: Override to disable formLoad and execute patch value to formItem */
+  onAfterUpdateSubmit(newFormData: WarehouseInventoryAdjustNoteModel[]) {
+    // this.formLoad(newFormData);
+    for (const i in this.array.controls) {
+      // this.patchFormGroupValue(this.array.controls[i] as FormGroup, newFormData[i]);
+      const formItem = this.array.controls[i];
+      const detailsForm = this.getDetails(formItem as FormGroup);
+      for (const d in detailsForm.controls) {
+        const detailForm = detailsForm.controls[d];
+        detailForm.get('AccessNumbers').patchValue(this.convertAccessNumberToStringList(newFormData[i]['Details'][d]['AccessNumbers']));
+      }
+    }
+    if (!this.silent) {
+      this.toastrService.show('success', 'Dữ liệu đã được cập nhật', {
+        status: 'success',
+        hasIcon: true,
+        position: NbGlobalPhysicalPosition.TOP_RIGHT,
+        duration: 3000,
+      });
+    }
+    this.id = newFormData?.map(item => this.makeId(item));
+    if (this.mode === 'page') {
+      this.commonService.location.go(this.generateUrlByIds(this.id));
+    }
+    if (this.queryParam && this.queryParam['list']) {
+      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+    }
+
+    if (this.mode === 'dialog' && this.onDialogSave) {
+      this.onDialogSave(newFormData);
+    }
   }
 
 }
