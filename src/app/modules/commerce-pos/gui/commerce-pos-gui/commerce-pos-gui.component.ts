@@ -601,478 +601,517 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   inputValue: string = '';
+  isBarcodeProcessing = false;
+  barcodeQueue: { inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel } }[] = [];
   async barcodeProcess(inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel }) {
 
-    // if (inputValue && !/[^\d]/.test(inputValue)) {
-    // if (inputValue) {
-    this.inputValue = inputValue;
-    const detailsControls = this.getDetails(this.orderForm).controls
-    const systemConfigs = await this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
-    const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
-    let productId = null;
-    let accessNumber = null;
-    let sku = null;
-    let unit = null;
-    let unitSeq = null;
-    let unitId = null;
-    let tmpProductFormGroup: FormGroup = null;
-    let existsProduct: FormGroup = null;
-    // inputValue = inputValue.replace(new RegExp('^118' + coreId), '');
-    let product: ProductModel = option?.product || null;
+    if (this.isBarcodeProcessing) {
+      this.barcodeQueue.push({ inputValue, option });
+      return;
+    }
+    this.isBarcodeProcessing = true;
 
-    if (!product) {
-      if (option?.searchBySku || /^[a-z]+\d+/i.test(inputValue)) {
-        // Search by sku
-        product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, eq_Sku: inputValue, includeInventory: true }).then(rs => {
-          return rs[0];
-        });
-        productId = product.Code;
-        unit = product.Unit;
-        unitId = this.commonService.getObjectId(product.Unit);
-      } else {
-        if (option?.searchByFindOrder || inputValue.length < 5) {
-          //Tìm hàng hóa theo số nhận thức
-          const goodsInContainer = this.findOrderMap[inputValue];
-          if (goodsInContainer && goodsInContainer.Goods && goodsInContainer.Unit) {
-            productId = goodsInContainer.Goods;
-            product = this.productMap[productId];
-            unitId = goodsInContainer.Unit;
-            product.Unit = unit = { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel };
-            product.Container = goodsInContainer.Container;
+    return new Promise(async (resolve, reject) => {
+      // if (inputValue && !/[^\d]/.test(inputValue)) {
+      // if (inputValue) {
+      this.inputValue = inputValue;
+      const detailsControls = this.getDetails(this.orderForm).controls
+      const systemConfigs = await this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
+      const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
+      let productId = null;
+      let accessNumber = null;
+      let sku = null;
+      let unit = null;
+      let unitSeq = null;
+      let unitId = null;
+      let tmpProductFormGroup: FormGroup = null;
+      let existsProduct: FormGroup = null;
+      // inputValue = inputValue.replace(new RegExp('^118' + coreId), '');
+      let product: ProductModel = option?.product || null;
+
+      if (!product) {
+        if (option?.searchBySku || /^[a-z]+\d+/i.test(inputValue)) {
+          // Search by sku
+          product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, eq_Sku: inputValue, includeInventory: true }).then(rs => {
+            return rs[0];
+          });
+          if(!product) {
+            this.commonService.toastService.show(`Sku không tồn tại !`, 'Sku không tồn tại !', { status: 'danger' });
+            resolve(true);
+            return;
           }
-          if (!product) {
-            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
-              includeUnit: true,
-              includePrice: false,
-              includeInventory: true,
-              findOrder: inputValue,
-              // isNotManageByAccessNumber: true
-            }).then(rs => {
-              return rs[0];
-            });
-          }
-          if (product) {
-            unit = product.Unit;
-            unitId = unitId || this.commonService.getObjectId(unit);
-            product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
-            product.FindOrder = inputValue.trim();
-            productId = product.Code;
-          }
+          productId = product.Code;
+          unit = product.Unit;
+          unitId = this.commonService.getObjectId(product.Unit);
         } else {
-          if (/^9\d+/.test(inputValue)) {
-            // Đây là barcode vị trí hàng hóa
-            let tmpcode = inputValue.substring(1);
-            const findOrderLength = parseInt(tmpcode.substring(0, 1));
-            tmpcode = tmpcode.substring(1);
-            const findOrder = tmpcode.substring(0, findOrderLength);
-            tmpcode = tmpcode.substring(findOrderLength);
-            const unitSeqLength = parseInt(tmpcode.substring(0, 1));
-            tmpcode = tmpcode.substring(1);
-            unitSeq = tmpcode.substring(0, unitSeqLength);
-            tmpcode = tmpcode.substring(unitSeqLength);
-            productId = tmpcode;
-
-
-            // product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
-            //   includeUnit: true,
-            //   includePrice: false,
-            //   includeInventory: true,
-            //   findOrder: findOrder,
-            //   // isNotManageByAccessNumber: true,
-            //   unitSeq: unitSeq
-            // }).then(rs => {
-            //   return rs[0];
-            // });
-
-            product = this.productMap[this.findOrderMap[findOrder].Goods];
-
-            if (product && unitSeq) {
-              unit = this.unitMap[unitSeq];
-              if (unit) {
-                unitId = unit.Code;
-                product.Unit = { ...unit, id: unit.Code, text: unit.Name };
-              }
+          if (option?.searchByFindOrder || inputValue.length < 5) {
+            //Tìm hàng hóa theo số nhận thức
+            const goodsInContainer = this.findOrderMap[inputValue];
+            if (goodsInContainer && goodsInContainer.Goods && goodsInContainer.Unit) {
+              productId = goodsInContainer.Goods;
+              product = this.productMap[productId];
+              unitId = goodsInContainer.Unit;
+              product.Unit = unit = { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel };
+              product.Container = goodsInContainer.Container;
             }
-
             if (!product) {
-              return Promise.reject('Không tìn thấy hàng hóa');
-            }
-
-            unitId = this.commonService.getObjectId(product.Unit);
-            product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
-            productId = product.Code;
-            product.FindOrder = findOrder;
-
-          } else {
-            if (new RegExp('^127' + coreId + '\\d+').test(inputValue)) {
-              accessNumber = inputValue;
-            } else {
-              if (new RegExp('^128' + coreId).test(inputValue)) {
-                setTimeout(() => {
-
-                  this.commonService.openDialog(ShowcaseDialogComponent, {
-                    context: {
-                      title: 'Máy bán hàng',
-                      content: 'Bạn có muốn tạo phiếu trả hàng từ đơn hàng ' + inputValue,
-                      actions: [
-                        {
-                          label: 'ESC - Trở về',
-                          status: 'basic',
-                          action: () => {
-                          }
-                        },
-                        {
-                          label: 'F7 - Tạo phiếu trả hàng',
-                          keyShortcut: 'F7',
-                          status: 'danger',
-                          // focus: true,
-                          action: async () => {
-                            this.orderForm = await this.makeNewReturnsForm(null, inputValue);
-                            this.save(this.orderForm);
-                            this.historyOrders.push(this.orderForm);
-                            this.historyOrderIndex = this.historyOrders.length - 1;
-                          }
-                        },
-                        {
-                          label: 'Enter - Mở lại bill',
-                          keyShortcut: 'Enter',
-                          status: 'info',
-                          focus: true,
-                          action: async () => {
-                            this.loadOrder(inputValue);
-                          }
-                        },
-                      ],
-                      onClose: () => {
-                      },
-                    }
-                  });
-                }, 50);
-                return true;
-              } else if (new RegExp('^129' + coreId).test(inputValue)) {
-                setTimeout(() => {
-                  this.shortcutKeyContext = 'returnspaymentconfirm';
-                  this.commonService.openDialog(ShowcaseDialogComponent, {
-                    context: {
-                      title: 'Máy bán hàng',
-                      content: 'Bạn có muốn tiếp tục bán hàng từ phiếu trả hàng ' + inputValue + ' hay hoàn tiền cho khách',
-                      actions: [
-                        {
-                          label: 'ESC - Trở về',
-                          status: 'basic',
-                          action: () => {
-                          }
-                        },
-                        {
-                          label: 'F4 - Tiếp tục bán hàng',
-                          keyShortcut: 'F4',
-                          status: 'success',
-                          focus: true,
-                          action: async () => {
-                            this.makeNewOrder(null, inputValue);
-                          }
-                        },
-                        {
-                          label: 'F2 - Hoàn tiền',
-                          status: 'danger',
-                          keyShortcut: 'F2',
-                          action: async () => {
-                            this.returnsPayment(inputValue);
-                          }
-                        },
-                      ],
-                      onClose: () => {
-                      },
-                    }
-                  });
-                }, 50);
-                return true;
-              } else if (new RegExp('^118' + coreId).test(inputValue)) {
-                product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + inputValue, {
-                  includeUnit: true,
-                  includePrice: false,
-                  includeInventory: true,
-                }).then(rs => {
-                  return rs[0];
-                });
-                if (product) {
-                  productId = product.Code;
-                  unitId = this.commonService.getObjectId(product.WarehouseUnit);
-                  product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
-                }
-              }
-              // else if (inputValue.length < 10 && !new RegExp('^128|129' + coreId).test(inputValue)) {
-
-              let unitIdLength = null;
-              // if (!product) {
-              //   // Truy van thong tin san pham theo cau truc moi
-              //   unitIdLength = parseInt(inputValue.slice(0, 1));
-              //   unitSeq = inputValue.slice(1, unitIdLength + 1);
-
-              //   productId = inputValue.slice(unitIdLength + 1);
-              //   productId = '118' + coreId + productId;
-              //   product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true, unitSeq: unitSeq }).then(rs => {
-              //     return rs[0];
-              //   });
-              // }
-
-              // => Thu truy van theo cau truc cu
-              // if (!product) {
-              //   productId = '118' + coreId + inputValue;
-              //   unitSeq = null;
-              //   product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true }).then(rs => {
-              //     return rs[0];
-              //   });
-              // }
-              // if (product) {
-              //   unitId = this.commonService.getObjectId(product.Unit);
-              // }
-
-              // } else {
-
-              if (!product) {
-                const productIdLength = parseInt(inputValue.substring(0, 2)) - 10;
-                accessNumber = inputValue.substring(productIdLength + 2);
-                if (accessNumber) {
-                  accessNumber = '127' + accessNumber;
-                }
-                productId = inputValue.substring(2, 2 + productIdLength);
-                unitIdLength = parseInt(productId.slice(0, 1));
-                unitSeq = productId.slice(1, unitIdLength + 1);
-                productId = productId.slice(unitIdLength + 1);
-                productId = '118' + coreId + productId;
-
-                product = this.productMap[productId];
-
-                if (product && unitSeq) {
-                  unit = this.unitMap[unitSeq];
-                  if (unit) {
-                    unitId = unit.Code;
-
-                    product.Unit = { ...unit, id: unit.Code, text: unit.Name };
-                  }
-                }
-              }
-
-              // }
-            }
-          }
-          // get access number inventory 
-          // get access number inventory 
-          // get access number inventory 
-          if (new RegExp('^127' + coreId).test(accessNumber)) {
-            // product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
-            const waitForGetProductByAccessNumber = this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
-              accessNumber: accessNumber,
-              includeUnit: true,
-              includePrice: false,
-              includeInventory: true
-            }).then(rs => {
-
-              product = rs[0];
-
-              if (!product) {
-                this.commonService.toastService.show(`Số truy xuất ${accessNumber} không tồn tại !`, 'Số truy xuất không tồn tại !', { status: 'warning' });
-                existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
-                return null;
-              }
-
-              setTimeout(() => {
-                const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
-                existsProduct = detailsControls[existsProductIndex] as FormGroup;
-                if (existsProduct) {
-
-                  existsProduct.get('Container').setValue(product.Container);
-
-                  if (this.orderForm['voucherType'] == 'CPOSRETURNS') {
-                    if (product.Inventory && product.Inventory > 0) {
-                      this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, 'Hàng hóa chưa xuất bán !', { status: 'warning' });
-                      existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
-                      // return;
-                    }
-                  } else {
-                    if (!product.Inventory || product.Inventory < 1) {
-                      this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, 'Hàng hóa không có trong kho !', { status: 'warning' });
-                      existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
-                      // return;
-                    }
-                  }
-
-                  // this.save(this.orderForm);
-                }
-              }, 1000);
-
-
-              return product;
-            });
-
-            if (!unitId || !product) { // Nếu tem cũ không có unit sequence thì phải lấy thông tin sản phẩm bằng số truy xuất ngay từ đầu
-              await waitForGetProductByAccessNumber;
-            }
-            if (product) {
-              productId = product.Code;
-              unitId = unitId || this.commonService.getObjectId(product.Unit);
-              product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
-              // if (this.orderForm['voucherType'] == 'CPOSRETURNS') {
-              //   if (product.Inventory && product.Inventory > 0) {
-              //     throw Error(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`);
-              //   }
-              // } else {
-              //   if (!product.Inventory || product.Inventory < 1) {
-              //     throw Error(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`);
-              //   }
-              // }
-            } else {
-              product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
+              product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
                 includeUnit: true,
                 includePrice: false,
                 includeInventory: true,
-                unitSeq: unitSeq
+                findOrder: inputValue,
+                // isNotManageByAccessNumber: true
               }).then(rs => {
                 return rs[0];
               });
+            }
+            if (product) {
+              unit = product.Unit;
+              unitId = unitId || this.commonService.getObjectId(unit);
+              product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              product.FindOrder = inputValue.trim();
+              productId = product.Code;
+            }
+          } else {
+            if (/^9\d+/.test(inputValue)) {
+              // Đây là barcode vị trí hàng hóa
+              let tmpcode = inputValue.substring(1);
+              const findOrderLength = parseInt(tmpcode.substring(0, 1));
+              tmpcode = tmpcode.substring(1);
+              const findOrder = tmpcode.substring(0, findOrderLength);
+              tmpcode = tmpcode.substring(findOrderLength);
+              const unitSeqLength = parseInt(tmpcode.substring(0, 1));
+              tmpcode = tmpcode.substring(1);
+              unitSeq = tmpcode.substring(0, unitSeqLength);
+              tmpcode = tmpcode.substring(unitSeqLength);
+              productId = tmpcode;
+
+
+              // product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+              //   includeUnit: true,
+              //   includePrice: false,
+              //   includeInventory: true,
+              //   findOrder: findOrder,
+              //   // isNotManageByAccessNumber: true,
+              //   unitSeq: unitSeq
+              // }).then(rs => {
+              //   return rs[0];
+              // });
+
+              product = this.productMap[this.findOrderMap[findOrder].Goods];
+
+              if (product && unitSeq) {
+                unit = this.unitMap[unitSeq];
+                if (unit) {
+                  unitId = unit.Code;
+                  product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                }
+              }
+
+              if (!product) {
+                resolve(true);
+                return Promise.reject('Không tìn thấy hàng hóa');
+              }
+
               unitId = this.commonService.getObjectId(product.Unit);
               product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              productId = product.Code;
+              product.FindOrder = findOrder;
+
+            } else {
+              if (new RegExp('^127' + coreId + '\\d+').test(inputValue)) {
+                accessNumber = inputValue;
+              } else {
+                if (new RegExp('^128' + coreId).test(inputValue)) {
+                  setTimeout(() => {
+
+                    this.commonService.openDialog(ShowcaseDialogComponent, {
+                      context: {
+                        title: 'Máy bán hàng',
+                        content: 'Bạn có muốn tạo phiếu trả hàng từ đơn hàng ' + inputValue,
+                        actions: [
+                          {
+                            label: 'ESC - Trở về',
+                            status: 'basic',
+                            action: () => {
+                            }
+                          },
+                          {
+                            label: 'F7 - Tạo phiếu trả hàng',
+                            keyShortcut: 'F7',
+                            status: 'danger',
+                            // focus: true,
+                            action: async () => {
+                              this.orderForm = await this.makeNewReturnsForm(null, inputValue);
+                              this.save(this.orderForm);
+                              this.historyOrders.push(this.orderForm);
+                              this.historyOrderIndex = this.historyOrders.length - 1;
+                            }
+                          },
+                          {
+                            label: 'Enter - Mở lại bill',
+                            keyShortcut: 'Enter',
+                            status: 'info',
+                            focus: true,
+                            action: async () => {
+                              this.loadOrder(inputValue);
+                            }
+                          },
+                        ],
+                        onClose: () => {
+                        },
+                      }
+                    });
+                  }, 50);
+                  resolve(true);
+                  return true;
+                } else if (new RegExp('^129' + coreId).test(inputValue)) {
+                  setTimeout(() => {
+                    this.shortcutKeyContext = 'returnspaymentconfirm';
+                    this.commonService.openDialog(ShowcaseDialogComponent, {
+                      context: {
+                        title: 'Máy bán hàng',
+                        content: 'Bạn có muốn tiếp tục bán hàng từ phiếu trả hàng ' + inputValue + ' hay hoàn tiền cho khách',
+                        actions: [
+                          {
+                            label: 'ESC - Trở về',
+                            status: 'basic',
+                            action: () => {
+                            }
+                          },
+                          {
+                            label: 'F4 - Tiếp tục bán hàng',
+                            keyShortcut: 'F4',
+                            status: 'success',
+                            focus: true,
+                            action: async () => {
+                              this.makeNewOrder(null, inputValue);
+                            }
+                          },
+                          {
+                            label: 'F2 - Hoàn tiền',
+                            status: 'danger',
+                            keyShortcut: 'F2',
+                            action: async () => {
+                              this.returnsPayment(inputValue);
+                            }
+                          },
+                        ],
+                        onClose: () => {
+                        },
+                      }
+                    });
+                  }, 50);
+                  resolve(true);
+                  return true;
+                } else if (new RegExp('^118' + coreId).test(inputValue)) {
+                  product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + inputValue, {
+                    includeUnit: true,
+                    includePrice: false,
+                    includeInventory: true,
+                  }).then(rs => {
+                    return rs[0];
+                  });
+                  if (product) {
+                    productId = product.Code;
+                    unitId = this.commonService.getObjectId(product.WarehouseUnit);
+                    product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                  }
+                }
+                // else if (inputValue.length < 10 && !new RegExp('^128|129' + coreId).test(inputValue)) {
+
+                let unitIdLength = null;
+                // if (!product) {
+                //   // Truy van thong tin san pham theo cau truc moi
+                //   unitIdLength = parseInt(inputValue.slice(0, 1));
+                //   unitSeq = inputValue.slice(1, unitIdLength + 1);
+
+                //   productId = inputValue.slice(unitIdLength + 1);
+                //   productId = '118' + coreId + productId;
+                //   product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true, unitSeq: unitSeq }).then(rs => {
+                //     return rs[0];
+                //   });
+                // }
+
+                // => Thu truy van theo cau truc cu
+                // if (!product) {
+                //   productId = '118' + coreId + inputValue;
+                //   unitSeq = null;
+                //   product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, { includeUnit: true, includePrice: true, includeInventory: true }).then(rs => {
+                //     return rs[0];
+                //   });
+                // }
+                // if (product) {
+                //   unitId = this.commonService.getObjectId(product.Unit);
+                // }
+
+                // } else {
+
+                if (!product) {
+                  const productIdLength = parseInt(inputValue.substring(0, 2)) - 10;
+                  accessNumber = inputValue.substring(productIdLength + 2);
+                  if (accessNumber) {
+                    accessNumber = '127' + accessNumber;
+                  }
+                  productId = inputValue.substring(2, 2 + productIdLength);
+                  unitIdLength = parseInt(productId.slice(0, 1));
+                  unitSeq = productId.slice(1, unitIdLength + 1);
+                  productId = productId.slice(unitIdLength + 1);
+                  productId = '118' + coreId + productId;
+
+                  product = this.productMap[productId];
+
+                  if (product && unitSeq) {
+                    unit = this.unitMap[unitSeq];
+                    if (unit) {
+                      unitId = unit.Code;
+
+                      product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                    }
+                  }
+                }
+
+                // }
+              }
+            }
+            // get access number inventory 
+            // get access number inventory 
+            // get access number inventory 
+            if (new RegExp('^127' + coreId).test(accessNumber)) {
+              // product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+              const waitForGetProductByAccessNumber = this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+                accessNumber: accessNumber,
+                includeUnit: true,
+                includePrice: false,
+                includeInventory: true
+              }).then(rs => {
+
+                product = rs[0];
+
+                if (!product) {
+                  this.commonService.toastService.show(`Số truy xuất ${accessNumber} không tồn tại !`, 'Số truy xuất không tồn tại !', { status: 'warning' });
+                  existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
+                  return null;
+                }
+
+                setTimeout(() => {
+                  const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
+                  existsProduct = detailsControls[existsProductIndex] as FormGroup;
+                  if (existsProduct) {
+
+                    existsProduct.get('Container').setValue(product.Container);
+
+                    if (this.orderForm['voucherType'] == 'CPOSRETURNS') {
+                      if (product.Inventory && product.Inventory > 0) {
+                        this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, 'Hàng hóa chưa xuất bán !', { status: 'warning' });
+                        existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
+                        // return;
+                      }
+                    } else {
+                      if (!product.Inventory || product.Inventory < 1) {
+                        this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, 'Hàng hóa không có trong kho !', { status: 'warning' });
+                        existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
+                        // return;
+                      }
+                    }
+
+                    // this.save(this.orderForm);
+                  }
+                }, 1000);
+
+
+                return product;
+              });
+
+              if (!unitId || !product) { // Nếu tem cũ không có unit sequence thì phải lấy thông tin sản phẩm bằng số truy xuất ngay từ đầu
+                await waitForGetProductByAccessNumber;
+              }
+              if (product) {
+                productId = product.Code;
+                unitId = unitId || this.commonService.getObjectId(product.Unit);
+                product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                // if (this.orderForm['voucherType'] == 'CPOSRETURNS') {
+                //   if (product.Inventory && product.Inventory > 0) {
+                //     throw Error(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`);
+                //   }
+                // } else {
+                //   if (!product.Inventory || product.Inventory < 1) {
+                //     throw Error(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`);
+                //   }
+                // }
+              } else {
+                product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
+                  includeUnit: true,
+                  includePrice: false,
+                  includeInventory: true,
+                  unitSeq: unitSeq
+                }).then(rs => {
+                  return rs[0];
+                });
+                unitId = this.commonService.getObjectId(product.Unit);
+                product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              }
             }
           }
         }
-      }
-    } else {
-      productId = product.Code;
-      unitId = this.commonService.getObjectId(product.Unit);
-    }
-
-    if (!product) { // Nếu không lấy đươc thông tin sản phẩm theo số truy xuất
-      // Case 2: Search by product id
-      productId = inputValue.length < 9 ? `118${coreId}${inputValue}` : inputValue;
-      accessNumber = null;
-      product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
-        includeUnit: true,
-        includePrice: false,
-        includeInventory: true
-      }).then(rs => {
-        return rs[0];
-      });
-      if (product) {
+      } else {
+        productId = product.Code;
         unitId = this.commonService.getObjectId(product.Unit);
-        product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
       }
-      // }
-    }
 
-    if (this.orderForm.value?.State == 'APPROVED') {
-      this.commonService.toastService.show('Bạn phải hủy phiếu mới thêm hàng hóa vào được!', 'Đơn hàng đã thanh toán !', { status: 'warning' });
-      return false;
-    }
+      if (!product) { // Nếu không lấy đươc thông tin sản phẩm theo số truy xuất
+        // Case 2: Search by product id
+        productId = inputValue.length < 9 ? `118${coreId}${inputValue}` : inputValue;
+        accessNumber = null;
+        product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
+          includeUnit: true,
+          includePrice: false,
+          includeInventory: true
+        }).then(rs => {
+          return rs[0];
+        });
+        if (product) {
+          unitId = this.commonService.getObjectId(product.Unit);
+          product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+        }
+        // }
+      }
 
-    console.log(accessNumber, productId);
-    let existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
-    existsProduct = detailsControls[existsProductIndex] as FormGroup;
-    if (existsProduct) {
-      const quantityControl = existsProduct.get('Quantity');
-      const priceControl = existsProduct.get('Price');
-      const toMoney = existsProduct.get('ToMoney');
-      const accessNumbersContorl = existsProduct.get('AccessNumbers');
-      if (accessNumber && accessNumbersContorl.value) {
-        if (!accessNumbersContorl.value.find(f => f == accessNumber)) {
-          quantityControl.setValue(quantityControl.value + 1);
-          toMoney.setValue(quantityControl.value * priceControl.value);
-          if (accessNumber && Array.isArray(accessNumbersContorl.value)) {
-            accessNumbersContorl.setValue([...accessNumbersContorl.value, accessNumber]);
+      if (this.orderForm.value?.State == 'APPROVED') {
+        this.commonService.toastService.show('Bạn phải hủy phiếu mới thêm hàng hóa vào được!', 'Đơn hàng đã thanh toán !', { status: 'warning' });
+        resolve(true);
+        return false;
+      }
+
+      console.log(accessNumber, productId);
+      let existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
+      existsProduct = detailsControls[existsProductIndex] as FormGroup;
+      if (existsProduct) {
+        const quantityControl = existsProduct.get('Quantity');
+        const priceControl = existsProduct.get('Price');
+        const toMoney = existsProduct.get('ToMoney');
+        const accessNumbersContorl = existsProduct.get('AccessNumbers');
+        if (accessNumber && accessNumbersContorl.value) {
+          if (!accessNumbersContorl.value.find(f => f == accessNumber)) {
+            quantityControl.setValue(quantityControl.value + 1);
+            toMoney.setValue(quantityControl.value * priceControl.value);
+            if (accessNumber && Array.isArray(accessNumbersContorl.value)) {
+              accessNumbersContorl.setValue([...accessNumbersContorl.value, accessNumber]);
+            }
+            this.calculateTotal(this.orderForm);
+
+            this.increaseDetailPipSound.nativeElement.play();
+            this.calculateToMoney(existsProduct);
+            this.calculateTotal(this.orderForm);
+            this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
+          } else {
+            this.errorSound.nativeElement.play();
+            this.commonService.toastService.show('Mã truy xuất đã được quét trước đó rồi, mời bạn quét tiếp các mã khác !', 'Trùng mã truy xuất !', { status: 'warning' });
           }
-          this.calculateTotal(this.orderForm);
-
-          this.increaseDetailPipSound.nativeElement.play();
+        } else {
+          quantityControl.setValue(quantityControl.value + 1);
           this.calculateToMoney(existsProduct);
           this.calculateTotal(this.orderForm);
+
           this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
-        } else {
-          this.errorSound.nativeElement.play();
-          this.commonService.toastService.show('Mã truy xuất đã được quét trước đó rồi, mời bạn quét tiếp các mã khác !', 'Trùng mã truy xuất !', { status: 'warning' });
+          this.increaseDetailPipSound.nativeElement.play();
         }
+        resolve(true);
+        return existsProduct;
       } else {
-        quantityControl.setValue(quantityControl.value + 1);
-        this.calculateToMoney(existsProduct);
-        this.calculateTotal(this.orderForm);
+        existsProduct = this.makeNewOrderDetail({
+          Sku: product?.Sku || productId,
+          Product: productId,
+          Unit: product?.Unit || 'n/a',
+          Description: product?.Name || productId,
+          Quantity: 1,
+          Price: product?.Price || 0,
+          ToMoney: (product?.Price * 1) || 0,
+          Image: product?.FeaturePicture || [],
+          AccessNumbers: accessNumber ? [accessNumber] : null,
+          Discount: 0,
+          FindOrder: product?.FindOrder,
+          Container: product?.Container,
+        });
+        existsProductIndex = detailsControls.length - 1;
 
-        this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
-        this.increaseDetailPipSound.nativeElement.play();
-      }
-      return existsProduct;
-    } else {
-      existsProduct = this.makeNewOrderDetail({
-        Sku: product?.Sku || productId,
-        Product: productId,
-        Unit: product?.Unit || 'n/a',
-        Description: product?.Name || productId,
-        Quantity: 1,
-        Price: product?.Price || 0,
-        ToMoney: (product?.Price * 1) || 0,
-        Image: product?.FeaturePicture || [],
-        AccessNumbers: accessNumber ? [accessNumber] : null,
-        Discount: 0,
-        FindOrder: product?.FindOrder,
-        Container: product?.Container,
-      });
-      existsProductIndex = detailsControls.length - 1;
+        if (product?.Price) {
+          // Nếu đã có giá (trường hợp quét số truy xuất)
+          this.calculateToMoney(existsProduct);
+          detailsControls.push(existsProduct);
+          this.calculateTotal(this.orderForm);
+          this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
+          this.newDetailPipSound.nativeElement.play();
+          resolve(true);
+          // this.save(this.orderForm);
+        } else {
+          // Nếu chưa có giá (trường hợp quét ID sản phẩm)
+          if (product) {
 
-      if (product?.Price) {
-        // Nếu đã có giá (trường hợp quét số truy xuất)
-        this.calculateToMoney(existsProduct);
-        detailsControls.push(existsProduct);
-        this.calculateTotal(this.orderForm);
-        this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
-        this.newDetailPipSound.nativeElement.play();
-        // this.save(this.orderForm);
-      } else {
-        // Nếu chưa có giá (trường hợp quét ID sản phẩm)
-        if (product) {
-
-          if (!product.Unit || !this.commonService.getObjectId(product.Unit) || this.commonService.getObjectId(product.Unit) == 'n/a') {
-            this.errorSound.nativeElement.play();
-            this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa được cài đặt đơn vị tính !', 'Sản phẩm chưa cài đặt đơn vị tính !', { status: 'danger' });
-            return;
-          }
-
-          existsProduct.get('Description').setValue(product.Name);
-          existsProduct.get('Sku').setValue(product.Sku);
-          existsProduct.get('Unit').setValue(product.Unit);
-          existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
-
-          return await this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
-            // priceTable: 'BGC201031',
-            product: productId,
-            includeUnit: true
-          }).catch(err => {
-            this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { status: 'danger' });
-            // this.errorSound.nativeElement.play();
-            return [];
-          }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.Unit))).then(price => {
-            if (price || true) { // Cho phép chọn sản phẩm không có giá bán
-              price = parseFloat(price?.Price || 0);
-              existsProduct.get('Price').setValue(price);
-              existsProduct.get('ToMoney').setValue(price * existsProduct.get('Quantity').value);
-
-              this.calculateToMoney(existsProduct);
-              detailsControls.push(existsProduct);
-              this.calculateTotal(this.orderForm);
-
-              this.activeDetail(this.orderForm, existsProduct, 0);
-
-              this.newDetailPipSound.nativeElement.play();
-              // this.save(this.orderForm);
-            } else {
-              this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { status: 'danger' });
+            if (!product.Unit || !this.commonService.getObjectId(product.Unit) || this.commonService.getObjectId(product.Unit) == 'n/a') {
+              this.errorSound.nativeElement.play();
+              this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa được cài đặt đơn vị tính !', 'Sản phẩm chưa cài đặt đơn vị tính !', { status: 'danger' });
+              resolve(true);
+              return;
             }
-            return existsProduct;
-          });
-        } else {
-          this.errorSound.nativeElement.play();
-          this.commonService.toastService.show('Hàng hóa không tồn tại !', 'Hàng hóa không tồn tại !', { status: 'danger' });
-          return false;
+
+            existsProduct.get('Description').setValue(product.Name);
+            existsProduct.get('Sku').setValue(product.Sku);
+            existsProduct.get('Unit').setValue(product.Unit);
+            existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
+
+            return await this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
+              // priceTable: 'BGC201031',
+              product: productId,
+              includeUnit: true
+            }).catch(err => {
+              this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { status: 'danger' });
+              // this.errorSound.nativeElement.play();
+              resolve(true);
+              return [];
+            }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.Unit))).then(price => {
+              if (price || true) { // Cho phép chọn sản phẩm không có giá bán
+                price = parseFloat(price?.Price || 0);
+                existsProduct.get('Price').setValue(price);
+                existsProduct.get('ToMoney').setValue(price * existsProduct.get('Quantity').value);
+
+                this.calculateToMoney(existsProduct);
+                detailsControls.push(existsProduct);
+                this.calculateTotal(this.orderForm);
+
+                this.activeDetail(this.orderForm, existsProduct, 0);
+
+                this.newDetailPipSound.nativeElement.play();
+                // this.save(this.orderForm);
+              } else {
+                this.commonService.toastService.show('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { status: 'danger' });
+              }
+              resolve(true);
+              return existsProduct;
+            });
+          } else {
+            this.errorSound.nativeElement.play();
+            this.commonService.toastService.show('Hàng hóa không tồn tại !', 'Hàng hóa không tồn tại !', { status: 'danger' });
+            resolve(true);
+            return false;
+          }
         }
       }
-    }
+    }).then(status => {
+      this.isBarcodeProcessing = false;
+      if (this.barcodeQueue.length > 0) {
+        const barcode = this.barcodeQueue.shift();
+        this.barcodeProcess(barcode.inputValue, barcode.option);
+      }
+      return status;
+    }).catch(err => {
+      this.isBarcodeProcessing = false;
+      if (this.barcodeQueue.length > 0) {
+        const barcode = this.barcodeQueue.shift();
+        this.barcodeProcess(barcode.inputValue, barcode.option);
+      }
+      return Promise.reject(err);
+    });
 
     // }
   }
