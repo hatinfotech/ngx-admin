@@ -28,6 +28,7 @@ import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choo
 import { SystemConfigModel } from '../../../../models/model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { _ } from 'ag-grid-community';
+import { AssignNewContainerFormComponent } from '../../goods/assign-new-containers-form/assign-new-containers-form.component';
 
 @Component({
   selector: 'ngx-inventory-adjust-note-form',
@@ -173,6 +174,44 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     }
   }];
 
+  customIconsForContainer: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.commonService.translateText('Gán vị trí'),
+    status: 'danger',
+    states: {
+      '<>': {
+        icon: 'plus-square-outline',
+        status: 'danger',
+        title: this.commonService.translateText('Thêm vị trí mới'),
+      },
+      '': {
+        icon: 'plus-square-outline',
+        status: 'success',
+        title: this.commonService.translateText('Thêm vị trí mới'),
+      },
+    },
+    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
+      const currentUnit = this.commonService.getObjectId(formGroup.get('Unit').value);
+      this.commonService.openDialog(AssignNewContainerFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
+          onDialogSave: (newData: ProductModel[]) => {
+            this.onSelectUnit(formGroup, formGroup.get('Unit').value, true).then(rs => {
+              formGroup.get('Container').patchValue({
+                id: newData[0].Code, text: newData[0].Path + newData[0].Name,
+              })
+            });
+          },
+          onDialogClose: () => {
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+
   systemConfigs: SystemConfigModel;
 
   constructor(
@@ -208,6 +247,49 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
+  }
+
+  customIconsForProduct: { [key: string]: CustomIcon[] } = {};
+  getCustomIconsForProduct(name: string): CustomIcon[] {
+    if (this.customIconsForProduct[name]) return this.customIconsForProduct[name];
+    return this.customIconsForProduct[name] = [{
+      icon: 'plus-square-outline',
+      title: this.commonService.translateText('Common.addNewProduct'),
+      status: 'success',
+      states: {
+        '<>': {
+          icon: 'edit-outline',
+          status: 'primary',
+          title: this.commonService.translateText('Common.editProduct'),
+        },
+        '': {
+          icon: 'plus-square-outline',
+          status: 'success',
+          title: this.commonService.translateText('Common.addNewProduct'),
+        },
+      },
+      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
+        this.commonService.openDialog(ProductFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            inputId: currentProduct ? [currentProduct] : null,
+            showLoadinng: true,
+            onDialogSave: (newData: ProductModel[]) => {
+              console.log(newData);
+              // const formItem = formGroupComponent.formGroup;
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              formGroup.get('Product').patchValue(newProduct);
+            },
+            onDialogClose: () => {
+
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    }];
   }
 
   select2OptionForProduct = {
@@ -1666,6 +1748,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       const detailsForm = this.getDetails(formItem as FormGroup);
       for (const d in detailsForm.controls) {
         const detailForm = detailsForm.controls[d];
+        detailForm.get('SystemUuid').patchValue(newFormData[i]['Details'][d]['SystemUuid']);
         detailForm.get('AccessNumbers').patchValue(this.convertAccessNumberToStringList(newFormData[i]['Details'][d]['AccessNumbers']));
       }
     }
@@ -1692,7 +1775,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   convertAccessNumberToStringList(accessNumbers: any[]) {
-    return accessNumbers.map(m => this.commonService.getObjectId(m));
+    return accessNumbers && Array.isArray(accessNumbers) ? accessNumbers.map(m => this.commonService.getObjectId(m)) : [];
   }
 
   /** Affter main form update event: Override to disable formLoad and execute patch value to formItem */
@@ -1704,6 +1787,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       const detailsForm = this.getDetails(formItem as FormGroup);
       for (const d in detailsForm.controls) {
         const detailForm = detailsForm.controls[d];
+        detailForm.get('SystemUuid').patchValue(newFormData[i]['Details'][d]['SystemUuid']);
         detailForm.get('AccessNumbers').patchValue(this.convertAccessNumberToStringList(newFormData[i]['Details'][d]['AccessNumbers']));
       }
     }

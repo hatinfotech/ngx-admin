@@ -197,7 +197,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-8 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Voucher.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [customIcons]="getCustomIconsForProduct(i + ic)">
                                                     <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
@@ -216,7 +216,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-7 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Container" label="Warehouse.container" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Container" label="Warehouse.container" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [customIcons]="customIconsForContainer">
                                                     <ngx-select2 [data]="detail['ContainerList'] || warehouseContainerList" formControlName="Container" [select2Option]="select2OptionForContainer" (selectChange)="onSelectContainer(detail, $event, false, formItem)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>

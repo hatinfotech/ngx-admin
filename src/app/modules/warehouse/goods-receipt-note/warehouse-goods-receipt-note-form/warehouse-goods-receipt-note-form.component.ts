@@ -149,6 +149,49 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     }
   }];
 
+  customIconsForProduct: { [key: string]: CustomIcon[] } = {};
+  getCustomIconsForProduct(name: string): CustomIcon[] {
+    if (this.customIconsForProduct[name]) return this.customIconsForProduct[name];
+    return this.customIconsForProduct[name] = [{
+      icon: 'plus-square-outline',
+      title: this.commonService.translateText('Common.addNewProduct'),
+      status: 'success',
+      states: {
+        '<>': {
+          icon: 'edit-outline',
+          status: 'primary',
+          title: this.commonService.translateText('Common.editProduct'),
+        },
+        '': {
+          icon: 'plus-square-outline',
+          status: 'success',
+          title: this.commonService.translateText('Common.addNewProduct'),
+        },
+      },
+      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
+        this.commonService.openDialog(ProductFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            inputId: currentProduct ? [currentProduct] : null,
+            showLoadinng: true,
+            onDialogSave: (newData: ProductModel[]) => {
+              console.log(newData);
+              // const formItem = formGroupComponent.formGroup;
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              formGroup.get('Product').patchValue(newProduct);
+            },
+            onDialogClose: () => {
+
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    }];
+  }
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
