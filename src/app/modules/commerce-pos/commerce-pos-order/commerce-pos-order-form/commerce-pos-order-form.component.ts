@@ -24,7 +24,7 @@ import { ActionControlListOption } from '../../../../lib/custom-element/action-c
 import { BusinessModel } from '../../../../models/accounting.model';
 import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
@@ -85,7 +85,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -123,7 +123,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -362,7 +362,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -387,7 +387,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',

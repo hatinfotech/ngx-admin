@@ -18,7 +18,7 @@ import { Select2SelectionObject } from '../../../../../../vendor/ng2select2/lib/
 import { PurchaseVoucherListComponent } from '../../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
 import { PurchaseVoucherModel } from '../../../../../models/purchase.model';
 import { PurchaseVoucherPrintComponent } from '../../../../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
-import { CustomIcon } from '../../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../../lib/custom-element/form/form-group/form-group.component';
 import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -47,7 +47,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   bankAccountList: AccBankAccountModel[] = [];
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(AccBusinessFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -270,7 +270,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   accountCreditList: AccountModel[] = [];
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',

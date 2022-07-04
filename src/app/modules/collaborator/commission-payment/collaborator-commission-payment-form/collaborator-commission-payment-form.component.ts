@@ -6,7 +6,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { takeUntil } from 'rxjs/operators';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { AccBankAccountModel, AccountModel, BusinessModel, CashVoucherDetailModel, CashVoucherModel } from '../../../../models/accounting.model';
 import { CollaboratorAwardVoucherModel, CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
@@ -44,7 +44,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   bankAccountList: AccBankAccountModel[] = [];
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(AccBusinessFormComponent, {
         context: {
           inputMode: 'dialog',

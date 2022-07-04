@@ -22,7 +22,7 @@ import { CommonService } from '../../../../services/common.service';
 import { PurchaseVoucherListComponent } from '../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { BusinessModel } from '../../../../models/accounting.model';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
@@ -90,7 +90,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   };
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -126,7 +126,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         title: this.commonService.translateText('Thêm vị trí mới'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
       const currentUnit = this.commonService.getObjectId(formGroup.get('Unit').value);
       this.commonService.openDialog(AssignNewContainerFormComponent, {
@@ -168,7 +168,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -310,7 +310,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -348,7 +348,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {

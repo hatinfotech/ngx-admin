@@ -17,7 +17,7 @@ export interface CustomIcon {
       status?: string,
     }
   };
-  action: (formGroup: FormGroup, array: FormArray, index: number, option: any) => void;
+  action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: any) => void;
   onInit?: (formGroupComponent: FormGroupComponent, customIcon: CustomIcon) => void;
 };
 @Component({
@@ -41,7 +41,7 @@ export class FormGroupComponent implements OnInit, OnDestroy {
   @Input() customIconPack?: string = 'eva';
   @Input() customIconTitle?: string;
   @Input() customIconSttaus?: string;
-  @Input() customIconAction?: string;
+  // @Input() customIconAction?: string;
   @Input() touchedValidate = true;
 
   protected destroy$: Subject<void> = new Subject<void>();
@@ -119,6 +119,10 @@ export class FormGroupComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  customIconAction(customIcon: CustomIcon, formGroup: FormGroup, array: FormArray, index: number, option: any) {
+    customIcon.action(this, formGroup, array, index, option);
   }
 
 }

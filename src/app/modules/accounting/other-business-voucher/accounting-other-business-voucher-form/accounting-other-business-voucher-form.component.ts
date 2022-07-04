@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { OtherBusinessVoucherModel, AccountModel, BusinessModel, CashVoucherDetailModel } from '../../../../models/accounting.model';
 import { ContactModel } from '../../../../models/contact.model';
@@ -217,7 +217,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   };
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',

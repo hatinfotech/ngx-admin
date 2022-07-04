@@ -7,7 +7,7 @@ import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment.prod';
 import { Select2, Select2QueryOptions } from '../../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
@@ -80,7 +80,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -104,7 +104,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -889,7 +889,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   // }
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductFormComponent, {
         context: {
           inputMode: 'dialog',

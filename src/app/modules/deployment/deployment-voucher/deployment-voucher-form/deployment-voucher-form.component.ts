@@ -7,7 +7,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactModel } from '../../../../models/contact.model';
 import { DeploymentVoucherDetailModel, DeploymentVoucherModel } from '../../../../models/deployment.model';
@@ -113,7 +113,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -151,7 +151,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -428,7 +428,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -453,7 +453,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',

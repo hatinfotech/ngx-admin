@@ -1,13 +1,13 @@
 import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
@@ -25,6 +25,7 @@ import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-form',
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './purchase-order-voucher-form.component.html',
   styleUrls: ['./purchase-order-voucher-form.component.scss']
 })
@@ -109,6 +110,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     public dialogService: NbDialogService,
     public commonService: CommonService,
     public ref: NbDialogRef<PurchaseOrderVoucherFormComponent>,
+    // public changeDirectorRef: ChangeDetectorRef,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -232,7 +234,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -270,7 +272,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -333,6 +335,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           });
         });
       }
+      // this.changeDirectorRef.detectChanges();//https://viblo.asia/p/tim-hieu-ve-change-detection-trong-angular-djeZ18EjKWz
       return status;
     });
   }
@@ -409,6 +412,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     } else {
       this.addDetailFormGroup(newForm);
     }
+    newForm['_details'] = this.getDetails(newForm);
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PurchaseOrderVoucherModel): void {
@@ -520,12 +524,15 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
               Product: product as any,
               Price: chooseItem?.Price,
               Quantity: chooseItem?.Quantity,
+              Image: chooseItem?.Image
             });
             newDetailFormGroup['UnitList'] = product.Units;
             details.push(newDetailFormGroup);
             newDetailFormGroup.get('Unit').setValue(product.Units.find(f => f['DefaultImport']));
             this.onAddDetailFormGroup(parentFormGroup, newDetailFormGroup, details.length - 1);
           }
+          this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+          // this.changeDirectorRef.detectChanges();
         },
         title: 'Danh sách hàng hóa đã đặt hàng nhà cung cấp ' + parentFormGroup.get('ObjectName').value,
         apiPath: '/purchase/order-voucher-details',
@@ -875,7 +882,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {

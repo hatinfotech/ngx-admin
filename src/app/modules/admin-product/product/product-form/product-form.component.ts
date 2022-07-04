@@ -22,7 +22,7 @@ import { Select2Option } from '../../../../lib/custom-element/select2/select2.co
 // import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic/build/ckeditor.js';
 // import * as ClassicEditorBuild from '../../../../../vendor/ckeditor5-build-classic/build/ckeditor.js'; 
 import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { AdminProductService } from '../../admin-product.service';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 
@@ -253,7 +253,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   unitControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',

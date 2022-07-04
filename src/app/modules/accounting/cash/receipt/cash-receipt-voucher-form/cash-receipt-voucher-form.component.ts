@@ -16,7 +16,7 @@ import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { CashReceiptVoucherPrintComponent } from '../cash-receipt-voucher-print/cash-receipt-voucher-print.component';
 import { TaxModel } from '../../../../../models/tax.model';
-import { CustomIcon } from '../../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../../lib/custom-element/form/form-group/form-group.component';
 import { AccBusinessFormComponent } from '../../../acc-business/acc-business-form/acc-business-form.component';
 import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
 
@@ -48,7 +48,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   bankAccountList: AccBankAccountModel[] = [];
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(AccBusinessFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -260,7 +260,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   };
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',

@@ -173,7 +173,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -198,7 +198,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -325,7 +325,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -363,7 +363,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {

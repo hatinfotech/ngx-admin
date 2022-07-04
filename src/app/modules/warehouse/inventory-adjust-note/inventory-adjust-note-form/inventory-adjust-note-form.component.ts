@@ -19,7 +19,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { WarehouseInventoryAdjustNotePrintComponent } from '../inventory-adjust-note-print/inventory-adjust-note-print.component';
 import { BusinessModel } from '../../../../models/accounting.model';
-import { CustomIcon } from '../../../../lib/custom-element/form/form-group/form-group.component';
+import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
@@ -29,6 +29,7 @@ import { SystemConfigModel } from '../../../../models/model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { _ } from 'ag-grid-community';
 import { AssignNewContainerFormComponent } from '../../goods/assign-new-containers-form/assign-new-containers-form.component';
+import { WarehouseGoodsContainerFormComponent } from '../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
 
 @Component({
   selector: 'ngx-inventory-adjust-note-form',
@@ -153,7 +154,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   };
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -174,7 +175,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     }
   }];
 
-  customIconsForContainer: CustomIcon[] = [{
+  customIconsForContainerX: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.commonService.translateText('Gán vị trí'),
     status: 'danger',
     states: {
@@ -189,7 +190,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         title: this.commonService.translateText('Thêm vị trí mới'),
       },
     },
-    action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
       const currentUnit = this.commonService.getObjectId(formGroup.get('Unit').value);
       this.commonService.openDialog(AssignNewContainerFormComponent, {
@@ -268,7 +269,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -288,6 +289,79 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           closeOnEsc: false,
           closeOnBackdropClick: false,
         });
+      }
+    }];
+  }
+
+  customIconsForContainer: { [key: string]: CustomIcon[] } = {};
+  getCustomIconsForContainer(name: string): CustomIcon[] {
+    if (this.customIconsForContainer[name]) return this.customIconsForContainer[name];
+    return this.customIconsForContainer[name] = [{
+      icon: 'plus-square-outline',
+      title: this.commonService.translateText('Thêm vị trí mới'),
+      status: 'success',
+      states: {
+        '<>': {
+          icon: 'edit-outline',
+          status: 'primary',
+          title: this.commonService.translateText('Chỉnh sửa vị trí'),
+        },
+        '': {
+          icon: 'plus-square-outline',
+          status: 'success',
+          title: this.commonService.translateText('Thêm vị trí mới'),
+        },
+      },
+      action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        const containerId = this.commonService.getObjectId(formGroup.get('Container').value);
+        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
+        const currentUnit = this.commonService.getObjectId(formGroup.get('Unit').value);
+        if (containerId) {
+          this.commonService.openDialog(WarehouseGoodsContainerFormComponent, {
+            context: {
+              inputMode: 'dialog',
+              // inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
+              inputId: [containerId],
+              onDialogSave: (newData: (WarehouseGoodsContainerModel & {[key: string]: any})[]) => {
+                let containerList = formGroup['ContainerList'];
+                if (Array.isArray(containerList)) {
+                  let containerUpdateIndex = containerList.findIndex(f => f.Code = containerId);
+                  if (containerUpdateIndex > -1) {
+                    containerList[containerUpdateIndex] = { ...newData[0], ContainerShelf: newData[0].Shelf, ContainerShelfName: newData[0].ShelfName, id: newData[0].Code, text: newData[0].Path + newData[0].Name, Path: newData[0].Path + newData[0].Name };
+                  }
+                  formGroup['ContainerList'] = null;
+                  setTimeout(() => {
+                    formGroup.get('Container').setValue(containerList[containerUpdateIndex]);
+                    formGroup['ContainerList'] = [...containerList];
+                    // this.onSelectContainer(formGroup, containerList[containerUpdateIndex], true, option?.parentForm).then(rs => { });
+                  }, 100);
+                }
+              },
+              onDialogClose: () => {
+              },
+            },
+            closeOnEsc: false,
+            closeOnBackdropClick: false,
+          });
+        } else {
+          this.commonService.openDialog(AssignNewContainerFormComponent, {
+            context: {
+              inputMode: 'dialog',
+              inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
+              onDialogSave: (newData: ProductModel[]) => {
+                this.onSelectContainer(formGroup, formGroup.get('Container').value, true).then(rs => {
+                  formGroup.get('Container').patchValue({
+                    id: newData[0].Code, text: newData[0].Path + newData[0].Name,
+                  })
+                });
+              },
+              onDialogClose: () => {
+              },
+            },
+            closeOnEsc: false,
+            closeOnBackdropClick: false,
+          });
+        }
       }
     }];
   }
@@ -395,7 +469,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   ];
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -417,7 +491,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -484,7 +558,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
           this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
             // Clear id
-            conditonFormGroup.get('Id').setValue('');
+            conditonFormGroup.get('Id').setValue(null);
+            conditonFormGroup.get('SystemUuid').setValue(null);
           });
         });
       }
@@ -916,7 +991,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       this.playErrorPipSound();
       return false;
     }
-    if (selectedData && selectedData['AccessNumbers']) {
+    if (false) if (selectedData && selectedData['AccessNumbers']) {
       detail['AccessNumberList'] = selectedData['AccessNumbers'].map(accessNumber => {
         // const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
         // let goodsId = this.commonService.getObjectId(detail.get('Product').value).replace(new RegExp(`^118${coreEmbedId}`), '');
@@ -928,6 +1003,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     } else {
       detail['AccessNumberList'] = [];
     }
+    return true;
   }
   async onSelectAccessNumbers(detail: FormGroup, event: any, force?: boolean, element?: any) {
     console.log(element, event);
