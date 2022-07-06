@@ -460,7 +460,7 @@
                 </div>
                 <div class="pos-status" style="display: flex; align-items: center; padding: 0.2rem; padding-left: 1rem;">
                     <div class="status" style="flex: 1;">Commerce POS v1.0 | Nhân viên bán hàng: {{(commonService.loginInfo$ | async)?.user?.Name}}</div>
-                    <div class="pos-time" style="text-align: right; width: 350px;">{{currentDate | date:'short'}} - Trạng thái: {{status || 'Ready'}}</div>
+                    <div class="pos-time" style="text-align: right; width: 350px;">{{currentDate | date:'short'}} - Trạng thái: {{ status || 'Ready'}}</div>
                 </div>
             </div>
         </nb-card-body>

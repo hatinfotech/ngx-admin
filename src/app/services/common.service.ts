@@ -667,7 +667,7 @@ export class CommonService {
         }
       }, delay);
     });
-    
+
     return result;
   }
   async takeUntilCallback(context: string, delay: number, callback?: () => void) {
@@ -1307,5 +1307,48 @@ export class CommonService {
     const goodsId = '118' + coreEmbedId + accessNumber.substring(2, 2 + goodsIdLength);
     const _accessNumber = accessNumber.substring(2 + goodsIdLength);
     return { accessNumber: '127' + _accessNumber, goodsId: goodsId };
+  }
+
+  private barcode = '';
+  barcodeScanDetective(key: string, callback: (barcode: string) => void) {
+    this.barcode += key;
+    this.takeUntil('barcode-scan-detective', 100, () => {
+      this.barcode = '';
+    });
+    console.log(this.barcode);
+    if (this.barcode && /Enter$/.test(this.barcode)) {
+      try {
+        if (this.barcode.length > 5) {
+          // this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
+          callback(this.barcode.replace(/Enter.*$/, ''));
+        }
+        // this.findOrderKeyInput = '';
+      } catch (err) {
+        this.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
+      }
+      this.barcode = '';
+    }
+  }
+
+  extractGoodsBarcode(barcode: string): { unitSeq: string, productId: string, accessNumber: String } {
+    const coreId = this.systemConfigs$.value.ROOT_CONFIGS.coreEmbedId;
+    const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
+    let accessNumber = barcode.substring(productIdLength + 2);
+    if (accessNumber) {
+      accessNumber = '127' + accessNumber;
+    }
+    let productId = barcode.substring(2, 2 + productIdLength);
+    let unitIdLength = parseInt(productId.slice(0, 1));
+    let unitSeq = productId.slice(1, unitIdLength + 1);
+    // let unit = unitMap[unitSeq];
+    // let unitId = this.getObjectId(unit);
+    productId = productId.slice(unitIdLength + 1);
+    if (/^9/.test(productId)) {// trường hợp id sp ngoài core
+      productId = '118' + productId.slice(1);
+    } else {
+      productId = '118' + coreId + productId;
+    }
+
+    return { unitSeq, productId, accessNumber };
   }
 }

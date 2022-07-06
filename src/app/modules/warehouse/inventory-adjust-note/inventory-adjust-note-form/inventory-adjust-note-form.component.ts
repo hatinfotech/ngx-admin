@@ -1572,7 +1572,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                       },
                       AccessNumbers: accessNumber ? [accessNumber] : [],
                       Quantity: accessNumber ? 1 : 0,
-                      Image: goods.Pictures
+                      Image: goods.Pictures,
+                      Business: [
+                        {
+                          id: 'GOODSINVENTORYADJUST',
+                          text: 'Điều chỉnh hàng hóa tồn kho',
+                        },
+                      ]
                     }
                   ]
                 });
@@ -2032,25 +2038,25 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   public barcode = '';
-  barcodeScanDetective(key: string, callback: (barcode: string) => void) {
-    this.barcode += key;
-    this.commonService.takeUntil('barcode-scan-detective', 100, () => {
-      this.barcode = '';
-    });
-    console.log(this.barcode);
-    if (this.barcode && /Enter$/.test(this.barcode)) {
-      try {
-        if (this.barcode.length > 5) {
-          // this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
-          callback(this.barcode.replace(/Enter.*$/, ''));
-        }
-        // this.findOrderKeyInput = '';
-      } catch (err) {
-        this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
-      }
-      this.barcode = '';
-    }
-  }
+  // barcodeScanDetective(key: string, callback: (barcode: string) => void) {
+  //   this.barcode += key;
+  //   this.commonService.takeUntil('barcode-scan-detective', 100, () => {
+  //     this.barcode = '';
+  //   });
+  //   console.log(this.barcode);
+  //   if (this.barcode && /Enter$/.test(this.barcode)) {
+  //     try {
+  //       if (this.barcode.length > 5) {
+  //         // this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
+  //         callback(this.barcode.replace(/Enter.*$/, ''));
+  //       }
+  //       // this.findOrderKeyInput = '';
+  //     } catch (err) {
+  //       this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
+  //     }
+  //     this.barcode = '';
+  //   }
+  // }
 
   onKeyboardEvent(event: KeyboardEvent) {
     // if (this.ref && document.activeElement.tagName == 'BODY') {
@@ -2069,7 +2075,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     //     }
     //     this.barcode = '';
     //   }
-    this.barcodeScanDetective(event.key, barcode => {
+    this.commonService.barcodeScanDetective(event.key, barcode => {
       this.barcodeProcess(barcode);
     });
     // }
@@ -2111,18 +2117,25 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       productId = '118' + coreId + productId;
     } else {
 
-      const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
-      accessNumber = barcode.substring(productIdLength + 2);
-      if (accessNumber) {
-        accessNumber = '127' + accessNumber;
-      }
-      productId = barcode.substring(2, 2 + productIdLength);
-      let unitIdLength = parseInt(productId.slice(0, 1));
-      unitSeq = productId.slice(1, unitIdLength + 1);
+      const extracted = this.commonService.extractGoodsBarcode(barcode);
+      accessNumber = extracted.accessNumber;
+      productId = extracted.productId;
+      unitSeq = extracted.unitSeq;
       unit = this.unitMap[unitSeq];
       unitId = this.commonService.getObjectId(unit);
-      productId = productId.slice(unitIdLength + 1);
-      productId = '118' + coreId + productId;
+
+      // const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
+      // accessNumber = barcode.substring(productIdLength + 2);
+      // if (accessNumber) {
+      //   accessNumber = '127' + accessNumber;
+      // }
+      // productId = barcode.substring(2, 2 + productIdLength);
+      // let unitIdLength = parseInt(productId.slice(0, 1));
+      // unitSeq = productId.slice(1, unitIdLength + 1);
+      // unit = this.unitMap[unitSeq];
+      // unitId = this.commonService.getObjectId(unit);
+      // productId = productId.slice(unitIdLength + 1);
+      // productId = '118' + coreId + productId;
     }
 
     let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
@@ -2192,7 +2205,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
               },
               AccessNumbers: accessNumber ? [accessNumber] : [],
               Quantity: accessNumber ? 1 : 0,
-              Image: goods.Pictures
+              Image: goods.Pictures,
+              Business: [
+                {
+                  id: 'GOODSINVENTORYADJUST',
+                  text: 'Điều chỉnh hàng hóa tồn kho',
+                },
+              ]
             }
           ]
         });
@@ -2374,7 +2393,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                         },
                         AccessNumbers: [],
                         Quantity: 0,
-                        Image: goodsInContainer.GoodsThumbnail ? [goodsInContainer.GoodsThumbnail] : []
+                        Image: goodsInContainer.GoodsThumbnail ? [goodsInContainer.GoodsThumbnail] : [],
+                        Business: [
+                          {
+                            id: 'GOODSINVENTORYADJUST',
+                            text: 'Điều chỉnh hàng hóa tồn kho',
+                          },
+                        ]
                       });
 
                       // if (newRowNodeTrans && newRowNodeTrans.add && newRowNodeTrans.add.length > 0) {
@@ -2607,7 +2632,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                                 },
                                 AccessNumbers: Array.isArray(detail.AccessNumbers) ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [],
                                 Quantity: Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? detail.AccessNumbers.length : detail.Quantity,
-                                Image: detail.Image
+                                Image: detail.Image,
+                                Business: detail.Business
                               }
                             ]
                           });
@@ -2714,7 +2740,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       this.gridApi.forEachNode((rowNode, index) => {
         const rspDetail = newFormData[0].Details[index];
         rspDetail.AccessNumbers = rspDetail.AccessNumbers.map(m => this.commonService.getObjectId(m))
-        rowNode.setData({...rowNode.data, SystemUuid: rspDetail.SystemUuid, AccessNumbers: rspDetail.AccessNumbers });
+        rowNode.setData({ ...rowNode.data, SystemUuid: rspDetail.SystemUuid, AccessNumbers: rspDetail.AccessNumbers });
       });
     }
 
@@ -2759,8 +2785,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // Update ag-grid
       this.gridApi.forEachNode((rowNode, index) => {
         const rspDetail = newFormData[0].Details[index];
-        rowNode.setDataValue('AccessNumbers', rspDetail.AccessNumbers.map(m => this.commonService.getObjectId(m)));
-        // rowNode.setDataValue('SystemUuid', rspDetail.SystemUuid);
+        rspDetail.AccessNumbers = rspDetail.AccessNumbers.map(m => this.commonService.getObjectId(m))
+        rowNode.setData({ ...rowNode.data, SystemUuid: rspDetail.SystemUuid, AccessNumbers: rspDetail.AccessNumbers });
       });
     }
     if (!this.silent) {

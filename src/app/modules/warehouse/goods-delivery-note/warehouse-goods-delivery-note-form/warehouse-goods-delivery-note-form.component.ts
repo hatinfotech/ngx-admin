@@ -282,7 +282,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -320,7 +320,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -975,18 +975,26 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   public activeDetailIndex = 0;
   barcodeProcess(barcode: string) {
     console.log(barcode);
-    const coreId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+    // const coreId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
 
-    const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
-    let accessNumber = barcode.substring(productIdLength + 2);
-    if (accessNumber) {
-      accessNumber = '127' + accessNumber;
-    }
-    let productId = barcode.substring(2, 2 + productIdLength);
-    let unitIdLength = parseInt(productId.slice(0, 1));
-    let unitSeq = productId.slice(1, unitIdLength + 1);
-    productId = productId.slice(unitIdLength + 1);
-    productId = '118' + coreId + productId;
+    // const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
+    // let accessNumber = barcode.substring(productIdLength + 2);
+    // if (accessNumber) {
+    //   accessNumber = '127' + accessNumber;
+    // }
+
+    const extracted = this.commonService.extractGoodsBarcode(barcode);
+    let accessNumber = extracted.accessNumber;
+    let productId = extracted.productId;
+    let unitSeq = extracted.unitSeq;
+    // let unit = this.unitMap[unitSeq];
+    // let unitId = this.commonService.getObjectId(unit);
+
+    // let productId = barcode.substring(2, 2 + productIdLength);
+    // let unitIdLength = parseInt(productId.slice(0, 1));
+    // let unitSeq = productId.slice(1, unitIdLength + 1);
+    // productId = productId.slice(unitIdLength + 1);
+    // productId = '118' + coreId + productId;
 
     this.apiService.getPromise<any[]>('/warehouse/goods', {
       includeCategories: true,
