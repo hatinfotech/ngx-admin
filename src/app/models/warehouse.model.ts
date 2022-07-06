@@ -1,7 +1,8 @@
+import { ImageModel } from './file.model';
 import { TaxModel } from './tax.model';
 import { ContactModel } from './contact.model';
 import { UserModel } from './user.model';
-import { ProductModel } from './product.model';
+import { ProductModel, ProductPictureModel } from './product.model';
 import { UnitModel } from './unit.model';
 import { BusinessModel } from './accounting.model';
 
@@ -139,6 +140,7 @@ export class WarehouseInventoryAdjustNoteDetailModel {
   CreaditAccount?: number;
   Tax?: string & TaxModel;
   AccessNumbers?: any;
+  SystemUuid?: string;
 }
 
 
@@ -200,6 +202,7 @@ export class WarehouseGoodsContainerModel {
   id?: string; text?: string;
 
   Id?: string | number;
+  Type?: string;
   Code?: string;
   Branch?: string;
   Warehouse?: string & WarehouseModel;
@@ -211,6 +214,8 @@ export class WarehouseGoodsContainerModel {
   X?: string;
   Y?: string;
   Z?: string;
+  Shelf?: string;
+  ShelfName?: string;
 }
 
 export class WarehouseBookModel {
@@ -234,7 +239,9 @@ export class WarehouseGoodsInContainerModel {
   Warehouse?: string & WarehouseModel;
   Goods?: string & GoodsModel;
   Unit?: string & UnitModel;
+  UnitLabel?: string;
   Container?: string & WarehouseGoodsContainerModel;
+  GoodsThumbnail?: ImageModel;
 }
 
 export class GoodsModel extends ProductModel {

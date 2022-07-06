@@ -39,7 +39,7 @@ export class AgSelectEditorComponent implements ICellEditorComp {
     this.eInput.focus();
     this.eInput.select();
   }
-  init?(params: ICellEditorParams): void | import('@ag-grid-community/all-modules').Promise<void> {
+  init?(params: ICellEditorParams): void {
     this.eInput = document.createElement('input');
     this.eInput.value = params.value;
   }
@@ -47,6 +47,8 @@ export class AgSelectEditorComponent implements ICellEditorComp {
 }
 
 export class AgSelectEditorParam implements ICellEditorParams {
+  key: string;
+  eventKey: string;
   value: any;
   keyPress: number;
   charPress: string;

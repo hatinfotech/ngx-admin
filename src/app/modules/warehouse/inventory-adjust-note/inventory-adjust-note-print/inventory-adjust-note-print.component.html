@@ -35,7 +35,7 @@
             <table style="width: 100%;" class="print-voucher-detail-table">
               <tr class="print-voucher-detail-header">
                 <th>#</th>
-                <th>{{'Common.description' | translate | headtitlecase}}</th>
+                <th>{{'Common.goods' | translate | headtitlecase}}</th>
                 <th>{{'Warehouse.container' | translate | headtitlecase}}</th>
                 <th class="">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                 <th class="text-align-right nowrap">{{'Warehouse.theoryInventory' | translate | headtitlecase}}</th>
@@ -49,7 +49,7 @@
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                   <td>{{detail.No}}</td>
                   <td><span [innerHTML]="detail.Description"></span> <br>ID: {{detail.Product | objectid}} - SKU: {{detail.Product?.Sku}}</td>
-                  <td class="">{{detail.Container?.FindOrder}} - {{detail.Container | objecttext}}</td>
+                  <td class="">{{detail.Container?.FindOrder}} - {{detail.Container.ShelfName}}</td>
                   <td class="">{{detail.Unit | objecttext}}</td>
                   <td class="text-align-right">{{renderValue(detail.Inventory) | number}}</td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
@@ -84,7 +84,7 @@
       </span>
     </nb-card-footer>
     <nb-card-footer>
-      <i>Chú ý: {{this.commonService.getObjectId(data.State) != 'APPROVED' ? 'Tồn kho lý thuyết tính tới thời điểm hiện tại vì phiếu này chưa được duyệt!' : 'Tồn kho lý thuyết tại thời điểm duyệt phiếu vì phiếu này đã duyệt'}}</i>
+      <i>Chú ý: {{this.commonService.getObjectId(data.State) != 'APPROVED' ? 'Tồn kho lý thuyết tính tới thời điểm hiện tại vì phiếu này chưa được duyệt!' : 'Tồn kho lý thuyết tại thời điểm duyệt phiếu vì phiếu này đã duyệt'}}<br>Nếu tồn thực tế lớn hơn số lượng hàng hóa có thể quét được mã vạch thì hệ thống sẽ tự động tạo mã cho các hàng hóa đã mất mã truy xuất !</i>
     </nb-card-footer>
     <nb-card-footer>
       <div class="buttons-row">

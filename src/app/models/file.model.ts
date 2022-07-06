@@ -35,3 +35,25 @@ export class FileStoreModel {
   constructor() { }
 
 }
+
+
+export interface ImageModel {
+  Id?: string;
+  Thumbnail?: string;
+  SmallImage?: string;
+  LargeImage?: string;
+  OriginImage?: string;
+  ClassName?: string;
+  Created?: string;
+  Description?: string;
+  DownloadLink?: string;
+  Extension?: string;
+  Filename?: string;
+  Name?: string;
+  Owner?: string;
+  Protected?: string;
+  Revision?: string;
+  Store?: string;
+  Type?: string;
+  Updated?: string;
+}

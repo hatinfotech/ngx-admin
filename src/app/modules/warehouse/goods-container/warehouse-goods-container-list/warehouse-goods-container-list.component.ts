@@ -2,7 +2,7 @@ import { ActionControl } from './../../../../lib/custom-element/action-control-l
 import { UnitModel } from './../../../../models/unit.model';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { WarehouseGoodsContainerPrintComponent } from './../warehouse-goods-container-print/warehouse-goods-container-print.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { WarehouseGoodsContainerFormComponent } from '../warehouse-goods-container-form/warehouse-goods-container-form.component';
@@ -28,6 +28,8 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
   apiPath = '/warehouse/goods-containers';
   idKey = 'Code';
   formDialog = WarehouseGoodsContainerFormComponent;
+
+  @Input() inputFilter: any;
 
   constructor(
     public apiService: ApiService,
@@ -173,13 +175,21 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
       // delete: this.configDeleteButton(),
       // pager: this.configPaging(),
       columns: {
+        Shelf: {
+          title: this.commonService.translateText('Kệ'),
+          type: 'string',
+          width: '5%',
+          valuePrepareFunction: (cell, row) => {
+            return row.ShelfName;
+          }
+        },
         Path: {
           title: this.commonService.translateText('Common.path'),
           type: 'string',
           width: '30%',
         },
-        Description: {
-          title: this.commonService.translateText('Common.description'),
+        Name: {
+          title: this.commonService.translateText('Common.name'),
           type: 'string',
           width: '20%',
         },
@@ -332,6 +342,10 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
       params['includeGoods'] = true;
       params['includeIdText'] = true;
       params['sort_Id'] = 'desc';
+
+      if (this.inputFilter) {
+        params = { ...params, ...this.inputFilter };
+      }
       return params;
     };
 

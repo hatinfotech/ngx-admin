@@ -90,7 +90,7 @@ export class ShowcaseDialogComponent implements AfterViewInit, OnInit {
       const nativeEle = dialog.componentRef.location.nativeElement;
       // tslint:disable-next-line: ban
       $(nativeEle).closest('.cdk-global-overlay-wrapper').addClass('dialog');
-      $(nativeEle).find('.buttons-row button.is-focus')[0].focus();
+      $(nativeEle).find('.buttons-row button.is-focus')[0]?.focus();
     }
     this.onAfterInit && this.onAfterInit();
   }

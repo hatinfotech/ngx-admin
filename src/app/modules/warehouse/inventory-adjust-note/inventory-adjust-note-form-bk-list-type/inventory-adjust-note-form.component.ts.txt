@@ -1,20 +1,19 @@
-import { WarehouseGoodsInContainerModel } from './../../../../models/warehouse.model';
-import { WarehouseGoodsContainerListComponent } from './../../goods-container/warehouse-goods-container-list/warehouse-goods-container-list.component';
+import { SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { Select2Component } from '../../../../../vendor/ng2select2 copy/lib/ng2-select2.component';
-import { ProductUnitModel } from '../../../../models/product.model';
-import { WarehouseGoodsContainerModel, WarehouseInventoryAdjustNoteDetailModel, WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
+import { ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel, ProductUnitModel } from '../../../../models/product.model';
+import { GoodsModel, WarehouseGoodsContainerModel, WarehouseInventoryAdjustNoteDetailModel, WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition, NbThemeService } from '@nebular/theme';
+import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
-import { SalesVoucherModel } from '../../../../models/sales.model';
+import { SalesMasterPriceTableDetailModel, SalesVoucherModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
@@ -24,43 +23,23 @@ import { BusinessModel } from '../../../../models/accounting.model';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { SystemConfigModel } from '../../../../models/model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
-import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
+import { _ } from 'ag-grid-community';
 import { AssignNewContainerFormComponent } from '../../goods/assign-new-containers-form/assign-new-containers-form.component';
 import { WarehouseGoodsContainerFormComponent } from '../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
-@Component({
-  selector: 'btn-cell-renderer',
-  template: `
-    <button nbButton [outline]="true" status="danger" (click)="btnClickedHandler($event)" size="small" hero fullWidth>
-        <nb-icon pack="eva" icon="minus-circle-outline"></nb-icon>{{'Gở' | translate | headtitlecase}}
-    </button>
-  `,
-})
-export class BtnCellRenderer implements ICellRendererAngularComp, OnDestroy {
-  refresh(params: ICellRendererParams): boolean {
-    throw new Error('Method not implemented.');
-  }
-  private params: any;
-
-  agInit(params: any): void {
-    this.params = params;
-  }
-
-  btnClickedHandler(event) {
-    this.params.clicked(this.params);
-  }
-
-  ngOnDestroy() {
-    // no need to remove the button click handler 
-    // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
-  }
-}
+import { SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent, SmartTableNumberEditableComponent, SmartTableSelect2EditableComponent, SmartTableTagComponent, SmartTableTextEditableComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
+import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from '../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
+import { AssignContainerFormComponent } from '../../goods/assign-containers-form/assign-containers-form.component';
+import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
   selector: 'ngx-inventory-adjust-note-form',
@@ -245,7 +224,6 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }];
 
   systemConfigs: SystemConfigModel;
-  themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -257,139 +235,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     public commonService: CommonService,
     public ref: NbDialogRef<WarehouseInventoryAdjustNoteFormComponent>,
     public adminProductService: AdminProductService,
-    public themeService: NbThemeService
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-
-    this.themeService.onThemeChange().pipe(map(({ name }) => name), takeUntil(this.destroy$)).subscribe(theme => {
-      this.themeName = theme == 'default' ? '' : theme;
-    })
-
-
-
-
-    /** AG-Grid */
-    this.columnDefs = [
-      {
-        headerName: '#',
-        width: 52,
-        valueGetter: 'node.data.No',
-        cellRenderer: 'loadingCellRenderer',
-        sortable: false,
-        pinned: 'left',
-      },
-      {
-        headerName: 'Hình',
-        field: 'Image',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-        cellRenderer: 'imageRender',
-      },
-      {
-        headerName: 'Mô tả',
-        field: 'Description',
-        width: 400,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-      },
-      {
-        headerName: 'Đơn vị tính',
-        field: 'Unit',
-        width: 110,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Kệ',
-        field: 'Shelf',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Kho',
-        field: 'Warehouse',
-        width: 200,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Vị trí',
-        field: 'Container',
-        width: 300,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'ID',
-        field: 'Product',
-        width: 110,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        cellRenderer: 'idRender',
-      },
-      {
-        headerName: 'Sku',
-        field: 'Sku',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'left',
-      },
-      {
-        headerName: 'Tồn thực tế',
-        field: 'Quantity',
-        width: 110,
-        filter: 'agTextColumnFilter',
-        pinned: 'right',
-        cellRenderer: 'numberRender',
-        editable: true
-      },
-      {
-        headerName: 'Số truy xuất',
-        field: 'AccessNumbers',
-        width: 210,
-        filter: 'agTextColumnFilter',
-        pinned: 'right',
-        cellRenderer: 'idRender',
-      },
-      {
-        headerName: 'Action',
-        field: 'id',
-        width: 110,
-        filter: 'agTextColumnFilter',
-        pinned: 'right',
-        cellRenderer: 'btnCellRenderer',
-        cellRendererParams: {
-          clicked: (params: { node: RowNode, data: WarehouseInventoryAdjustNoteDetailModel, api: GridApi } & { [key: string]: any }) => {
-            // alert(`${field} was clicked`);
-            console.log(params);
-
-            // Remove row
-            params.api.applyTransaction({ remove: [params.node.data] });
-
-          },
-        },
-      },
-    ];
-
-    this.pagination = false;
-    this.maxBlocksInCache = 5;
-    this.paginationPageSize = this.cacheBlockSize = 1000;
-    /** End AG-Grid */
-
-
-
-
-
-
-
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
@@ -455,354 +302,6 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       }
     }];
   }
-
-
-
-
-
-  /** AG-Grid */
-  public gridApi: GridApi;
-  public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
-  public dataSource: IDatasource;
-  public columnDefs: ColDef[];
-  public rowSelection = 'single';
-  // public rowModelType = 'infinite';
-  public rowModelType = 'clientSide';
-  public paginationPageSize: number;
-  public cacheOverflowSize = 2;
-  public maxConcurrentDatasourceRequests = 2;
-  public infiniteInitialRowCount = 1;
-  public maxBlocksInCache: number;
-  public cacheBlockSize: number;
-  public rowData: WarehouseInventoryAdjustNoteDetailModel[];
-  public gridParams;
-  public multiSortKey = 'ctrl';
-  public rowDragManaged = false;
-  public getRowHeight;
-  public rowHeight: number = 50;
-  public hadRowsSelected = false;
-  public pagination: boolean;
-  public emailAddressListDetails: WarehouseInventoryAdjustNoteDetailModel[] = [];
-  // public suppressKeyboardEvent = (event) => {
-  //   console.log(event);
-  // };
-  public defaultColDef = {
-    sortable: true,
-    resizable: true,
-    // suppressSizeToFit: true,
-
-    suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => {
-      if (!params.editing) {
-
-        let isDeleteKey = params.event.key === 'Delete';
-
-        // Delete selected rows with back space
-        if (isDeleteKey) {
-          // const selectedRows: RowNode[] = params.api.getSelectedRows();
-          const selectedNodes: RowNode[] = params.api.getSelectedNodes();
-          const currentIndex = selectedNodes[0].rowIndex;
-          let prevNode: RowNode, prevIndex: number, nextNode: RowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
-
-          // Find Next and Prev Node
-          params.api.forEachNode((node, index) => {
-            if (wasFoundCurrnet === true) {
-              nextNode = node;
-              nextIndex = index;
-              wasFoundCurrnet = null;
-              // wasFoundPrevNode = true;
-            }
-            if (index === currentIndex) {
-              wasFoundCurrnet = true;
-            }
-            if (wasFoundCurrnet === false) {
-              prevNode = node;
-              prevIndex = index;
-            }
-            // nextId = index;
-          });
-
-          // Remove
-          params.api.applyTransaction({ remove: [selectedNodes[0].data] });
-
-          // Select alternate node
-          if (nextNode) {
-            nextNode.setSelected(true, true);
-            params.api.ensureIndexVisible(nextIndex);
-          } else if (prevNode) {
-            prevNode.setSelected(true, true);
-            params.api.ensureIndexVisible(prevIndex);
-          }
-          return true;
-        }
-
-        // Barcode scan detative
-        // this.barcodeScanDetective(params.event.key, barcode => {
-        //   this.barcodeProcess(barcode);
-        // });
-
-        return false;
-      }
-    }
-
-  };
-  public getRowNodeId = (item: WarehouseInventoryAdjustNoteDetailModel) => {
-    return this.commonService.getObjectId(item.Product) + '-' + this.commonService.getObjectId(item.Unit);
-  }
-  public getRowStyle = (params: { node: RowNode }) => {
-    // if (params.node.rowIndex == this.activeDetailIndex) {
-    //   return { background: '#ffc107' };
-    // }
-  };
-
-  async createNewContainer(productId: string, unitId: string): Promise<WarehouseGoodsContainerModel> {
-    return new Promise((resolve, reject) => {
-      this.commonService.openDialog(AssignNewContainerFormComponent, {
-        context: {
-          inputMode: 'dialog',
-          inputGoodsList: [{ Code: productId, WarehouseUnit: unitId as any }],
-          onDialogSave: (newData: WarehouseGoodsContainerModel[]) => {
-            resolve(newData[0]);
-          },
-          onDialogClose: () => {
-            resolve(null);
-          },
-        },
-        closeOnEsc: false,
-        closeOnBackdropClick: false,
-      });
-    });
-  }
-
-  async openCreateOfPreviewContainersDialog(productId: string, productName: string, unitId: string, containers: string[]) {
-    return new Promise<WarehouseGoodsContainerModel>((resolve, reject) => {
-      this.commonService.showDialog('Vị trí hàng hóa', `«${productName}» đã có vị trí! Bạn vẫn muốn tạo thêm vị trí mới hay xem lại các vị trí liên quan ?`, [
-        {
-          label: 'Tạo mới',
-          status: 'danger',
-          action: async () => {
-            await this.createNewContainer(productId, unitId).then(container => {
-              // params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
-              // params.node.setDataValue('Container', { id: container.Code, text: container.Path });
-
-              // // Update row data
-              // params.data.Containers.push({ ...container, id: container.Code, text: container.Path });
-              // params.node.setData({ ...params.data, Containers: params.data.Containers });
-
-              resolve(container);
-            });
-            return true;
-          }
-        },
-        {
-          label: 'Xem lại',
-          status: 'primary',
-          action: () => {
-            this.commonService.openDialog(WarehouseGoodsContainerListComponent, {
-              context: {
-                // isChoosedMode: true,
-                inputFilter: {
-                  eq_Code: '[' + containers.join(',') + ']'
-                },
-                onDialogChoose: (containers => {
-                  console.log(containers);
-                  resolve(containers[0]);
-                })
-              }
-            });
-            return true;
-          }
-        }
-      ], () => {
-        // resolve(null);
-      });
-    });
-  }
-
-  public cellDoubleClicked = (params: CellDoubleClickedEvent) => {
-    console.log(params);
-    const shelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
-    if (params.colDef.field == 'Shelf' || params.colDef.field == 'Container') {
-      if (!params.data.Containers || params.data.Containers.length == 0) {
-
-        this.createNewContainer(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectId(params.data.Unit)).then(container => {
-          params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
-          params.node.setDataValue('Warehouse', container.Warehouse);
-          params.node.setDataValue('Container', { id: container.Code, text: container.Path, Shelf: { id: container.Shelf, text: container.ShelfName }, Warehouse: container.Warehouse });
-        });
-
-      } else {
-        this.openCreateOfPreviewContainersDialog(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectText(params.data.Product), this.commonService.getObjectId(params.data.Unit), params.data.Containers.map(m => this.commonService.getObjectId(m))).then(container => {
-          if (this.commonService.getObjectId(shelf) && container.Shelf != this.commonService.getObjectId(shelf)) {
-            this.commonService.toastService.show(`Vị trí vừa chọn không thuộc kệ «${this.commonService.getObjectText(shelf)}»`, 'Không đúng kệ đang kiểm kho', { status: 'warning', duration: 10000 });
-          } else {
-            params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
-            params.node.setDataValue('Warehouse', container.Warehouse);
-            params.node.setDataValue('Container', { id: container.Code, text: container.Path, Shelf: { id: container.Shelf, text: container.ShelfName }, Warehouse: container.Warehouse });
-
-            // Update row data
-            params.data.Containers.push({ ...container, id: container.Code, text: container.Path });
-            params.node.setData({ ...params.data, Containers: params.data.Containers });
-          }
-        });
-      }
-    }
-    if (params.colDef.field == 'AccessNumbers') {
-      this.commonService.showDialog('Số truy xuất', Array.isArray(params.data.AccessNumbers) ? params.data.AccessNumbers.join(', ') : '', []);
-    }
-  };
-
-
-  public components = {
-    loadingCellRenderer: (params) => {
-      if (params.value) {
-        return params.value;
-      } else {
-        return '<img src="assets/images/loading.gif">';
-      }
-    },
-    textRender: (params) => {
-      if (params.colDef.field == 'Shelf' || params.colDef.field == 'Container') {
-        if (!this.commonService.getObjectId(params.value) || typeof this.commonService.getObjectId(params.value) == 'undefined') {
-          return 'Double click để thay đổi vị trí';
-        }
-      }
-      if (params.colDef.field == 'Warehouse') {
-        return this.commonService.getObjectText(params.data.Warehouse);
-      }
-      if (params.colDef.field == 'Sku') {
-        return params.data.Product?.Sku;
-      }
-      if (Array.isArray(params.value)) {
-        return params.value.map(m => this.commonService.getObjectText(m)).join(', ');
-      } else {
-        return this.commonService.getObjectText(params.value);
-      }
-    },
-    idRender: (params) => {
-      if (Array.isArray(params.value)) {
-        return params.value.map(m => this.commonService.getObjectId(m)).join(', ');
-      } else {
-        return this.commonService.getObjectId(params.value);
-      }
-    },
-    numberRender: (params) => {
-      return params.value;
-    },
-    imageRender: (params) => {
-      let image = params.value;
-      if (Array.isArray(params.value)) {
-        image = params.value[0];
-      }
-      return image?.Thumbnail ? '<img style="height: 45px" src="' + image?.Thumbnail + '">' : '';
-    },
-    // btnCellRenderer: (params) => {
-    //   return `<button onClick={this.btnClickedHandler}>Remove</button>`;
-    // },
-    btnCellRenderer: BtnCellRenderer
-  };
-  onGridReady(params) {
-    this.gridParams = params;
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-
-    this.loadList();
-
-  }
-  onColumnResized() {
-    this.gridApi.resetRowHeights();
-  }
-  onRowSelected() {
-    this.updateActionState();
-  }
-  updateActionState() {
-    this.hadRowsSelected = this.getSelectedRows().length > 0;
-  }
-  getSelectedRows() {
-    return this.gridApi.getSelectedRows();
-  }
-  loadList(callback?: (list: WarehouseInventoryAdjustNoteDetailModel[]) => void) {
-
-    if (this.gridApi) {
-      // this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
-
-      let details: WarehouseInventoryAdjustNoteDetailModel[] = (this.array.controls[0]['Details'] || []).map((detail: WarehouseInventoryAdjustNoteDetailModel) => {
-        if (detail.Container) {
-          detail.Shelf = { id: detail.Container.Shelf, text: detail.Container.ShelfName };
-        }
-        detail.AccessNumbers = detail.AccessNumbers ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [];
-        return detail;
-      });
-      this.gridApi.setRowData(details);
-      // this.gridApi.applyTransaction({
-      //   add: details
-      // });
-
-    }
-
-  }
-
-  initDataSource() {
-    this.dataSource = {
-      rowCount: null,
-      getRows: (getRowParams: IGetRowsParams) => {
-        console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
-
-        // const query = { limit: this.paginationPageSize, offset: getRowParams.startRow };
-        // getRowParams.sortModel.forEach(sortItem => {
-        //   query['sort_' + sortItem['colId']] = sortItem['sort'];
-        // });
-        // Object.keys(getRowParams.filterModel).forEach(key => {
-        //   const condition: { filter: string, filterType: string, type: string } = getRowParams.filterModel[key];
-        //   query['filter_' + key] = condition.filter;
-        // });
-
-        // query['noCount'] = true;
-        // query['filter_AddressList'] = this.id[0] ? this.id[0] : 'X';
-
-        // new Promise<(WarehouseInventoryAdjustNoteDetailModel & { Message?: string })[]>((resolve2, reject2) => {
-        //   // if (this.updateMode === 'live' || this.smsSendList.length === 0) {
-        //   this.apiService.getPromise<WarehouseInventoryAdjustNoteDetailModel[]>('/email-marketing/address-list-details', query).then(emailAddressListDetails => {
-        //     emailAddressListDetails.forEach((item, index) => {
-        //       item['No'] = (getRowParams.startRow + index + 1);
-        //       item['id'] = item[this.idKey];
-        //     });
-
-        //     this.emailAddressListDetails = emailAddressListDetails;
-        //     resolve2(emailAddressListDetails);
-
-        //   }).catch(e => reject2(e));
-        // }).then(details => {
-        let details: WarehouseInventoryAdjustNoteDetailModel[] = (this.array.controls[0]['Details'] as []).slice(getRowParams.startRow, getRowParams.endRow);
-        // for (let i = 0; i < 100; i++) {
-        //   // for (const detail of details) {
-        //   details.push({ Code: new Date().getTime() + i, No: details.length + 1, Description: '23432432432' });
-        //   // }
-        // }
-        let lastRow = -1;
-        if (details.length < this.paginationPageSize) {
-          lastRow = getRowParams.startRow + details.length;
-        }
-        getRowParams.successCallback(details, lastRow);
-        this.gridApi.resetRowHeights();
-        // const allColumnIds: string[] = [];
-        // this.gridColumnApi.getAllColumns()!.forEach((column) => {
-        //   allColumnIds.push(column.getId());
-        // });
-        // this.gridColumnApi.sizeColumnsToFit(allColumnIds);
-        // });
-
-      },
-    };
-  }
-  /** End AG-Grid */
-
-
-
-
-
-
-
 
   customIconsForContainer: { [key: string]: CustomIcon[] } = {};
   getCustomIconsForContainer(name: string): CustomIcon[] {
@@ -1031,7 +530,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   private unitMap: { [key: string]: ProductUnitModel } = {};
   private shelfList: WarehouseGoodsContainerModel[] = null;
   async init(): Promise<boolean> {
-
+    this.initDataSource();
     /** Load and cache tax list */
     // if (!PurchaseOrderVoucherFormComponent._taxList) {
     //   this.taxList = PurchaseOrderVoucherFormComponent._taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
@@ -1112,48 +611,34 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // Details form load
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
-        newForm['Details'] = itemFormData.Details.map((detail: WarehouseInventoryAdjustNoteDetailModel) => {
-          if (detail.Container) {
-            detail.Shelf = detail.Container && detail.Container.Shelf ? { id: detail.Container.Shelf, text: detail.Container.ShelfName } : null;
-            detail.Warehouse = detail.Container && detail.Container.Warehouse ? { id: detail.Container.Warehouse, text: detail.Container.WarehouseName } : null;
-            detail.Containers = [detail.Container];
-          }
-          return detail;
-        });
 
-        if (this.gridApi) {
-          this.loadList();
-        }
-
-        // this.initDataSource();
         // Get product unit info
         let goodsList = [];
         let page = 1;
         const limit = 50;
-        // while (true) {
-        //   const ids = itemFormData.Details.slice((page - 1) * limit, page * limit).map(m => `${this.commonService.getObjectId(m.Product)}-${this.commonService.getObjectId(m.Unit)}`);
-        //   if (ids.length == 0) break;
-        //   const pageList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
-        //     select: 'Code',
-        //     includeUnit: true,
-        //     includeContainers: true,
-        //     id: ids,
-        //     limit: 'nolimit'
-        //   }).then(goodsList => {
-        //     return goodsList;
-        //   });
-        //   if (pageList.length == 0) {
-        //     break;
-        //   }
-        //   goodsList = goodsList.concat(pageList);
-        //   page++;
-        // }
+        while (true) {
+          const ids = itemFormData.Details.slice((page - 1) * limit, page * limit).map(m => `${this.commonService.getObjectId(m.Product)}-${this.commonService.getObjectId(m.Unit)}`);
+          if (ids.length == 0) break;
+          const pageList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+            select: 'Code',
+            includeUnit: true,
+            includeContainers: true,
+            id: ids,
+            limit: 'nolimit'
+          }).then(goodsList => {
+            return goodsList;
+          });
+          if (pageList.length == 0) {
+            break;
+          }
+          goodsList = goodsList.concat(pageList);
+          page++;
+        }
 
-        // const goodsListIndex = {};
-        // for (const goods of goodsList) {
-        //   goodsListIndex[`${goods.Code}-${this.commonService.getObjectId(goods.ConversionUnit)}`] = goods;
-        // }
-
+        const goodsListIndex = {};
+        for (const goods of goodsList) {
+          goodsListIndex[`${goods.Code}-${this.commonService.getObjectId(goods.ConversionUnit)}`] = goods;
+        }
 
         // for (let id = 0; id < itemFormData.Details.length; id++) {
         //   const detail = itemFormData.Details[id];
@@ -1198,6 +683,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         // }
 
         // this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+
+
+      }
+
+      // this.loadList(itemFormData.Details);
+      for (const detail of itemFormData.Details) {
+        this.source.append(detail);
       }
 
       // Direct callback
@@ -1249,18 +741,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       RelativeVouchers: [],
       Shelf: [],
       _total: [''],
-      // Details: this.formBuilder.array([]),
+      Details: this.formBuilder.array([]),
     });
     if (data) {
       // data['Code_old'] = data['Code'];
       newForm.patchValue(data);
-      if (data.Details) {
-        newForm['Details'] = data.Details;
-      }
+    } else {
+      this.addDetailFormGroup(newForm);
     }
-    // else {
-    // this.addDetailFormGroup(newForm);
-    // }
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: WarehouseInventoryAdjustNoteModel): void {
@@ -1335,274 +823,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     return parentFormGroup.get('Details') as FormArray;
   }
   addDetailFormGroup(parentFormGroup: FormGroup) {
-    // const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
-    // const detailsFormArray = this.getDetails(parentFormGroup);
-    // detailsFormArray.push(newChildFormGroup);
-    // const noFormControl = newChildFormGroup.get('No');
-    // if (!noFormControl.value) {
-    //   noFormControl.setValue(detailsFormArray.length);
-    // }
-    // this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
-
-    let goodsField: FormControl = null;
-    let unitField: FormControl = null;
-    let unitList: UnitModel[] = [];
-    let containerList: WarehouseGoodsContainerModel[] = [];
-    this.commonService.openDialog(DialogFormComponent, {
-      context: {
-        title: 'Thêm hàng hóa theo tên',
-        onInit: async (form, dialog) => {
-          goodsField = form.get('Goods') as FormControl;
-          unitField = form.get('Unit') as FormControl;
-
-          goodsField.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(goods => {
-            unitList = goods.Units || [];
-          });
-          unitField.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(unit => {
-            this.apiService.getPromise<any[]>('/warehouse/goods', {
-              select: 'Code',
-              includeUnit: true,
-              includeContainers: true,
-              includeAccessNumbers: true,
-              eq_Code: this.commonService.getObjectId(goodsField.value),
-              eq_ConversionUnit: this.commonService.getObjectId(unitField.value),
-            }).then(goodsList => {
-              // const results = [];
-              if (goodsList && goodsList.length > 0) {
-                if (goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
-                  // detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
-                } else {
-                  // detail['IsManageByAccessNumber'] = false;
-                }
-                containerList = goodsList[0].Containers.map(m => ({
-                  // ...m,
-                  Shelf: m.ContainerShelf,
-                  ShelfName: m.ContainerShelfName,
-                  Warehouse: m.Warehouse,
-                  WarehouseName: m.WarehouseName,
-                  AccessNumbers: m?.AccessNumbers,
-                  // AccessNumbers: m?.AccessNumbers?.map(an => ({ id: an, text: an })),
-                  id: m.Container,
-                  text: `${m.ContainerFindOrder} - ${m.WarehouseName}/${m.ContainerShelfName}`
-                }));
-              }
-              return [];
-            });
-          });
-          return true;
-        },
-        controls: [
-          {
-            name: 'Goods',
-            label: 'Hàng hóa',
-            placeholder: 'Chọn hàng hóa',
-            type: 'select2',
-            initValue: null,
-            // focus: true,
-            option: {
-              placeholder: 'Chọn hàng hóa...',
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 1,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              ajax: {
-                transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-                  console.log(settings);
-                  this.apiService.getPromise('/admin-product/products', { search: settings.data['term'] ? settings.data['term'] : '', includeIdText: true, includeUnits: true, limit: 20 }).then(rs => {
-                    success(rs);
-                  }).catch(err => {
-                    console.error(err);
-                    failure();
-                  });
-                },
-                delay: 300,
-                processResults: (data: any, params: any) => {
-                  // console.info(data, params);
-                  return {
-                    results: data,
-                  };
-                },
-              },
-            }
-          },
-          {
-            name: 'Unit',
-            label: 'Đơn vị tính',
-            placeholder: 'Chọn đơn vị tính',
-            type: 'select2',
-            initValue: null,
-            // focus: true,
-            option: {
-              placeholder: 'Chọn đơn vị tính...',
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              ajax: {
-                url: (params: any) => {
-                  return 'data:text/plan,[]';
-                },
-                delay: 0,
-                processResults: (data: any, params: any) => {
-                  return {
-                    results: unitList.filter(unit => !params.term || this.commonService.smartFilter(unit.text, params.term)),
-                  };
-                },
-              },
-            }
-          },
-          {
-            name: 'Container',
-            label: 'Vị trí',
-            placeholder: 'Chọn vị trí',
-            type: 'select2',
-            initValue: null,
-            // focus: true,
-            option: {
-              placeholder: 'Chọn vị trí...',
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              ajax: {
-                url: (params: any) => {
-                  return 'data:text/plan,[]';
-                },
-                delay: 0,
-                processResults: (data: any, params: any) => {
-                  return {
-                    results: containerList.filter(unit => !params.term || this.commonService.smartFilter(unit.text, params.term)),
-                  };
-                },
-              },
-            }
-          },
-        ],
-        actions: [
-          {
-            label: 'Esc - Trở về',
-            icon: 'back',
-            status: 'basic',
-            keyShortcut: 'Escape',
-            action: () => { return true; },
-          },
-          {
-            label: 'Thêm',
-            icon: 'generate',
-            status: 'success',
-            // keyShortcut: 'Enter',
-            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
-
-              console.log(form.value);
-
-              // Get all container of shelf
-              this.isProcessing = true;
-              try {
-                const data = form.value;
-                const accessNumber = '';
-                const goods: any = {
-                  Code: data.Goods.Code,
-                  Name: data.Goods.Name,
-                  WarehouseUnit: data.Unit,
-                  Pictures: data.Goods.Pictures,
-                  Containers: containerList,
-                  Container: data.Container,
-                  Warehouse: data.Container.Warehouse,
-                  WarehouseName: data.Container.WarehouseName,
-                };
-
-                let container = null;
-                if (goods.Containers && goods.Containers.length > 0) {
-
-                  const selectedShelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
-
-                  if (selectedShelf) {
-                    container = goods.Containers.find(f => f.Shelf == selectedShelf);
-                    if (container) {
-                      container.selected = true;
-                      this.playNewPipSound();
-                    } else {
-                      this.commonService.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
-                      this.playErrorPipSound();
-                    }
-                  } else {
-                    if (accessNumber) {
-                      container = goods.Containers.find(f => Array.isArray(f.AccessNumbers) && f.AccessNumbers.some(s => s == accessNumber));
-                      if (!container) {
-                        this.commonService.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
-                        this.playErrorPipSound();
-                      } else {
-                        container.selected = true;
-                        this.playNewPipSound();
-                      }
-                    }
-                  }
-                } else {
-                  this.playErrorPipSound();
-                  this.commonService.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
-                }
-                const newRowNodeTrans = this.gridApi.applyTransaction({
-                  add: [
-                    {
-                      No: this.gridApi.getDisplayedRowCount() + 1,
-                      Product: { id: goods.Code, text: goods.Name, Sku: goods.Sku },
-                      Description: goods.Name,
-                      Unit: goods.WarehouseUnit,
-                      Container: container || null,
-                      Containers: goods.Containers,
-                      Shelf: {
-                        id: container?.Shelf,
-                        text: container?.ShelfName,
-                      },
-                      Warehouse: {
-                        id: container?.Warehouse,
-                        text: container?.WarehouseName,
-                      },
-                      AccessNumbers: accessNumber ? [accessNumber] : [],
-                      Quantity: accessNumber ? 1 : 0,
-                      Image: goods.Pictures
-                    }
-                  ]
-                });
-
-                if (newRowNodeTrans && newRowNodeTrans.add && newRowNodeTrans.add.length > 0) {
-                  newRowNodeTrans.add[0].setSelected(true);
-                  setTimeout(() => {
-                    this.gridApi.ensureIndexVisible(newRowNodeTrans.add[0].rowIndex, 'middle');
-                  }, 0);
-                }
-                this.isProcessing = false;
-              } catch (err) {
-                console.error(err);
-                this.isProcessing = false;
-              }
-
-
-
-
-
-
-              // formDialogConpoent.dismiss();
-
-              return true;
-            },
-          },
-        ],
-      },
-    });
-
+    const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
+    const detailsFormArray = this.getDetails(parentFormGroup);
+    detailsFormArray.push(newChildFormGroup);
+    const noFormControl = newChildFormGroup.get('No');
+    if (!noFormControl.value) {
+      noFormControl.setValue(detailsFormArray.length);
+    }
+    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
@@ -1750,7 +978,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     // console.log(selectedData);
     const selectedShelf = parentForm && this.commonService.getObjectId(parentForm.get('Shelf').value) || null;
     if (selectedShelf && selectedData?.ContainerShelf && selectedData?.ContainerShelf != selectedShelf) {
-      this.commonService.toastService.show('Vị trí hàng hóa không đúng kệ đã chọn', 'Vị trí hàng hóa không đúng kệ đã chọn', { status: 'warning', duration: 10000 });
+      this.commonService.toastService.show('Vị trí hàng hóa không đúng kệ đã chọn', 'Vị trí hàng hóa không đúng kệ đã chọn', { status: 'warning' });
       // this.errorSound.nativeElement.pause();
       // this.errorSound.nativeElement.currentTime = 0;
       this.playErrorPipSound();
@@ -1859,37 +1087,22 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           item[prop] = this.commonService.getObjectId(item[prop]);
         }
       }
-      // for (const detail of item.Details) {
-      //   for (const prop in detail) {
-      //     if (prop != 'AccessNumbers') {
-      //       detail[prop] = this.commonService.getObjectId(detail[prop]);
-      //     }
-      //   }
-      //   if (typeof detail.AccessNumbers == 'string') {
-      //     detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').filter(ac => !!ac).map(ac => {
-      //       if (/^127/.test(ac)) {
-      //         return { id: ac, text: ac };
-      //       }
-      //       const acd = this.commonService.decompileAccessNumber(ac);
-      //       return { id: acd.accessNumber, text: acd.accessNumber };
-      //     });
-      //   }
-      // }
-
-      // Get details data from ag-grid
-      item.Details = [];
-      this.gridApi.forEachNode((rowNode, index) => {
-        console.log(rowNode, index);
-        const rawDetail = {};
-        for (const prop in rowNode.data) {
-          if (prop == 'AccessNumbers') {
-            rawDetail[prop] = Array.isArray(rowNode.data[prop]) ? rowNode.data[prop].map(m => this.commonService.getObjectId(m)) : [];
-          } else {
-            rawDetail[prop] = this.commonService.getObjectId(rowNode.data[prop]);
+      for (const detail of item.Details) {
+        for (const prop in detail) {
+          if (prop != 'AccessNumbers') {
+            detail[prop] = this.commonService.getObjectId(detail[prop]);
           }
         }
-        item.Details.push(rawDetail);
-      });
+        if (typeof detail.AccessNumbers == 'string') {
+          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').filter(ac => !!ac).map(ac => {
+            if (/^127/.test(ac)) {
+              return { id: ac, text: ac };
+            }
+            const acd = this.commonService.decompileAccessNumber(ac);
+            return { id: acd.accessNumber, text: acd.accessNumber };
+          });
+        }
+      }
     }
     return data;
   }
@@ -1917,12 +1130,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -1961,12 +1174,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                    this.commonService.toastService.show(this.commonService.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -2032,47 +1245,29 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   public barcode = '';
-  barcodeScanDetective(key: string, callback: (barcode: string) => void) {
-    this.barcode += key;
-    this.commonService.takeUntil('barcode-scan-detective', 100, () => {
-      this.barcode = '';
-    });
-    console.log(this.barcode);
-    if (this.barcode && /Enter$/.test(this.barcode)) {
-      try {
-        if (this.barcode.length > 5) {
-          // this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
-          callback(this.barcode.replace(/Enter.*$/, ''));
-        }
-        // this.findOrderKeyInput = '';
-      } catch (err) {
-        this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
-      }
-      this.barcode = '';
-    }
-  }
-
   onKeyboardEvent(event: KeyboardEvent) {
-    // if (this.ref && document.activeElement.tagName == 'BODY') {
-    //   this.barcode += event.key;
-    //   this.commonService.takeUntil('warehouse-receipt-note-barcode-scan', 100, () => {
-    //     this.barcode = '';
-    //   });
-    //   console.log(this.barcode);
-    //   if (this.barcode && /Enter$/.test(this.barcode)) {
-    //     try {
-    //       if (this.barcode.length > 5) {
-    //         this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
-    //       }
-    //     } catch (err) {
-    //       this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
-    //     }
-    //     this.barcode = '';
-    //   }
-    this.barcodeScanDetective(event.key, barcode => {
-      this.barcodeProcess(barcode);
-    });
+    // if(this.commonService.dialogStack) {
+
     // }
+    if (this.ref && document.activeElement.tagName == 'BODY') {
+      this.barcode += event.key;
+      this.commonService.takeUntil('warehouse-receipt-note-barcode-scan', 100, () => {
+        this.barcode = '';
+      });
+      console.log(this.barcode);
+      if (this.barcode && /Enter$/.test(this.barcode)) {
+        try {
+          if (this.barcode.length > 5) {
+            this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
+          }
+          // this.findOrderKeyInput = '';
+        } catch (err) {
+          this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning' });
+        }
+        this.barcode = '';
+      }
+      // });
+    }
     return true;
   }
 
@@ -2125,8 +1320,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       productId = '118' + coreId + productId;
     }
 
-    let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
+    const details = this.getDetails(this.array.controls[0] as FormGroup);
+    let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
+    let existsGoods = details.controls[existGoodsIndex] as FormGroup;
     if (!existsGoods) {
+      if (!this.commonService.getObjectId(details.controls[0]?.get('Product').value)) {
+        details.removeAt(0);
+      }
 
       this.apiService.getPromise<any[]>('/warehouse/goods', {
         includeCategories: true,
@@ -2142,68 +1342,60 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       }).then(rs => {
         console.log(rs);
         const goods = rs[0];
+        existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
+          Product: { Code: goods.Code, id: goods.Code, text: goods.Name },
+          Unit: goods.WarehouseUnit,
+          Container: goods.Container,
+          // AccessNumbers: `${accessNumber}\n`,
+          AccessNumbers: accessNumber ? [accessNumber] : [],
+          Quantity: 1,
+          Description: goods.Name,
+          Image: goods.Pictures
+        } as any);
+        existsGoods['IsManageByAccessNumber'] = true;
+        details.push(existsGoods);
 
-        let container = null;
+
         if (goods.Containers && goods.Containers.length > 0) {
+          // this.errorSound.nativeElement.pause();
+          // this.errorSound.nativeElement.currentTime = 0;
 
           const selectedShelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
 
+          let container = null;
           if (selectedShelf) {
             container = goods.Containers.find(f => f.ContainerShelf == selectedShelf);
             if (container) {
               container.selected = true;
               this.playNewPipSound();
             } else {
-              this.commonService.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
+              this.commonService.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning' });
               this.playErrorPipSound();
             }
           } else {
             if (accessNumber) {
-              container = goods.Containers.find(f => Array.isArray(f.AccessNumbers) && f.AccessNumbers.some(s => s == accessNumber));
+              container = goods.Containers.find(f => f.AccessNumbers.some(s => s == accessNumber));
               if (!container) {
-                this.commonService.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
+                this.commonService.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning' });
                 this.playErrorPipSound();
               } else {
                 container.selected = true;
                 this.playNewPipSound();
               }
+            } else {
+
             }
           }
         } else {
           this.playErrorPipSound();
-          this.commonService.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
+          this.commonService.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning' });
         }
-        const newRowNodeTrans = this.gridApi.applyTransaction({
-          add: [
-            {
-              No: this.gridApi.getDisplayedRowCount() + 1,
-              Product: { id: goods.Code, text: goods.Name, Sku: goods.Sku },
-              Description: goods.Name,
-              Unit: goods.WarehouseUnit,
-              Container: container || null,
-              Containers: goods.Containers,
-              Shelf: {
-                id: container?.ContainerShelf,
-                text: container?.ContainerShelfName,
-              },
-              Warehouse: {
-                id: container?.Warehouse,
-                text: container?.WarehouseName,
-              },
-              AccessNumbers: accessNumber ? [accessNumber] : [],
-              Quantity: accessNumber ? 1 : 0,
-              Image: goods.Pictures
-            }
-          ]
-        });
-
-        if (newRowNodeTrans && newRowNodeTrans.add && newRowNodeTrans.add.length > 0) {
-          newRowNodeTrans.add[0].setSelected(true);
-          setTimeout(() => {
-            this.gridApi.ensureIndexVisible(newRowNodeTrans.add[0].rowIndex, 'middle');
-          }, 0);
-        }
-
+        this.onSelectUnit(existsGoods, { ...unit, IsManageByAccessNumber: true, Containers: goods.Containers });
+        this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+        this.activeDetailIndex = details.length - 1;
+        setTimeout(() => {
+          $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
+        }, 0);
         this.barcodeInPrgress = false;
         if (this.barcodeQueue.length > 0) {
           this.barcodeProcess(this.barcodeQueue.shift());
@@ -2218,25 +1410,26 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
     } else {
       if (accessNumber) {
-        let currentAccessNumbers: string[] = existsGoods.data.AccessNumbers || [];
+        // let currentAccessNumbers: string = existsGoods.get('AccessNumbers').value || '';
+        let currentAccessNumbers: string[] = existsGoods.get('AccessNumbers').value || [];
+        this.activeDetailIndex = existGoodsIndex;
+        $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
         if (currentAccessNumbers.indexOf(accessNumber) < 0) {
-          currentAccessNumbers.push(accessNumber);
-          currentAccessNumbers = [...new Set(currentAccessNumbers)];
-          existsGoods.setDataValue('AccessNumbers', currentAccessNumbers);
-          existsGoods.setDataValue('Quantity', currentAccessNumbers.length);
+          // currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
+          currentAccessNumbers.push(accessNumber)
+          existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
+          // existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
+          existsGoods.get('Quantity').setValue(currentAccessNumbers.length);
           this.playIncreasePipSound();
         } else {
-          this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning', duration: 10000 });
+          this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning' });
           this.playErrorPipSound();
+          $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
         }
       } else {
+        existsGoods.get('Quantity').setValue(parseFloat(existsGoods.get('Quantity').value) + 1);
         this.playIncreasePipSound();
       }
-
-      existsGoods.setSelected(true);
-
-      this.gridApi.ensureIndexVisible(existsGoods.rowIndex, 'middle');
-
       this.barcodeInPrgress = false;
       if (this.barcodeQueue.length > 0) {
         this.barcodeProcess(this.barcodeQueue.shift());
@@ -2247,8 +1440,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   addGoodsOfShelf(parentFormGroup: FormGroup) {
     this.commonService.openDialog(DialogFormComponent, {
       context: {
-        title: 'Chọn kệ cần thêm hàng hóa',
+        title: 'Thay đổi giá bán',
         onInit: async (form, dialog) => {
+          // const price = form.get('Price');
+          // const description = form.get('Description');
+          // price.setValue(parseFloat(activeDetail.get('Price').value));
+          // description.setValue(parseFloat(activeDetail.get('Description').value));
           return true;
         },
         controls: [
@@ -2257,7 +1454,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
             label: 'Kệ hàng hóa',
             placeholder: 'Chọn kệ hàng hóa',
             type: 'select2',
-            initValue: parentFormGroup.get('Shelf').value,
+            initValue: null,
             // focus: true,
             option: {
               placeholder: 'Chọn kệ...',
@@ -2313,88 +1510,32 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 console.log(rs);
 
                 if (rs && rs.length > 0) {
-                  // const details = this.getDetails(this.array.controls[0] as FormGroup);
-
-                  // if (!this.commonService.getObjectId(details.controls[0]?.get('Product').value)) {
-                  //   details.removeAt(0);
-                  // }
-                  let totalRows = this.gridApi.getDisplayedRowCount();
-                  // this.gridApi.forEachNode((rowNode, index) => {
-                  //   totalRows++;
-                  // });
-
-                  let i = 0;
-                  const prepareItems = [];
+                  const details = this.getDetails(this.array.controls[0] as FormGroup);
+                  if (!this.commonService.getObjectId(details.controls[0]?.get('Product').value)) {
+                    details.removeAt(0);
+                  }
                   for (const container of rs) {
-                    container.id = container.Code;
-                    container.text = container.Path;
-                    const goodsInContainer: WarehouseGoodsInContainerModel = container?.GoodsInContainers[0];
-                    if (!goodsInContainer) {
-                      // Skip not enoungh condition
-                      continue;
-                    }
-                    const goods = goodsInContainer.Goods;
-                    const productId = this.commonService.getObjectId(goods), unitId = this.commonService.getObjectId(goodsInContainer.Unit);
-
-                    if (!productId || !unitId) {
-                      // Skip not enoungh condition
-                      continue;
-                    }
-                    i++;
-
-                    // let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == this.commonService.getObjectId(goods) && this.commonService.getObjectId(f.get('Unit').value) == goods.Unit);
-                    // let existsGoods = details.controls[existGoodsIndex] as FormGroup;
-                    let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
+                    const goods = container?.Goods[0];
+                    let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == this.commonService.getObjectId(goods) && this.commonService.getObjectId(f.get('Unit').value) == goods.Unit);
+                    let existsGoods = details.controls[existGoodsIndex] as FormGroup;
                     if (!existsGoods) {
-                      // existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
-                      //   Product: { Code: this.commonService.getObjectId(goods), id: this.commonService.getObjectId(goods), text: this.commonService.getObjectText(goods) },
-                      //   Unit: { id: goods.Unit, text: goods.UnitLabel },
-                      //   Container: { id: container.Code, text: container.Path },
-                      //   AccessNumbers: [],
-                      //   Quantity: 0,
-                      //   Description: container.GoodsName,
-                      //   Image: [goods.GoodsThumbnail]
-                      // } as any);
-                      // existsGoods['IsManageByAccessNumber'] = goods.IsManageByAccessNumber;
-                      // existsGoods['ContainerList'] = [{ id: container.Code, text: container.Path }];
-                      // details.push(existsGoods);
-                      // this.onSelectUnit(existsGoods, { id: goods.Unit, text: goods.UnitLabel, IsManageByAccessNumber: true });
-                      // this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
-                      // this.activeDetailIndex = 0;
-                      prepareItems.push({
-                        No: totalRows + i,
-                        Product: goods,
-                        Description: this.commonService.getObjectText(goods),
-                        Unit: { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel },
-                        Container: container || null,
-                        Containers: [container],
-                        Shelf: {
-                          id: container?.Shelf,
-                          text: container?.ShelfName,
-                        },
+                      existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
+                        Product: { Code: this.commonService.getObjectId(goods), id: this.commonService.getObjectId(goods), text: this.commonService.getObjectText(goods) },
+                        Unit: { id: goods.Unit, text: goods.UnitLabel },
+                        Container: { id: container.Code, text: container.Path },
                         AccessNumbers: [],
                         Quantity: 0,
-                        Image: goodsInContainer.GoodsThumbnail ? [goodsInContainer.GoodsThumbnail] : []
-                      });
-
-                      // if (newRowNodeTrans && newRowNodeTrans.add && newRowNodeTrans.add.length > 0) {
-                      //   // this.activeDetailIndex = newRowNodeTrans.add[0].rowIndex;
-                      //   // newRowNodeTrans.add[0].setSelected(true);
-                      // }
-
+                        Description: container.GoodsName,
+                        Image: [goods.GoodsThumbnail]
+                      } as any);
+                      existsGoods['IsManageByAccessNumber'] = goods.IsManageByAccessNumber;
+                      existsGoods['ContainerList'] = [{ id: container.Code, text: container.Path }];
+                      details.push(existsGoods);
+                      // this.onSelectUnit(existsGoods, { id: goods.Unit, text: goods.UnitLabel, IsManageByAccessNumber: true });
+                      this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+                      this.activeDetailIndex = 0;
                     }
                   }
-
-
-                  const newRowNodeTrans = this.gridApi.applyTransaction({
-                    add: prepareItems
-                  });
-
-                  console.log('New Row Node Trans: ', newRowNodeTrans);
-
-                  // setTimeout(() => {
-                  //   this.gridApi.ensureIndexVisible(newRowNodeTrans.add[0].rowIndex, 'middle');
-                  // }, 0);
                 }
                 this.isProcessing = false;
               }).catch(err => {
@@ -2465,12 +1606,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   createAlternateAdjustVoucher(formItem: FormGroup) {
     if (!formItem.get('Code').value) {
-      this.commonService.toastService.show(`Bạn phải lưu phiếu trước khi tạo phiếu phụ !`, 'Phiếu chưa được lưu !', { status: 'warning', duration: 10000 });
+      this.commonService.toastService.show(`Bạn phải lưu phiếu trước khi tạo phiếu phụ !`, 'Phiếu chưa được lưu !', { status: 'warning' });
       this.playErrorPipSound();
       return false;
     }
     if (!formItem.get('Title').value) {
-      this.commonService.toastService.show(`Bạn phải điền tiêu đề trước khi tạo phiếu phụ !`, 'Phiếu chưa có tiêu đề !', { status: 'warning', duration: 10000 });
+      this.commonService.toastService.show(`Bạn phải điền tiêu đề trước khi tạo phiếu phụ !`, 'Phiếu chưa có tiêu đề !', { status: 'warning' });
       this.playErrorPipSound();
       return false;
     }
@@ -2562,7 +1703,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
               this.apiService.getPromise<WarehouseInventoryAdjustNoteModel[]>(this.apiPath, { id: relativeVoucher.map(m => this.commonService.getObjectId(m)), includeDetails: true, includeAccessNumbers: true }).then(subVouchers => {
 
                 console.log(subVouchers);
-                // const details = this.getDetails(this.array.controls[0] as FormGroup);
+                const details = this.getDetails(this.array.controls[0] as FormGroup);
 
                 if (subVouchers && subVouchers.length > 0) {
                   for (const subVoucher of subVouchers) {
@@ -2577,62 +1718,32 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                       for (const detail of subVoucher.Details) {
 
 
-                        // let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == this.commonService.getObjectId(detail.Product) && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(detail.Unit));
-                        // let existsGoods = details.controls[existGoodsIndex] as FormGroup;
-                        const productId = this.commonService.getObjectId(detail.Product), unitId = this.commonService.getObjectId(detail.Unit);
-                        let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
+                        let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == this.commonService.getObjectId(detail.Product) && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(detail.Unit));
+                        let existsGoods = details.controls[existGoodsIndex] as FormGroup;
 
 
                         if (!existsGoods) {
-                          // existsGoods = this.makeNewDetailFormGroup(formItem, detail);
-                          // existsGoods['_type'] = 'IMPORT';
-                          // details.push(existsGoods);
-
-                          const newRowNodeTrans = this.gridApi.applyTransaction({
-                            add: [
-                              {
-                                No: this.gridApi.getDisplayedRowCount() + 1,
-                                Product: detail.Product,
-                                Description: detail.Description,
-                                Unit: detail.Unit,
-                                Container: detail.Container,
-                                Containers: detail.Containers,
-                                Shelf: {
-                                  id: detail.Container?.Shelf,
-                                  text: detail.Container?.ShelfName,
-                                },
-                                Warehouse: {
-                                  id: detail.Container?.Warehouse,
-                                  text: detail.Container?.WarehouseName,
-                                },
-                                AccessNumbers: Array.isArray(detail.AccessNumbers) ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [],
-                                Quantity: Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? detail.AccessNumbers.length : detail.Quantity,
-                                Image: detail.Image
-                              }
-                            ]
-                          });
-
-                          console.log(newRowNodeTrans);
-
+                          existsGoods = this.makeNewDetailFormGroup(formItem, detail);
+                          existsGoods['_type'] = 'IMPORT';
+                          details.push(existsGoods);
                         } else {
                           if (detail.Quantity > 0) {
-                            this.commonService.toastService.show(`Phát hiện trùng hàng hóa ${detail.Description}, hệ thống tự động hợp nhất dữ liệu !`, 'Phát hiện trùng hàng hóa', { status: 'warning', duration: 15000 });
-                            if (Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0) {
-                              let currentAccessNumbers: string[] = existsGoods.data.AccessNumbers || [];
+                            if (detail.AccessNumbers && detail.AccessNumbers.length > 0) {
+                              let currentAccessNumbers: string[] = existsGoods.get('AccessNumbers').value || [];
+
                               for (const ac of detail.AccessNumbers) {
                                 const accessNumber = this.commonService.getObjectId(ac);
                                 if (currentAccessNumbers.indexOf(accessNumber) < 0) {
                                   // currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
                                   currentAccessNumbers.push(accessNumber);
-                                  currentAccessNumbers = [...new Set(currentAccessNumbers)];
-                                  existsGoods.setDataValue('AccessNumbers', currentAccessNumbers);
+                                  existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
                                   // existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
-                                  existsGoods.setDataValue('Quantity', currentAccessNumbers.length);
+                                  existsGoods.get('Quantity').setValue(currentAccessNumbers.length);
                                 }
                               }
 
                             } else {
-                              existsGoods.setDataValue('Quantity', parseFloat(existsGoods.data.Quantity) + parseFloat(detail.Quantity as any));
+                              existsGoods.get('Quantity').setValue(parseFloat(existsGoods.get('Quantity').value) + parseFloat(detail.Quantity as any));
                             }
                           }
                         }
@@ -2642,7 +1753,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                   }
                 }
 
-                // this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+                this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
 
               });
               return true;
@@ -2650,7 +1761,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           },
         ])
       } catch (err) {
-        this.commonService.toastService.show(err, 'Lỗi trong lúc đồng bộ phiếu phụ !', { status: 'warning', duration: 10000 });
+        this.commonService.toastService.show(err, 'Lỗi trong lúc đồng bộ phiếu phụ !', { status: 'warning' });
       }
     }
   }
@@ -2703,19 +1814,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // this.patchFormGroupValue(this.array.controls[i] as FormGroup, newFormData[i]);
       const formItem = this.array.controls[i];
       formItem.get('Code').patchValue(newFormData[i].Code);
-      // const detailsForm = this.getDetails(formItem as FormGroup);
-      // for (const d in detailsForm.controls) {
-      //   const detailForm = detailsForm.controls[d];
-      //   detailForm.get('SystemUuid').patchValue(newFormData[i]['Details'][d]['SystemUuid']);
-      //   detailForm.get('AccessNumbers').patchValue(this.convertAccessNumberToStringList(newFormData[i]['Details'][d]['AccessNumbers']));
-      // }
-
-      // Update ag-grid
-      this.gridApi.forEachNode((rowNode, index) => {
-        const rspDetail = newFormData[0].Details[index];
-        rspDetail.AccessNumbers = rspDetail.AccessNumbers.map(m => this.commonService.getObjectId(m))
-        rowNode.setData({...rowNode.data, SystemUuid: rspDetail.SystemUuid, AccessNumbers: rspDetail.AccessNumbers });
-      });
+      const detailsForm = this.getDetails(formItem as FormGroup);
+      for (const d in detailsForm.controls) {
+        const detailForm = detailsForm.controls[d];
+        detailForm.get('SystemUuid').patchValue(newFormData[i]['Details'][d]['SystemUuid']);
+        detailForm.get('AccessNumbers').patchValue(this.convertAccessNumberToStringList(newFormData[i]['Details'][d]['AccessNumbers']));
+      }
     }
 
     if (!this.silent) {
@@ -2748,20 +1852,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     // this.formLoad(newFormData);
     for (const i in this.array.controls) {
       // this.patchFormGroupValue(this.array.controls[i] as FormGroup, newFormData[i]);
-      // const formItem = this.array.controls[i];
-      // const detailsForm = this.getDetails(formItem as FormGroup);
-      // for (const d in detailsForm.controls) {
-      //   const detailForm = detailsForm.controls[d];
-      //   detailForm.get('SystemUuid').patchValue(newFormData[i]['Details'][d]['SystemUuid']);
-      //   detailForm.get('AccessNumbers').patchValue(this.convertAccessNumberToStringList(newFormData[i]['Details'][d]['AccessNumbers']));
-      // }
-
-      // Update ag-grid
-      this.gridApi.forEachNode((rowNode, index) => {
-        const rspDetail = newFormData[0].Details[index];
-        rowNode.setDataValue('AccessNumbers', rspDetail.AccessNumbers.map(m => this.commonService.getObjectId(m)));
-        // rowNode.setDataValue('SystemUuid', rspDetail.SystemUuid);
-      });
+      const formItem = this.array.controls[i];
+      const detailsForm = this.getDetails(formItem as FormGroup);
+      for (const d in detailsForm.controls) {
+        const detailForm = detailsForm.controls[d];
+        detailForm.get('SystemUuid').patchValue(newFormData[i]['Details'][d]['SystemUuid']);
+        detailForm.get('AccessNumbers').patchValue(this.convertAccessNumberToStringList(newFormData[i]['Details'][d]['AccessNumbers']));
+      }
     }
     if (!this.silent) {
       this.toastrService.show('success', 'Dữ liệu đã được cập nhật', {
@@ -2783,5 +1880,954 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       this.onDialogSave(newFormData);
     }
   }
+
+
+
+
+  /** Common function for ng2-smart-table */
+
+  // Category list for filter
+  categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
+  groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
+  containerList: WarehouseGoodsContainerModel[] = [];
+  // unitList: UnitModel[] = [];
+  // async loadCache() {
+  //   // iniit category
+  //   this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+  // }
+
+  editing = {};
+  rows = [];
+
+  settings = this.configSetting({
+    actions: false,
+    pager: this.configPaging(),
+    columns: {
+      Image: {
+        title: 'Hình',
+        type: 'custom',
+        width: '5%',
+        renderComponent: SmartTableThumbnailComponent,
+        valuePrepareFunction: (cell, row) => {
+          return cell[0];
+        },
+        onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+          // instance.valueChange.subscribe(value => {
+          // });
+          // instance.click.subscribe(async (row: GoodsModel) => {
+          // });
+
+
+
+
+
+          instance.valueChange.subscribe(value => {
+          });
+          instance.previewAction.subscribe((row: ProductModel) => {
+            const pictureList = row?.Pictures || [];
+            if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
+              pictureList.push(row.FeaturePicture);
+            }
+            if (pictureList.length > 0) {
+              const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
+              if (pictureList.length > 1) {
+                const currentItems = pictureList.splice(currentIndex, 1);
+                pictureList.unshift(currentItems[0]);
+              }
+              this.commonService.openDialog(ImagesViewerComponent, {
+                context: {
+                  images: pictureList.map(m => m['OriginImage']),
+                  imageIndex: 0,
+                }
+              });
+            }
+          });
+          // instance.uploadAction.subscribe((row: ProductModel) => {
+          //   if (this.files.length === 0) {
+          //     this.uploadForProduct = row;
+          //     this.uploadBtn.nativeElement.click();
+          //   } else {
+          //     this.commonService.toastService.show(
+          //       this.commonService.translateText('Common.uploadInProcess'),
+          //       this.commonService.translateText('Common.upload'),
+          //       {
+          //         status: 'warning',
+          //       });
+          //     // this.commonService.openDialog(ShowcaseDialogComponent, {
+          //     //   context: {
+          //     //     title: this.commonService.translateText('Common.upload'),
+          //     //     content: this.commonService.translateText('Common.uploadInProcess'),
+          //     //   },
+          //     // });
+          //   }
+          // });
+          // instance.title = this.commonService.translateText('click to change main product picture');
+
+
+        },
+      },
+      Description: {
+        title: 'Tên',
+        type: 'string',
+        width: '10%',
+        // filter: {
+        //   type: 'custom',
+        //   component: SmartTableFilterComponent,
+        //   config: {
+        //     delay: 3000,
+        //   },
+        // },
+      },
+      Categories: {
+        title: 'Danh mục',
+        type: 'html',
+        width: '10%',
+        valuePrepareFunction: (value: string, product: GoodsModel) => {
+          return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+        },
+        // valuePrepareFunction: (value: string, product: GoodsModel) => {
+        //   return product['Categories'] ? product['Categories'].map(cate => cate['text']).join(', ') : '';
+        // },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: 'Chọn danh mục...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              // code template: smart-table fiter with data update
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
+        },
+      },
+      Groups: {
+        title: 'Nhóm',
+        type: 'html',
+        width: '10%',
+        valuePrepareFunction: (value: string, product: GoodsModel) => {
+          return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+        },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: 'Chọn nhóm...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              // code template: smart-table fiter with data update
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
+        },
+      },
+      Container: {
+        title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
+        type: 'custom',
+        width: '10%',
+        renderComponent: SmartTableTagComponent,
+
+        onComponentInitFunction: (instance: SmartTableTagComponent) => {
+          instance.labelAsText = () => {
+            return instance.value.text;
+          };
+          instance.nowrap = false;
+          instance.click.subscribe((tag: { id: string, text: string, type: string }) => {
+            if (tag.type == 'NEWCONTAINER') {
+              this.commonService.openDialog(AssignContainerFormComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputGoodsList: [{ Code: instance.rowData.Code, WarehouseUnit: instance.rowData.WarehouseUnit }],
+                  onDialogSave: async (newData: ProductModel[]) => {
+                    // this.refresh();
+                    // this.updateGridItems(editedItems, newData);
+                    const udpateItem = (await this.source.getAll()).find(f => instance.rowData.Code == f.Code && this.commonService.getObjectId(f.WarehouseUnit) == this.commonService.getObjectId(instance.rowData.WarehouseUnit));
+                    this.apiService.getPromise<ProductModel[]>('/warehouse/goods/' + instance.rowData.Code, {
+                      masterPriceTable: this.array.controls[0].get('Code').value,
+                      includeCategories: true,
+                      includeGroups: true,
+                      includeUnit: true,
+                      includeContainer: true,
+                      includeFeaturePicture: true,
+                      includeHeadBookEntry: true,
+                    }).then(rs => {
+                      const dataUpdate = rs.find(f => this.commonService.getObjectId(f.WarehouseUnit) == this.commonService.getObjectId(instance.rowData.WarehouseUnit));
+                      // if (dataUpdate.Container) {
+                      //   dataUpdate.Container = [dataUpdate.Container];
+                      // }
+                      // this.source.isLocalUpdate = true;
+                      try {
+                        this.source.update(udpateItem, { Container: dataUpdate.Container }).then(() => {
+                          // this.source.isLocalUpdate = false;
+                        });
+                      } catch (err) {
+                        // this.source.isLocalUpdate = false;
+                      }
+
+                    });
+                  },
+                  onDialogClose: () => {
+                  },
+                },
+                closeOnEsc: false,
+                closeOnBackdropClick: false,
+              });
+            }
+          });
+        },
+        // valuePrepareFunction: (value: string, product: GoodsModel) => {
+        //   // return this.commonService.getObjectText(value);
+        //   return [value] as any;
+        // },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              logic: 'OR',
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
+        },
+      },
+      Unit: {
+        title: 'ĐVT',
+        type: 'html',
+        width: '5%',
+        valuePrepareFunction: (cell: string, product: GoodsModel) => {
+          // return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+          return this.commonService.getObjectText(cell);
+        },
+        filter: {
+          type: 'custom',
+          component: SmartTableSelect2FilterComponent,
+          config: {
+            delay: 0,
+            select2Option: {
+              placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              multiple: true,
+              logic: 'OR',
+              ajax: {
+                url: (params: any) => {
+                  return 'data:text/plan,[]';
+                },
+                delay: 0,
+                processResults: (data: any, params: any) => {
+                  return {
+                    results: this.unitList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                  };
+                },
+              },
+            },
+          },
+        },
+      },
+      Code: {
+        title: 'Code',
+        type: 'string',
+        width: '5%',
+        valuePrepareFunction: (cell, row) => {
+          return row.Product?.Code;
+        }
+      },
+      Sku: {
+        title: 'Sku',
+        type: 'string',
+        width: '5%',
+        valuePrepareFunction: (cell, row) => {
+          return row.Product?.Sku;
+        }
+      },
+      AccessNumbers: {
+        title: this.commonService.translateText('Warehouse.accessNumber'),
+        width: '20%',
+        type: 'custom',
+        renderComponent: SmartTableTagsComponent,
+        editable: true,
+        delay: 3000,
+        onComponentInitFunction: (component: SmartTableSelect2EditableComponent) => {
+          component.select2Option = {
+            placeholder: 'Tự động tạo khi nhập tồn kho...',
+            allowClear: true,
+            width: '100%',
+            dropdownAutoWidth: true,
+            minimumInputLength: 0,
+            dropdownCssClass: 'is_tags',
+            multiple: true,
+            // maximumSelectionLength: 1,
+            tags: true,
+            keyMap: {
+              id: 'id',
+              text: 'text',
+            },
+          };
+          component.onSelectChange = (selectedData: any, select2Conponent: Select2Component) => {
+            console.log(selectedData);
+            let hadChanged = false;
+            if (selectedData) {
+              for (const an of selectedData) {
+                if (!an?.origin && an.id == an.text) {
+                  const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+                  console.log(accessNumber, goodsId);
+                  // an.text = an.text + ' (' + accessNumber + ')';
+                  an.text = accessNumber + ' (' + this.commonService.getObjectId(an) + ')';
+                  an.id = accessNumber;
+                  hadChanged = true;
+                }
+              }
+              if (hadChanged) {
+                component.inputControl.setValue(selectedData);
+                // const accessNumbersControl = detail.get('AccessNumbers');
+                // accessNumbersControl.setValue(selectedData);
+                setTimeout(() => {
+                  $(select2Conponent['controls'].element[0])['select2']('open');
+                }, 500);
+              }
+              component.rowData.AccessNumbers = selectedData;
+              $(select2Conponent['controls'].element[0]).closest('td').next().find('input').val(selectedData.length)
+              component.status = 'warning';
+              this.commonService.takeUntil('update_head_entry_' + component.rowData.Code, 5000).then(() => {
+                const masterPriceTable = this.array.controls[0].get('Code').value;
+                if (this.commonService.getObjectId(component.rowData.WarehouseUnit)) {
+                  console.log(component.rowData.Code);
+                  this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
+                    id: [this.array.controls[0].get('Code').value],
+                    updateHeadInventory: true,
+                    goods: component.rowData.Code,
+                    unit: this.commonService.getObjectId(component.rowData.WarehouseUnit),
+                    container: this.commonService.getObjectId(component.rowData['Container']),
+                    inventory: selectedData.length,
+                    currency: this.commonService.loginInfo.configuration.defaultCurrency,
+                  }, [{
+                    MasterPriceTable: masterPriceTable,
+                    Product: component.rowData.Code,
+                    Unit: component.rowData.WarehouseUnit.Code,
+                    UnitPrice: component.rowData.UnitPrice,
+                    Inventory: component.rowData.Inventory,
+                    AccessNumbers: component.rowData.AccessNumbers.map(m => m.id).filter(f => !!f)
+                  }]).then(rs => {
+                    console.log(component.rowData.Code);
+                    component.status = 'success';
+                  });
+                  // }
+                } else {
+                  component.status = 'danger';
+                  this.commonService.openDialog(ShowcaseDialogComponent, {
+                    context: {
+                      title: 'Cảnh báo',
+                      content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+                      actions: [
+                        {
+                          label: 'Trở về',
+                          icon: 'back',
+                          status: 'info',
+                          action: () => { },
+                        },
+                      ],
+                    },
+                  });
+                }
+              });
+            }
+          }
+        },
+        onChange: (value: any, row: GoodsModel, instance: SmartTableSelect2EditableComponent) => {
+          console.log(value);
+          //   const masterPriceTable = this.array.controls[0].get('Code').value;
+          //   if (value !== null) {
+          //     row.AccesssNumbers = value;
+          //     if (this.commonService.getObjectId(row.WarehouseUnit)) {
+          //       instance.status = 'primary';
+          //       console.log(instance.rowData.Code);
+          //       this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
+          //         id: [this.array.controls[0].get('Code').value],
+          //         updateHeadInventory: true,
+          //         goods: row.Code,
+          //         unit: this.commonService.getObjectId(row.WarehouseUnit),
+          //         container: this.commonService.getObjectId(row['Container']),
+          //         inventory: row['Inventory'],
+          //         currency: this.commonService.loginInfo.configuration.defaultCurrency,
+          //       }, [{
+          //         MasterPriceTable: masterPriceTable,
+          //         Product: row.Code,
+          //         Unit: row.WarehouseUnit.Code,
+          //         Price: row.UnitPrice,
+          //         Inventory: row.Inventory,
+          //         AccessNumbers: value.map(m => m.id).filter(f => !!f)
+          //       }]).then(rs => {
+          //         console.log(instance.rowData.Code);
+          //         instance.status = 'success';
+          //       });
+          //       // }
+          //     } else {
+          //       instance.status = 'danger';
+          //       this.commonService.openDialog(ShowcaseDialogComponent, {
+          //         context: {
+          //           title: 'Cảnh báo',
+          //           content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+          //           actions: [
+          //             {
+          //               label: 'Trở về',
+          //               icon: 'back',
+          //               status: 'info',
+          //               action: () => { },
+          //             },
+          //           ],
+          //         },
+          //       });
+          //     }
+          //   }
+        },
+      },
+      Quantitys: {
+        title: this.commonService.translateText('Warehouse.inventory'),
+        width: '8%',
+        type: 'number-editable',
+        editable: true,
+        delay: 5000,
+        onChange: (value: number, row: GoodsModel, component: SmartTableNumberEditableComponent) => {
+          const masterPriceTable = this.array.controls[0].get('Code').value;
+          if (value !== null) {
+            row.Inventory = value;
+            if (this.commonService.getObjectId(row.WarehouseUnit)) {
+              component.status = 'warning';
+              console.log(component.rowData.Code);
+              this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
+                id: [this.array.controls[0].get('Code').value],
+                updateHeadInventory: true,
+                goods: row.Code,
+                unit: this.commonService.getObjectId(row.WarehouseUnit),
+                container: this.commonService.getObjectId(row['Container']),
+                inventory: value,
+                unitPrice: row.UnitPrice,
+                currency: this.commonService.loginInfo.configuration.defaultCurrency,
+              }, [{
+                MasterPriceTable: masterPriceTable,
+                Product: row.Code,
+                Unit: row.WarehouseUnit.Code,
+                UnitPrice: row.UnitPrice,
+                Inventory: value,
+                AccessNumbers: row.AccessNumbers.map(m => m.id).filter(f => !!f)
+              }]).then(async rs => {
+                console.log(component.rowData.Code);
+
+                //Update row
+                // this.source.isLocalUpdate = true;
+                try {
+                  const updateItem = (await this.source.getAll()).find(f =>
+                    row.Code == f.Code
+                    && this.commonService.getObjectId(f.WarehouseUnit) == this.commonService.getObjectId(row.WarehouseUnit)
+                    && this.commonService.getObjectId(f.Container) == this.commonService.getObjectId(row.Container)
+                  );
+                  if (rs[0]['AccessNumbers']) {
+                    this.source.update(updateItem, {
+                      // ...udpateItem,
+                      AccessNumbers: rs[0]['AccessNumbers'].length > 0 ? rs[0]['AccessNumbers'].filter(m => !!m).map(m => {
+                        const id = this.commonService.getObjectId(m);
+                        return {
+                          id: id,
+                          text: m + ' (' + this.commonService.compileAccessNumber(id, component.rowData.Code) + ')'
+                        };
+                      }) : []
+                    }).then(() => {
+                      component.status = 'success';
+                      // this.source.isLocalUpdate = false;
+                    });
+                  }
+                } catch (err) {
+                  // this.source.isLocalUpdate = false;
+                }
+
+              });
+              // }
+            } else {
+              component.status = 'danger';
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: 'Cảnh báo',
+                  content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+                  actions: [
+                    {
+                      label: 'Trở về',
+                      icon: 'back',
+                      status: 'info',
+                      action: () => { },
+                    },
+                  ],
+                },
+              });
+            }
+          }
+        },
+      },
+      UnitPrice: {
+        title: this.commonService.translateText('Warehouse.warehousePrice'),
+        width: '12%',
+        type: 'number-editable',
+        editable: true,
+        delay: 3000,
+        onChange: (value: number, row: GoodsModel, component: SmartTableNumberEditableComponent) => {
+          const masterPriceTable = this.array.controls[0].get('Code').value;
+          if (value !== null) {
+            if (this.commonService.getObjectId(row.WarehouseUnit)) {
+              component.status = 'warning';
+              console.log(component.rowData.Code);
+              row.UnitPrice = value;
+              this.apiService.putPromise<SalesMasterPriceTableDetailModel[]>('/warehouse/books', {
+                id: [this.array.controls[0].get('Code').value],
+                updateHeadInventory: true,
+                goods: row.Code,
+                unit: this.commonService.getObjectId(row.WarehouseUnit),
+                container: this.commonService.getObjectId(row['Container']),
+                unitPrice: value,
+                inventory: row.Inventory,
+                currency: this.commonService.loginInfo.configuration.defaultCurrency,
+              }, [{
+                MasterPriceTable: masterPriceTable,
+                Product: row.Code,
+                Unit: row.WarehouseUnit.Code,
+                UnitPrice: value,
+                Inventory: row.Inventory,
+                AccessNumbers: row.AccessNumbers.map(m => m.id).filter(f => !!f)
+              }]).then(rs => {
+                console.log(component.rowData.Code);
+                component.status = 'success';
+              });
+              // }
+            } else {
+              component.status = 'danger';
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: 'Cảnh báo',
+                  content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
+                  actions: [
+                    {
+                      label: 'Trở về',
+                      icon: 'back',
+                      status: 'info',
+                      action: () => { },
+                    },
+                  ],
+                },
+              });
+            }
+          }
+        },
+      },
+      PrintAccessNumbers: {
+        title: this.commonService.translateText('In số truy xuất'),
+        type: 'custom',
+        width: '5%',
+        // class: 'align-right',
+        renderComponent: SmartTableButtonComponent,
+        onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+          instance.iconPack = 'eva';
+          instance.icon = 'pricetags';
+          instance.display = true;
+          instance.status = 'success';
+          // instance.disabled = this.ref && Object.keys(this.ref).length > 0;
+          // instance.style = 'text-align: right';
+          // instance.class = 'align-right';
+          instance.status = 'primary';
+          instance.title = this.commonService.translateText('In số truy xuất');
+          instance.label = this.commonService.translateText('In số truy xuất');
+          instance.valueChange.subscribe(value => {
+          });
+          instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
+            if (rowData['AccessNumbers'] && rowData['AccessNumbers'].length > 0) {
+              this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+                context: {
+                  id: rowData['AccessNumbers'].map(m => this.commonService.getObjectId(m))
+                }
+              });
+            } else {
+              this.commonService.toastService.show('Chưa có số truy xuất tồn đầu', 'Sổ kho', { status: 'warning' });
+            }
+          });
+        },
+      },
+    },
+  });
+
+  /** Seleted ids */
+  selectedIds: string[] = [];
+  selectedItems: SalesMasterPriceTableDetailModel[] = [];
+
+  /** Config for stmart table setttings */
+  protected configSetting(settings: SmartTableSetting) {
+
+    // Set default filter function
+    Object.keys(settings.columns).forEach(key => {
+      const column = settings.columns[key];
+      if (!settings.columns[key]['filterFunction']) {
+        settings.columns[key]['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
+      }
+
+      if (column.type === 'boolean') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableCheckboxComponent;
+        column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
+          instance.disabled = !column.editable;
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            // console.info(value);
+            if (column.onChange) {
+              column.onChange(value, instance.rowData, instance);
+            }
+          });
+        };
+      }
+
+      if (column.type === 'currency-editable') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableCurrencyEditableComponent;
+        column.onComponentInitFunction = (instance: SmartTableCurrencyEditableComponent) => {
+          instance.disabled = !column.editable;
+          instance.placeholder = column.title;
+          instance.name = key;
+          if (column.delay) {
+            instance.delay = column.delay;
+          }
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            if (column.onChange) {
+              column.onChange(value, instance.rowData, instance);
+            }
+          });
+        };
+      }
+
+      if (column.type === 'number-editable') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableNumberEditableComponent;
+        column.onComponentInitFunction = (instance: SmartTableNumberEditableComponent) => {
+          instance.disabled = !column.editable;
+          instance.placeholder = column.title;
+          instance.name = key;
+          if (column.delay) {
+            instance.delay = column.delay;
+          }
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            if (column.onChange) {
+              column.onChange(value, instance.rowData, instance);
+            }
+          });
+        };
+      }
+
+      if (column.type === 'text-editable') {
+        column.type = 'custom';
+        column.renderComponent = SmartTableTextEditableComponent;
+        const onComponentInitFunction = column.onComponentInitFunction;
+        column.onComponentInitFunction = (instance: SmartTableTextEditableComponent) => {
+          instance.disabled = !column.editable;
+          instance.placeholder = column.title;
+          instance.name = key;
+          if (column.delay) {
+            instance.delay = column.delay;
+          }
+          instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+            if (column.onChange) {
+              column.onChange(value, instance.rowData, instance);
+            }
+          });
+          if (onComponentInitFunction) {
+            onComponentInitFunction(instance);
+          }
+        };
+      }
+
+      if (typeof column['filter'] === 'undefined') {
+        column['filter'] = {
+          type: 'custom',
+          component: SmartTableFilterComponent,
+        };
+      }
+
+    });
+
+    return settings;
+  }
+
+  /** Config for add button */
+  protected configAddButton() {
+    return {
+      addButtonContent: '<i class="nb-edit"></i> <i class="nb-trash"></i> <i class="nb-plus"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for add button */
+  protected configFilterButton() {
+    return {
+      addButtonContent: '<i class="nb-search"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for edit button */
+  protected configEditButton() {
+    return {
+      editButtonContent: '<i class="nb-edit"></i>',
+      saveButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    };
+  }
+
+  /** Config for delete button */
+  protected configDeleteButton() {
+    return {
+      deleteButtonContent: '<i class="nb-trash"></i>',
+      confirmDelete: true,
+    };
+  }
+
+  /** Config for paging */
+  protected configPaging() {
+    return {
+      display: true,
+      perPage: 50,
+    };
+  }
+
+  /** User select event */
+  onUserRowSelect(event: any) {
+    this.selectedItems = event.selected;
+    this.selectedIds = event.selected.map((item: SalesMasterPriceTableDetailModel) => {
+      return item[this.idKey];
+    });
+    // console.info(event);
+    if (this.selectedIds.length > 0) {
+      this.hasSelect = 'selected';
+    } else {
+      this.hasSelect = 'none';
+    }
+  }
+
+  /** Row select event */
+  onRowSelect(event) {
+    // console.info(event);
+  }
+
+  hasSelect = 'none';
+
+  /** Local dat source */
+  source: LocalDataSource;
+
+  // initDataSource() {
+  //   return this.source = new CustomeServerDataSource<SalesMasterPriceTableDetailModel>(this.apiService, '/sales/master-price-table-details');
+  // }
+
+  initDataSource() {
+
+    this.source = new LocalDataSource();
+
+    // Set DataSource: prepareData
+    // this.source.prepareData = (data: GoodsModel[]) => {
+    //   data.map((product: any) => {
+    //     if (product['WarehouseUnit']) {
+    //       product['UnitLabel'] = product['WarehouseUnit']['Name'];
+    //     }
+    //     // if (product['Categories']) {
+    //     //   product['Categories'] = product['Categories'].map(cate => cate['text']).join(', ');
+    //     // }
+    //     if (product['FeaturePictureThumbnail']) {
+    //       product['FeaturePictureThumbnail'] += '?token=' + this.apiService.getAccessToken();
+    //     } else {
+    //       delete product['FeaturePictureThumbnail'];
+    //     }
+    //     if (product?.AccessNumbers) {
+    //       product['AccessNumbers'] = product['AccessNumbers'].map(m => {
+    //         const id = this.commonService.getObjectId(m);
+    //         return {
+    //           id: id,
+    //           text: m + ' (' + this.commonService.compileAccessNumber(id, product.Code) + ')'
+    //           // text: m
+    //         };
+    //       });
+    //     } else {
+    //       product['AccessNumbers'] = [];
+    //     }
+    //     if (product.Container) {
+    //       // product.Container = [product.Container];
+    //     } else {
+    //       product.Container = { type: 'NEWCONTAINER', id: 'Gán vị trí', text: 'Gán vị trí' };
+    //     }
+    //     return product;
+    //   });
+    //   return data;
+    // };
+
+    // Set DataSource: prepareParams
+    // this.source.prepareParams = (params: any) => {
+    //   params['eq_Voucher'] = this.array.controls[0].get('Code').value;
+    //   // params['includeCategories'] = true;
+    //   // params['includeGroups'] = true;
+    //   // params['includeUnit'] = true;
+    //   // params['includeContainer'] = true;
+    //   // params['includeFeaturePicture'] = true;
+    //   // params['includeHeadBookEntry'] = true;
+    //   // params['filter_Warehouse'] = this.commonService.getObjectId(this.array.controls[0].get('Warehouse').value);
+    //   params['sort_Id'] = 'desc';
+    //   return params;
+    // };
+
+    return this.source;
+  }
+
+  /** Get data from api and push to list */
+  loadList(data: any[], callback?: (list: GoodsModel[]) => void) {
+    this.selectedIds = [];
+    this.hasSelect = 'none';
+    if (!this.source) {
+      this.initDataSource();
+    } else {
+      // this.source.refresh();
+    }
+    if (data) this.source.load(data);
+  }
+
+  /** Edit event */
+  onEditAction(event: { data: GoodsModel }) {
+    // this.router.navigate(['modules/manager/form', event.data[this.idKey]]);
+    this.openProductForm([event.data['Code']]);
+  }
+
+  /** Implement required */
+  openProductForm(ids?: string[], onDialogSave?: (newData: GoodsModel[]) => void, onDialogClose?: () => void) {
+    this.commonService.openDialog(ProductFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: GoodsModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+          // this.loadList();
+        },
+      },
+      closeOnEsc: false,
+      closeOnBackdropClick: false,
+    });
+  }
+
+  /** Create and multi edit/delete action */
+  onSerialAction(event: any) {
+    if (this.selectedIds.length > 0) {
+      this.editChoosedItems();
+    } else {
+      // this.router.navigate(['modules/manager/form']);
+      this.openProductForm();
+    }
+  }
+
+  editChoosedItems(): false {
+    this.commonService.openDialog(ShowcaseDialogComponent, {
+      context: {
+        title: 'Xác nhận',
+        content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
+        actions: [
+          // {
+          //   label: 'Xoá',
+          //   icon: 'delete',
+          //   status: 'danger',
+          //   action: () => {
+          //     this.deleteConfirm(this.selectedIds, () => this.loadList());
+          //   },
+          // },
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'success',
+            action: () => { },
+          },
+          {
+            label: 'Chỉnh',
+            icon: 'edit',
+            status: 'warning',
+            action: () => {
+              // this.router.navigate(['modules/manager/form/', this.selectedIds.join('-')]);
+              this.openProductForm(this.selectedIds);
+            },
+          },
+        ],
+      },
+    });
+    return false;
+  }
+  refreshList() {
+    this.source.refresh();
+    return false;
+  }
+
+  /** End Common function for ng2-smart-table */
 
 }

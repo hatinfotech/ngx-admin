@@ -853,11 +853,12 @@ export class CommonService {
   }
 
   getObjectId(obj: any, idName?: string) {
-    return obj && typeof obj[idName || 'id'] !== 'undefined' ? obj[idName || 'id'] : obj;
+    // return obj && typeof obj[idName || 'id'] !== 'undefined' ? obj[idName || 'id'] : obj;
+    return obj && Object.keys(obj).indexOf(idName || 'id') > -1 ? obj[idName || 'id'] : obj;
   }
 
   getObjectText(obj: any, textName?: string) {
-    return obj && typeof obj[textName || 'text'] !== 'undefined' ? obj[textName || 'text'] : obj;
+    return obj && Object.keys(obj).indexOf(textName || 'id') > -1 ? obj[textName || 'text'] : obj;
   }
 
   currencyTransform(value: any, currencyCode?: string, display?: 'code' | 'symbol' | 'symbol-narrow' | string | boolean, digitsInfo?: string, locale?: string): string | null {

@@ -461,7 +461,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
 
   reset() {
     this.gridApi.setFilterModel(null);
-    this.gridApi.setSortModel(null);
+    // this.gridApi.setSortModel(null);
     this.gridApi.deselectAll();
     this.loadList();
     this.updateActionState();

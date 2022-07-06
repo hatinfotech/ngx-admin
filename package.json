@@ -32,8 +32,8 @@
     "postinstall": "ngcc --properties es2015 es5 browser module main --first-only --create-ivy-entry-points --tsconfig \"./src/tsconfig.app.json\""
   },
   "dependencies": {
-    "@ag-grid-community/all-modules": "^23.2.1",
-    "@ag-grid-community/angular": "^23.2.1",
+    "@ag-grid-community/all-modules": "^27.3.0",
+    "@ag-grid-community/angular": "^27.3.0",
     "@akveo/ng2-completer": "^9.0.1",
     "@angular/animations": "^12.1.0",
     "@angular/cdk": "12.1.0",

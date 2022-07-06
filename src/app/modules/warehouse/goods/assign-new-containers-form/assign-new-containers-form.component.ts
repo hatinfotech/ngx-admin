@@ -84,19 +84,18 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
     let rs = null;
     for (const inputGoods of this.inputGoodsList) {
       if (choosedContainer) {
-        rs = await this.apiService.postPromise<GoodsModel[]>('/warehouse/goods-containers', {}, [{
+        rs = await this.apiService.postPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', {}, [{
           Parent: choosedContainer,
           Warehouse: this.containersFormControl.value?.Warehouse,
           Type: 'DRAWERS',
         }]).then(async rs => {
-          await this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: inputGoods.Code, updateContainerDescription: true, assignContainers: rs[0].Code }, [
+          const goods = await this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: inputGoods.Code, updateContainerDescription: true, assignContainers: rs[0].Code }, [
             {
               Code: inputGoods.Code,
               WarehouseUnit: this.commonService.getObjectId(inputGoods.WarehouseUnit)
             }
-          ]).then(rs => {
-
-          });
+          ]);
+          rs[0].Path = goods[0].Containers[0]['Path'];
           return rs;
         });
       }
