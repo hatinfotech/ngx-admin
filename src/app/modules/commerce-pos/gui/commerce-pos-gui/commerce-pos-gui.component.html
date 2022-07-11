@@ -52,34 +52,42 @@
                         <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem; padding-bottom: 0;">
                             <div class="pos-search-input-wrap" style="flex: 1; position: relative;">
                                 <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" (keyup)="onSearchInputKeyup($event)" type="text" nbInput status="{{orderForm['voucherType'] == 'CPOSRETURNS' ? 'danger' : 'success'}}" fieldSize="large" fullWidth [placeholder]="searchInputPlaceholder || 'F3 - Tìm hàng hóa theo số truy xuất, số nhận thức, sku, id, tên...'" class="pos-search-input">
-                                <div #searchResultsRef id="searchResults" class="scrollable-container" style="
-                                    position: absolute; 
-                                    width: 100vw;
-                                    height: 70vh;
-                                    overflow: auto;
-                                    z-index: 1;
-                                    background: var(--ck-color-base-background);
-                                    " [ngStyle]="{'display': searchResults && searchResults.length > 0 ? 'block' : 'none'}">
+                                <div #searchResultsRef id="searchResults" style="
+                                        position: fixed;
+                                        z-index: 1;
+                                        left: 0px;
+                                        top: 65px;
+                                        background-color: var(--ck-color-base-background);
+                                        border-radius: 5px;
+                                    " [style.height]="searchResults && searchResults.length > 0 ? '80vh' : '1px'" [style.width]="searchResults && searchResults.length > 0 ? '100vw' : '1px'">
                                     <!-- <div style=""> -->
-                                    <div class="pos-search-result-item" style="
-                                        cursor: pointer;
-                                        padding: 0.5rem;
-                                        border: 1px solid var(--ck-color-base-border);
-                                        border-radius: 1rem; font-size: 1.2rem; line-height: 1.4rem;
-                                        margin: 0.5rem;
-                                        display: flex;
-                                        flex-direction: row;
-                                        " *ngFor="let item of searchResults; let i = index" [ngClass]="{'active': i == searchResultActiveIndex}" (click)="onChooseProduct(item)">
-                                        <div>
-                                            <img style="width: 10rem;" src="{{item.FeaturePicture?.SmallImage}}">
+                                    <cdk-virtual-scroll-viewport #searchListViewport [itemSize]="150" style="height: 80vh;" class="scrollable-container">
+                                        <div class="pos-search-result-item" style="
+                                                cursor: pointer;
+                                                padding: 0.5rem;
+                                                border: 1px solid var(--ck-color-base-border);
+                                                border-top: 0;
+                                                font-size: 1.2rem;
+                                                line-height: 1.4rem;
+                                                display: flex;
+                                                flex-direction: row;
+                                                height: 150px;
+                                                " *cdkVirtualFor="let item of searchResults; let i = index" [ngClass]="{'active': i == searchResultActiveIndex}" (click)="onChooseProduct(item)">
+                                            <div style="
+                                                    background-repeat: no-repeat; 
+                                                    background-size: cover;
+                                                    width: 150px; 
+                                                    height: 100%;
+                                                    margin-right: 0.5rem" [style.backgroundImage]="'url('+item.FeaturePicture?.SmallImage+')'"></div>
+                                            <div style="flex: 1;">
+                                                <div>{{item.Name}}</div>
+                                                <div style="margin-top: 0.5rem;">SKU: {{item.Sku}}</div>
+                                                <div>Vị trí: {{item.Container?.FindOrder || item.Container?.ContainerFindOrder}} - {{item.Container?.ShelfName}}</div>
+                                                <div>ĐVT: {{(item.Unit || item.WarehouseUnit) | objecttext}}</div>
+                                                <div style="color: var(--danger);">Giá: {{item.Price | currency:'VND'}}</div>
+                                            </div>
                                         </div>
-                                        <div style="flex: 1;">
-                                            <div style="margin-top: 0.5rem;">SKU: {{item.Sku}}</div>
-                                            <div>{{item.Name}}</div>
-                                            <div>Vị trí: {{item.Container?.ContainerFindOrder}} - {{item.Container?.ContainerPath}}</div>
-                                            <div style="color: var(--danger);">Giá: {{item.Price | currency:'VND'}}/{{item.WarehouseUnit | objecttext}}</div>
-                                        </div>
-                                    </div>
+                                    </cdk-virtual-scroll-viewport>
                                     <!-- </div> -->
                                 </div>
                             </div>
@@ -399,7 +407,7 @@
                                 </div>
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field">
-                                        <input id="ObjectName" formControlName="ObjectName" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" status="primary" fieldSize="large" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
+                                        <input id="ObjectName" #ObjectName formControlName="ObjectName" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" status="primary" fieldSize="large" fullWidth placeholder="F8 - Tên khách hàng..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                             </div>

@@ -5,6 +5,7 @@ import { UserModel } from './user.model';
 import { ProductModel, ProductPictureModel } from './product.model';
 import { UnitModel } from './unit.model';
 import { BusinessModel } from './accounting.model';
+import { Tracing } from 'trace_events';
 
 export class WarehouseModel {
   Id?: string | number;
@@ -238,10 +239,27 @@ export class WarehouseGoodsInContainerModel {
   Id?: string | number;
   Warehouse?: string & WarehouseModel;
   Goods?: string & GoodsModel;
+  GoodsName?: string & GoodsModel;
+  SearchIndex?: string;
+  GoodsSku?: string;
   Unit?: string & UnitModel;
   UnitLabel?: string;
+  UnitSeq?: string;
+  UnitNo?: string;
   Container?: string & WarehouseGoodsContainerModel;
-  GoodsThumbnail?: ImageModel;
+  ContainerName?: string;
+  ContainerDescription?: string;
+  ContainerFindOrder?: string;
+  ContainerPath?: string;
+  ContainerAccAccount?: string;
+  ContainerAccAccountName?: string;
+  ContainerShelf?: string;
+  ContainerShelfName?: string;
+  WarehouseName?: string;
+  Inventory?: string;
+  LastUpdate?: string;
+  CostOfGoodsSold?: ImageModel;
+  GoodsThumbnail?: any;
 }
 
 export class GoodsModel extends ProductModel {

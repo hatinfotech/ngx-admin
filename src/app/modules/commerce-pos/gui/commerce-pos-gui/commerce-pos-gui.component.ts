@@ -1,3 +1,4 @@
+import { WarehouseGoodsInContainerModel } from './../../../../models/warehouse.model';
 import { UnitModel } from './../../../../models/unit.model';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductModel, ProductUnitModel } from './../../../../models/product.model';
@@ -20,6 +21,8 @@ import { CommercePosPaymnentPrintComponent } from '../commerce-pos-payment-print
 import { ContactAllListComponent } from '../../../contact/contact-all-list/contact-all-list.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { BehaviorSubject } from 'rxjs';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { ɵangular_packages_platform_browser_platform_browser_k } from '@angular/platform-browser';
 
 declare const openDatabase;
 
@@ -72,10 +75,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   @ViewChild('paymentSound', { static: true }) paymentSound: ElementRef;
 
   @ViewChild('ObjectPhone', { static: true }) objectPhoneEleRef: ElementRef;
+  @ViewChild('ObjectName', { static: true }) objectNameEleRef: ElementRef;
   @ViewChild('Search', { static: true }) searchEleRef: ElementRef;
   @ViewChild('orderDetailTable', { static: true }) orderDetailTableRef: ElementRef;
   @ViewChild('searchResultsRef', { static: true }) searchResultsRef: ElementRef;
   @ViewChild('customerEle', { static: true }) customerEle: ElementRef;
+  @ViewChild('searchListViewport', { static: true }) searchListViewport: CdkVirtualScrollViewport;
 
   get isFullscreenMode() {
     return screenfull.isFullscreen;
@@ -170,6 +175,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     (document.activeElement as HTMLElement).blur();
   }
 
+  private goodsList: ProductModel[] = [];
   async updateGodosInfo() {
     this.status = 'Đang tải bảng giá...';
     // while (true) {
@@ -217,6 +223,55 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
       });
       // this.commonService.toastService.show('Đã cập nhật bảng giá mới', 'POS Thương mại', { status: 'success' });
+
+
+      // Get goods list
+      this.goodsList = [];
+      let offset = 0;
+      while (true) {
+        const rs = await this.apiService.getPromise<WarehouseGoodsInContainerModel[]>('/warehouse/goods-in-containers', {
+          sort_Goods: 'asc',
+          sort_UnitNo: 'asc',
+          offset: offset,
+          limit: 100
+        }).then(rs => {
+
+          for (const goodsInContainer of rs) {
+            const price = this.masterPriceTable[`${goodsInContainer.Goods}-${this.commonService.getObjectId(goodsInContainer.Unit)}`]?.Price || null;
+            this.goodsList.push({
+              Code: goodsInContainer.Goods,
+              Sku: goodsInContainer.GoodsSku?.toUpperCase(),
+              Name: goodsInContainer.GoodsName,
+              FeaturePicture: goodsInContainer.GoodsThumbnail,
+              // Unit: goodsInContainer.Unit,
+              Container: {
+                id: goodsInContainer.Container,
+                text: goodsInContainer.ContainerName,
+                FindOrder: goodsInContainer.ContainerFindOrder,
+                Shelf: goodsInContainer.ContainerShelf,
+                ShelfName: goodsInContainer.ContainerShelfName,
+              },
+              Unit: { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel, Sequence: goodsInContainer.UnitSeq },
+              // Shelf: { id: goodsInContainer.ContainerShelf, text: goodsInContainer.ContainerShelfName },
+              Price: price,
+              Keyword: (goodsInContainer.GoodsSku + ' ' + goodsInContainer.GoodsName).toLowerCase()
+            });
+          }
+
+          offset += 100;
+          return rs;
+        });
+
+        if (!rs || rs.length == 0) {
+          break;
+        }
+      }
+
+      console.log(this.goodsList);
+
+
+
+
       return true;
     } catch (err) {
       console.log(err);
@@ -231,7 +286,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   private unitMap: { [key: string]: ProductUnitModel } = {};
   private productMap: { [key: string]: ProductModel } = {};
   private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
-  private goodsList: ProductModel[] = [];
   async init() {
     const result = await super.init().then(async status => {
 
@@ -259,6 +313,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // await this.barcodeProcess('11802497094');
     // await this.barcodeProcess('11802497093');
     // await this.barcodeProcess('11802497092');
+
+
+    // this.searchResults = Array.from({ length: 100 }).map((_, i) => `Item #${i}`) as any;
 
     // Listen price table update
     setInterval(() => {
@@ -487,6 +544,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       try {
         await this.barcodeProcess(inputValue);
         event.target.value = '';
+        event.target.blur();
       } catch (err) {
         this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning' });
       }
@@ -499,72 +557,78 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     console.log(event);
     this.commonService.takeUntilCallback('commerce-pos-search', 300, () => {
       const inputValue: string = event.target?.value;
-      if ((event.key.length == 1 && /[a-z0-9\ ]/.test(event.key)) || (event.key.length > 1 && ['Backspace'].indexOf(event.key) > -1)) {
+      if ((event.key.length == 1 && /[a-z0-9\ ]/i.test(event.key)) || (event.key.length > 1 && ['Backspace'].indexOf(event.key) > -1)) {
         if (/\w+/.test(inputValue)) {
           this.lastSearchCount++;
           const currentSearchCount = this.lastSearchCount;
 
 
-          // if (this.goodsList && this.goodsList.length > 0) {
-          //   // Search in local memory
-          //   const rs = this.goodsList.filter(f => this.commonService.smartFilter(f.Keyword, inputValue)).slice(0, 20);
-          //   // let rs: ProductModel[];
-          //   // this.webdb.transaction((t) => {
-          //   //   t.executeSql("SELECT * FROM product where Sky");
-          //   // });
+          if (this.goodsList && this.goodsList.length > 0) {
+            // Search in local memory
+            let rs = this.goodsList.filter(f => new RegExp('^' + inputValue.toUpperCase()).test(f.Sku)).slice(0, 256);
+            rs = rs.concat(rs, this.goodsList.filter(f => this.commonService.smartFilter(f.Keyword, inputValue.toLowerCase())).slice(0, 256));
 
-          //   if (currentSearchCount == this.lastSearchCount) {
-          //     this.searchResults = rs.map(goods => {
-          //       goods.Price = this.masterPriceTable[`${goods.Code}-${this.commonService.getObjectId(goods.WarehouseUnit)}`]?.Price;
-          //       return goods;
-          //     });
-          //     if (rs[0]) {
-          //       rs[0].active = true;
-          //       this.searchResultActiveIndex = 0;
-          //       // const activeEle = $(this.searchResultsRef.nativeElement.children[this.searchResultActiveIndex]);
-          //       // activeEle[0].scrollIntoView();
-          //       setTimeout(() => {
-          //         $(this.searchResultsRef.nativeElement).scrollTop(0);
-          //       }, 0);
-          //     }
-          //     // return rs;
-          //   } else {
-          //     console.log('search results was lated');
-          //   }
+            // let rs: ProductModel[];
+            // this.webdb.transaction((t) => {
+            //   t.executeSql("SELECT * FROM product where Sky");
+            // });
 
-          // } else {
-          // If goods list indexing then search by server
-          this.apiService.getPromise<ProductModel[]>('/warehouse/goods', {
-            includeCategories: true,
-            includeFeaturePicture: true,
-            includeUnit: true,
-            includeContainer: true,
-            sort_Name: 'asc',
-            sort_UnitConvertNo: 'asc',
-            // includeInventory: true,
-            // sort_Id: 'desc',
-            search: inputValue,
-          }).then(rs => {
             if (currentSearchCount == this.lastSearchCount) {
-              this.searchResults = rs.map(goods => {
-                goods.Price = this.masterPriceTable[`${goods.Code}-${this.commonService.getObjectId(goods.WarehouseUnit)}`]?.Price;
-                return goods;
-              });
-              if (rs[0]) {
-                rs[0].active = true;
+              // this.searchResults = rs.map(goods => {
+              //   goods.Price = this.masterPriceTable[`${goods.Code}-${this.commonService.getObjectId(goods.WarehouseUnit)}`]?.Price;
+              //   return goods;
+              // });
+              this.searchResults = rs;
+              if (this.searchResults[0]) {
+                this.searchResults[0].active = true;
                 this.searchResultActiveIndex = 0;
                 // const activeEle = $(this.searchResultsRef.nativeElement.children[this.searchResultActiveIndex]);
                 // activeEle[0].scrollIntoView();
                 setTimeout(() => {
-                  $(this.searchResultsRef.nativeElement).scrollTop(0);
+                  // $(this.searchResultsRef.nativeElement).scrollTop(0);
+                  this.searchListViewport.scrollToIndex(0, 'smooth');
                 }, 0);
               }
               // return rs;
             } else {
               console.log('search results was lated');
             }
-          });
-          // }
+
+          } else {
+            // If goods list indexing then search by server
+            this.apiService.getPromise<ProductModel[]>('/warehouse/goods', {
+              includeCategories: true,
+              includeFeaturePicture: true,
+              includeUnit: true,
+              includeContainer: true,
+              sort_Name: 'asc',
+              sort_UnitConvertNo: 'asc',
+              // includeInventory: true,
+              // sort_Id: 'desc',
+              search: inputValue,
+              limit: 20
+            }).then(rs => {
+              if (currentSearchCount == this.lastSearchCount) {
+                this.searchResults = rs.map(goods => {
+                  goods.Price = this.masterPriceTable[`${goods.Code}-${this.commonService.getObjectId(goods.WarehouseUnit)}`]?.Price;
+                  return goods;
+                });
+                if (rs[0]) {
+                  rs[0].active = true;
+                  this.searchResultActiveIndex = 0;
+                  // const activeEle = $(this.searchResultsRef.nativeElement.children[this.searchResultActiveIndex]);
+                  // activeEle[0].scrollIntoView();
+                  setTimeout(() => {
+                    this.searchListViewport.scrollToIndex(0, 'smooth');
+                    // $(this.searchResultsRef.nativeElement).scrollTop(0);
+                  }, 0);
+                }
+                // return rs;
+              } else {
+                console.log('search results was lated');
+              }
+            });
+          }
 
         } else {
           this.searchResults = null;
@@ -633,9 +697,24 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       if (!product) {
         if (option?.searchBySku || /^[a-z]+\d+/i.test(inputValue)) {
           // Search by sku
-          product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, eq_Sku: inputValue, includeInventory: true }).then(rs => {
-            return rs[0];
-          });
+          if (this.goodsList) {
+            const products = this.goodsList.filter(f => f.Sku == inputValue.toUpperCase());
+            for (const prod of products) {
+              const productInfo = this.productMap[prod.Code];
+
+              // Tìm vị trí tương ứng với đơn vị tính cơ bản
+              if (productInfo && this.commonService.getObjectId(productInfo.WarehouseUnit) == this.commonService.getObjectId(prod.Unit)) {
+                product = prod;
+                break;
+              }
+            }
+          }
+          if (!product) {
+            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, eq_Sku: inputValue, includeInventory: true }).then(rs => {
+              return rs[0];
+            });
+          }
+
           if (!product) {
             this.commonService.toastService.show(`Sku không tồn tại !`, 'Sku không tồn tại !', { status: 'danger' });
             // resolve(true);
@@ -994,7 +1073,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           Image: product?.FeaturePicture || [],
           AccessNumbers: accessNumber ? [accessNumber] : null,
           Discount: 0,
-          FindOrder: product?.FindOrder,
+          FindOrder: product?.FindOrder || product?.Container?.FindOrder,
           Container: product?.Container,
         });
         existsProductIndex = detailsControls.length - 1;
@@ -1069,7 +1148,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       return existsProduct;
     } catch (err) {
       this.isBarcodeProcessing.next(queueId + 1);
-      return Promise.reject(err);
+      return null;
     }
   }
 
@@ -1094,7 +1173,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         focus: true,
         action: () => {
           // this.order = new OrderModel();
-          this.apiService.putPromise('/commerce-pos/orders', { changeState: 'UNRECORDED' }, [{ Code: this.orderForm.get('Code').value }]).then(rs => {
+
+          const apiPath = this.orderForm['voucherType'] == 'CPOSORDER' ? '/commerce-pos/orders' : '/commerce-pos/returns';
+          this.apiService.putPromise(apiPath, { changeState: 'UNRECORDED' }, [{ Code: this.orderForm.get('Code').value }]).then(rs => {
             this.orderForm.get('State').setValue('UNRECORDED');
             this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
             if (this.historyOrderIndex > -1) {
@@ -1178,8 +1259,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       if (event.key == 'ArrowDown') {
         if (this.searchResultActiveIndex < this.searchResults.length - 1) {
           this.searchResultActiveIndex++;
-          const activeEle = $(this.searchResultsRef.nativeElement.children[this.searchResultActiveIndex]);
-          activeEle[0].scrollIntoView();
+          // const activeEle = $(this.searchResultsRef.nativeElement.children[0].children[0].children[this.searchResultActiveIndex]);
+          this.searchListViewport.scrollToIndex(this.searchResultActiveIndex, 'smooth');
+          // activeEle[0].scrollIntoView();
 
           event.preventDefault();
           // return false;
@@ -1190,8 +1272,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         if (this.searchResultActiveIndex > 0) {
           this.searchResultActiveIndex--;
 
-          const activeEle = $(this.searchResultsRef.nativeElement.children[this.searchResultActiveIndex]);
-          activeEle[0].scrollIntoView();
+          // const activeEle = $(this.searchResultsRef.nativeElement.children[0].children[0].children[this.searchResultActiveIndex]);
+          // activeEle[0].scrollIntoView();
+          this.searchListViewport.scrollToIndex(this.searchResultActiveIndex, 'smooth');
 
           event.preventDefault();
           // return false;
@@ -1224,68 +1307,74 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       return true;
     }
 
-    // Search customer
-    if (event.key == 'F6') {
-      console.log(this.customerEle);
-      $(this.customerEle['controls'].selector.nativeElement)['select2']('open');
-      return false;
-    }
-
-    // Toggle debt
-    if (event.key == 'F7') {
-      this.toggleDebt();
-      return false;
-    }
-
-    if (event.key == 'F6') {
-      console.log(this.customerEle);
-      $(this.customerEle['controls'].selector.nativeElement)['select2']('open');
-      return false;
-    }
-
-    if (event.key == 'F10') {
-      if (this.commonService.dialogStack.length === 0) {
-        this.onMakeNewReturnsForm();
+    if (this.commonService.dialogStack.length === 0) {
+      if (event.key == 'F6') {
+        console.log(this.customerEle);
+        $(this.customerEle['controls'].selector.nativeElement)['select2']('open');
         return false;
       }
-    }
 
-    // Payment/re-print
-    if (event.key == 'F9') {
-      if (this.commonService.dialogStack.length === 0) {
+      // Toggle debt
+      if (event.key == 'F7') {
+        this.toggleDebt();
+        return false;
+      }
+
+      // if (event.key == 'F6') {
+      //   console.log(this.customerEle);
+      //   $(this.customerEle['controls'].selector.nativeElement)['select2']('open');
+      //   return false;
+      // }
+
+      if (event.key == 'F10') {
+        if (this.commonService.dialogStack.length === 0) {
+          this.onMakeNewReturnsForm();
+          return false;
+        }
+      }
+
+      // Payment/re-print
+      if (event.key == 'F9') {
+        // if (this.commonService.dialogStack.length === 0) {
         if (this.orderForm.value?.State == 'APPROVED') {
           this.print(this.orderForm, { printType: 'INVOICE' });
         } else {
           this.payment(this.orderForm, { skipPrint: false, printType: 'INVOICE' });
         }
         event.preventDefault();
+        // }
+        return true;
       }
-      return true;
-    }
-    if (event.key == 'F8') {
-      if (this.commonService.dialogStack.length === 0) {
-        this.objectPhoneEleRef.nativeElement.focus();
+      if (event.key == 'F8') {
+        // if (this.commonService.dialogStack.length === 0) {
+        if ($(this.objectPhoneEleRef.nativeElement).is(':focus')) {
+          this.objectNameEleRef.nativeElement.focus();
+        } else {
+          this.objectPhoneEleRef.nativeElement.focus();
+        }
         event.preventDefault();
+        // }
+        return true;
       }
-      return true;
-    }
-    if (event.key == 'F4') {
-      if (this.commonService.dialogStack.length === 0) {
+      if (event.key == 'F4') {
+        // if (this.commonService.dialogStack.length === 0) {
         this.destroyOrder();
         event.preventDefault();
         return false;
+        // }
+        return true;
       }
-      return true;
-    }
-    if (event.key == 'F8') {
-      if (this.commonService.dialogStack.length === 0) {
-        this.objectPhoneEleRef.nativeElement.focus();
-        event.preventDefault();
-      }
-      return true;
-    }
-    if (event.key == 'F2') {
-      if (this.commonService.dialogStack.length === 0) {
+      // if (event.key == 'F8') {
+      //   if (this.commonService.dialogStack.length === 0) {
+      //     this.objectPhoneEleRef.nativeElement.focus();
+      //     event.preventDefault();
+      //   }
+      //   return true;
+      // }
+
+      // Change quantity
+      if (event.key == 'F2') {
+        // if (this.commonService.dialogStack.length === 0) {
         const details = this.getDetails(this.orderForm).controls;
         let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
         // const quantityEle = $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1]).find('.pos-quantity')[0] as HTMLInputElement;
@@ -1295,11 +1384,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         this.focusToQuantity(activeDetailIndex);
         event.preventDefault();
         return false;
+        // }
+        // return true;
       }
-      return true;
-    }
-    if (event.key == 'F12') {
-      if (this.commonService.dialogStack.length === 0) {
+
+      // Change price
+      if (event.key == 'F12') {
+        // if (this.commonService.dialogStack.length === 0) {
         const details = this.getDetails(this.orderForm).controls;
         let activeDetail = details.find(f => f['isActive'] === true);
         // const quantityEle = $(this.orderDetailTableRef.nativeElement.children[activeDetailIndex + 1]).find('.pos-quantity')[0] as HTMLInputElement;
@@ -1366,26 +1457,71 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
         event.preventDefault();
         return false;
+        // }
+        // return false;
       }
-      return false;
-    }
-    if (event.key == 'F3') {
-      if (this.commonService.dialogStack.length === 0) {
+
+      // Forcus to serach
+      if (event.key == 'F3') {
+        // if (this.commonService.dialogStack.length === 0) {
         this.searchEleRef.nativeElement.focus();
         event.preventDefault();
+        // }
+        return true;
       }
-      return true;
+      if (event.key == 'F5') {
+        // if (this.commonService.dialogStack.length === 0) {
+        this.makeNewOrder();
+        event.preventDefault();
+        // }
+        return true;
+      }
+
+      if (event.key == '+') {
+        if (this.commonService.dialogStack.length === 0) {
+          const details = this.getDetails(this.orderForm).controls;
+          const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+          if (activeDetail) {
+            this.onIncreaseQuantityClick(this.orderForm, activeDetail);
+          }
+        }
+        return false;
+      }
+      if (event.key == '-') {
+        if (this.commonService.dialogStack.length === 0) {
+          const details = this.getDetails(this.orderForm).controls;
+          const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
+          if (activeDetail) {
+            this.onDecreaseQuantityClick(this.orderForm, activeDetail);
+          }
+        }
+        return false;
+      }
+
+      if (event.key == 'Delete') {
+        if (this.commonService.dialogStack.length === 0) {
+          const details = this.getDetails(this.orderForm).controls;
+          let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
+          if (activeDetailIndex > -1) {
+            details.splice(activeDetailIndex, 1);
+            this.calculateTotal(this.orderForm);
+            const nextActive = details[activeDetailIndex] as FormGroup;
+            if (nextActive) {
+              this.activeDetail(this.orderForm, nextActive, activeDetailIndex);
+            } else {
+              if (details.length > 0) {
+                activeDetailIndex = 0;
+                this.activeDetail(this.orderForm, details[0] as FormGroup, activeDetailIndex);
+              }
+            }
+          }
+        }
+      }
     }
+
     if (event.key == 'F4') {
       if (this.shortcutKeyContext == 'returnspaymentconfirm') {
         this.makeNewOrder(null, this.inputValue);
-      }
-      return true;
-    }
-    if (event.key == 'F5') {
-      if (this.commonService.dialogStack.length === 0) {
-        this.makeNewOrder();
-        event.preventDefault();
       }
       return true;
     }
@@ -1470,48 +1606,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         }
         return false;
       }
-
-
-      if (event.key == '+') {
-        if (this.commonService.dialogStack.length === 0) {
-          const details = this.getDetails(this.orderForm).controls;
-          const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
-          if (activeDetail) {
-            this.onIncreaseQuantityClick(this.orderForm, activeDetail);
-          }
-        }
-        return false;
-      }
-      if (event.key == '-') {
-        if (this.commonService.dialogStack.length === 0) {
-          const details = this.getDetails(this.orderForm).controls;
-          const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
-          if (activeDetail) {
-            this.onDecreaseQuantityClick(this.orderForm, activeDetail);
-          }
-        }
-        return false;
-      }
-
-      if (event.key == 'Delete') {
-        if (this.commonService.dialogStack.length === 0) {
-          const details = this.getDetails(this.orderForm).controls;
-          let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
-          if (activeDetailIndex > -1) {
-            details.splice(activeDetailIndex, 1);
-            this.calculateTotal(this.orderForm);
-            const nextActive = details[activeDetailIndex] as FormGroup;
-            if (nextActive) {
-              this.activeDetail(this.orderForm, nextActive, activeDetailIndex);
-            } else {
-              if (details.length > 0) {
-                activeDetailIndex = 0;
-                this.activeDetail(this.orderForm, details[0] as FormGroup, activeDetailIndex);
-              }
-            }
-          }
-        }
-      }
     } else {
       // Control for search results
 
@@ -1586,11 +1680,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
       if (/^[0-9a-z]$/i.test(event.key) && (document.activeElement as HTMLElement).tagName == 'BODY') {
         this.findOrderKeyInput += event.key;
-        this.searchInputPlaceholder = this.findOrderKeyInput + ' - tìm theo vị trí hàng hóa...';
+        this.searchInputPlaceholder = this.findOrderKeyInput + ' - tìm theo vị trí hàng hóa, sku...';
       }
       if (event.key == 'Backspace') {
         this.findOrderKeyInput = this.findOrderKeyInput.slice(0, -1);
-        this.searchInputPlaceholder = this.findOrderKeyInput + ' - tìm theo vị trí hàng hóa...';
+        this.searchInputPlaceholder = this.findOrderKeyInput + ' - tìm theo vị trí hàng hóa, sku...';
       }
 
       if (event.key == 'Enter' && this.findOrderKeyInput) {
@@ -1637,6 +1731,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     //     return false;
     //   }
     // });
+
+    // Disable F7 key for else
+    if (event.key == 'F7') {
+      return false;
+    }
 
     return true;
   }
@@ -1765,8 +1864,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           data: [data],
           onSaveAndClose: (newOrder: CommercePosOrderModel, printComponent) => {
             if (typeof newOrder.Object == 'string') {
-              newOrder.Object = { id: newOrder.Object, text: `${newOrder.Object} - ${newOrder.ObjectName}` };
+              newOrder.Object = { id: newOrder.Object, text: `${newOrder.Object} - ${newOrder.ObjectName}` }
             }
+            newOrder.Object = { ...orderForm.get('Object').value, ...newOrder.Object };
             orderForm.patchValue(newOrder);
             this.commonService.toastService.show(option?.skipPrint ? `Đã thanh toán cho đơn hàng ${newOrder.Code}, để in phiếu nhấn nút điều hướng sang trái và in lại!` : `Đã thanh toán cho đơn hàng ${newOrder.Code}`, 'Đã thanh toán', { status: 'success', duration: 8000 })
             this.makeNewOrder();
@@ -1999,20 +2099,22 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   onChooseProduct(product: ProductModel) {
     (document.activeElement as HTMLElement).blur();
     this.searchEleRef.nativeElement.value = '';
-    let productId = product.Code;
+    // let productId = product.Code;
     this.searchResults = null;
-    this.searchResultActiveIndex = 0;
-    if (product.WarehouseUnit['sequence']) {
-      const miniErpCode = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
-      productId = productId.replace(new RegExp('^118' + miniErpCode), '');
-      productId = product.WarehouseUnit['sequence'].length + product.WarehouseUnit['sequence'] + productId;
-    }
-    if (product.Container?.ContainerFindOrder) {
-      this.barcodeProcess(product.Container.ContainerFindOrder, { searchByFindOrder: true });
-    } else {
-      product.Unit = product.WarehouseUnit;
-      this.barcodeProcess(null, { product: product });
-    }
+    // this.searchResultActiveIndex = 0;
+    // if (product.Unit['sequence'] || product.WarehouseUnit['sequence']) {
+    //   const miniErpCode = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+    //   productId = productId.replace(new RegExp('^118' + miniErpCode), '');
+    //   productId = product.WarehouseUnit['sequence'].length + product.WarehouseUnit['sequence'] + productId;
+    // }
+    // if (product.Container?.ContainerFindOrder) {
+    //   this.barcodeProcess(product.Container.ContainerFindOrder, { searchByFindOrder: true });
+    // } else {
+    //   product.Unit = product.WarehouseUnit;
+    //   this.barcodeProcess(null, { product: product });
+    // }
+
+    this.barcodeProcess(null, { product: product });
     // this.tmpQuantity = '';
   }
 
