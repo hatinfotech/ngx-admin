@@ -258,7 +258,7 @@ export class CommercePosPaymnentPrintComponent extends DataManagerPrintComponent
   }
 
   approve(index: number) {
-    const params: any = { payment: true };
+    const params: any = { payment: true, includeRelativeVouchers: true };
     let returnsPayment = this.data[index];
     if (returnsPayment) {
       returnsPayment.State = 'APPROVED';

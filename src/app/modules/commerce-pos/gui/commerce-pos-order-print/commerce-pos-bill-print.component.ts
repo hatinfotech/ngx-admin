@@ -278,7 +278,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
 
   isProcessing = false;
   payment(index: number, option?: { print: boolean }) {
-    const params: any = { payment: true };
+    const params: any = { payment: true, includeRelativeVouchers: true };
     let order = this.data[index];
     if (order) {
       // order.State = 'APPROVED';

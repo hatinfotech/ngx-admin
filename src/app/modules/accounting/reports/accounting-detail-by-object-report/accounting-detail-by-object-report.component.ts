@@ -178,7 +178,9 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
             return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
           },
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id));
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
+              this.refresh();
+            }));
           },
           width: '10%',
         },
@@ -191,25 +193,25 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
           title: this.commonService.translateText('Số lượng'),
           type: 'number',
           width: '5%',
-          valuePrepareFunction: (cell, row) => { 
+          valuePrepareFunction: (cell, row) => {
             return row.ProductUnitLabel ? row.Quantity : '-';
-           },
+          },
         },
         Unit: {
           title: this.commonService.translateText('ĐVT'),
           type: 'text',
           width: '5%',
-          valuePrepareFunction: (cell, row) => { 
+          valuePrepareFunction: (cell, row) => {
             return row.ProductUnitLabel ? row.ProductUnitLabel : '-';
-           },
+          },
         },
         Price: {
           title: this.commonService.translateText('Giá'),
           type: 'acc-currency',
           width: '5%',
-          valuePrepareFunction: (cell, row) => { 
-            
-            return row.Quantity ? `${(row.GenerateDebit - row.GenerateCredit) / row.Quantity}` : '-'; 
+          valuePrepareFunction: (cell, row) => {
+
+            return row.Quantity ? `${(row.GenerateDebit - row.GenerateCredit) / row.Quantity}` : '-';
           },
         },
         HeadAmount: {

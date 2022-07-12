@@ -56,6 +56,7 @@ import { AdminProductService } from '../modules/admin-product/admin-product.serv
 import { CollaboratorEducationArticlePrintComponent } from '../modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
 import { SalesReturnsVoucherPrintComponent } from '../modules/sales/sales-returns-voucher/sales-returns-voucher-print/sales-returns-voucher-print.component';
 import { CommercePosReturnPrintComponent } from '../modules/commerce-pos/commerce-pos-return/commerce-pos-return-print/commerce-pos-return-print.component';
+import { DataManagerPrintComponent } from '../lib/data-manager/data-manager-print.component';
 
 interface ClipboardItem {
   readonly types: string[];
@@ -957,7 +958,7 @@ export class CommonService {
     'COMMERCEPOSORDER': CommercePosOrderPrintComponent,
     'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
   };
-  previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void) {
+  previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void, onChange?: (data: M, printComponent: DataManagerPrintComponent<M>) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {
       this.openDialog(this.voucherPrintConponentTypeIndex[type], {
         context: {
@@ -974,6 +975,9 @@ export class CommonService {
           onClose: (data: M) => {
             onClose && onClose(data);
           },
+          onChange: (data: M, instance: DataManagerPrintComponent<M>) => {
+            onChange && onChange(data, instance);
+          }
         },
       });
       return true;

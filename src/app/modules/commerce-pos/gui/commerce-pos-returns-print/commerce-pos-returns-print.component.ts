@@ -1,5 +1,6 @@
+import { CommercePosReturnModel } from './../../../../models/commerce-pos.model';
 import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { isThisTypeNode } from 'typescript';
@@ -31,6 +32,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
   @Input() skipPreview: boolean;
   @Input() instantPayment: boolean;
   @Input() order: CommercePosOrderModel;
+  onContinueOrder = new EventEmitter<CommercePosReturnModel>();
 
   style = /*css*/`
   #print-area {
@@ -262,7 +264,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
   }
 
   approve(index: number, option?: { print: boolean }) {
-    const params: any = { payment: true };
+    const params: any = { payment: true, includeRelativeVouchers: true };
     let order = this.data[index];
     if (order) {
       order.State = 'APPROVED';
@@ -291,6 +293,35 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
 
       }
     }
+  }
+
+  continueOrder(index?: number) {
+    // this.close();
+    this.onContinueOrder.next(this.data[0]);
+    return true;
+  }
+
+  onKeyboardEvent(event: KeyboardEvent) {
+    if (event.key == 'F5') {
+      this.continueOrder(0);
+      this.close();
+      return false;
+    }
+    if (event.key == 'Enter') {
+
+      if (!this.instantPayment) {
+        this.print(0);
+      } else {
+        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+          this.print(0);
+          this.close();
+        } else {
+          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
+        }
+      }
+      return false;
+    }
+    return true;
   }
 
 }

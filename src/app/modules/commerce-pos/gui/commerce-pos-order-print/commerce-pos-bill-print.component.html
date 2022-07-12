@@ -56,7 +56,8 @@
                                 <td colspan="3" style="text-align: right; font-weight: bold;">Cấn trừ tiền trả hàng (phiếu {{order.Returns}}): {{order.DebitFunds | currency:'VND'}}</td>
                             </tr>
                             <tr *ngIf="order.Returns">
-                                <td colspan="3" style="text-align: right; font-weight: bold;">Phải thu: {{order.Total - order.DebitFunds | currency:'VND'}}</td>
+                                <td colspan="3" *ngIf="order.Total >= order.DebitFunds" style="text-align: right; font-weight: bold;">Phải thu: {{order.Total - order.DebitFunds | currency:'VND'}}</td>
+                                <td colspan="3" *ngIf="order.Total < order.DebitFunds" style="text-align: right; font-weight: bold;">Trả lại: {{order.DebitFunds - order.Total | currency:'VND'}}</td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="text-align: right; font-weight: bold;">&nbsp;</td>
@@ -84,10 +85,10 @@
                     <nb-icon pack="eva" icon="close"></nb-icon>
                 </button> -->
                 <button #paymentBtn nbButton [disabled]="isProcessing" hero *ngIf="data[0].State != 'APPROVED'" status="success" (click)="payment(0)">
-                    <nb-icon pack="eva" icon="flash"></nb-icon>{{'Enter để thanh toán và in bill' | translate | headtitlecase}}
+                    <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In (Enter)' | translate | headtitlecase}}
                 </button>
                 <button #printBtn nbButton hero *ngIf="data[0].State == 'APPROVED'" status="primary" (click)="print(0)">
-                    <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'Enter để In bill' | translate | headtitlecase}}
+                    <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In (Enter)' | translate | headtitlecase}}
                 </button>
             </div>
         </nb-card-footer>
