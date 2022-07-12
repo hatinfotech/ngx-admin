@@ -12,7 +12,7 @@ import { BaseComponent } from "../../../../lib/base-component";
 import { ApiService } from "../../../../services/api.service";
 import { CommonService } from "../../../../services/common.service";
 import screenfull from 'screenfull';
-import { filter, take, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { SystemConfigModel } from "../../../../models/model";
 import { CurrencyMaskConfig } from "ng2-currency-mask";
 import { CommercePosBillPrintComponent } from '../commerce-pos-order-print/commerce-pos-bill-print.component';
@@ -67,6 +67,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   currentDate = new Date();
 
   status = '';
+
+  loading = false;
+  progress = 0;
+  progressStatus = 'success';
+  progressLabel = '0%';
 
   // @ViewChild('newDetailPipSound', { static: true }) newDetailPipSound: ElementRef;
   // @ViewChild('increaseDetailPipSound', { static: true }) increaseDetailPipSound: ElementRef;
@@ -250,13 +255,32 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       // Get goods list
       this.goodsList = [];
       let offset = 0;
+      this.progressStatus = 'danger';
       while (true) {
-        const rs = await this.apiService.getPromise<WarehouseGoodsInContainerModel[]>('/warehouse/goods-in-containers', {
+        const rs = await this.apiService.getObservable<WarehouseGoodsInContainerModel[]>('/warehouse/goods-in-containers', {
           sort_Goods: 'asc',
           sort_UnitNo: 'asc',
           offset: offset,
           limit: 100
-        }).then(rs => {
+        }).pipe(
+          map((res) => {
+            const total = +res.headers.get('x-total-count');
+            let data = res.body;
+            return { data, total };
+          }),
+        ).toPromise().then(result => {
+
+          const rs = result.data;
+          const total = result.total;
+
+          const progress = parseInt(((offset + 101) / result.total * 100) as any);
+          if (progress <= 100) {
+            this.progress = progress;
+          } else {
+            this.progress = 100;
+            this.progressStatus = 'success';
+          }
+          this.progressLabel = 'Tải thông tin hàng hóa (' + this.progress + '%)';
 
           for (const goodsInContainer of rs) {
             const price = this.masterPriceTable[`${goodsInContainer.Goods}-${this.commonService.getObjectId(goodsInContainer.Unit)}`]?.Price || null;
@@ -309,6 +333,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   private productMap: { [key: string]: ProductModel } = {};
   private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
   async init() {
+    this.loading = true;
     const result = await super.init().then(async status => {
 
       await this.updateGodosInfo();
@@ -340,6 +365,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         console.log(err);
       });
     }, 20000);
+
+    this.loading = false;
     return result;
   }
 

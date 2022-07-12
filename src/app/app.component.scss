@@ -169,6 +169,11 @@ a.tag {
       text-decoration: underline !important;
     }
   }
+  nb-progress-bar.status-success .progress-value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 hr {
