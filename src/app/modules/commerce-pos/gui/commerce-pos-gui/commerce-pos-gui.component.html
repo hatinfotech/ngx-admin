@@ -1,53 +1,9 @@
 <div class="pos-wrap scrollable-container" [ngClass]="{'is-fullscreen': isFullscreenMode}" #commercePosGui>
-    <audio #newDetailPipSound>
-        <source src='assets/sounds/beep-08b.wav' type="audio/mp3">
-    </audio>
-    <audio #increaseDetailPipSound>
-        <source src='assets/sounds/beep-07a.wav' type="audio/mp3">
-    </audio>
-    <audio #errorSound>
-        <source src='assets/sounds/beep-03.wav' type="audio/mp3">
-    </audio>
-    <audio #paymentSound>
-        <source src='assets/sounds/benboncan_till-with-bell.wav' type="audio/mp3">
-    </audio>
     <nb-card class="small-header smart-table" class="dialog-wrap {{inputMode}}" [formGroup]="orderForm" [ngClass]="{'pos-returns': orderForm['voucherType'] == 'COMMERCEPOSRETURN'}">
-        <!-- <nb-card-header>
-            <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('Máy bán hàng' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase))" [controls]="actionButtonList"></ngx-card-header>
-        </nb-card-header> -->
         <nb-card-body>
             <div class="pos" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-                <!-- <div class="pos-header" style="display: flex; align-items: center;">
-                    <div class="info-wrap" style="min-width: 10rem; flex: 1;">
-                    </div>
-                    <div class="control-wrap" style="min-width: 10rem; padding: 0.5rem; margin-right: 0.5rem;">
-                        <div class="buttons-row">
-                            <button nbButton size="medium" status="danger">Quản lý</button>
-                            <button nbButton size="medium" h status="primary">Tùy chọn</button>
-                            <button nbButton size="medium" status="success" (click)="toggleFullscreen()">
-                                <nb-icon icon="external-link-outline"></nb-icon>Toàn màn hình
-                            </button>
-                        </div>
-                    </div>
-                </div> -->
                 <div class="pos-container scrollable-container" style="flex: 1; display: flex; flex-direction: row; width: 100%; overflow: hidden;">
                     <div class="order" style="display: flex; flex-direction: column; flex: 1;">
-
-                        <!-- <div class="pos-contact" style="padding: 1rem">
-                            <input type="hidden" formControlName="Object">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="pos-contact-field">
-                                        <input #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="F8 - Số điện thoại..." class="pos-contact-field-input">
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="pos-contact-field">
-                                        <input formControlName="ObjectName" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
 
                         <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem; padding-bottom: 0;">
                             <div class="pos-search-input-wrap" style="flex: 1; position: relative;">
@@ -88,7 +44,6 @@
                                             </div>
                                         </div>
                                     </cdk-virtual-scroll-viewport>
-                                    <!-- </div> -->
                                 </div>
                             </div>
                             <div class="pos-search-button-wrap">
@@ -113,22 +68,12 @@
 
                         <div class="pos-order-detail scrollable-container" style="flex: 1; padding: 0.5rem;">
                             <table #orderDetailTable style="width: 100%; font-size: 1rem; font-weight: bold;">
-                                <!-- <colgroup>
-                                    <td style="width: 5%;"></td>
-                                    <td style="width: 45%;"></td>
-                                    <td style="width: 5%;"></td>
-                                    <td style="width: 40%;"></td>
-                                    <td style="width: 5%;"></td>
-                                </colgroup> -->
                                 <thead>
                                     <td style="text-align: center;">Xóa</td>
                                     <td style=" white-space: nowrap;">Hàng hóa</td>
                                     <td style="text-align: center;">(-)</td>
                                     <td style="text-align: right;">Số lượng X Đơn giá<br>= Thành tiền</td>
                                     <td style="text-align: center;">(+)</td>
-                                    <!-- <td style="text-align: right; white-space: nowrap;">Đơn giá</td> -->
-                                    <!-- <td style="text-align: right; white-space: nowrap;">CK(%)</td> -->
-                                    <!-- <td style="text-align: right; white-space: nowrap;">Thành tiền</td> -->
                                 </thead>
                                 <tr *ngFor="let detail of getDetails(orderForm).controls; let i=index" [formGroup]="detail" [ngClass]="{'detail-active': detail['isActive']}" [id]="'detail-'+index" (click)="activeDetail(orderForm, detail, index)">
                                     <td style="text-align: center">
@@ -163,14 +108,9 @@
                                     <td style="text-align: right;">
                                         <input class="pos-quantity" nbInput size="large" formControlName="Quantity" (keydown)="onQuantityKeydown(orderForm, detail, $event, quantityFormat)" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)">
                                         <div class="pos-unit" style="white-space: nowrap;">{{detail.value.Unit | objecttext}}</div>
-                                        <!-- <div style="display: flex;">
-                                            <div style="flex: 1;">
-                                            </div>
-                                        </div> -->
                                         <div *ngIf="detail.value.AccessNumbers && detail.value.AccessNumbers.length > 0" class="pos-access-numbers">Số truy xuất: {{detail.value.AccessNumbers | objectstext}}</div>
                                         <div class="pos-price">x {{detail.value.Price | currency:'VND'}}</div>
                                         <div class="pos-discount">Bớt khách quen: {{detail.value.Discount | number}} đ</div>
-                                        <!-- <br> -->
                                         <hr style="margin: 0.5rem;">
                                         <div class="pos-tomoney">= {{detail.value.ToMoney | currency:'VND'}}</div>
                                     </td>
@@ -179,55 +119,15 @@
                                             <nb-icon icon="plus-outline"></nb-icon>
                                         </button>
                                     </td>
-                                    <!-- <td style="text-align: right;">{{detail.Price | currency:'VND'}}</td> -->
-                                    <!-- <td style="text-align: right;">{{detail.value.Discount | number}}</td> -->
-                                    <!-- <td style="text-align: right;">{{detail.value.ToMoney | currency:'VND'}}</td> -->
                                 </tr>
                             </table>
                         </div>
-                        <!-- <div class="pos-order-summary">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
-                                        <div class="pos-field-label" style="text-align: right;">Tiền khách đưa</div>
-                                        <div class="pos-field-control">
-                                            <input type="text" nbInput fullWidth formControlName="CashReceipt" fieldSize="large" style="text-align: right; font-size: 2rem;" (keyup)="onCashReceiptChanged(orderForm)" currencyMask [options]="toMoneyCurencyFormat">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
-                                        <div class="pos-field-label" style="text-align: right;">Tiền hàng</div>
-                                        <div class="pos-field-control" style="flex: 1">
-                                            <input type="text" formControlName="Total" fieldSize="large" nbInput fullWidth disabled style="text-align: right; font-size: 2rem;" currencyMask [options]="toMoneyCurencyFormat">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
-                                        <div class="pos-field-label" style="text-align: right;">Tiền CK</div>
-                                        <div class="pos-field-control">
-                                            <input type="text" nbInput fullWidth style="text-align: right; font-size: 2rem;" fieldSize="large" currencyMask [options]="toMoneyCurencyFormat">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="pos-field" style="display: flex; margin-bottom: 1rem; flex-direction: column;">
-                                        <div class="pos-field-label" style="text-align: right;">Tiền thừa</div>
-                                        <div class="pos-field-control">
-                                            <input type="text" nbInput formControlName="CashBack" fieldSize="large" fullWidth disabled style="text-align: right; font-size: 2rem;" currencyMask [options]="toMoneyCurencyFormat">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                     <div class="pos-business" style="display: flex; flex-direction: column; padding: 0.5rem;">
 
                         <div>
                             <div class="row">
                                 <div class="col-xxxl-12">
-                                    <!-- Mã đơn:<br>{{orderForm.value?.Code}} -->
                                     <div class="pos-info">
                                         <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" [ngClass]="{'text-color-danger': (orderForm['voucherType'] == 'COMMERCEPOSRETURN' || orderForm.value['State'] == 'UNRECORDED'),'text-color-success':(orderForm['voucherType'] == 'COMMERCEPOSORDER' && orderForm.value['State'] != 'UNRECORDED')}">Mã đơn:<br>{{orderForm.value?.Code}}</div>
                                         <div *ngIf="!orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" class="text-color-warning">Đang khởi tạo...</div>
@@ -416,7 +316,6 @@
                             </div>
                         </div>
                         <div style="padding-top: 1rem">
-                            <!-- <input type="hidden" formControlName="Object"> -->
                             <div class="row pos-contact">
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field" style="padding-top: 10px">
