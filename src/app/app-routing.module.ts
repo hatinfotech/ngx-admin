@@ -107,6 +107,7 @@ import { WarehouseInventoryAdjustNoteListComponent } from './modules/warehouse/i
 import { SalesReturnsVoucherListComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-list/sales-returns-voucher-list.component';
 import { CommercePosReturnPrintComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-print/commerce-pos-return-print.component';
 import { CommercePosReturnListComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-list/commerce-pos-return-list.component';
+import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -1194,6 +1195,14 @@ const routes: Routes = [
     path: 'commerce-pos/return/list',
     canActivate: [AuthGuardService],
     component: CommercePosReturnListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'commerce-pos/dashboard',
+    canActivate: [AuthGuardService],
+    component: CommercePosDashboardComponent,
     data: {
       reuse: true,
     },

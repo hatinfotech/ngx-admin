@@ -264,6 +264,8 @@ import { CommercePosReturnFormComponent } from './modules/commerce-pos/commerce-
 import { CommercePosReturnListComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-list/commerce-pos-return-list.component';
 import { CommercePosReturnPrintComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-print/commerce-pos-return-print.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard.component';
+import { CommercePosDashboardStatisticsComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard-statistics.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -522,6 +524,8 @@ export class DynamicLocaleId extends String {
     CommercePosReturnFormComponent,
     CommercePosReturnListComponent,
     CommercePosReturnPrintComponent,
+    CommercePosDashboardComponent,
+    CommercePosDashboardStatisticsComponent,
 
     // Ag-Grid components
     BtnCellRenderer,
