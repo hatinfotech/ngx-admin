@@ -271,6 +271,9 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
         title: this.commonService.translateText('Accounting.increment'),
         type: 'acc-currency',
         width: '10%',
+        // valuePrepareFunction: (cell, row) => {
+        //   return cell;
+        // }
       };
     }
     settings.columns['Preview'] = {

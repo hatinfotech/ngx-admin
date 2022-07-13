@@ -9,52 +9,54 @@
             <nb-icon icon="ios-pie" pack="ion"></nb-icon>
           </div>
         </div>
-
         <div class="details">
-          <div class="title h5">Tổng quan</div>
-          <div class="status paragraph-2">Quỹ: {{summaryReport?.Cash | currency:'VND'}}</div>
+          <div class="title h5">Quỹ</div>
+          <div class="status paragraph-2" style="font-weight: bold; color: var(--primary); font-size: 1rem;">{{summaryReport?.Cash | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
+
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-info" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
+          <div class="icon status-success" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
             <nb-icon icon="android-cart" pack="ion"></nb-icon>
           </div>
         </div>
-
         <div class="details">
           <div class="title h5">Doanh thu</div>
-          <div class="status paragraph-2">Doanh thu: {{summaryReport?.Revenues | currency:'VND'}}<br/>Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div>
+          <div class="status paragraph-2" style="font-weight: bold; color: var(--success); font-size: 1rem;">{{summaryReport?.Revenues | currency:'VND'}}</div>
+          <!-- <div class="status paragraph-2" style="font-weight: bold; color: var(--danger)">Giá vốn: {{summaryReport?.CostOfGoodsSold | currency:'VND'}}</div> -->
+          <!-- <div class="status paragraph-2" style="font-weight: bold; color: var(--warning)">Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div> -->
         </div>
       </nb-card>
     </div>
-    <div class="col-xxxl-3 col-md-3 col-sm-6">
-      <nb-card class="status-card">
-        <div class="icon-container">
-          <div class="icon status-warning" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
-            <nb-icon icon="cube" pack="ion"></nb-icon>
-          </div>
-        </div>
 
-        <div class="details">
-          <div class="title h5">Công nợ</div>
-          <div class="status paragraph-2">Phải thu: {{summaryReport?.CustomerReceivableDebt | currency:'VND'}}<br/>Phải trả: {{summaryReport?.LiabilitiesDebt | currency:'VND'}}</div>
-        </div>
-      </nb-card>
-    </div>
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-success" (click)="this.commonService.router.navigate(['accounting/report/profit-report'])">
+          <div class="icon status-warning" (click)="this.commonService.router.navigate(['accounting/report/profit-report'])">
             <nb-icon icon="arrow-graph-up-right" pack="ion"></nb-icon>
           </div>
         </div>
-
         <div class="details">
-          <div class="title h5">Lãi/lỗ</div>
-          <div class="status paragraph-2">{{summaryReport?.Profit | currency:'VND'}}</div>
+          <div class="title h5">Giảm doanh thu</div>
+          <div class="status paragraph-2" style="font-weight: bold; font-size: 1rem; color: var(--warning)">Trả hàng: {{summaryReport?.DecreaseRevenuesByReturns | currency:'VND'}}</div>
+          <div class="status paragraph-2" style="font-weight: bold; font-size: 1rem; color: var(--primary)">Giảm giá: {{summaryReport?.DecreaseRevenuesByDiscount | currency:'VND'}}</div>
+        </div>
+      </nb-card>
+    </div>
+
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
+            <nb-icon icon="cube" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="details">
+          <div class="title h5">Công nợ</div>
+          <div class="status paragraph-2" style="font-weight: bold; color: var(--primary); font-size: 1rem;">{{summaryReport?.CustomerReceivableDebt | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
@@ -109,11 +111,42 @@
   <div class="row">
 
     <div class="col-xxxl-3 col-xxl-3 col-lg-3 col-md-12">
-      <ngx-accounting-most-of-debt [customerReceivableDebt]="customerReceivableDebt" [liabilitityDebt]="liabilitityDebt"></ngx-accounting-most-of-debt>
+      <!-- <ngx-commerce-pos-most-of-revenus [topCustomerList]="topCustomerList" [topGoodsList]="topGoodsList"></ngx-commerce-pos-most-of-revenus> -->
+      <nb-card size="giant" class="same-height-chart" style="height: 562px">
+        <nb-tabset fullWidth>
+          <nb-tab tabTitle="TOP NV">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topEmployeeList">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.EmployeeName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <nb-tab tabTitle="TOP KH">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topCustomerList">
+                <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <nb-tab tabTitle="TOP HH">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topGoodsList">
+                <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.ProductUnitLabel" size="large"></nb-user>
+                <span style="flex: 1;" class="caption">{{ c.TailCredit | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+        </nb-tabset>
+      </nb-card>
     </div>
 
     <div class="col-xxxl-9 col-xxl-9 col-lg-9 col-md-12">
-      <nb-card class="size-giant chart small-header">
+      <nb-card class="size-giant chart small-header" style="height: 562px">
         <nb-tabset fullWidth>
           <nb-tab tabTitle="Hoạt động kinh doanh">
             <nb-card class="size-giant chart small-header">
@@ -143,13 +176,13 @@
               </nb-card-body>
             </nb-card>
           </nb-tab>
-          <nb-tab tabTitle="Lãi/lỗ">
+          <!-- <nb-tab tabTitle="Lãi/lỗ">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="line" [data]="profitStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
-          </nb-tab>
+          </nb-tab> -->
         </nb-tabset>
       </nb-card>
     </div>

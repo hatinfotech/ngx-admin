@@ -49,6 +49,7 @@ export class AccountingDashboardComponent implements OnDestroy {
 
   summaryReport: {
     Cash?: number,
+    CashInBank?: number,
     Revenues?: number,
     Cost?: number,
     CustomerReceivableDebt?: number,
@@ -370,13 +371,14 @@ export class AccountingDashboardComponent implements OnDestroy {
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;
 
-    this.apiService.getPromise<any[]>('/accounting/reports', { reportSummary: true, eq_Accounts: "111,511,512,515,632,642,641,2288,711,811,131,331", skipHeader: true, branch: pages, toDate: toDate, fromDate: fromDate }).then(summaryReport => {
+    this.apiService.getPromise<any[]>('/accounting/reports', { reportSummary: true, eq_Accounts: "111,112,511,512,515,521,632,635,642,641,623,2288,711,811,131,331", skipHeader: true, branch: pages, toDate: toDate, fromDate: fromDate, limit: 'nolimit' }).then(summaryReport => {
       console.log(summaryReport);
 
       this.summaryReport = {
         Cash: summaryReport.filter(f => /^111/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
+        CashInBank: summaryReport.filter(f => /^112/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
         Revenues: summaryReport.filter(f => /^511|512|515|711/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
-        Cost: summaryReport.filter(f => /^632|642|641|811|2288/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
+        Cost: summaryReport.filter(f => /^632|642|635|623|641|811|521/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
         CustomerReceivableDebt: summaryReport.filter(f => /^131/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
         LiabilitiesDebt: summaryReport.filter(f => /^331/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
         // Profit: summaryReport.filter(f => /^4212/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),

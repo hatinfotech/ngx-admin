@@ -11,8 +11,10 @@
         </div>
 
         <div class="details">
-          <div class="title h5">Tổng quan</div>
-          <div class="status paragraph-2">Quỹ: {{summaryReport?.Cash | currency:'VND'}}</div>
+          <div class="title h5">Quỹ</div>
+          <div class="status paragraph-2">Tiền mặt+vàng: {{summaryReport?.Cash | currency:'VND'}}</div>
+          <div class="status paragraph-2">Tiền ngân hàng: {{summaryReport?.CashInBank | currency:'VND'}}</div>
+          <div class="status paragraph-2">Tổng quỹ: {{(summaryReport?.Cash + summaryReport?.CashInBank) | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>

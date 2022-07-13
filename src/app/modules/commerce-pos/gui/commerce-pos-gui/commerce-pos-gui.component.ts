@@ -412,10 +412,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     const cashBack = newForm.get('CashBack');
     const total = newForm.get('Total');
     decreaseTotal.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      cashBack.setValue(parseFloat(cashReceipt.value || 0) - parseFloat(total.value || 0) + parseFloat(decreaseTotal.value || 0));
+      console.log('Cash receipt: ' + cashReceipt.value)
+      cashBack.setValue(cashReceipt.value > 0 && (parseFloat(cashReceipt.value || 0) - parseFloat(total.value || 0) + parseFloat(decreaseTotal.value || 0)) || 0);
     });
     cashReceipt.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      cashBack.setValue(parseFloat(cashReceipt.value || 0) - parseFloat(total.value || 0) + parseFloat(decreaseTotal.value || 0));
+      console.log('Cash receipt: ' + cashReceipt.value)
+      cashBack.setValue(cashReceipt.value > 0 && (parseFloat(cashReceipt.value || 0) - parseFloat(total.value || 0) + parseFloat(decreaseTotal.value || 0)) || 0);
     });
 
     return newForm;
@@ -1804,10 +1806,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   onCashReceiptChanged(formGroup: FormGroup) {
-    const cashReceiptControl = formGroup.get('CashReceipt');
-    const cashBackControl = formGroup.get('CashBack');
-    const totolControl = formGroup.get('Total');
-    cashBackControl.setValue(cashReceiptControl.value - totolControl.value);
+    // const cashReceiptControl = formGroup.get('CashReceipt');
+    // const cashBackControl = formGroup.get('CashBack');
+    // const totolControl = formGroup.get('Total');
+    // cashBackControl.setValue(cashReceiptControl.value - totolControl.value);
   }
 
   async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE', skipPrint?: boolean }) {
