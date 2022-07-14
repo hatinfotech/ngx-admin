@@ -1822,7 +1822,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.orderForm.get('CashReceipt').disable();
     } else {
       this.orderForm['isReceipt'] = true;
-      this.orderForm.get('CashReceipt').disable();
+      this.orderForm.get('CashReceipt').enable();
     }
   }
 

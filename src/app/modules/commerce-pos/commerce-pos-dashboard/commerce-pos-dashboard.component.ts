@@ -379,7 +379,7 @@ export class CommercePosDashboardComponent implements OnDestroy {
       branch: pages,
       toDate: toDate,
       fromDate: fromDate,
-      // entryGroup: 'COMMERCEPOS',
+      entryGroup: 'COMMERCEPOS',
       limit: 'nolimit'
     }).then(summaryReport => {
       console.log(summaryReport);
