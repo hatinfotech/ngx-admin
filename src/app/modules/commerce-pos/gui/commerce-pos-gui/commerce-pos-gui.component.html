@@ -320,7 +320,7 @@
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field" style="padding-top: 10px">
                                         <nb-badge text="Số điện thoại (F8)" status="primary" position="top left" style="left: 5px;"></nb-badge>
-                                        <input id="ObjectPhone" #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="SĐT..." class="pos-contact-field-input">
+                                        <input id="ObjectPhone" #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Số điện thoại..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
@@ -330,7 +330,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
-                                    <div class="pos-contact-field" style="padding-top: 10px">
+                                    <div class="pos-contact-field" style="padding-top: 10px; margin-bottom: 5px;">
                                         <nb-badge text="Địa chỉ (F8)" status="primary" position="top left" style="left: 5px;"></nb-badge>
                                         <input id="ObjectAddress" #ObjectAddress formControlName="ObjectAddress" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" status="primary" fieldSize="large" fullWidth placeholder="Địa chỉ..." class="pos-contact-field-input">
                                     </div>
@@ -338,18 +338,16 @@
                             </div>
                             <div class="row" style="padding-bottom: 0.5rem;">
                                 <div class="col-xxxl-12">
-                                    <div class="pos-total-payment" style="text-align: right; margin-top: 5px; padding-top: 1rem; padding-bottom: 1rem;">
-                                        <nb-badge text="Tổng tiền" status="danger" position="top left" style="top: -5px; left: 5px; font-size: 0.8rem;"></nb-badge>
-                                        <div>{{orderForm.value?.Total | currency:'VND'}}</div>
+                                    <div class="pos-total-payment" style="text-align: right; margin-top: 5px; padding-top: 1rem; padding-bottom: 1rem; border-color: var(--info)">
+                                        <nb-badge text="Tạm tính" status="info" position="top left" style="top: -5px; left: 5px; font-size: 0.8rem;"></nb-badge>
+                                        <div style="color: var(--info)">{{orderForm.value?.Total | currency:'VND'}}</div>
                                         <ng-container *ngIf="orderForm.value.State != 'APPROVED' && orderForm.value.Object?.id && orderForm.value.Object?.id != 'POSCUSTOMER'">
                                             <div *ngIf="orderForm['ReceivableDebt']" style="color: var(--warning);">Công nợ:<br>{{orderForm['ReceivableDebt'] | currency:'VND'}}</div>
-                                            <!-- <div *ngIf="orderForm.value?.Returns" style="color: var(--primary)">{{orderForm.value?.Total - (-orderForm['ReceivableDebt']) < 0 ? 'Trả lại' : 'Phải thu' }}:<br>{{(orderForm.value?.Total - (-orderForm['ReceivableDebt']) < 0 ? -(orderForm.value?.Total - (-orderForm['ReceivableDebt'])) : (orderForm.value?.Total - (-orderForm['ReceivableDebt']))) | currency:'VND'}}</div> -->
                                         </ng-container>
                                         <div *ngIf="orderForm.value?.Returns">
-                                            <!-- <div style="color: var(--warning);">Hoàn tiền:<br>{{orderForm.value?.DebitFunds | currency:'VND'}}</div> -->
                                             <ng-container *ngIf="!orderForm.value.Object?.id || orderForm.value.Object?.id == 'POSCUSTOMER'">
                                                 <div style="color: var(--warning);">Hoàn tiền:<br>{{orderForm.value.DebitFunds | currency:'VND'}}</div>
-                                                <div style="color: var(--danger)">{{orderForm.value?.Total - orderForm.value.DebitFunds < 0 ? 'Trả lại' : 'Phải thu' }}:<br>{{(orderForm.value?.Total - orderForm.value.DebitFunds < 0 ? -(orderForm.value?.Total - orderForm.value.DebitFunds) : (orderForm.value?.Total - orderForm.value.DebitFunds)) | currency:'VND'}}</div>
+                                                <div style="color: var(--danger)">{{orderForm.value?.Total - orderForm.value.DebitFunds < 0 ? 'Tạm trả' : 'Tạm thu' }}:<br>{{(orderForm.value?.Total - orderForm.value.DebitFunds < 0 ? -(orderForm.value?.Total - orderForm.value.DebitFunds) : (orderForm.value?.Total - orderForm.value.DebitFunds)) | currency:'VND'}}</div>
                                             </ng-container>
                                         </div>
                                     </div>
@@ -357,22 +355,28 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
-                                    <div class="pos-contact-field" style="padding-top: 10px">
-                                        <nb-badge text="Bớt lấy thảo (F11)" status="success" position="top left" style="left: 5px;"></nb-badge>
+                                    <div class="pos-contact-field" style="padding-top: 10px; margin-bottom: 5px;">
+                                        <nb-badge text="Bớt (F11)" status="success" position="top left" style="left: 5px;"></nb-badge>
                                         <nb-badge text="{{orderForm.value.Total && orderForm.value.DecreaseForTotal && ((orderForm.value.DecreaseForTotal || 0)/orderForm.value.Total*100).toFixed(2)}}%" status="danger" position="top right"></nb-badge>
-                                        <input #DecreaseForTotal formControlName="DecreaseForTotal" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Bớt lấy thảo" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
+                                        <input style="color: var(--success) !important;" #DecreaseForTotal formControlName="DecreaseForTotal" type="text" nbInput status="success" fieldSize="large" fullWidth placeholder="Bớt lấy thảo" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="pos-total-payment" style="text-align: right; margin-top: 5px; padding-top: 1rem; padding-bottom: 1rem; margin-bottom: 10px;">
+                                        <nb-badge text="{{orderForm['isReceipt'] ? 'Phải thu' : 'Phải trả'}}" status="danger" position="top left" style="left: 5px;"></nb-badge>
+                                        <div>{{ (orderForm['isReceipt']? (orderForm.value?.Total - orderForm.value?.DecreaseForTotal - orderForm.value?.DebitFunds) : -(orderForm.value?.Total - orderForm.value?.DecreaseForTotal - orderForm.value?.DebitFunds) | currency:'VND')}}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field" style="padding-top: 10px">
-                                        <nb-badge text="Khách đưa (F11)" status="success" position="top left" style="left: 5px;"></nb-badge>
-                                        <input #CashReceipt formControlName="CashReceipt" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Khách đưa" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
+                                        <nb-badge text="Khách đưa (F11)" status="primary" position="top left" style="left: 5px;"></nb-badge>
+                                        <input style="color: var(--primary) !important;" #CashReceipt formControlName="CashReceipt" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Khách đưa" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
                                     </div>
                                 </div>
-                                <div class="col-md-12" style="margin-bottom: 0.5rem;">
-                                    <div class="pos-contact-field" style="padding-top: 10px">
-                                        <nb-badge text="Thối lại" status="success" position="top left" style="left: 5px;"></nb-badge>
-                                        <input #CashBack formControlName="CashBack" disabled type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Thối lại" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
+                                <div class="col-md-12">
+                                    <div class="pos-total-payment" style="text-align: right; margin-top: 5px; padding-top: 1rem; padding-bottom: 1rem; border-color: var(--warning); margin-bottom: 10px;">
+                                        <nb-badge text="Thối lại" status="warning" position="top left" style="left: 5px;"></nb-badge>
+                                        <div style="color: var(--warning)">{{orderForm.value?.CashReceipt - (orderForm.value?.Total - orderForm.value?.DecreaseForTotal - orderForm.value?.DebitFunds) > 0 ? (orderForm.value?.CashReceipt - (orderForm.value?.Total - orderForm.value?.DecreaseForTotal - orderForm.value?.DebitFunds) | currency:'VND') : '--'}}</div>
                                     </div>
                                 </div>
                                 <div class="col-xxxl-8">

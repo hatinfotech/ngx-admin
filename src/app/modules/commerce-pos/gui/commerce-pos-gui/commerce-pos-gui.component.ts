@@ -88,7 +88,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   @ViewChild('searchListViewport', { static: true }) searchListViewport: CdkVirtualScrollViewport;
   @ViewChild('DecreaseForTotal', { static: true }) decreaseForTotalEleRef: ElementRef;
   @ViewChild('CashReceipt', { static: true }) cashReceiptEleRef: ElementRef;
-  @ViewChild('CashBack', { static: true }) cashBackEleRef: ElementRef;
+  // @ViewChild('CashBack', { static: true }) cashBackEleRef: ElementRef;
 
   get isFullscreenMode() {
     return screenfull.isFullscreen;
@@ -385,16 +385,18 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       Total: [0],
       CashReceipt: [null],
       DecreaseForTotal: [null],
-      CashBack: [null],
+      // CashBack: [null],
       State: [null],
       DateOfSale: [null],
       Details: this.formBuilder.array([]),
       Returns: [],
       RelativeVouchers: [data?.Returns ? [{ id: data.Returns, text: data.Returns, type: 'COMMERCEPOSRETURN' }] : null],
       DebitFunds: [],
+      // FinalReceipt: [],
       IsDebt: [false],
     });
     newForm['voucherType'] = 'COMMERCEPOSORDER';
+    newForm['isReceipt'] = true;
     newForm['isProcessing'] = null;
     if (data) {
       newForm.patchValue(data);
@@ -407,18 +409,20 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
     }
 
-    const decreaseTotal = newForm.get('DecreaseForTotal');
-    const cashReceipt = newForm.get('CashReceipt');
-    const cashBack = newForm.get('CashBack');
-    const total = newForm.get('Total');
-    decreaseTotal.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      console.log('Cash receipt: ' + cashReceipt.value)
-      cashBack.setValue(cashReceipt.value > 0 && (parseFloat(cashReceipt.value || 0) - parseFloat(total.value || 0) + parseFloat(decreaseTotal.value || 0)) || 0);
-    });
-    cashReceipt.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      console.log('Cash receipt: ' + cashReceipt.value)
-      cashBack.setValue(cashReceipt.value > 0 && (parseFloat(cashReceipt.value || 0) - parseFloat(total.value || 0) + parseFloat(decreaseTotal.value || 0)) || 0);
-    });
+    // const decreaseTotal = newForm.get('DecreaseForTotal');
+    // const cashReceipt = newForm.get('CashReceipt');
+    // const cashBack = newForm.get('CashBack');
+    // const total = newForm.get('Total');
+    // const debitFunds = newForm.get('DebitFunds');
+    // const finalReceipt = newForm.get('FinalReceipt');
+    // decreaseTotal.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+    //   finalReceipt.setValue(parseFloat(total.value || 0) - parseFloat(debitFunds.value || 0) - parseFloat(decreaseTotal.value || 0));
+    //   cashBack.setValue(parseFloat(cashReceipt.value || 0) - parseFloat(finalReceipt.value || 0));
+    // });
+    // cashReceipt.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+    //   finalReceipt.setValue(parseFloat(total.value || 0) - parseFloat(debitFunds.value || 0) - parseFloat(decreaseTotal.value || 0));
+    //   cashBack.setValue(parseFloat(cashReceipt.value || 0) - parseFloat(finalReceipt.value || 0));
+    // });
 
     return newForm;
   }
@@ -443,7 +447,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         Note: [],
         SubNote: [],
         Total: [0],
-        CashBack: [0],
+        // CashBack: [0],
         CashReceipt: [0],
         State: [null],
         DateOfReturn: [new Date()],
@@ -471,7 +475,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         Note: [],
         SubNote: [],
         Total: [0],
-        CashBack: [0],
+        // CashBack: [0],
         CashReceipt: [0],
         State: [null],
         DateOfSale: [new Date()],
@@ -481,7 +485,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       });
     }
     newForm['voucherType'] = 'COMMERCEPOSRETURN';
-
 
     if (data) {
       newForm.patchValue(data);
@@ -592,6 +595,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
 
     this.orderForm.get('Total').setValue(total);
+    // const discount = this.orderForm.get('DecreaseForTotal');
+    // this.orderForm.get('FinalReceipt').setValue(parseFloat(total || 0 as any) - parseFloat((discount.value || 0)));
+
     this.onCashReceiptChanged(form);
     return total;
   }
@@ -1810,6 +1816,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // const cashBackControl = formGroup.get('CashBack');
     // const totolControl = formGroup.get('Total');
     // cashBackControl.setValue(cashReceiptControl.value - totolControl.value);
+
+    if (this.orderForm.value?.DebitFunds >= this.orderForm.value?.Total - this.orderForm.value?.DecreaseForTotal) {
+      this.orderForm['isReceipt'] = false;
+      this.orderForm.get('CashReceipt').disable();
+    } else {
+      this.orderForm['isReceipt'] = true;
+      this.orderForm.get('CashReceipt').disable();
+    }
   }
 
   async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE', skipPrint?: boolean }) {
