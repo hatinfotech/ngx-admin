@@ -1,3 +1,4 @@
+import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
 import { SalesProductListComponent } from './modules/sales/product/sales-product-list/sales-product-list.component';
 import { CommercePosOrderListComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-list/commerce-pos-order-list.component';
 import { CommercePosGuiComponent } from './modules/commerce-pos/gui/commerce-pos-gui/commerce-pos-gui.component';
@@ -371,8 +372,16 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     component: WarehouseGoodsFormComponent,
   },
-
-
+  {
+    path: 'warehouse/dashboard',
+    canActivate: [AuthGuardService],
+    component: WarehouseDashboardComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  
+  
   // Sales routes
   // Price report
   {
