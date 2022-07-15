@@ -109,6 +109,7 @@ import { SalesReturnsVoucherListComponent } from './modules/sales/sales-returns-
 import { CommercePosReturnPrintComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-print/commerce-pos-return-print.component';
 import { CommercePosReturnListComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-list/commerce-pos-return-list.component';
 import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard.component';
+import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -546,6 +547,14 @@ const routes: Routes = [
     path: 'purchase/goods/list',
     canActivate: [AuthGuardService],
     component: PurchaseGoodsListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'purchase/dashboard',
+    canActivate: [AuthGuardService],
+    component: PurchaseDashboardComponent,
     data: {
       reuse: true,
     },

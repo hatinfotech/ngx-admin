@@ -268,6 +268,7 @@ import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-p
 import { CommercePosDashboardStatisticsComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard-statistics.component';
 import { CommercePosDeploymentVoucherPrintComponent } from './modules/commerce-pos/gui/commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
+import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -335,6 +336,7 @@ export class DynamicLocaleId extends String {
     PurchaseGoodsFormComponent,
     PurchaseGoodsListComponent,
     PurchaseGoodsPrintComponent,
+    PurchaseDashboardComponent,
 
     // Warehouse components
     WarehouseGoodsReceiptNoteListComponent,
