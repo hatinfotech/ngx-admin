@@ -110,6 +110,7 @@ import { CommercePosReturnPrintComponent } from './modules/commerce-pos/commerce
 import { CommercePosReturnListComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-list/commerce-pos-return-list.component';
 import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard.component';
 import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
+import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-dashboard.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -381,8 +382,8 @@ const routes: Routes = [
       reuse: true,
     },
   },
-  
-  
+
+
   // Sales routes
   // Price report
   {
@@ -464,6 +465,14 @@ const routes: Routes = [
     path: 'sales/master-price-table/list',
     canActivate: [AuthGuardService],
     component: MasterPriceTableListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'sales/dashboard',
+    canActivate: [AuthGuardService],
+    component: SalesDashboardComponent,
     data: {
       reuse: true,
     },

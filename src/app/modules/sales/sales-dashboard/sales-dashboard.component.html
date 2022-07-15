@@ -1,0 +1,227 @@
+<div class="page-deskboard">
+
+  <div class="row">
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['accounting/report/summary'])">
+            <!-- <i [ngClass]="'nb-lightbulb'"></i> -->
+            <nb-icon icon="cube" pack="eva"></nb-icon>
+          </div>
+        </div>
+        <div class="details">
+          <div class="title h5">Doanh thu</div>
+          <div class="status paragraph-2" style="font-weight: bold; color: var(--primary); font-size: 1rem;">{{summaryReport?.PurchaseAmount | currency:'VND'}}</div>
+        </div>
+      </nb-card>
+    </div>
+
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-danger" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
+            <nb-icon icon="arrow-graph-up-right" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="details">
+          <div class="title h5">Chi phí bán hàng</div>
+          <div class="status paragraph-2" style="font-weight: bold; color: var(--danger); font-size: 1rem;">{{summaryReport?.PurchaseCost | currency:'VND'}}</div>
+          <!-- <div class="status paragraph-2" style="font-weight: bold; color: var(--danger)">Giá vốn: {{summaryReport?.CostOfGoodsSold | currency:'VND'}}</div> -->
+          <!-- <div class="status paragraph-2" style="font-weight: bold; color: var(--warning)">Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div> -->
+        </div>
+      </nb-card>
+    </div>
+
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-success" (click)="this.commonService.router.navigate(['accounting/report/profit-report'])">
+            <nb-icon icon="arrow-graph-up-right" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="details">
+          <div class="title h5">Chiết khấu thương mại</div>
+          <div style="font-weight: bold; color: var(--success)">{{summaryReport?.CommerceDiscount | currency:'VND'}}</div>
+        </div>
+      </nb-card>
+    </div>
+
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
+            <nb-icon icon="ios-pie" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="details">
+          <div class="title h5">Các chỉ số</div>
+          <div class="status paragraph-2" style="font-weight: bold; color: var(--primary); font-size: 1rem;">
+            <div>Quá hạn: 7%</div>
+            <div>Mới nhập: 11%</div>
+          </div>
+        </div>
+      </nb-card>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xxxl-12 col-md-12">
+      <nb-card>
+        <nb-card-body>
+          <div style="display: flex;">
+            <div style="flex: 1;">
+              <div class="row">
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [index]="0" [allowCopy]="false" [required]="true">
+                    <ngx-select2 formControlName="DateReport" [select2Option]="select2DateReportOption" [data]="dateReportList" (selectChange)="onDateReportChange($event)"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
+                    <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
+                    <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="Page" label="Chi nhánh" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="[]" (selectChange)="onChangePage($event)"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-3">
+                  <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+              </div>
+            </div>
+            <div style="margin-left: 1rem;">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label class="label">Action</label>
+                    <button nbButton fullWidth status="success" (click)="refresh()">{{'Common.refresh' | translate | headtitlecase}}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-xxxl-3 col-xxl-3 col-lg-3 col-md-12">
+      <!-- <ngx-commerce-pos-most-of-revenus [topCustomerList]="topCustomerList" [topGoodsList]="topGoodsList"></ngx-commerce-pos-most-of-revenus> -->
+      <nb-card size="giant" class="same-height-chart" style="height: 562px">
+        <nb-tabset fullWidth>
+          <nb-tab tabTitle="TOP KH">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topSupplierList">
+                <nb-user [picture]="c.ObjectAvatar?.Thumbnail" [name]="c.ObjectName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.GenerateDebit - c.GenerateCredit) | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <!-- <nb-tab tabTitle="TOP HH">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topGoodsList">
+                <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab> -->
+
+          <nb-tab tabTitle="TOP HH">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topGoodsList">
+                <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.ProductUnitLabel" size="large"></nb-user>
+                <span style="flex: 1;" class="caption">{{ (c.GenerateDebit - c.GenerateCredit) | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+        </nb-tabset>
+      </nb-card>
+    </div>
+
+    <div class="col-xxxl-9 col-xxl-9 col-lg-9 col-md-12">
+      <nb-card class="size-giant chart small-header" style="height: 562px">
+        <nb-tabset fullWidth>
+          <!-- <nb-tab tabTitle="Hàng hóa">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="pie" [data]="goodsStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab> -->
+          <nb-tab tabTitle="Hoạt động mua hàng">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="bar" [data]="costAndRevenueStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <!-- <nb-tab tabTitle="Tồn kho">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="inventoryStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab> -->
+          <nb-tab tabTitle="Nhóm hàng hóa">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="pie" [data]="goodsGroupsStatisticsData" [options]="pieOption"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <!-- <nb-tab tabTitle="Lãi/lỗ">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="profitStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab> -->
+        </nb-tabset>
+      </nb-card>
+    </div>
+  </div>
+
+  <!-- <div class="row">
+    <div class="col-xxxl-3 col-xxl-4 col-lg-5 col-md-6">
+      <ngx-temperature></ngx-temperature>
+    </div>
+
+    <div class="col-xxxl-9 col-xxl-8 col-lg-7 col-md-6">
+      <ngx-electricity></ngx-electricity>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xxxl-9 col-xl-12">
+      <ngx-rooms></ngx-rooms>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-lg-7 col-md-6">
+      <ngx-contacts></ngx-contacts>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-lg-5 col-md-6">
+      <ngx-solar [chartValue]="solarValue"></ngx-solar>
+
+      <ngx-kitten></ngx-kitten>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-md-5">
+      <ngx-traffic></ngx-traffic>
+      <ngx-weather></ngx-weather>
+    </div>
+
+    <div class="col-xxxl-6 col-xxl-12 col-md-7">
+      <ngx-security-cameras></ngx-security-cameras>
+    </div>
+  </div> -->
+</div>
