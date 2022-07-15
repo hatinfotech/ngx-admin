@@ -72,7 +72,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
   };
 
   topEmployeeList = [];
-  topCustomerList = [];
+  topSupplierList = [];
   topGoodsList = [];
 
   masterBook: AccMasterBookModel;
@@ -454,14 +454,14 @@ export class PurchaseDashboardComponent implements OnDestroy {
     //   this.topEmployeeList = rs;
     //   console.log(rs);
     // });
-    // this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromCustomer: true, branch: pages, toDate: toDate, sort_TailCredit: 'desc', limit: 100 }).then(rs => {
-    //   this.topCustomerList = rs;
-    //   console.log(rs);
-    // });
-    // this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromGoods: true, branch: pages, toDate: toDate, sort_TailCredit: 'desc', limit: 100 }).then(rs => {
-    //   this.topGoodsList = rs;
-    //   console.log(rs);
-    // });
+    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromSupplier: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_TailDebit: 'desc', limit: 100 }).then(rs => {
+      this.topSupplierList = rs;
+      console.log(rs);
+    });
+    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromGoods: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_TailDebit: 'desc', limit: 100 }).then(rs => {
+      this.topGoodsList = rs;
+      console.log(rs);
+    });
 
     let pointRadius: number = 1;
     if (reportType == 'MONTH') {
@@ -478,13 +478,15 @@ export class PurchaseDashboardComponent implements OnDestroy {
     // let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[641,642,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[156,152,153]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', eq_VoucherType: 'PURCHASE' });
+    let costStatistics633 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1562]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', eq_VoucherType: 'PURCHASE' });
     // let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[5212]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
     // line1Data = revenueStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    // line1Data = costStatistics632.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return { ...statistic, Value: statistic.SumOfDebit }; });
     line2Data = costStatistics632.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return { ...statistic, Value: statistic.SumOfDebit }; });
-    line3Data = costStatistics632.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return { ...statistic, Value: statistic.SumOfCredit }; });
+    line3Data = costStatistics633.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return { ...statistic, Value: statistic.SumOfCredit }; });
     timeline = [...new Set([
       // ...line1Data.map(item => item['Timeline']),
       ...line2Data.map(item => item['Timeline']),
@@ -534,18 +536,18 @@ export class PurchaseDashboardComponent implements OnDestroy {
         //   pointHoverRadius: 10,
         // },
         {
-          label: 'Nhập kho',
+          label: 'Nua hàng',
           data: mergeData.map(point => point.Line2['Value']),
-          borderColor: this.colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 1),
+          borderColor: this.colors.success,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
         {
-          label: 'Xuất kho',
+          label: 'Chi phí mua hàng',
           data: mergeData.map(point => point.Line3['Value']),
-          borderColor: this.colors.success,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
+          borderColor: this.colors.warning,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 1),
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         },

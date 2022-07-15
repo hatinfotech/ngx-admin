@@ -116,20 +116,11 @@
       <!-- <ngx-commerce-pos-most-of-revenus [topCustomerList]="topCustomerList" [topGoodsList]="topGoodsList"></ngx-commerce-pos-most-of-revenus> -->
       <nb-card size="giant" class="same-height-chart" style="height: 562px">
         <nb-tabset fullWidth>
-          <nb-tab tabTitle="TOP Offline">
+          <nb-tab tabTitle="TOP NCC">
             <nb-list class="scrollable-container">
-              <nb-list-item class="contact" *ngFor="let c of topEmployeeList">
-                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.EmployeeName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
-                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
-              </nb-list-item>
-            </nb-list>
-          </nb-tab>
-
-          <nb-tab tabTitle="TOP Online">
-            <nb-list class="scrollable-container">
-              <nb-list-item class="contact" *ngFor="let c of topCustomerList">
-                <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large" style="flex: 8"></nb-user>
-                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
+              <nb-list-item class="contact" *ngFor="let c of topSupplierList">
+                <nb-user [picture]="c.ObjectAvatar?.Thumbnail" [name]="c.ObjectName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.GenerateDebit - c.GenerateCredit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
           </nb-tab>
@@ -137,11 +128,20 @@
           <!-- <nb-tab tabTitle="TOP HH">
             <nb-list class="scrollable-container">
               <nb-list-item class="contact" *ngFor="let c of topGoodsList">
-                <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.ProductUnitLabel" size="large"></nb-user>
-                <span style="flex: 1;" class="caption">{{ c.TailCredit | currency:'VND' }}</span>
+                <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
           </nb-tab> -->
+
+          <nb-tab tabTitle="TOP HH">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topGoodsList">
+                <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.ProductUnitLabel" size="large"></nb-user>
+                <span style="flex: 1;" class="caption">{{ (c.GenerateDebit - c.GenerateCredit) | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
 
         </nb-tabset>
       </nb-card>
@@ -157,20 +157,20 @@
               </nb-card-body>
             </nb-card>
           </nb-tab> -->
-          <nb-tab tabTitle="Tồn kho">
-            <nb-card class="size-giant chart small-header">
-              <nb-card-body class="commission-statistics-wrapper">
-                <chart type="line" [data]="inventoryStatisticsData" [options]="options"></chart>
-              </nb-card-body>
-            </nb-card>
-          </nb-tab>
-          <nb-tab tabTitle="Hoạt động nhập/xuất">
+          <nb-tab tabTitle="Hoạt động mua hàng">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="bar" [data]="costAndRevenueStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>
+          <!-- <nb-tab tabTitle="Tồn kho">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="inventoryStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab> -->
           <nb-tab tabTitle="Nhóm hàng hóa">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
